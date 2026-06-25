@@ -56,6 +56,80 @@ Depois, use **Arquivo → Abrir** (Ctrl+O) para escolher o `.txt` do SPED.
   registros de totalização: **X990** (total por bloco), **9900** (um por tipo
   de registro), **9990** e **9999**.
 
+### Pesquisa e filtro por modelo (aba C100)
+
+Nas grades de documento (que têm `NUM_DOC`/`COD_MOD`, como **C100**):
+
+- **🔎 Nº do documento**: caixa de pesquisa que filtra as linhas pelo número do
+  documento conforme você digita.
+- **Modelo:**: seletor que filtra por **COD_MOD** (ex.: `55` = NF-e, `65` =
+  NFC-e), preenchido com os modelos presentes no arquivo.
+
+Os filtros se combinam entre si e com o seletor **Operação** (entradas/saídas);
+o rótulo mostra "X de Y" quando há filtro ativo.
+
+### Edição estilo planilha (Excel-like)
+
+- **Digite para editar**: basta começar a digitar na célula selecionada — não
+  precisa de duplo-clique nem F2.
+- **Setas ↑/↓ e Enter durante a edição** confirmam o valor e já abrem a edição
+  na célula vizinha, para você preencher uma coluna inteira sem tocar no mouse.
+- **Seleção múltipla** com **Ctrl** e **Shift** (clique ou setas), como no Excel.
+- **Preencher várias células com um valor**: selecione as células e use o botão
+  direito → *Preencher seleção com um valor…*, ou **cole** (Ctrl+V) um valor
+  único — ele é aplicado a toda a seleção.
+- **Ctrl+C / Ctrl+V**: copia/cola blocos de células (formato tabulado,
+  compatível com Excel). **Ctrl+D**: preenche para baixo o valor da célula do
+  topo da seleção.
+
+A coluna **REG** é sempre protegida e nunca é sobrescrita por colar/preencher.
+
+### Filtro de operação (Entradas × Saídas)
+
+Em qualquer grade de documento que tenha o campo **IND_OPER** (ex.: **C100**,
+**D100**), aparece no canto superior direito um seletor **Operação:** com as
+opções **Todas / Entradas (0) / Saídas (1)**. Ele filtra as linhas exibidas
+pelo `IND_OPER` (`0` = entrada, `1` = saída) e o rótulo mostra "X de Y". Com um
+filtro ativo, ao **Adicionar linha** o novo registro já nasce com o `IND_OPER`
+correspondente.
+
+### Recalcular C190 (analítico) a partir dos itens C170
+
+Na grade **C190** de um documento C100 (EFD ICMS/IPI), ao lado de *Adicionar/
+Remover linha* há o botão **🔄 Recalcular C190**. Ele reconstrói os registros
+C190 a partir dos itens **C170**, agrupando por **CST_ICMS + CFOP + ALIQ_ICMS**
+e somando os valores — substituindo os C190 anteriores e mantendo a sequência
+correta dentro do C100 (entre os itens e os C195).
+
+- **VL_BC_ICMS, VL_ICMS, VL_BC_ICMS_ST, VL_ICMS_ST, VL_IPI**: soma exata dos
+  itens do grupo (conferido contra arquivos reais: ~100%).
+- **VL_OPR**: `Σ(VL_ITEM − VL_DESC) + VL_IPI + VL_ICMS_ST`, mais o **rateio** de
+  frete, seguro e outras despesas do C100 (proporcional ao VL_ITEM). Reproduz o
+  valor original em ~98–99% dos casos; quando há rateio de despesas, pode haver
+  diferença de centavos que você pode ajustar manualmente.
+
+Assim, depois de alterar qualquer C170, basta um clique para deixar o C190
+coerente, sem somar grupo por grupo na mão.
+
+### Contagens / totais (C990, 9900, 9990, 9999)
+
+Sempre que você adiciona, remove ou recalcula registros, as contagens são
+atualizadas: **X990** (ex.: `C990` = nº de linhas do bloco), **9900** (um por
+tipo de registro, ex.: `9900|C190|<qtd>`), **9990** (linhas do bloco 9) e
+**9999** (total do arquivo). Esses valores são **sempre reconstruídos ao
+salvar** e podem ser atualizados na tela a qualquer momento por
+**Ferramentas → Recalcular totais (C990/9900)**.
+
+### Nome do produto no topo (grades C170)
+
+Nas grades que têm **COD_ITEM** (ex.: **C170**), ao **selecionar uma linha** o
+nome do produto aparece **centralizado no topo do widget** (ao lado do contador
+`C170 — N registro(s)`), em destaque verde, no formato `📦 1021 — PESC PANGA
+FILE...`. A descrição é buscada no cadastro **0200** (`COD_ITEM → DESCR_ITEM`).
+Se o código não estiver cadastrado, o rótulo avisa; se você editar o `COD_ITEM`
+da linha, o nome é atualizado na hora. A busca é indexada e se refaz sozinha
+quando um registro 0200 é editado, criado ou removido.
+
 ## 4. Estrutura do projeto
 
 | Arquivo            | Função                                                         |

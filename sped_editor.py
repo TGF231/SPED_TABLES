@@ -25,16 +25,50 @@ Como executar:
 import sys
 import os
 
-from PyQt6.QtCore import Qt
-from PyQt6.QtGui import QAction, QKeySequence, QColor, QFont
+from PyQt6.QtCore import Qt, QEvent, QTimer
+from PyQt6.QtGui import QAction, QKeySequence, QColor, QFont, QShortcut
 from PyQt6.QtWidgets import (
     QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout,
     QTabWidget, QTableWidget, QTableWidgetItem, QSplitter, QPushButton,
     QFileDialog, QMessageBox, QLabel, QHeaderView, QAbstractItemView,
-    QToolBar, QStatusBar,
+    QToolBar, QStatusBar, QComboBox, QLineEdit, QMenu, QInputDialog,
+    QStyledItemDelegate,
 )
 
 from sped_model import SpedDocument
+
+
+# ---------------------------------------------------------------------------
+# Delegate estilo planilha: setas ↑/↓ e Enter confirmam a edição e já reabrem
+# a edição na célula vizinha (como no Excel), sem precisar de duplo-clique.
+# ---------------------------------------------------------------------------
+class GridDelegate(QStyledItemDelegate):
+    def __init__(self, tabela):
+        super().__init__(tabela)
+        self.tabela = tabela
+
+    def eventFilter(self, editor, event):
+        if event.type() == QEvent.Type.KeyPress:
+            key = event.key()
+            if key in (Qt.Key.Key_Up, Qt.Key.Key_Down,
+                       Qt.Key.Key_Return, Qt.Key.Key_Enter):
+                self.commitData.emit(editor)
+                self.closeEditor.emit(editor)
+                self._mover(-1 if key == Qt.Key.Key_Up else +1)
+                return True
+        return super().eventFilter(editor, event)
+
+    def _mover(self, d):
+        t = self.tabela
+        nova = t.currentRow() + d
+        col = t.currentColumn()
+        if 0 <= nova < t.rowCount():
+            def go():
+                t.setCurrentCell(nova, col)
+                idx = t.model().index(nova, col)
+                if t.model().flags(idx) & Qt.ItemFlag.ItemIsEditable:
+                    t.edit(idx)
+            QTimer.singleShot(0, go)
 
 
 # ---------------------------------------------------------------------------
@@ -66,8 +100,16 @@ class MasterDetailWidget(QWidget):
         self.provider = provider
         self.pai = pai
         self.on_change = on_change
-        self._registros = []          # ordem espelhada na tabela
-        self._detalhe_cache = {}      # uid -> widget de detalhe já criado
+        self._registros = []          # todos os registros desta grade
+        self._visiveis = []           # registros após o filtro (espelham a tabela)
+        self._colunas = []
+        self._idx_ind_oper = None     # coluna IND_OPER, se houver
+        self._idx_cod_item = None     # coluna COD_ITEM, se houver
+        self._idx_cod_mod = None      # coluna COD_MOD, se houver
+        self._idx_num_doc = None      # coluna NUM_DOC, se houver
+        self._filtro = "TODOS"        # TODOS | ENTRADAS | SAIDAS
+        self._filtro_mod = ""         # COD_MOD selecionado ("" = todos)
+        self._texto_busca = ""        # texto da pesquisa
 
         layout = QVBoxLayout(self)
         layout.setContentsMargins(4, 4, 4, 4)
@@ -77,12 +119,67 @@ class MasterDetailWidget(QWidget):
         barra = QHBoxLayout()
         self.lbl = QLabel()
         self.lbl.setStyleSheet("color:#444;")
+
+        # rótulo central: nome do produto da linha selecionada (grades C170 etc.)
+        self.lbl_item = QLabel("")
+        self.lbl_item.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.lbl_item.setStyleSheet(
+            "color:#2e7d32; font-weight:bold; padding:0 8px;")
+        self.lbl_item.setVisible(False)
+
+        # campo de pesquisa (nº do documento etc.) — visível quando há NUM_DOC
+        self.busca = QLineEdit()
+        self.busca.setPlaceholderText("🔎 Nº do documento")
+        self.busca.setClearButtonEnabled(True)
+        self.busca.setMaximumWidth(240)
+        self.busca.textChanged.connect(self._busca_mudou)
+        self.busca.setVisible(False)
+
+        # filtro por modelo do documento (COD_MOD) — visível quando há COD_MOD
+        self.lbl_mod = QLabel("Modelo:")
+        self.combo_mod = QComboBox()
+        self.combo_mod.setMinimumWidth(90)
+        self.combo_mod.currentIndexChanged.connect(self._mod_mudou)
+        self.lbl_mod.setVisible(False)
+        self.combo_mod.setVisible(False)
+
+        # seletor Entradas/Saídas (visível só quando há IND_OPER)
+        self.lbl_filtro = QLabel("Operação:")
+        self.combo_filtro = QComboBox()
+        self.combo_filtro.addItem("Todas", "TODOS")
+        self.combo_filtro.addItem("↘ Entradas (0)", "ENTRADAS")
+        self.combo_filtro.addItem("↗ Saídas (1)", "SAIDAS")
+        self.combo_filtro.currentIndexChanged.connect(self._filtro_mudou)
+        self.lbl_filtro.setVisible(False)
+        self.combo_filtro.setVisible(False)
+
         btn_add = QPushButton("➕ Adicionar linha")
         btn_del = QPushButton("➖ Remover linha")
         btn_add.clicked.connect(self._adicionar)
         btn_del.clicked.connect(self._remover)
+
+        # botão de recálculo do C190 (analítico) — só na grade C190 do ICMS,
+        # quando ela é detalhe de um C100
+        self.btn_recalc = QPushButton("🔄 Recalcular C190")
+        self.btn_recalc.setToolTip(
+            "Recalcula os C190 somando os itens C170 por CST + CFOP + alíquota")
+        self.btn_recalc.clicked.connect(self._recalcular_c190)
+        mostrar_recalc = (self.tipo == "C190" and self.doc.layout == "ICMS"
+                          and self.pai is not None and self.pai.reg == "C100")
+        self.btn_recalc.setVisible(mostrar_recalc)
+
         barra.addWidget(self.lbl)
         barra.addStretch(1)
+        barra.addWidget(self.lbl_item, 2)
+        barra.addStretch(1)
+        barra.addWidget(self.busca)
+        barra.addWidget(self.lbl_mod)
+        barra.addWidget(self.combo_mod)
+        barra.addSpacing(8)
+        barra.addWidget(self.lbl_filtro)
+        barra.addWidget(self.combo_filtro)
+        barra.addSpacing(12)
+        barra.addWidget(self.btn_recalc)
         barra.addWidget(btn_add)
         barra.addWidget(btn_del)
         layout.addLayout(barra)
@@ -92,15 +189,35 @@ class MasterDetailWidget(QWidget):
         layout.addWidget(self.splitter, 1)
 
         self.tabela = QTableWidget()
+        # seleção de células múltiplas (Ctrl/Shift como no Excel)
         self.tabela.setSelectionBehavior(
-            QAbstractItemView.SelectionBehavior.SelectRows)
+            QAbstractItemView.SelectionBehavior.SelectItems)
         self.tabela.setSelectionMode(
-            QAbstractItemView.SelectionMode.SingleSelection)
+            QAbstractItemView.SelectionMode.ExtendedSelection)
+        # começa a editar ao digitar (sem precisar de duplo-clique/F2)
+        self.tabela.setEditTriggers(
+            QAbstractItemView.EditTrigger.DoubleClicked
+            | QAbstractItemView.EditTrigger.EditKeyPressed
+            | QAbstractItemView.EditTrigger.AnyKeyPressed
+            | QAbstractItemView.EditTrigger.SelectedClicked)
+        self.tabela.setItemDelegate(GridDelegate(self.tabela))
         self.tabela.setAlternatingRowColors(True)
-        self.tabela.itemSelectionChanged.connect(self._sel_mudou)
+        # o detalhe segue a CÉLULA atual (não recria a cada extensão de seleção)
+        self.tabela.currentCellChanged.connect(self._cel_atual_mudou)
         self.tabela.itemChanged.connect(self._celula_editada)
         self.tabela.setHorizontalScrollMode(
             QAbstractItemView.ScrollMode.ScrollPerPixel)
+        # menu de contexto (preencher seleção / copiar / colar)
+        self.tabela.setContextMenuPolicy(
+            Qt.ContextMenuPolicy.CustomContextMenu)
+        self.tabela.customContextMenuRequested.connect(self._menu_contexto)
+        # atalhos estilo planilha (locais ao grid com foco, p/ evitar conflito
+        # entre as várias grades abertas)
+        for seq, fn in ((QKeySequence.StandardKey.Copy, self._copiar),
+                        (QKeySequence.StandardKey.Paste, self._colar),
+                        (QKeySequence("Ctrl+D"), self._preencher_baixo)):
+            sc = QShortcut(seq, self.tabela, fn)
+            sc.setContext(Qt.ShortcutContext.WidgetWithChildrenShortcut)
         self.splitter.addWidget(self.tabela)
 
         # área de detalhe (preenchida sob demanda)
@@ -116,52 +233,133 @@ class MasterDetailWidget(QWidget):
 
     # ------------------------------------------------------------------ grade
     def recarregar(self):
-        """Repreenche a grade a partir do provider (após inserir/remover)."""
+        """Busca os registros do provider, detecta colunas especiais e
+        repreenche a grade (respeitando o filtro de operação ativo)."""
+        self._registros = list(self.provider())
+        self._colunas = self.doc.colunas(self.tipo, self._registros) \
+            if self._registros else self.doc.colunas(self.tipo, [])
+
+        # localiza colunas especiais (IND_OPER p/ filtro; COD_ITEM p/ tooltip;
+        # COD_MOD p/ filtro de modelo; NUM_DOC p/ pesquisa)
+        def _idx(nome):
+            return self._colunas.index(nome) if nome in self._colunas else None
+        self._idx_ind_oper = _idx("IND_OPER")
+        self._idx_cod_item = _idx("COD_ITEM")
+        self._idx_cod_mod = _idx("COD_MOD")
+        self._idx_num_doc = _idx("NUM_DOC")
+
+        # mostra o seletor Entradas/Saídas apenas em grades com IND_OPER
+        tem_filtro = self._idx_ind_oper is not None
+        self.lbl_filtro.setVisible(tem_filtro)
+        self.combo_filtro.setVisible(tem_filtro)
+
+        # campo de pesquisa: grades de documento (que têm NUM_DOC)
+        self.busca.setVisible(self._idx_num_doc is not None)
+
+        # filtro por COD_MOD: popula com os modelos presentes
+        tem_mod = self._idx_cod_mod is not None
+        self.lbl_mod.setVisible(tem_mod)
+        self.combo_mod.setVisible(tem_mod)
+        if tem_mod:
+            self.combo_mod.blockSignals(True)
+            atual = self.combo_mod.currentData()
+            self.combo_mod.clear()
+            self.combo_mod.addItem("Todos", "")
+            modelos = sorted({(r.valor(self._idx_cod_mod) or "").strip()
+                              for r in self._registros
+                              if (r.valor(self._idx_cod_mod) or "").strip()})
+            for m in modelos:
+                self.combo_mod.addItem(m, m)
+            # tenta preservar a seleção anterior
+            pos = self.combo_mod.findData(atual) if atual else 0
+            self.combo_mod.setCurrentIndex(pos if pos >= 0 else 0)
+            self._filtro_mod = self.combo_mod.currentData() or ""
+            self.combo_mod.blockSignals(False)
+
+        self._preencher()
+
+    def _preencher(self):
+        """Aplica os filtros ativos (operação, modelo, pesquisa) e popula a
+        tabela."""
         self._carregando = True
         self.tabela.blockSignals(True)
 
-        self._registros = list(self.provider())
-        colunas = self.doc.colunas(self.tipo, self._registros) \
-            if self._registros else self.doc.colunas(self.tipo, [])
+        vis = self._registros
+        # 1) filtro Entradas/Saídas (IND_OPER)
+        if self._idx_ind_oper is not None and self._filtro != "TODOS":
+            alvo = "0" if self._filtro == "ENTRADAS" else "1"
+            vis = [r for r in vis
+                   if (r.valor(self._idx_ind_oper) or "").strip() == alvo]
+        # 2) filtro por modelo (COD_MOD)
+        if self._idx_cod_mod is not None and self._filtro_mod:
+            vis = [r for r in vis
+                   if (r.valor(self._idx_cod_mod) or "").strip()
+                   == self._filtro_mod]
+        # 3) pesquisa textual (na coluna NUM_DOC quando houver; senão, geral)
+        if self._texto_busca:
+            t = self._texto_busca.lower()
+            if self._idx_num_doc is not None:
+                vis = [r for r in vis
+                       if t in (r.valor(self._idx_num_doc) or "").lower()]
+            else:
+                vis = [r for r in vis
+                       if any(t in (v or "").lower() for v in r.campos)]
+        self._visiveis = list(vis)
+
+        colunas = self._colunas
         self.tabela.clear()
         self.tabela.setColumnCount(len(colunas))
         self.tabela.setHorizontalHeaderLabels(colunas)
-        self.tabela.setRowCount(len(self._registros))
+        self.tabela.setRowCount(len(self._visiveis))
 
-        for i, r in enumerate(self._registros):
+        for i, r in enumerate(self._visiveis):
             for j in range(len(colunas)):
-                texto = r.valor(j)
-                item = QTableWidgetItem(texto)
+                item = QTableWidgetItem(r.valor(j))
                 if j == 0:
-                    # coluna REG é fixa (não editável): muda a hierarquia
                     item.setFlags(item.flags() & ~Qt.ItemFlag.ItemIsEditable)
                     f = item.font()
                     f.setBold(True)
                     item.setFont(f)
                     item.setForeground(QColor("#1565c0"))
-                # guarda o registro na 1ª coluna para referência rápida
-                if j == 0:
                     item.setData(Qt.ItemDataRole.UserRole, r.uid)
                 self.tabela.setItem(i, j, item)
 
         hdr = self.tabela.horizontalHeader()
         hdr.setSectionResizeMode(QHeaderView.ResizeMode.Interactive)
         self.tabela.resizeColumnsToContents()
-        # evita colunas exageradamente largas
         for c in range(self.tabela.columnCount()):
             if self.tabela.columnWidth(c) > 320:
                 self.tabela.setColumnWidth(c, 320)
 
-        self.lbl.setText("%s — %d registro(s)" % (self.tipo,
-                                                  len(self._registros)))
+        # rótulo: total e, se filtrado, a contagem visível
+        filtrado = (len(self._visiveis) != len(self._registros))
+        if filtrado:
+            self.lbl.setText("%s — %d de %d (filtrado)" % (
+                self.tipo, len(self._visiveis), len(self._registros)))
+        else:
+            self.lbl.setText("%s — %d registro(s)" % (self.tipo,
+                                                      len(self._registros)))
+
         self.tabela.blockSignals(False)
         self._carregando = False
-        self._detalhe_cache.clear()
+        self._atualizar_item_label(None)
         self._mostrar_detalhe(None)
 
+    def _filtro_mudou(self, _idx):
+        self._filtro = self.combo_filtro.currentData() or "TODOS"
+        self._preencher()
+
+    def _mod_mudou(self, _idx):
+        self._filtro_mod = self.combo_mod.currentData() or ""
+        self._preencher()
+
+    def _busca_mudou(self, texto):
+        self._texto_busca = (texto or "").strip()
+        self._preencher()
+
     def _registro_da_linha(self, linha):
-        if 0 <= linha < len(self._registros):
-            return self._registros[linha]
+        if 0 <= linha < len(self._visiveis):
+            return self._visiveis[linha]
         return None
 
     # --------------------------------------------------------------- edição
@@ -172,14 +370,181 @@ class MasterDetailWidget(QWidget):
         if r is None:
             return
         r.set_valor(item.column(), item.text())
+        # editar um 0200 muda as descrições -> invalida o cache de itens
+        if r.reg == "0200":
+            self.doc.invalidar_itens()
         if self.on_change:
             self.on_change()
+        # editar o COD_ITEM atualiza o nome mostrado no topo
+        if item.column() == self._idx_cod_item:
+            self._atualizar_item_label(r)
+        # se mexeu no IND_OPER com filtro ativo, a linha pode sair da vista
+        if item.column() == self._idx_ind_oper and self._filtro != "TODOS":
+            self._preencher()
 
     # ------------------------------------------------------------ detalhe
-    def _sel_mudou(self):
-        linha = self.tabela.currentRow()
-        r = self._registro_da_linha(linha)
+    def _cel_atual_mudou(self, cur_row, _cur_col, _prev_row, _prev_col):
+        r = self._registro_da_linha(cur_row)
+        self._atualizar_item_label(r)
         self._mostrar_detalhe(r)
+
+    def _atualizar_item_label(self, registro):
+        """Mostra, no topo centralizado, o nome do produto da linha selecionada
+        (apenas em grades que têm COD_ITEM, ex.: C170)."""
+        if self._idx_cod_item is None or registro is None:
+            self.lbl_item.setText("")
+            self.lbl_item.setVisible(False)
+            return
+        cod = registro.valor(self._idx_cod_item)
+        desc = self.doc.descricao_item(cod)
+        if desc:
+            texto = "📦  %s — %s" % (cod, desc)
+        elif cod:
+            texto = "📦  %s — (não cadastrado no 0200)" % cod
+        else:
+            texto = ""
+        self.lbl_item.setText(texto)
+        self.lbl_item.setToolTip(texto)   # caso o nome seja maior que o espaço
+        self.lbl_item.setVisible(bool(texto))
+
+    # ----------------------------------------- seleção múltipla / clipboard
+    def _menu_contexto(self, pos):
+        sel = self.tabela.selectedIndexes()
+        menu = QMenu(self)
+        n = len([ix for ix in sel if ix.column() != 0])
+        a_fill = menu.addAction(
+            "Preencher seleção com um valor…  (%d célula%s)"
+            % (n, "s" if n != 1 else ""))
+        a_fill.setEnabled(n > 0)
+        menu.addSeparator()
+        a_copy = menu.addAction("Copiar\tCtrl+C")
+        a_paste = menu.addAction("Colar\tCtrl+V")
+        a_down = menu.addAction("Preencher para baixo\tCtrl+D")
+        a_fill.triggered.connect(self._preencher_dialogo)
+        a_copy.triggered.connect(self._copiar)
+        a_paste.triggered.connect(self._colar)
+        a_down.triggered.connect(self._preencher_baixo)
+        menu.exec(self.tabela.viewport().mapToGlobal(pos))
+
+    def _preencher_dialogo(self):
+        valor, ok = QInputDialog.getText(
+            self, "Preencher seleção",
+            "Valor a aplicar em todas as células selecionadas:")
+        if ok:
+            self._aplicar_valor_em_selecao(valor)
+
+    def _aplicar_valor_em_selecao(self, valor):
+        """Escreve `valor` em todas as células selecionadas (exceto REG)."""
+        sel = [ix for ix in self.tabela.selectedIndexes() if ix.column() != 0]
+        if not sel:
+            return
+        self.tabela.blockSignals(True)
+        mudou = False
+        for ix in sel:
+            r = self._registro_da_linha(ix.row())
+            if r is None:
+                continue
+            r.set_valor(ix.column(), valor)
+            it = self.tabela.item(ix.row(), ix.column())
+            if it is not None:
+                it.setText(valor)
+            if r.reg == "0200":
+                self.doc.invalidar_itens()
+            mudou = True
+        self.tabela.blockSignals(False)
+        if mudou and self.on_change:
+            self.on_change()
+
+    def _copiar(self):
+        """Copia a seleção como texto tabulado (linhas/colunas)."""
+        sel = self.tabela.selectedIndexes()
+        if not sel:
+            return
+        linhas = sorted({ix.row() for ix in sel})
+        cols = sorted({ix.column() for ix in sel})
+        matriz = []
+        for lr in linhas:
+            celulas = []
+            for c in cols:
+                it = self.tabela.item(lr, c)
+                celulas.append(it.text() if it is not None else "")
+            matriz.append("\t".join(celulas))
+        QApplication.clipboard().setText("\n".join(matriz))
+
+    def _colar(self):
+        """Cola o conteúdo da área de transferência.
+        - valor único  -> aplica a TODAS as células selecionadas;
+        - bloco (TSV)  -> cola a partir da célula atual."""
+        texto = QApplication.clipboard().text()
+        if texto == "":
+            return
+        sel = [ix for ix in self.tabela.selectedIndexes() if ix.column() != 0]
+        # valor único colado em vários campos selecionados
+        if "\t" not in texto and "\n" not in texto.strip():
+            if len(sel) > 1:
+                self._aplicar_valor_em_selecao(texto.strip())
+                return
+        # bloco: cola a partir do canto superior esquerdo
+        linha0 = self.tabela.currentRow()
+        col0 = self.tabela.currentColumn()
+        if linha0 < 0:
+            linha0 = 0
+        if col0 < 0:
+            col0 = 1
+        self.tabela.blockSignals(True)
+        mudou = False
+        for di, linha_txt in enumerate(texto.split("\n")):
+            if linha_txt == "" and di == len(texto.split("\n")) - 1:
+                continue
+            for dj, val in enumerate(linha_txt.split("\t")):
+                lr = linha0 + di
+                c = col0 + dj
+                if lr >= self.tabela.rowCount() or c >= self.tabela.columnCount():
+                    continue
+                if c == 0:        # não sobrescreve a coluna REG
+                    continue
+                r = self._registro_da_linha(lr)
+                if r is None:
+                    continue
+                r.set_valor(c, val)
+                it = self.tabela.item(lr, c)
+                if it is not None:
+                    it.setText(val)
+                if r.reg == "0200":
+                    self.doc.invalidar_itens()
+                mudou = True
+        self.tabela.blockSignals(False)
+        if mudou and self.on_change:
+            self.on_change()
+
+    def _preencher_baixo(self):
+        """Ctrl+D: copia o valor da célula de cima para as células abaixo
+        dentro da seleção (ou para a célula atual)."""
+        sel = [ix for ix in self.tabela.selectedIndexes() if ix.column() != 0]
+        if not sel:
+            return
+        por_coluna = {}
+        for ix in sel:
+            por_coluna.setdefault(ix.column(), []).append(ix.row())
+        self.tabela.blockSignals(True)
+        mudou = False
+        for c, rows in por_coluna.items():
+            rows.sort()
+            topo = rows[0]
+            it_topo = self.tabela.item(topo, c)
+            valor = it_topo.text() if it_topo is not None else ""
+            for lr in rows[1:]:
+                r = self._registro_da_linha(lr)
+                if r is None:
+                    continue
+                r.set_valor(c, valor)
+                it = self.tabela.item(lr, c)
+                if it is not None:
+                    it.setText(valor)
+                mudou = True
+        self.tabela.blockSignals(False)
+        if mudou and self.on_change:
+            self.on_change()
 
     def _mostrar_detalhe(self, registro):
         self.area_detalhe.clear()
@@ -189,7 +554,6 @@ class MasterDetailWidget(QWidget):
 
         # uma sub-aba por tipo de filho
         for tipo_filho in self.doc.tipos_filhos(registro):
-            # provider fecha sobre (registro, tipo_filho) atuais
             def make_provider(reg=registro, t=tipo_filho):
                 return lambda: self.doc.filhos_por_tipo(reg, t)
 
@@ -215,9 +579,13 @@ class MasterDetailWidget(QWidget):
         pai = self._resolver_pai()
         depois = self._registros[-1] if self._registros else pai
         novo = self.doc.novo_registro(self.tipo, pai=pai, depois=depois)
+        # se há um filtro de operação ativo, já marca o IND_OPER do novo
+        if self._idx_ind_oper is not None and self._filtro != "TODOS":
+            novo.set_valor(self._idx_ind_oper,
+                           "0" if self._filtro == "ENTRADAS" else "1")
+        self.doc.atualizar_bloco9_inplace()
         self.recarregar()
-        # seleciona a linha recém-criada
-        for i, r in enumerate(self._registros):
+        for i, r in enumerate(self._visiveis):
             if r.uid == novo.uid:
                 self.tabela.selectRow(i)
                 break
@@ -240,9 +608,41 @@ class MasterDetailWidget(QWidget):
                 != QMessageBox.StandardButton.Yes:
             return
         self.doc.remover_registro(r)
+        self.doc.atualizar_bloco9_inplace()
         self.recarregar()
         if self.on_change:
             self.on_change()
+
+    def _recalcular_c190(self):
+        """Recalcula os C190 do C100 pai a partir dos itens C170."""
+        if self.pai is None:
+            return
+        res = self.doc.consolidar_c190(self.pai)
+        if res is None:
+            QMessageBox.information(
+                self, "Recalcular C190",
+                "O recálculo automático do C190 só se aplica ao bloco C do "
+                "EFD ICMS/IPI.")
+            return
+        if res.get("sem_c170"):
+            QMessageBox.warning(
+                self, "Recalcular C190",
+                "Este documento (C100) não possui itens C170 para consolidar.")
+            return
+        self.recarregar()
+        if self.on_change:
+            self.on_change()
+        QMessageBox.information(
+            self, "Recalcular C190",
+            "C190 recalculado a partir dos itens C170:\n\n"
+            "• %d registro(s) C190 gerado(s), agrupados por "
+            "CST + CFOP + alíquota\n"
+            "• %d C190 anterior(es) substituído(s)\n\n"
+            "Os valores de imposto (VL_BC_ICMS, VL_ICMS, VL_ICMS_ST, VL_IPI) "
+            "são a soma exata dos itens. O VL_OPR inclui o rateio de frete, "
+            "seguro e outras despesas do C100.\n\n"
+            "Os totais C990 e 9900 foram atualizados."
+            % (res["criados"], res["removidos"]))
 
 
 # ---------------------------------------------------------------------------
@@ -323,6 +723,10 @@ class JanelaPrincipal(QMainWindow):
         self.act_sair = QAction("Sair", self)
         self.act_sair.triggered.connect(self.close)
 
+        self.act_recalc_totais = QAction("Recalcular totais (C990/9900)…", self)
+        self.act_recalc_totais.triggered.connect(self.recalcular_totais)
+        self.act_recalc_totais.setEnabled(False)
+
     def _criar_barra(self):
         menu = self.menuBar().addMenu("&Arquivo")
         menu.addAction(self.act_abrir)
@@ -331,12 +735,32 @@ class JanelaPrincipal(QMainWindow):
         menu.addSeparator()
         menu.addAction(self.act_sair)
 
+        menu_ferr = self.menuBar().addMenu("&Ferramentas")
+        menu_ferr.addAction(self.act_recalc_totais)
+
         tb = QToolBar("Principal")
         tb.setMovable(False)
         self.addToolBar(tb)
         tb.addAction(self.act_abrir)
         tb.addAction(self.act_salvar)
         tb.addAction(self.act_salvar_como)
+
+    def recalcular_totais(self):
+        """Recalcula as contagens (X990 e bloco 9) e atualiza a exibição."""
+        if not self.doc:
+            return
+        self.doc.atualizar_bloco9_inplace()
+        self._montar_abas()
+        self.statusBar().showMessage(
+            "Totais recalculados: X990 (por bloco) e 9900 (por tipo de "
+            "registro) atualizados.")
+        QMessageBox.information(
+            self, "Recalcular totais",
+            "As contagens foram atualizadas:\n\n"
+            "• X990 (ex.: C990) = nº de linhas de cada bloco\n"
+            "• 9900 = nº de registros de cada tipo (ex.: 9900|C190|<qtd>)\n"
+            "• 9990 e 9999 = totais do bloco 9 e do arquivo\n\n"
+            "Esses valores também são sempre recalculados ao salvar.")
 
     # ------------------------------------------------------------ abrir
     def abrir(self):
@@ -356,6 +780,7 @@ class JanelaPrincipal(QMainWindow):
         self._montar_abas()
         self.act_salvar.setEnabled(True)
         self.act_salvar_como.setEnabled(True)
+        self.act_recalc_totais.setEnabled(True)
         nome = os.path.basename(caminho)
         tipo = "EFD Contribuições" if doc.layout == "CONTRIB" \
             else "EFD ICMS/IPI"

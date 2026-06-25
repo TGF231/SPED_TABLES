@@ -17,6 +17,25 @@ from sped_layouts import nivel, campos, detectar_layout
 _id_seq = itertools.count(1)
 
 
+def _to_num(s):
+    """Converte um valor SPED (decimal com vírgula) para float."""
+    s = (s or "").strip()
+    if not s:
+        return 0.0
+    if "," in s:
+        s = s.replace(".", "").replace(",", ".")
+    try:
+        return float(s)
+    except ValueError:
+        return 0.0
+
+
+def _fmt_val(v):
+    """Formata um número no padrão SPED (2 casas, vírgula decimal)."""
+    return ("%.2f" % round(v, 2)).replace(".", ",")
+
+
+
 class Registro:
     __slots__ = ("uid", "reg", "bloco", "nivel", "campos", "pai", "filhos",
                  "ordem")
@@ -60,6 +79,7 @@ class SpedDocument:
         self.raizes = []         # registros sem pai (topo de cada bloco)
         self.encoding = "latin-1"
         self.caminho = None
+        self._cad_itens = None   # cache COD_ITEM -> DESCR_ITEM (registros 0200)
 
     # ------------------------------------------------------------------ load
     @classmethod
@@ -180,6 +200,165 @@ class SpedDocument:
     def filhos_por_tipo(registro, tipo):
         return [f for f in registro.filhos if f.reg == tipo]
 
+    # ----------------------------------------------- cadastro de itens (0200)
+    def _reindexar_itens(self):
+        """(Re)constrói o índice COD_ITEM -> DESCR_ITEM a partir dos 0200."""
+        d = {}
+        for r in self.registros:
+            if r.reg == "0200":
+                cod = (r.valor(1) or "").strip()
+                if cod:
+                    d[cod] = (r.valor(2) or "").strip()
+        self._cad_itens = d
+
+    def descricao_item(self, cod):
+        """Descrição do item (DESCR_ITEM do 0200) para um COD_ITEM, ou ''."""
+        if self._cad_itens is None:
+            self._reindexar_itens()
+        return self._cad_itens.get((cod or "").strip(), "")
+
+    def invalidar_itens(self):
+        """Marca o índice de itens para ser reconstruído (após editar 0200)."""
+        self._cad_itens = None
+
+    # ----------------------------------------------- consolidação do C190
+    def _ix(self, tipo, nome):
+        """Índice da coluna `nome` no layout atual para o registro `tipo`."""
+        cols = campos(tipo, self.layout, 40)
+        return cols.index(nome) if nome in cols else None
+
+    def consolidar_c190(self, c100):
+        """
+        (Apenas EFD ICMS/IPI) Recalcula os registros **C190** (analítico) de um
+        documento **C100** a partir dos seus itens **C170**, agrupando por
+        (CST_ICMS, CFOP, ALIQ_ICMS) e somando os valores.
+
+        Frete, seguro e outras despesas acessórias do C100 são rateados entre
+        os itens proporcionalmente ao VL_ITEM e entram no VL_OPR. Os C190
+        antigos são substituídos pelos novos, posicionados logo após os itens
+        (mantendo a sequência correta dentro do C100). Por fim, os totais
+        (X990 e bloco 9) são reajustados.
+
+        Retorna um dicionário-resumo, ou None se não se aplicar.
+        """
+        if self.layout != "ICMS" or c100.reg != "C100":
+            return None
+        c170 = [f for f in c100.filhos if f.reg == "C170"]
+        if not c170:
+            return {"grupos": 0, "removidos": 0, "criados": 0, "sem_c170": True}
+
+        # índices dos campos do C170
+        i_item = self._ix("C170", "VL_ITEM")
+        i_desc = self._ix("C170", "VL_DESC")
+        i_cst = self._ix("C170", "CST_ICMS")
+        i_cfop = self._ix("C170", "CFOP")
+        i_bc = self._ix("C170", "VL_BC_ICMS")
+        i_aliq = self._ix("C170", "ALIQ_ICMS")
+        i_icms = self._ix("C170", "VL_ICMS")
+        i_bcst = self._ix("C170", "VL_BC_ICMS_ST")
+        i_icmsst = self._ix("C170", "VL_ICMS_ST")
+        i_ipi = self._ix("C170", "VL_IPI")
+
+        # despesas acessórias do documento (rateadas pelo valor do item)
+        acess = (_to_num(c100.valor(self._ix("C100", "VL_FRT")))
+                 + _to_num(c100.valor(self._ix("C100", "VL_SEG")))
+                 + _to_num(c100.valor(self._ix("C100", "VL_OUT_DA"))))
+        soma_item = sum(_to_num(it.valor(i_item)) for it in c170) or 1.0
+
+        grupos = {}
+        for it in c170:
+            cst = it.valor(i_cst)
+            cfop = it.valor(i_cfop)
+            aliq = _to_num(it.valor(i_aliq))
+            chave = (cst, cfop, "%.2f" % aliq)
+            g = grupos.get(chave)
+            if g is None:
+                g = {"cst": cst, "cfop": cfop, "aliq": aliq,
+                     "VL_OPR": 0.0, "VL_BC": 0.0, "VL_ICMS": 0.0,
+                     "VL_BCST": 0.0, "VL_ICMSST": 0.0, "VL_IPI": 0.0}
+                grupos[chave] = g
+            vit = _to_num(it.valor(i_item))
+            rateio = round(acess * vit / soma_item, 2) if acess else 0.0
+            g["VL_OPR"] += (vit - _to_num(it.valor(i_desc)) + rateio
+                            + _to_num(it.valor(i_ipi))
+                            + _to_num(it.valor(i_icmsst)))
+            g["VL_BC"] += _to_num(it.valor(i_bc))
+            g["VL_ICMS"] += _to_num(it.valor(i_icms))
+            g["VL_BCST"] += _to_num(it.valor(i_bcst))
+            g["VL_ICMSST"] += _to_num(it.valor(i_icmsst))
+            g["VL_IPI"] += _to_num(it.valor(i_ipi))
+
+        chaves = sorted(grupos.keys(),
+                        key=lambda k: (k[0], k[1], float(k[2])))
+
+        # remove os C190 antigos do documento
+        antigos = [f for f in c100.filhos if f.reg == "C190"]
+        n_rem = len(antigos)
+        for a in antigos:
+            self.remover_registro(a)
+
+        # âncora: último filho cujo número de registro seja anterior ao 190
+        def numreg(r):
+            try:
+                return int(r.reg[1:])
+            except ValueError:
+                return 999
+        anteriores = [f for f in sorted(c100.filhos, key=lambda x: x.ordem)
+                      if numreg(f) < 190]
+        ancora = anteriores[-1] if anteriores else c100
+
+        n_cri = 0
+        for chave in chaves:
+            g = grupos[chave]
+            novo = self.novo_registro("C190", pai=c100, depois=ancora)
+            novo.campos = ["C190", g["cst"], g["cfop"], _fmt_val(g["aliq"]),
+                           _fmt_val(g["VL_OPR"]), _fmt_val(g["VL_BC"]),
+                           _fmt_val(g["VL_ICMS"]), _fmt_val(g["VL_BCST"]),
+                           _fmt_val(g["VL_ICMSST"]), _fmt_val(0.0),
+                           _fmt_val(g["VL_IPI"]), ""]
+            ancora = novo
+            n_cri += 1
+
+        self.atualizar_bloco9_inplace()
+        return {"grupos": len(chaves), "removidos": n_rem, "criados": n_cri}
+
+    # --------------------------------------------- totais (in-place, p/ tela)
+    def atualizar_bloco9_inplace(self):
+        """
+        Atualiza, sem alterar a estrutura, os registros de contagem para que a
+        interface reflita a realidade atual:
+          * X990  -> nº de linhas do bloco (inclui o próprio X990);
+          * 9900  -> nº de registros de cada tipo (ex.: 9900|C190|<qtd>);
+          * 9990  -> nº de linhas do bloco 9;
+          * 9999  -> total de linhas do arquivo.
+        A gravação (gerar_texto) reconstrói o bloco 9 do zero e continua sendo
+        a fonte definitiva; este método serve para exibição imediata.
+        """
+        base = [r for r in self.registros if r.bloco != "9"]
+        cont_bloco = {}
+        for r in base:
+            cont_bloco[r.bloco] = cont_bloco.get(r.bloco, 0) + 1
+        for r in self.registros:
+            if len(r.reg) == 4 and r.reg.endswith("990") and r.reg != "9990":
+                r.set_valor(1, str(cont_bloco.get(r.reg[0], 0)))
+
+        cont_tipo = {}
+        for r in self.registros:
+            cont_tipo[r.reg] = cont_tipo.get(r.reg, 0) + 1
+        for r in self.registros:
+            if r.reg == "9900":
+                t = r.valor(1)
+                if t in cont_tipo:
+                    r.set_valor(2, str(cont_tipo[t]))
+
+        n_bloco9 = sum(1 for r in self.registros if r.bloco == "9")
+        total = len(self.registros)
+        for r in self.registros:
+            if r.reg == "9990":
+                r.set_valor(1, str(n_bloco9))
+            elif r.reg == "9999":
+                r.set_valor(1, str(total))
+
     def colunas(self, tipo, registros):
         """Nomes de coluna para um conjunto de registros do mesmo tipo."""
         max_campos = max((len(r.campos) for r in registros), default=1)
@@ -212,6 +391,8 @@ class SpedDocument:
             self.raizes.sort(key=lambda x: x.ordem)
         self.registros.append(r)
         self._reordenar()
+        if tipo == "0200":
+            self._cad_itens = None
         return r
 
     def remover_registro(self, r):
@@ -227,6 +408,7 @@ class SpedDocument:
         else:
             self.raizes = [c for c in self.raizes if c.uid != r.uid]
         self.registros = [x for x in self.registros if x.uid not in remover]
+        self._cad_itens = None
 
     def _reordenar(self):
         """Recalcula 'ordem' inteira percorrendo a árvore em profundidade."""
