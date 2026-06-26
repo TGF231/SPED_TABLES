@@ -93,6 +93,70 @@ pelo `IND_OPER` (`0` = entrada, `1` = saída) e o rótulo mostra "X de Y". Com u
 filtro ativo, ao **Adicionar linha** o novo registro já nasce com o `IND_OPER`
 correspondente.
 
+### Importar XMLs → consolidar C175 (EFD Contribuições)
+
+**Ferramentas → Importar XMLs → consolidar C175…** lê uma pasta de XMLs de
+NFC-e (modelo 65) e gera os registros **C175** dos documentos correspondentes:
+
+- **Vínculo** XML ↔ C100 pelas tags **mod + série + nNF** (lidas de dentro de
+  cada XML; o nome do arquivo é ignorado, pois é inconsistente).
+- Para cada documento, os itens do XML são agrupados por **CFOP + CST_PIS +
+  ALIQ_PIS + CST_COFINS + ALIQ_COFINS** e somados (VL_OPR, VL_BC, VL_PIS,
+  VL_COFINS), substituindo os C175 anteriores.
+- **VL_PIS** e **VL_COFINS** do C100 e os totais (C990/9900) são atualizados.
+- NF-e modelo 55 são ignoradas (usam C170, não C175); a ferramenta informa
+  quantos XMLs casaram, quantos ficaram sem C100 e eventuais erros de leitura.
+
+O motor de vínculo (`xml_fiscal.vincular`) é genérico e reaproveitável: a mesma
+função casa **item XML ↔ C170** pela chave **mod + série + nNF + nItem** (útil
+para conferir entradas modelo 55, em que o código do produto muda entre a saída
+do fornecedor e a entrada do comprador, mas a ordem do item se mantém).
+
+### Recalcular bloco M — apuração PIS/COFINS (EFD Contribuições)
+
+**Ferramentas → Recalcular bloco M (apuração)…** recompõe a apuração de PIS
+(**M200/M210**) e COFINS (**M600/M610**) a partir das receitas tributadas de
+saída (C175 e C170), agrupadas por alíquota. Fórmula validada contra arquivos
+reais:
+
+- `VL_REC_BRT` = Σ VL_OPR do grupo;
+- `VL_BC_CONT` = Σ VL_BC do grupo;
+- `VL_CONT_APUR` = VL_BC_CONT × alíquota (ex.: PIS 1,65 %, COFINS 7,6 %).
+
+O **regime** é lido do registro **0110 (COD_INC_TRIB)** e respeitado:
+
+- **Cumulativo (2):** a contribuição é lançada nos campos *CUM* do M200/M600
+  (COD_CONT 51) e os registros de crédito **M100/M105/M500/M505 não são usados
+  nem criados** — como você indicou, no regime cumulativo não há créditos.
+- **Não-cumulativo (1) / ambos (3):** a contribuição vai nos campos *NC*
+  (COD_CONT 01); os créditos já existentes (M100/M500) são **preservados** e
+  apenas descontados na consolidação (`VL_TOT_CONT_NC_DEV = apurado − créditos`).
+
+Este recálculo cobre o **débito** (apuração da contribuição). Ele não recompõe
+os **créditos** (M100/M105/M500/M505), que dependem da classificação das
+entradas — por isso são mantidos como estão. Recomenda-se conferência por
+profissional antes da transmissão.
+
+### Conferir entradas (NF-e modelo 55) com os XMLs
+
+**Ferramentas → Conferir entradas (NF-e 55) com XMLs…** compara cada item dos
+XMLs de compra com o **C170** correspondente do SPED, usando o mesmo motor de
+vínculo (`xml_fiscal.vincular`) — aqui no nível de item, pela chave
+**mod + série + nNF + nItem**.
+
+A ordem do item (nItem) é a chave porque, da saída do fornecedor para a entrada
+do comprador, **o código do produto muda** (cProd ≠ COD_ITEM) e **o CFOP muda**
+(5xxx → 1xxx/2xxx). Por isso esses campos não entram como chave nem são
+conferidos por igualdade; o que se confere por padrão é o **valor do item**
+(VL_ITEM × vProd) e o **desconto** (VL_DESC × vDesc), além do **total do
+documento** (VL_DOC × vNF). As comparações são parametrizáveis em
+`conferencia.COMPARACOES_PADRAO`.
+
+O resultado abre numa janela com o resumo (documentos casados, itens conferidos,
+divergências, itens sem C170, notas sem XML) e a lista de divergências, que pode
+ser **exportada em CSV**. Itens presentes no XML mas ausentes no SPED — e
+vice-versa — são identificados individualmente.
+
 ### Recalcular C190 (analítico) a partir dos itens C170
 
 Na grade **C190** de um documento C100 (EFD ICMS/IPI), ao lado de *Adicionar/

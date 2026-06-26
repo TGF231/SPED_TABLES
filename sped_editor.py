@@ -32,10 +32,20 @@ from PyQt6.QtWidgets import (
     QTabWidget, QTableWidget, QTableWidgetItem, QSplitter, QPushButton,
     QFileDialog, QMessageBox, QLabel, QHeaderView, QAbstractItemView,
     QToolBar, QStatusBar, QComboBox, QLineEdit, QMenu, QInputDialog,
-    QStyledItemDelegate,
+    QStyledItemDelegate, QDialog,
 )
 
 from sped_model import SpedDocument
+import xml_fiscal as xf
+import conferencia as cf
+
+
+def _br(v):
+    """Formata número no padrão brasileiro: 1234.5 -> '1.234,50'."""
+    try:
+        return ("%0.2f" % float(v)).replace(".", "@").replace(",", ".").replace("@", ",")
+    except (TypeError, ValueError):
+        return str(v)
 
 
 # ---------------------------------------------------------------------------
@@ -678,6 +688,77 @@ class BlocoWidget(QWidget):
 
 
 # ---------------------------------------------------------------------------
+# Diálogo de resultado da conferência de entradas (NF-e 55)
+# ---------------------------------------------------------------------------
+class DialogoConferencia(QDialog):
+    """Mostra o resultado da conferência item XML ↔ C170 e permite exportar."""
+
+    COLS = ["Escopo", "nNF", "nItem", "Campo", "Valor XML", "Valor SPED",
+            "Observação"]
+
+    def __init__(self, resultado, parent=None):
+        super().__init__(parent)
+        self.resultado = resultado
+        self.setWindowTitle("Conferência de entradas (NF-e modelo 55)")
+        self.resize(900, 520)
+        lay = QVBoxLayout(self)
+
+        r = resultado["resumo"]
+        resumo = (
+            "XMLs modelo 55: %d   |   documentos casados: %d   |   "
+            "itens conferidos: %d\n"
+            "Divergências: %d   |   itens sem C170 (faltam no SPED): %d   |   "
+            "C170 sem XML na pasta: %d\n"
+            "XMLs sem C100 no SPED: %d"
+            % (r["xml_55"], r["docs_casados"], r["itens_conferidos"],
+               r["divergencias"], r["itens_sem_c170"], r["itens_sem_xml"],
+               r["docs_sem_c100"]))
+        lbl = QLabel(resumo)
+        if r["divergencias"] == 0:
+            lbl.setStyleSheet("color:#0a0; font-weight:bold;")
+        else:
+            lbl.setStyleSheet("color:#b00; font-weight:bold;")
+        lay.addWidget(lbl)
+
+        divs = resultado["divergencias"]
+        tab = QTableWidget(len(divs), len(self.COLS))
+        tab.setHorizontalHeaderLabels(self.COLS)
+        tab.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
+        for i, d in enumerate(divs):
+            vals = [d.escopo, d.nnf, d.nitem or "", d.campo,
+                    cf._fmt(d.valor_xml), cf._fmt(d.valor_sped), d.obs or ""]
+            for j, v in enumerate(vals):
+                it = QTableWidgetItem(str(v))
+                if j in (4, 5):
+                    it.setForeground(QColor("#b00"))
+                tab.setItem(i, j, it)
+        tab.resizeColumnsToContents()
+        tab.horizontalHeader().setStretchLastSection(True)
+        lay.addWidget(tab)
+
+        botoes = QHBoxLayout()
+        botoes.addStretch(1)
+        b_csv = QPushButton("Exportar CSV…")
+        b_csv.clicked.connect(self._exportar)
+        b_csv.setEnabled(bool(divs))
+        b_fechar = QPushButton("Fechar")
+        b_fechar.clicked.connect(self.accept)
+        botoes.addWidget(b_csv)
+        botoes.addWidget(b_fechar)
+        lay.addLayout(botoes)
+
+    def _exportar(self):
+        caminho, _ = QFileDialog.getSaveFileName(
+            self, "Salvar divergências", "divergencias_entradas.csv",
+            "Arquivos CSV (*.csv)")
+        if not caminho:
+            return
+        cf.exportar_csv(self.resultado, caminho)
+        QMessageBox.information(self, "Exportar",
+                                "Divergências exportadas para:\n%s" % caminho)
+
+
+# ---------------------------------------------------------------------------
 # Janela principal
 # ---------------------------------------------------------------------------
 class JanelaPrincipal(QMainWindow):
@@ -727,6 +808,20 @@ class JanelaPrincipal(QMainWindow):
         self.act_recalc_totais.triggered.connect(self.recalcular_totais)
         self.act_recalc_totais.setEnabled(False)
 
+        self.act_importar_xml = QAction(
+            "Importar XMLs → consolidar C175…", self)
+        self.act_importar_xml.triggered.connect(self.importar_xml_c175)
+        self.act_importar_xml.setEnabled(False)
+
+        self.act_recalc_m = QAction("Recalcular bloco M (apuração)…", self)
+        self.act_recalc_m.triggered.connect(self.recalcular_bloco_m)
+        self.act_recalc_m.setEnabled(False)
+
+        self.act_conferir_55 = QAction(
+            "Conferir entradas (NF-e 55) com XMLs…", self)
+        self.act_conferir_55.triggered.connect(self.conferir_entradas_55)
+        self.act_conferir_55.setEnabled(False)
+
     def _criar_barra(self):
         menu = self.menuBar().addMenu("&Arquivo")
         menu.addAction(self.act_abrir)
@@ -737,6 +832,10 @@ class JanelaPrincipal(QMainWindow):
 
         menu_ferr = self.menuBar().addMenu("&Ferramentas")
         menu_ferr.addAction(self.act_recalc_totais)
+        menu_ferr.addAction(self.act_importar_xml)
+        menu_ferr.addAction(self.act_recalc_m)
+        menu_ferr.addSeparator()
+        menu_ferr.addAction(self.act_conferir_55)
 
         tb = QToolBar("Principal")
         tb.setMovable(False)
@@ -762,6 +861,139 @@ class JanelaPrincipal(QMainWindow):
             "• 9990 e 9999 = totais do bloco 9 e do arquivo\n\n"
             "Esses valores também são sempre recalculados ao salvar.")
 
+    def importar_xml_c175(self):
+        """Importa XMLs de NFC-e (modelo 65) de uma pasta e consolida os C175
+        dos C100 correspondentes (vínculo por mod + série + nNF)."""
+        if not self.doc or self.doc.layout != "CONTRIB":
+            QMessageBox.information(
+                self, "Importar XMLs",
+                "A consolidação de C175 a partir de XMLs aplica-se ao "
+                "EFD Contribuições.")
+            return
+        pasta = QFileDialog.getExistingDirectory(
+            self, "Selecione a pasta com os XMLs das NFC-e")
+        if not pasta:
+            return
+        try:
+            nfes, erros = xf.ler_pasta(pasta)
+        except Exception as e:  # noqa: BLE001
+            QMessageBox.critical(self, "Importar XMLs",
+                                 "Erro ao ler a pasta:\n%s" % e)
+            return
+        if not nfes:
+            QMessageBox.warning(
+                self, "Importar XMLs",
+                "Nenhum XML de NF-e/NFC-e válido foi encontrado na pasta.")
+            return
+
+        from sped_layouts import campos
+        cols = campos("C100", self.doc.layout, 30)
+        i_mod = cols.index("COD_MOD")
+        i_ser = cols.index("SER")
+        i_num = cols.index("NUM_DOC")
+        c100s = [r for r in self.doc.registros if r.reg == "C100"]
+
+        def ch_c100(r):
+            return (xf.norm(r.valor(i_mod)), xf.norm(r.valor(i_ser)),
+                    xf.norm(r.valor(i_num)))
+
+        # apenas NFC-e (modelo 65) geram C175
+        nfes65 = [n for n in nfes if xf.norm(n.mod) == "65"]
+        n55 = sum(1 for n in nfes if xf.norm(n.mod) == "55")
+        pares, so_xml, _ = xf.vincular(nfes65, xf.chave_doc, c100s, ch_c100)
+
+        n_doc = n_c175 = 0
+        for nfe, casados in pares:
+            res = self.doc.consolidar_c175_de_itens(casados[0], nfe.itens)
+            if res and not res.get("sem_itens"):
+                n_doc += 1
+                n_c175 += res["criados"]
+
+        if n_doc:
+            self._marcar_alterado()
+            self._montar_abas()
+
+        msg = ("Importação concluída:\n\n"
+               "• %d XML(s) lido(s)  —  NFC-e (65): %d, NF-e (55): %d\n"
+               "• %d documento(s) C100 consolidados\n"
+               "• %d registro(s) C175 gerados\n"
+               % (len(nfes), len(nfes65), n55, n_doc, n_c175))
+        if so_xml:
+            msg += "• %d NFC-e sem C100 correspondente no SPED\n" % len(so_xml)
+        if n55:
+            msg += ("• %d NF-e modelo 55 ignoradas (usam C170, não C175)\n"
+                    % n55)
+        if erros:
+            msg += "• %d arquivo(s) com erro de leitura\n" % len(erros)
+        msg += ("\nVL_PIS/VL_COFINS dos C100 e os totais (C990/9900) foram "
+                "atualizados.")
+        self.statusBar().showMessage(
+            "Importação de XMLs: %d C100 consolidados, %d C175 gerados."
+            % (n_doc, n_c175))
+        QMessageBox.information(self, "Importar XMLs", msg)
+
+    def recalcular_bloco_m(self):
+        """Recalcula a apuração do bloco M (M200/M210 e M600/M610) conforme o
+        regime declarado no registro 0110."""
+        if not self.doc or self.doc.layout != "CONTRIB":
+            QMessageBox.information(
+                self, "Bloco M",
+                "A apuração do bloco M aplica-se ao EFD Contribuições.")
+            return
+        res = self.doc.recalcular_bloco_m()
+        if not res:
+            QMessageBox.warning(self, "Bloco M",
+                                "Não foi possível recalcular o bloco M.")
+            return
+        self._marcar_alterado()
+        self._montar_abas()
+
+        def linha(t, d):
+            if isinstance(d, dict):
+                return ("• %s: apurado R$ %s  |  a recolher R$ %s"
+                        % (t, _br(d["apurado"]), _br(d["a_recolher"])))
+            return "• %s: %s" % (t, d)
+
+        msg = ("Apuração recalculada — regime %s.\n\n%s\n%s\n\n"
+               "As bases e contribuições foram somadas das receitas "
+               "tributadas de saída (C175/C170) por alíquota.\n\n"
+               "Observação: os créditos (M100/M105/M500/M505) são "
+               "preservados e apenas descontados na consolidação; "
+               "este recálculo não recompõe os créditos."
+               % (res.get("regime", "?"),
+                  linha("PIS", res.get("PIS", "—")),
+                  linha("COFINS", res.get("COFINS", "—"))))
+        self.statusBar().showMessage("Bloco M recalculado (regime %s)."
+                                     % res.get("regime", "?"))
+        QMessageBox.information(self, "Bloco M", msg)
+
+    def conferir_entradas_55(self):
+        """Confere os itens das NF-e modelo 55 (entradas) de uma pasta de XMLs
+        contra os C170 do SPED, vinculando por mod + série + nNF + nItem."""
+        if not self.doc:
+            return
+        pasta = QFileDialog.getExistingDirectory(
+            self, "Selecione a pasta com os XMLs das NF-e (modelo 55)")
+        if not pasta:
+            return
+        try:
+            nfes, erros = xf.ler_pasta(pasta)
+        except Exception as e:  # noqa: BLE001
+            QMessageBox.critical(self, "Conferir entradas",
+                                 "Erro ao ler a pasta:\n%s" % e)
+            return
+        if not any(xf.norm(n.mod) == "55" for n in nfes):
+            QMessageBox.warning(
+                self, "Conferir entradas",
+                "Nenhum XML de NF-e modelo 55 foi encontrado na pasta.")
+            return
+        resultado = cf.conferir_entradas_55(self.doc, nfes)
+        self.statusBar().showMessage(
+            "Conferência: %d itens, %d divergência(s)."
+            % (resultado["resumo"]["itens_conferidos"],
+               resultado["resumo"]["divergencias"]))
+        DialogoConferencia(resultado, self).exec()
+
     # ------------------------------------------------------------ abrir
     def abrir(self):
         caminho, _ = QFileDialog.getOpenFileName(
@@ -781,6 +1013,9 @@ class JanelaPrincipal(QMainWindow):
         self.act_salvar.setEnabled(True)
         self.act_salvar_como.setEnabled(True)
         self.act_recalc_totais.setEnabled(True)
+        self.act_importar_xml.setEnabled(doc.layout == "CONTRIB")
+        self.act_recalc_m.setEnabled(doc.layout == "CONTRIB")
+        self.act_conferir_55.setEnabled(True)
         nome = os.path.basename(caminho)
         tipo = "EFD Contribuições" if doc.layout == "CONTRIB" \
             else "EFD ICMS/IPI"

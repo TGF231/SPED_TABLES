@@ -322,7 +322,229 @@ class SpedDocument:
         self.atualizar_bloco9_inplace()
         return {"grupos": len(chaves), "removidos": n_rem, "criados": n_cri}
 
+    def consolidar_c175_de_itens(self, c100, itens, atualizar_c100=True):
+        """
+        (Apenas EFD Contribuições) Gera os registros **C175** de um **C100** a
+        partir de uma lista de itens (tipicamente vinda dos XMLs dos cupons),
+        agrupando por (CFOP, CST_PIS, ALIQ_PIS, CST_COFINS, ALIQ_COFINS) e
+        somando os valores de PIS/COFINS. Atualiza também VL_PIS/VL_COFINS do
+        C100. Os C175 antigos são substituídos.
+
+        `itens` é qualquer sequência de objetos com os atributos: cfop, vprod,
+        vdesc, pis_cst, pis_vbc, pis_aliq, pis_vpis, cofins_cst, cofins_vbc,
+        cofins_aliq, cofins_vcofins (ver xml_fiscal.ItemNFe). Por ser neutro
+        quanto à origem, o método não depende de XML.
+        """
+        if self.layout != "CONTRIB" or c100.reg != "C100":
+            return None
+        if not itens:
+            return {"grupos": 0, "removidos": 0, "criados": 0,
+                    "sem_itens": True}
+
+        def c100v(nome):
+            i = self._ix("C100", nome)
+            return _to_num(c100.valor(i)) if i is not None else 0.0
+        acess = c100v("VL_FRT") + c100v("VL_SEG") + c100v("VL_OUT_DA")
+        soma_prod = sum((getattr(it, "vprod", 0.0) or 0.0)
+                        for it in itens) or 1.0
+
+        def fmt_aliq(a):
+            return _fmt_val(_to_num((a or "").replace(".", ","))) if a else ""
+
+        grupos, ordem = {}, []
+        tot_pis = tot_cof = 0.0
+        for it in itens:
+            cfop = (it.cfop or "").strip()
+            cstp = (it.pis_cst or "").strip()
+            cstc = (it.cofins_cst or "").strip()
+            ap = _to_num((it.pis_aliq or "").replace(".", ","))
+            ac = _to_num((it.cofins_aliq or "").replace(".", ","))
+            chave = (cfop, cstp, "%.4f" % ap, cstc, "%.4f" % ac)
+            g = grupos.get(chave)
+            if g is None:
+                g = {"cfop": cfop, "cstp": cstp, "cstc": cstc,
+                     "aliq_pis": it.pis_aliq, "aliq_cof": it.cofins_aliq,
+                     "VL_OPR": 0.0, "VL_DESC": 0.0, "VL_BC_PIS": 0.0,
+                     "VL_PIS": 0.0, "VL_BC_COF": 0.0, "VL_COF": 0.0}
+                grupos[chave] = g
+                ordem.append(chave)
+            vprod = getattr(it, "vprod", 0.0) or 0.0
+            vdesc = getattr(it, "vdesc", 0.0) or 0.0
+            rateio = round(acess * vprod / soma_prod, 2) if acess else 0.0
+            g["VL_OPR"] += vprod - vdesc + rateio
+            g["VL_DESC"] += vdesc
+            g["VL_BC_PIS"] += it.pis_vbc or 0.0
+            g["VL_PIS"] += it.pis_vpis or 0.0
+            g["VL_BC_COF"] += it.cofins_vbc or 0.0
+            g["VL_COF"] += it.cofins_vcofins or 0.0
+            tot_pis += it.pis_vpis or 0.0
+            tot_cof += it.cofins_vcofins or 0.0
+
+        antigos = [f for f in c100.filhos if f.reg == "C175"]
+        n_rem = len(antigos)
+        for a in antigos:
+            self.remover_registro(a)
+
+        def numreg(r):
+            try:
+                return int(r.reg[1:])
+            except ValueError:
+                return 999
+        ant = [f for f in sorted(c100.filhos, key=lambda x: x.ordem)
+               if numreg(f) < 175]
+        ancora = ant[-1] if ant else c100
+
+        n_cri = 0
+        for chave in ordem:
+            g = grupos[chave]
+            novo = self.novo_registro("C175", pai=c100, depois=ancora)
+            novo.campos = ["C175", g["cfop"], _fmt_val(g["VL_OPR"]),
+                           _fmt_val(g["VL_DESC"]), g["cstp"],
+                           _fmt_val(g["VL_BC_PIS"]), fmt_aliq(g["aliq_pis"]),
+                           "", "", _fmt_val(g["VL_PIS"]), g["cstc"],
+                           _fmt_val(g["VL_BC_COF"]), fmt_aliq(g["aliq_cof"]),
+                           "", "", _fmt_val(g["VL_COF"]), "", ""]
+            ancora = novo
+            n_cri += 1
+
+        if atualizar_c100:
+            ip = self._ix("C100", "VL_PIS")
+            ic = self._ix("C100", "VL_COFINS")
+            if ip is not None:
+                c100.set_valor(ip, _fmt_val(tot_pis))
+            if ic is not None:
+                c100.set_valor(ic, _fmt_val(tot_cof))
+
+        self.atualizar_bloco9_inplace()
+        return {"grupos": len(ordem), "removidos": n_rem, "criados": n_cri,
+                "vl_pis": tot_pis, "vl_cofins": tot_cof}
+
     # --------------------------------------------- totais (in-place, p/ tela)
+    def recalcular_bloco_m(self):
+        """
+        (Apenas EFD Contribuições) Recalcula a APURAÇÃO de PIS (M200/M210) e
+        COFINS (M600/M610) a partir das receitas tributadas de saída
+        (C175 e C170), agrupando por alíquota.
+
+        Regra validada nos arquivos reais:
+          VL_REC_BRT  = Σ VL_OPR do grupo;
+          VL_BC_CONT  = Σ VL_BC do grupo;
+          VL_CONT_APUR = VL_BC_CONT × alíquota.
+
+        O REGIME (registro 0110, COD_INC_TRIB) é respeitado:
+          * cumulativo (2)  -> a contribuição vai para os campos CUM e os
+            registros de crédito M100/M105/M500/M505 NÃO são usados nem criados;
+          * não-cumulativo (1) ou ambos (3) -> contribuição nos campos NC; os
+            créditos já existentes (M100/M500) são preservados e apenas
+            descontados no M200/M600 (este método não recalcula créditos).
+
+        Retorna um resumo, ou None se não se aplicar.
+        """
+        if self.layout != "CONTRIB":
+            return None
+        r0110 = [r for r in self.registros if r.reg == "0110"]
+        cod_inc = "1"
+        if r0110:
+            i = self._ix("0110", "COD_INC_TRIB")
+            cod_inc = (r0110[0].valor(i) or "1").strip()
+        cumulativo = (cod_inc == "2")
+        cod_cont = "51" if cumulativo else "01"
+
+        i_op = self._ix("C100", "IND_OPER")
+        saidas = [r for r in self.registros
+                  if r.reg == "C100" and (r.valor(i_op) or "").strip() == "1"]
+
+        def coletar(tributo):
+            """Agrupa (alíquota -> {rec, bc, aliq_str}) da receita tributada."""
+            if tributo == "PIS":
+                c175 = (4, 5, 2, 6)      # cst, bc, opr, aliq
+                c170 = (24, 25, 6, 26)
+            else:
+                c175 = (10, 11, 2, 12)
+                c170 = (30, 31, 6, 32)
+            grupos = {}
+            for c100 in saidas:
+                for f in c100.filhos:
+                    if f.reg == "C175":
+                        i_cst, i_bc, i_opr, i_al = c175
+                    elif f.reg == "C170":
+                        i_cst, i_bc, i_opr, i_al = c170
+                    else:
+                        continue
+                    bc = _to_num(f.valor(i_bc))
+                    al = _to_num(f.valor(i_al))
+                    if bc <= 0 or al <= 0:
+                        continue
+                    k = "%.4f" % al
+                    g = grupos.setdefault(k, {"aliq": f.valor(i_al),
+                                             "rec": 0.0, "bc": 0.0})
+                    g["rec"] += _to_num(f.valor(i_opr))
+                    g["bc"] += bc
+            return grupos
+
+        resumo = {}
+        for tributo, reg_cons, reg_det in (("PIS", "M200", "M210"),
+                                           ("COFINS", "M600", "M610")):
+            grupos = coletar(tributo)
+            cons = next((r for r in self.registros if r.reg == reg_cons), None)
+            if cons is None:
+                resumo[tributo] = "sem %s" % reg_cons
+                continue
+
+            # remove os M210/M610 atuais e recria por alíquota
+            antigos = [f for f in cons.filhos if f.reg == reg_det]
+            for a in antigos:
+                self.remover_registro(a)
+
+            total_apur = 0.0
+            ancora = cons
+            for k in sorted(grupos.keys(), key=float):
+                g = grupos[k]
+                al = float(k)
+                apur = round(g["bc"] * al / 100.0, 2)
+                total_apur += apur
+                novo = self.novo_registro(reg_det, pai=cons, depois=ancora)
+                # campos comuns a M210 e M610 (mesma ordem)
+                novo.campos = [reg_det, cod_cont, _fmt_val(g["rec"]),
+                               _fmt_val(g["bc"]), _fmt_val(0.0), _fmt_val(0.0),
+                               _fmt_val(g["bc"]), g["aliq"], _fmt_val(0.0), "",
+                               _fmt_val(apur), _fmt_val(0.0), _fmt_val(0.0),
+                               _fmt_val(0.0), _fmt_val(0.0), _fmt_val(apur)]
+                ancora = novo
+
+            # atualiza a consolidação M200/M600
+            cred = _to_num(cons.valor(2))           # VL_TOT_CRED_DESC (mantido)
+            ret_nc = _to_num(cons.valor(5))
+            ded_nc = _to_num(cons.valor(6))
+            ret_cum = _to_num(cons.valor(9))
+            ded_cum = _to_num(cons.valor(10))
+            if cumulativo:
+                nc_per = 0.0
+                cred = 0.0
+                cum_per = total_apur
+            else:
+                nc_per = total_apur
+                cum_per = 0.0
+            nc_dev = max(nc_per - cred, 0.0)
+            nc_rec = max(nc_dev - ret_nc - ded_nc, 0.0)
+            cum_rec = max(cum_per - ret_cum - ded_cum, 0.0)
+            cons.set_valor(1, _fmt_val(nc_per))
+            cons.set_valor(2, _fmt_val(cred))
+            cons.set_valor(4, _fmt_val(nc_dev))
+            cons.set_valor(7, _fmt_val(nc_rec))
+            cons.set_valor(8, _fmt_val(cum_per))
+            cons.set_valor(11, _fmt_val(cum_rec))
+            cons.set_valor(12, _fmt_val(nc_rec + cum_rec))
+            resumo[tributo] = {"grupos": len(grupos),
+                               "apurado": round(total_apur, 2),
+                               "a_recolher": round(nc_rec + cum_rec, 2)}
+
+        self.atualizar_bloco9_inplace()
+        resumo["regime"] = ("cumulativo" if cumulativo
+                            else "não-cumulativo" if cod_inc == "1"
+                            else "ambos")
+        return resumo
+
     def atualizar_bloco9_inplace(self):
         """
         Atualiza, sem alterar a estrutura, os registros de contagem para que a
