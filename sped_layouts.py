@@ -436,6 +436,14 @@ def campos(reg: str, layout: str, n: int):
     return nomes[:n] if n > 0 else nomes
 
 
+def num_campos_esperado(reg: str, layout: str):
+    """Número de campos (incluindo REG) previsto no layout para `reg`,
+    ou None se o tipo de registro não estiver mapeado."""
+    tabela = CAMPOS_CONTRIB if layout == "CONTRIB" else CAMPOS_ICMS
+    base = tabela.get(reg)
+    return len(base) if base else None
+
+
 def detectar_layout(linhas) -> str:
     """
     Detecta o tipo de SPED a partir do conteúdo.

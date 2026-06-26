@@ -24,6 +24,7 @@ Como executar:
 
 import sys
 import os
+import datetime
 
 from PyQt6.QtCore import Qt, QEvent, QTimer
 from PyQt6.QtGui import QAction, QKeySequence, QColor, QFont, QShortcut
@@ -38,6 +39,8 @@ from PyQt6.QtWidgets import (
 from sped_model import SpedDocument
 import xml_fiscal as xf
 import conferencia as cf
+import revisao as rev
+from version import __version__, APP_NAME
 
 
 def _br(v):
@@ -263,8 +266,14 @@ class MasterDetailWidget(QWidget):
         self.lbl_filtro.setVisible(tem_filtro)
         self.combo_filtro.setVisible(tem_filtro)
 
-        # campo de pesquisa: grades de documento (que têm NUM_DOC)
-        self.busca.setVisible(self._idx_num_doc is not None)
+        # campo de pesquisa: visível em qualquer grade com registros.
+        # Em grades de documento foca o nº do documento; nas demais (0200,
+        # H010, etc.) pesquisa em todas as colunas.
+        self.busca.setVisible(bool(self._registros))
+        if self._idx_num_doc is not None:
+            self.busca.setPlaceholderText("🔎 Nº do documento")
+        else:
+            self.busca.setPlaceholderText("🔎 Pesquisar (todas as colunas)")
 
         # filtro por COD_MOD: popula com os modelos presentes
         tem_mod = self._idx_cod_mod is not None
@@ -576,6 +585,47 @@ class MasterDetailWidget(QWidget):
 
         self.area_detalhe.setVisible(True)
 
+    # ----------------------------------------------------------- navegação
+    def selecionar_uid(self, uid):
+        """Limpa filtros, localiza a linha do registro `uid`, seleciona-a e
+        garante que o detalhe seja exibido. Retorna True se encontrou."""
+        self._texto_busca = ""
+        self.busca.blockSignals(True)
+        self.busca.clear()
+        self.busca.blockSignals(False)
+        if self._idx_ind_oper is not None:
+            self.combo_filtro.blockSignals(True)
+            self.combo_filtro.setCurrentIndex(0)
+            self.combo_filtro.blockSignals(False)
+            self._filtro = "TODOS"
+        if self._idx_cod_mod is not None:
+            self.combo_mod.blockSignals(True)
+            self.combo_mod.setCurrentIndex(0)
+            self.combo_mod.blockSignals(False)
+            self._filtro_mod = ""
+        self._preencher()
+        for i, r in enumerate(self._visiveis):
+            if r.uid == uid:
+                self.tabela.setCurrentCell(i, 0)
+                self.tabela.selectRow(i)
+                it = self.tabela.item(i, 0)
+                if it is not None:
+                    self.tabela.scrollToItem(
+                        it, QAbstractItemView.ScrollHint.PositionAtCenter)
+                self._mostrar_detalhe(r)
+                return True
+        return False
+
+    def subwidget_de_tipo(self, tipo):
+        """Após o detalhe estar visível, seleciona a sub-aba do `tipo` filho e
+        devolve o MasterDetailWidget correspondente (ou None)."""
+        for i in range(self.area_detalhe.count()):
+            w = self.area_detalhe.widget(i)
+            if getattr(w, "tipo", None) == tipo:
+                self.area_detalhe.setCurrentIndex(i)
+                return w
+        return None
+
     # ------------------------------------------------------- inserir/remover
     def _resolver_pai(self):
         """Pai a usar ao inserir um novo registro nesta grade."""
@@ -686,6 +736,17 @@ class BlocoWidget(QWidget):
             n = len(self.doc.registros_raiz_por_tipo(self.bloco, tipo))
             self.tabs.addTab(w, "%s (%d)" % (tipo, n))
 
+    def widget_do_tipo(self, tipo):
+        """Garante o bloco construído, seleciona a sub-aba do `tipo` e devolve
+        o MasterDetailWidget (ou None)."""
+        self.construir()
+        for i in range(self.tabs.count()):
+            w = self.tabs.widget(i)
+            if getattr(w, "tipo", None) == tipo:
+                self.tabs.setCurrentIndex(i)
+                return w
+        return None
+
 
 # ---------------------------------------------------------------------------
 # Diálogo de resultado da conferência de entradas (NF-e 55)
@@ -759,31 +820,231 @@ class DialogoConferencia(QDialog):
 
 
 # ---------------------------------------------------------------------------
+# Página inicial: cabeçalho do arquivo e contagem de registros
+# ---------------------------------------------------------------------------
+def _data_br(s):
+    s = (s or "").strip()
+    if len(s) == 8 and s.isdigit():
+        return "%s/%s/%s" % (s[0:2], s[2:4], s[4:8])
+    return s or "—"
+
+
+class ResumoWidget(QWidget):
+    """Aba inicial: dados do registro 0000, metadados do arquivo e contagem."""
+
+    def __init__(self, doc, caminho, parent=None):
+        super().__init__(parent)
+        self.doc = doc
+        lay = QVBoxLayout(self)
+        lay.setContentsMargins(16, 16, 16, 16)
+        lay.setSpacing(12)
+
+        def v(nome):
+            i = doc._ix("0000", nome)
+            r0 = next((r for r in doc.registros if r.reg == "0000"), None)
+            return (r0.valor(i) if (r0 and i is not None) else "") or ""
+
+        tipo = ("EFD Contribuições" if doc.layout == "CONTRIB"
+                else "EFD ICMS/IPI")
+        nome = v("NOME") or "—"
+        cnpj = v("CNPJ")
+        cnpj_fmt = ("%s.%s.%s/%s-%s" % (cnpj[0:2], cnpj[2:5], cnpj[5:8],
+                                        cnpj[8:12], cnpj[12:14])
+                    if len(cnpj) == 14 else (cnpj or "—"))
+        ie = v("IE")
+        uf = v("UF")
+        periodo = "%s a %s" % (_data_br(v("DT_INI")), _data_br(v("DT_FIN")))
+
+        mod = "—"
+        if caminho and os.path.exists(caminho):
+            ts = os.path.getmtime(caminho)
+            mod = datetime.datetime.fromtimestamp(ts).strftime(
+                "%d/%m/%Y %H:%M:%S")
+        nome_arq = os.path.basename(caminho) if caminho else "(não salvo)"
+
+        cab = QLabel(
+            "<div style='font-size:20px;font-weight:bold;color:#1565c0'>%s</div>"
+            "<div style='color:#555;margin-bottom:8px'>%s &nbsp;•&nbsp; %s</div>"
+            "<table cellspacing='6'>"
+            "<tr><td style='color:#888'>CNPJ</td><td><b>%s</b></td>"
+            "<td style='color:#888;padding-left:24px'>IE</td><td><b>%s</b></td>"
+            "<td style='color:#888;padding-left:24px'>UF</td><td><b>%s</b></td></tr>"
+            "<tr><td style='color:#888'>Período</td><td><b>%s</b></td>"
+            "<td style='color:#888;padding-left:24px'>Layout</td>"
+            "<td colspan='3'><b>%s</b></td></tr>"
+            "</table>"
+            % (nome, tipo, "%s v%s" % (APP_NAME, __version__),
+               cnpj_fmt, ie or "—", uf or "—", periodo, doc.layout))
+        cab.setTextFormat(Qt.TextFormat.RichText)
+        lay.addWidget(cab)
+
+        meta = QLabel(
+            "<span style='color:#888'>Arquivo:</span> %s &nbsp;&nbsp;"
+            "<span style='color:#888'>Modificado em:</span> %s &nbsp;&nbsp;"
+            "<span style='color:#888'>Total de registros:</span> "
+            "<b>%d</b>" % (nome_arq, mod, len(doc.registros)))
+        meta.setTextFormat(Qt.TextFormat.RichText)
+        meta.setWordWrap(True)
+        lay.addWidget(meta)
+
+        # contagem por tipo de registro
+        from collections import Counter
+        cont = Counter(r.reg for r in doc.registros)
+        nomes_bloco = {
+            "0": "Abertura", "A": "Serviços", "B": "ISS",
+            "C": "Mercadorias", "D": "Transporte/Serviços", "E": "Apuração",
+            "F": "Demais", "G": "CIAP", "H": "Inventário", "I": "Outras",
+            "K": "Produção", "M": "PIS/COFINS", "P": "Previdenciária",
+            "1": "Outras", "9": "Controle",
+        }
+        tab = QTableWidget(len(cont), 4)
+        tab.setHorizontalHeaderLabels(["Bloco", "Registro", "Descrição bloco",
+                                       "Quantidade"])
+        tab.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
+        tab.verticalHeader().setVisible(False)
+        for i, reg in enumerate(sorted(cont)):
+            vals = [reg[0], reg, nomes_bloco.get(reg[0], ""), str(cont[reg])]
+            for j, val in enumerate(vals):
+                it = QTableWidgetItem(val)
+                if j == 3:
+                    it.setTextAlignment(Qt.AlignmentFlag.AlignRight
+                                        | Qt.AlignmentFlag.AlignVCenter)
+                tab.setItem(i, j, it)
+        tab.resizeColumnsToContents()
+        tab.horizontalHeader().setStretchLastSection(True)
+        lay.addWidget(QLabel("<b>Contagem de registros</b>"))
+        lay.addWidget(tab, 1)
+
+
+# ---------------------------------------------------------------------------
+# Diálogo de revisão de erros
+# ---------------------------------------------------------------------------
+class DialogoRevisao(QDialog):
+    """Lista os problemas encontrados; duplo-clique navega até o registro."""
+
+    COLS = ["Bloco", "Registro", "Regra", "Descrição"]
+
+    def __init__(self, problemas, resumo, ir_callback, parent=None):
+        super().__init__(parent)
+        self.problemas = problemas
+        self.ir_callback = ir_callback
+        self.setWindowTitle("Revisão de erros")
+        self.resize(820, 520)
+        lay = QVBoxLayout(self)
+
+        total = len(problemas)
+        partes = "  |  ".join("%s: %d" % (rot, n) for rot, n in resumo)
+        lbl = QLabel("%d ocorrência(s).   %s" % (total, partes))
+        lbl.setStyleSheet("color:#0a0; font-weight:bold;" if total == 0
+                          else "color:#b00; font-weight:bold;")
+        lay.addWidget(lbl)
+        dica = QLabel("Dê duplo-clique numa linha para ir ao registro.")
+        dica.setStyleSheet("color:#666;")
+        lay.addWidget(dica)
+
+        self.tab = QTableWidget(total, len(self.COLS))
+        self.tab.setHorizontalHeaderLabels(self.COLS)
+        self.tab.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
+        self.tab.setSelectionBehavior(
+            QAbstractItemView.SelectionBehavior.SelectRows)
+        self.tab.verticalHeader().setVisible(False)
+        for i, p in enumerate(problemas):
+            vals = [p.bloco, p.reg, p.regra, p.descricao]
+            for j, val in enumerate(vals):
+                it = QTableWidgetItem(val)
+                if j == 0:
+                    it.setData(Qt.ItemDataRole.UserRole, p.uid)
+                self.tab.setItem(i, j, it)
+        self.tab.resizeColumnsToContents()
+        self.tab.horizontalHeader().setStretchLastSection(True)
+        self.tab.cellDoubleClicked.connect(self._ir)
+        lay.addWidget(self.tab, 1)
+
+        botoes = QHBoxLayout()
+        botoes.addStretch(1)
+        b_ir = QPushButton("Ir para o registro")
+        b_ir.clicked.connect(self._ir_selecionado)
+        b_ir.setEnabled(total > 0)
+        b_fechar = QPushButton("Fechar")
+        b_fechar.clicked.connect(self.close)
+        botoes.addWidget(b_ir)
+        botoes.addWidget(b_fechar)
+        lay.addLayout(botoes)
+
+    def _ir(self, row, _col):
+        it = self.tab.item(row, 0)
+        if it is not None:
+            uid = it.data(Qt.ItemDataRole.UserRole)
+            self.ir_callback(uid)
+
+    def _ir_selecionado(self):
+        row = self.tab.currentRow()
+        if row >= 0:
+            self._ir(row, 0)
+
+
+# ---------------------------------------------------------------------------
 # Janela principal
 # ---------------------------------------------------------------------------
 class JanelaPrincipal(QMainWindow):
     def __init__(self):
         super().__init__()
         self.doc = None
+        self.caminho = None
         self.alterado = False
-        self.setWindowTitle("Editor SPED")
+        self._offset_blocos = 0
+        self._blocos = []
         self.resize(1200, 760)
 
-        self._criar_acoes()
-        self._criar_barra()
+        # Carrega o layout do Qt Designer (sped_editor.ui) quando presente;
+        # caso contrário, constrói a interface programaticamente (fallback).
+        ui_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                               "sped_editor.ui")
+        self._modo_ui = False
+        if os.path.exists(ui_path):
+            try:
+                from PyQt6 import uic
+                uic.loadUi(ui_path, self)
+                self._modo_ui = True
+            except Exception:  # noqa: BLE001
+                self._modo_ui = False
 
-        self.tabs_bloco = QTabWidget()
+        if self._modo_ui:
+            self._conectar_ui()
+        else:
+            self._criar_acoes()
+            self._criar_barra()
+            self.tabs_bloco = QTabWidget()
+            self.tabs_bloco.setTabPosition(QTabWidget.TabPosition.North)
+            self.tabs_bloco.currentChanged.connect(self._bloco_aberto)
+            self.setCentralWidget(self.tabs_bloco)
+            self.setStatusBar(QStatusBar())
+
+        self.setWindowTitle("%s v%s" % (APP_NAME, __version__))
+        self.statusBar().showMessage("Pronto. Abra um arquivo SPED (Ctrl+O).")
+
+    def _conectar_ui(self):
+        """Liga as QActions e widgets carregados do .ui aos slots."""
+        self.act_abrir.setShortcut(QKeySequence.StandardKey.Open)
+        self.act_abrir.triggered.connect(self.abrir)
+        self.act_salvar.setShortcut(QKeySequence.StandardKey.Save)
+        self.act_salvar.triggered.connect(self.salvar)
+        self.act_salvar.setEnabled(False)
+        self.act_salvar_como.triggered.connect(self.salvar_como)
+        self.act_salvar_como.setEnabled(False)
+        self.act_sair.triggered.connect(self.close)
+        self.act_recalc_totais.triggered.connect(self.recalcular_totais)
+        self.act_recalc_totais.setEnabled(False)
+        self.act_importar_xml.triggered.connect(self.importar_xml_c175)
+        self.act_importar_xml.setEnabled(False)
+        self.act_recalc_m.triggered.connect(self.recalcular_bloco_m)
+        self.act_recalc_m.setEnabled(False)
+        self.act_conferir_55.triggered.connect(self.conferir_entradas_55)
+        self.act_conferir_55.setEnabled(False)
+        self.act_revisar.triggered.connect(self.revisar_erros)
+        self.act_revisar.setEnabled(False)
         self.tabs_bloco.setTabPosition(QTabWidget.TabPosition.North)
         self.tabs_bloco.currentChanged.connect(self._bloco_aberto)
-
-        vazio = QLabel("Abra um arquivo SPED para começar  (Ctrl+O)")
-        vazio.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        vazio.setStyleSheet("color:#888; font-size:16px;")
-        self._placeholder = vazio
-        self.setCentralWidget(vazio)
-
-        self.setStatusBar(QStatusBar())
-        self.statusBar().showMessage("Pronto.")
 
     # --------------------------------------------------------------- ações
     def _criar_acoes(self):
@@ -822,6 +1083,10 @@ class JanelaPrincipal(QMainWindow):
         self.act_conferir_55.triggered.connect(self.conferir_entradas_55)
         self.act_conferir_55.setEnabled(False)
 
+        self.act_revisar = QAction("Revisar erros…", self)
+        self.act_revisar.triggered.connect(self.revisar_erros)
+        self.act_revisar.setEnabled(False)
+
     def _criar_barra(self):
         menu = self.menuBar().addMenu("&Arquivo")
         menu.addAction(self.act_abrir)
@@ -836,6 +1101,7 @@ class JanelaPrincipal(QMainWindow):
         menu_ferr.addAction(self.act_recalc_m)
         menu_ferr.addSeparator()
         menu_ferr.addAction(self.act_conferir_55)
+        menu_ferr.addAction(self.act_revisar)
 
         tb = QToolBar("Principal")
         tb.setMovable(False)
@@ -994,6 +1260,66 @@ class JanelaPrincipal(QMainWindow):
                resultado["resumo"]["divergencias"]))
         DialogoConferencia(resultado, self).exec()
 
+    def revisar_erros(self):
+        """Executa as regras de revisão e abre o relatório (não-modal, para
+        permitir navegar até os registros enquanto a lista fica aberta)."""
+        if not self.doc:
+            return
+        problemas, resumo = rev.revisar(self.doc)
+        self._dlg_revisao = DialogoRevisao(
+            problemas, resumo, self.ir_para_registro, self)
+        self._dlg_revisao.show()
+        self.statusBar().showMessage(
+            "Revisão: %d ocorrência(s)." % len(problemas))
+
+    def ir_para_registro(self, uid):
+        """Navega até o registro de `uid`: abre a aba do bloco, a sub-aba do
+        tipo raiz de exibição e desce pela cadeia até o registro alvo.
+
+        A "raiz de exibição" não é o topo absoluto da cadeia .pai, mas o
+        ancestral principal mais próximo do alvo (aquele que vira sub-aba de
+        topo do bloco). Ex.: para um C190, a raiz é o C100 (não o C001 de
+        abertura); o C190 aparece no detalhe do C100.
+        """
+        if not self.doc:
+            return False
+        reg = next((r for r in self.doc.registros if r.uid == uid), None)
+        if reg is None:
+            return False
+
+        # sobe do alvo até o topo, coletando os ancestrais
+        sobe = []
+        cur = reg
+        while cur is not None:
+            sobe.append(cur)
+            cur = cur.pai
+        # raiz de exibição = primeiro ancestral principal (subindo do alvo)
+        raiz_idx = next((i for i, r in enumerate(sobe)
+                         if SpedDocument._eh_principal(r)), len(sobe) - 1)
+        cadeia = list(reversed(sobe[:raiz_idx + 1]))   # [raiz_exib, ..., alvo]
+        raiz = cadeia[0]
+
+        blocos = self.doc.blocos()
+        if raiz.bloco not in blocos:
+            return False
+        pos = blocos.index(raiz.bloco)
+        idx_aba = self._offset_blocos + pos
+        self.tabs_bloco.setCurrentIndex(idx_aba)
+        self._bloco_aberto(idx_aba)
+        md = self._blocos[pos].widget_do_tipo(raiz.reg)
+        if md is None:
+            return False
+        md.selecionar_uid(raiz.uid)
+        for prox in cadeia[1:]:
+            sub = md.subwidget_de_tipo(prox.reg)
+            if sub is None:
+                break
+            sub.selecionar_uid(prox.uid)
+            md = sub
+        self.raise_()
+        self.activateWindow()
+        return True
+
     # ------------------------------------------------------------ abrir
     def abrir(self):
         caminho, _ = QFileDialog.getOpenFileName(
@@ -1008,6 +1334,7 @@ class JanelaPrincipal(QMainWindow):
                                  "Não foi possível ler o arquivo:\n%s" % e)
             return
         self.doc = doc
+        self.caminho = caminho
         self.alterado = False
         self._montar_abas()
         self.act_salvar.setEnabled(True)
@@ -1016,19 +1343,21 @@ class JanelaPrincipal(QMainWindow):
         self.act_importar_xml.setEnabled(doc.layout == "CONTRIB")
         self.act_recalc_m.setEnabled(doc.layout == "CONTRIB")
         self.act_conferir_55.setEnabled(True)
+        self.act_revisar.setEnabled(True)
         nome = os.path.basename(caminho)
         tipo = "EFD Contribuições" if doc.layout == "CONTRIB" \
             else "EFD ICMS/IPI"
-        self.setWindowTitle("Editor SPED — %s  [%s]" % (nome, tipo))
+        self.setWindowTitle("%s v%s — %s  [%s]"
+                            % (APP_NAME, __version__, nome, tipo))
         self.statusBar().showMessage(
             "%s carregado: %d registros, layout %s."
             % (nome, len(doc.registros), tipo))
 
     def _montar_abas(self):
-        self.tabs_bloco = QTabWidget()
-        self.tabs_bloco.setTabPosition(QTabWidget.TabPosition.North)
-        self.tabs_bloco.currentChanged.connect(self._bloco_aberto)
-        self.setCentralWidget(self.tabs_bloco)
+        # reutiliza o QTabWidget central (criado no __init__ ou vindo do .ui)
+        self.tabs_bloco.blockSignals(True)
+        self.tabs_bloco.clear()
+        self.tabs_bloco.blockSignals(False)
 
         nomes_bloco = {
             "0": "0 · Abertura/Identificação", "A": "A · Serviços",
@@ -1041,17 +1370,20 @@ class JanelaPrincipal(QMainWindow):
             "9": "9 · Controle/Totais",
         }
         self._blocos = []
+        # aba inicial de resumo (cabeçalho + contagem)
+        self.tabs_bloco.addTab(
+            ResumoWidget(self.doc, self.caminho), "📋 Resumo")
+        self._offset_blocos = 1
         for b in self.doc.blocos():
             w = BlocoWidget(self.doc, b, on_change=self._marcar_alterado)
             self._blocos.append(w)
             self.tabs_bloco.addTab(w, nomes_bloco.get(b, "Bloco %s" % b))
-        if self._blocos:
-            self.tabs_bloco.setCurrentIndex(0)
-            self._bloco_aberto(0)
+        self.tabs_bloco.setCurrentIndex(0)
 
     def _bloco_aberto(self, idx):
-        if 0 <= idx < len(getattr(self, "_blocos", [])):
-            self._blocos[idx].construir()
+        j = idx - self._offset_blocos
+        if 0 <= j < len(getattr(self, "_blocos", [])):
+            self._blocos[j].construir()
 
     # ------------------------------------------------------------ salvar
     def _marcar_alterado(self):
@@ -1084,6 +1416,7 @@ class JanelaPrincipal(QMainWindow):
             QMessageBox.critical(self, "Erro ao salvar",
                                  "Não foi possível gravar:\n%s" % e)
             return
+        self.caminho = caminho
         self.alterado = False
         nome = os.path.basename(caminho)
         self.setWindowTitle(self.windowTitle().rstrip(" *"))

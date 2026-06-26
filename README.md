@@ -194,13 +194,64 @@ Se o código não estiver cadastrado, o rótulo avisa; se você editar o `COD_IT
 da linha, o nome é atualizado na hora. A busca é indexada e se refaz sozinha
 quando um registro 0200 é editado, criado ou removido.
 
+### Página inicial (Resumo)
+
+Ao abrir um arquivo, a primeira aba **📋 Resumo** mostra o cabeçalho do registro
+**0000** (nome do contribuinte, CNPJ, IE, UF e o período DT_INI–DT_FIN), o
+**layout** detectado, a **data de modificação** do arquivo em disco, o nome do
+arquivo, o **total de registros** e uma tabela com a **contagem por tipo de
+registro**. Funciona nos dois leiautes (os campos do 0000 são localizados pelo
+nome, já que a posição muda entre ICMS/IPI e Contribuições).
+
+### Pesquisa em qualquer bloco
+
+O campo de busca aparece em **qualquer grade com registros** — não só nas de
+documento. Em grades com **NUM_DOC** (ex.: C100) a busca foca o número do
+documento; nas demais (ex.: **0200**, **H010**) pesquisa em **todas as colunas**,
+útil para localizar um item, um produto ou um saldo entre milhares de linhas.
+
+### Revisão de erros
+
+**Ferramentas → Revisar erros…** gera um relatório de inconsistências simples.
+Nesta versão há duas regras:
+
+1. **Número de campos divergente** — registros cujo número de campos destoa dos
+   demais do **mesmo tipo** no próprio arquivo (detecta uma linha editada com um
+   `|` a mais ou a menos). A referência é a maioria dos registros daquele tipo,
+   não um leiaute fixo, o que evita falsos positivos por diferença de versão.
+2. **C190 com CST x20/x70 e VL_RED_BC zerado** — registros C190 cujo CST indica
+   redução de base de cálculo, mas com o valor da redução em branco/zero.
+
+Dê **duplo-clique** numa linha do relatório (ou use **Ir para o registro**) e o
+editor abre o bloco, a sub-aba e a linha exata do registro com problema —
+inclusive descendo até registros-filho como o C190 (dentro do C100). O
+relatório fica aberto enquanto você navega. As regras estão centralizadas em
+`revisao.py` (lista `REGRAS`) e novas verificações podem ser acrescentadas com
+poucas linhas.
+
+### Editar o layout no Qt Designer
+
+A janela principal é descrita em **`sped_editor.ui`** (formato padrão do Qt). O
+aplicativo carrega esse arquivo automaticamente quando ele está presente, de modo
+que você pode abrir o **Qt Designer**, reorganizar menus, barra de ferramentas e
+ações, e ver as mudanças sem mexer no código. Se o arquivo não existir (ou não
+puder ser lido), a interface é montada programaticamente como alternativa. As
+ações mantêm nomes fixos (`act_abrir`, `act_salvar`, `act_revisar`, …) e o
+`QTabWidget` central chama-se `tabs_bloco` — preserve esses nomes ao editar.
+
 ## 4. Estrutura do projeto
 
 | Arquivo            | Função                                                         |
 |--------------------|----------------------------------------------------------------|
 | `sped_editor.py`   | Interface gráfica PyQt6 (mestre-detalhe recursivo).            |
+| `sped_editor.ui`   | Layout da janela principal (editável no Qt Designer).         |
 | `sped_model.py`    | Modelo de dados: parser, árvore pai/filho, CRUD e gravação.    |
 | `sped_layouts.py`  | Níveis hierárquicos e nomes oficiais de campos por registro.   |
+| `xml_fiscal.py`    | Leitura de XML NF-e/NFC-e e motor de vínculo genérico.        |
+| `conferencia.py`   | Conferência de entradas modelo 55 (item XML ↔ C170).          |
+| `revisao.py`       | Regras de revisão de erros (extensível).                      |
+| `version.py`       | Versão do aplicativo (SemVer).                                |
+| `CHANGELOG.md`     | Histórico de versões.                                          |
 | `requirements.txt` | Dependências (PyQt6).                                          |
 
 ## 5. Notas e limitações

@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>JanelaPrincipal</class>
+ <widget class="QMainWindow" name="JanelaPrincipal">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1200</width>
+    <height>760</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Editor SPED</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QVBoxLayout" name="layout_central">
+    <property name="leftMargin"><number>0</number></property>
+    <property name="topMargin"><number>0</number></property>
+    <property name="rightMargin"><number>0</number></property>
+    <property name="bottomMargin"><number>0</number></property>
+    <item>
+     <widget class="QTabWidget" name="tabs_bloco">
+      <property name="tabPosition">
+       <enum>QTabWidget::North</enum>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <widget class="QMenu" name="menu_arquivo">
+    <property name="title">
+     <string>&amp;Arquivo</string>
+    </property>
+    <addaction name="act_abrir"/>
+    <addaction name="act_salvar"/>
+    <addaction name="act_salvar_como"/>
+    <addaction name="separator"/>
+    <addaction name="act_sair"/>
+   </widget>
+   <widget class="QMenu" name="menu_ferramentas">
+    <property name="title">
+     <string>&amp;Ferramentas</string>
+    </property>
+    <addaction name="act_recalc_totais"/>
+    <addaction name="act_importar_xml"/>
+    <addaction name="act_recalc_m"/>
+    <addaction name="separator"/>
+    <addaction name="act_conferir_55"/>
+    <addaction name="act_revisar"/>
+   </widget>
+   <addaction name="menu_arquivo"/>
+   <addaction name="menu_ferramentas"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <widget class="QToolBar" name="toolbar">
+   <property name="windowTitle">
+    <string>Principal</string>
+   </property>
+   <property name="movable">
+    <bool>false</bool>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="act_abrir"/>
+   <addaction name="act_salvar"/>
+   <addaction name="act_salvar_como"/>
+  </widget>
+  <action name="act_abrir">
+   <property name="text">
+    <string>Abrir…</string>
+   </property>
+  </action>
+  <action name="act_salvar">
+   <property name="text">
+    <string>Salvar</string>
+   </property>
+  </action>
+  <action name="act_salvar_como">
+   <property name="text">
+    <string>Salvar como…</string>
+   </property>
+  </action>
+  <action name="act_sair">
+   <property name="text">
+    <string>Sair</string>
+   </property>
+  </action>
+  <action name="act_recalc_totais">
+   <property name="text">
+    <string>Recalcular totais (C990/9900)…</string>
+   </property>
+  </action>
+  <action name="act_importar_xml">
+   <property name="text">
+    <string>Importar XMLs → consolidar C175…</string>
+   </property>
+  </action>
+  <action name="act_recalc_m">
+   <property name="text">
+    <string>Recalcular bloco M (apuração)…</string>
+   </property>
+  </action>
+  <action name="act_conferir_55">
+   <property name="text">
+    <string>Conferir entradas (NF-e 55) com XMLs…</string>
+   </property>
+  </action>
+  <action name="act_revisar">
+   <property name="text">
+    <string>Revisar erros…</string>
+   </property>
+  </action>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
