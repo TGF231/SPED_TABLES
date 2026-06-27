@@ -984,6 +984,120 @@ class DialogoRevisao(QDialog):
 
 
 # ---------------------------------------------------------------------------
+# Editor das correlações de CFOP (saída do fornecedor -> entrada do comprador)
+# ---------------------------------------------------------------------------
+class DialogoCorrelacoesCFOP(QDialog):
+    """Tabela editável de CFOP de saída -> CFOPs de entrada válidos.
+
+    Persiste em JSON (via conferencia.salvar_correlacoes) e devolve o novo
+    mapa pelo callback `on_salvar`."""
+
+    def __init__(self, mapa, caminho, on_salvar, parent=None):
+        super().__init__(parent)
+        self.caminho = caminho
+        self.on_salvar = on_salvar
+        self.setWindowTitle("Correlações de CFOP — entradas (NF-e 55)")
+        self.resize(560, 560)
+        lay = QVBoxLayout(self)
+
+        info = QLabel(
+            "Para cada <b>CFOP de saída</b> do fornecedor (5xxx/6xxx), informe "
+            "os <b>CFOPs de entrada</b> válidos no SPED (1xxx/2xxx), separados "
+            "por vírgula.<br>Ex.: <b>5403</b> → <b>1401, 1403</b>. Itens cujo "
+            "CFOP de entrada não estiver na lista são apontados na conferência.")
+        info.setWordWrap(True)
+        info.setTextFormat(Qt.TextFormat.RichText)
+        lay.addWidget(info)
+
+        self.tab = QTableWidget(0, 2)
+        self.tab.setHorizontalHeaderLabels(
+            ["CFOP saída (fornecedor)", "CFOPs entrada válidos"])
+        self.tab.horizontalHeader().setStretchLastSection(True)
+        self.tab.verticalHeader().setVisible(False)
+        lay.addWidget(self.tab, 1)
+        self._preencher(mapa)
+
+        linha_btn = QHBoxLayout()
+        b_add = QPushButton("➕ Adicionar")
+        b_add.clicked.connect(self._adicionar)
+        b_del = QPushButton("➖ Remover")
+        b_del.clicked.connect(self._remover)
+        b_padrao = QPushButton("Restaurar padrão")
+        b_padrao.clicked.connect(self._restaurar)
+        linha_btn.addWidget(b_add)
+        linha_btn.addWidget(b_del)
+        linha_btn.addWidget(b_padrao)
+        linha_btn.addStretch(1)
+        lay.addLayout(linha_btn)
+
+        rodape = QHBoxLayout()
+        rodape.addStretch(1)
+        b_salvar = QPushButton("Salvar")
+        b_salvar.clicked.connect(self._salvar)
+        b_fechar = QPushButton("Fechar")
+        b_fechar.clicked.connect(self.reject)
+        rodape.addWidget(b_salvar)
+        rodape.addWidget(b_fechar)
+        lay.addLayout(rodape)
+
+    def _preencher(self, mapa):
+        self.tab.setRowCount(0)
+        for cfop in sorted(mapa):
+            destinos = ", ".join(sorted(mapa[cfop]))
+            self._nova_linha(cfop, destinos)
+
+    def _nova_linha(self, saida="", entrada=""):
+        i = self.tab.rowCount()
+        self.tab.insertRow(i)
+        self.tab.setItem(i, 0, QTableWidgetItem(saida))
+        self.tab.setItem(i, 1, QTableWidgetItem(entrada))
+
+    def _adicionar(self):
+        self._nova_linha()
+        self.tab.scrollToBottom()
+        self.tab.editItem(self.tab.item(self.tab.rowCount() - 1, 0))
+
+    def _remover(self):
+        linhas = sorted({i.row() for i in self.tab.selectedItems()},
+                        reverse=True)
+        for r in linhas:
+            self.tab.removeRow(r)
+
+    def _restaurar(self):
+        if QMessageBox.question(
+                self, "Restaurar padrão",
+                "Substituir a tabela atual pelas correlações padrão?") \
+                == QMessageBox.StandardButton.Yes:
+            self._preencher(cf.normalizar_correlacoes(
+                cf.CORRELACOES_CFOP_PADRAO))
+
+    def _coletar(self):
+        d = {}
+        for i in range(self.tab.rowCount()):
+            s = self.tab.item(i, 0)
+            e = self.tab.item(i, 1)
+            saida = s.text() if s else ""
+            entrada = e.text() if e else ""
+            if saida.strip():
+                d[saida] = entrada
+        return cf.normalizar_correlacoes(d)
+
+    def _salvar(self):
+        mapa = self._coletar()
+        try:
+            cf.salvar_correlacoes(mapa, self.caminho)
+        except Exception as exc:  # noqa: BLE001
+            QMessageBox.critical(self, "Salvar",
+                                 "Não foi possível gravar:\n%s" % exc)
+            return
+        self.on_salvar(mapa)
+        QMessageBox.information(
+            self, "Correlações de CFOP",
+            "Correlações salvas (%d CFOP de saída)." % len(mapa))
+        self.accept()
+
+
+# ---------------------------------------------------------------------------
 # Janela principal
 # ---------------------------------------------------------------------------
 class JanelaPrincipal(QMainWindow):
@@ -995,6 +1109,12 @@ class JanelaPrincipal(QMainWindow):
         self._offset_blocos = 0
         self._blocos = []
         self.resize(1200, 760)
+
+        # correlações de CFOP (saída -> entradas válidas), persistidas em JSON
+        self._caminho_correl = os.path.join(
+            os.path.dirname(os.path.abspath(__file__)),
+            "correlacoes_cfop.json")
+        self.correlacoes_cfop = cf.carregar_correlacoes(self._caminho_correl)
 
         # Carrega o layout do Qt Designer (sped_editor.ui) quando presente;
         # caso contrário, constrói a interface programaticamente (fallback).
@@ -1043,6 +1163,14 @@ class JanelaPrincipal(QMainWindow):
         self.act_conferir_55.setEnabled(False)
         self.act_revisar.triggered.connect(self.revisar_erros)
         self.act_revisar.setEnabled(False)
+        # ação de correlações de CFOP — criada aqui se o .ui não a trouxer
+        if not hasattr(self, "act_correlacoes_cfop"):
+            self.act_correlacoes_cfop = QAction(
+                "Correlações de CFOP (entradas)…", self)
+            if hasattr(self, "menu_ferramentas"):
+                self.menu_ferramentas.addAction(self.act_correlacoes_cfop)
+        self.act_correlacoes_cfop.triggered.connect(
+            self.editar_correlacoes_cfop)
         self.tabs_bloco.setTabPosition(QTabWidget.TabPosition.North)
         self.tabs_bloco.currentChanged.connect(self._bloco_aberto)
 
@@ -1087,6 +1215,11 @@ class JanelaPrincipal(QMainWindow):
         self.act_revisar.triggered.connect(self.revisar_erros)
         self.act_revisar.setEnabled(False)
 
+        self.act_correlacoes_cfop = QAction(
+            "Correlações de CFOP (entradas)…", self)
+        self.act_correlacoes_cfop.triggered.connect(
+            self.editar_correlacoes_cfop)
+
     def _criar_barra(self):
         menu = self.menuBar().addMenu("&Arquivo")
         menu.addAction(self.act_abrir)
@@ -1101,6 +1234,7 @@ class JanelaPrincipal(QMainWindow):
         menu_ferr.addAction(self.act_recalc_m)
         menu_ferr.addSeparator()
         menu_ferr.addAction(self.act_conferir_55)
+        menu_ferr.addAction(self.act_correlacoes_cfop)
         menu_ferr.addAction(self.act_revisar)
 
         tb = QToolBar("Principal")
@@ -1253,12 +1387,23 @@ class JanelaPrincipal(QMainWindow):
                 self, "Conferir entradas",
                 "Nenhum XML de NF-e modelo 55 foi encontrado na pasta.")
             return
-        resultado = cf.conferir_entradas_55(self.doc, nfes)
+        resultado = cf.conferir_entradas_55(
+            self.doc, nfes, correlacoes_cfop=self.correlacoes_cfop)
         self.statusBar().showMessage(
             "Conferência: %d itens, %d divergência(s)."
             % (resultado["resumo"]["itens_conferidos"],
                resultado["resumo"]["divergencias"]))
         DialogoConferencia(resultado, self).exec()
+
+    def editar_correlacoes_cfop(self):
+        """Abre o editor da tabela de correlações de CFOP (saída -> entrada)."""
+        def aplicar(novo_mapa):
+            self.correlacoes_cfop = novo_mapa
+            self.statusBar().showMessage(
+                "Correlações de CFOP atualizadas (%d CFOP de saída)."
+                % len(novo_mapa))
+        DialogoCorrelacoesCFOP(
+            self.correlacoes_cfop, self._caminho_correl, aplicar, self).exec()
 
     def revisar_erros(self):
         """Executa as regras de revisão e abre o relatório (não-modal, para

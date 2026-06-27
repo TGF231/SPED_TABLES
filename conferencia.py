@@ -9,8 +9,12 @@ O vínculo usa o motor genérico `xml_fiscal.vincular`, casando **item XML ↔ C
 pela chave **(mod, série, nNF, nItem)**. A ordem do item (nItem) é a chave porque
 o **código do produto muda** entre a saída do fornecedor e a entrada do
 comprador (cProd ≠ COD_ITEM) e o **CFOP também muda** (saída 5xxx → entrada
-1xxx/2xxx). Por isso esses campos não servem de chave nem são conferidos por
-igualdade; o que se confere é o **valor** do item.
+1xxx/2xxx). Por isso esses campos não servem de chave.
+
+Conferem-se: o **valor** do item (VL_ITEM/VL_DESC) e o **total do documento**
+(VL_DOC); e, quando há uma tabela de correlações, a **coerência do CFOP** — o
+CFOP de saída do XML deve mapear para um CFOP de entrada válido no C170 (a
+tabela é editável e fica em correlacoes_cfop.json).
 
 Este módulo orquestra xml_fiscal (parsing/vínculo) + o SpedDocument (índices de
 campo por layout); não depende de PyQt.
@@ -40,6 +44,131 @@ def _fmt(v):
     return "" if v is None else str(v)
 
 
+def _so_digitos(s):
+    return "".join(c for c in (s or "") if c.isdigit())
+
+
+# --------------------------------------------------------- correlação de CFOP
+# Numa COMPRA, o XML do fornecedor traz o CFOP de SAÍDA (5xxx mesma UF, 6xxx
+# outra UF). O comprador escritura no C170 o CFOP de ENTRADA correspondente
+# (1xxx / 2xxx), que deve preservar a natureza da operação (comercialização,
+# industrialização, ST, ativo, uso/consumo, etc.). Esta tabela define, para
+# cada CFOP de saída, os CFOPs de entrada considerados VÁLIDOS.
+#
+# A base abaixo é por "miolo" (3 últimos dígitos) e é expandida para 5→1 e
+# 6→2. A tabela é apenas o ponto de partida: pode ser editada na interface e
+# salva em JSON (ver carregar/salvar_correlacoes).
+_BASE_CFOP = {
+    # venda / compra (sem ST)
+    "101": ["101", "401"],
+    "102": ["102", "101", "403", "401"],
+    "103": ["101"],
+    "104": ["102"],
+    "105": ["101"],
+    "106": ["102"],
+    "109": ["101", "102"],
+    "110": ["101", "102"],
+    "111": ["101"],
+    "113": ["101"],
+    "114": ["102"],
+    "116": ["101"],
+    "117": ["102"],
+    "118": ["101"],
+    "119": ["102"],
+    "120": ["101"],
+    "122": ["102"],
+    "123": ["101"],
+    "124": ["101"],
+    "125": ["101"],
+    # transferências
+    "151": ["151"],
+    "152": ["152"],
+    # com substituição tributária
+    "401": ["401"],
+    "402": ["401"],
+    "403": ["403", "401"],
+    "405": ["403"],
+    "408": ["408"],
+    "409": ["409"],
+    # industrialização por encomenda
+    "124": ["101"],
+    "125": ["101"],
+    "901": ["901"],
+    "902": ["902"],
+    # ativo imobilizado e uso/consumo
+    "551": ["551"],
+    "552": ["552"],
+    "553": ["553"],
+    "556": ["556"],
+    "557": ["557"],
+    # remessas / retornos / outras
+    "910": ["910"],
+    "911": ["911"],
+    "912": ["912"],
+    "913": ["913"],
+    "914": ["914"],
+    "915": ["915"],
+    "916": ["916"],
+    "917": ["917"],
+    "918": ["918"],
+    "919": ["919"],
+    "920": ["920"],
+    "921": ["921"],
+    "949": ["949"],
+}
+
+
+def _expandir_base(base):
+    out = {}
+    for miolo, destinos in base.items():
+        out["5" + miolo] = ["1" + d for d in destinos]
+        out["6" + miolo] = ["2" + d for d in destinos]
+    return out
+
+
+CORRELACOES_CFOP_PADRAO = _expandir_base(_BASE_CFOP)
+
+
+def normalizar_correlacoes(d):
+    """Converte um dict {cfop_saida: [cfops_entrada]} num dict de conjuntos,
+    com tudo reduzido a dígitos. Aceita valores em lista, set, ou string com
+    separadores (vírgula/espaço)."""
+    out = {}
+    for k, v in (d or {}).items():
+        chave = _so_digitos(k)
+        if not chave:
+            continue
+        if isinstance(v, str):
+            itens = v.replace(";", ",").replace(" ", ",").split(",")
+        else:
+            itens = list(v)
+        out[chave] = {_so_digitos(x) for x in itens if _so_digitos(x)}
+    return out
+
+
+def carregar_correlacoes(caminho):
+    """Lê as correlações de um JSON; se o arquivo não existir, devolve o
+    padrão. Sempre retorna um dict {cfop: set(cfops)}."""
+    import json
+    import os
+    if caminho and os.path.exists(caminho):
+        try:
+            with open(caminho, encoding="utf-8") as fh:
+                return normalizar_correlacoes(json.load(fh))
+        except Exception:  # noqa: BLE001 - arquivo corrompido cai no padrão
+            pass
+    return normalizar_correlacoes(CORRELACOES_CFOP_PADRAO)
+
+
+def salvar_correlacoes(mapa, caminho):
+    """Grava as correlações num JSON legível (listas ordenadas)."""
+    import json
+    serial = {k: sorted(v) for k, v in sorted(mapa.items())}
+    with open(caminho, "w", encoding="utf-8") as fh:
+        json.dump(serial, fh, ensure_ascii=False, indent=2)
+    return caminho
+
+
 # comparações padrão item XML ↔ C170:
 #   (rótulo, função-valor-do-item-XML, nome-do-campo-C170, tolerância)
 COMPARACOES_PADRAO = [
@@ -48,9 +177,16 @@ COMPARACOES_PADRAO = [
 ]
 
 
-def conferir_entradas_55(doc, nfes, comparacoes=None, tol_doc=0.01):
+def conferir_entradas_55(doc, nfes, comparacoes=None, tol_doc=0.01,
+                         correlacoes_cfop=None, avisar_cfop_sem_regra=False):
     """
     Confere as entradas modelo 55 do documento SPED `doc` contra os XMLs `nfes`.
+
+    Se `correlacoes_cfop` for fornecido (dict {cfop_saida: iterável de
+    cfops_entrada} ou já normalizado), confere também a **correlação de CFOP**:
+    o CFOP do item no XML (saída do fornecedor) deve corresponder a um CFOP de
+    entrada válido no C170. Quando o CFOP de saída não tem regra cadastrada, a
+    divergência só é apontada se `avisar_cfop_sem_regra` for True.
 
     Retorna um dicionário com:
       * resumo: contadores gerais;
@@ -69,8 +205,11 @@ def conferir_entradas_55(doc, nfes, comparacoes=None, tol_doc=0.01):
     iC_op = doc._ix("C100", "IND_OPER")
     iC_vdoc = doc._ix("C100", "VL_DOC")
     i170_item = doc._ix("C170", "NUM_ITEM")
+    i170_cfop = doc._ix("C170", "CFOP")
     idx_cmp = [(rot, fn, doc._ix("C170", campo), t)
                for (rot, fn, campo, t) in comparacoes]
+    correl = normalizar_correlacoes(correlacoes_cfop) if correlacoes_cfop \
+        else None
 
     nfes55 = [n for n in nfes if xf.norm(n.mod) == "55"]
 
@@ -135,6 +274,27 @@ def conferir_entradas_55(doc, nfes, comparacoes=None, tol_doc=0.01):
                     escopo="item", campo=rot, valor_xml=vx, valor_sped=vs,
                     obs="cProd XML=%s / COD_ITEM=%s"
                         % (it.cprod, c170.valor(doc._ix("C170", "COD_ITEM")))))
+
+        # correlação de CFOP (saída do fornecedor -> entrada do comprador)
+        if correl is not None and i170_cfop is not None:
+            cfop_x = _so_digitos(it.cfop)
+            cfop_s = _so_digitos(c170.valor(i170_cfop))
+            validos = correl.get(cfop_x)
+            if validos:
+                if cfop_s not in validos:
+                    divergencias.append(Divergencia(
+                        mod=nfe.mod, serie=nfe.serie, nnf=nfe.nnf,
+                        nitem=it.nitem, escopo="item", campo="CFOP",
+                        valor_xml=cfop_x, valor_sped=cfop_s,
+                        obs="entrada deveria ser: %s"
+                            % " ou ".join(sorted(validos))))
+            elif avisar_cfop_sem_regra and cfop_x:
+                divergencias.append(Divergencia(
+                    mod=nfe.mod, serie=nfe.serie, nnf=nfe.nnf,
+                    nitem=it.nitem, escopo="item", campo="CFOP (sem regra)",
+                    valor_xml=cfop_x, valor_sped=cfop_s,
+                    obs="sem correlação cadastrada para o CFOP de saída %s"
+                        % cfop_x))
 
     resumo = {
         "xml_55": len(nfes55),

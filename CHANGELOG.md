@@ -5,6 +5,19 @@ Todas as mudanças relevantes deste projeto são documentadas neste arquivo.
 O formato segue [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/)
 e o projeto adota [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [0.3.0] - 2026-06-26
+
+### Adicionado
+- **Correlação de CFOP nas entradas (NF-e 55)**: a conferência passou a checar
+  se o CFOP de saída do fornecedor (5xxx/6xxx, no XML) corresponde a um CFOP de
+  entrada válido no C170 (1xxx/2xxx). Ex.: um item com **5403** na compra
+  escriturado como **1102** é apontado, com a sugestão de que deveria ser
+  **1401** ou **1403**.
+- **Tabela de correlações editável** (Ferramentas → Correlações de CFOP): lista
+  de CFOP de saída → CFOPs de entrada válidos, editável na interface e
+  persistida em `correlacoes_cfop.json`. Acompanha um conjunto padrão (96 CFOPs)
+  que pode ser ajustado e restaurado.
+
 ## [0.2.0] - 2026-06-26
 
 ### Adicionado

@@ -157,6 +157,23 @@ divergências, itens sem C170, notas sem XML) e a lista de divergências, que po
 ser **exportada em CSV**. Itens presentes no XML mas ausentes no SPED — e
 vice-versa — são identificados individualmente.
 
+#### Correlação de CFOP (saída do fornecedor → entrada do comprador)
+
+Numa compra, o XML do fornecedor traz o CFOP de **saída** (5xxx mesma UF, 6xxx
+outra UF) e o C170 do comprador traz o CFOP de **entrada** (1xxx/2xxx). A
+conferência verifica se esse par é coerente: o CFOP de saída deve corresponder a
+um CFOP de entrada **válido**, preservando a natureza da operação (comercializar,
+industrializar, ST, ativo, uso/consumo). Por exemplo, um item com **5403** na
+compra lançado como **1102** é apontado, indicando que o correto seria **1401**
+ou **1403**.
+
+A lista de correlações válidas é **editável na interface** em **Ferramentas →
+Correlações de CFOP (entradas)…**: uma tabela *CFOP de saída → CFOPs de entrada
+válidos* (separados por vírgula), com botões para adicionar, remover, restaurar o
+padrão e salvar. As correlações ficam em **`correlacoes_cfop.json`** (ao lado do
+programa); o aplicativo já vem com um conjunto inicial que cobre os casos mais
+comuns e pode ser ajustado à realidade da empresa.
+
 ### Recalcular C190 (analítico) a partir dos itens C170
 
 Na grade **C190** de um documento C100 (EFD ICMS/IPI), ao lado de *Adicionar/
@@ -249,6 +266,7 @@ ações mantêm nomes fixos (`act_abrir`, `act_salvar`, `act_revisar`, …) e o
 | `sped_layouts.py`  | Níveis hierárquicos e nomes oficiais de campos por registro.   |
 | `xml_fiscal.py`    | Leitura de XML NF-e/NFC-e e motor de vínculo genérico.        |
 | `conferencia.py`   | Conferência de entradas modelo 55 (item XML ↔ C170).          |
+| `correlacoes_cfop.json` | Correlações CFOP saída→entrada (gerado/editável).        |
 | `revisao.py`       | Regras de revisão de erros (extensível).                      |
 | `version.py`       | Versão do aplicativo (SemVer).                                |
 | `CHANGELOG.md`     | Histórico de versões.                                          |

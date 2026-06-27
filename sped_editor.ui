@@ -15,20 +15,36 @@
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="layout_central">
-    <property name="leftMargin"><number>0</number></property>
-    <property name="topMargin"><number>0</number></property>
-    <property name="rightMargin"><number>0</number></property>
-    <property name="bottomMargin"><number>0</number></property>
+    <property name="leftMargin">
+     <number>0</number>
+    </property>
+    <property name="topMargin">
+     <number>0</number>
+    </property>
+    <property name="rightMargin">
+     <number>0</number>
+    </property>
+    <property name="bottomMargin">
+     <number>0</number>
+    </property>
     <item>
      <widget class="QTabWidget" name="tabs_bloco">
       <property name="tabPosition">
-       <enum>QTabWidget::North</enum>
+       <enum>QTabWidget::TabPosition::North</enum>
       </property>
      </widget>
     </item>
    </layout>
   </widget>
   <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1200</width>
+     <height>22</height>
+    </rect>
+   </property>
    <widget class="QMenu" name="menu_arquivo">
     <property name="title">
      <string>&amp;Arquivo</string>
@@ -43,11 +59,11 @@
     <property name="title">
      <string>&amp;Ferramentas</string>
     </property>
-    <addaction name="act_recalc_totais"/>
     <addaction name="act_importar_xml"/>
     <addaction name="act_recalc_m"/>
     <addaction name="separator"/>
     <addaction name="act_conferir_55"/>
+    <addaction name="act_correlacoes_cfop"/>
     <addaction name="act_revisar"/>
    </widget>
    <addaction name="menu_arquivo"/>
@@ -83,7 +99,7 @@
   </action>
   <action name="act_salvar_como">
    <property name="text">
-    <string>Salvar como…</string>
+    <string>Salvar como</string>
    </property>
   </action>
   <action name="act_sair">
@@ -93,27 +109,32 @@
   </action>
   <action name="act_recalc_totais">
    <property name="text">
-    <string>Recalcular totais (C990/9900)…</string>
+    <string>Recalcular quantidade de registros (C990/9900)</string>
    </property>
   </action>
   <action name="act_importar_xml">
    <property name="text">
-    <string>Importar XMLs → consolidar C175…</string>
+    <string>Importar XMLs de NFC-e → consolidar C175</string>
    </property>
   </action>
   <action name="act_recalc_m">
    <property name="text">
-    <string>Recalcular bloco M (apuração)…</string>
+    <string>Recalcular bloco M (apuração)</string>
    </property>
   </action>
   <action name="act_conferir_55">
    <property name="text">
-    <string>Conferir entradas (NF-e 55) com XMLs…</string>
+    <string>Conferir entradas com XMLs</string>
    </property>
   </action>
   <action name="act_revisar">
    <property name="text">
-    <string>Revisar erros…</string>
+    <string>Revisar erros comuns</string>
+   </property>
+  </action>
+  <action name="act_correlacoes_cfop">
+   <property name="text">
+    <string>Correlações de CFOP (entradas)</string>
    </property>
   </action>
  </widget>
