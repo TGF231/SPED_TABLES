@@ -137,6 +137,17 @@ os **créditos** (M100/M105/M500/M505), que dependem da classificação das
 entradas — por isso são mantidos como estão. Recomenda-se conferência por
 profissional antes da transmissão.
 
+### Trocar alíquotas de PIS/COFINS (C175)
+
+**Ferramentas → Trocar alíquotas PIS/COFINS (C175)…** (EFD Contribuições)
+substitui as alíquotas de PIS e/ou COFINS nos registros **C175** e recalcula
+**VL_PIS** e **VL_COFINS** (base × alíquota ÷ 100), atualizando os totais
+**VL_PIS/VL_COFINS** dos **C100**. O diálogo já sugere as alíquotas atuais
+predominantes (ex.: 1,65 % / 7,6 %) e permite aplicar só ao PIS, só ao COFINS ou
+a ambos, limitando aos registros **tributados** (base ou alíquota > 0) para não
+afetar CST sem tributação. Depois da troca, se precisar, rode *Recalcular bloco
+M* para refletir a apuração.
+
 ### Conferir entradas (NF-e modelo 55) com os XMLs
 
 **Ferramentas → Conferir entradas (NF-e 55) com XMLs…** compara cada item dos
@@ -194,12 +205,10 @@ coerente, sem somar grupo por grupo na mão.
 
 ### Contagens / totais (C990, 9900, 9990, 9999)
 
-Sempre que você adiciona, remove ou recalcula registros, as contagens são
-atualizadas: **X990** (ex.: `C990` = nº de linhas do bloco), **9900** (um por
-tipo de registro, ex.: `9900|C190|<qtd>`), **9990** (linhas do bloco 9) e
-**9999** (total do arquivo). Esses valores são **sempre reconstruídos ao
-salvar** e podem ser atualizados na tela a qualquer momento por
-**Ferramentas → Recalcular totais (C990/9900)**.
+As contagens são **sempre reconstruídas ao salvar**: **X990** (ex.: `C990` = nº
+de linhas do bloco), **9900** (um por tipo de registro, ex.: `9900|C190|<qtd>`),
+**9990** (linhas do bloco 9) e **9999** (total do arquivo). Não é preciso
+recalcular manualmente — basta salvar.
 
 ### Nome do produto no topo (grades C170)
 
@@ -250,11 +259,13 @@ poucas linhas.
 
 A janela principal é descrita em **`sped_editor.ui`** (formato padrão do Qt). O
 aplicativo carrega esse arquivo automaticamente quando ele está presente, de modo
-que você pode abrir o **Qt Designer**, reorganizar menus, barra de ferramentas e
+que você pode abrir o **Qt Designer**, reorganizar a barra de ferramentas e as
 ações, e ver as mudanças sem mexer no código. Se o arquivo não existir (ou não
 puder ser lido), a interface é montada programaticamente como alternativa. As
 ações mantêm nomes fixos (`act_abrir`, `act_salvar`, `act_revisar`, …) e o
-`QTabWidget` central chama-se `tabs_bloco` — preserve esses nomes ao editar.
+`QTabWidget` central chama-se `tabs_bloco` — preserve esses nomes ao editar. O
+botão **Ferramentas** da barra é montado em código (reúne as ações de
+ferramentas num menu suspenso ao lado de *Salvar como*).
 
 ## 4. Estrutura do projeto
 

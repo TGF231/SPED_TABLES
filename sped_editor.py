@@ -33,7 +33,8 @@ from PyQt6.QtWidgets import (
     QTabWidget, QTableWidget, QTableWidgetItem, QSplitter, QPushButton,
     QFileDialog, QMessageBox, QLabel, QHeaderView, QAbstractItemView,
     QToolBar, QStatusBar, QComboBox, QLineEdit, QMenu, QInputDialog,
-    QStyledItemDelegate, QDialog,
+    QStyledItemDelegate, QDialog, QCheckBox, QFormLayout, QToolButton,
+    QDoubleSpinBox,
 )
 
 from sped_model import SpedDocument
@@ -1098,6 +1099,71 @@ class DialogoCorrelacoesCFOP(QDialog):
 
 
 # ---------------------------------------------------------------------------
+# Diálogo: trocar alíquotas de PIS/COFINS (C175) e recalcular
+# ---------------------------------------------------------------------------
+class DialogoTrocarAliquotas(QDialog):
+    """Pede as novas alíquotas de PIS/COFINS e recalcula os C175."""
+
+    def __init__(self, doc, parent=None):
+        super().__init__(parent)
+        self.doc = doc
+        self.setWindowTitle("Trocar alíquotas de PIS/COFINS (C175)")
+        self.resize(440, 240)
+        lay = QVBoxLayout(self)
+
+        info = QLabel(
+            "Define novas alíquotas de PIS e COFINS para os registros "
+            "<b>C175</b> e recalcula VL_PIS e VL_COFINS (base × alíquota). "
+            "Os totais dos C100 são atualizados.")
+        info.setWordWrap(True)
+        lay.addWidget(info)
+
+        form = QFormLayout()
+        ap = doc.aliquota_predominante_c175("ALIQ_PIS") or 1.65
+        ac = doc.aliquota_predominante_c175("ALIQ_COFINS") or 7.6
+        self.sp_pis = QDoubleSpinBox()
+        self.sp_pis.setDecimals(4)
+        self.sp_pis.setRange(0, 100)
+        self.sp_pis.setSuffix(" %")
+        self.sp_pis.setValue(ap)
+        self.sp_cof = QDoubleSpinBox()
+        self.sp_cof.setDecimals(4)
+        self.sp_cof.setRange(0, 100)
+        self.sp_cof.setSuffix(" %")
+        self.sp_cof.setValue(ac)
+        self.chk_pis = QCheckBox("Alterar PIS")
+        self.chk_pis.setChecked(True)
+        self.chk_cof = QCheckBox("Alterar COFINS")
+        self.chk_cof.setChecked(True)
+        self.chk_pis.toggled.connect(self.sp_pis.setEnabled)
+        self.chk_cof.toggled.connect(self.sp_cof.setEnabled)
+        form.addRow(self.chk_pis, self.sp_pis)
+        form.addRow(self.chk_cof, self.sp_cof)
+        lay.addLayout(form)
+
+        self.chk_trib = QCheckBox(
+            "Somente registros tributados (base ou alíquota > 0)")
+        self.chk_trib.setChecked(True)
+        lay.addWidget(self.chk_trib)
+
+        botoes = QHBoxLayout()
+        botoes.addStretch(1)
+        b_ok = QPushButton("Aplicar e recalcular")
+        b_ok.clicked.connect(self.accept)
+        b_cancel = QPushButton("Cancelar")
+        b_cancel.clicked.connect(self.reject)
+        botoes.addWidget(b_ok)
+        botoes.addWidget(b_cancel)
+        lay.addLayout(botoes)
+
+    def valores(self):
+        """Retorna (aliq_pis, aliq_cofins, apenas_tributados); None = não mexe."""
+        ap = self.sp_pis.value() if self.chk_pis.isChecked() else None
+        ac = self.sp_cof.value() if self.chk_cof.isChecked() else None
+        return ap, ac, self.chk_trib.isChecked()
+
+
+# ---------------------------------------------------------------------------
 # Janela principal
 # ---------------------------------------------------------------------------
 class JanelaPrincipal(QMainWindow):
@@ -1152,9 +1218,8 @@ class JanelaPrincipal(QMainWindow):
         self.act_salvar.setEnabled(False)
         self.act_salvar_como.triggered.connect(self.salvar_como)
         self.act_salvar_como.setEnabled(False)
-        self.act_sair.triggered.connect(self.close)
-        self.act_recalc_totais.triggered.connect(self.recalcular_totais)
-        self.act_recalc_totais.setEnabled(False)
+        if hasattr(self, "act_sair"):
+            self.act_sair.triggered.connect(self.close)
         self.act_importar_xml.triggered.connect(self.importar_xml_c175)
         self.act_importar_xml.setEnabled(False)
         self.act_recalc_m.triggered.connect(self.recalcular_bloco_m)
@@ -1163,16 +1228,50 @@ class JanelaPrincipal(QMainWindow):
         self.act_conferir_55.setEnabled(False)
         self.act_revisar.triggered.connect(self.revisar_erros)
         self.act_revisar.setEnabled(False)
-        # ação de correlações de CFOP — criada aqui se o .ui não a trouxer
+        # ações que podem não vir num .ui antigo são criadas aqui
         if not hasattr(self, "act_correlacoes_cfop"):
             self.act_correlacoes_cfop = QAction(
                 "Correlações de CFOP (entradas)…", self)
-            if hasattr(self, "menu_ferramentas"):
-                self.menu_ferramentas.addAction(self.act_correlacoes_cfop)
         self.act_correlacoes_cfop.triggered.connect(
             self.editar_correlacoes_cfop)
+        if not hasattr(self, "act_trocar_aliquotas"):
+            self.act_trocar_aliquotas = QAction(
+                "Trocar alíquotas PIS/COFINS (C175)…", self)
+        self.act_trocar_aliquotas.triggered.connect(self.trocar_aliquotas)
+        self.act_trocar_aliquotas.setEnabled(False)
+        # a barra de menus é redundante com a toolbar: ocultar
+        if hasattr(self, "menubar") and self.menubar is not None:
+            self.menubar.setVisible(False)
         self.tabs_bloco.setTabPosition(QTabWidget.TabPosition.North)
         self.tabs_bloco.currentChanged.connect(self._bloco_aberto)
+        # botão "Ferramentas" na toolbar (ao lado de Salvar como)
+        tb = getattr(self, "toolbar", None)
+        if tb is None:
+            tb = QToolBar("Principal")
+            tb.setMovable(False)
+            self.addToolBar(tb)
+            self.toolbar = tb
+        self._montar_botao_ferramentas(tb)
+
+    def _montar_botao_ferramentas(self, toolbar):
+        """Cria o botão suspenso 'Ferramentas' e o posiciona na toolbar."""
+        menu = QMenu(self)
+        menu.addAction(self.act_importar_xml)
+        menu.addAction(self.act_recalc_m)
+        menu.addAction(self.act_trocar_aliquotas)
+        menu.addSeparator()
+        menu.addAction(self.act_conferir_55)
+        menu.addAction(self.act_correlacoes_cfop)
+        menu.addSeparator()
+        menu.addAction(self.act_revisar)
+        botao = QToolButton(self)
+        botao.setText("Ferramentas ▾")
+        botao.setMenu(menu)
+        botao.setPopupMode(QToolButton.ToolButtonPopupMode.InstantPopup)
+        botao.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextOnly)
+        toolbar.addSeparator()
+        toolbar.addWidget(botao)
+        self._botao_ferramentas = botao
 
     # --------------------------------------------------------------- ações
     def _criar_acoes(self):
@@ -1193,10 +1292,6 @@ class JanelaPrincipal(QMainWindow):
         self.act_sair = QAction("Sair", self)
         self.act_sair.triggered.connect(self.close)
 
-        self.act_recalc_totais = QAction("Recalcular totais (C990/9900)…", self)
-        self.act_recalc_totais.triggered.connect(self.recalcular_totais)
-        self.act_recalc_totais.setEnabled(False)
-
         self.act_importar_xml = QAction(
             "Importar XMLs → consolidar C175…", self)
         self.act_importar_xml.triggered.connect(self.importar_xml_c175)
@@ -1205,6 +1300,11 @@ class JanelaPrincipal(QMainWindow):
         self.act_recalc_m = QAction("Recalcular bloco M (apuração)…", self)
         self.act_recalc_m.triggered.connect(self.recalcular_bloco_m)
         self.act_recalc_m.setEnabled(False)
+
+        self.act_trocar_aliquotas = QAction(
+            "Trocar alíquotas PIS/COFINS (C175)…", self)
+        self.act_trocar_aliquotas.triggered.connect(self.trocar_aliquotas)
+        self.act_trocar_aliquotas.setEnabled(False)
 
         self.act_conferir_55 = QAction(
             "Conferir entradas (NF-e 55) com XMLs…", self)
@@ -1221,45 +1321,15 @@ class JanelaPrincipal(QMainWindow):
             self.editar_correlacoes_cfop)
 
     def _criar_barra(self):
-        menu = self.menuBar().addMenu("&Arquivo")
-        menu.addAction(self.act_abrir)
-        menu.addAction(self.act_salvar)
-        menu.addAction(self.act_salvar_como)
-        menu.addSeparator()
-        menu.addAction(self.act_sair)
-
-        menu_ferr = self.menuBar().addMenu("&Ferramentas")
-        menu_ferr.addAction(self.act_recalc_totais)
-        menu_ferr.addAction(self.act_importar_xml)
-        menu_ferr.addAction(self.act_recalc_m)
-        menu_ferr.addSeparator()
-        menu_ferr.addAction(self.act_conferir_55)
-        menu_ferr.addAction(self.act_correlacoes_cfop)
-        menu_ferr.addAction(self.act_revisar)
-
+        # sem barra de menus (redundante com a toolbar); apenas a toolbar
         tb = QToolBar("Principal")
         tb.setMovable(False)
         self.addToolBar(tb)
+        self.toolbar = tb
         tb.addAction(self.act_abrir)
         tb.addAction(self.act_salvar)
         tb.addAction(self.act_salvar_como)
-
-    def recalcular_totais(self):
-        """Recalcula as contagens (X990 e bloco 9) e atualiza a exibição."""
-        if not self.doc:
-            return
-        self.doc.atualizar_bloco9_inplace()
-        self._montar_abas()
-        self.statusBar().showMessage(
-            "Totais recalculados: X990 (por bloco) e 9900 (por tipo de "
-            "registro) atualizados.")
-        QMessageBox.information(
-            self, "Recalcular totais",
-            "As contagens foram atualizadas:\n\n"
-            "• X990 (ex.: C990) = nº de linhas de cada bloco\n"
-            "• 9900 = nº de registros de cada tipo (ex.: 9900|C190|<qtd>)\n"
-            "• 9990 e 9999 = totais do bloco 9 e do arquivo\n\n"
-            "Esses valores também são sempre recalculados ao salvar.")
+        self._montar_botao_ferramentas(tb)
 
     def importar_xml_c175(self):
         """Importa XMLs de NFC-e (modelo 65) de uma pasta e consolida os C175
@@ -1405,6 +1475,49 @@ class JanelaPrincipal(QMainWindow):
         DialogoCorrelacoesCFOP(
             self.correlacoes_cfop, self._caminho_correl, aplicar, self).exec()
 
+    def trocar_aliquotas(self):
+        """Troca as alíquotas de PIS/COFINS dos C175 e recalcula os valores."""
+        if not self.doc or self.doc.layout != "CONTRIB":
+            QMessageBox.information(
+                self, "Trocar alíquotas",
+                "Esta ferramenta aplica-se ao EFD Contribuições (registros "
+                "C175).")
+            return
+        dlg = DialogoTrocarAliquotas(self.doc, self)
+        if dlg.exec() != QDialog.DialogCode.Accepted:
+            return
+        aliq_pis, aliq_cofins, apenas_trib = dlg.valores()
+        if aliq_pis is None and aliq_cofins is None:
+            return
+        res = self.doc.trocar_aliquotas_pis_cofins(
+            aliq_pis=aliq_pis, aliq_cofins=aliq_cofins,
+            apenas_tributados=apenas_trib)
+        if res.get("sem_c175"):
+            QMessageBox.information(
+                self, "Trocar alíquotas",
+                "Nenhum registro C175 foi encontrado neste arquivo.")
+            return
+        self._marcar_alterado()
+        self._montar_abas()
+        partes = []
+        if aliq_pis is not None:
+            partes.append("PIS → %s%%" % ("%.4f" % aliq_pis).rstrip("0")
+                          .rstrip("."))
+        if aliq_cofins is not None:
+            partes.append("COFINS → %s%%" % ("%.4f" % aliq_cofins).rstrip("0")
+                          .rstrip("."))
+        self.statusBar().showMessage(
+            "Alíquotas atualizadas (%s): %d C175, %d C100."
+            % (", ".join(partes), res["c175"], res["c100"]))
+        QMessageBox.information(
+            self, "Trocar alíquotas",
+            "%s\n\n%d registro(s) C175 recalculado(s) em %d documento(s) "
+            "C100.\nNovos totais: VL_PIS = %s, VL_COFINS = %s\n\n"
+            "Se necessário, rode 'Recalcular bloco M' para refletir a "
+            "apuração."
+            % (", ".join(partes), res["c175"], res["c100"],
+               _br(res["vl_pis"]), _br(res["vl_cofins"])))
+
     def revisar_erros(self):
         """Executa as regras de revisão e abre o relatório (não-modal, para
         permitir navegar até os registros enquanto a lista fica aberta)."""
@@ -1484,9 +1597,9 @@ class JanelaPrincipal(QMainWindow):
         self._montar_abas()
         self.act_salvar.setEnabled(True)
         self.act_salvar_como.setEnabled(True)
-        self.act_recalc_totais.setEnabled(True)
         self.act_importar_xml.setEnabled(doc.layout == "CONTRIB")
         self.act_recalc_m.setEnabled(doc.layout == "CONTRIB")
+        self.act_trocar_aliquotas.setEnabled(doc.layout == "CONTRIB")
         self.act_conferir_55.setEnabled(True)
         self.act_revisar.setEnabled(True)
         nome = os.path.basename(caminho)
@@ -1565,13 +1678,10 @@ class JanelaPrincipal(QMainWindow):
         self.alterado = False
         nome = os.path.basename(caminho)
         self.setWindowTitle(self.windowTitle().rstrip(" *"))
-        self.statusBar().showMessage(
-            "Salvo em %s (bloco 9 recalculado)." % nome)
+        self.statusBar().showMessage("Salvo em %s." % nome)
         QMessageBox.information(
             self, "Salvo",
-            "Arquivo gravado com sucesso:\n%s\n\n"
-            "Os registros de totalização (X990, 9900, 9990, 9999) "
-            "foram recalculados automaticamente." % caminho)
+            "Arquivo salvo com sucesso em\n%s" % caminho)
 
     # ------------------------------------------------------------ fechar
     def closeEvent(self, event):

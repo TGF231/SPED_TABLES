@@ -35,6 +35,12 @@ def _fmt_val(v):
     return ("%.2f" % round(v, 2)).replace(".", ",")
 
 
+def _fmt_aliq(a):
+    """Formata uma alíquota no padrão SPED (vírgula, sem zeros à direita)."""
+    s = ("%.4f" % round(float(a), 4)).rstrip("0").rstrip(".")
+    return (s or "0").replace(".", ",")
+
+
 
 class Registro:
     __slots__ = ("uid", "reg", "bloco", "nivel", "campos", "pai", "filhos",
@@ -417,6 +423,81 @@ class SpedDocument:
 
         self.atualizar_bloco9_inplace()
         return {"grupos": len(ordem), "removidos": n_rem, "criados": n_cri,
+                "vl_pis": tot_pis, "vl_cofins": tot_cof}
+
+    def aliquota_predominante_c175(self, campo):
+        """Alíquota mais comum entre os C175 tributados (para sugerir na UI)."""
+        from collections import Counter
+        i = self._ix("C175", campo)
+        if i is None:
+            return None
+        c = Counter()
+        for r in self.registros:
+            if r.reg == "C175":
+                a = _to_num(r.valor(i))
+                if a > 0:
+                    c[a] += 1
+        return c.most_common(1)[0][0] if c else None
+
+    def trocar_aliquotas_pis_cofins(self, aliq_pis=None, aliq_cofins=None,
+                                    apenas_tributados=True):
+        """Substitui as alíquotas de PIS e/ou COFINS nos registros C175 e
+        recalcula VL_PIS / VL_COFINS (base × alíquota / 100). Atualiza os
+        totais VL_PIS / VL_COFINS dos C100 afetados.
+
+        `aliq_pis` e `aliq_cofins` são percentuais (ex.: 1.65); None mantém o
+        tributo inalterado. Com `apenas_tributados=True`, só mexe nos C175 que
+        já têm base ou alíquota positiva (preserva CST não tributados).
+        """
+        i_bcp = self._ix("C175", "VL_BC_PIS")
+        i_ap = self._ix("C175", "ALIQ_PIS")
+        i_vp = self._ix("C175", "VL_PIS")
+        i_bcc = self._ix("C175", "VL_BC_COFINS")
+        i_ac = self._ix("C175", "ALIQ_COFINS")
+        i_vc = self._ix("C175", "VL_COFINS")
+        if i_ap is None or i_ac is None:
+            return {"c175": 0, "c100": 0, "sem_c175": True}
+
+        n175 = 0
+        c100s = set()
+        for r in self.registros:
+            if r.reg != "C175":
+                continue
+            mudou = False
+            if aliq_pis is not None:
+                bc = _to_num(r.valor(i_bcp))
+                al = _to_num(r.valor(i_ap))
+                if (not apenas_tributados) or bc > 0 or al > 0:
+                    r.set_valor(i_ap, _fmt_aliq(aliq_pis))
+                    r.set_valor(i_vp, _fmt_val(round(bc * aliq_pis / 100, 2)))
+                    mudou = True
+            if aliq_cofins is not None:
+                bc = _to_num(r.valor(i_bcc))
+                al = _to_num(r.valor(i_ac))
+                if (not apenas_tributados) or bc > 0 or al > 0:
+                    r.set_valor(i_ac, _fmt_aliq(aliq_cofins))
+                    r.set_valor(i_vc, _fmt_val(round(bc * aliq_cofins / 100, 2)))
+                    mudou = True
+            if mudou:
+                n175 += 1
+                if r.pai is not None:
+                    c100s.add(r.pai)
+
+        icp = self._ix("C100", "VL_PIS")
+        icc = self._ix("C100", "VL_COFINS")
+        tot_pis = tot_cof = 0.0
+        for c100 in c100s:
+            sp = sum(_to_num(f.valor(i_vp))
+                     for f in c100.filhos if f.reg == "C175")
+            sc = sum(_to_num(f.valor(i_vc))
+                     for f in c100.filhos if f.reg == "C175")
+            tot_pis += sp
+            tot_cof += sc
+            if icp is not None:
+                c100.set_valor(icp, _fmt_val(sp))
+            if icc is not None:
+                c100.set_valor(icc, _fmt_val(sc))
+        return {"c175": n175, "c100": len(c100s),
                 "vl_pis": tot_pis, "vl_cofins": tot_cof}
 
     # --------------------------------------------- totais (in-place, p/ tela)

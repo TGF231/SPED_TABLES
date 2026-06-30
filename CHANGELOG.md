@@ -5,6 +5,24 @@ Todas as mudanças relevantes deste projeto são documentadas neste arquivo.
 O formato segue [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/)
 e o projeto adota [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [0.4.0] - 2026-06-27
+
+### Adicionado
+- **Trocar alíquotas de PIS/COFINS (C175)**: nova ferramenta que aplica novas
+  alíquotas de PIS e/ou COFINS aos registros C175 e recalcula VL_PIS/VL_COFINS
+  (base × alíquota), atualizando os totais dos C100. Sugere as alíquotas atuais
+  predominantes e permite restringir aos registros tributados.
+
+### Alterado
+- As ferramentas passaram a ficar num botão **Ferramentas** na barra de
+  ferramentas (ao lado de *Salvar como*).
+- A **barra de menus** foi removida (redundante com a barra de ferramentas).
+- A mensagem ao salvar agora informa apenas o caminho do arquivo salvo.
+
+### Removido
+- Ação manual **Recalcular totais (C990/9900)**: a recontagem (X990, 9900,
+  9990, 9999) já é feita automaticamente ao salvar.
+
 ## [0.3.0] - 2026-06-26
 
 ### Adicionado
