@@ -1102,35 +1102,42 @@ class DialogoCorrelacoesCFOP(QDialog):
 # Diálogo: trocar alíquotas de PIS/COFINS (C175) e recalcular
 # ---------------------------------------------------------------------------
 class DialogoTrocarAliquotas(QDialog):
-    """Pede as novas alíquotas de PIS/COFINS e recalcula os C175."""
+    """Pede as novas alíquotas de PIS/COFINS e recalcula (saídas/entradas)."""
+
+    ESCOPOS = [("Saídas — débito (C175)", "saidas"),
+               ("Entradas — crédito (C170)", "entradas"),
+               ("Ambos", "ambos")]
 
     def __init__(self, doc, parent=None):
         super().__init__(parent)
         self.doc = doc
-        self.setWindowTitle("Trocar alíquotas de PIS/COFINS (C175)")
-        self.resize(440, 240)
+        self.setWindowTitle("Trocar alíquotas de PIS/COFINS")
+        self.resize(460, 300)
         lay = QVBoxLayout(self)
 
         info = QLabel(
-            "Define novas alíquotas de PIS e COFINS para os registros "
-            "<b>C175</b> e recalcula VL_PIS e VL_COFINS (base × alíquota). "
-            "Os totais dos C100 são atualizados.")
+            "Define novas alíquotas de PIS e COFINS e recalcula VL_PIS e "
+            "VL_COFINS (base × alíquota), atualizando os totais dos C100. "
+            "As <b>saídas</b> usam os C175 (débito); as <b>entradas</b> usam "
+            "os C170 (crédito, com a alíquota do comprador).")
         info.setWordWrap(True)
         lay.addWidget(info)
 
         form = QFormLayout()
-        ap = doc.aliquota_predominante_c175("ALIQ_PIS") or 1.65
-        ac = doc.aliquota_predominante_c175("ALIQ_COFINS") or 7.6
+        self.combo_escopo = QComboBox()
+        for rotulo, _ in self.ESCOPOS:
+            self.combo_escopo.addItem(rotulo)
+        self.combo_escopo.currentIndexChanged.connect(self._atualizar_sugestao)
+        form.addRow("Aplicar em:", self.combo_escopo)
+
         self.sp_pis = QDoubleSpinBox()
         self.sp_pis.setDecimals(4)
         self.sp_pis.setRange(0, 100)
         self.sp_pis.setSuffix(" %")
-        self.sp_pis.setValue(ap)
         self.sp_cof = QDoubleSpinBox()
         self.sp_cof.setDecimals(4)
         self.sp_cof.setRange(0, 100)
         self.sp_cof.setSuffix(" %")
-        self.sp_cof.setValue(ac)
         self.chk_pis = QCheckBox("Alterar PIS")
         self.chk_pis.setChecked(True)
         self.chk_cof = QCheckBox("Alterar COFINS")
@@ -1156,11 +1163,23 @@ class DialogoTrocarAliquotas(QDialog):
         botoes.addWidget(b_cancel)
         lay.addLayout(botoes)
 
+        self._atualizar_sugestao()
+
+    def _atualizar_sugestao(self):
+        """Pré-preenche com a alíquota predominante do escopo selecionado."""
+        escopo = self.ESCOPOS[self.combo_escopo.currentIndex()][1]
+        base = "entradas" if escopo == "entradas" else "saidas"
+        ap = self.doc.aliquota_predominante("ALIQ_PIS", base) or 1.65
+        ac = self.doc.aliquota_predominante("ALIQ_COFINS", base) or 7.6
+        self.sp_pis.setValue(ap)
+        self.sp_cof.setValue(ac)
+
     def valores(self):
-        """Retorna (aliq_pis, aliq_cofins, apenas_tributados); None = não mexe."""
+        """(aliq_pis, aliq_cofins, apenas_tributados, escopo); None=não mexe."""
         ap = self.sp_pis.value() if self.chk_pis.isChecked() else None
         ac = self.sp_cof.value() if self.chk_cof.isChecked() else None
-        return ap, ac, self.chk_trib.isChecked()
+        escopo = self.ESCOPOS[self.combo_escopo.currentIndex()][1]
+        return ap, ac, self.chk_trib.isChecked(), escopo
 
 
 # ---------------------------------------------------------------------------
@@ -1169,6 +1188,11 @@ class DialogoTrocarAliquotas(QDialog):
 class JanelaPrincipal(QMainWindow):
     def __init__(self):
         super().__init__()
+        # Carrega o ícone da janela
+        icon_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),"icon.ico")
+        if os.path.exists(icon_path):
+            from PyQt6.QtGui import QIcon
+            self.setWindowIcon(QIcon(icon_path))
         self.doc = None
         self.caminho = None
         self.alterado = False
@@ -1236,7 +1260,7 @@ class JanelaPrincipal(QMainWindow):
             self.editar_correlacoes_cfop)
         if not hasattr(self, "act_trocar_aliquotas"):
             self.act_trocar_aliquotas = QAction(
-                "Trocar alíquotas PIS/COFINS (C175)…", self)
+                "Trocar alíquotas PIS/COFINS…", self)
         self.act_trocar_aliquotas.triggered.connect(self.trocar_aliquotas)
         self.act_trocar_aliquotas.setEnabled(False)
         # a barra de menus é redundante com a toolbar: ocultar
@@ -1302,7 +1326,7 @@ class JanelaPrincipal(QMainWindow):
         self.act_recalc_m.setEnabled(False)
 
         self.act_trocar_aliquotas = QAction(
-            "Trocar alíquotas PIS/COFINS (C175)…", self)
+            "Trocar alíquotas PIS/COFINS…", self)
         self.act_trocar_aliquotas.triggered.connect(self.trocar_aliquotas)
         self.act_trocar_aliquotas.setEnabled(False)
 
@@ -1476,29 +1500,35 @@ class JanelaPrincipal(QMainWindow):
             self.correlacoes_cfop, self._caminho_correl, aplicar, self).exec()
 
     def trocar_aliquotas(self):
-        """Troca as alíquotas de PIS/COFINS dos C175 e recalcula os valores."""
+        """Troca alíquotas de PIS/COFINS (saídas C175 / entradas C170) e
+        recalcula os valores."""
         if not self.doc or self.doc.layout != "CONTRIB":
             QMessageBox.information(
                 self, "Trocar alíquotas",
                 "Esta ferramenta aplica-se ao EFD Contribuições (registros "
-                "C175).")
+                "C175 de saída e C170 de entrada).")
             return
         dlg = DialogoTrocarAliquotas(self.doc, self)
         if dlg.exec() != QDialog.DialogCode.Accepted:
             return
-        aliq_pis, aliq_cofins, apenas_trib = dlg.valores()
+        aliq_pis, aliq_cofins, apenas_trib, escopo = dlg.valores()
         if aliq_pis is None and aliq_cofins is None:
             return
         res = self.doc.trocar_aliquotas_pis_cofins(
             aliq_pis=aliq_pis, aliq_cofins=aliq_cofins,
-            apenas_tributados=apenas_trib)
-        if res.get("sem_c175"):
+            apenas_tributados=apenas_trib, escopo=escopo)
+        if res.get("sem_alvo"):
+            alvo = "C175 (saídas)" if escopo == "saidas" else \
+                ("C170 de entrada" if escopo == "entradas" else "C170/C175")
             QMessageBox.information(
                 self, "Trocar alíquotas",
-                "Nenhum registro C175 foi encontrado neste arquivo.")
+                "Nenhum registro %s foi encontrado neste arquivo." % alvo)
             return
         self._marcar_alterado()
         self._montar_abas()
+        rot_escopo = {"saidas": "saídas (C175)",
+                      "entradas": "entradas (C170)",
+                      "ambos": "entradas e saídas"}[escopo]
         partes = []
         if aliq_pis is not None:
             partes.append("PIS → %s%%" % ("%.4f" % aliq_pis).rstrip("0")
@@ -1507,15 +1537,15 @@ class JanelaPrincipal(QMainWindow):
             partes.append("COFINS → %s%%" % ("%.4f" % aliq_cofins).rstrip("0")
                           .rstrip("."))
         self.statusBar().showMessage(
-            "Alíquotas atualizadas (%s): %d C175, %d C100."
-            % (", ".join(partes), res["c175"], res["c100"]))
+            "Alíquotas atualizadas em %s (%s): %d registros, %d C100."
+            % (rot_escopo, ", ".join(partes), res["itens"], res["c100"]))
         QMessageBox.information(
             self, "Trocar alíquotas",
-            "%s\n\n%d registro(s) C175 recalculado(s) em %d documento(s) "
-            "C100.\nNovos totais: VL_PIS = %s, VL_COFINS = %s\n\n"
-            "Se necessário, rode 'Recalcular bloco M' para refletir a "
-            "apuração."
-            % (", ".join(partes), res["c175"], res["c100"],
+            "Escopo: %s\n%s\n\n%d registro(s) recalculado(s) em %d "
+            "documento(s) C100.\nNovos totais no escopo: VL_PIS = %s, "
+            "VL_COFINS = %s\n\nSe necessário, rode 'Recalcular bloco M' para "
+            "refletir a apuração."
+            % (rot_escopo, ", ".join(partes), res["itens"], res["c100"],
                _br(res["vl_pis"]), _br(res["vl_cofins"])))
 
     def revisar_erros(self):

@@ -81,7 +81,7 @@ class Ui_JanelaPrincipal(object):
         self.act_sair.setText(QCoreApplication.translate("JanelaPrincipal", u"Sair", None))
         self.act_importar_xml.setText(QCoreApplication.translate("JanelaPrincipal", u"Importar XMLs \u2192 consolidar C175\u2026", None))
         self.act_recalc_m.setText(QCoreApplication.translate("JanelaPrincipal", u"Recalcular bloco M (apura\u00e7\u00e3o)\u2026", None))
-        self.act_trocar_aliquotas.setText(QCoreApplication.translate("JanelaPrincipal", u"Trocar al\u00edquotas PIS/COFINS (C175)\u2026", None))
+        self.act_trocar_aliquotas.setText(QCoreApplication.translate("JanelaPrincipal", u"Trocar al\u00edquotas PIS/COFINS\u2026", None))
         self.act_conferir_55.setText(QCoreApplication.translate("JanelaPrincipal", u"Conferir entradas (NF-e 55) com XMLs\u2026", None))
         self.act_correlacoes_cfop.setText(QCoreApplication.translate("JanelaPrincipal", u"Correla\u00e7\u00f5es de CFOP (entradas)\u2026", None))
         self.act_revisar.setText(QCoreApplication.translate("JanelaPrincipal", u"Revisar erros\u2026", None))

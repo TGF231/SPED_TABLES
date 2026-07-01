@@ -425,43 +425,66 @@ class SpedDocument:
         return {"grupos": len(ordem), "removidos": n_rem, "criados": n_cri,
                 "vl_pis": tot_pis, "vl_cofins": tot_cof}
 
-    def aliquota_predominante_c175(self, campo):
-        """Alíquota mais comum entre os C175 tributados (para sugerir na UI)."""
+    def _registros_aliq_escopo(self, escopo):
+        """Registros-alvo da troca de alíquotas conforme o escopo:
+        'saidas' → C175; 'entradas' → C170 de documentos de entrada
+        (C100 com IND_OPER=0); 'ambos' → os dois."""
+        alvos = []
+        if escopo in ("saidas", "ambos"):
+            alvos += [r for r in self.registros if r.reg == "C175"]
+        if escopo in ("entradas", "ambos"):
+            i_op = self._ix("C100", "IND_OPER")
+            alvos += [r for r in self.registros
+                      if r.reg == "C170" and r.pai is not None
+                      and r.pai.reg == "C100"
+                      and (r.pai.valor(i_op) or "").strip() == "0"]
+        return alvos
+
+    def aliquota_predominante(self, campo, escopo="saidas"):
+        """Alíquota mais comum (>0) entre os registros do escopo, p/ sugerir."""
         from collections import Counter
-        i = self._ix("C175", campo)
-        if i is None:
-            return None
         c = Counter()
-        for r in self.registros:
-            if r.reg == "C175":
+        for r in self._registros_aliq_escopo(escopo):
+            i = self._ix(r.reg, campo)
+            if i is not None:
                 a = _to_num(r.valor(i))
                 if a > 0:
                     c[a] += 1
         return c.most_common(1)[0][0] if c else None
 
+    def aliquota_predominante_c175(self, campo):
+        """Compatibilidade: alíquota predominante nas saídas (C175)."""
+        return self.aliquota_predominante(campo, "saidas")
+
     def trocar_aliquotas_pis_cofins(self, aliq_pis=None, aliq_cofins=None,
-                                    apenas_tributados=True):
-        """Substitui as alíquotas de PIS e/ou COFINS nos registros C175 e
-        recalcula VL_PIS / VL_COFINS (base × alíquota / 100). Atualiza os
-        totais VL_PIS / VL_COFINS dos C100 afetados.
+                                    apenas_tributados=True, escopo="saidas"):
+        """Substitui as alíquotas de PIS e/ou COFINS e recalcula VL_PIS /
+        VL_COFINS (base × alíquota / 100), atualizando os totais dos C100.
 
-        `aliq_pis` e `aliq_cofins` são percentuais (ex.: 1.65); None mantém o
-        tributo inalterado. Com `apenas_tributados=True`, só mexe nos C175 que
-        já têm base ou alíquota positiva (preserva CST não tributados).
+        `escopo` define onde aplicar: 'saidas' recalcula os C175 (débito);
+        'entradas' recalcula os C170 dos documentos de entrada (crédito, cuja
+        alíquota é a do comprador); 'ambos' aplica nos dois. `aliq_pis` e
+        `aliq_cofins` são percentuais (ex.: 1.65); None mantém o tributo
+        inalterado. Com `apenas_tributados=True`, só mexe onde já há base ou
+        alíquota positiva (preserva CST sem tributação/crédito).
         """
-        i_bcp = self._ix("C175", "VL_BC_PIS")
-        i_ap = self._ix("C175", "ALIQ_PIS")
-        i_vp = self._ix("C175", "VL_PIS")
-        i_bcc = self._ix("C175", "VL_BC_COFINS")
-        i_ac = self._ix("C175", "ALIQ_COFINS")
-        i_vc = self._ix("C175", "VL_COFINS")
-        if i_ap is None or i_ac is None:
-            return {"c175": 0, "c100": 0, "sem_c175": True}
+        # C170 e C175 têm os campos de PIS/COFINS em posições diferentes
+        idx = {}
+        for tipo in ("C170", "C175"):
+            idx[tipo] = (self._ix(tipo, "VL_BC_PIS"),
+                         self._ix(tipo, "ALIQ_PIS"), self._ix(tipo, "VL_PIS"),
+                         self._ix(tipo, "VL_BC_COFINS"),
+                         self._ix(tipo, "ALIQ_COFINS"),
+                         self._ix(tipo, "VL_COFINS"))
+        alvos = self._registros_aliq_escopo(escopo)
+        if not alvos:
+            return {"itens": 0, "c100": 0, "sem_alvo": True}
 
-        n175 = 0
+        n = 0
         c100s = set()
-        for r in self.registros:
-            if r.reg != "C175":
+        for r in alvos:
+            i_bcp, i_ap, i_vp, i_bcc, i_ac, i_vc = idx[r.reg]
+            if i_ap is None or i_ac is None:
                 continue
             mudou = False
             if aliq_pis is not None:
@@ -479,7 +502,7 @@ class SpedDocument:
                     r.set_valor(i_vc, _fmt_val(round(bc * aliq_cofins / 100, 2)))
                     mudou = True
             if mudou:
-                n175 += 1
+                n += 1
                 if r.pai is not None:
                     c100s.add(r.pai)
 
@@ -487,17 +510,21 @@ class SpedDocument:
         icc = self._ix("C100", "VL_COFINS")
         tot_pis = tot_cof = 0.0
         for c100 in c100s:
-            sp = sum(_to_num(f.valor(i_vp))
-                     for f in c100.filhos if f.reg == "C175")
-            sc = sum(_to_num(f.valor(i_vc))
-                     for f in c100.filhos if f.reg == "C175")
+            sp = sc = 0.0
+            for f in c100.filhos:
+                if f.reg in ("C170", "C175"):
+                    _, _, fvp, _, _, fvc = idx[f.reg]
+                    if fvp is not None:
+                        sp += _to_num(f.valor(fvp))
+                    if fvc is not None:
+                        sc += _to_num(f.valor(fvc))
             tot_pis += sp
             tot_cof += sc
             if icp is not None:
                 c100.set_valor(icp, _fmt_val(sp))
             if icc is not None:
                 c100.set_valor(icc, _fmt_val(sc))
-        return {"c175": n175, "c100": len(c100s),
+        return {"itens": n, "c100": len(c100s),
                 "vl_pis": tot_pis, "vl_cofins": tot_cof}
 
     # --------------------------------------------- totais (in-place, p/ tela)

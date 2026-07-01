@@ -5,10 +5,26 @@ Todas as mudanças relevantes deste projeto são documentadas neste arquivo.
 O formato segue [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/)
 e o projeto adota [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [0.6.0] - 2026-06-27
+
+### Alterado
+- Ícone visual adicionado (icon.ico) exibido na barra de título da janela.
+- **Trocar alíquotas de PIS/COFINS** agora atua também nos **documentos de
+  entrada** (registros C170 de C100 com IND_OPER=0), recalculando o crédito com
+  a alíquota do comprador. O diálogo ganhou o seletor de **escopo** (Saídas
+  C175 / Entradas C170 / Ambos) e sugere a alíquota predominante de cada escopo
+  (as entradas costumam ter alíquota de crédito diferente das saídas).
+
 ## [0.5.0] - 2026-06-27
-### Adicionado
-- Revisão: 0200 não utilizados / duplicados (aponta itens sem referência em
-  C170/H010 e códigos repetidos; clicar navega até o registro).
+
+### Alterado
+- Nome do aplicativo: **Editor SPED** → **SPED Tables** (melhor representa o
+  foco em edição tabular de arquivos SPED).
+- **Revisão: 0200 não utilizados / duplicados** — nova regra em `revisao.py`
+  que aponta registros 0200 cujo COD_ITEM não é referenciado por nenhum outro
+  registro (C170, H010, etc.) e os 0200 com COD_ITEM duplicado. As referências
+  são coletadas de qualquer registro que possua o campo COD_ITEM (não só
+  C170/H010), evitando falsos positivos. Clicar no relatório navega até o 0200.
 
 ## [0.4.0] - 2026-06-27
 

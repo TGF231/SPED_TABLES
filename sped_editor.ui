@@ -78,7 +78,7 @@
   </action>
   <action name="act_trocar_aliquotas">
    <property name="text">
-    <string>Trocar alíquotas PIS/COFINS (C175)…</string>
+    <string>Trocar alíquotas PIS/COFINS…</string>
    </property>
   </action>
   <action name="act_conferir_55">

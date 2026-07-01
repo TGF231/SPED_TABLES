@@ -137,16 +137,24 @@ os **créditos** (M100/M105/M500/M505), que dependem da classificação das
 entradas — por isso são mantidos como estão. Recomenda-se conferência por
 profissional antes da transmissão.
 
-### Trocar alíquotas de PIS/COFINS (C175)
+### Trocar alíquotas de PIS/COFINS
 
-**Ferramentas → Trocar alíquotas PIS/COFINS (C175)…** (EFD Contribuições)
-substitui as alíquotas de PIS e/ou COFINS nos registros **C175** e recalcula
-**VL_PIS** e **VL_COFINS** (base × alíquota ÷ 100), atualizando os totais
-**VL_PIS/VL_COFINS** dos **C100**. O diálogo já sugere as alíquotas atuais
-predominantes (ex.: 1,65 % / 7,6 %) e permite aplicar só ao PIS, só ao COFINS ou
-a ambos, limitando aos registros **tributados** (base ou alíquota > 0) para não
-afetar CST sem tributação. Depois da troca, se precisar, rode *Recalcular bloco
-M* para refletir a apuração.
+**Ferramentas → Trocar alíquotas PIS/COFINS…** (EFD Contribuições) substitui as
+alíquotas de PIS e/ou COFINS e recalcula **VL_PIS** e **VL_COFINS** (base ×
+alíquota ÷ 100), atualizando os totais dos **C100**. Um seletor de **escopo**
+define onde aplicar:
+
+- **Saídas — débito (C175):** recalcula os registros C175 (vendas consolidadas);
+- **Entradas — crédito (C170):** recalcula os itens dos documentos de entrada
+  (C100 com IND_OPER=0), cujo crédito é apurado pela **alíquota do comprador** —
+  que costuma diferir da alíquota de saída;
+- **Ambos.**
+
+O diálogo já sugere a alíquota predominante do escopo escolhido (ex.: saídas
+1,65 %/7,6 %; entradas podem trazer alíquotas de crédito distintas). É possível
+alterar só o PIS, só o COFINS ou ambos, e limitar aos registros **tributados**
+(base ou alíquota > 0) para não afetar CST sem tributação/crédito. Depois da
+troca, rode *Recalcular bloco M* se precisar refletir a apuração.
 
 ### Conferir entradas (NF-e modelo 55) com os XMLs
 
