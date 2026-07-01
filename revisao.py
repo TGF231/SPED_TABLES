@@ -81,12 +81,53 @@ def verificar_c190_reducao(doc):
                           "zerado." % cst))
     return problemas
 
+def verificar_0200_nao_utilizados(doc):
+    """Aponta registros 0200 (cadastro de item) cujo COD_ITEM:
+      * não é referenciado por nenhum outro registro (C170, H010, etc.); ou
+      * está duplicado (mesmo COD_ITEM em mais de um 0200).
+    """
+    i0 = doc._ix("0200", "COD_ITEM")
+    if i0 is None:
+        return []
+    referenciados = set()
+    for r in doc.registros:
+        if r.reg == "0200":
+            continue
+        i = doc._ix(r.reg, "COD_ITEM")
+        if i is not None:
+            v = (r.valor(i) or "").strip()
+            if v:
+                referenciados.add(v)
+
+    problemas = []
+    vistos = set()
+    for r in doc.registros:
+        if r.reg != "0200":
+            continue
+        cod = (r.valor(i0) or "").strip()
+        if cod and cod in vistos:
+            problemas.append(Problema(
+                uid=r.uid, reg=r.reg, bloco=r.bloco,
+                regra="0200 duplicado",
+                descricao="COD_ITEM %s já cadastrado em outro 0200." % cod,
+                gravidade="aviso"))
+        else:
+            vistos.add(cod)
+        if cod and cod not in referenciados:
+            problemas.append(Problema(
+                uid=r.uid, reg=r.reg, bloco=r.bloco,
+                regra="0200 não utilizado",
+                descricao="COD_ITEM %s não é referenciado por nenhum registro "
+                          "(C170, H010, ...)." % cod,
+                gravidade="aviso"))
+    return problemas
 
 # Registro central de regras. Para adicionar uma nova verificação, escreva a
 # função acima e inclua aqui o par (rótulo, função).
 REGRAS = [
     ("Número de campos divergente do layout", verificar_num_campos),
     ("C190 CST x20/x70 com VL_RED_BC zerado", verificar_c190_reducao),
+    ("0200 não utilizados / duplicados", verificar_0200_nao_utilizados),
 ]
 
 

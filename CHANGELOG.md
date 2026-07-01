@@ -5,6 +5,11 @@ Todas as mudanças relevantes deste projeto são documentadas neste arquivo.
 O formato segue [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/)
 e o projeto adota [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [0.5.0] - 2026-06-27
+### Adicionado
+- Revisão: 0200 não utilizados / duplicados (aponta itens sem referência em
+  C170/H010 e códigos repetidos; clicar navega até o registro).
+
 ## [0.4.0] - 2026-06-27
 
 ### Adicionado

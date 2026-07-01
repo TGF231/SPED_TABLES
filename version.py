@@ -9,8 +9,8 @@ Esquema: Semantic Versioning (https://semver.org) — MAJOR.MINOR.PATCH
 Enquanto MAJOR for 0, a API/UI ainda é considerada em evolução (0.y.z).
 """
 
-__version__ = "0.4.0"
-APP_NAME = "Editor SPED"
+__version__ = "0.5.0"
+APP_NAME = "SPED Tables"
 
 
 def titulo_completo():
