@@ -5,21 +5,48 @@ Todas as mudanças relevantes deste projeto são documentadas neste arquivo.
 O formato segue [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/)
 e o projeto adota [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [0.7.0] - 2026-07-02
+
+### Corrigido
+- **Recálculo do bloco M gerava erros de validação no PVA.** Os registros
+  M210/M610 eram reinseridos logo após o M200/M600, ficando **à frente** do
+  M205/M605 e violando a ordem do leiaute (M200 → M205 → M210). Isso causava os
+  erros de "organização hierárquica" (esperado M211/M611 no lugar do M205/M605)
+  e as divergências de contagem (QTD_LIN_M e QTD_LIN). Agora os detalhes são
+  ancorados **após** o M205/M605, corrigindo inclusive arquivos que já tenham
+  sido gravados fora de ordem. O formato dos campos zerados também passou a
+  seguir o do arquivo original ("0" em vez de "0,00").
+
+### Adicionado
+- **Reordenação de abas por arrasto**, com a ordem preservada durante a sessão
+  (não persiste após fechar). Vale para as abas de bloco e para as sub-abas de
+  tipo de registro (inclusive as de registros-filho no detalhe). Cada aba é
+  identificada por um id estável, então a ordem escolhida sobrevive às
+  remontagens das grades.
+
 ## [0.6.0] - 2026-06-27
 
 ### Alterado
+- Nome do aplicativo: **Editor SPED** → **SPED Tables** (melhor representa o
+  foco em edição tabular de arquivos SPED).
 - Ícone visual adicionado (icon.ico) exibido na barra de título da janela.
+
+### Versão
+Versão salto de 0.4.2 para 0.6.0 refletindo o amadurecimento da ferramenta
+(suporte saídas/entradas, conferência CFOP, revisões, etc.).
+
+## [0.4.2] - 2026-06-27
+
+### Alterado
 - **Trocar alíquotas de PIS/COFINS** agora atua também nos **documentos de
   entrada** (registros C170 de C100 com IND_OPER=0), recalculando o crédito com
   a alíquota do comprador. O diálogo ganhou o seletor de **escopo** (Saídas
   C175 / Entradas C170 / Ambos) e sugere a alíquota predominante de cada escopo
   (as entradas costumam ter alíquota de crédito diferente das saídas).
 
-## [0.5.0] - 2026-06-27
+## [0.4.1] - 2026-06-27
 
-### Alterado
-- Nome do aplicativo: **Editor SPED** → **SPED Tables** (melhor representa o
-  foco em edição tabular de arquivos SPED).
+### Adicionado
 - **Revisão: 0200 não utilizados / duplicados** — nova regra em `revisao.py`
   que aponta registros 0200 cujo COD_ITEM não é referenciado por nenhum outro
   registro (C170, H010, etc.) e os 0200 com COD_ITEM duplicado. As referências

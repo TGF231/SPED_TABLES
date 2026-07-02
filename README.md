@@ -44,6 +44,9 @@ Depois, use **Arquivo → Abrir** (Ctrl+O) para escolher o `.txt` do SPED.
 
 - **Abas superiores** = blocos (0, A, C, D, E, …, 9).
 - Dentro de cada bloco, **sub-abas** = registros principais (ex.: C001, C100, C990).
+- **Reordenar abas**: arraste as abas (de bloco ou de tipo) para a ordem que
+  preferir. A ordem escolhida vale **durante a sessão** — ao fechar e reabrir o
+  programa, tudo volta ao padrão.
 - Clique numa linha da grade. Se o registro tiver filhos, aparecem **sub-abas
   de detalhe** logo abaixo (ex.: `C110 (1)`, `C170 (4)`, `C190 (1)`,
   `C195 (4)`), cada uma com sua própria grade editável — e isso é **recursivo**.

@@ -88,6 +88,48 @@ class GridDelegate(QStyledItemDelegate):
 # ---------------------------------------------------------------------------
 # Widget Master-Detail (recursivo)
 # ---------------------------------------------------------------------------
+class GerenciadorOrdemAbas:
+    """Memoriza, apenas durante a sessão, a ordem em que o usuário arrastou as
+    abas. Cada aba é identificada por um id estável (código do bloco ou tipo de
+    registro), de modo que a ordem escolhida sobrevive às remontagens das grades.
+    Não há persistência após fechar o programa — ao reabrir, tudo volta ao
+    padrão."""
+
+    def __init__(self):
+        self._ordens = {}   # chave de contexto -> [ids na ordem desejada]
+
+    def registrar(self, tabw, chave, ids):
+        """Habilita o arrasto de abas, reaplica a ordem já escolhida para esta
+        `chave` (se houver) e passa a memorizar novas reordenações.
+        `ids[i]` é o identificador estável da aba de índice i."""
+        tabw.setMovable(True)
+        bar = tabw.tabBar()
+        for i, ident in enumerate(ids):
+            if i < bar.count():
+                bar.setTabData(i, ident)
+        self._aplicar(tabw, chave)
+        try:
+            bar.tabMoved.disconnect()
+        except TypeError:
+            pass
+        bar.tabMoved.connect(lambda *_: self._memorizar(tabw, chave))
+
+    def _memorizar(self, tabw, chave):
+        bar = tabw.tabBar()
+        self._ordens[chave] = [bar.tabData(i) for i in range(bar.count())]
+
+    def _aplicar(self, tabw, chave):
+        ordem = self._ordens.get(chave)
+        if not ordem:
+            return
+        bar = tabw.tabBar()
+        for destino, ident in enumerate(ordem):
+            atual = next((i for i in range(bar.count())
+                          if bar.tabData(i) == ident), None)
+            if atual is not None and atual != destino:
+                bar.moveTab(atual, destino)
+
+
 class MasterDetailWidget(QWidget):
     """
     Mostra uma grade de registros de um mesmo TIPO e, ao selecionar uma linha
@@ -107,13 +149,14 @@ class MasterDetailWidget(QWidget):
     """
 
     def __init__(self, doc, tipo, provider, pai=None, on_change=None,
-                 parent=None):
+                 parent=None, gerenciador=None):
         super().__init__(parent)
         self.doc = doc
         self.tipo = tipo
         self.provider = provider
         self.pai = pai
         self.on_change = on_change
+        self._ger_abas = gerenciador
         self._registros = []          # todos os registros desta grade
         self._visiveis = []           # registros após o filtro (espelham a tabela)
         self._colunas = []
@@ -573,18 +616,24 @@ class MasterDetailWidget(QWidget):
             return
 
         # uma sub-aba por tipo de filho
-        for tipo_filho in self.doc.tipos_filhos(registro):
+        tipos = list(self.doc.tipos_filhos(registro))
+        for tipo_filho in tipos:
             def make_provider(reg=registro, t=tipo_filho):
                 return lambda: self.doc.filhos_por_tipo(reg, t)
 
             sub = MasterDetailWidget(
                 self.doc, tipo_filho, make_provider(),
-                pai=registro, on_change=self.on_change)
+                pai=registro, on_change=self.on_change,
+                gerenciador=self._ger_abas)
             n = len(self.doc.filhos_por_tipo(registro, tipo_filho))
             rotulo = "%s (%d)" % (tipo_filho, n)
             self.area_detalhe.addTab(sub, rotulo)
 
         self.area_detalhe.setVisible(True)
+        # permite reordenar as sub-abas de detalhe (ordem por tipo do master)
+        if self._ger_abas is not None:
+            self._ger_abas.registrar(
+                self.area_detalhe, "det:%s" % self.tipo, tipos)
 
     # ----------------------------------------------------------- navegação
     def selecionar_uid(self, uid):
@@ -710,11 +759,13 @@ class MasterDetailWidget(QWidget):
 # Aba de um BLOCO (lazy): QTabWidget com uma sub-aba por tipo principal
 # ---------------------------------------------------------------------------
 class BlocoWidget(QWidget):
-    def __init__(self, doc, bloco, on_change=None, parent=None):
+    def __init__(self, doc, bloco, on_change=None, parent=None,
+                 gerenciador=None):
         super().__init__(parent)
         self.doc = doc
         self.bloco = bloco
         self.on_change = on_change
+        self._ger_abas = gerenciador
         self._construido = False
 
         lay = QVBoxLayout(self)
@@ -728,14 +779,19 @@ class BlocoWidget(QWidget):
         if self._construido:
             return
         self._construido = True
-        for tipo in self.doc.tipos_raiz_do_bloco(self.bloco):
+        tipos = list(self.doc.tipos_raiz_do_bloco(self.bloco))
+        for tipo in tipos:
             def make_provider(b=self.bloco, t=tipo):
                 return lambda: self.doc.registros_raiz_por_tipo(b, t)
 
             w = MasterDetailWidget(self.doc, tipo, make_provider(),
-                                   pai=None, on_change=self.on_change)
+                                   pai=None, on_change=self.on_change,
+                                   gerenciador=self._ger_abas)
             n = len(self.doc.registros_raiz_por_tipo(self.bloco, tipo))
             self.tabs.addTab(w, "%s (%d)" % (tipo, n))
+        # permite reordenar as sub-abas de tipo dentro do bloco
+        if self._ger_abas is not None:
+            self._ger_abas.registrar(self.tabs, "bloco:%s" % self.bloco, tipos)
 
     def widget_do_tipo(self, tipo):
         """Garante o bloco construído, seleciona a sub-aba do `tipo` e devolve
@@ -1189,7 +1245,8 @@ class JanelaPrincipal(QMainWindow):
     def __init__(self):
         super().__init__()
         # Carrega o ícone da janela
-        icon_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),"icon.ico")
+        icon_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                                 "icon.ico")
         if os.path.exists(icon_path):
             from PyQt6.QtGui import QIcon
             self.setWindowIcon(QIcon(icon_path))
@@ -1198,6 +1255,8 @@ class JanelaPrincipal(QMainWindow):
         self.alterado = False
         self._offset_blocos = 0
         self._blocos = []
+        # ordem de abas escolhida por arrasto (só durante a sessão)
+        self._ger_abas = GerenciadorOrdemAbas()
         self.resize(1200, 760)
 
         # correlações de CFOP (saída -> entradas válidas), persistidas em JSON
@@ -1590,11 +1649,16 @@ class JanelaPrincipal(QMainWindow):
         blocos = self.doc.blocos()
         if raiz.bloco not in blocos:
             return False
-        pos = blocos.index(raiz.bloco)
-        idx_aba = self._offset_blocos + pos
+        # localiza a aba pelo widget do bloco (robusto à reordenação)
+        alvo = next((w for w in self._blocos if w.bloco == raiz.bloco), None)
+        if alvo is None:
+            return False
+        idx_aba = self.tabs_bloco.indexOf(alvo)
+        if idx_aba < 0:
+            return False
         self.tabs_bloco.setCurrentIndex(idx_aba)
         self._bloco_aberto(idx_aba)
-        md = self._blocos[pos].widget_do_tipo(raiz.reg)
+        md = alvo.widget_do_tipo(raiz.reg)
         if md is None:
             return False
         md.selecionar_uid(raiz.uid)
@@ -1662,16 +1726,22 @@ class JanelaPrincipal(QMainWindow):
         self.tabs_bloco.addTab(
             ResumoWidget(self.doc, self.caminho), "📋 Resumo")
         self._offset_blocos = 1
+        ids = ["resumo"]
         for b in self.doc.blocos():
-            w = BlocoWidget(self.doc, b, on_change=self._marcar_alterado)
+            w = BlocoWidget(self.doc, b, on_change=self._marcar_alterado,
+                            gerenciador=self._ger_abas)
             self._blocos.append(w)
             self.tabs_bloco.addTab(w, nomes_bloco.get(b, "Bloco %s" % b))
+            ids.append(b)
+        # permite reordenar as abas de bloco (persistente na sessão)
+        self._ger_abas.registrar(self.tabs_bloco, "blocos", ids)
         self.tabs_bloco.setCurrentIndex(0)
 
     def _bloco_aberto(self, idx):
-        j = idx - self._offset_blocos
-        if 0 <= j < len(getattr(self, "_blocos", [])):
-            self._blocos[j].construir()
+        # robusto à reordenação: usa o widget da aba, não o índice na lista
+        w = self.tabs_bloco.widget(idx)
+        if isinstance(w, BlocoWidget):
+            w.construir()
 
     # ------------------------------------------------------------ salvar
     def _marcar_alterado(self):

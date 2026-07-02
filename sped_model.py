@@ -599,25 +599,39 @@ class SpedDocument:
                 resumo[tributo] = "sem %s" % reg_cons
                 continue
 
-            # remove os M210/M610 atuais e recria por alíquota
+            # remove os M210/M610 atuais e recria por alíquota, PRESERVANDO a
+            # ordem do leiaute (M200 -> M205 -> M210 -> ...). A âncora correta é
+            # o último M205/M605 (que precede os M210); se não houver, o registro
+            # anterior ao 1º M210 atual; por fim, o próprio M200/M600. Isso
+            # conserta inclusive arquivos onde o M210 ficou à frente do M205.
             antigos = [f for f in cons.filhos if f.reg == reg_det]
+            reg_rec = "M205" if reg_det == "M210" else "M605"
+            recs = [f for f in cons.filhos if f.reg == reg_rec]
+            if recs:
+                ancora = max(recs, key=lambda x: x.ordem)
+            elif antigos:
+                filhos_ord = sorted(cons.filhos, key=lambda x: x.ordem)
+                pos = filhos_ord.index(min(antigos, key=lambda x: x.ordem))
+                ancora = filhos_ord[pos - 1] if pos > 0 else cons
+            else:
+                ancora = cons
             for a in antigos:
                 self.remover_registro(a)
 
             total_apur = 0.0
-            ancora = cons
             for k in sorted(grupos.keys(), key=float):
                 g = grupos[k]
                 al = float(k)
                 apur = round(g["bc"] * al / 100.0, 2)
                 total_apur += apur
                 novo = self.novo_registro(reg_det, pai=cons, depois=ancora)
-                # campos comuns a M210 e M610 (mesma ordem)
+                # campos de M210/M610 (mesma ordem). Zeros como "0" (formato do
+                # arquivo original); QUANT_BC e ALIQ_QUANT ficam "0"/"".
                 novo.campos = [reg_det, cod_cont, _fmt_val(g["rec"]),
-                               _fmt_val(g["bc"]), _fmt_val(0.0), _fmt_val(0.0),
-                               _fmt_val(g["bc"]), g["aliq"], _fmt_val(0.0), "",
-                               _fmt_val(apur), _fmt_val(0.0), _fmt_val(0.0),
-                               _fmt_val(0.0), _fmt_val(0.0), _fmt_val(apur)]
+                               _fmt_val(g["bc"]), "0", "0",
+                               _fmt_val(g["bc"]), g["aliq"], "0", "",
+                               _fmt_val(apur), "0", "0",
+                               "0", "0", _fmt_val(apur)]
                 ancora = novo
 
             # atualiza a consolidação M200/M600
@@ -636,13 +650,15 @@ class SpedDocument:
             nc_dev = max(nc_per - cred, 0.0)
             nc_rec = max(nc_dev - ret_nc - ded_nc, 0.0)
             cum_rec = max(cum_per - ret_cum - ded_cum, 0.0)
-            cons.set_valor(1, _fmt_val(nc_per))
-            cons.set_valor(2, _fmt_val(cred))
-            cons.set_valor(4, _fmt_val(nc_dev))
-            cons.set_valor(7, _fmt_val(nc_rec))
-            cons.set_valor(8, _fmt_val(cum_per))
-            cons.set_valor(11, _fmt_val(cum_rec))
-            cons.set_valor(12, _fmt_val(nc_rec + cum_rec))
+            def z(v):
+                return _fmt_val(v) if abs(v) > 1e-9 else "0"
+            cons.set_valor(1, z(nc_per))
+            cons.set_valor(2, z(cred))
+            cons.set_valor(4, z(nc_dev))
+            cons.set_valor(7, z(nc_rec))
+            cons.set_valor(8, z(cum_per))
+            cons.set_valor(11, z(cum_rec))
+            cons.set_valor(12, z(nc_rec + cum_rec))
             resumo[tributo] = {"grupos": len(grupos),
                                "apurado": round(total_apur, 2),
                                "a_recolher": round(nc_rec + cum_rec, 2)}
