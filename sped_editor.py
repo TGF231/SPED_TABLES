@@ -34,7 +34,7 @@ from PyQt6.QtWidgets import (
     QFileDialog, QMessageBox, QLabel, QHeaderView, QAbstractItemView,
     QToolBar, QStatusBar, QComboBox, QLineEdit, QMenu, QInputDialog,
     QStyledItemDelegate, QDialog, QCheckBox, QFormLayout, QToolButton,
-    QDoubleSpinBox,
+    QDoubleSpinBox, QGridLayout, QGroupBox,
 )
 
 from sped_model import SpedDocument
@@ -1239,6 +1239,251 @@ class DialogoTrocarAliquotas(QDialog):
 
 
 # ---------------------------------------------------------------------------
+# Modo Relatório — visão achatada dos itens (C170), com filtros do script SQL
+# ---------------------------------------------------------------------------
+class RelatorioWidget(QWidget):
+    """Mostra os itens do SPED numa tabela achatada (uma linha por C170, com
+    dados do C100 e do produto 0200), com os mesmos filtros/campos do relatório
+    usado no banco do ERP — para comparação. A tabela é somente-leitura."""
+
+    def __init__(self, doc=None, parent=None):
+        super().__init__(parent)
+        self.doc = doc
+        lay = QVBoxLayout(self)
+        lay.setContentsMargins(6, 6, 6, 6)
+
+        # ---- seletor de fonte do relatório -------------------------------
+        topo = QHBoxLayout()
+        topo.addWidget(QLabel("Fonte:"))
+        self.cb_fonte = QComboBox()
+        self.cb_fonte.addItems([
+            "Itens (C170)",
+            "PIS/COFINS consolidado (C175) — NFC-e 65",
+            "ICMS consolidado (C190) — NFC-e 65",
+        ])
+        self.cb_fonte.currentIndexChanged.connect(self._fonte_mudou)
+        topo.addWidget(self.cb_fonte)
+        topo.addStretch(1)
+        lay.addLayout(topo)
+
+        # ---- painel de filtros -------------------------------------------
+        grupo = QGroupBox("Filtros")
+        g = QGridLayout(grupo)
+        g.setHorizontalSpacing(10)
+        g.setVerticalSpacing(4)
+
+        def campo(rotulo, w, lin, col, tip=""):
+            lb = QLabel(rotulo)
+            if tip:
+                w.setToolTip(tip)
+                lb.setToolTip(tip)
+            g.addWidget(lb, lin, col * 2)
+            g.addWidget(w, lin, col * 2 + 1)
+            return w
+
+        self.cb_tipo = QComboBox()
+        self.cb_tipo.addItems(["Todos", "Entradas", "Saídas"])
+        self.ed_data_ini = QLineEdit()
+        self.ed_data_ini.setPlaceholderText("AAAA-MM-DD")
+        self.ed_data_fim = QLineEdit()
+        self.ed_data_fim.setPlaceholderText("AAAA-MM-DD")
+        self.ed_modelo = QLineEdit()
+        self.ed_num = QLineEdit()
+        self.ed_prod = QLineEdit()
+        self.ed_item = QLineEdit()
+        self.ed_ncm = QLineEdit()
+        self.ed_ncm.setPlaceholderText("prefixo")
+        self.ed_cfop = QLineEdit()
+        self.ed_cst_icms = QLineEdit()
+        self.ed_cst_icms.setPlaceholderText("ex.: 060, 020")
+        self.ed_cst_pis = QLineEdit()
+        self.ed_cst_pis.setPlaceholderText("ex.: 04, 06")
+        self.ed_cst_cofins = QLineEdit()
+        self.ed_cst_cofins.setPlaceholderText("ex.: 04, 06")
+        self.ed_cst_ipi = QLineEdit()
+        self.ed_aliq_pis = QLineEdit()
+        self.ed_aliq_cofins = QLineEdit()
+        self.ed_aliq_icms = QLineEdit()
+
+        campo("Tipo:", self.cb_tipo, 0, 0)
+        campo("Data ini.:", self.ed_data_ini, 0, 1)
+        campo("Data fim:", self.ed_data_fim, 0, 2)
+        campo("Modelo:", self.ed_modelo, 0, 3)
+        campo("Nº nota:", self.ed_num, 1, 0)
+        campo("Cód. prod.:", self.ed_prod, 1, 1)
+        campo("Nº item:", self.ed_item, 1, 2)
+        campo("NCM:", self.ed_ncm, 1, 3)
+        campo("CFOP:", self.ed_cfop, 2, 0)
+        campo("CST ICMS:", self.ed_cst_icms, 2, 1)
+        campo("CST PIS:", self.ed_cst_pis, 2, 2)
+        campo("CST COFINS:", self.ed_cst_cofins, 2, 3)
+        campo("CST IPI:", self.ed_cst_ipi, 3, 0)
+        campo("Alíq. ICMS:", self.ed_aliq_icms, 3, 1)
+        campo("Alíq. PIS:", self.ed_aliq_pis, 3, 2)
+        campo("Alíq. COFINS:", self.ed_aliq_cofins, 3, 3)
+        lay.addWidget(grupo)
+
+        # campos que só se aplicam a certas fontes (habilitados dinamicamente)
+        self._especificos = {
+            "prod": self.ed_prod, "item": self.ed_item, "ncm": self.ed_ncm,
+            "cst_icms": self.ed_cst_icms, "cst_pis": self.ed_cst_pis,
+            "cst_cofins": self.ed_cst_cofins, "cst_ipi": self.ed_cst_ipi,
+            "aliq_icms": self.ed_aliq_icms, "aliq_pis": self.ed_aliq_pis,
+            "aliq_cofins": self.ed_aliq_cofins,
+        }
+        self._aplic_por_fonte = {
+            0: {"prod", "item", "ncm", "cst_icms", "cst_pis", "cst_cofins",
+                "cst_ipi", "aliq_pis", "aliq_cofins"},          # C170
+            1: {"cst_pis", "cst_cofins", "aliq_pis", "aliq_cofins"},  # C175
+            2: {"cst_icms", "aliq_icms"},                       # C190
+        }
+
+        # ---- barra de ações ----------------------------------------------
+        acoes = QHBoxLayout()
+        b_gerar = QPushButton("Gerar relatório")
+        b_gerar.clicked.connect(self.gerar)
+        b_limpar = QPushButton("Limpar filtros")
+        b_limpar.clicked.connect(self._limpar)
+        b_csv = QPushButton("Exportar CSV")
+        b_csv.clicked.connect(self._exportar_csv)
+        self.lbl_info = QLabel("—")
+        acoes.addWidget(b_gerar)
+        acoes.addWidget(b_limpar)
+        acoes.addWidget(b_csv)
+        acoes.addStretch(1)
+        acoes.addWidget(self.lbl_info)
+        lay.addLayout(acoes)
+
+        # ---- tabela -------------------------------------------------------
+        self.tabela = QTableWidget()
+        self.tabela.setEditTriggers(
+            QAbstractItemView.EditTrigger.NoEditTriggers)
+        self.tabela.setAlternatingRowColors(True)
+        self.tabela.setSortingEnabled(True)
+        self.tabela.setSelectionBehavior(
+            QAbstractItemView.SelectionBehavior.SelectRows)
+        lay.addWidget(self.tabela, 1)
+        self._fonte_mudou()
+
+    def _fonte_mudou(self):
+        """Habilita apenas os filtros aplicáveis à fonte e regenera (se houver
+        documento). Filtros de cabeçalho (tipo, data, modelo, nº nota, CFOP)
+        valem para todas as fontes."""
+        aplic = self._aplic_por_fonte.get(self.cb_fonte.currentIndex(), set())
+        for chave, w in self._especificos.items():
+            on = chave in aplic
+            w.setEnabled(on)
+            if not on:
+                w.clear()
+        if self.doc:
+            self.gerar()
+
+    # -------------------------------------------------------------- API
+    def set_doc(self, doc):
+        self.doc = doc
+        self.tabela.setRowCount(0)
+        self.tabela.setColumnCount(0)
+        self.lbl_info.setText(
+            "Clique em “Gerar relatório”." if doc else "—")
+
+    def _limpar(self):
+        for w in (self.ed_data_ini, self.ed_data_fim, self.ed_modelo,
+                  self.ed_num, self.ed_prod, self.ed_item, self.ed_ncm,
+                  self.ed_cfop, self.ed_cst_icms, self.ed_cst_pis,
+                  self.ed_cst_cofins, self.ed_cst_ipi, self.ed_aliq_icms,
+                  self.ed_aliq_pis, self.ed_aliq_cofins):
+            w.clear()
+        self.cb_tipo.setCurrentIndex(0)
+        self.gerar()
+
+    def _coletar_filtros(self):
+        def txt(w):
+            return w.text().strip() or None
+
+        def lista(w):
+            t = w.text().strip()
+            return [x.strip() for x in t.replace(";", ",").split(",")
+                    if x.strip()] or None
+
+        def flt(w):
+            t = w.text().strip().replace(",", ".")
+            try:
+                return float(t) if t else None
+            except ValueError:
+                return None
+
+        return {
+            "tipo": ["T", "E", "S"][self.cb_tipo.currentIndex()],
+            "data_ini": (self.ed_data_ini.text().strip().replace("-", "")
+                         or None),
+            "data_fim": (self.ed_data_fim.text().strip().replace("-", "")
+                         or None),
+            "modelo": txt(self.ed_modelo), "num_nota": txt(self.ed_num),
+            "cod_prod": txt(self.ed_prod), "nitem": txt(self.ed_item),
+            "ncm": txt(self.ed_ncm), "cfop": txt(self.ed_cfop),
+            "cst_icms": lista(self.ed_cst_icms),
+            "cst_pis": lista(self.ed_cst_pis),
+            "cst_cofins": lista(self.ed_cst_cofins),
+            "cst_ipi": txt(self.ed_cst_ipi),
+            "aliq_icms": flt(self.ed_aliq_icms),
+            "aliq_pis": flt(self.ed_aliq_pis),
+            "aliq_cofins": flt(self.ed_aliq_cofins),
+        }
+
+    def gerar(self):
+        if not self.doc:
+            self.tabela.setRowCount(0)
+            self.lbl_info.setText("—")
+            return
+        filtros = self._coletar_filtros()
+        idx = self.cb_fonte.currentIndex()
+        if idx == 1:
+            cols, linhas = self.doc.itens_relatorio_c175(filtros)
+        elif idx == 2:
+            cols, linhas = self.doc.itens_relatorio_c190(filtros)
+        else:
+            cols, linhas = self.doc.itens_relatorio(filtros)
+        self._cols = cols
+        self.tabela.setSortingEnabled(False)
+        self.tabela.clear()
+        self.tabela.setColumnCount(len(cols))
+        self.tabela.setHorizontalHeaderLabels(cols)
+        self.tabela.setRowCount(len(linhas))
+        for r, linha in enumerate(linhas):
+            for c, val in enumerate(linha):
+                self.tabela.setItem(r, c, QTableWidgetItem(str(val)))
+        self.tabela.setSortingEnabled(True)
+        self.tabela.resizeColumnsToContents()
+        self.lbl_info.setText("%d itens" % len(linhas))
+
+    def _exportar_csv(self):
+        if self.tabela.rowCount() == 0:
+            QMessageBox.information(self, "Exportar CSV",
+                                    "Gere o relatório antes de exportar.")
+            return
+        caminho, _ = QFileDialog.getSaveFileName(
+            self, "Exportar relatório", "relatorio_sped.csv",
+            "CSV (*.csv)")
+        if not caminho:
+            return
+        cols = getattr(self, "_cols", [])
+        try:
+            with open(caminho, "w", encoding="latin-1", newline="") as fh:
+                fh.write(";".join(cols) + "\r\n")
+                for r in range(self.tabela.rowCount()):
+                    vals = []
+                    for c in range(self.tabela.columnCount()):
+                        it = self.tabela.item(r, c)
+                        vals.append(it.text() if it else "")
+                    fh.write(";".join(vals) + "\r\n")
+        except Exception as exc:  # noqa: BLE001
+            QMessageBox.critical(self, "Exportar CSV", str(exc))
+            return
+        QMessageBox.information(self, "Exportar CSV",
+                                "Relatório exportado:\n%s" % caminho)
+
+
+# ---------------------------------------------------------------------------
 # Janela principal
 # ---------------------------------------------------------------------------
 class JanelaPrincipal(QMainWindow):
@@ -1289,8 +1534,26 @@ class JanelaPrincipal(QMainWindow):
             self.setCentralWidget(self.tabs_bloco)
             self.setStatusBar(QStatusBar())
 
+        self._montar_modo_topo()
         self.setWindowTitle("%s v%s" % (APP_NAME, __version__))
         self.statusBar().showMessage("Pronto. Abra um arquivo SPED (Ctrl+O).")
+
+    def _montar_modo_topo(self):
+        """Envolve as grades num QTabWidget de nível superior com dois modos:
+        'Modo Tabela' (as abas de bloco atuais) e 'Modo Relatório' (visão
+        achatada dos itens para comparação com o banco)."""
+        self.tabs_topo = QTabWidget()
+        self.tabs_topo.setTabPosition(QTabWidget.TabPosition.North)
+        # Modo Tabela: reparenta o tabs_bloco para dentro de um container
+        cont_tabela = QWidget()
+        lt = QVBoxLayout(cont_tabela)
+        lt.setContentsMargins(0, 0, 0, 0)
+        lt.addWidget(self.tabs_bloco)
+        self.tabs_topo.addTab(cont_tabela, "📋 Modo Tabela")
+        # Modo Relatório
+        self.relatorio = RelatorioWidget()
+        self.tabs_topo.addTab(self.relatorio, "📊 Modo Relatório")
+        self.setCentralWidget(self.tabs_topo)
 
     def _conectar_ui(self):
         """Liga as QActions e widgets carregados do .ui aos slots."""
@@ -1653,6 +1916,9 @@ class JanelaPrincipal(QMainWindow):
         alvo = next((w for w in self._blocos if w.bloco == raiz.bloco), None)
         if alvo is None:
             return False
+        # garante que o Modo Tabela esteja visível antes de navegar
+        if hasattr(self, "tabs_topo"):
+            self.tabs_topo.setCurrentIndex(0)
         idx_aba = self.tabs_bloco.indexOf(alvo)
         if idx_aba < 0:
             return False
@@ -1736,6 +2002,9 @@ class JanelaPrincipal(QMainWindow):
         # permite reordenar as abas de bloco (persistente na sessão)
         self._ger_abas.registrar(self.tabs_bloco, "blocos", ids)
         self.tabs_bloco.setCurrentIndex(0)
+        # atualiza o Modo Relatório com o documento aberto
+        if hasattr(self, "relatorio"):
+            self.relatorio.set_doc(self.doc)
 
     def _bloco_aberto(self, idx):
         # robusto à reordenação: usa o widget da aba, não o índice na lista

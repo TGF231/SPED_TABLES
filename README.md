@@ -42,6 +42,10 @@ Depois, use **Arquivo → Abrir** (Ctrl+O) para escolher o `.txt` do SPED.
 
 ## 3. Como usar
 
+O topo da janela tem dois modos: **📋 Modo Tabela** (edição mestre-detalhe por
+bloco) e **📊 Modo Relatório** (visão achatada dos itens para comparação com o
+banco). O Modo Tabela funciona assim:
+
 - **Abas superiores** = blocos (0, A, C, D, E, …, 9).
 - Dentro de cada bloco, **sub-abas** = registros principais (ex.: C001, C100, C990).
 - **Reordenar abas**: arraste as abas (de bloco ou de tipo) para a ordem que
@@ -248,7 +252,6 @@ documento; nas demais (ex.: **0200**, **H010**) pesquisa em **todas as colunas**
 útil para localizar um item, um produto ou um saldo entre milhares de linhas.
 
 ### Revisão de erros
-
 **Ferramentas → Revisar erros…** gera um relatório de inconsistências simples.
 Nesta versão há duas regras:
 
@@ -265,6 +268,30 @@ inclusive descendo até registros-filho como o C190 (dentro do C100). O
 relatório fica aberto enquanto você navega. As regras estão centralizadas em
 `revisao.py` (lista `REGRAS`) e novas verificações podem ser acrescentadas com
 poucas linhas.
+
+### Modo Relatório (comparação com o banco)
+
+A aba **📊 Modo Relatório** mostra os itens do arquivo numa **tabela achatada**.
+Um seletor de **Fonte** escolhe o registro de origem, porque nem todo documento
+tem detalhamento por item:
+
+- **Itens (C170)** — uma linha por item, com dados do documento (C100) e do
+  produto (0200): tipo, data, nota, item, código/descrição/NCM do produto,
+  quantidades e valores, CFOP, ICMS, ICMS-ST, PIS, COFINS e IPI.
+- **PIS/COFINS consolidado (C175)** — para documentos sem C170, como a **NFC-e
+  (modelo 65)**: CFOP, valor da operação/desconto e os campos de PIS e COFINS.
+- **ICMS consolidado (C190)** — também típico de **NFC-e (modelo 65)** e outros
+  consolidados: CST, CFOP, alíquota, base e valor de ICMS, ICMS-ST, redução de
+  base, IPI e código de observação.
+
+Ao trocar a fonte, apenas os filtros aplicáveis ficam ativos.
+
+O painel de **Filtros** reproduz os do script SQL (data inicial/final, tipo de
+movimento, modelo, nº da nota, código do produto, nº do item, NCM por prefixo,
+CFOP, CST de ICMS/PIS/COFINS/IPI — aceitando listas separadas por vírgula — e
+alíquotas de PIS/COFINS). Clique em **Gerar relatório** para aplicar os filtros
+e **Exportar CSV** para salvar o resultado (separador `;`, latin-1), que pode ser
+confrontado com a saída do mesmo relatório no banco.
 
 ### Editar o layout no Qt Designer
 

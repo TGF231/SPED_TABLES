@@ -5,6 +5,28 @@ Todas as mudanças relevantes deste projeto são documentadas neste arquivo.
 O formato segue [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/)
 e o projeto adota [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [0.8.1] - 2026-07-02
+
+### Adicionado
+- **Modo Relatório com três fontes**, selecionáveis por um combo:
+  **Itens (C170)**, **PIS/COFINS consolidado (C175)** e **ICMS consolidado
+  (C190)**. Os relatórios de C175 e C190 cobrem documentos sem detalhamento de
+  item — como a **NFC-e (modelo 65)** —, em que não há C170. Cada fonte mostra
+  as colunas próprias do registro e habilita apenas os filtros aplicáveis
+  (ex.: CST/alíquota de ICMS no C190; CST/alíquotas de PIS e COFINS no C175).
+  Acrescentado o filtro de alíquota de ICMS.
+
+## [0.8.0] - 2026-07-02
+
+### Adicionado
+- **Dois modos de visualização** no topo da janela: **Modo Tabela** (a edição
+  mestre-detalhe por bloco, como antes) e **Modo Relatório**.
+- **Modo Relatório**: visão achatada dos itens (uma linha por C170, com dados do
+  C100 e do produto 0200), com filtros e colunas espelhando o relatório usado no
+  banco do ERP — data, tipo (E/S), modelo, nº da nota, código do produto, item,
+  NCM, CFOP, CST de ICMS/PIS/COFINS/IPI e alíquotas de PIS/COFINS. Permite
+  **exportar em CSV** para comparar com o resultado do script SQL.
+
 ## [0.7.0] - 2026-07-02
 
 ### Corrigido

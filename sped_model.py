@@ -227,6 +227,289 @@ class SpedDocument:
         """Marca o índice de itens para ser reconstruído (após editar 0200)."""
         self._cad_itens = None
 
+    # ------------------------------------------------- relatório (visão flat)
+    COLUNAS_RELATORIO = [
+        "TIPO", "NOTA_DATA", "NOTA_N", "NOTA_SERIE", "NOTA_MODELO",
+        "NOTA_ITEM", "PROD_COD", "PROD_DESCRICAO", "PROD_NCM",
+        "PROD_QTDE", "PROD_VL_UN", "PROD_VL_SUBTOTAL", "PROD_VL_DESC",
+        "PROD_VL_TOTAL", "CFOP", "ICMS_CST", "ICMS_BC", "ICMS_ALIQ", "ICMS_VL",
+        "ICMSST_BC", "ICMSST_ALIQ", "ICMSST_VL",
+        "PIS_CST", "PIS_BC", "PIS_ALIQ", "PIS_VL",
+        "COFINS_CST", "COFINS_BC", "COFINS_ALIQ", "COFINS_VL",
+        "IPI_CST", "IPI_VL", "CHAVE_ACESSO",
+    ]
+
+    def itens_relatorio(self, filtros=None):
+        """Achata os itens (C170) numa tabela — uma linha por item, com dados do
+        C100 pai e do produto (0200) — aplicando os filtros do Modo Relatório.
+        Espelha o SELECT usado no banco do ERP, para comparação. Devolve
+        (colunas, linhas) com valores já como texto no padrão do arquivo."""
+        f = filtros or {}
+        C = {c: self._ix("C170", c) for c in (
+            "NUM_ITEM", "COD_ITEM", "QTD", "VL_ITEM", "VL_DESC", "CST_ICMS",
+            "CFOP", "VL_BC_ICMS", "ALIQ_ICMS", "VL_ICMS", "VL_BC_ICMS_ST",
+            "ALIQ_ST", "VL_ICMS_ST", "CST_IPI", "VL_IPI", "CST_PIS", "VL_BC_PIS",
+            "ALIQ_PIS", "VL_PIS", "CST_COFINS", "VL_BC_COFINS", "ALIQ_COFINS",
+            "VL_COFINS")}
+        c_oper = self._ix("C100", "IND_OPER")
+        c_mod = self._ix("C100", "COD_MOD")
+        c_ser = self._ix("C100", "SER")
+        c_num = self._ix("C100", "NUM_DOC")
+        c_chv = self._ix("C100", "CHV_NFE")
+        c_dtdoc = self._ix("C100", "DT_DOC")
+        c_dtes = self._ix("C100", "DT_E_S")
+
+        i0c = self._ix("0200", "COD_ITEM")
+        i0d = self._ix("0200", "DESCR_ITEM")
+        i0n = self._ix("0200", "COD_NCM")
+        prod = {}
+        for r in self.registros:
+            if r.reg == "0200":
+                cod = (r.valor(i0c) or "").strip()
+                prod[cod] = (
+                    (r.valor(i0d) or "").strip() if i0d is not None else "",
+                    (r.valor(i0n) or "").strip() if i0n is not None else "")
+
+        def dkey(s):
+            s = (s or "").strip()
+            return (s[4:8] + s[2:4] + s[0:2]) if len(s) == 8 else ""
+
+        di = f.get("data_ini") or None      # 'AAAAMMDD'
+        dfim = f.get("data_fim") or None
+        tipo = f.get("tipo", "T")
+        cfop = f.get("cfop")
+        ncm = f.get("ncm")
+        modelo = f.get("modelo")
+        num = f.get("num_nota")
+        nitem = f.get("nitem")
+        cod_prod = f.get("cod_prod")
+        cst_icms = {str(x) for x in (f.get("cst_icms") or [])}
+        cst_pis = {str(x) for x in (f.get("cst_pis") or [])}
+        cst_cofins = {str(x) for x in (f.get("cst_cofins") or [])}
+        cst_ipi = f.get("cst_ipi")
+        aliq_pis = f.get("aliq_pis")
+        aliq_cofins = f.get("aliq_cofins")
+
+        linhas = []
+        for c100 in self.registros:
+            if c100.reg != "C100":
+                continue
+            oper = (c100.valor(c_oper) or "").strip() if c_oper is not None else ""
+            tp = "E" if oper == "0" else "S"
+            if tipo != "T" and tp != tipo:
+                continue
+            mod = (c100.valor(c_mod) or "").strip() if c_mod is not None else ""
+            if modelo and mod != str(modelo):
+                continue
+            ndoc = (c100.valor(c_num) or "").strip() if c_num is not None else ""
+            if num and ndoc != str(num):
+                continue
+            dt = (c100.valor(c_dtdoc) or "").strip() if c_dtdoc is not None else ""
+            if not dt and c_dtes is not None:
+                dt = (c100.valor(c_dtes) or "").strip()
+            dk = dkey(dt)
+            if di and dk and dk < di:
+                continue
+            if dfim and dk and dk > dfim:
+                continue
+            chave = (c100.valor(c_chv) or "").strip() if c_chv is not None else ""
+            ser = (c100.valor(c_ser) or "").strip() if c_ser is not None else ""
+            data_br = ("%s/%s/%s" % (dt[0:2], dt[2:4], dt[4:8])) \
+                if len(dt) == 8 else dt
+
+            for it in c100.filhos:
+                if it.reg != "C170":
+                    continue
+
+                def v(campo, _it=it):
+                    idx = C.get(campo)
+                    return (_it.valor(idx) or "").strip() if idx is not None \
+                        else ""
+
+                if cfop and v("CFOP") != str(cfop):
+                    continue
+                if cst_icms and v("CST_ICMS") not in cst_icms:
+                    continue
+                if cst_pis and v("CST_PIS") not in cst_pis:
+                    continue
+                if cst_cofins and v("CST_COFINS") not in cst_cofins:
+                    continue
+                if cst_ipi and v("CST_IPI") != str(cst_ipi):
+                    continue
+                if nitem and v("NUM_ITEM") != str(nitem):
+                    continue
+                cod = v("COD_ITEM")
+                if cod_prod and cod != str(cod_prod):
+                    continue
+                descr, ncm_prod = prod.get(cod, ("", ""))
+                if ncm and not ncm_prod.startswith(str(ncm)):
+                    continue
+                if aliq_pis is not None and _to_num(v("ALIQ_PIS")) != aliq_pis:
+                    continue
+                if aliq_cofins is not None and \
+                        _to_num(v("ALIQ_COFINS")) != aliq_cofins:
+                    continue
+
+                vl_item = _to_num(v("VL_ITEM"))
+                vl_desc = _to_num(v("VL_DESC"))
+                qtd = _to_num(v("QTD"))
+                vl_un = (vl_item / qtd) if qtd else 0.0
+                linhas.append([
+                    tp, data_br, ndoc, ser, mod,
+                    v("NUM_ITEM"), cod, descr, ncm_prod,
+                    v("QTD"), _fmt_val(vl_un), v("VL_ITEM"), v("VL_DESC"),
+                    _fmt_val(vl_item - vl_desc),
+                    v("CFOP"), v("CST_ICMS"), v("VL_BC_ICMS"), v("ALIQ_ICMS"),
+                    v("VL_ICMS"), v("VL_BC_ICMS_ST"), v("ALIQ_ST"),
+                    v("VL_ICMS_ST"),
+                    v("CST_PIS"), v("VL_BC_PIS"), v("ALIQ_PIS"), v("VL_PIS"),
+                    v("CST_COFINS"), v("VL_BC_COFINS"), v("ALIQ_COFINS"),
+                    v("VL_COFINS"),
+                    v("CST_IPI"), v("VL_IPI"), chave])
+        return self.COLUNAS_RELATORIO, linhas
+
+    # -- consolidados (sem C170): NFC-e mod 65 e afins ----------------------
+    COLUNAS_RELATORIO_C175 = [
+        "TIPO", "NOTA_DATA", "NOTA_N", "NOTA_SERIE", "NOTA_MODELO",
+        "CFOP", "VL_OPR", "VL_DESC",
+        "PIS_CST", "PIS_BC", "PIS_ALIQ", "PIS_VL",
+        "COFINS_CST", "COFINS_BC", "COFINS_ALIQ", "COFINS_VL",
+        "COD_CTA", "INFO_COMPL", "CHAVE_ACESSO",
+    ]
+    COLUNAS_RELATORIO_C190 = [
+        "TIPO", "NOTA_DATA", "NOTA_N", "NOTA_SERIE", "NOTA_MODELO",
+        "ICMS_CST", "CFOP", "ICMS_ALIQ", "VL_OPR", "ICMS_BC", "ICMS_VL",
+        "ICMSST_BC", "ICMSST_VL", "VL_RED_BC", "VL_IPI", "COD_OBS",
+        "CHAVE_ACESSO",
+    ]
+
+    def _c100_filtrados(self, f):
+        """Gera (c100, tp, data_br, num, serie, modelo, chave) para os C100 que
+        passam nos filtros de cabeçalho (data, tipo, modelo, nº nota). Base
+        comum aos relatórios de C170, C175 e C190."""
+        c_oper = self._ix("C100", "IND_OPER")
+        c_mod = self._ix("C100", "COD_MOD")
+        c_ser = self._ix("C100", "SER")
+        c_num = self._ix("C100", "NUM_DOC")
+        c_chv = self._ix("C100", "CHV_NFE")
+        c_dt = self._ix("C100", "DT_DOC")
+        c_es = self._ix("C100", "DT_E_S")
+        di = f.get("data_ini") or None
+        dfim = f.get("data_fim") or None
+        tipo = f.get("tipo", "T")
+        modelo = f.get("modelo")
+        num = f.get("num_nota")
+
+        def dkey(s):
+            s = (s or "").strip()
+            return (s[4:8] + s[2:4] + s[0:2]) if len(s) == 8 else ""
+
+        for c100 in self.registros:
+            if c100.reg != "C100":
+                continue
+            oper = (c100.valor(c_oper) or "").strip() if c_oper is not None else ""
+            tp = "E" if oper == "0" else "S"
+            if tipo != "T" and tp != tipo:
+                continue
+            mod = (c100.valor(c_mod) or "").strip() if c_mod is not None else ""
+            if modelo and mod != str(modelo):
+                continue
+            ndoc = (c100.valor(c_num) or "").strip() if c_num is not None else ""
+            if num and ndoc != str(num):
+                continue
+            dt = (c100.valor(c_dt) or "").strip() if c_dt is not None else ""
+            if not dt and c_es is not None:
+                dt = (c100.valor(c_es) or "").strip()
+            dk = dkey(dt)
+            if di and dk and dk < di:
+                continue
+            if dfim and dk and dk > dfim:
+                continue
+            chave = (c100.valor(c_chv) or "").strip() if c_chv is not None else ""
+            ser = (c100.valor(c_ser) or "").strip() if c_ser is not None else ""
+            data_br = ("%s/%s/%s" % (dt[0:2], dt[2:4], dt[4:8])) \
+                if len(dt) == 8 else dt
+            yield c100, tp, data_br, ndoc, ser, mod, chave
+
+    def itens_relatorio_c175(self, filtros=None):
+        """Relatório do C175 (PIS/COFINS consolidado por CFOP/CST/alíquota),
+        típico de NFC-e (modelo 65), que não possui C170."""
+        f = filtros or {}
+        I = {c: self._ix("C175", c) for c in (
+            "CFOP", "VL_OPR", "VL_DESC", "CST_PIS", "VL_BC_PIS", "ALIQ_PIS",
+            "VL_PIS", "CST_COFINS", "VL_BC_COFINS", "ALIQ_COFINS", "VL_COFINS",
+            "COD_CTA", "INFO_COMPL")}
+        cfop = f.get("cfop")
+        cst_pis = {str(x) for x in (f.get("cst_pis") or [])}
+        cst_cofins = {str(x) for x in (f.get("cst_cofins") or [])}
+        aliq_pis = f.get("aliq_pis")
+        aliq_cofins = f.get("aliq_cofins")
+        linhas = []
+        for c100, tp, data, ndoc, ser, mod, chave in self._c100_filtrados(f):
+            for r in c100.filhos:
+                if r.reg != "C175":
+                    continue
+
+                def v(campo, _r=r):
+                    idx = I.get(campo)
+                    return (_r.valor(idx) or "").strip() if idx is not None \
+                        else ""
+
+                if cfop and v("CFOP") != str(cfop):
+                    continue
+                if cst_pis and v("CST_PIS") not in cst_pis:
+                    continue
+                if cst_cofins and v("CST_COFINS") not in cst_cofins:
+                    continue
+                if aliq_pis is not None and _to_num(v("ALIQ_PIS")) != aliq_pis:
+                    continue
+                if aliq_cofins is not None and \
+                        _to_num(v("ALIQ_COFINS")) != aliq_cofins:
+                    continue
+                linhas.append([
+                    tp, data, ndoc, ser, mod,
+                    v("CFOP"), v("VL_OPR"), v("VL_DESC"),
+                    v("CST_PIS"), v("VL_BC_PIS"), v("ALIQ_PIS"), v("VL_PIS"),
+                    v("CST_COFINS"), v("VL_BC_COFINS"), v("ALIQ_COFINS"),
+                    v("VL_COFINS"), v("COD_CTA"), v("INFO_COMPL"), chave])
+        return self.COLUNAS_RELATORIO_C175, linhas
+
+    def itens_relatorio_c190(self, filtros=None):
+        """Relatório do C190 (ICMS consolidado por CST/CFOP/alíquota), usado por
+        NFC-e (modelo 65) e outros documentos sem detalhamento de itens."""
+        f = filtros or {}
+        I = {c: self._ix("C190", c) for c in (
+            "CST_ICMS", "CFOP", "ALIQ_ICMS", "VL_OPR", "VL_BC_ICMS", "VL_ICMS",
+            "VL_BC_ICMS_ST", "VL_ICMS_ST", "VL_RED_BC", "VL_IPI", "COD_OBS")}
+        cfop = f.get("cfop")
+        cst_icms = {str(x) for x in (f.get("cst_icms") or [])}
+        aliq_icms = f.get("aliq_icms")
+        linhas = []
+        for c100, tp, data, ndoc, ser, mod, chave in self._c100_filtrados(f):
+            for r in c100.filhos:
+                if r.reg != "C190":
+                    continue
+
+                def v(campo, _r=r):
+                    idx = I.get(campo)
+                    return (_r.valor(idx) or "").strip() if idx is not None \
+                        else ""
+
+                if cfop and v("CFOP") != str(cfop):
+                    continue
+                if cst_icms and v("CST_ICMS") not in cst_icms:
+                    continue
+                if aliq_icms is not None and \
+                        _to_num(v("ALIQ_ICMS")) != aliq_icms:
+                    continue
+                linhas.append([
+                    tp, data, ndoc, ser, mod,
+                    v("CST_ICMS"), v("CFOP"), v("ALIQ_ICMS"), v("VL_OPR"),
+                    v("VL_BC_ICMS"), v("VL_ICMS"), v("VL_BC_ICMS_ST"),
+                    v("VL_ICMS_ST"), v("VL_RED_BC"), v("VL_IPI"), v("COD_OBS"),
+                    chave])
+        return self.COLUNAS_RELATORIO_C190, linhas
+
     # ----------------------------------------------- consolidação do C190
     def _ix(self, tipo, nome):
         """Índice da coluna `nome` no layout atual para o registro `tipo`."""
