@@ -710,17 +710,28 @@ class SpedDocument:
 
     def _registros_aliq_escopo(self, escopo):
         """Registros-alvo da troca de alíquotas conforme o escopo:
-        'saidas' → C175; 'entradas' → C170 de documentos de entrada
-        (C100 com IND_OPER=0); 'ambos' → os dois."""
+        'saidas'   → C175 + C170 de documentos de saída (IND_OPER=1);
+        'entradas' → C170 de documentos de entrada (IND_OPER=0);
+        'ambos'/'todos' → todos os C170 e C175 (qualquer operação)."""
+        i_op = self._ix("C100", "IND_OPER")
+
+        def oper(r):
+            p = r.pai
+            if p is not None and p.reg == "C100" and i_op is not None:
+                return (p.valor(i_op) or "").strip()
+            return ""
+
+        c175 = [r for r in self.registros if r.reg == "C175"]
+        c170 = [r for r in self.registros if r.reg == "C170"]
         alvos = []
-        if escopo in ("saidas", "ambos"):
-            alvos += [r for r in self.registros if r.reg == "C175"]
-        if escopo in ("entradas", "ambos"):
-            i_op = self._ix("C100", "IND_OPER")
-            alvos += [r for r in self.registros
-                      if r.reg == "C170" and r.pai is not None
-                      and r.pai.reg == "C100"
-                      and (r.pai.valor(i_op) or "").strip() == "0"]
+        if escopo in ("saidas", "ambos", "todos"):
+            alvos += c175
+        if escopo == "saidas":
+            alvos += [r for r in c170 if oper(r) == "1"]
+        elif escopo == "entradas":
+            alvos += [r for r in c170 if oper(r) == "0"]
+        elif escopo in ("ambos", "todos"):
+            alvos += c170
         return alvos
 
     def aliquota_predominante(self, campo, escopo="saidas"):
@@ -740,16 +751,20 @@ class SpedDocument:
         return self.aliquota_predominante(campo, "saidas")
 
     def trocar_aliquotas_pis_cofins(self, aliq_pis=None, aliq_cofins=None,
-                                    apenas_tributados=True, escopo="saidas"):
+                                    apenas_tributados=True, escopo="saidas",
+                                    de_pis=None, de_cofins=None):
         """Substitui as alíquotas de PIS e/ou COFINS e recalcula VL_PIS /
         VL_COFINS (base × alíquota / 100), atualizando os totais dos C100.
 
-        `escopo` define onde aplicar: 'saidas' recalcula os C175 (débito);
-        'entradas' recalcula os C170 dos documentos de entrada (crédito, cuja
-        alíquota é a do comprador); 'ambos' aplica nos dois. `aliq_pis` e
-        `aliq_cofins` são percentuais (ex.: 1.65); None mantém o tributo
-        inalterado. Com `apenas_tributados=True`, só mexe onde já há base ou
-        alíquota positiva (preserva CST sem tributação/crédito).
+        `escopo` define onde aplicar: 'saidas' → C175 + C170 de saída (débito);
+        'entradas' → C170 de entrada (crédito); 'ambos'/'todos' → todos os C170
+        e C175. `aliq_pis` e `aliq_cofins` são percentuais (ex.: 1.65); None
+        mantém o tributo inalterado. Com `apenas_tributados=True`, só mexe onde
+        há base ou alíquota positiva.
+
+        `de_pis` / `de_cofins`, se informados, restringem a troca aos registros
+        cuja alíquota **atual** seja exatamente aquele valor — útil para corrigir
+        apenas uma alíquota preenchida errada, sem tocar nas demais.
         """
         # C170 e C175 têm os campos de PIS/COFINS em posições diferentes
         idx = {}
@@ -773,14 +788,20 @@ class SpedDocument:
             if aliq_pis is not None:
                 bc = _to_num(r.valor(i_bcp))
                 al = _to_num(r.valor(i_ap))
-                if (not apenas_tributados) or bc > 0 or al > 0:
+                ok = (not apenas_tributados) or bc > 0 or al > 0
+                if de_pis is not None:
+                    ok = ok and abs(al - de_pis) < 1e-9
+                if ok:
                     r.set_valor(i_ap, _fmt_aliq(aliq_pis))
                     r.set_valor(i_vp, _fmt_val(round(bc * aliq_pis / 100, 2)))
                     mudou = True
             if aliq_cofins is not None:
                 bc = _to_num(r.valor(i_bcc))
                 al = _to_num(r.valor(i_ac))
-                if (not apenas_tributados) or bc > 0 or al > 0:
+                ok = (not apenas_tributados) or bc > 0 or al > 0
+                if de_cofins is not None:
+                    ok = ok and abs(al - de_cofins) < 1e-9
+                if ok:
                     r.set_valor(i_ac, _fmt_aliq(aliq_cofins))
                     r.set_valor(i_vc, _fmt_val(round(bc * aliq_cofins / 100, 2)))
                     mudou = True
@@ -809,6 +830,85 @@ class SpedDocument:
                 c100.set_valor(icc, _fmt_val(sc))
         return {"itens": n, "c100": len(c100s),
                 "vl_pis": tot_pis, "vl_cofins": tot_cof}
+
+    def alterar_datas_c100(self, campo_filtro="DT_E_S", data_ini=None,
+                           data_fim=None, modelos=None, tipo="T",
+                           campos_alterar=("DT_E_S",), modo="especifica",
+                           valor=None):
+        """Altera a data de emissão (DT_DOC) e/ou de entrada/saída (DT_E_S) dos
+        documentos C100 que passam no filtro.
+
+        Filtro: intervalo [data_ini, data_fim] avaliado sobre `campo_filtro`
+        ('DT_DOC' ou 'DT_E_S'); `modelos` = conjunto de COD_MOD a incluir (vazio
+        = todos); `tipo` = 'T'/'E'/'S' (IND_OPER). As datas de filtro/valor são
+        objetos date; no arquivo o formato é DDMMAAAA.
+
+        Ação: `campos_alterar` lista quais datas mudar; `modo='especifica'` grava
+        `valor` (date) fixo; `modo='dias'` desloca cada data em `valor` dias
+        (inteiro, pode ser negativo). Retorna resumo com contagens.
+        """
+        from datetime import datetime, timedelta
+
+        i_oper = self._ix("C100", "IND_OPER")
+        i_mod = self._ix("C100", "COD_MOD")
+        i_dtdoc = self._ix("C100", "DT_DOC")
+        i_dtes = self._ix("C100", "DT_E_S")
+        i_filtro = i_dtdoc if campo_filtro == "DT_DOC" else i_dtes
+        alvos = []
+        if "DT_DOC" in campos_alterar and i_dtdoc is not None:
+            alvos.append(i_dtdoc)
+        if "DT_E_S" in campos_alterar and i_dtes is not None:
+            alvos.append(i_dtes)
+        modelos = {str(m).strip() for m in (modelos or []) if str(m).strip()}
+
+        def parse(s):
+            s = (s or "").strip()
+            try:
+                return datetime.strptime(s, "%d%m%Y").date()
+            except ValueError:
+                return None
+
+        n_alterados = 0
+        n_no_filtro = 0
+        sem_data = 0
+        for r in self.registros:
+            if r.reg != "C100":
+                continue
+            if tipo != "T":
+                oper = (r.valor(i_oper) or "").strip() if i_oper is not None \
+                    else ""
+                if ("E" if oper == "0" else "S") != tipo:
+                    continue
+            if modelos:
+                mod = (r.valor(i_mod) or "").strip() if i_mod is not None else ""
+                if mod not in modelos:
+                    continue
+            dref = parse(r.valor(i_filtro)) if i_filtro is not None else None
+            if dref is None:
+                sem_data += 1
+                continue
+            if data_ini and dref < data_ini:
+                continue
+            if data_fim and dref > data_fim:
+                continue
+            n_no_filtro += 1
+
+            mudou = False
+            for idx in alvos:
+                if modo == "especifica":
+                    nova = valor
+                else:  # deslocamento em dias
+                    atual = parse(r.valor(idx))
+                    if atual is None:
+                        continue
+                    nova = atual + timedelta(days=int(valor))
+                if nova is not None:
+                    r.set_valor(idx, nova.strftime("%d%m%Y"))
+                    mudou = True
+            if mudou:
+                n_alterados += 1
+        return {"c100": n_alterados, "no_filtro": n_no_filtro,
+                "sem_data": sem_data}
 
     # --------------------------------------------- totais (in-place, p/ tela)
     def recalcular_bloco_m(self):

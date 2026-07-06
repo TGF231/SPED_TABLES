@@ -1160,22 +1160,22 @@ class DialogoCorrelacoesCFOP(QDialog):
 class DialogoTrocarAliquotas(QDialog):
     """Pede as novas alíquotas de PIS/COFINS e recalcula (saídas/entradas)."""
 
-    ESCOPOS = [("Saídas — débito (C175)", "saidas"),
+    ESCOPOS = [("Saídas — débito (C175 + C170 de saída)", "saidas"),
                ("Entradas — crédito (C170)", "entradas"),
-               ("Ambos", "ambos")]
+               ("Todos os itens (C170 e C175)", "todos")]
 
     def __init__(self, doc, parent=None):
         super().__init__(parent)
         self.doc = doc
         self.setWindowTitle("Trocar alíquotas de PIS/COFINS")
-        self.resize(460, 300)
+        self.resize(480, 360)
         lay = QVBoxLayout(self)
 
         info = QLabel(
             "Define novas alíquotas de PIS e COFINS e recalcula VL_PIS e "
-            "VL_COFINS (base × alíquota), atualizando os totais dos C100. "
-            "As <b>saídas</b> usam os C175 (débito); as <b>entradas</b> usam "
-            "os C170 (crédito, com a alíquota do comprador).")
+            "VL_COFINS (base × alíquota), atualizando os totais dos C100. O "
+            "escopo escolhe onde aplicar: saídas (C175 e C170 de saída), "
+            "entradas (C170) ou todos os itens.")
         info.setWordWrap(True)
         lay.addWidget(info)
 
@@ -1209,6 +1209,27 @@ class DialogoTrocarAliquotas(QDialog):
         self.chk_trib.setChecked(True)
         lay.addWidget(self.chk_trib)
 
+        # filtro opcional: só corrigir onde a alíquota ATUAL for exatamente X
+        self.chk_de = QCheckBox(
+            "Trocar apenas onde a alíquota atual for:")
+        lay.addWidget(self.chk_de)
+        form_de = QFormLayout()
+        self.sp_de_pis = QDoubleSpinBox()
+        self.sp_de_pis.setDecimals(4)
+        self.sp_de_pis.setRange(0, 100)
+        self.sp_de_pis.setSuffix(" %")
+        self.sp_de_cof = QDoubleSpinBox()
+        self.sp_de_cof.setDecimals(4)
+        self.sp_de_cof.setRange(0, 100)
+        self.sp_de_cof.setSuffix(" %")
+        self.sp_de_pis.setEnabled(False)
+        self.sp_de_cof.setEnabled(False)
+        self.chk_de.toggled.connect(self.sp_de_pis.setEnabled)
+        self.chk_de.toggled.connect(self.sp_de_cof.setEnabled)
+        form_de.addRow("PIS atual =", self.sp_de_pis)
+        form_de.addRow("COFINS atual =", self.sp_de_cof)
+        lay.addLayout(form_de)
+
         botoes = QHBoxLayout()
         botoes.addStretch(1)
         b_ok = QPushButton("Aplicar e recalcular")
@@ -1231,11 +1252,139 @@ class DialogoTrocarAliquotas(QDialog):
         self.sp_cof.setValue(ac)
 
     def valores(self):
-        """(aliq_pis, aliq_cofins, apenas_tributados, escopo); None=não mexe."""
+        """(aliq_pis, aliq_cofins, apenas_trib, escopo, de_pis, de_cofins)."""
         ap = self.sp_pis.value() if self.chk_pis.isChecked() else None
         ac = self.sp_cof.value() if self.chk_cof.isChecked() else None
         escopo = self.ESCOPOS[self.combo_escopo.currentIndex()][1]
-        return ap, ac, self.chk_trib.isChecked(), escopo
+        de_pis = de_cof = None
+        if self.chk_de.isChecked():
+            de_pis = self.sp_de_pis.value()
+            de_cof = self.sp_de_cof.value()
+        return ap, ac, self.chk_trib.isChecked(), escopo, de_pis, de_cof
+
+
+# ---------------------------------------------------------------------------
+# Diálogo: alterar datas (emissão/saída) de documentos C100
+# ---------------------------------------------------------------------------
+class DialogoAlterarDatas(QDialog):
+    """Filtra C100 por intervalo de datas (+ modelo e tipo) e altera a data de
+    emissão (DT_DOC) e/ou de entrada/saída (DT_E_S)."""
+
+    def __init__(self, doc, parent=None):
+        super().__init__(parent)
+        self.doc = doc
+        self.setWindowTitle("Alterar datas de emissão/saída (C100)")
+        self.resize(480, 430)
+        lay = QVBoxLayout(self)
+
+        # ---- filtro -------------------------------------------------------
+        g_filtro = QGroupBox("Selecionar documentos (filtro)")
+        ff = QFormLayout(g_filtro)
+        self.cb_campo_filtro = QComboBox()
+        self.cb_campo_filtro.addItems([
+            "Data de entrada/saída (DT_E_S)", "Data de emissão (DT_DOC)"])
+        self.ed_ini = QLineEdit()
+        self.ed_ini.setPlaceholderText("DDMMAAAA")
+        self.ed_fim = QLineEdit()
+        self.ed_fim.setPlaceholderText("DDMMAAAA")
+        self.cb_tipo = QComboBox()
+        self.cb_tipo.addItems(["Todos", "Entrada", "Saída"])
+        self.ed_modelos = QLineEdit()
+        self.ed_modelos.setPlaceholderText("ex.: 55, 65 — vazio = todos")
+        ff.addRow("Filtrar pela:", self.cb_campo_filtro)
+        ff.addRow("Data inicial:", self.ed_ini)
+        ff.addRow("Data final:", self.ed_fim)
+        ff.addRow("Tipo de movimento:", self.cb_tipo)
+        ff.addRow("Somente modelos:", self.ed_modelos)
+        lay.addWidget(g_filtro)
+
+        # ---- ação ---------------------------------------------------------
+        g_acao = QGroupBox("Alterar")
+        fa = QFormLayout(g_acao)
+        self.cb_campos = QComboBox()
+        self.cb_campos.addItems([
+            "Data de entrada/saída (DT_E_S)", "Data de emissão (DT_DOC)",
+            "Ambas (DT_DOC e DT_E_S)"])
+        self.cb_modo = QComboBox()
+        self.cb_modo.addItems(["Para data específica", "Deslocar em dias"])
+        self.cb_modo.currentIndexChanged.connect(self._modo_mudou)
+        self.ed_valor = QLineEdit()
+        fa.addRow("Data(s) a alterar:", self.cb_campos)
+        fa.addRow("Como:", self.cb_modo)
+        fa.addRow("Valor:", self.ed_valor)
+        lay.addWidget(g_acao)
+        self._modo_mudou()
+
+        rod = QHBoxLayout()
+        rod.addStretch(1)
+        b_ok = QPushButton("Aplicar")
+        b_ok.clicked.connect(self.accept)
+        b_c = QPushButton("Cancelar")
+        b_c.clicked.connect(self.reject)
+        rod.addWidget(b_ok)
+        rod.addWidget(b_c)
+        lay.addLayout(rod)
+
+    def _modo_mudou(self):
+        if self.cb_modo.currentIndex() == 0:
+            self.ed_valor.setPlaceholderText("DDMMAAAA")
+        else:
+            self.ed_valor.setPlaceholderText("dias, ex.: 1 ou -3")
+
+    @staticmethod
+    def _data(s):
+        from datetime import datetime
+        try:
+            return datetime.strptime((s or "").strip(), "%d%m%Y").date()
+        except ValueError:
+            return None
+
+    def valores(self):
+        """Valida os campos e devolve os parâmetros para alterar_datas_c100;
+        em caso de erro mostra a mensagem e devolve None."""
+        di = self._data(self.ed_ini.text()) if self.ed_ini.text().strip() \
+            else None
+        dfim = self._data(self.ed_fim.text()) if self.ed_fim.text().strip() \
+            else None
+        if self.ed_ini.text().strip() and di is None:
+            QMessageBox.critical(self, "Datas", "Data inicial inválida (DDMMAAAA).")
+            return None
+        if self.ed_fim.text().strip() and dfim is None:
+            QMessageBox.critical(self, "Datas", "Data final inválida (DDMMAAAA).")
+            return None
+        if di and dfim and di > dfim:
+            QMessageBox.critical(self, "Datas",
+                                 "Data inicial maior que a final.")
+            return None
+
+        campo_filtro = "DT_E_S" if self.cb_campo_filtro.currentIndex() == 0 \
+            else "DT_DOC"
+        tipo = ["T", "E", "S"][self.cb_tipo.currentIndex()]
+        modelos = [x.strip() for x in
+                   self.ed_modelos.text().replace(";", ",").split(",")
+                   if x.strip()]
+        campos = [["DT_E_S"], ["DT_DOC"], ["DT_DOC", "DT_E_S"]][
+            self.cb_campos.currentIndex()]
+
+        if self.cb_modo.currentIndex() == 0:
+            modo = "especifica"
+            valor = self._data(self.ed_valor.text())
+            if valor is None:
+                QMessageBox.critical(self, "Nova data",
+                                     "Informe a nova data (DDMMAAAA).")
+                return None
+        else:
+            modo = "dias"
+            try:
+                valor = int(self.ed_valor.text().strip())
+            except ValueError:
+                QMessageBox.critical(self, "Deslocamento",
+                                     "Informe um número inteiro de dias.")
+                return None
+
+        return {"campo_filtro": campo_filtro, "data_ini": di, "data_fim": dfim,
+                "modelos": modelos, "tipo": tipo, "campos_alterar": campos,
+                "modo": modo, "valor": valor}
 
 
 # ---------------------------------------------------------------------------
@@ -1585,6 +1734,11 @@ class JanelaPrincipal(QMainWindow):
                 "Trocar alíquotas PIS/COFINS…", self)
         self.act_trocar_aliquotas.triggered.connect(self.trocar_aliquotas)
         self.act_trocar_aliquotas.setEnabled(False)
+        if not hasattr(self, "act_alterar_datas"):
+            self.act_alterar_datas = QAction(
+                "Alterar datas emissão/saída (C100)…", self)
+        self.act_alterar_datas.triggered.connect(self.alterar_datas)
+        self.act_alterar_datas.setEnabled(False)
         # a barra de menus é redundante com a toolbar: ocultar
         if hasattr(self, "menubar") and self.menubar is not None:
             self.menubar.setVisible(False)
@@ -1605,6 +1759,7 @@ class JanelaPrincipal(QMainWindow):
         menu.addAction(self.act_importar_xml)
         menu.addAction(self.act_recalc_m)
         menu.addAction(self.act_trocar_aliquotas)
+        menu.addAction(self.act_alterar_datas)
         menu.addSeparator()
         menu.addAction(self.act_conferir_55)
         menu.addAction(self.act_correlacoes_cfop)
@@ -1651,6 +1806,11 @@ class JanelaPrincipal(QMainWindow):
             "Trocar alíquotas PIS/COFINS…", self)
         self.act_trocar_aliquotas.triggered.connect(self.trocar_aliquotas)
         self.act_trocar_aliquotas.setEnabled(False)
+
+        self.act_alterar_datas = QAction(
+            "Alterar datas emissão/saída (C100)…", self)
+        self.act_alterar_datas.triggered.connect(self.alterar_datas)
+        self.act_alterar_datas.setEnabled(False)
 
         self.act_conferir_55 = QAction(
             "Conferir entradas (NF-e 55) com XMLs…", self)
@@ -1821,6 +1981,30 @@ class JanelaPrincipal(QMainWindow):
         DialogoCorrelacoesCFOP(
             self.correlacoes_cfop, self._caminho_correl, aplicar, self).exec()
 
+    def alterar_datas(self):
+        """Altera datas de emissão/saída dos C100 conforme filtro de data."""
+        if not self.doc:
+            return
+        dlg = DialogoAlterarDatas(self.doc, self)
+        if dlg.exec() != QDialog.DialogCode.Accepted:
+            return
+        p = dlg.valores()
+        if p is None:
+            return
+        res = self.doc.alterar_datas_c100(**p)
+        self._marcar_alterado()
+        self._montar_abas()
+        campos = " e ".join(p["campos_alterar"])
+        self.statusBar().showMessage(
+            "Datas alteradas em %d documento(s) C100 (%s)."
+            % (res["c100"], campos))
+        QMessageBox.information(
+            self, "Alterar datas",
+            "%d documento(s) no filtro; %d alterado(s) (%s).%s"
+            % (res["no_filtro"], res["c100"], campos,
+               ("\n%d sem data válida no campo de filtro." % res["sem_data"])
+               if res["sem_data"] else ""))
+
     def trocar_aliquotas(self):
         """Troca alíquotas de PIS/COFINS (saídas C175 / entradas C170) e
         recalcula os valores."""
@@ -1833,14 +2017,16 @@ class JanelaPrincipal(QMainWindow):
         dlg = DialogoTrocarAliquotas(self.doc, self)
         if dlg.exec() != QDialog.DialogCode.Accepted:
             return
-        aliq_pis, aliq_cofins, apenas_trib, escopo = dlg.valores()
+        aliq_pis, aliq_cofins, apenas_trib, escopo, de_pis, de_cof = \
+            dlg.valores()
         if aliq_pis is None and aliq_cofins is None:
             return
         res = self.doc.trocar_aliquotas_pis_cofins(
             aliq_pis=aliq_pis, aliq_cofins=aliq_cofins,
-            apenas_tributados=apenas_trib, escopo=escopo)
+            apenas_tributados=apenas_trib, escopo=escopo,
+            de_pis=de_pis, de_cofins=de_cof)
         if res.get("sem_alvo"):
-            alvo = "C175 (saídas)" if escopo == "saidas" else \
+            alvo = "C175/C170 de saída" if escopo == "saidas" else \
                 ("C170 de entrada" if escopo == "entradas" else "C170/C175")
             QMessageBox.information(
                 self, "Trocar alíquotas",
@@ -1848,9 +2034,9 @@ class JanelaPrincipal(QMainWindow):
             return
         self._marcar_alterado()
         self._montar_abas()
-        rot_escopo = {"saidas": "saídas (C175)",
+        rot_escopo = {"saidas": "saídas (C175 + C170)",
                       "entradas": "entradas (C170)",
-                      "ambos": "entradas e saídas"}[escopo]
+                      "todos": "todos os itens (C170 e C175)"}[escopo]
         partes = []
         if aliq_pis is not None:
             partes.append("PIS → %s%%" % ("%.4f" % aliq_pis).rstrip("0")
@@ -1960,6 +2146,7 @@ class JanelaPrincipal(QMainWindow):
         self.act_importar_xml.setEnabled(doc.layout == "CONTRIB")
         self.act_recalc_m.setEnabled(doc.layout == "CONTRIB")
         self.act_trocar_aliquotas.setEnabled(doc.layout == "CONTRIB")
+        self.act_alterar_datas.setEnabled(True)
         self.act_conferir_55.setEnabled(True)
         self.act_revisar.setEnabled(True)
         nome = os.path.basename(caminho)

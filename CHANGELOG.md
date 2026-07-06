@@ -5,6 +5,33 @@ Todas as mudanças relevantes deste projeto são documentadas neste arquivo.
 O formato segue [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/)
 e o projeto adota [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [0.8.3] - 2026-07-02
+
+### Alterado
+- **Trocar alíquotas de PIS/COFINS** ampliada:
+  - O escopo **Saídas** agora inclui, além do C175, os **C170 de documentos de
+    saída** (débito detalhado por item) — antes só o C175 era corrigido.
+  - Novo escopo **Todos os itens (C170 e C175)**, para corrigir alíquotas em
+    qualquer registro, independentemente de entrada/saída.
+  - Novo filtro opcional **“Trocar apenas onde a alíquota atual for”** (PIS e
+    COFINS), para corrigir somente uma alíquota preenchida errada sem tocar nas
+    demais.
+
+## [0.8.2] - 2026-07-02
+
+### Adicionado
+- **Alterar datas de emissão/saída (C100)** (Ferramentas): filtra documentos por
+  um intervalo de datas — avaliado sobre DT_E_S ou DT_DOC —, além de tipo de
+  movimento e modelo, e altera a **data de emissão (DT_DOC)**, de **entrada/saída
+  (DT_E_S)** ou ambas, seja para uma **data específica** ou **deslocando N dias**
+  (aceita negativos).
+
+### Corrigido
+- O **filtro por modelo** de uma rotina externa de correção de datas estava
+  invertido (marcar um modelo processava apenas ele, ao contrário do rótulo).
+  Na versão integrada a semântica é explícita: *“Somente modelos”* aplica a
+  alteração apenas aos modelos informados; em branco, a todos.
+
 ## [0.8.1] - 2026-07-02
 
 ### Adicionado

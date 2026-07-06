@@ -151,17 +151,26 @@ alíquotas de PIS e/ou COFINS e recalcula **VL_PIS** e **VL_COFINS** (base ×
 alíquota ÷ 100), atualizando os totais dos **C100**. Um seletor de **escopo**
 define onde aplicar:
 
-- **Saídas — débito (C175):** recalcula os registros C175 (vendas consolidadas);
-- **Entradas — crédito (C170):** recalcula os itens dos documentos de entrada
-  (C100 com IND_OPER=0), cujo crédito é apurado pela **alíquota do comprador** —
-  que costuma diferir da alíquota de saída;
-- **Ambos.**
+- **Saídas — débito (C175 + C170 de saída):** recalcula as vendas consolidadas
+  (C175) e também os itens de documentos de saída detalhados (C170);
+- **Entradas — crédito (C170):** os itens dos documentos de entrada (C100 com
+  IND_OPER=0), cujo crédito é apurado pela **alíquota do comprador**;
+- **Todos os itens (C170 e C175):** qualquer registro, independentemente de
+  entrada/saída — útil para corrigir alíquotas preenchidas erradas.
 
-O diálogo já sugere a alíquota predominante do escopo escolhido (ex.: saídas
-1,65 %/7,6 %; entradas podem trazer alíquotas de crédito distintas). É possível
-alterar só o PIS, só o COFINS ou ambos, e limitar aos registros **tributados**
-(base ou alíquota > 0) para não afetar CST sem tributação/crédito. Depois da
-troca, rode *Recalcular bloco M* se precisar refletir a apuração.
+Há ainda o filtro opcional **“Trocar apenas onde a alíquota atual for”**: com ele
+marcado, só os registros cuja alíquota atual seja exatamente o valor informado
+são corrigidos, deixando os demais intactos.
+
+### Alterar datas de emissão/saída (C100)
+
+**Ferramentas → Alterar datas emissão/saída (C100)…** seleciona documentos por
+um **intervalo de datas** (avaliado sobre a data de entrada/saída *DT_E_S* ou a
+de emissão *DT_DOC*), podendo restringir por **tipo de movimento** (entrada/saída)
+e por **modelo** (campo *Somente modelos*, ex.: `55, 65`; em branco, todos). Nos
+documentos filtrados, altera a **DT_DOC**, a **DT_E_S** ou **ambas**, para uma
+**data específica** (DDMMAAAA) ou **deslocando N dias** (aceita negativos, ex.:
+`-3`). As datas seguem o formato do arquivo (DDMMAAAA).
 
 ### Conferir entradas (NF-e modelo 55) com os XMLs
 
@@ -270,7 +279,6 @@ relatório fica aberto enquanto você navega. As regras estão centralizadas em
 poucas linhas.
 
 ### Modo Relatório (comparação com o banco)
-
 A aba **📊 Modo Relatório** mostra os itens do arquivo numa **tabela achatada**.
 Um seletor de **Fonte** escolhe o registro de origem, porque nem todo documento
 tem detalhamento por item:
