@@ -1,5 +1,23 @@
 # Changelog
 
+## [0.9.0] - 2026-07-02
+
+### Adicionado
+- **Verificar CST por NCM (tabelas RFB)** (Ferramentas): classifica cada item
+  **C170** pelo NCM usando as tabelas oficiais do EFD-Contribuições — produtos de
+  **alíquota zero** (CST 06) e **monofásicos** — e aponta CST de PIS/COFINS
+  incoerentes, separando **entradas** e **saídas**. Ex.: entrada de produto
+  monofásico (bebidas) escriturada com CST 50 (crédito indevido) em vez de 73/98.
+  - As tabelas são localizadas automaticamente na pasta de recursos do PVA pela
+    **maior versão** (nomes tipo `…$PROD_ALIQ_ZERO$48$166`), com opção de
+    **informar o caminho de cada arquivo** diretamente caso o padrão mude.
+  - Respeita a **vigência** (DT_INI/DT_FIM) na data de referência (por padrão, a
+    DT_FIN do arquivo) e as exceções (NCM_EX). O **gênero** vem dos 2 primeiros
+    dígitos do NCM. Opcionalmente valida contra a **Tabela NCM Vigente (XLSX)**
+    do Siscomex. Resultado navegável e exportável em CSV. Config persistida em
+    `config_tabelas_rfb.json`.
+- Novo módulo `tabelas_rfb.py`; dependência opcional `openpyxl` (para o XLSX).
+
 Todas as mudanças relevantes deste projeto são documentadas neste arquivo.
 
 O formato segue [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/)

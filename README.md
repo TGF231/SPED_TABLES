@@ -301,8 +301,30 @@ alíquotas de PIS/COFINS). Clique em **Gerar relatório** para aplicar os filtro
 e **Exportar CSV** para salvar o resultado (separador `;`, latin-1), que pode ser
 confrontado com a saída do mesmo relatório no banco.
 
-### Editar o layout no Qt Designer
+### Verificar CST por NCM (tabelas da RFB)
 
+**Ferramentas → Verificar CST por NCM (tabelas RFB)…** (EFD Contribuições)
+classifica cada item **C170** pelo NCM e aponta CST de PIS/COFINS incoerentes,
+separando entradas e saídas. A classificação usa as tabelas oficiais do
+EFD-Contribuições: **produtos de alíquota zero** (CST 06) e **monofásicos**.
+
+As tabelas ficam na pasta de recursos do PVA
+(`C:\Arquivos de Programas RFB\Programas SPED\EFD-Contribuicoes\recursos\tabelas`);
+o programa localiza automaticamente a **maior versão** de cada uma (nomes como
+`…$SPEDPISCOFINS_PROD_ALIQ_ZERO$48$166`). Se o padrão de nome mudar, é possível
+**apontar o caminho de cada arquivo** manualmente no diálogo. A verificação
+respeita a **vigência** (DT_INI/DT_FIM) na data de referência — por padrão a
+DT_FIN do arquivo — e as exceções (NCM_EX); o **gênero** do item vem dos dois
+primeiros dígitos do NCM. Opcionalmente, a **Tabela NCM Vigente** (XLSX do portal
+Siscomex) pode ser informada para validar os NCMs.
+
+Exemplos de achados típicos: entrada de produto **monofásico** (bebidas) com CST
+50 — crédito indevido, quando o correto seria 73/98 — ou produto de **alíquota
+zero** escriturado como tributado. O resultado é navegável (duplo clique leva ao
+registro) e exportável em CSV. Como o **C175** (NFC-e consolidada) não traz o
+item/NCM, a verificação por NCM cobre os **C170** (entradas e saídas detalhadas).
+
+### Editar o layout no Qt Designer
 A janela principal é descrita em **`sped_editor.ui`** (formato padrão do Qt). O
 aplicativo carrega esse arquivo automaticamente quando ele está presente, de modo
 que você pode abrir o **Qt Designer**, reorganizar a barra de ferramentas e as
@@ -323,6 +345,7 @@ ferramentas num menu suspenso ao lado de *Salvar como*).
 | `sped_layouts.py`  | Níveis hierárquicos e nomes oficiais de campos por registro.   |
 | `xml_fiscal.py`    | Leitura de XML NF-e/NFC-e e motor de vínculo genérico.        |
 | `conferencia.py`   | Conferência de entradas modelo 55 (item XML ↔ C170).          |
+| `tabelas_rfb.py`   | Tabelas RFB (alíq. zero, monofásicos, gênero, NCM) + CST.     |
 | `correlacoes_cfop.json` | Correlações CFOP saída→entrada (gerado/editável).        |
 | `revisao.py`       | Regras de revisão de erros (extensível).                      |
 | `version.py`       | Versão do aplicativo (SemVer).                                |

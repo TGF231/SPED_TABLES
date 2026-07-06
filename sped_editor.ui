@@ -86,6 +86,11 @@
     <string>Alterar datas emissão/saída (C100)…</string>
    </property>
   </action>
+  <action name="act_verificar_cst">
+   <property name="text">
+    <string>Verificar CST por NCM (tabelas RFB)…</string>
+   </property>
+  </action>
   <action name="act_conferir_55">
    <property name="text">
     <string>Conferir entradas (NF-e 55) com XMLs…</string>

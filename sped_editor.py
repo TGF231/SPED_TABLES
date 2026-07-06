@@ -41,6 +41,7 @@ from sped_model import SpedDocument
 import xml_fiscal as xf
 import conferencia as cf
 import revisao as rev
+import tabelas_rfb as trfb
 from version import __version__, APP_NAME
 
 
@@ -1264,6 +1265,172 @@ class DialogoTrocarAliquotas(QDialog):
 
 
 # ---------------------------------------------------------------------------
+# Diálogo: verificar CST de PIS/COFINS por NCM (tabelas RFB)
+# ---------------------------------------------------------------------------
+class DialogoVerificarCST(QDialog):
+    """Configura as tabelas da RFB (alíquota zero, monofásicos, gênero e, opc.,
+    NCM vigente) e verifica o CST de PIS/COFINS dos itens C170 por NCM."""
+
+    def __init__(self, doc, cfg, data_ref, on_cfg, parent=None):
+        super().__init__(parent)
+        self.doc = doc
+        self.cfg = dict(cfg or {})
+        self.on_cfg = on_cfg
+        self.setWindowTitle("Verificar CST de PIS/COFINS por NCM")
+        self.resize(880, 620)
+        lay = QVBoxLayout(self)
+
+        info = QLabel(
+            "Classifica cada item (C170) pelo NCM usando as tabelas oficiais da "
+            "RFB e aponta CST de PIS/COFINS incoerentes (ex.: entrada de produto "
+            "monofásico com crédito, ou produto de alíquota zero tributado). O "
+            "C175 (NFC-e consolidada) não é verificável por NCM.")
+        info.setWordWrap(True)
+        lay.addWidget(info)
+
+        cfgbox = QGroupBox("Tabelas (pasta do PVA ou caminhos diretos)")
+        gl = QGridLayout(cfgbox)
+
+        def linha_arquivo(rot, chave, lin, pasta=False):
+            gl.addWidget(QLabel(rot), lin, 0)
+            ed = QLineEdit(self.cfg.get(chave, ""))
+            gl.addWidget(ed, lin, 1)
+            b = QPushButton("…")
+            b.setMaximumWidth(32)
+            if pasta:
+                b.clicked.connect(lambda: self._pasta(ed))
+            else:
+                b.clicked.connect(lambda: self._arquivo(ed))
+            gl.addWidget(b, lin, 2)
+            return ed
+
+        self.ed_pasta = linha_arquivo("Pasta das tabelas:", "pasta", 0, True)
+        if not self.ed_pasta.text():
+            self.ed_pasta.setText(trfb.PASTA_PADRAO)
+        self.ed_zero = linha_arquivo("Alíquota zero (opcional):", "zero", 1)
+        self.ed_mono = linha_arquivo("Monofásicos (opcional):", "mono", 2)
+        self.ed_genero = linha_arquivo("Gênero (opcional):", "genero", 3)
+        self.ed_ncm = linha_arquivo("NCM vigente XLSX (opc.):", "ncm", 4)
+
+        gl.addWidget(QLabel("Data de referência:"), 5, 0)
+        self.ed_data = QLineEdit(data_ref or "")
+        self.ed_data.setPlaceholderText("DDMMAAAA")
+        self.ed_data.setMaximumWidth(120)
+        gl.addWidget(self.ed_data, 5, 1)
+        lay.addWidget(cfgbox)
+
+        acoes = QHBoxLayout()
+        b_ver = QPushButton("Verificar")
+        b_ver.clicked.connect(self._verificar)
+        b_csv = QPushButton("Exportar CSV")
+        b_csv.clicked.connect(self._exportar)
+        self.lbl = QLabel("—")
+        acoes.addWidget(b_ver)
+        acoes.addWidget(b_csv)
+        acoes.addStretch(1)
+        acoes.addWidget(self.lbl)
+        lay.addLayout(acoes)
+
+        self.COLS = ["Operação", "COD_ITEM", "NCM", "Gênero", "Classificação",
+                     "CST PIS", "CST COFINS", "CST sugerido", "Observação"]
+        self.tab = QTableWidget(0, len(self.COLS))
+        self.tab.setHorizontalHeaderLabels(self.COLS)
+        self.tab.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
+        self.tab.setAlternatingRowColors(True)
+        self.tab.setSortingEnabled(True)
+        self.tab.cellDoubleClicked.connect(self._ir)
+        lay.addWidget(self.tab, 1)
+        self._uids = []
+
+    def _pasta(self, ed):
+        d = QFileDialog.getExistingDirectory(self, "Pasta das tabelas",
+                                             ed.text() or "")
+        if d:
+            ed.setText(d)
+
+    def _arquivo(self, ed):
+        f, _ = QFileDialog.getOpenFileName(self, "Selecionar arquivo",
+                                           ed.text() or "")
+        if f:
+            ed.setText(f)
+
+    def _coletar_cfg(self):
+        return {"pasta": self.ed_pasta.text().strip(),
+                "zero": self.ed_zero.text().strip(),
+                "mono": self.ed_mono.text().strip(),
+                "genero": self.ed_genero.text().strip(),
+                "ncm": self.ed_ncm.text().strip()}
+
+    def _verificar(self):
+        cfg = self._coletar_cfg()
+        try:
+            clf, achados = trfb.carregar_tudo(
+                pasta=cfg["pasta"] or None,
+                caminho_zero=cfg["zero"] or None,
+                caminho_mono=cfg["mono"] or None,
+                caminho_genero=cfg["genero"] or None,
+                caminho_ncm=cfg["ncm"] or None)
+        except Exception as exc:  # noqa: BLE001
+            QMessageBox.critical(self, "Tabelas",
+                                 "Falha ao carregar as tabelas:\n%s" % exc)
+            return
+        if not achados.get("zero") and not achados.get("mono"):
+            QMessageBox.warning(
+                self, "Tabelas",
+                "Não encontrei as tabelas de alíquota zero/monofásicos na pasta "
+                "informada. Verifique o caminho ou informe os arquivos "
+                "diretamente.")
+            return
+        self.on_cfg(cfg)
+        probs = trfb.verificar_cst_pis_cofins(
+            self.doc, clf, data_ref=self.ed_data.text().strip() or None)
+        self._preencher(probs)
+        self.lbl.setText(
+            "%d divergência(s) · tabelas: zero v%s, mono v%s"
+            % (len(probs), clf.versao_zero, clf.versao_mono))
+
+    def _preencher(self, probs):
+        self.tab.setSortingEnabled(False)
+        self.tab.setRowCount(len(probs))
+        self._uids = []
+        for i, p in enumerate(probs):
+            self._uids.append(p["uid"])
+            vals = ["Entrada" if p["op"] == "E" else "Saída", p["cod_item"],
+                    p["ncm"], "%s %s" % (p["genero"], p["genero_desc"]),
+                    p["classe_desc"], p["cst_pis"], p["cst_cofins"],
+                    p["cst_sugerido"], p["detalhe"]]
+            for c, v in enumerate(vals):
+                self.tab.setItem(i, c, QTableWidgetItem(str(v)))
+        self.tab.setSortingEnabled(True)
+        self.tab.resizeColumnsToContents()
+
+    def _ir(self, row, _col):
+        if 0 <= row < len(self._uids) and self.parent() is not None:
+            self.parent().ir_para_registro(self._uids[row])
+
+    def _exportar(self):
+        if self.tab.rowCount() == 0:
+            QMessageBox.information(self, "Exportar", "Nada para exportar.")
+            return
+        caminho, _ = QFileDialog.getSaveFileName(
+            self, "Exportar verificação", "verificacao_cst.csv", "CSV (*.csv)")
+        if not caminho:
+            return
+        try:
+            with open(caminho, "w", encoding="latin-1", newline="") as fh:
+                fh.write(";".join(self.COLS) + "\r\n")
+                for r in range(self.tab.rowCount()):
+                    fh.write(";".join(
+                        (self.tab.item(r, c).text() if self.tab.item(r, c)
+                         else "") for c in range(self.tab.columnCount()))
+                        + "\r\n")
+        except Exception as exc:  # noqa: BLE001
+            QMessageBox.critical(self, "Exportar", str(exc))
+            return
+        QMessageBox.information(self, "Exportar", "Exportado:\n%s" % caminho)
+
+
+# ---------------------------------------------------------------------------
 # Diálogo: alterar datas (emissão/saída) de documentos C100
 # ---------------------------------------------------------------------------
 class DialogoAlterarDatas(QDialog):
@@ -1659,6 +1826,12 @@ class JanelaPrincipal(QMainWindow):
             "correlacoes_cfop.json")
         self.correlacoes_cfop = cf.carregar_correlacoes(self._caminho_correl)
 
+        # configuração das tabelas da RFB (verificação de CST por NCM)
+        self._caminho_cfg_tabelas = os.path.join(
+            os.path.dirname(os.path.abspath(__file__)),
+            "config_tabelas_rfb.json")
+        self.cfg_tabelas = self._carregar_cfg_tabelas()
+
         # Carrega o layout do Qt Designer (sped_editor.ui) quando presente;
         # caso contrário, constrói a interface programaticamente (fallback).
         ui_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),
@@ -1739,6 +1912,11 @@ class JanelaPrincipal(QMainWindow):
                 "Alterar datas emissão/saída (C100)…", self)
         self.act_alterar_datas.triggered.connect(self.alterar_datas)
         self.act_alterar_datas.setEnabled(False)
+        if not hasattr(self, "act_verificar_cst"):
+            self.act_verificar_cst = QAction(
+                "Verificar CST por NCM (tabelas RFB)…", self)
+        self.act_verificar_cst.triggered.connect(self.verificar_cst_ncm)
+        self.act_verificar_cst.setEnabled(False)
         # a barra de menus é redundante com a toolbar: ocultar
         if hasattr(self, "menubar") and self.menubar is not None:
             self.menubar.setVisible(False)
@@ -1763,6 +1941,7 @@ class JanelaPrincipal(QMainWindow):
         menu.addSeparator()
         menu.addAction(self.act_conferir_55)
         menu.addAction(self.act_correlacoes_cfop)
+        menu.addAction(self.act_verificar_cst)
         menu.addSeparator()
         menu.addAction(self.act_revisar)
         botao = QToolButton(self)
@@ -1811,6 +1990,11 @@ class JanelaPrincipal(QMainWindow):
             "Alterar datas emissão/saída (C100)…", self)
         self.act_alterar_datas.triggered.connect(self.alterar_datas)
         self.act_alterar_datas.setEnabled(False)
+
+        self.act_verificar_cst = QAction(
+            "Verificar CST por NCM (tabelas RFB)…", self)
+        self.act_verificar_cst.triggered.connect(self.verificar_cst_ncm)
+        self.act_verificar_cst.setEnabled(False)
 
         self.act_conferir_55 = QAction(
             "Conferir entradas (NF-e 55) com XMLs…", self)
@@ -1981,6 +2165,47 @@ class JanelaPrincipal(QMainWindow):
         DialogoCorrelacoesCFOP(
             self.correlacoes_cfop, self._caminho_correl, aplicar, self).exec()
 
+    def _carregar_cfg_tabelas(self):
+        import json
+        try:
+            with open(self._caminho_cfg_tabelas, encoding="utf-8") as fh:
+                return json.load(fh)
+        except Exception:  # noqa: BLE001
+            return {}
+
+    def _salvar_cfg_tabelas(self, cfg):
+        import json
+        self.cfg_tabelas = cfg
+        try:
+            with open(self._caminho_cfg_tabelas, "w", encoding="utf-8") as fh:
+                json.dump(cfg, fh, ensure_ascii=False, indent=2)
+        except Exception:  # noqa: BLE001
+            pass
+
+    def _data_fin_doc(self):
+        """DT_FIN do registro 0000 (DDMMAAAA), para referência de vigência."""
+        if not self.doc:
+            return ""
+        i = self.doc._ix("0000", "DT_FIN")
+        for r in self.doc.registros:
+            if r.reg == "0000":
+                return (r.valor(i) or "").strip() if i is not None else ""
+        return ""
+
+    def verificar_cst_ncm(self):
+        """Verifica o CST de PIS/COFINS dos itens C170 por NCM, usando as
+        tabelas oficiais da RFB (alíquota zero e monofásicos)."""
+        if not self.doc or self.doc.layout != "CONTRIB":
+            QMessageBox.information(
+                self, "Verificar CST",
+                "Esta verificação aplica-se ao EFD Contribuições (CST de "
+                "PIS/COFINS por NCM).")
+            return
+        self._dlg_cst = DialogoVerificarCST(
+            self.doc, self.cfg_tabelas, self._data_fin_doc(),
+            self._salvar_cfg_tabelas, self)
+        self._dlg_cst.show()
+
     def alterar_datas(self):
         """Altera datas de emissão/saída dos C100 conforme filtro de data."""
         if not self.doc:
@@ -2147,6 +2372,7 @@ class JanelaPrincipal(QMainWindow):
         self.act_recalc_m.setEnabled(doc.layout == "CONTRIB")
         self.act_trocar_aliquotas.setEnabled(doc.layout == "CONTRIB")
         self.act_alterar_datas.setEnabled(True)
+        self.act_verificar_cst.setEnabled(doc.layout == "CONTRIB")
         self.act_conferir_55.setEnabled(True)
         self.act_revisar.setEnabled(True)
         nome = os.path.basename(caminho)
