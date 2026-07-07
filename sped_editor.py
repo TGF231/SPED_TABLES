@@ -24,6 +24,7 @@ Como executar:
 
 import sys
 import os
+import re
 import datetime
 
 from PyQt6.QtCore import Qt, QEvent, QTimer
@@ -51,6 +52,26 @@ def _br(v):
         return ("%0.2f" % float(v)).replace(".", "@").replace(",", ".").replace("@", ",")
     except (TypeError, ValueError):
         return str(v)
+
+
+# número no padrão BR: inteiro, com pontos de milhar e/ou vírgula decimal.
+# (evita tratar códigos como "3.1.1" ou datas como número)
+_RE_NUM_BR = re.compile(r"^-?\d{1,3}(\.\d{3})+(,\d+)?$|^-?\d+(,\d+)?$")
+
+
+def _num_celula(texto):
+    """Converte o texto de uma célula em float se for um número BR; senão None.
+    Ignora inteiros muito longos (ex.: chave de acesso de 44 dígitos), que não
+    são valores somáveis e perderiam precisão."""
+    s = (texto or "").strip()
+    if not s or not _RE_NUM_BR.match(s):
+        return None
+    if len(s.replace("-", "").replace(".", "").replace(",", "")) > 15:
+        return None
+    try:
+        return float(s.replace(".", "").replace(",", "."))
+    except ValueError:
+        return None
 
 
 # ---------------------------------------------------------------------------
@@ -109,11 +130,13 @@ class GerenciadorOrdemAbas:
             if i < bar.count():
                 bar.setTabData(i, ident)
         self._aplicar(tabw, chave)
-        try:
-            bar.tabMoved.disconnect()
-        except TypeError:
-            pass
-        bar.tabMoved.connect(lambda *_: self._memorizar(tabw, chave))
+        # Conecta o memorizador UMA única vez por QTabWidget. NÃO desconectar
+        # o sinal em geral: `tabMoved.disconnect()` removeria também o slot
+        # interno do QTabWidget que sincroniza o conteúdo ao mover a aba —
+        # era isso que fazia o conteúdo "ficar para trás" da aba arrastada.
+        if not getattr(tabw, "_ordem_conectada", False):
+            bar.tabMoved.connect(lambda *_: self._memorizar(tabw, chave))
+            tabw._ordem_conectada = True
 
     def _memorizar(self, tabw, chave):
         bar = tabw.tabBar()
@@ -263,6 +286,7 @@ class MasterDetailWidget(QWidget):
         # o detalhe segue a CÉLULA atual (não recria a cada extensão de seleção)
         self.tabela.currentCellChanged.connect(self._cel_atual_mudou)
         self.tabela.itemChanged.connect(self._celula_editada)
+        self.tabela.itemSelectionChanged.connect(self._resumo_selecao)
         self.tabela.setHorizontalScrollMode(
             QAbstractItemView.ScrollMode.ScrollPerPixel)
         # menu de contexto (preencher seleção / copiar / colar)
@@ -451,6 +475,25 @@ class MasterDetailWidget(QWidget):
         r = self._registro_da_linha(cur_row)
         self._atualizar_item_label(r)
         self._mostrar_detalhe(r)
+
+    def _resumo_selecao(self):
+        """Como no Excel: ao selecionar várias células numéricas, mostra
+        soma, média e contagem na barra de status."""
+        itens = self.tabela.selectedItems()
+        if len(itens) < 2:
+            return
+        nums = [n for n in (_num_celula(it.text()) for it in itens)
+                if n is not None]
+        if len(nums) < 2:
+            return
+        janela = self.window()
+        if janela is None or not hasattr(janela, "statusBar"):
+            return
+        soma = sum(nums)
+        media = soma / len(nums)
+        janela.statusBar().showMessage(
+            "Soma: %s     Média: %s     Contagem: %d"
+            % (_br(soma), _br(media), len(nums)))
 
     def _atualizar_item_label(self, registro):
         """Mostra, no topo centralizado, o nome do produto da linha selecionada
@@ -1672,14 +1715,40 @@ class RelatorioWidget(QWidget):
 
         # ---- tabela -------------------------------------------------------
         self.tabela = QTableWidget()
+        # tabela editável (como uma "query" do SSMS): as colunas próprias do
+        # registro-fonte podem ser editadas; produto/documento/calculadas ficam
+        # somente-leitura.
         self.tabela.setEditTriggers(
-            QAbstractItemView.EditTrigger.NoEditTriggers)
+            QAbstractItemView.EditTrigger.DoubleClicked
+            | QAbstractItemView.EditTrigger.EditKeyPressed
+            | QAbstractItemView.EditTrigger.AnyKeyPressed)
         self.tabela.setAlternatingRowColors(True)
         self.tabela.setSortingEnabled(True)
         self.tabela.setSelectionBehavior(
-            QAbstractItemView.SelectionBehavior.SelectRows)
+            QAbstractItemView.SelectionBehavior.SelectItems)
+        self.tabela.setSelectionMode(
+            QAbstractItemView.SelectionMode.ExtendedSelection)
+        self.tabela.itemChanged.connect(self._celula_editada)
+        self.tabela.itemSelectionChanged.connect(self._resumo_selecao)
+        self._preenchendo = False
+        self._uids = []
+        self._edit_idx = {}          # índice de coluna -> campo no registro
         lay.addWidget(self.tabela, 1)
         self._fonte_mudou()
+
+    def _resumo_selecao(self):
+        itens = self.tabela.selectedItems()
+        if len(itens) < 2:
+            return
+        nums = [n for n in (_num_celula(it.text()) for it in itens)
+                if n is not None]
+        if len(nums) < 2:
+            return
+        jan = self.window()
+        if jan is not None and hasattr(jan, "statusBar"):
+            jan.statusBar().showMessage(
+                "Soma: %s     Média: %s     Contagem: %d"
+                % (_br(sum(nums)), _br(sum(nums) / len(nums)), len(nums)))
 
     def _fonte_mudou(self):
         """Habilita apenas os filtros aplicáveis à fonte e regenera (se houver
@@ -1754,23 +1823,64 @@ class RelatorioWidget(QWidget):
         filtros = self._coletar_filtros()
         idx = self.cb_fonte.currentIndex()
         if idx == 1:
-            cols, linhas = self.doc.itens_relatorio_c175(filtros)
+            cols, linhas, uids, edit = self.doc.itens_relatorio_c175(filtros)
         elif idx == 2:
-            cols, linhas = self.doc.itens_relatorio_c190(filtros)
+            cols, linhas, uids, edit = self.doc.itens_relatorio_c190(filtros)
         else:
-            cols, linhas = self.doc.itens_relatorio(filtros)
+            cols, linhas, uids, edit = self.doc.itens_relatorio(filtros)
         self._cols = cols
+        self._uids = uids
+        # mapeia índice de coluna -> campo do registro (colunas editáveis)
+        self._edit_idx = {i: edit[c] for i, c in enumerate(cols) if c in edit}
+        self._preenchendo = True
         self.tabela.setSortingEnabled(False)
         self.tabela.clear()
         self.tabela.setColumnCount(len(cols))
         self.tabela.setHorizontalHeaderLabels(cols)
         self.tabela.setRowCount(len(linhas))
+        cinza = QColor(245, 245, 245)
         for r, linha in enumerate(linhas):
             for c, val in enumerate(linha):
-                self.tabela.setItem(r, c, QTableWidgetItem(str(val)))
+                item = QTableWidgetItem(str(val))
+                if c == 0:                           # guarda o uid na linha
+                    item.setData(Qt.ItemDataRole.UserRole, uids[r])
+                if c not in self._edit_idx:          # coluna somente-leitura
+                    item.setFlags(item.flags() & ~Qt.ItemFlag.ItemIsEditable)
+                    item.setBackground(cinza)
+                self.tabela.setItem(r, c, item)
         self.tabela.setSortingEnabled(True)
         self.tabela.resizeColumnsToContents()
-        self.lbl_info.setText("%d itens" % len(linhas))
+        self._preenchendo = False
+        self.lbl_info.setText(
+            "%d itens · %d colunas editáveis" % (len(linhas), len(edit)))
+
+    def _celula_editada(self, item):
+        """Grava a edição de uma célula editável de volta no registro-fonte."""
+        if self._preenchendo:
+            return
+        col = item.column()
+        campo = self._edit_idx.get(col)
+        if campo is None:
+            return
+        row = item.row()
+        it0 = self.tabela.item(row, 0)
+        uid = it0.data(Qt.ItemDataRole.UserRole) if it0 is not None else None
+        if uid is None:
+            return
+        reg = next((x for x in self.doc.registros if x.uid == uid), None)
+        if reg is None:
+            return
+        i_campo = self.doc._ix(reg.reg, campo)
+        if i_campo is None:
+            return
+        reg.set_valor(i_campo, item.text().strip())
+        jan = self.window()
+        if jan is not None and hasattr(jan, "_marcar_alterado"):
+            jan._marcar_alterado()
+        if jan is not None and hasattr(jan, "statusBar"):
+            jan.statusBar().showMessage(
+                "%s do %s atualizado para “%s”."
+                % (campo, reg.reg, item.text().strip()))
 
     def _exportar_csv(self):
         if self.tabela.rowCount() == 0:

@@ -51,6 +51,8 @@ banco). O Modo Tabela funciona assim:
 - **Reordenar abas**: arraste as abas (de bloco ou de tipo) para a ordem que
   preferir. A ordem escolhida vale **durante a sessão** — ao fechar e reabrir o
   programa, tudo volta ao padrão.
+- **Soma da seleção**: ao selecionar várias células numéricas numa grade, a
+  barra de status mostra **Soma, Média e Contagem** (como no Excel).
 - Clique numa linha da grade. Se o registro tiver filhos, aparecem **sub-abas
   de detalhe** logo abaixo (ex.: `C110 (1)`, `C170 (4)`, `C190 (1)`,
   `C195 (4)`), cada uma com sua própria grade editável — e isso é **recursivo**.
@@ -293,6 +295,12 @@ tem detalhamento por item:
   base, IPI e código de observação.
 
 Ao trocar a fonte, apenas os filtros aplicáveis ficam ativos.
+
+A tabela do relatório é **editável**: as colunas próprias do registro-fonte
+(C170/C175/C190) podem ser alteradas diretamente — como uma *query* editável —,
+gravando no registro correspondente do SPED (é preciso salvar o arquivo para
+persistir). As colunas derivadas (produto, dados da nota, valores calculados)
+aparecem em cinza e são somente-leitura.
 
 O painel de **Filtros** reproduz os do script SQL (data inicial/final, tipo de
 movimento, modelo, nº da nota, código do produto, nº do item, NCM por prefixo,

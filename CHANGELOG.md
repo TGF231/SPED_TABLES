@@ -1,5 +1,24 @@
 # Changelog
 
+## [0.10.0] - 2026-07-03
+
+### Corrigido
+- **Reposicionamento de abas não levava o conteúdo junto.** O gerenciador de
+  ordem de abas desconectava o sinal `tabMoved` por completo, removendo também o
+  slot interno do `QTabWidget` que sincroniza o conteúdo ao mover a aba —
+  por isso o rótulo mudava de lugar mas a aba mostrava o conteúdo antigo. Agora o
+  memorizador é ligado uma única vez, sem afetar a sincronização nativa.
+
+### Adicionado
+- **Soma da seleção (estilo Excel):** ao selecionar várias células numéricas
+  numa grade, a barra de status mostra **Soma**, **Média** e **Contagem**.
+- **Modo Relatório editável:** as células das colunas próprias do registro-fonte
+  (C170/C175/C190) podem ser editadas diretamente na tabela do relatório — como
+  uma *query* editável —, gravando a alteração no registro correspondente do
+  SPED. Colunas derivadas (produto, dados do documento, valores calculados)
+  ficam somente-leitura (fundo acinzentado). A edição respeita a ordenação por
+  coluna.
+
 ## [0.9.1] - 2026-07-02
 
 ### Corrigido

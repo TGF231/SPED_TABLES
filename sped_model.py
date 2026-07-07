@@ -238,6 +238,19 @@ class SpedDocument:
         "COFINS_CST", "COFINS_BC", "COFINS_ALIQ", "COFINS_VL",
         "IPI_CST", "IPI_VL", "CHAVE_ACESSO",
     ]
+    # colunas do relatório editáveis -> campo no registro-fonte (C170).
+    # As demais (produto/documento/calculadas) são somente-leitura.
+    EDIT_C170 = {
+        "NOTA_ITEM": "NUM_ITEM", "PROD_COD": "COD_ITEM", "PROD_QTDE": "QTD",
+        "PROD_VL_SUBTOTAL": "VL_ITEM", "PROD_VL_DESC": "VL_DESC",
+        "CFOP": "CFOP", "ICMS_CST": "CST_ICMS", "ICMS_BC": "VL_BC_ICMS",
+        "ICMS_ALIQ": "ALIQ_ICMS", "ICMS_VL": "VL_ICMS",
+        "ICMSST_BC": "VL_BC_ICMS_ST", "ICMSST_ALIQ": "ALIQ_ST",
+        "ICMSST_VL": "VL_ICMS_ST", "PIS_CST": "CST_PIS", "PIS_BC": "VL_BC_PIS",
+        "PIS_ALIQ": "ALIQ_PIS", "PIS_VL": "VL_PIS", "COFINS_CST": "CST_COFINS",
+        "COFINS_BC": "VL_BC_COFINS", "COFINS_ALIQ": "ALIQ_COFINS",
+        "COFINS_VL": "VL_COFINS", "IPI_CST": "CST_IPI", "IPI_VL": "VL_IPI",
+    }
 
     def itens_relatorio(self, filtros=None):
         """Achata os itens (C170) numa tabela — uma linha por item, com dados do
@@ -291,6 +304,7 @@ class SpedDocument:
         aliq_cofins = f.get("aliq_cofins")
 
         linhas = []
+        uids = []
         for c100 in self.registros:
             if c100.reg != "C100":
                 continue
@@ -354,6 +368,7 @@ class SpedDocument:
                 vl_desc = _to_num(v("VL_DESC"))
                 qtd = _to_num(v("QTD"))
                 vl_un = (vl_item / qtd) if qtd else 0.0
+                uids.append(it.uid)
                 linhas.append([
                     tp, data_br, ndoc, ser, mod,
                     v("NUM_ITEM"), cod, descr, ncm_prod,
@@ -366,7 +381,7 @@ class SpedDocument:
                     v("CST_COFINS"), v("VL_BC_COFINS"), v("ALIQ_COFINS"),
                     v("VL_COFINS"),
                     v("CST_IPI"), v("VL_IPI"), chave])
-        return self.COLUNAS_RELATORIO, linhas
+        return self.COLUNAS_RELATORIO, linhas, uids, self.EDIT_C170
 
     # -- consolidados (sem C170): NFC-e mod 65 e afins ----------------------
     COLUNAS_RELATORIO_C175 = [
@@ -376,12 +391,26 @@ class SpedDocument:
         "COFINS_CST", "COFINS_BC", "COFINS_ALIQ", "COFINS_VL",
         "COD_CTA", "INFO_COMPL", "CHAVE_ACESSO",
     ]
+    EDIT_C175 = {
+        "CFOP": "CFOP", "VL_OPR": "VL_OPR", "VL_DESC": "VL_DESC",
+        "PIS_CST": "CST_PIS", "PIS_BC": "VL_BC_PIS", "PIS_ALIQ": "ALIQ_PIS",
+        "PIS_VL": "VL_PIS", "COFINS_CST": "CST_COFINS",
+        "COFINS_BC": "VL_BC_COFINS", "COFINS_ALIQ": "ALIQ_COFINS",
+        "COFINS_VL": "VL_COFINS", "COD_CTA": "COD_CTA",
+        "INFO_COMPL": "INFO_COMPL",
+    }
     COLUNAS_RELATORIO_C190 = [
         "TIPO", "NOTA_DATA", "NOTA_N", "NOTA_SERIE", "NOTA_MODELO",
         "ICMS_CST", "CFOP", "ICMS_ALIQ", "VL_OPR", "ICMS_BC", "ICMS_VL",
         "ICMSST_BC", "ICMSST_VL", "VL_RED_BC", "VL_IPI", "COD_OBS",
         "CHAVE_ACESSO",
     ]
+    EDIT_C190 = {
+        "ICMS_CST": "CST_ICMS", "CFOP": "CFOP", "ICMS_ALIQ": "ALIQ_ICMS",
+        "VL_OPR": "VL_OPR", "ICMS_BC": "VL_BC_ICMS", "ICMS_VL": "VL_ICMS",
+        "ICMSST_BC": "VL_BC_ICMS_ST", "ICMSST_VL": "VL_ICMS_ST",
+        "VL_RED_BC": "VL_RED_BC", "VL_IPI": "VL_IPI", "COD_OBS": "COD_OBS",
+    }
 
     def _c100_filtrados(self, f):
         """Gera (c100, tp, data_br, num, serie, modelo, chave) para os C100 que
@@ -445,6 +474,7 @@ class SpedDocument:
         aliq_pis = f.get("aliq_pis")
         aliq_cofins = f.get("aliq_cofins")
         linhas = []
+        uids = []
         for c100, tp, data, ndoc, ser, mod, chave in self._c100_filtrados(f):
             for r in c100.filhos:
                 if r.reg != "C175":
@@ -472,7 +502,8 @@ class SpedDocument:
                     v("CST_PIS"), v("VL_BC_PIS"), v("ALIQ_PIS"), v("VL_PIS"),
                     v("CST_COFINS"), v("VL_BC_COFINS"), v("ALIQ_COFINS"),
                     v("VL_COFINS"), v("COD_CTA"), v("INFO_COMPL"), chave])
-        return self.COLUNAS_RELATORIO_C175, linhas
+                uids.append(r.uid)
+        return self.COLUNAS_RELATORIO_C175, linhas, uids, self.EDIT_C175
 
     def itens_relatorio_c190(self, filtros=None):
         """Relatório do C190 (ICMS consolidado por CST/CFOP/alíquota), usado por
@@ -485,6 +516,7 @@ class SpedDocument:
         cst_icms = {str(x) for x in (f.get("cst_icms") or [])}
         aliq_icms = f.get("aliq_icms")
         linhas = []
+        uids = []
         for c100, tp, data, ndoc, ser, mod, chave in self._c100_filtrados(f):
             for r in c100.filhos:
                 if r.reg != "C190":
@@ -508,7 +540,8 @@ class SpedDocument:
                     v("VL_BC_ICMS"), v("VL_ICMS"), v("VL_BC_ICMS_ST"),
                     v("VL_ICMS_ST"), v("VL_RED_BC"), v("VL_IPI"), v("COD_OBS"),
                     chave])
-        return self.COLUNAS_RELATORIO_C190, linhas
+                uids.append(r.uid)
+        return self.COLUNAS_RELATORIO_C190, linhas, uids, self.EDIT_C190
 
     # ----------------------------------------------- consolidação do C190
     def _ix(self, tipo, nome):
