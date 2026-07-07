@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.10.1] - 2026-07-03
+
+### Corrigido
+- **VL_RED_BC não era calculado no recálculo do C190.** Nos grupos com CST de
+  ICMS terminado em **20** ou **70** (redução de base), o campo ficava zerado
+  mesmo quando o C170 não trazia o percentual/valor de redução. Agora é obtido
+  diretamente por **VL_OPR − VL_BC_ICMS** (nunca negativo).
+
 ## [0.10.0] - 2026-07-03
 
 ### Corrigido

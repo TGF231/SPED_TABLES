@@ -643,11 +643,20 @@ class SpedDocument:
         n_cri = 0
         for chave in chaves:
             g = grupos[chave]
+            # redução de base: nos CST terminados em 20 ou 70, o valor reduzido
+            # é a parcela da operação que ficou fora da base de cálculo.
+            cst2 = (g["cst"] or "").strip()[-2:]
+            if cst2 in ("20", "70"):
+                vl_red = round(g["VL_OPR"] - g["VL_BC"], 2)
+                if vl_red < 0:
+                    vl_red = 0.0
+            else:
+                vl_red = 0.0
             novo = self.novo_registro("C190", pai=c100, depois=ancora)
             novo.campos = ["C190", g["cst"], g["cfop"], _fmt_val(g["aliq"]),
                            _fmt_val(g["VL_OPR"]), _fmt_val(g["VL_BC"]),
                            _fmt_val(g["VL_ICMS"]), _fmt_val(g["VL_BCST"]),
-                           _fmt_val(g["VL_ICMSST"]), _fmt_val(0.0),
+                           _fmt_val(g["VL_ICMSST"]), _fmt_val(vl_red),
                            _fmt_val(g["VL_IPI"]), ""]
             ancora = novo
             n_cri += 1
