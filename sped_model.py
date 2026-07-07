@@ -548,13 +548,18 @@ class SpedDocument:
         i_icmsst = self._ix("C170", "VL_ICMS_ST")
         i_ipi = self._ix("C170", "VL_IPI")
 
-        # despesas acessórias do documento (rateadas pelo valor do item)
+        # despesas acessórias do documento, rateadas entre os itens pelo valor.
+        # O rateio usa DIFERENÇA DE ACUMULADOS ARREDONDADOS: o quinhão de cada
+        # item é a variação do total rateado arredondado, de modo que a soma dos
+        # quinhões feche EXATAMENTE com `acess` (sem sobrar/faltar centavos).
         acess = (_to_num(c100.valor(self._ix("C100", "VL_FRT")))
                  + _to_num(c100.valor(self._ix("C100", "VL_SEG")))
                  + _to_num(c100.valor(self._ix("C100", "VL_OUT_DA"))))
         soma_item = sum(_to_num(it.valor(i_item)) for it in c170) or 1.0
 
         grupos = {}
+        valor_acum = 0.0
+        rateio_acum = 0.0
         for it in c170:
             cst = it.valor(i_cst)
             cfop = it.valor(i_cfop)
@@ -567,7 +572,13 @@ class SpedDocument:
                      "VL_BCST": 0.0, "VL_ICMSST": 0.0, "VL_IPI": 0.0}
                 grupos[chave] = g
             vit = _to_num(it.valor(i_item))
-            rateio = round(acess * vit / soma_item, 2) if acess else 0.0
+            if acess:
+                valor_acum += vit
+                ideal = round(acess * valor_acum / soma_item, 2)
+                rateio = round(ideal - rateio_acum, 2)
+                rateio_acum = ideal
+            else:
+                rateio = 0.0
             g["VL_OPR"] += (vit - _to_num(it.valor(i_desc)) + rateio
                             + _to_num(it.valor(i_ipi))
                             + _to_num(it.valor(i_icmsst)))

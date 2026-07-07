@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.9.1] - 2026-07-02
+
+### Corrigido
+- **Rateio de despesas acessórias no recálculo do C190.** Frete/seguro/outras
+  despesas do C100 eram rateados arredondando o quinhão de cada item
+  isoladamente, e a soma dos quinhões não fechava com o total (sobra/falta de
+  centavos — ex.: 1,50 de VL_OUT_DA distribuído como 1,52). Agora o rateio usa a
+  diferença de acumulados arredondados, de modo que a soma dos VL_OPR do C190
+  bate exatamente com o total dos itens mais as despesas acessórias.
+
 ## [0.9.0] - 2026-07-02
 
 ### Adicionado
