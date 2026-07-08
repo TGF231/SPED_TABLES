@@ -852,6 +852,76 @@ class BlocoWidget(QWidget):
 # ---------------------------------------------------------------------------
 # Diálogo de resultado da conferência de entradas (NF-e 55)
 # ---------------------------------------------------------------------------
+class DialogoConfC190(QDialog):
+    """Resultado da conferência C190 × XML (agrupada pela classificação do
+    C170). Mostra as divergências por grupo e permite exportar em CSV."""
+
+    COLS = ["nNF", "Grupo (CFOP·CST·alíq)", "Campo", "Valor XML",
+            "Valor SPED", "Diferença"]
+
+    def __init__(self, resultado, parent=None):
+        super().__init__(parent)
+        self.resultado = resultado
+        self.setWindowTitle("Conferência C190 × XML")
+        self.resize(820, 560)
+        lay = QVBoxLayout(self)
+
+        r = resultado["resumo"]
+        resumo = QLabel(
+            "Documentos casados: %d   ·   Grupos conferidos: %d   ·   "
+            "Divergências: %d\nGrupos só no C190: %d   ·   só no XML: %d   ·   "
+            "docs sem XML: %d   ·   itens do XML sem C170: %d"
+            % (r["docs_casados"], r["grupos_conferidos"], r["divergencias"],
+               r["grupos_so_c190"], r["grupos_so_xml"], r["docs_sem_xml"],
+               r["itens_sem_c170"]))
+        lay.addWidget(resumo)
+
+        self.tab = QTableWidget(0, len(self.COLS))
+        self.tab.setHorizontalHeaderLabels(self.COLS)
+        self.tab.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
+        self.tab.setAlternatingRowColors(True)
+        self.tab.setSortingEnabled(True)
+        self.tab.horizontalHeader().setStretchLastSection(True)
+        divs = resultado["divergencias"]
+        self.tab.setRowCount(len(divs))
+        for i, d in enumerate(divs):
+            vals = [d.nnf, d.nitem, d.campo, _br(d.valor_xml),
+                    _br(d.valor_sped), _br((d.valor_xml or 0) - (d.valor_sped or 0))]
+            for c, v in enumerate(vals):
+                self.tab.setItem(i, c, QTableWidgetItem(str(v)))
+        self.tab.resizeColumnsToContents()
+        lay.addWidget(self.tab, 1)
+
+        rod = QHBoxLayout()
+        rod.addStretch(1)
+        b_csv = QPushButton("Exportar CSV")
+        b_csv.clicked.connect(self._exportar)
+        b_fechar = QPushButton("Fechar")
+        b_fechar.clicked.connect(self.accept)
+        rod.addWidget(b_csv)
+        rod.addWidget(b_fechar)
+        lay.addLayout(rod)
+
+    def _exportar(self):
+        caminho, _ = QFileDialog.getSaveFileName(
+            self, "Exportar conferência C190", "conferencia_c190.csv",
+            "CSV (*.csv)")
+        if not caminho:
+            return
+        try:
+            with open(caminho, "w", encoding="latin-1", newline="") as fh:
+                fh.write(";".join(self.COLS) + "\r\n")
+                for d in self.resultado["divergencias"]:
+                    fh.write(";".join([
+                        d.nnf or "", d.nitem or "", d.campo or "",
+                        _br(d.valor_xml), _br(d.valor_sped),
+                        _br((d.valor_xml or 0) - (d.valor_sped or 0))]) + "\r\n")
+        except Exception as exc:  # noqa: BLE001
+            QMessageBox.critical(self, "Exportar", str(exc))
+            return
+        QMessageBox.information(self, "Exportar", "Exportado:\n%s" % caminho)
+
+
 class DialogoConferencia(QDialog):
     """Mostra o resultado da conferência item XML ↔ C170 e permite exportar."""
 
@@ -2007,6 +2077,11 @@ class JanelaPrincipal(QMainWindow):
         self.act_revisar.triggered.connect(self.revisar_erros)
         self.act_revisar.setEnabled(False)
         # ações que podem não vir num .ui antigo são criadas aqui
+        if not hasattr(self, "act_conferir_c190"):
+            self.act_conferir_c190 = QAction(
+                "Conferir C190 (ICMS) com XMLs…", self)
+        self.act_conferir_c190.triggered.connect(self.conferir_c190_xml)
+        self.act_conferir_c190.setEnabled(False)
         if not hasattr(self, "act_correlacoes_cfop"):
             self.act_correlacoes_cfop = QAction(
                 "Correlações de CFOP (entradas)…", self)
@@ -2050,6 +2125,7 @@ class JanelaPrincipal(QMainWindow):
         menu.addAction(self.act_alterar_datas)
         menu.addSeparator()
         menu.addAction(self.act_conferir_55)
+        menu.addAction(self.act_conferir_c190)
         menu.addAction(self.act_correlacoes_cfop)
         menu.addAction(self.act_verificar_cst)
         menu.addSeparator()
@@ -2110,6 +2186,11 @@ class JanelaPrincipal(QMainWindow):
             "Conferir entradas (NF-e 55) com XMLs…", self)
         self.act_conferir_55.triggered.connect(self.conferir_entradas_55)
         self.act_conferir_55.setEnabled(False)
+
+        self.act_conferir_c190 = QAction(
+            "Conferir C190 (ICMS) com XMLs…", self)
+        self.act_conferir_c190.triggered.connect(self.conferir_c190_xml)
+        self.act_conferir_c190.setEnabled(False)
 
         self.act_revisar = QAction("Revisar erros…", self)
         self.act_revisar.triggered.connect(self.revisar_erros)
@@ -2264,6 +2345,33 @@ class JanelaPrincipal(QMainWindow):
             % (resultado["resumo"]["itens_conferidos"],
                resultado["resumo"]["divergencias"]))
         DialogoConferencia(resultado, self).exec()
+
+    def conferir_c190_xml(self):
+        """Compara os C190 (ICMS analítico) com os XMLs, agrupando os itens do
+        XML pela classificação do C170 (CFOP/CST/alíquota de entrada), casada
+        por nItem — resolvendo a diferença de CFOP entre XML e SPED."""
+        if not self.doc:
+            return
+        pasta = QFileDialog.getExistingDirectory(
+            self, "Selecione a pasta com os XMLs (entradas/saídas)")
+        if not pasta:
+            return
+        try:
+            nfes, _erros = xf.ler_pasta(pasta)
+        except Exception as e:  # noqa: BLE001
+            QMessageBox.critical(self, "Conferir C190",
+                                 "Erro ao ler a pasta:\n%s" % e)
+            return
+        if not nfes:
+            QMessageBox.warning(self, "Conferir C190",
+                                "Nenhum XML encontrado na pasta.")
+            return
+        resultado = cf.conferir_c190_com_xml(self.doc, nfes)
+        r = resultado["resumo"]
+        self.statusBar().showMessage(
+            "C190 × XML: %d documentos, %d grupos, %d divergência(s)."
+            % (r["docs_casados"], r["grupos_conferidos"], r["divergencias"]))
+        DialogoConfC190(resultado, self).exec()
 
     def editar_correlacoes_cfop(self):
         """Abre o editor da tabela de correlações de CFOP (saída -> entrada)."""
@@ -2484,6 +2592,7 @@ class JanelaPrincipal(QMainWindow):
         self.act_alterar_datas.setEnabled(True)
         self.act_verificar_cst.setEnabled(doc.layout == "CONTRIB")
         self.act_conferir_55.setEnabled(True)
+        self.act_conferir_c190.setEnabled(doc.layout == "ICMS")
         self.act_revisar.setEnabled(True)
         nome = os.path.basename(caminho)
         tipo = "EFD Contribuições" if doc.layout == "CONTRIB" \

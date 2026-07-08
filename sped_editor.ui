@@ -96,6 +96,11 @@
     <string>Conferir entradas (NF-e 55) com XMLs…</string>
    </property>
   </action>
+  <action name="act_conferir_c190">
+   <property name="text">
+    <string>Conferir C190 (ICMS) com XMLs…</string>
+   </property>
+  </action>
   <action name="act_correlacoes_cfop">
    <property name="text">
     <string>Correlações de CFOP (entradas)…</string>

@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.11.0] - 2026-07-03
+
+### Adicionado
+- **Conferir C190 (ICMS) com XMLs** (Ferramentas, EFD ICMS/IPI): compara os
+  registros C190 com os XMLs, para entradas e saídas. Como o CFOP do XML é o de
+  saída do fornecedor (diferente do CFOP de entrada escriturado), os itens do
+  XML são agrupados pela **classificação do C170** (CST/CFOP/alíquota de ICMS),
+  casada por **nItem** — assim os grupos do C190 (ex.: CFOP 1101 e 1102, quando o
+  XML só traz 5102) são reconstruídos sem perder a correlação de cada item.
+  Compara VL_OPR, VL_BC_ICMS e VL_ICMS por grupo (com o mesmo rateio de despesas
+  acessórias do recálculo do C190) e exporta as divergências em CSV.
+- O parser de XML passou a extrair os campos de **ICMS por item** (CST, base,
+  alíquota, valor, ST e IPI), além de PIS/COFINS.
+
 ## [0.10.1] - 2026-07-03
 
 ### Corrigido

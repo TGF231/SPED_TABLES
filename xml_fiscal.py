@@ -53,7 +53,9 @@ def norm(s):
 class ItemNFe:
     __slots__ = ("nitem", "cprod", "xprod", "cfop", "vprod", "vdesc",
                  "pis_cst", "pis_vbc", "pis_aliq", "pis_vpis",
-                 "cofins_cst", "cofins_vbc", "cofins_aliq", "cofins_vcofins")
+                 "cofins_cst", "cofins_vbc", "cofins_aliq", "cofins_vcofins",
+                 "icms_cst", "icms_vbc", "icms_aliq", "icms_vicms",
+                 "icms_vbcst", "icms_vicmsst", "vipi")
 
     def __init__(self, **k):
         for s in self.__slots__:
@@ -114,11 +116,30 @@ def ler_nfe(caminho):
             continue
         pis = det.find(".//PIS/*")
         cof = det.find(".//COFINS/*")
+        # grupo de ICMS do item: o elemento dentro de <ICMS> varia (ICMS00,
+        # ICMS20, ICMS60, ICMSSN..., etc.); lê o primeiro filho, seja qual for.
+        icms = det.find(".//ICMS/*")
+        orig = (icms.findtext("orig") if icms is not None else None) or ""
+        cst_ic = (icms.findtext("CST") or icms.findtext("CSOSN")) \
+            if icms is not None else None
+        icms_cst = (orig + cst_ic) if cst_ic else None
+        vipi = 0.0
+        ipi = det.find(".//IPI")
+        if ipi is not None:
+            vipi = _num(ipi.findtext(".//vIPI"))
         nfe.itens.append(ItemNFe(
             nitem=det.get("nItem"),
             cprod=prod.findtext("cProd"), xprod=prod.findtext("xProd"),
             cfop=prod.findtext("CFOP"), vprod=_num(prod.findtext("vProd")),
             vdesc=_num(prod.findtext("vDesc")),
+            icms_cst=icms_cst,
+            icms_vbc=_num(icms.findtext("vBC")) if icms is not None else 0.0,
+            icms_aliq=(icms.findtext("pICMS") if icms is not None else None),
+            icms_vicms=_num(icms.findtext("vICMS")) if icms is not None else 0.0,
+            icms_vbcst=_num(icms.findtext("vBCST")) if icms is not None else 0.0,
+            icms_vicmsst=(_num(icms.findtext("vICMSST"))
+                          if icms is not None else 0.0),
+            vipi=vipi,
             pis_cst=(pis.findtext("CST") if pis is not None else None),
             pis_vbc=_num(pis.findtext("vBC")) if pis is not None else 0.0,
             pis_aliq=(pis.findtext("pPIS") if pis is not None else None),

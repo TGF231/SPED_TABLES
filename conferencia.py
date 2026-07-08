@@ -327,3 +327,135 @@ def exportar_csv(resultado, caminho):
         for d in resultado["divergencias"]:
             w.writerow(d.linha_csv())
     return caminho
+
+
+def conferir_c190_com_xml(doc, nfes, tol=0.01):
+    """
+    Compara os registros **C190** (analítico de ICMS) com os **XMLs**, para
+    entradas e saídas.
+
+    O ponto central: o CFOP do XML é o de SAÍDA do fornecedor (5xxx/6xxx),
+    diferente do CFOP de ENTRADA escriturado no SPED. Por isso o agrupamento dos
+    itens do XML NÃO usa o CFOP do XML — usa a classificação do **C170** do SPED
+    (CST_ICMS, CFOP, ALIQ_ICMS), casando XML ↔ C170 por **nItem**. Assim os
+    grupos do C190 (ex.: CFOP 1101 e 1102, quando o XML só traz 5102) são
+    reconstruídos a partir do XML preservando a correlação de cada item.
+
+    Compara, por grupo, VL_OPR, VL_BC_ICMS e VL_ICMS (valores vindos do XML)
+    contra o C190 do SPED. Retorna um dicionário com resumo e divergências.
+    """
+    i_num = doc._ix("C170", "NUM_ITEM")
+    i_cfop = doc._ix("C170", "CFOP")
+    i_cst = doc._ix("C170", "CST_ICMS")
+    i_aliq = doc._ix("C170", "ALIQ_ICMS")
+    j_cst = doc._ix("C190", "CST_ICMS")
+    j_cfop = doc._ix("C190", "CFOP")
+    j_aliq = doc._ix("C190", "ALIQ_ICMS")
+    j_opr = doc._ix("C190", "VL_OPR")
+    j_bc = doc._ix("C190", "VL_BC_ICMS")
+    j_icms = doc._ix("C190", "VL_ICMS")
+    i_mod = doc._ix("C100", "COD_MOD")
+    i_ser = doc._ix("C100", "SER")
+    i_num100 = doc._ix("C100", "NUM_DOC")
+
+    idx_xml = xf.indexar(nfes, xf.chave_doc)
+
+    divergencias = []
+    grupos_so_c190 = []
+    grupos_so_xml = []
+    docs_sem_xml = []
+    itens_sem_c170 = 0
+    docs_casados = 0
+    grupos_conf = 0
+
+    def _grp(k):
+        return "CFOP %s · CST %s · %s%%" % (k[1], k[0], k[2].replace(".", ","))
+
+    for c100 in doc.registros:
+        if c100.reg != "C100":
+            continue
+        c190s = [f for f in c100.filhos if f.reg == "C190"]
+        if not c190s:
+            continue
+        mod = xf.norm(c100.valor(i_mod))
+        ser = xf.norm(c100.valor(i_ser))
+        num = xf.norm(c100.valor(i_num100))
+        achados = idx_xml.get((mod, ser, num))
+        if not achados:
+            docs_sem_xml.append((mod, ser, num))
+            continue
+        nfe = achados[0]
+        docs_casados += 1
+
+        c170_por_item = {xf.norm(f.valor(i_num)): f
+                         for f in c100.filhos if f.reg == "C170"}
+
+        # agrupa os itens do XML pela classificação do C170 (por nItem)
+        acess = (nfe.vfrete or 0.0) + (nfe.vseg or 0.0) + (nfe.voutro or 0.0)
+        soma_vprod = sum((it.vprod or 0.0) for it in nfe.itens) or 1.0
+        grupos = {}
+        valor_acum = 0.0
+        rateio_acum = 0.0
+        for it in nfe.itens:
+            c170 = c170_por_item.get(xf.norm(it.nitem))
+            if c170 is None:
+                itens_sem_c170 += 1
+                continue
+            gk = (c170.valor(i_cst), c170.valor(i_cfop),
+                  "%.2f" % _to_num(c170.valor(i_aliq)))
+            g = grupos.setdefault(gk, {"VL_OPR": 0.0, "VL_BC": 0.0,
+                                       "VL_ICMS": 0.0})
+            vprod = it.vprod or 0.0
+            if acess:
+                valor_acum += vprod
+                ideal = round(acess * valor_acum / soma_vprod, 2)
+                rateio = round(ideal - rateio_acum, 2)
+                rateio_acum = ideal
+            else:
+                rateio = 0.0
+            g["VL_OPR"] += (vprod - (it.vdesc or 0.0) + rateio
+                            + (it.vipi or 0.0) + (it.icms_vicmsst or 0.0))
+            g["VL_BC"] += it.icms_vbc or 0.0
+            g["VL_ICMS"] += it.icms_vicms or 0.0
+
+        c190_por_key = {
+            (c.valor(j_cst), c.valor(j_cfop),
+             "%.2f" % _to_num(c.valor(j_aliq))): c for c in c190s}
+
+        for gk, g in grupos.items():
+            grupos_conf += 1
+            c = c190_por_key.get(gk)
+            if c is None:
+                grupos_so_xml.append((mod, num, _grp(gk)))
+                continue
+            comps = [("VL_OPR", g["VL_OPR"], _to_num(c.valor(j_opr))),
+                     ("VL_BC_ICMS", g["VL_BC"], _to_num(c.valor(j_bc))),
+                     ("VL_ICMS", g["VL_ICMS"], _to_num(c.valor(j_icms)))]
+            for campo, vx, vs in comps:
+                if abs(round(vx, 2) - round(vs, 2)) > tol:
+                    divergencias.append(Divergencia(
+                        mod=mod, serie=ser, nnf=num, nitem=_grp(gk),
+                        escopo="C190", campo=campo, valor_xml=round(vx, 2),
+                        valor_sped=round(vs, 2),
+                        obs="dif %s" % _fmt(round(vx - vs, 2))))
+
+        for k, c in c190_por_key.items():
+            if k not in grupos:
+                grupos_so_c190.append((mod, num, _grp(k)))
+
+    resumo = {
+        "docs_casados": docs_casados,
+        "grupos_conferidos": grupos_conf,
+        "divergencias": len(divergencias),
+        "grupos_so_c190": len(grupos_so_c190),
+        "grupos_so_xml": len(grupos_so_xml),
+        "docs_sem_xml": len(docs_sem_xml),
+        "itens_sem_c170": itens_sem_c170,
+    }
+    return {
+        "resumo": resumo,
+        "divergencias": divergencias,
+        "grupos_so_c190": grupos_so_c190,
+        "grupos_so_xml": grupos_so_xml,
+        "docs_sem_xml": docs_sem_xml,
+    }
