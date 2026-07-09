@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.13.1] - 2026-07-04
+
+### Adicionado
+- **Recalcular totais do C100** (botão à esquerda de adicionar/remover, na grade
+  de C100): recompõe os totais do documento a partir dos itens C170 — valor das
+  mercadorias, desconto, base e valor de ICMS, ICMS-ST, IPI e (no EFD
+  Contribuições) PIS/COFINS —, e recalcula o VL_DOC mantendo frete, seguro e
+  outras despesas do C100. Recalcula o documento selecionado ou, se nenhum
+  estiver selecionado, oferece recalcular todos os C100 com itens.
+
 ## [0.13.0] - 2026-07-04
 
 ### Adicionado

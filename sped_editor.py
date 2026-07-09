@@ -275,6 +275,16 @@ class MasterDetailWidget(QWidget):
                           and self.pai is not None and self.pai.reg == "C100")
         self.btn_recalc.setVisible(mostrar_recalc)
 
+        # botão de recálculo dos totais do C100 a partir dos itens C170,
+        # só na grade de C100
+        self.btn_recalc_totais = QPushButton("🔄 Recalcular totais")
+        self.btn_recalc_totais.setToolTip(
+            "Recalcula os totais do C100 selecionado (mercadorias, desconto, "
+            "base e valor de ICMS, ICMS-ST, IPI, PIS/COFINS e VL_DOC) somando "
+            "os itens C170")
+        self.btn_recalc_totais.clicked.connect(self._recalcular_totais_c100)
+        self.btn_recalc_totais.setVisible(self.tipo == "C100")
+
         barra.addWidget(self.lbl)
         barra.addStretch(1)
         barra.addWidget(self.lbl_item, 2)
@@ -287,6 +297,7 @@ class MasterDetailWidget(QWidget):
         barra.addWidget(self.combo_filtro)
         barra.addSpacing(12)
         barra.addWidget(self.btn_recalc)
+        barra.addWidget(self.btn_recalc_totais)
         barra.addWidget(btn_add)
         barra.addWidget(btn_del)
         layout.addLayout(barra)
@@ -840,6 +851,47 @@ class MasterDetailWidget(QWidget):
         self.recarregar()
         if self.on_change:
             self.on_change()
+
+    def _recalcular_totais_c100(self):
+        """Recalcula os totais do C100 selecionado (ou de todos) a partir dos
+        itens C170."""
+        row = self.tabela.currentRow()
+        reg = self._registro_da_linha(row) if row >= 0 else None
+        if reg is None or reg.reg != "C100":
+            resp = QMessageBox.question(
+                self, "Recalcular totais",
+                "Nenhum documento C100 selecionado.\n\nDeseja recalcular os "
+                "totais de TODOS os C100 com itens?",
+                QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
+            if resp == QMessageBox.StandardButton.Yes:
+                n = self.doc.recalcular_totais_todos_c100()
+                self.recarregar()
+                if self.on_change:
+                    self.on_change()
+                QMessageBox.information(
+                    self, "Recalcular totais",
+                    "Totais recalculados em %d documento(s) C100." % n)
+            return
+        if not any(f.reg == "C170" for f in reg.filhos):
+            QMessageBox.warning(
+                self, "Recalcular totais",
+                "Este C100 não possui itens C170 para somar.")
+            return
+        tot = self.doc.recalcular_totais_c100(reg)
+        self.recarregar()
+        if self.on_change:
+            self.on_change()
+        QMessageBox.information(
+            self, "Recalcular totais",
+            "Totais do C100 recalculados a partir dos itens C170:\n\n"
+            "• Mercadorias (VL_MERC): %s\n"
+            "• Base de ICMS (VL_BC_ICMS): %s\n"
+            "• Valor do ICMS (VL_ICMS): %s\n"
+            "• Valor do documento (VL_DOC): %s\n\n"
+            "Frete, seguro e outras despesas do C100 foram mantidos no cálculo "
+            "do VL_DOC."
+            % (_br(tot.get("VL_MERC", 0.0)), _br(tot.get("VL_BC_ICMS", 0.0)),
+               _br(tot.get("VL_ICMS", 0.0)), _br(tot.get("VL_DOC", 0.0))))
 
     def _recalcular_c190(self):
         """Recalcula os C190 do C100 pai a partir dos itens C170."""

@@ -216,6 +216,18 @@ padrão e salvar. As correlações ficam em **`correlacoes_cfop.json`** (ao lado
 programa); o aplicativo já vem com um conjunto inicial que cobre os casos mais
 comuns e pode ser ajustado à realidade da empresa.
 
+### Recalcular totais do C100 a partir dos itens C170
+
+Na grade **C100**, ao lado de *Adicionar/Remover linha*, o botão **🔄 Recalcular
+totais** recompõe os totais do documento selecionado somando os itens **C170**:
+valor das mercadorias (VL_MERC), desconto, base e valor de ICMS, ICMS-ST, IPI e —
+no EFD Contribuições — PIS/COFINS. Em seguida recalcula o **VL_DOC**
+(`VL_MERC − VL_DESC − VL_ABAT_NT + VL_FRT + VL_SEG + VL_OUT_DA + VL_IPI +
+VL_ICMS_ST`), mantendo frete, seguro e outras despesas do próprio C100. Útil
+depois de editar itens C170, quando as bases de cálculo do documento mudam. Se
+nenhum C100 estiver selecionado, o programa oferece recalcular **todos** os
+documentos com itens.
+
 ### Recalcular C190 (analítico) a partir dos itens C170
 
 Na grade **C190** de um documento C100 (EFD ICMS/IPI), ao lado de *Adicionar/

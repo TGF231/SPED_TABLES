@@ -796,7 +796,64 @@ class SpedDocument:
         self.atualizar_bloco9_inplace()
         return {"grupos": len(chaves), "removidos": n_rem, "criados": n_cri}
 
-    def consolidar_c175_de_itens(self, c100, itens, atualizar_c100=True):
+    # somas diretas: campo do C100 <- soma do campo correspondente nos C170
+    TOTAIS_C100 = {
+        "VL_MERC": "VL_ITEM", "VL_DESC": "VL_DESC",
+        "VL_BC_ICMS": "VL_BC_ICMS", "VL_ICMS": "VL_ICMS",
+        "VL_BC_ICMS_ST": "VL_BC_ICMS_ST", "VL_ICMS_ST": "VL_ICMS_ST",
+        "VL_IPI": "VL_IPI", "VL_PIS": "VL_PIS", "VL_COFINS": "VL_COFINS",
+    }
+
+    def recalcular_totais_c100(self, c100):
+        """Recalcula os totais de um C100 a partir dos seus itens C170.
+
+        Soma, dos C170, os campos de mercadorias, desconto, base e valor de ICMS,
+        ICMS-ST, IPI e (no EFD Contribuições) PIS/COFINS, gravando cada total no
+        campo correspondente do C100 (apenas os que existem no layout). Por fim,
+        recompõe o VL_DOC:
+            VL_DOC = VL_MERC − VL_DESC − VL_ABAT_NT + VL_FRT + VL_SEG
+                     + VL_OUT_DA + VL_IPI + VL_ICMS_ST
+        mantendo frete, seguro e outras despesas (que são do documento, não dos
+        itens). Devolve um dicionário {campo: total} com o que foi recalculado.
+        """
+        c170s = [f for f in c100.filhos if f.reg == "C170"]
+        tot = {}
+        for campo_c100, campo_c170 in self.TOTAIS_C100.items():
+            i100 = self._ix("C100", campo_c100)
+            i170 = self._ix("C170", campo_c170)
+            if i100 is None or i170 is None:
+                continue
+            s = round(sum(_to_num(f.valor(i170)) for f in c170s), 2)
+            tot[campo_c100] = s
+            c100.set_valor(i100, _fmt_val(s))
+
+        def c100v(nome):
+            i = self._ix("C100", nome)
+            return _to_num(c100.valor(i)) if i is not None else 0.0
+
+        i_doc = self._ix("C100", "VL_DOC")
+        if i_doc is not None:
+            vl_doc = (tot.get("VL_MERC", c100v("VL_MERC"))
+                      - tot.get("VL_DESC", c100v("VL_DESC"))
+                      - c100v("VL_ABAT_NT")
+                      + c100v("VL_FRT") + c100v("VL_SEG") + c100v("VL_OUT_DA")
+                      + tot.get("VL_IPI", c100v("VL_IPI"))
+                      + tot.get("VL_ICMS_ST", c100v("VL_ICMS_ST")))
+            vl_doc = round(vl_doc, 2)
+            tot["VL_DOC"] = vl_doc
+            c100.set_valor(i_doc, _fmt_val(vl_doc))
+        return tot
+
+    def recalcular_totais_todos_c100(self):
+        """Recalcula os totais de todos os C100 que possuem itens C170.
+        Devolve a quantidade de documentos recalculados."""
+        n = 0
+        for c100 in self.registros:
+            if c100.reg == "C100" and any(f.reg == "C170"
+                                          for f in c100.filhos):
+                self.recalcular_totais_c100(c100)
+                n += 1
+        return n
         """
         (Apenas EFD Contribuições) Gera os registros **C175** de um **C100** a
         partir de uma lista de itens (tipicamente vinda dos XMLs dos cupons),
