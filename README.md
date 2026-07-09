@@ -191,8 +191,10 @@ documento** (VL_DOC × vNF). As comparações são parametrizáveis em
 
 O resultado abre numa janela com o resumo (documentos casados, itens conferidos,
 divergências, itens sem C170, notas sem XML) e a lista de divergências, que pode
-ser **exportada em CSV**. Itens presentes no XML mas ausentes no SPED — e
-vice-versa — são identificados individualmente.
+ser **exportada em CSV**. Além de VL_ITEM e VL_DESC, a conferência verifica o
+**CST de ICMS** e os **valores de ICMS** (base e imposto) de cada item — que não
+podem divergir entre o XML e o SPED. Itens presentes no XML mas ausentes no
+SPED — e vice-versa — são identificados individualmente.
 
 #### Correlação de CFOP (saída do fornecedor → entrada do comprador)
 
@@ -247,6 +249,21 @@ da linha, o nome é atualizado na hora. A busca é indexada e se refaz sozinha
 quando um registro 0200 é editado, criado ou removido.
 
 ### Página inicial (Resumo)
+
+A aba **📋 Resumo** reúne, no topo, os dados do registro 0000 (razão social,
+CNPJ, IE, UF, período e layout) e os metadados do arquivo. Em seguida vem a
+**apuração do período** e uma **lista dos registros** (agrupada por bloco, com a
+quantidade de cada tipo).
+
+A apuração depende do layout:
+
+- **EFD ICMS/IPI:** consolidação das **entradas** e das **saídas** por
+  CST/CFOP/alíquota (apenas os totais, sem listar documentos individuais) e a
+  **apuração do ICMS de operações próprias (E110)** — débitos, créditos, saldo
+  credor anterior, ICMS a recolher e saldo credor a transportar.
+- **EFD Contribuições:** **consolidação por CST** de PIS/COFINS, separando
+  receitas/saídas, aquisições/custos/despesas e outras operações, com valor do
+  item e bases de PIS e COFINS.
 
 Ao abrir um arquivo, a primeira aba **📋 Resumo** mostra o cabeçalho do registro
 **0000** (nome do contribuinte, CNPJ, IE, UF e o período DT_INI–DT_FIN), o

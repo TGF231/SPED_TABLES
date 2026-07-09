@@ -1,5 +1,23 @@
 # Changelog
 
+## [0.12.0] - 2026-07-03
+
+### Alterado
+- **Aba Resumo reformulada.** A contagem de registros deixou de ser uma tabela e
+  passou a ser uma **lista simples** agrupada por bloco. A aba agora traz também
+  a **apuração do período**:
+  - *EFD ICMS/IPI:* consolidação das **entradas** e das **saídas** por
+    CST/CFOP/alíquota (só os totais, sem listar documentos), e a **apuração do
+    ICMS de operações próprias (E110)** — débitos, créditos, saldo credor
+    anterior, ICMS a recolher e saldo a transportar.
+  - *EFD Contribuições:* **consolidação por CST** de PIS/COFINS, separando
+    receitas/saídas, aquisições/custos e outras operações (valor do item, base
+    de PIS e base de COFINS).
+- A **conferência de entradas (NF-e 55 × C170)** passou a verificar também o
+  **CST de ICMS** e os **valores de ICMS** (base e imposto) — antes só conferia
+  VL_ITEM/VL_DESC e a correlação de CFOP. CST e valores de ICMS não podem
+  divergir entre o XML e o SPED.
+
 ## [0.11.0] - 2026-07-03
 
 ### Adicionado

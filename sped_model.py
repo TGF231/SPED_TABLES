@@ -543,6 +543,109 @@ class SpedDocument:
                 uids.append(r.uid)
         return self.COLUNAS_RELATORIO_C190, linhas, uids, self.EDIT_C190
 
+    # ------------------------------------------------- apuração / resumos
+    def resumo_c190(self, operacao):
+        """Consolida os C190 por (CST_ICMS, CFOP, ALIQ_ICMS) para a operação
+        ('0'=entrada, '1'=saída). Devolve (linhas, totais); cada linha é
+        (cst, cfop, aliq, vl_opr, vl_bc, vl_icms, vl_bc_st, vl_icms_st)."""
+        from collections import defaultdict
+        i_op = self._ix("C100", "IND_OPER")
+        jc = self._ix("C190", "CST_ICMS")
+        jf = self._ix("C190", "CFOP")
+        ja = self._ix("C190", "ALIQ_ICMS")
+        jo = self._ix("C190", "VL_OPR")
+        jb = self._ix("C190", "VL_BC_ICMS")
+        ji = self._ix("C190", "VL_ICMS")
+        jbs = self._ix("C190", "VL_BC_ICMS_ST")
+        jis = self._ix("C190", "VL_ICMS_ST")
+        g = defaultdict(lambda: [0.0] * 5)
+        for c in self.registros:
+            if c.reg != "C100":
+                continue
+            if (c.valor(i_op) or "").strip() != operacao:
+                continue
+            for f in c.filhos:
+                if f.reg != "C190":
+                    continue
+                k = (f.valor(jc), f.valor(jf), "%.2f" % _to_num(f.valor(ja)))
+                v = g[k]
+                v[0] += _to_num(f.valor(jo))
+                v[1] += _to_num(f.valor(jb))
+                v[2] += _to_num(f.valor(ji))
+                v[3] += _to_num(f.valor(jbs))
+                v[4] += _to_num(f.valor(jis))
+        linhas = []
+        tot = [0.0] * 5
+        for k in sorted(g, key=lambda x: (x[0], x[1], float(x[2]))):
+            v = g[k]
+            linhas.append((k[0], k[1], float(k[2]), v[0], v[1], v[2],
+                           v[3], v[4]))
+            for i in range(5):
+                tot[i] += v[i]
+        return linhas, tot
+
+    def apuracao_e110(self):
+        """Campos do registro E110 (apuração do ICMS de operações próprias),
+        como dicionário nomeado; None se não houver E110."""
+        e = next((r for r in self.registros if r.reg == "E110"), None)
+        if e is None:
+            return None
+        campos = ["VL_TOT_DEBITOS", "VL_AJ_DEBITOS", "VL_TOT_AJ_DEBITOS",
+                  "VL_ESTORNOS_CRED", "VL_TOT_CREDITOS", "VL_AJ_CREDITOS",
+                  "VL_TOT_AJ_CREDITOS", "VL_ESTORNOS_DEB", "VL_SLD_CREDOR_ANT",
+                  "VL_SLD_APURADO", "VL_TOT_DED", "VL_ICMS_RECOLHER",
+                  "VL_SLD_CREDOR_TRANSPORTAR", "DEB_ESP"]
+        out = {}
+        for c in campos:
+            ix = self._ix("E110", c)
+            if ix is not None:
+                out[c] = _to_num(e.valor(ix))
+        return out
+
+    def consolidacao_cst_pis_cofins(self):
+        """Consolida C170 (aquisições) e C175 (receitas) por CST de PIS,
+        separando receitas/saídas (CST < 50), aquisições/custos (CST 50–98) e
+        outras (99). Cada linha: (cst, vl_item, base_pis, base_cofins)."""
+        from collections import defaultdict
+        g = defaultdict(lambda: [0.0, 0.0, 0.0])
+        idx = {
+            "C170": (self._ix("C170", "CST_PIS"), self._ix("C170", "VL_ITEM"),
+                     self._ix("C170", "VL_BC_PIS"),
+                     self._ix("C170", "VL_BC_COFINS")),
+            "C175": (self._ix("C175", "CST_PIS"), self._ix("C175", "VL_OPR"),
+                     self._ix("C175", "VL_BC_PIS"),
+                     self._ix("C175", "VL_BC_COFINS")),
+        }
+        for r in self.registros:
+            cfg = idx.get(r.reg)
+            if not cfg or cfg[0] is None:
+                continue
+            ic, iv, ip, icf = cfg
+            cst = (r.valor(ic) or "").strip()
+            v = g[cst]
+            v[0] += _to_num(r.valor(iv))
+            v[1] += _to_num(r.valor(ip)) if ip is not None else 0.0
+            v[2] += _to_num(r.valor(icf)) if icf is not None else 0.0
+        receitas, aquisicoes, outras = [], [], []
+        tr = [0.0, 0.0, 0.0]
+        ta = [0.0, 0.0, 0.0]
+        for cst in sorted(g):
+            v = g[cst]
+            linha = (cst, v[0], v[1], v[2])
+            if cst == "99":
+                outras.append(linha)
+            elif cst < "50":
+                receitas.append(linha)
+                for i in range(3):
+                    tr[i] += v[i]
+            else:
+                aquisicoes.append(linha)
+                for i in range(3):
+                    ta[i] += v[i]
+        return {"receitas": receitas, "tot_receitas": tr,
+                "aquisicoes": aquisicoes, "tot_aquisicoes": ta,
+                "outras": outras}
+
     # ----------------------------------------------- consolidação do C190
     def _ix(self, tipo, nome):
         """Índice da coluna `nome` no layout atual para o registro `tipo`."""

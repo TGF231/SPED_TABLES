@@ -174,6 +174,8 @@ def salvar_correlacoes(mapa, caminho):
 COMPARACOES_PADRAO = [
     ("VL_ITEM", lambda it: it.vprod, "VL_ITEM", 0.01),
     ("VL_DESC", lambda it: it.vdesc, "VL_DESC", 0.01),
+    ("VL_BC_ICMS", lambda it: it.icms_vbc or 0.0, "VL_BC_ICMS", 0.01),
+    ("VL_ICMS", lambda it: it.icms_vicms or 0.0, "VL_ICMS", 0.01),
 ]
 
 
@@ -206,6 +208,7 @@ def conferir_entradas_55(doc, nfes, comparacoes=None, tol_doc=0.01,
     iC_vdoc = doc._ix("C100", "VL_DOC")
     i170_item = doc._ix("C170", "NUM_ITEM")
     i170_cfop = doc._ix("C170", "CFOP")
+    i170_cst = doc._ix("C170", "CST_ICMS")
     idx_cmp = [(rot, fn, doc._ix("C170", campo), t)
                for (rot, fn, campo, t) in comparacoes]
     correl = normalizar_correlacoes(correlacoes_cfop) if correlacoes_cfop \
@@ -295,6 +298,18 @@ def conferir_entradas_55(doc, nfes, comparacoes=None, tol_doc=0.01,
                     valor_xml=cfop_x, valor_sped=cfop_s,
                     obs="sem correlação cadastrada para o CFOP de saída %s"
                         % cfop_x))
+
+        # CST de ICMS: deve ser o mesmo no XML e no C170 (situação tributária
+        # da mercadoria não muda entre saída do fornecedor e entrada)
+        if i170_cst is not None and it.icms_cst:
+            cst_x = _so_digitos(it.icms_cst)
+            cst_s = _so_digitos(c170.valor(i170_cst))
+            if cst_x and cst_s and cst_x != cst_s:
+                divergencias.append(Divergencia(
+                    mod=nfe.mod, serie=nfe.serie, nnf=nfe.nnf,
+                    nitem=it.nitem, escopo="item", campo="CST_ICMS",
+                    valor_xml=cst_x, valor_sped=cst_s,
+                    obs="CST de ICMS divergente entre XML e SPED"))
 
     resumo = {
         "xml_55": len(nfes55),
