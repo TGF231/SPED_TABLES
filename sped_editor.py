@@ -118,7 +118,33 @@ class GerenciadorOrdemAbas:
     padrão."""
 
     def __init__(self):
-        self._ordens = {}   # chave de contexto -> [ids na ordem desejada]
+        self._ordens = {}    # chave de contexto -> [ids na ordem desejada]
+        self._fixada = {}    # chave -> id da aba a exibir primeiro ao trocar
+        self._fechadas = {}  # chave -> set de ids ocultos até "resetar"
+
+    # -- preferências por contexto (fixar / fechar / resetar) --------------
+    def fixar(self, chave, ident):
+        """Fixa (ou desfixa, se já fixada) a aba `ident` como a preferida do
+        contexto — a que deve aparecer primeiro ao trocar de registro pai."""
+        if self._fixada.get(chave) == ident:
+            self._fixada.pop(chave, None)
+        else:
+            self._fixada[chave] = ident
+
+    def fixada(self, chave):
+        return self._fixada.get(chave)
+
+    def fechar(self, chave, ident):
+        self._fechadas.setdefault(chave, set()).add(ident)
+
+    def fechadas(self, chave):
+        return self._fechadas.get(chave, set())
+
+    def resetar(self, chave):
+        """Remove ordem, fixação e abas fechadas do contexto."""
+        self._ordens.pop(chave, None)
+        self._fixada.pop(chave, None)
+        self._fechadas.pop(chave, None)
 
     def registrar(self, tabw, chave, ids):
         """Habilita o arrasto de abas, reaplica a ordem já escolhida para esta
@@ -659,8 +685,14 @@ class MasterDetailWidget(QWidget):
             self.area_detalhe.setVisible(False)
             return
 
-        # uma sub-aba por tipo de filho
-        tipos = list(self.doc.tipos_filhos(registro))
+        chave_ctx = "det:%s" % self.tipo
+        fechadas = (self._ger_abas.fechadas(chave_ctx)
+                    if self._ger_abas is not None else set())
+        # uma sub-aba por tipo de filho (exceto os tipos "fechados")
+        todos = list(self.doc.tipos_filhos(registro))
+        tipos = [t for t in todos if t not in fechadas]
+        if not tipos:                      # todos fechados: mostra tudo
+            tipos = todos
         for tipo_filho in tipos:
             def make_provider(reg=registro, t=tipo_filho):
                 return lambda: self.doc.filhos_por_tipo(reg, t)
@@ -670,14 +702,56 @@ class MasterDetailWidget(QWidget):
                 pai=registro, on_change=self.on_change,
                 gerenciador=self._ger_abas)
             n = len(self.doc.filhos_por_tipo(registro, tipo_filho))
-            rotulo = "%s (%d)" % (tipo_filho, n)
-            self.area_detalhe.addTab(sub, rotulo)
+            self.area_detalhe.addTab(sub, "%s (%d)" % (tipo_filho, n))
 
         self.area_detalhe.setVisible(True)
         # permite reordenar as sub-abas de detalhe (ordem por tipo do master)
         if self._ger_abas is not None:
-            self._ger_abas.registrar(
-                self.area_detalhe, "det:%s" % self.tipo, tipos)
+            self._ger_abas.registrar(self.area_detalhe, chave_ctx, tipos)
+            # menu de contexto (fixar / fechar / resetar), ligado uma vez
+            bar = self.area_detalhe.tabBar()
+            if not getattr(self.area_detalhe, "_menu_conectado", False):
+                bar.setContextMenuPolicy(
+                    Qt.ContextMenuPolicy.CustomContextMenu)
+                bar.customContextMenuRequested.connect(
+                    lambda pos: self._menu_abas(pos, chave_ctx))
+                self.area_detalhe._menu_conectado = True
+            # exibe primeiro a aba fixada, se existir neste documento
+            fix = self._ger_abas.fixada(chave_ctx)
+            if fix is not None:
+                for i in range(self.area_detalhe.tabBar().count()):
+                    if self.area_detalhe.tabBar().tabData(i) == fix:
+                        self.area_detalhe.setCurrentIndex(i)
+                        break
+            else:
+                self.area_detalhe.setCurrentIndex(0)
+
+    def _menu_abas(self, pos, chave_ctx):
+        """Menu de contexto das sub-abas: fixar/desfixar, fechar, resetar."""
+        bar = self.area_detalhe.tabBar()
+        idx = bar.tabAt(pos)
+        if idx < 0:
+            return
+        ident = bar.tabData(idx)
+        menu = QMenu(self.area_detalhe)
+        fixada = self._ger_abas.fixada(chave_ctx)
+        act_fixar = menu.addAction(
+            "Desafixar aba" if fixada == ident else "Fixar aba (exibir 1ª)")
+        act_fechar = menu.addAction("Fechar aba")
+        menu.addSeparator()
+        act_reset = menu.addAction("Resetar abas")
+        escolha = menu.exec(bar.mapToGlobal(pos))
+        if escolha == act_fixar:
+            self._ger_abas.fixar(chave_ctx, ident)
+        elif escolha == act_fechar:
+            self._ger_abas.fechar(chave_ctx, ident)
+        elif escolha == act_reset:
+            self._ger_abas.resetar(chave_ctx)
+        else:
+            return
+        # reconstrói o detalhe do registro atual para refletir a mudança
+        r = self._registro_da_linha(self.tabela.currentRow())
+        self._mostrar_detalhe(r)
 
     # ----------------------------------------------------------- navegação
     def selecionar_uid(self, uid):
@@ -953,9 +1027,13 @@ class DialogoConferencia(QDialog):
         lay.addWidget(lbl)
 
         divs = resultado["divergencias"]
+        self._divs = divs
         tab = QTableWidget(len(divs), len(self.COLS))
         tab.setHorizontalHeaderLabels(self.COLS)
         tab.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
+        tab.setSelectionBehavior(
+            QAbstractItemView.SelectionBehavior.SelectRows)
+        tab.setToolTip("Duplo clique numa linha para ir ao registro no SPED.")
         for i, d in enumerate(divs):
             vals = [d.escopo, d.nnf, d.nitem or "", d.campo,
                     cf._fmt(d.valor_xml), cf._fmt(d.valor_sped), d.obs or ""]
@@ -966,6 +1044,8 @@ class DialogoConferencia(QDialog):
                 tab.setItem(i, j, it)
         tab.resizeColumnsToContents()
         tab.horizontalHeader().setStretchLastSection(True)
+        tab.cellDoubleClicked.connect(self._ir_registro)
+        self._tab = tab
         lay.addWidget(tab)
 
         botoes = QHBoxLayout()
@@ -978,6 +1058,16 @@ class DialogoConferencia(QDialog):
         botoes.addWidget(b_csv)
         botoes.addWidget(b_fechar)
         lay.addLayout(botoes)
+
+    def _ir_registro(self, row, _col):
+        """Duplo clique: navega ao C170 correspondente à divergência."""
+        if not (0 <= row < len(self._divs)):
+            return
+        uid = getattr(self._divs[row], "uid", None)
+        jan = self.parent()
+        if uid and jan is not None and hasattr(jan, "ir_para_registro"):
+            jan.ir_para_registro(uid)
+            self.accept()
 
     def _exportar(self):
         caminho, _ = QFileDialog.getSaveFileName(

@@ -51,6 +51,10 @@ banco). O Modo Tabela funciona assim:
 - **Reordenar abas**: arraste as abas (de bloco ou de tipo) para a ordem que
   preferir. A ordem escolhida vale **durante a sessão** — ao fechar e reabrir o
   programa, tudo volta ao padrão.
+- **Fixar / fechar sub-abas**: no painel de detalhe (registros-filho), clique com
+  o **botão direito** numa sub-aba para *fixá-la* (passa a ser exibida primeiro
+  ao trocar de registro pai), *fechá-la* (fica oculta até resetar) ou *resetar as
+  abas*. Sem aba fixada, o detalhe sempre abre na primeira aba da ordem atual.
 - **Soma da seleção**: ao selecionar várias células numéricas numa grade, a
   barra de status mostra **Soma, Média e Contagem** (como no Excel).
 - Clique numa linha da grade. Se o registro tiver filhos, aparecem **sub-abas
@@ -189,12 +193,11 @@ conferidos por igualdade; o que se confere por padrão é o **valor do item**
 documento** (VL_DOC × vNF). As comparações são parametrizáveis em
 `conferencia.COMPARACOES_PADRAO`.
 
-O resultado abre numa janela com o resumo (documentos casados, itens conferidos,
-divergências, itens sem C170, notas sem XML) e a lista de divergências, que pode
-ser **exportada em CSV**. Além de VL_ITEM e VL_DESC, a conferência verifica o
-**CST de ICMS** e os **valores de ICMS** (base e imposto) de cada item — que não
-podem divergir entre o XML e o SPED. Itens presentes no XML mas ausentes no
-SPED — e vice-versa — são identificados individualmente.
+poder de ser **exportada em CSV**. Além de VL_ITEM e VL_DESC, a conferência
+verifica o **CST de ICMS** e os **valores de ICMS** (base e imposto) de cada
+item — que não podem divergir entre o XML e o SPED. Um **duplo clique** numa
+divergência leva ao registro C170 correspondente no editor. Itens presentes no
+XML mas ausentes no SPED — e vice-versa — são identificados individualmente.
 
 #### Correlação de CFOP (saída do fornecedor → entrada do comprador)
 

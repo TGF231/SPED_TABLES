@@ -1,5 +1,22 @@
 # Changelog
 
+## [0.13.0] - 2026-07-04
+
+### Adicionado
+- **Revisão: C170 sem C190 compatível.** Nova regra que aponta itens (C170) cuja
+  combinação de CST_ICMS, CFOP e alíquota de ICMS não aparece em nenhum C190 do
+  mesmo documento — ou seja, itens que não foram consolidados no analítico.
+- **Conferência de entradas: ir ao registro.** Duplo clique numa linha de
+  divergência leva ao C170 correspondente no editor.
+- **Fixar / fechar / resetar sub-abas de detalhe** (menu de contexto ao clicar
+  com o botão direito numa sub-aba do painel de detalhe):
+  - *Fixar aba:* o tipo de registro fixado passa a ser **exibido primeiro** ao
+    trocar de registro pai (resolve o detalhe voltar sempre para a primeira aba
+    disponível do documento).
+  - *Fechar aba:* oculta aquele tipo de sub-aba até resetar.
+  - *Resetar abas:* limpa ordem, fixação e abas fechadas do contexto.
+  Sem aba fixada, o painel passa a exibir sempre a primeira aba na ordem atual.
+
 ## [0.12.2] - 2026-07-03
 
 ### Adicionado

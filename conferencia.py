@@ -26,7 +26,7 @@ import xml_fiscal as xf
 
 class Divergencia:
     __slots__ = ("mod", "serie", "nnf", "nitem", "escopo", "campo",
-                 "valor_xml", "valor_sped", "obs")
+                 "valor_xml", "valor_sped", "obs", "uid")
 
     def __init__(self, **k):
         for s in self.__slots__:
@@ -273,7 +273,7 @@ def conferir_entradas_55(doc, nfes, comparacoes=None, tol_doc=0.01,
             vs = _to_num(c170.valor(idx))
             if abs(vx - vs) > t:
                 divergencias.append(Divergencia(
-                    mod=nfe.mod, serie=nfe.serie, nnf=nfe.nnf, nitem=it.nitem,
+                    mod=nfe.mod, serie=nfe.serie, nnf=nfe.nnf, nitem=it.nitem, uid=c170.uid,
                     escopo="item", campo=rot, valor_xml=vx, valor_sped=vs,
                     obs="cProd XML=%s / COD_ITEM=%s"
                         % (it.cprod, c170.valor(doc._ix("C170", "COD_ITEM")))))
@@ -287,14 +287,14 @@ def conferir_entradas_55(doc, nfes, comparacoes=None, tol_doc=0.01,
                 if cfop_s not in validos:
                     divergencias.append(Divergencia(
                         mod=nfe.mod, serie=nfe.serie, nnf=nfe.nnf,
-                        nitem=it.nitem, escopo="item", campo="CFOP",
+                        nitem=it.nitem, uid=c170.uid, escopo="item", campo="CFOP",
                         valor_xml=cfop_x, valor_sped=cfop_s,
                         obs="entrada deveria ser: %s"
                             % " ou ".join(sorted(validos))))
             elif avisar_cfop_sem_regra and cfop_x:
                 divergencias.append(Divergencia(
                     mod=nfe.mod, serie=nfe.serie, nnf=nfe.nnf,
-                    nitem=it.nitem, escopo="item", campo="CFOP (sem regra)",
+                    nitem=it.nitem, uid=c170.uid, escopo="item", campo="CFOP (sem regra)",
                     valor_xml=cfop_x, valor_sped=cfop_s,
                     obs="sem correlação cadastrada para o CFOP de saída %s"
                         % cfop_x))
@@ -307,7 +307,7 @@ def conferir_entradas_55(doc, nfes, comparacoes=None, tol_doc=0.01,
             if cst_x and cst_s and cst_x != cst_s:
                 divergencias.append(Divergencia(
                     mod=nfe.mod, serie=nfe.serie, nnf=nfe.nnf,
-                    nitem=it.nitem, escopo="item", campo="CST_ICMS",
+                    nitem=it.nitem, uid=c170.uid, escopo="item", campo="CST_ICMS",
                     valor_xml=cst_x, valor_sped=cst_s,
                     obs="CST de ICMS divergente entre XML e SPED"))
 

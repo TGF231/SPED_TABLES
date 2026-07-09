@@ -81,10 +81,17 @@ def verificar_c190_reducao(doc):
                           "zerado." % cst))
     return problemas
 
+
+# Registro central de regras. Para adicionar uma nova verificação, escreva a
+# função acima e inclua aqui o par (rótulo, função).
 def verificar_0200_nao_utilizados(doc):
     """Aponta registros 0200 (cadastro de item) cujo COD_ITEM:
       * não é referenciado por nenhum outro registro (C170, H010, etc.); ou
       * está duplicado (mesmo COD_ITEM em mais de um 0200).
+
+    As referências são coletadas de qualquer registro (≠ 0200) que possua o
+    campo COD_ITEM no layout — não apenas C170/H010 —, evitando marcar como
+    "não utilizado" um item citado em outro bloco.
     """
     i0 = doc._ix("0200", "COD_ITEM")
     if i0 is None:
@@ -122,11 +129,54 @@ def verificar_0200_nao_utilizados(doc):
                 gravidade="aviso"))
     return problemas
 
-# Registro central de regras. Para adicionar uma nova verificação, escreva a
-# função acima e inclua aqui o par (rótulo, função).
+
+def verificar_c170_sem_c190(doc):
+    """C170 (item) sem um C190 (analítico) compatível no mesmo documento — ou
+    seja, cuja combinação de CST_ICMS, CFOP e ALIQ_ICMS não aparece em nenhum
+    C190 do C100. Indica que o item não foi consolidado no analítico."""
+    if doc.layout != "ICMS":
+        return []
+    ic = doc._ix("C170", "CST_ICMS")
+    iff = doc._ix("C170", "CFOP")
+    ia = doc._ix("C170", "ALIQ_ICMS")
+    inum = doc._ix("C170", "NUM_ITEM")
+    jc = doc._ix("C190", "CST_ICMS")
+    jf = doc._ix("C190", "CFOP")
+    ja = doc._ix("C190", "ALIQ_ICMS")
+    if None in (ic, iff, ia, jc, jf, ja):
+        return []
+
+    def chave(r, i_cst, i_cfop, i_aliq):
+        return ((r.valor(i_cst) or "").strip(), (r.valor(i_cfop) or "").strip(),
+                "%.2f" % _to_num(r.valor(i_aliq)))
+
+    problemas = []
+    for c100 in doc.registros:
+        if c100.reg != "C100":
+            continue
+        c170s = [f for f in c100.filhos if f.reg == "C170"]
+        if not c170s:
+            continue
+        chaves_190 = {chave(f, jc, jf, ja) for f in c100.filhos
+                      if f.reg == "C190"}
+        for f in c170s:
+            if chave(f, ic, iff, ia) not in chaves_190:
+                problemas.append(Problema(
+                    uid=f.uid, reg=f.reg, bloco=f.bloco,
+                    regra="C170 sem C190 compatível",
+                    descricao="Item %s (CST %s, CFOP %s, alíq. %s) não possui "
+                              "C190 correspondente no documento."
+                              % ((f.valor(inum) or "").strip(),
+                                 (f.valor(ic) or "").strip(),
+                                 (f.valor(iff) or "").strip(),
+                                 (f.valor(ia) or "").strip())))
+    return problemas
+
+
 REGRAS = [
     ("Número de campos divergente do layout", verificar_num_campos),
     ("C190 CST x20/x70 com VL_RED_BC zerado", verificar_c190_reducao),
+    ("C170 sem C190 compatível", verificar_c170_sem_c190),
     ("0200 não utilizados / duplicados", verificar_0200_nao_utilizados),
 ]
 
