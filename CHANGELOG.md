@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.12.2] - 2026-07-03
+
+### Adicionado
+- **Atalhos estilo Excel no Modo Relatório:** **Ctrl+D** preenche as células
+  selecionadas com o valor da primeira linha da seleção (ou, se houver só uma
+  célula, com a de cima) e **Ctrl+R** preenche à direita a partir da primeira
+  coluna. Só afeta as colunas editáveis (as derivadas continuam intactas) e cada
+  preenchimento é gravado no registro correspondente do SPED.
+
 ## [0.12.1] - 2026-07-03
 
 ### Alterado

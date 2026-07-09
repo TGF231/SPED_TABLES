@@ -1905,7 +1905,80 @@ class RelatorioWidget(QWidget):
         self._uids = []
         self._edit_idx = {}          # índice de coluna -> campo no registro
         lay.addWidget(self.tabela, 1)
+
+        # atalhos estilo Excel (só quando o foco está na tabela do relatório)
+        sc_d = QShortcut(QKeySequence("Ctrl+D"), self.tabela)
+        sc_d.setContext(Qt.ShortcutContext.WidgetShortcut)
+        sc_d.activated.connect(self._fill_down)
+        sc_r = QShortcut(QKeySequence("Ctrl+R"), self.tabela)
+        sc_r.setContext(Qt.ShortcutContext.WidgetShortcut)
+        sc_r.activated.connect(self._fill_right)
+
         self._fonte_mudou()
+
+    def _fill_down(self):
+        """Ctrl+D: preenche as células selecionadas com o valor da primeira
+        linha da seleção (ou, se só uma célula, com a de cima). Como no Excel."""
+        self._preencher_selecao(horizontal=False)
+
+    def _fill_right(self):
+        """Ctrl+R: preenche à direita a partir da primeira coluna da seleção."""
+        self._preencher_selecao(horizontal=True)
+
+    def _preencher_selecao(self, horizontal):
+        t = self.tabela
+        ranges = t.selectedRanges()
+        if not ranges:
+            return
+        total = sum((r.bottomRow() - r.topRow() + 1)
+                    * (r.rightColumn() - r.leftColumn() + 1) for r in ranges)
+        n = 0
+
+        def aplicar(alvo, texto):
+            nonlocal n
+            if alvo is not None and (alvo.flags()
+                                     & Qt.ItemFlag.ItemIsEditable):
+                if alvo.text() != texto:
+                    alvo.setText(texto)   # dispara _celula_editada -> grava
+                    n += 1
+
+        if total == 1:                    # uma célula: copia da vizinha
+            rng = ranges[0]
+            row, col = rng.topRow(), rng.leftColumn()
+            if horizontal and col > 0:
+                fonte = t.item(row, col - 1)
+                if fonte is not None:
+                    aplicar(t.item(row, col), fonte.text())
+            elif not horizontal and row > 0:
+                fonte = t.item(row - 1, col)
+                if fonte is not None:
+                    aplicar(t.item(row, col), fonte.text())
+        else:
+            for rng in ranges:
+                if horizontal:
+                    for row in range(rng.topRow(), rng.bottomRow() + 1):
+                        base = t.item(row, rng.leftColumn())
+                        if base is None:
+                            continue
+                        val = base.text()
+                        for col in range(rng.leftColumn() + 1,
+                                         rng.rightColumn() + 1):
+                            aplicar(t.item(row, col), val)
+                else:
+                    for col in range(rng.leftColumn(), rng.rightColumn() + 1):
+                        base = t.item(rng.topRow(), col)
+                        if base is None:
+                            continue
+                        val = base.text()
+                        for row in range(rng.topRow() + 1,
+                                         rng.bottomRow() + 1):
+                            aplicar(t.item(row, col), val)
+
+        jan = self.window()
+        if jan is not None and hasattr(jan, "statusBar"):
+            jan.statusBar().showMessage(
+                "%d célula(s) preenchida(s)." % n if n else
+                "Nada preenchido (verifique se as células são editáveis).")
 
     def _resumo_selecao(self):
         itens = self.tabela.selectedItems()
@@ -2003,6 +2076,7 @@ class RelatorioWidget(QWidget):
             cols, linhas, uids, edit = self.doc.itens_relatorio(filtros)
         self._cols = cols
         self._uids = uids
+        self._reg_por_uid = {r.uid: r for r in self.doc.registros}
         # mapeia índice de coluna -> campo do registro (colunas editáveis)
         self._edit_idx = {i: edit[c] for i, c in enumerate(cols) if c in edit}
         self._preenchendo = True
@@ -2040,7 +2114,7 @@ class RelatorioWidget(QWidget):
         uid = it0.data(Qt.ItemDataRole.UserRole) if it0 is not None else None
         if uid is None:
             return
-        reg = next((x for x in self.doc.registros if x.uid == uid), None)
+        reg = getattr(self, "_reg_por_uid", {}).get(uid)
         if reg is None:
             return
         i_campo = self.doc._ix(reg.reg, campo)

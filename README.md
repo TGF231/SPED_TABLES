@@ -321,7 +321,9 @@ A tabela do relatório é **editável**: as colunas próprias do registro-fonte
 (C170/C175/C190) podem ser alteradas diretamente — como uma *query* editável —,
 gravando no registro correspondente do SPED (é preciso salvar o arquivo para
 persistir). As colunas derivadas (produto, dados da nota, valores calculados)
-aparecem em cinza e são somente-leitura.
+aparecem em cinza e são somente-leitura. Há atalhos no estilo do Excel:
+**Ctrl+D** preenche as células selecionadas para baixo (com o valor da primeira
+linha da seleção) e **Ctrl+R** preenche para a direita.
 
 O painel de **Filtros** reproduz os do script SQL (data inicial/final, tipo de
 movimento, modelo, nº da nota, código do produto, nº do item, NCM por prefixo,
