@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.12.1] - 2026-07-03
+
+### Alterado
+- **Filtros do Modo Relatório agora aceitam múltiplos valores** em todos os
+  campos, separados por ponto e vírgula (";"). Ex.: CFOP "1101;1102", CST
+  "000;020;060", Alíq. PIS "1,65;0,65". Usa-se ";" (e não vírgula) para não
+  conflitar com a vírgula decimal das alíquotas. O filtro de NCM continua por
+  prefixo, agora aceitando vários (ex.: "02;2202").
+
 ## [0.12.0] - 2026-07-03
 
 ### Alterado

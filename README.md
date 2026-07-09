@@ -311,7 +311,11 @@ tem detalhamento por item:
   consolidados: CST, CFOP, alíquota, base e valor de ICMS, ICMS-ST, redução de
   base, IPI e código de observação.
 
-Ao trocar a fonte, apenas os filtros aplicáveis ficam ativos.
+Ao trocar a fonte, apenas os filtros aplicáveis ficam ativos. Todos os campos de
+filtro aceitam **vários valores separados por ponto e vírgula** (`;`) — por
+exemplo, CFOP `1101;1102`, CST `000;020;060` ou Alíq. PIS `1,65;0,65`. Usa-se
+`;` (e não vírgula) para não conflitar com a vírgula decimal das alíquotas; o
+filtro de NCM aceita vários prefixos (ex.: `02;2202`).
 
 A tabela do relatório é **editável**: as colunas próprias do registro-fonte
 (C170/C175/C190) podem ser alteradas diretamente — como uma *query* editável —,

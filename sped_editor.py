@@ -1792,7 +1792,12 @@ class RelatorioWidget(QWidget):
         lay.addLayout(topo)
 
         # ---- painel de filtros -------------------------------------------
-        grupo = QGroupBox("Filtros")
+        grupo = QGroupBox("Filtros (vários valores por campo: separe com \";\")")
+        grupo.setToolTip(
+            "Cada campo aceita múltiplos valores separados por ponto e vírgula "
+            "(;). Ex.: CFOP \"1101;1102\"  ·  Alíq. PIS \"1,65;0,65\".\n"
+            "Use ; (e não vírgula) porque a vírgula é o separador decimal das "
+            "alíquotas.")
         g = QGridLayout(grupo)
         g.setHorizontalSpacing(10)
         g.setVerticalSpacing(4)
@@ -1948,20 +1953,22 @@ class RelatorioWidget(QWidget):
         self.gerar()
 
     def _coletar_filtros(self):
-        def txt(w):
-            return w.text().strip() or None
-
+        # todos os filtros aceitam múltiplos valores separados por ';'
         def lista(w):
             t = w.text().strip()
-            return [x.strip() for x in t.replace(";", ",").split(",")
-                    if x.strip()] or None
+            return [x.strip() for x in t.split(";") if x.strip()] or None
 
-        def flt(w):
-            t = w.text().strip().replace(",", ".")
-            try:
-                return float(t) if t else None
-            except ValueError:
-                return None
+        def listaf(w):
+            vals = []
+            for x in w.text().strip().split(";"):
+                x = x.strip().replace(",", ".")
+                if not x:
+                    continue
+                try:
+                    vals.append(float(x))
+                except ValueError:
+                    pass
+            return vals or None
 
         return {
             "tipo": ["T", "E", "S"][self.cb_tipo.currentIndex()],
@@ -1969,16 +1976,16 @@ class RelatorioWidget(QWidget):
                          or None),
             "data_fim": (self.ed_data_fim.text().strip().replace("-", "")
                          or None),
-            "modelo": txt(self.ed_modelo), "num_nota": txt(self.ed_num),
-            "cod_prod": txt(self.ed_prod), "nitem": txt(self.ed_item),
-            "ncm": txt(self.ed_ncm), "cfop": txt(self.ed_cfop),
+            "modelo": lista(self.ed_modelo), "num_nota": lista(self.ed_num),
+            "cod_prod": lista(self.ed_prod), "nitem": lista(self.ed_item),
+            "ncm": lista(self.ed_ncm), "cfop": lista(self.ed_cfop),
             "cst_icms": lista(self.ed_cst_icms),
             "cst_pis": lista(self.ed_cst_pis),
             "cst_cofins": lista(self.ed_cst_cofins),
-            "cst_ipi": txt(self.ed_cst_ipi),
-            "aliq_icms": flt(self.ed_aliq_icms),
-            "aliq_pis": flt(self.ed_aliq_pis),
-            "aliq_cofins": flt(self.ed_aliq_cofins),
+            "cst_ipi": lista(self.ed_cst_ipi),
+            "aliq_icms": listaf(self.ed_aliq_icms),
+            "aliq_pis": listaf(self.ed_aliq_pis),
+            "aliq_cofins": listaf(self.ed_aliq_cofins),
         }
 
     def gerar(self):

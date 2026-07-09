@@ -41,6 +41,38 @@ def _fmt_aliq(a):
     return (s or "0").replace(".", ",")
 
 
+def _set_str(v):
+    """Normaliza um filtro em conjunto de strings. Aceita lista/tupla, valor
+    único ou None. Devolve None (= sem filtro) para vazio."""
+    if v is None:
+        return None
+    itens = v if isinstance(v, (list, tuple, set)) else [v]
+    s = {str(x).strip() for x in itens if str(x).strip()}
+    return s or None
+
+
+def _set_float(v):
+    """Normaliza um filtro numérico em conjunto de floats (ou None)."""
+    if v is None:
+        return None
+    itens = v if isinstance(v, (list, tuple, set)) else [v]
+    out = set()
+    for x in itens:
+        try:
+            out.add(round(float(x), 4))
+        except (TypeError, ValueError):
+            pass
+    return out or None
+
+
+def _casa_float(valor, conjunto):
+    """True se `valor` casa com algum do conjunto (tolerância p/ arredondamento);
+    True também quando não há filtro (conjunto None)."""
+    if conjunto is None:
+        return True
+    return any(abs(valor - c) < 1e-6 for c in conjunto)
+
+
 
 class Registro:
     __slots__ = ("uid", "reg", "bloco", "nivel", "campos", "pai", "filhos",
@@ -290,18 +322,18 @@ class SpedDocument:
         di = f.get("data_ini") or None      # 'AAAAMMDD'
         dfim = f.get("data_fim") or None
         tipo = f.get("tipo", "T")
-        cfop = f.get("cfop")
-        ncm = f.get("ncm")
-        modelo = f.get("modelo")
-        num = f.get("num_nota")
-        nitem = f.get("nitem")
-        cod_prod = f.get("cod_prod")
-        cst_icms = {str(x) for x in (f.get("cst_icms") or [])}
-        cst_pis = {str(x) for x in (f.get("cst_pis") or [])}
-        cst_cofins = {str(x) for x in (f.get("cst_cofins") or [])}
-        cst_ipi = f.get("cst_ipi")
-        aliq_pis = f.get("aliq_pis")
-        aliq_cofins = f.get("aliq_cofins")
+        cfop = _set_str(f.get("cfop"))
+        ncm = _set_str(f.get("ncm"))
+        modelo = _set_str(f.get("modelo"))
+        num = _set_str(f.get("num_nota"))
+        nitem = _set_str(f.get("nitem"))
+        cod_prod = _set_str(f.get("cod_prod"))
+        cst_icms = _set_str(f.get("cst_icms"))
+        cst_pis = _set_str(f.get("cst_pis"))
+        cst_cofins = _set_str(f.get("cst_cofins"))
+        cst_ipi = _set_str(f.get("cst_ipi"))
+        aliq_pis = _set_float(f.get("aliq_pis"))
+        aliq_cofins = _set_float(f.get("aliq_cofins"))
 
         linhas = []
         uids = []
@@ -313,10 +345,10 @@ class SpedDocument:
             if tipo != "T" and tp != tipo:
                 continue
             mod = (c100.valor(c_mod) or "").strip() if c_mod is not None else ""
-            if modelo and mod != str(modelo):
+            if modelo and mod not in modelo:
                 continue
             ndoc = (c100.valor(c_num) or "").strip() if c_num is not None else ""
-            if num and ndoc != str(num):
+            if num and ndoc not in num:
                 continue
             dt = (c100.valor(c_dtdoc) or "").strip() if c_dtdoc is not None else ""
             if not dt and c_dtes is not None:
@@ -340,7 +372,7 @@ class SpedDocument:
                     return (_it.valor(idx) or "").strip() if idx is not None \
                         else ""
 
-                if cfop and v("CFOP") != str(cfop):
+                if cfop and v("CFOP") not in cfop:
                     continue
                 if cst_icms and v("CST_ICMS") not in cst_icms:
                     continue
@@ -348,20 +380,19 @@ class SpedDocument:
                     continue
                 if cst_cofins and v("CST_COFINS") not in cst_cofins:
                     continue
-                if cst_ipi and v("CST_IPI") != str(cst_ipi):
+                if cst_ipi and v("CST_IPI") not in cst_ipi:
                     continue
-                if nitem and v("NUM_ITEM") != str(nitem):
+                if nitem and v("NUM_ITEM") not in nitem:
                     continue
                 cod = v("COD_ITEM")
-                if cod_prod and cod != str(cod_prod):
+                if cod_prod and cod not in cod_prod:
                     continue
                 descr, ncm_prod = prod.get(cod, ("", ""))
-                if ncm and not ncm_prod.startswith(str(ncm)):
+                if ncm and not any(ncm_prod.startswith(p) for p in ncm):
                     continue
-                if aliq_pis is not None and _to_num(v("ALIQ_PIS")) != aliq_pis:
+                if not _casa_float(_to_num(v("ALIQ_PIS")), aliq_pis):
                     continue
-                if aliq_cofins is not None and \
-                        _to_num(v("ALIQ_COFINS")) != aliq_cofins:
+                if not _casa_float(_to_num(v("ALIQ_COFINS")), aliq_cofins):
                     continue
 
                 vl_item = _to_num(v("VL_ITEM"))
@@ -426,8 +457,8 @@ class SpedDocument:
         di = f.get("data_ini") or None
         dfim = f.get("data_fim") or None
         tipo = f.get("tipo", "T")
-        modelo = f.get("modelo")
-        num = f.get("num_nota")
+        modelo = _set_str(f.get("modelo"))
+        num = _set_str(f.get("num_nota"))
 
         def dkey(s):
             s = (s or "").strip()
@@ -441,10 +472,10 @@ class SpedDocument:
             if tipo != "T" and tp != tipo:
                 continue
             mod = (c100.valor(c_mod) or "").strip() if c_mod is not None else ""
-            if modelo and mod != str(modelo):
+            if modelo and mod not in modelo:
                 continue
             ndoc = (c100.valor(c_num) or "").strip() if c_num is not None else ""
-            if num and ndoc != str(num):
+            if num and ndoc not in num:
                 continue
             dt = (c100.valor(c_dt) or "").strip() if c_dt is not None else ""
             if not dt and c_es is not None:
@@ -468,11 +499,11 @@ class SpedDocument:
             "CFOP", "VL_OPR", "VL_DESC", "CST_PIS", "VL_BC_PIS", "ALIQ_PIS",
             "VL_PIS", "CST_COFINS", "VL_BC_COFINS", "ALIQ_COFINS", "VL_COFINS",
             "COD_CTA", "INFO_COMPL")}
-        cfop = f.get("cfop")
-        cst_pis = {str(x) for x in (f.get("cst_pis") or [])}
-        cst_cofins = {str(x) for x in (f.get("cst_cofins") or [])}
-        aliq_pis = f.get("aliq_pis")
-        aliq_cofins = f.get("aliq_cofins")
+        cfop = _set_str(f.get("cfop"))
+        cst_pis = _set_str(f.get("cst_pis"))
+        cst_cofins = _set_str(f.get("cst_cofins"))
+        aliq_pis = _set_float(f.get("aliq_pis"))
+        aliq_cofins = _set_float(f.get("aliq_cofins"))
         linhas = []
         uids = []
         for c100, tp, data, ndoc, ser, mod, chave in self._c100_filtrados(f):
@@ -485,16 +516,15 @@ class SpedDocument:
                     return (_r.valor(idx) or "").strip() if idx is not None \
                         else ""
 
-                if cfop and v("CFOP") != str(cfop):
+                if cfop and v("CFOP") not in cfop:
                     continue
                 if cst_pis and v("CST_PIS") not in cst_pis:
                     continue
                 if cst_cofins and v("CST_COFINS") not in cst_cofins:
                     continue
-                if aliq_pis is not None and _to_num(v("ALIQ_PIS")) != aliq_pis:
+                if not _casa_float(_to_num(v("ALIQ_PIS")), aliq_pis):
                     continue
-                if aliq_cofins is not None and \
-                        _to_num(v("ALIQ_COFINS")) != aliq_cofins:
+                if not _casa_float(_to_num(v("ALIQ_COFINS")), aliq_cofins):
                     continue
                 linhas.append([
                     tp, data, ndoc, ser, mod,
@@ -512,9 +542,9 @@ class SpedDocument:
         I = {c: self._ix("C190", c) for c in (
             "CST_ICMS", "CFOP", "ALIQ_ICMS", "VL_OPR", "VL_BC_ICMS", "VL_ICMS",
             "VL_BC_ICMS_ST", "VL_ICMS_ST", "VL_RED_BC", "VL_IPI", "COD_OBS")}
-        cfop = f.get("cfop")
-        cst_icms = {str(x) for x in (f.get("cst_icms") or [])}
-        aliq_icms = f.get("aliq_icms")
+        cfop = _set_str(f.get("cfop"))
+        cst_icms = _set_str(f.get("cst_icms"))
+        aliq_icms = _set_float(f.get("aliq_icms"))
         linhas = []
         uids = []
         for c100, tp, data, ndoc, ser, mod, chave in self._c100_filtrados(f):
@@ -527,12 +557,11 @@ class SpedDocument:
                     return (_r.valor(idx) or "").strip() if idx is not None \
                         else ""
 
-                if cfop and v("CFOP") != str(cfop):
+                if cfop and v("CFOP") not in cfop:
                     continue
                 if cst_icms and v("CST_ICMS") not in cst_icms:
                     continue
-                if aliq_icms is not None and \
-                        _to_num(v("ALIQ_ICMS")) != aliq_icms:
+                if not _casa_float(_to_num(v("ALIQ_ICMS")), aliq_icms):
                     continue
                 linhas.append([
                     tp, data, ndoc, ser, mod,
