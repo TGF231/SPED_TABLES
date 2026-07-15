@@ -52,10 +52,12 @@ def norm(s):
 # ------------------------------------------------------------------ modelos
 class ItemNFe:
     __slots__ = ("nitem", "cprod", "xprod", "cfop", "vprod", "vdesc",
+                 "qtd", "unid", "ncm",
                  "pis_cst", "pis_vbc", "pis_aliq", "pis_vpis",
                  "cofins_cst", "cofins_vbc", "cofins_aliq", "cofins_vcofins",
                  "icms_cst", "icms_vbc", "icms_aliq", "icms_vicms",
-                 "icms_vbcst", "icms_vicmsst", "vipi")
+                 "icms_vbcst", "icms_aliqst", "icms_vicmsst",
+                 "ipi_cst", "ipi_vbc", "ipi_aliq", "vipi")
 
     def __init__(self, **k):
         for s in self.__slots__:
@@ -123,23 +125,37 @@ def ler_nfe(caminho):
         cst_ic = (icms.findtext("CST") or icms.findtext("CSOSN")) \
             if icms is not None else None
         icms_cst = (orig + cst_ic) if cst_ic else None
-        vipi = 0.0
+        # grupo IPI (pode ser IPITrib ou IPINT)
         ipi = det.find(".//IPI")
-        if ipi is not None:
-            vipi = _num(ipi.findtext(".//vIPI"))
+        ipi_trib = ipi.find(".//IPITrib") if ipi is not None else None
+        ipi_nt = ipi.find(".//IPINT") if ipi is not None else None
+        ipi_cst = None
+        ipi_vbc = ipi_aliq = None
+        vipi = 0.0
+        if ipi_trib is not None:
+            ipi_cst = ipi_trib.findtext("CST")
+            ipi_vbc = _num(ipi_trib.findtext("vBC"))
+            ipi_aliq = ipi_trib.findtext("pIPI")
+            vipi = _num(ipi_trib.findtext("vIPI"))
+        elif ipi_nt is not None:
+            ipi_cst = ipi_nt.findtext("CST")
         nfe.itens.append(ItemNFe(
             nitem=det.get("nItem"),
             cprod=prod.findtext("cProd"), xprod=prod.findtext("xProd"),
             cfop=prod.findtext("CFOP"), vprod=_num(prod.findtext("vProd")),
             vdesc=_num(prod.findtext("vDesc")),
+            qtd=_num(prod.findtext("qCom")), unid=prod.findtext("uCom"),
+            ncm=prod.findtext("NCM"),
             icms_cst=icms_cst,
             icms_vbc=_num(icms.findtext("vBC")) if icms is not None else 0.0,
             icms_aliq=(icms.findtext("pICMS") if icms is not None else None),
             icms_vicms=_num(icms.findtext("vICMS")) if icms is not None else 0.0,
             icms_vbcst=_num(icms.findtext("vBCST")) if icms is not None else 0.0,
+            icms_aliqst=(icms.findtext("pICMSST")
+                         if icms is not None else None),
             icms_vicmsst=(_num(icms.findtext("vICMSST"))
                           if icms is not None else 0.0),
-            vipi=vipi,
+            ipi_cst=ipi_cst, ipi_vbc=ipi_vbc, ipi_aliq=ipi_aliq, vipi=vipi,
             pis_cst=(pis.findtext("CST") if pis is not None else None),
             pis_vbc=_num(pis.findtext("vBC")) if pis is not None else 0.0,
             pis_aliq=(pis.findtext("pPIS") if pis is not None else None),

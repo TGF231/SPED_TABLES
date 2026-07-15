@@ -84,6 +84,15 @@ def _fmt_aliq_pct(s):
         return ""
 
 
+def _fmt_qtd(v):
+    """Formata quantidade no padrão SPED (vírgula decimal, sem zeros à direita)."""
+    try:
+        s = ("%.5f" % float(v)).rstrip("0").rstrip(".")
+        return (s or "0").replace(".", ",")
+    except (TypeError, ValueError):
+        return ""
+
+
 class _ItemC170View:
     """Expõe um registro C170 com a interface de "item" (atributos vprod, vdesc,
     cfop e pis_*/cofins_*) esperada por `consolidar_c175_de_itens`, permitindo
@@ -1007,7 +1016,10 @@ class SpedDocument:
         i_num = self._ix("C100", "NUM_DOC")
         ncampos = len(campos("C170", self.layout, 40))
         col = {c: self._ix("C170", c) for c in (
-            "NUM_ITEM", "COD_ITEM", "VL_ITEM", "VL_DESC", "CFOP",
+            "NUM_ITEM", "COD_ITEM", "DESCR_COMPL", "QTD", "UNID",
+            "VL_ITEM", "VL_DESC", "CST_ICMS", "CFOP", "VL_BC_ICMS",
+            "ALIQ_ICMS", "VL_ICMS", "VL_BC_ICMS_ST", "ALIQ_ST", "VL_ICMS_ST",
+            "CST_IPI", "VL_BC_IPI", "ALIQ_IPI", "VL_IPI",
             "CST_PIS", "VL_BC_PIS", "ALIQ_PIS", "VL_PIS",
             "CST_COFINS", "VL_BC_COFINS", "ALIQ_COFINS", "VL_COFINS")}
 
@@ -1039,9 +1051,26 @@ class SpedDocument:
                 novo.campos = ["C170"] + [""] * (ncampos - 1)
                 setv(novo, "NUM_ITEM", str(k))
                 setv(novo, "COD_ITEM", (it.cprod or "").strip())
+                setv(novo, "DESCR_COMPL", (it.xprod or "").strip())
+                if it.qtd:
+                    setv(novo, "QTD", _fmt_qtd(it.qtd))
+                setv(novo, "UNID", (it.unid or "").strip())
                 setv(novo, "VL_ITEM", _fmt_val(it.vprod or 0.0))
                 setv(novo, "VL_DESC", _fmt_val(it.vdesc or 0.0))
+                setv(novo, "CST_ICMS", (it.icms_cst or "").strip())
                 setv(novo, "CFOP", (it.cfop or "").strip())
+                setv(novo, "VL_BC_ICMS", _fmt_val(it.icms_vbc or 0.0))
+                setv(novo, "ALIQ_ICMS", _fmt_aliq_pct(it.icms_aliq))
+                setv(novo, "VL_ICMS", _fmt_val(it.icms_vicms or 0.0))
+                setv(novo, "VL_BC_ICMS_ST", _fmt_val(it.icms_vbcst or 0.0))
+                setv(novo, "ALIQ_ST", _fmt_aliq_pct(it.icms_aliqst))
+                setv(novo, "VL_ICMS_ST", _fmt_val(it.icms_vicmsst or 0.0))
+                setv(novo, "CST_IPI", (it.ipi_cst or "").strip())
+                setv(novo, "VL_BC_IPI", _fmt_val(it.ipi_vbc or 0.0)
+                     if it.ipi_vbc else "")
+                setv(novo, "ALIQ_IPI", _fmt_aliq_pct(it.ipi_aliq))
+                setv(novo, "VL_IPI", _fmt_val(it.vipi or 0.0)
+                     if it.vipi else "")
                 setv(novo, "CST_PIS", (it.pis_cst or "").strip())
                 setv(novo, "VL_BC_PIS", _fmt_val(it.pis_vbc or 0.0))
                 setv(novo, "ALIQ_PIS", _fmt_aliq_pct(it.pis_aliq))

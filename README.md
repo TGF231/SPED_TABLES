@@ -355,7 +355,8 @@ itens), validar valor a valor exige um artifício. O fluxo, em **Ferramentas**
 
 1. **Validar C175 (modelo 65) com XMLs** — importa os XMLs das NFC-e e cria, em
    cada C100 modelo 65, registros **C170 fictícios** (um por item do XML), com
-   valor, CFOP e os campos de PIS/COFINS. Abre um relatório com as
+   **todos os dados do item**: descrição, quantidade, unidade, ICMS (CST, base,
+   alíquota, valor), ICMS-ST, IPI e PIS/COFINS. Abre um relatório com as
    **discrepâncias** entre a soma dos itens e o C175 já escriturado (exportável
    em CSV).
 2. **Corrigir por item** — os C170 fictícios ficam disponíveis no **Modo

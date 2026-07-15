@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.14.1] - 2026-07-04
+
+### Alterado
+- Os **C170 fictícios** gerados na validação do C175 (modelo 65) agora recebem
+  **todos os dados do item do XML** — descrição, quantidade, unidade, CST/base/
+  alíquota/valor de ICMS, ICMS-ST e IPI, além de PIS/COFINS — e não apenas os
+  campos consumidos pelo C175. O parser de XML passou a extrair quantidade
+  (qCom), unidade (uCom), NCM, alíquota de ICMS-ST e o grupo de IPI (CST, base,
+  alíquota).
+
 ## [0.14.0] - 2026-07-04
 
 ### Adicionado
