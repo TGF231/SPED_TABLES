@@ -1186,6 +1186,8 @@ class SpedDocument:
             docs += 1
         self.atualizar_bloco9_inplace()
         return {"docs": docs, "c175": c175}
+
+    def _registros_aliq_escopo(self, escopo):
         """Registros-alvo da troca de alíquotas conforme o escopo:
         'saidas'   → C175 + C170 de documentos de saída (IND_OPER=1);
         'entradas' → C170 de documentos de entrada (IND_OPER=0);

@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.14.2] - 2026-07-04
+
+### Corrigido
+- **Erro ao abrir "Trocar alíquotas de PIS/COFINS"** (AttributeError:
+  '_registros_aliq_escopo'). O método auxiliar de seleção de registros por
+  escopo havia perdido sua assinatura numa edição anterior (o corpo ficara como
+  código inacessível), quebrando a sugestão de alíquota predominante e a própria
+  troca. Restaurado. Feita também uma varredura (AST) em todos os módulos para
+  garantir que não há outros métodos na mesma situação.
+
 ## [0.14.1] - 2026-07-04
 
 ### Alterado
