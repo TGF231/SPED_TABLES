@@ -978,6 +978,87 @@ class BlocoWidget(QWidget):
 # ---------------------------------------------------------------------------
 # Diálogo de resultado da conferência de entradas (NF-e 55)
 # ---------------------------------------------------------------------------
+class DialogoDiscrepanciasC175(QDialog):
+    """Relatório das discrepâncias entre os C170 fictícios (itens do XML da
+    NFC-e modelo 65) e o C175 já escriturado, após a importação."""
+
+    COLS = ["nNF", "Grupo (CFOP · CST/alíq.)", "Campo", "Valor itens (XML)",
+            "Valor C175 (SPED)"]
+
+    def __init__(self, resumo, divergencias, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle("Validação do C175 (modelo 65) por item")
+        self.resize(820, 560)
+        lay = QVBoxLayout(self)
+
+        info = QLabel(
+            "Foram criados <b>%d</b> itens C170 fictícios em <b>%d</b> "
+            "documento(s) modelo 65, a partir dos XMLs. Edite-os no <b>Modo "
+            "Relatório</b> (fonte C170) se precisar corrigir algum item e, ao "
+            "final, use <b>Ferramentas → Regenerar C175 (modelo 65)</b> para "
+            "consolidar o C175 correto e remover os fictícios.<br>"
+            "As linhas abaixo mostram onde a soma dos itens diverge do C175 "
+            "atualmente escriturado." % (resumo.get("itens", 0),
+                                         resumo.get("docs", 0)))
+        info.setWordWrap(True)
+        lay.addWidget(info)
+
+        sem_xml = resumo.get("sem_xml") or []
+        if sem_xml:
+            aviso = QLabel("Documentos modelo 65 sem XML correspondente na "
+                           "pasta: %d." % len(sem_xml))
+            aviso.setStyleSheet("color:#b60;")
+            lay.addWidget(aviso)
+
+        self.tab = QTableWidget(len(divergencias), len(self.COLS))
+        self.tab.setHorizontalHeaderLabels(self.COLS)
+        self.tab.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
+        self.tab.setAlternatingRowColors(True)
+        self.tab.setSortingEnabled(True)
+        self.tab.horizontalHeader().setStretchLastSection(True)
+        for i, d in enumerate(divergencias):
+            vals = [d["nnf"], d["grupo"], d["campo"], d["xml"], d["sped"]]
+            for c, v in enumerate(vals):
+                it = QTableWidgetItem(str(v))
+                if c >= 3:
+                    it.setForeground(QColor("#b00"))
+                self.tab.setItem(i, c, it)
+        self.tab.resizeColumnsToContents()
+        lay.addWidget(self.tab, 1)
+
+        lbl = QLabel("%d discrepância(s)." % len(divergencias))
+        lbl.setStyleSheet("font-weight:bold; color:%s;"
+                          % ("#0a0" if not divergencias else "#b00"))
+        rod = QHBoxLayout()
+        rod.addWidget(lbl)
+        rod.addStretch(1)
+        b_csv = QPushButton("Exportar CSV")
+        b_csv.clicked.connect(lambda: self._exportar(divergencias))
+        b_csv.setEnabled(bool(divergencias))
+        b_fechar = QPushButton("Fechar")
+        b_fechar.clicked.connect(self.accept)
+        rod.addWidget(b_csv)
+        rod.addWidget(b_fechar)
+        lay.addLayout(rod)
+
+    def _exportar(self, divs):
+        caminho, _ = QFileDialog.getSaveFileName(
+            self, "Exportar discrepâncias", "discrepancias_c175.csv",
+            "CSV (*.csv)")
+        if not caminho:
+            return
+        try:
+            with open(caminho, "w", encoding="latin-1", newline="") as fh:
+                fh.write(";".join(self.COLS) + "\r\n")
+                for d in divs:
+                    fh.write(";".join([d["nnf"], d["grupo"], d["campo"],
+                                       d["xml"], d["sped"]]) + "\r\n")
+        except Exception as exc:  # noqa: BLE001
+            QMessageBox.critical(self, "Exportar", str(exc))
+            return
+        QMessageBox.information(self, "Exportar", "Exportado:\n%s" % caminho)
+
+
 class DialogoConfC190(QDialog):
     """Resultado da conferência C190 × XML (agrupada pela classificação do
     C170). Mostra as divergências por grupo e permite exportar em CSV."""
@@ -2421,6 +2502,16 @@ class JanelaPrincipal(QMainWindow):
                 "Verificar CST por NCM (tabelas RFB)…", self)
         self.act_verificar_cst.triggered.connect(self.verificar_cst_ncm)
         self.act_verificar_cst.setEnabled(False)
+        if not hasattr(self, "act_validar_c175_65"):
+            self.act_validar_c175_65 = QAction(
+                "Validar C175 (modelo 65) com XMLs…", self)
+        self.act_validar_c175_65.triggered.connect(self.validar_c175_65)
+        self.act_validar_c175_65.setEnabled(False)
+        if not hasattr(self, "act_regenerar_c175_65"):
+            self.act_regenerar_c175_65 = QAction(
+                "Regenerar C175 (modelo 65) dos itens…", self)
+        self.act_regenerar_c175_65.triggered.connect(self.regenerar_c175_65)
+        self.act_regenerar_c175_65.setEnabled(False)
         # a barra de menus é redundante com a toolbar: ocultar
         if hasattr(self, "menubar") and self.menubar is not None:
             self.menubar.setVisible(False)
@@ -2447,6 +2538,8 @@ class JanelaPrincipal(QMainWindow):
         menu.addAction(self.act_conferir_c190)
         menu.addAction(self.act_correlacoes_cfop)
         menu.addAction(self.act_verificar_cst)
+        menu.addAction(self.act_validar_c175_65)
+        menu.addAction(self.act_regenerar_c175_65)
         menu.addSeparator()
         menu.addAction(self.act_revisar)
         botao = QToolButton(self)
@@ -2692,6 +2785,67 @@ class JanelaPrincipal(QMainWindow):
             % (r["docs_casados"], r["grupos_conferidos"], r["divergencias"]))
         DialogoConfC190(resultado, self).exec()
 
+    def validar_c175_65(self):
+        """Importa XMLs de NFC-e (modelo 65), gera C170 fictícios por item e
+        mostra as discrepâncias com o C175 escriturado."""
+        if not self.doc or self.doc.layout != "CONTRIB":
+            QMessageBox.information(
+                self, "Validar C175 (modelo 65)",
+                "Disponível apenas no EFD Contribuições.")
+            return
+        pasta = QFileDialog.getExistingDirectory(
+            self, "Selecione a pasta com os XMLs das NFC-e (modelo 65)")
+        if not pasta:
+            return
+        try:
+            nfes, _erros = xf.ler_pasta(pasta)
+        except Exception as e:  # noqa: BLE001
+            QMessageBox.critical(self, "Validar C175", "Erro ao ler:\n%s" % e)
+            return
+        nfe65 = [n for n in nfes if str(n.mod) == "65"]
+        if not nfe65:
+            QMessageBox.warning(
+                self, "Validar C175",
+                "Nenhum XML de NFC-e (modelo 65) encontrado na pasta.")
+            return
+        res = self.doc.gerar_c170_ficticios_65(nfe65)
+        div = self.doc.discrepancias_c175_65()
+        self._marcar_alterado()
+        self._montar_abas()
+        DialogoDiscrepanciasC175(res, div, self).exec()
+
+    def regenerar_c175_65(self):
+        """Regenera o C175 a partir dos C170 fictícios (já corrigidos) e remove
+        os fictícios, restaurando a estrutura consolidada do modelo 65."""
+        if not self.doc or self.doc.layout != "CONTRIB":
+            return
+        pendentes = sum(
+            1 for c in self.doc.registros
+            if c.reg == "C100"
+            and (c.valor(self.doc._ix("C100", "COD_MOD")) or "").strip() == "65"
+            and any(f.reg == "C170" for f in c.filhos))
+        if not pendentes:
+            QMessageBox.information(
+                self, "Regenerar C175",
+                "Não há C170 fictícios (modelo 65) para consolidar. Rode antes "
+                "\"Validar C175 (modelo 65) com XMLs\".")
+            return
+        resp = QMessageBox.question(
+            self, "Regenerar C175",
+            "Isto vai regenerar o C175 de %d documento(s) modelo 65 a partir "
+            "dos itens C170 (com as correções feitas) e remover os C170 "
+            "fictícios. Continuar?" % pendentes,
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
+        if resp != QMessageBox.StandardButton.Yes:
+            return
+        r = self.doc.regenerar_c175_de_c170_65()
+        self._marcar_alterado()
+        self._montar_abas()
+        QMessageBox.information(
+            self, "Regenerar C175",
+            "C175 regenerado em %d documento(s); %d registro(s) C175 gerado(s). "
+            "Os C170 fictícios foram removidos." % (r["docs"], r["c175"]))
+
     def editar_correlacoes_cfop(self):
         """Abre o editor da tabela de correlações de CFOP (saída -> entrada)."""
         def aplicar(novo_mapa):
@@ -2910,6 +3064,8 @@ class JanelaPrincipal(QMainWindow):
         self.act_trocar_aliquotas.setEnabled(doc.layout == "CONTRIB")
         self.act_alterar_datas.setEnabled(True)
         self.act_verificar_cst.setEnabled(doc.layout == "CONTRIB")
+        self.act_validar_c175_65.setEnabled(doc.layout == "CONTRIB")
+        self.act_regenerar_c175_65.setEnabled(doc.layout == "CONTRIB")
         self.act_conferir_55.setEnabled(True)
         self.act_conferir_c190.setEnabled(doc.layout == "ICMS")
         self.act_revisar.setEnabled(True)

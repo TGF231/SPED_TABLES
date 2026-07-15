@@ -1,5 +1,25 @@
 # Changelog
 
+## [0.14.0] - 2026-07-04
+
+### Adicionado
+- **Validação e correção do C175 (NFC-e modelo 65) por item, via XMLs.** Novo
+  fluxo no EFD Contribuições, em três passos:
+  1. *Ferramentas → Validar C175 (modelo 65) com XMLs:* importa os XMLs das
+     NFC-e e cria, em cada C100 modelo 65, registros **C170 fictícios** (um por
+     item do XML) com valor, CFOP e PIS/COFINS — já que o modelo 65 é
+     escriturado consolidado, sem itens. Abre um **relatório de discrepâncias**
+     entre a soma dos itens e o C175 escriturado (exportável em CSV).
+  2. *Correção por item:* os C170 fictícios podem ser editados no **Modo
+     Relatório** (fonte C170), inclusive com Ctrl+D/Ctrl+R.
+  3. *Ferramentas → Regenerar C175 (modelo 65) dos itens:* reconsolida o C175 a
+     partir dos itens corrigidos e **remove** os C170 fictícios, restaurando a
+     estrutura consolidada.
+
+### Corrigido
+- A função interna de consolidação do C175 a partir de itens havia perdido sua
+  assinatura numa edição anterior (ficara como código inacessível); restaurada.
+
 ## [0.13.1] - 2026-07-04
 
 ### Adicionado

@@ -347,8 +347,24 @@ alíquotas de PIS/COFINS). Clique em **Gerar relatório** para aplicar os filtro
 e **Exportar CSV** para salvar o resultado (separador `;`, latin-1), que pode ser
 confrontado com a saída do mesmo relatório no banco.
 
-### Verificar CST por NCM (tabelas da RFB)
+### Validar e corrigir o C175 (NFC-e modelo 65) por item
 
+Como as NFC-e (modelo 65) são escrituradas de forma **consolidada** em C175 (sem
+itens), validar valor a valor exige um artifício. O fluxo, em **Ferramentas**
+(EFD Contribuições), tem três passos:
+
+1. **Validar C175 (modelo 65) com XMLs** — importa os XMLs das NFC-e e cria, em
+   cada C100 modelo 65, registros **C170 fictícios** (um por item do XML), com
+   valor, CFOP e os campos de PIS/COFINS. Abre um relatório com as
+   **discrepâncias** entre a soma dos itens e o C175 já escriturado (exportável
+   em CSV).
+2. **Corrigir por item** — os C170 fictícios ficam disponíveis no **Modo
+   Relatório** (fonte C170) e podem ser editados célula a célula (com Ctrl+D/R).
+3. **Regenerar C175 (modelo 65) dos itens** — reconsolida o C175 a partir dos
+   itens corrigidos e **remove** os C170 fictícios, restaurando a estrutura
+   consolidada do modelo 65.
+
+### Verificar CST por NCM (tabelas da RFB)
 **Ferramentas → Verificar CST por NCM (tabelas RFB)…** (EFD Contribuições)
 classifica cada item **C170** pelo NCM e aponta CST de PIS/COFINS incoerentes,
 separando entradas e saídas. A classificação usa as tabelas oficiais do

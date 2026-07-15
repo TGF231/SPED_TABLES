@@ -73,6 +73,39 @@ def _casa_float(valor, conjunto):
     return any(abs(valor - c) < 1e-6 for c in conjunto)
 
 
+def _fmt_aliq_pct(s):
+    """Formata no padrão SPED uma alíquota vinda do XML (aceita '1.65' ou
+    '1,65'); '' para vazio."""
+    if not s:
+        return ""
+    try:
+        return _fmt_aliq(float(str(s).replace(",", ".")))
+    except ValueError:
+        return ""
+
+
+class _ItemC170View:
+    """Expõe um registro C170 com a interface de "item" (atributos vprod, vdesc,
+    cfop e pis_*/cofins_*) esperada por `consolidar_c175_de_itens`, permitindo
+    reconsolidar o C175 a partir dos C170 fictícios já corrigidos."""
+
+    def __init__(self, doc, reg):
+        def g(campo):
+            i = doc._ix("C170", campo)
+            return (reg.valor(i) or "").strip() if i is not None else ""
+        self.cfop = g("CFOP")
+        self.vprod = _to_num(g("VL_ITEM"))
+        self.vdesc = _to_num(g("VL_DESC"))
+        self.pis_cst = g("CST_PIS")
+        self.pis_vbc = _to_num(g("VL_BC_PIS"))
+        self.pis_aliq = g("ALIQ_PIS")
+        self.pis_vpis = _to_num(g("VL_PIS"))
+        self.cofins_cst = g("CST_COFINS")
+        self.cofins_vbc = _to_num(g("VL_BC_COFINS"))
+        self.cofins_aliq = g("ALIQ_COFINS")
+        self.cofins_vcofins = _to_num(g("VL_COFINS"))
+
+
 
 class Registro:
     __slots__ = ("uid", "reg", "bloco", "nivel", "campos", "pai", "filhos",
@@ -854,6 +887,8 @@ class SpedDocument:
                 self.recalcular_totais_c100(c100)
                 n += 1
         return n
+
+    def consolidar_c175_de_itens(self, c100, itens, atualizar_c100=True):
         """
         (Apenas EFD Contribuições) Gera os registros **C175** de um **C100** a
         partir de uma lista de itens (tipicamente vinda dos XMLs dos cupons),
@@ -950,7 +985,178 @@ class SpedDocument:
         return {"grupos": len(ordem), "removidos": n_rem, "criados": n_cri,
                 "vl_pis": tot_pis, "vl_cofins": tot_cof}
 
-    def _registros_aliq_escopo(self, escopo):
+    # -------------------------------------------------------------------
+    # NFC-e (modelo 65): C170 "fictício" para validar/corrigir o C175 por item
+    # -------------------------------------------------------------------
+    def gerar_c170_ficticios_65(self, nfes):
+        """(EFD Contribuições) Para cada C100 modelo 65 casado com um XML (por
+        série + número), cria registros **C170 fictícios** — um por item do XML —
+        com COD_ITEM, valor, CFOP e os campos de PIS/COFINS. Como o modelo 65 é
+        escriturado consolidado (C175, sem C170), esses C170 são um andaime para
+        validação/correção por item; depois o C175 é regenerado a partir deles.
+
+        C170 fictícios anteriores (de execução prévia) são substituídos. Retorna
+        um resumo com documentos e itens criados e os documentos sem XML.
+        """
+        if self.layout != "CONTRIB":
+            return {"erro": "Disponível apenas no EFD Contribuições."}
+        import xml_fiscal as xf
+        idx_xml = xf.indexar(nfes, xf.chave_doc)
+        i_mod = self._ix("C100", "COD_MOD")
+        i_ser = self._ix("C100", "SER")
+        i_num = self._ix("C100", "NUM_DOC")
+        ncampos = len(campos("C170", self.layout, 40))
+        col = {c: self._ix("C170", c) for c in (
+            "NUM_ITEM", "COD_ITEM", "VL_ITEM", "VL_DESC", "CFOP",
+            "CST_PIS", "VL_BC_PIS", "ALIQ_PIS", "VL_PIS",
+            "CST_COFINS", "VL_BC_COFINS", "ALIQ_COFINS", "VL_COFINS")}
+
+        def setv(reg, nome, valor):
+            i = col.get(nome)
+            if i is not None and i < len(reg.campos):
+                reg.set_valor(i, valor)
+
+        docs = itens = 0
+        sem_xml = []
+        for c100 in list(self.registros):
+            if c100.reg != "C100":
+                continue
+            if (c100.valor(i_mod) or "").strip() != "65":
+                continue
+            chave = (xf.norm(c100.valor(i_mod)), xf.norm(c100.valor(i_ser)),
+                     xf.norm(c100.valor(i_num)))
+            achados = idx_xml.get(chave)
+            if not achados:
+                sem_xml.append(chave)
+                continue
+            nfe = achados[0]
+            for f in [x for x in c100.filhos if x.reg == "C170"]:
+                self.remover_registro(f)
+            # âncora: inserir os C170 logo após o C100 (antes dos C175)
+            ancora = c100
+            for k, it in enumerate(nfe.itens, 1):
+                novo = self.novo_registro("C170", pai=c100, depois=ancora)
+                novo.campos = ["C170"] + [""] * (ncampos - 1)
+                setv(novo, "NUM_ITEM", str(k))
+                setv(novo, "COD_ITEM", (it.cprod or "").strip())
+                setv(novo, "VL_ITEM", _fmt_val(it.vprod or 0.0))
+                setv(novo, "VL_DESC", _fmt_val(it.vdesc or 0.0))
+                setv(novo, "CFOP", (it.cfop or "").strip())
+                setv(novo, "CST_PIS", (it.pis_cst or "").strip())
+                setv(novo, "VL_BC_PIS", _fmt_val(it.pis_vbc or 0.0))
+                setv(novo, "ALIQ_PIS", _fmt_aliq_pct(it.pis_aliq))
+                setv(novo, "VL_PIS", _fmt_val(it.pis_vpis or 0.0))
+                setv(novo, "CST_COFINS", (it.cofins_cst or "").strip())
+                setv(novo, "VL_BC_COFINS", _fmt_val(it.cofins_vbc or 0.0))
+                setv(novo, "ALIQ_COFINS", _fmt_aliq_pct(it.cofins_aliq))
+                setv(novo, "VL_COFINS", _fmt_val(it.cofins_vcofins or 0.0))
+                ancora = novo
+                itens += 1
+            docs += 1
+        self.atualizar_bloco9_inplace()
+        return {"docs": docs, "itens": itens, "sem_xml": sem_xml}
+
+    def discrepancias_c175_65(self):
+        """Compara, em cada C100 modelo 65 que tenha C170 fictícios, a soma dos
+        itens (por CFOP/CST/alíquota de PIS/COFINS) com o C175 já escriturado.
+        Devolve a lista de divergências (dicts) — valores do C175 que não batem
+        com a totalização dos itens do XML."""
+        if self.layout != "CONTRIB":
+            return []
+        i_mod = self._ix("C100", "COD_MOD")
+        i_num = self._ix("C100", "NUM_DOC")
+        # C170
+        a = {c: self._ix("C170", c) for c in (
+            "CFOP", "VL_ITEM", "VL_DESC", "CST_PIS", "VL_BC_PIS", "ALIQ_PIS",
+            "VL_PIS", "CST_COFINS", "VL_BC_COFINS", "ALIQ_COFINS", "VL_COFINS")}
+        # C175
+        b = {c: self._ix("C175", c) for c in (
+            "CFOP", "VL_OPR", "VL_DESC", "CST_PIS", "VL_BC_PIS", "ALIQ_PIS",
+            "VL_PIS", "CST_COFINS", "VL_BC_COFINS", "ALIQ_COFINS", "VL_COFINS")}
+        div = []
+        for c100 in self.registros:
+            if c100.reg != "C100":
+                continue
+            if (c100.valor(i_mod) or "").strip() != "65":
+                continue
+            c170s = [f for f in c100.filhos if f.reg == "C170"]
+            c175s = [f for f in c100.filhos if f.reg == "C175"]
+            if not c170s or not c175s:
+                continue
+            ndoc = (c100.valor(i_num) or "").strip()
+            # consolida os C170 por (CFOP, CST_PIS, ALIQ_PIS, CST_COFINS, ALIQ_COFINS)
+            grupos = {}
+            for f in c170s:
+                k = ((f.valor(a["CFOP"]) or "").strip(),
+                     (f.valor(a["CST_PIS"]) or "").strip(),
+                     "%.4f" % _to_num(f.valor(a["ALIQ_PIS"])),
+                     (f.valor(a["CST_COFINS"]) or "").strip(),
+                     "%.4f" % _to_num(f.valor(a["ALIQ_COFINS"])))
+                g = grupos.setdefault(k, [0.0, 0.0, 0.0, 0.0, 0.0])
+                g[0] += _to_num(f.valor(a["VL_ITEM"])) \
+                    - _to_num(f.valor(a["VL_DESC"]))   # VL_OPR
+                g[1] += _to_num(f.valor(a["VL_BC_PIS"]))
+                g[2] += _to_num(f.valor(a["VL_PIS"]))
+                g[3] += _to_num(f.valor(a["VL_BC_COFINS"]))
+                g[4] += _to_num(f.valor(a["VL_COFINS"]))
+            # indexa o C175 existente pela mesma chave
+            c175_por_k = {}
+            for r in c175s:
+                k = ((r.valor(b["CFOP"]) or "").strip(),
+                     (r.valor(b["CST_PIS"]) or "").strip(),
+                     "%.4f" % _to_num(r.valor(b["ALIQ_PIS"])),
+                     (r.valor(b["CST_COFINS"]) or "").strip(),
+                     "%.4f" % _to_num(r.valor(b["ALIQ_COFINS"])))
+                c175_por_k[k] = r
+            for k, g in grupos.items():
+                r = c175_por_k.get(k)
+                grp = "CFOP %s · PIS %s/%s · COFINS %s/%s" % (
+                    k[0], k[1], k[2].rstrip("0").rstrip("."),
+                    k[3], k[4].rstrip("0").rstrip("."))
+                if r is None:
+                    div.append({"nnf": ndoc, "grupo": grp, "campo": "C175",
+                                "xml": _fmt_val(g[0]), "sped": "(ausente)",
+                                "uid": None})
+                    continue
+                comps = [("VL_OPR", g[0], _to_num(r.valor(b["VL_OPR"]))),
+                         ("VL_BC_PIS", g[1], _to_num(r.valor(b["VL_BC_PIS"]))),
+                         ("VL_PIS", g[2], _to_num(r.valor(b["VL_PIS"]))),
+                         ("VL_BC_COFINS", g[3],
+                          _to_num(r.valor(b["VL_BC_COFINS"]))),
+                         ("VL_COFINS", g[4], _to_num(r.valor(b["VL_COFINS"])))]
+                for campo, vx, vs in comps:
+                    if abs(round(vx, 2) - round(vs, 2)) > 0.01:
+                        div.append({"nnf": ndoc, "grupo": grp, "campo": campo,
+                                    "xml": _fmt_val(vx), "sped": _fmt_val(vs),
+                                    "uid": r.uid})
+        return div
+
+    def regenerar_c175_de_c170_65(self):
+        """Para cada C100 modelo 65 com C170 fictícios, regenera o C175 a partir
+        dos itens (aplicando eventuais correções feitas neles) e **remove** os
+        C170 fictícios, restaurando a estrutura consolidada do modelo 65.
+        Retorna a quantidade de documentos e de C175 gerados."""
+        if self.layout != "CONTRIB":
+            return {"erro": "Disponível apenas no EFD Contribuições."}
+        i_mod = self._ix("C100", "COD_MOD")
+        docs = c175 = 0
+        for c100 in self.registros:
+            if c100.reg != "C100":
+                continue
+            if (c100.valor(i_mod) or "").strip() != "65":
+                continue
+            c170s = [f for f in c100.filhos if f.reg == "C170"]
+            if not c170s:
+                continue
+            itens = [_ItemC170View(self, f) for f in c170s]
+            res = self.consolidar_c175_de_itens(c100, itens)
+            if res:
+                c175 += res.get("criados", 0)
+            for f in c170s:
+                self.remover_registro(f)
+            docs += 1
+        self.atualizar_bloco9_inplace()
+        return {"docs": docs, "c175": c175}
         """Registros-alvo da troca de alíquotas conforme o escopo:
         'saidas'   → C175 + C170 de documentos de saída (IND_OPER=1);
         'entradas' → C170 de documentos de entrada (IND_OPER=0);
