@@ -1,5 +1,28 @@
 # Changelog
 
+## [0.15.2] - 2026-09-10
+
+### Corrigido
+- **Tabelas de resultado exibiam apenas a coluna "Situação"/primeira coluna, em
+  todas as linhas menos a última.** Os diálogos preenchiam a grade com a
+  **ordenação já ligada**: cada `setItem` reordenava a tabela na hora, de modo
+  que as células seguintes da mesma linha caíam em outra linha. Agora a
+  ordenação só é ativada **depois** do preenchimento (idioma já usado no Modo
+  Relatório e na verificação de CST por NCM). Afetava:
+  - *Comparar inventário com a planilha* (bloco H);
+  - *Validar C175 (modelo 65) com XMLs* — relatório de discrepâncias;
+  - *Conferir C190 (ICMS) com XMLs*.
+
+### Alterado
+- Os relatórios em tabela passam a **abrir na ordem em que foram montados**
+  (na comparação de inventário: divergentes, depois só no SPED, depois só na
+  planilha; nas conferências, documento a documento; na verificação de CST por
+  NCM, entradas antes das saídas), em vez de ordenados alfabeticamente pela
+  primeira coluna. O clique no cabeçalho continua ordenando normalmente. O
+  indicador de ordenação é zerado **antes** de a ordenação ser ligada, porque o
+  QTableWidget reordena o próprio modelo — depois de ordenado não há como voltar
+  à ordem original.
+
 ## [0.15.1] - 2026-07-05
 
 ### Adicionado

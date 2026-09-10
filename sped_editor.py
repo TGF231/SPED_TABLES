@@ -1015,7 +1015,9 @@ class DialogoComparaInventario(QDialog):
         self.tab.setHorizontalHeaderLabels(self.COLS)
         self.tab.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
         self.tab.setAlternatingRowColors(True)
-        self.tab.setSortingEnabled(True)
+        # a ordenação só é ligada depois de preencher: com ela ativa, cada
+        # setItem reordena a tabela e as células seguintes caem em outra linha
+        self.tab.setSortingEnabled(False)
         self.tab.horizontalHeader().setStretchLastSection(True)
         for i, ln in enumerate(linhas):
             for c, v in enumerate(ln[:5]):
@@ -1023,6 +1025,13 @@ class DialogoComparaInventario(QDialog):
                 if c == 0:
                     it.setForeground(QColor(ln[5]))
                 self.tab.setItem(i, c, it)
+        # o indicador -1 precisa vir ANTES de ligar a ordenação: o
+        # QTableWidget ordena o próprio modelo e, depois de ordenado,
+        # não há como voltar à ordem de montagem (divergentes -> só no SPED -> só na planilha).
+        # O clique no cabeçalho continua ordenando normalmente.
+        self.tab.horizontalHeader().setSortIndicator(
+            -1, Qt.SortOrder.AscendingOrder)
+        self.tab.setSortingEnabled(True)
         self.tab.resizeColumnsToContents()
         lay.addWidget(self.tab, 1)
 
@@ -1426,7 +1435,7 @@ class DialogoDiscrepanciasC175(QDialog):
         self.tab.setHorizontalHeaderLabels(self.COLS)
         self.tab.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
         self.tab.setAlternatingRowColors(True)
-        self.tab.setSortingEnabled(True)
+        self.tab.setSortingEnabled(False)   # ligada só depois de preencher
         self.tab.horizontalHeader().setStretchLastSection(True)
         for i, d in enumerate(divergencias):
             vals = [d["nnf"], d["grupo"], d["campo"], d["xml"], d["sped"]]
@@ -1435,6 +1444,13 @@ class DialogoDiscrepanciasC175(QDialog):
                 if c >= 3:
                     it.setForeground(QColor("#b00"))
                 self.tab.setItem(i, c, it)
+        # o indicador -1 precisa vir ANTES de ligar a ordenação: o
+        # QTableWidget ordena o próprio modelo e, depois de ordenado,
+        # não há como voltar à ordem de montagem (documento a documento).
+        # O clique no cabeçalho continua ordenando normalmente.
+        self.tab.horizontalHeader().setSortIndicator(
+            -1, Qt.SortOrder.AscendingOrder)
+        self.tab.setSortingEnabled(True)
         self.tab.resizeColumnsToContents()
         lay.addWidget(self.tab, 1)
 
@@ -1499,7 +1515,7 @@ class DialogoConfC190(QDialog):
         self.tab.setHorizontalHeaderLabels(self.COLS)
         self.tab.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
         self.tab.setAlternatingRowColors(True)
-        self.tab.setSortingEnabled(True)
+        self.tab.setSortingEnabled(False)   # ligada só depois de preencher
         self.tab.horizontalHeader().setStretchLastSection(True)
         divs = resultado["divergencias"]
         self.tab.setRowCount(len(divs))
@@ -1508,6 +1524,13 @@ class DialogoConfC190(QDialog):
                     _br(d.valor_sped), _br((d.valor_xml or 0) - (d.valor_sped or 0))]
             for c, v in enumerate(vals):
                 self.tab.setItem(i, c, QTableWidgetItem(str(v)))
+        # o indicador -1 precisa vir ANTES de ligar a ordenação: o
+        # QTableWidget ordena o próprio modelo e, depois de ordenado,
+        # não há como voltar à ordem de montagem (documento a documento).
+        # O clique no cabeçalho continua ordenando normalmente.
+        self.tab.horizontalHeader().setSortIndicator(
+            -1, Qt.SortOrder.AscendingOrder)
+        self.tab.setSortingEnabled(True)
         self.tab.resizeColumnsToContents()
         lay.addWidget(self.tab, 1)
 
@@ -2245,6 +2268,12 @@ class DialogoVerificarCST(QDialog):
                     p["cst_sugerido"], p["detalhe"]]
             for c, v in enumerate(vals):
                 self.tab.setItem(i, c, QTableWidgetItem(str(v)))
+        # o indicador -1 precisa vir ANTES de ligar a ordenação: o
+        # QTableWidget ordena o próprio modelo e, depois de ordenado,
+        # não há como voltar à ordem de montagem (entradas antes das saídas).
+        # O clique no cabeçalho continua ordenando normalmente.
+        self.tab.horizontalHeader().setSortIndicator(
+            -1, Qt.SortOrder.AscendingOrder)
         self.tab.setSortingEnabled(True)
         self.tab.resizeColumnsToContents()
 
