@@ -718,6 +718,21 @@ class SpedDocument:
                 "outras": outras}
 
     # ----------------------------------------------- consolidação do C190
+    def _ncampos(self, tipo):
+        """Quantidade real de campos do registro `tipo` (incluindo o REG).
+
+        Usa a moda dos registros do mesmo tipo já presentes no arquivo; se não
+        houver nenhum, conta os campos **nomeados** do layout (o helper `campos`
+        completa a lista com rótulos genéricos "Campo NN" só para exibição, e
+        usá-los geraria linhas com pipes sobrando)."""
+        tam = [len(r.campos) for r in self.registros if r.reg == tipo]
+        if tam:
+            from collections import Counter
+            return Counter(tam).most_common(1)[0][0]
+        import re as _re
+        return sum(1 for c in campos(tipo, self.layout, 40)
+                   if not _re.match(r"^Campo \d+$", c))
+
     def _ix(self, tipo, nome):
         """Índice da coluna `nome` no layout atual para o registro `tipo`."""
         cols = campos(tipo, self.layout, 40)
@@ -1014,7 +1029,7 @@ class SpedDocument:
         i_mod = self._ix("C100", "COD_MOD")
         i_ser = self._ix("C100", "SER")
         i_num = self._ix("C100", "NUM_DOC")
-        ncampos = len(campos("C170", self.layout, 40))
+        ncampos = self._ncampos("C170")
         col = {c: self._ix("C170", c) for c in (
             "NUM_ITEM", "COD_ITEM", "DESCR_COMPL", "QTD", "UNID",
             "VL_ITEM", "VL_DESC", "CST_ICMS", "CFOP", "VL_BC_ICMS",
@@ -1186,6 +1201,222 @@ class SpedDocument:
             docs += 1
         self.atualizar_bloco9_inplace()
         return {"docs": docs, "c175": c175}
+
+    # -------------------------------------------------------------------
+    # Bloco H — inventário a partir de planilha
+    # -------------------------------------------------------------------
+    # chaves canônicas aceitas em cada linha da planilha importada
+    CAMPOS_INVENTARIO = (
+        "cod_item", "unid", "qtd", "vl_unit", "vl_item", "ind_prop",
+        "cod_part", "txt_compl", "cod_cta", "vl_item_ir",
+        "descr_item", "cod_barra", "tipo_item", "cod_ncm", "ex_ipi",
+        "cod_gen", "aliq_icms", "cest")
+
+    def conferir_itens_inventario(self, linhas):
+        """Compara os itens da planilha com o cadastro 0200 já existente, sem
+        alterar nada. Devolve dict com:
+          novos       -> códigos que não existem no 0200 (serão criados);
+          existentes  -> códigos já cadastrados;
+          divergentes -> [(cod, campo, valor_0200, valor_planilha)] quando a
+                         descrição/unidade/NCM da planilha diferem do 0200;
+          duplicados  -> códigos repetidos dentro da própria planilha.
+        """
+        i_cod = self._ix("0200", "COD_ITEM")
+        i_desc = self._ix("0200", "DESCR_ITEM")
+        i_unid = self._ix("0200", "UNID_INV")
+        i_ncm = self._ix("0200", "COD_NCM")
+        cad = {}
+        for r in self.registros:
+            if r.reg == "0200":
+                cad[(r.valor(i_cod) or "").strip()] = r
+        novos, existentes, divergentes, duplicados = [], [], [], []
+        vistos = set()
+        for ln in linhas:
+            cod = str(ln.get("cod_item") or "").strip()
+            if not cod:
+                continue
+            if cod in vistos:
+                duplicados.append(cod)
+                continue
+            vistos.add(cod)
+            r = cad.get(cod)
+            if r is None:
+                novos.append(cod)
+                continue
+            existentes.append(cod)
+            for chave, idx, rot in (("descr_item", i_desc, "DESCR_ITEM"),
+                                    ("unid", i_unid, "UNID_INV"),
+                                    ("cod_ncm", i_ncm, "COD_NCM")):
+                novo = str(ln.get(chave) or "").strip()
+                if not novo or idx is None:
+                    continue
+                atual = (r.valor(idx) or "").strip()
+                if atual and atual.upper() != novo.upper():
+                    divergentes.append((cod, rot, atual, novo))
+        return {"novos": novos, "existentes": existentes,
+                "divergentes": divergentes, "duplicados": duplicados}
+
+    def importar_inventario_h010(self, linhas, dt_inv, mot_inv="01",
+                                 ind_prop_padrao="0", criar_0200=True,
+                                 substituir=True):
+        """(EFD ICMS/IPI) Gera o inventário do **bloco H** a partir das `linhas`
+        de uma planilha — uma por item, com as chaves de `CAMPOS_INVENTARIO`.
+
+        Cria/atualiza H001 (IND_MOV=0), um H005 com a data e o motivo do
+        inventário, e um **H010** por item. Para manter a coerência com o
+        cadastro, itens que ainda não existem no **0200** são criados (com
+        descrição, unidade, tipo e NCM da planilha), sem duplicar os já
+        cadastrados; as unidades novas também geram registros **0190**.
+
+        `dt_inv` no formato DDMMAAAA. Com `substituir=True`, H005/H010 anteriores
+        são removidos. Devolve um resumo do que foi criado.
+        """
+        if self.layout != "ICMS":
+            return {"erro": "O bloco H (inventário) é do EFD ICMS/IPI."}
+
+        h = {c: self._ix("H010", c) for c in (
+            "COD_ITEM", "UNID", "QTD", "VL_UNIT", "VL_ITEM", "IND_PROP",
+            "COD_PART", "TXT_COMPL", "COD_CTA", "VL_ITEM_IR")}
+        z = {c: self._ix("0200", c) for c in (
+            "COD_ITEM", "DESCR_ITEM", "COD_BARRA", "UNID_INV", "TIPO_ITEM",
+            "COD_NCM", "EX_IPI", "COD_GEN", "ALIQ_ICMS", "CEST")}
+        n_h010 = self._ncampos("H010")
+        n_h005 = self._ncampos("H005")
+        n_0200 = self._ncampos("0200")
+        n_0190 = self._ncampos("0190")
+
+        def setv(reg, idx, valor):
+            if idx is not None and idx < len(reg.campos):
+                reg.set_valor(idx, valor)
+
+        # ---- bloco H: abertura e limpeza -------------------------------
+        h001 = next((r for r in self.registros if r.reg == "H001"), None)
+        if h001 is None:
+            ancora = next((r for r in reversed(self.registros)
+                           if r.reg.startswith("G") or r.reg.startswith("E")
+                           or r.reg.startswith("D") or r.reg.startswith("C")),
+                          None)
+            h001 = self.novo_registro("H001", depois=ancora)
+            h001.campos = ["H001", "0"]
+        else:
+            setv(h001, 1, "0")            # IND_MOV = 0 (com dados)
+        if substituir:
+            for r in [x for x in self.registros if x.reg in ("H005", "H010",
+                                                             "H020")]:
+                self.remover_registro(r)
+
+        h005 = self.novo_registro("H005", pai=h001, depois=h001)
+        h005.campos = ["H005"] + [""] * (n_h005 - 1)
+        setv(h005, self._ix("H005", "DT_INV"), dt_inv)
+        setv(h005, self._ix("H005", "MOT_INV"), mot_inv)
+
+        # ---- cadastro 0200 / 0190 já existentes ------------------------
+        cad = {}
+        for r in self.registros:
+            if r.reg == "0200":
+                cad[(r.valor(z["COD_ITEM"]) or "").strip()] = r
+        i_u190 = self._ix("0190", "UNID")
+        unids = {(r.valor(i_u190) or "").strip().upper()
+                 for r in self.registros if r.reg == "0190"}
+        ult_0200 = None
+        ult_0190 = None
+        for r in self.registros:
+            if r.reg == "0200":
+                ult_0200 = r
+            elif r.reg == "0190":
+                ult_0190 = r
+        r0001 = next((r for r in self.registros if r.reg == "0001"), None)
+
+        # ---- itens -----------------------------------------------------
+        ancora_h = h005
+        total = 0.0
+        n_itens = n_novos_0200 = n_novos_0190 = 0
+        vistos = set()
+        ignorados = []
+
+        def num(v):
+            """Aceita número nativo da planilha ou texto no padrão BR."""
+            if isinstance(v, (int, float)):
+                return float(v)
+            return _to_num(v)
+
+        for ln in linhas:
+            cod = str(ln.get("cod_item") or "").strip()
+            if not cod or cod in vistos:
+                if cod:
+                    ignorados.append(cod)
+                continue
+            vistos.add(cod)
+            unid = str(ln.get("unid") or "").strip()
+            qtd = num(ln.get("qtd"))
+            vl_unit = num(ln.get("vl_unit"))
+            vl_item = num(ln.get("vl_item"))
+            if not vl_item and qtd and vl_unit:
+                vl_item = round(qtd * vl_unit, 2)
+            if not vl_unit and qtd:
+                vl_unit = round(vl_item / qtd, 6) if qtd else 0.0
+
+            reg = self.novo_registro("H010", pai=h005, depois=ancora_h)
+            reg.campos = ["H010"] + [""] * (n_h010 - 1)
+            setv(reg, h["COD_ITEM"], cod)
+            setv(reg, h["UNID"], unid)
+            setv(reg, h["QTD"], _fmt_qtd(qtd))
+            setv(reg, h["VL_UNIT"], _fmt_qtd(vl_unit))
+            setv(reg, h["VL_ITEM"], _fmt_val(vl_item))
+            setv(reg, h["IND_PROP"],
+                 str(ln.get("ind_prop") or ind_prop_padrao).strip())
+            for chave, campo in (("cod_part", "COD_PART"),
+                                 ("txt_compl", "TXT_COMPL"),
+                                 ("cod_cta", "COD_CTA"),
+                                 ("vl_item_ir", "VL_ITEM_IR")):
+                v = str(ln.get(chave) or "").strip()
+                if v:
+                    setv(reg, h[campo], v)
+            ancora_h = reg
+            total += vl_item
+            n_itens += 1
+
+            # cadastro 0200 do item, se ainda não existir
+            if criar_0200 and cod not in cad and r0001 is not None:
+                novo = self.novo_registro(
+                    "0200", pai=r0001, depois=(ult_0200 or ult_0190 or r0001))
+                novo.campos = ["0200"] + [""] * (n_0200 - 1)
+                setv(novo, z["COD_ITEM"], cod)
+                setv(novo, z["DESCR_ITEM"],
+                     str(ln.get("descr_item") or "").strip())
+                setv(novo, z["UNID_INV"], unid)
+                setv(novo, z["TIPO_ITEM"],
+                     str(ln.get("tipo_item") or "").strip())
+                for chave, campo in (("cod_barra", "COD_BARRA"),
+                                     ("cod_ncm", "COD_NCM"),
+                                     ("ex_ipi", "EX_IPI"),
+                                     ("cod_gen", "COD_GEN"),
+                                     ("aliq_icms", "ALIQ_ICMS"),
+                                     ("cest", "CEST")):
+                    v = str(ln.get(chave) or "").strip()
+                    if v:
+                        setv(novo, z[campo], v)
+                cad[cod] = novo
+                ult_0200 = novo
+                n_novos_0200 += 1
+
+            # unidade nova -> 0190
+            if unid and unid.upper() not in unids and r0001 is not None:
+                u = self.novo_registro(
+                    "0190", pai=r0001, depois=(ult_0190 or r0001))
+                u.campos = ["0190"] + [""] * (n_0190 - 1)
+                setv(u, self._ix("0190", "UNID"), unid)
+                setv(u, self._ix("0190", "DESCR"), unid)
+                unids.add(unid.upper())
+                ult_0190 = u
+                n_novos_0190 += 1
+
+        setv(h005, self._ix("H005", "VL_INV"), _fmt_val(round(total, 2)))
+        self._cad_itens = None
+        self.atualizar_bloco9_inplace()
+        return {"itens": n_itens, "vl_inv": round(total, 2),
+                "novos_0200": n_novos_0200, "novos_0190": n_novos_0190,
+                "ignorados": ignorados}
 
     def _registros_aliq_escopo(self, escopo):
         """Registros-alvo da troca de alíquotas conforme o escopo:

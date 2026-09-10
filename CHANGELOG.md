@@ -1,5 +1,27 @@
 # Changelog
 
+## [0.15.0] - 2026-07-05
+
+### Adicionado
+- **Importar inventário (bloco H) de planilha** (Ferramentas, EFD ICMS/IPI):
+  lê uma planilha **XLSX/CSV** e gera o inventário — H001 (IND_MOV=0), **H005**
+  (data, motivo e valor total) e um **H010** por item.
+  - As colunas são **reconhecidas automaticamente** pelo nome do cabeçalho
+    (código, descrição, unidade, quantidade, valor unitário, NCM, conta
+    contábil…), com **mapeamento manual** ajustável para qualquer layout.
+  - **Coerência com o 0200:** itens que ainda não existem no cadastro são
+    criados (descrição, unidade, tipo e NCM da planilha) e os já cadastrados
+    **não são duplicados**; unidades novas geram registros **0190**.
+  - Botão *Conferir com o 0200* mostra, antes de importar, quantos itens são
+    novos, quantos já existem, códigos repetidos na planilha e divergências de
+    descrição/unidade/NCM em relação ao cadastro.
+
+### Corrigido
+- Registros criados pelo programa passaram a usar o **número real de campos** do
+  tipo (moda dos registros do arquivo ou campos nomeados do layout). Os C170
+  fictícios do fluxo do modelo 65 vinham sendo gerados com 40 campos em vez de
+  37, o que geraria erro de layout no PVA.
+
 ## [0.14.2] - 2026-07-04
 
 ### Corrigido

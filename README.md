@@ -365,6 +365,30 @@ itens), validar valor a valor exige um artifício. O fluxo, em **Ferramentas**
    itens corrigidos e **remove** os C170 fictícios, restaurando a estrutura
    consolidada do modelo 65.
 
+### Importar inventário (bloco H) de planilha
+
+**Ferramentas → Importar inventário (bloco H) de planilha…** (EFD ICMS/IPI) lê
+uma planilha **XLSX** ou **CSV** com o inventário e gera os registros do bloco H:
+**H001** (com movimento), **H005** (data, motivo e valor total) e um **H010** por
+item — com unidade, quantidade, valor unitário, valor total, indicador de
+propriedade e, quando informados, participante, complemento, conta contábil e
+valor para IR.
+
+A primeira linha da planilha deve ser o **cabeçalho**. As colunas são
+reconhecidas automaticamente pelo nome (por exemplo *Código do Produto*,
+*Descrição*, *Unidade*, *Quantidade*, *Valor Unitário*, *NCM*, *Conta Contábil*)
+e o **mapeamento pode ser ajustado manualmente**, de modo que qualquer layout de
+planilha funciona. Só *código*, *unidade* e *quantidade* são obrigatórios; o
+valor total é calculado (quantidade × valor unitário) quando não vier na
+planilha.
+
+**Coerência com o cadastro 0200:** antes de gravar, o botão *Conferir com o 0200*
+informa quantos itens já estão cadastrados, quantos serão criados, códigos
+repetidos na planilha e divergências de descrição/unidade/NCM frente ao cadastro
+atual. Na importação, os itens ausentes do **0200** são cadastrados (com
+descrição, unidade, tipo e NCM da planilha) e os existentes **não são
+duplicados**; unidades ainda não declaradas geram registros **0190**.
+
 ### Verificar CST por NCM (tabelas da RFB)
 **Ferramentas → Verificar CST por NCM (tabelas RFB)…** (EFD Contribuições)
 classifica cada item **C170** pelo NCM e aponta CST de PIS/COFINS incoerentes,
