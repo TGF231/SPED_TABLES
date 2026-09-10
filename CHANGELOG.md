@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.15.1] - 2026-07-05
+
+### Adicionado
+- **Comparar o inventário atual com a planilha** (botão *Comparar com
+  inventário atual*, no diálogo de importação do bloco H): confronta o **H010 já
+  escriturado** com a planilha por **código e quantidade**, **sem alterar o
+  arquivo**. Mostra os itens que conferem, os de **quantidade divergente** (com
+  a diferença), os que estão **só no SPED**, os que estão **só na planilha** e as
+  somas de quantidade dos dois lados; exportável em CSV.
+
 ## [0.15.0] - 2026-07-05
 
 ### Adicionado

@@ -382,6 +382,13 @@ planilha funciona. Só *código*, *unidade* e *quantidade* são obrigatórios; o
 valor total é calculado (quantidade × valor unitário) quando não vier na
 planilha.
 
+**Comparar sem alterar:** o botão *Comparar com inventário atual* confronta o
+**H010 já escriturado** com a planilha por **código e quantidade**, sem modificar
+o arquivo — útil para conferir a contagem física contra o que foi escriturado.
+O resultado separa os itens que conferem, os de quantidade divergente (com a
+diferença), os que só existem no SPED e os que só existem na planilha, além das
+somas dos dois lados, e pode ser exportado em CSV.
+
 **Coerência com o cadastro 0200:** antes de gravar, o botão *Conferir com o 0200*
 informa quantos itens já estão cadastrados, quantos serão criados, códigos
 repetidos na planilha e divergências de descrição/unidade/NCM frente ao cadastro

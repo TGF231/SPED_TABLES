@@ -1212,6 +1212,59 @@ class SpedDocument:
         "descr_item", "cod_barra", "tipo_item", "cod_ncm", "ex_ipi",
         "cod_gen", "aliq_icms", "cest")
 
+    def comparar_inventario_h010(self, linhas, tol=0.001):
+        """Compara o inventário **já escriturado** (H010) com a planilha, por
+        código e quantidade — sem alterar nada no arquivo.
+
+        Devolve dict com:
+          divergentes -> [(cod, qtd_sped, qtd_planilha, dif)] quantidades que
+                         não batem (diferença acima de `tol`);
+          so_sped     -> [(cod, qtd)] itens no H010 e ausentes da planilha;
+          so_planilha -> [(cod, qtd)] itens da planilha sem H010;
+          iguais      -> quantos coincidem;
+          tot_sped / tot_planilha -> somas das quantidades;
+          sem_h010    -> True se o arquivo não tem inventário escriturado.
+        """
+        h_cod = self._ix("H010", "COD_ITEM")
+        h_qtd = self._ix("H010", "QTD")
+        atual = {}
+        for r in self.registros:
+            if r.reg != "H010":
+                continue
+            cod = (r.valor(h_cod) or "").strip()
+            if cod:
+                atual[cod] = atual.get(cod, 0.0) + _to_num(r.valor(h_qtd))
+
+        def num(v):
+            if isinstance(v, (int, float)):
+                return float(v)
+            return _to_num(v)
+
+        plan = {}
+        for ln in linhas:
+            cod = str(ln.get("cod_item") or "").strip()
+            if cod:
+                plan[cod] = plan.get(cod, 0.0) + num(ln.get("qtd"))
+
+        divergentes, so_sped, so_planilha = [], [], []
+        iguais = 0
+        for cod in sorted(set(atual) | set(plan)):
+            if cod not in plan:
+                so_sped.append((cod, atual[cod]))
+            elif cod not in atual:
+                so_planilha.append((cod, plan[cod]))
+            else:
+                dif = round(plan[cod] - atual[cod], 6)
+                if abs(dif) > tol:
+                    divergentes.append((cod, atual[cod], plan[cod], dif))
+                else:
+                    iguais += 1
+        return {"divergentes": divergentes, "so_sped": so_sped,
+                "so_planilha": so_planilha, "iguais": iguais,
+                "tot_sped": round(sum(atual.values()), 4),
+                "tot_planilha": round(sum(plan.values()), 4),
+                "sem_h010": not atual}
+
     def conferir_itens_inventario(self, linhas):
         """Compara os itens da planilha com o cadastro 0200 já existente, sem
         alterar nada. Devolve dict com:

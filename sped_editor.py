@@ -978,6 +978,87 @@ class BlocoWidget(QWidget):
 # ---------------------------------------------------------------------------
 # Diálogo de resultado da conferência de entradas (NF-e 55)
 # ---------------------------------------------------------------------------
+class DialogoComparaInventario(QDialog):
+    """Resultado da comparação entre o inventário escriturado (H010) e a
+    planilha — por código e quantidade, sem alterar o arquivo."""
+
+    COLS = ["Situação", "Código do item", "Qtde. SPED", "Qtde. planilha",
+            "Diferença"]
+
+    def __init__(self, res, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle("Comparar inventário com a planilha")
+        self.resize(760, 560)
+        lay = QVBoxLayout(self)
+
+        resumo = QLabel(
+            "Conferem: <b>%d</b> &nbsp;·&nbsp; Quantidade divergente: "
+            "<b>%d</b> &nbsp;·&nbsp; Só no SPED: <b>%d</b> &nbsp;·&nbsp; "
+            "Só na planilha: <b>%d</b><br>Soma das quantidades — SPED: "
+            "<b>%s</b> &nbsp;|&nbsp; planilha: <b>%s</b>"
+            % (res["iguais"], len(res["divergentes"]), len(res["so_sped"]),
+               len(res["so_planilha"]), _br(res["tot_sped"]),
+               _br(res["tot_planilha"])))
+        resumo.setTextFormat(Qt.TextFormat.RichText)
+        lay.addWidget(resumo)
+
+        linhas = []
+        for cod, qs, qp, dif in res["divergentes"]:
+            linhas.append(("Quantidade difere", cod, _br(qs), _br(qp),
+                           _br(dif), "#b00"))
+        for cod, q in res["so_sped"]:
+            linhas.append(("Só no SPED", cod, _br(q), "—", "", "#b60"))
+        for cod, q in res["so_planilha"]:
+            linhas.append(("Só na planilha", cod, "—", _br(q), "", "#06c"))
+
+        self.tab = QTableWidget(len(linhas), len(self.COLS))
+        self.tab.setHorizontalHeaderLabels(self.COLS)
+        self.tab.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
+        self.tab.setAlternatingRowColors(True)
+        self.tab.setSortingEnabled(True)
+        self.tab.horizontalHeader().setStretchLastSection(True)
+        for i, ln in enumerate(linhas):
+            for c, v in enumerate(ln[:5]):
+                it = QTableWidgetItem(str(v))
+                if c == 0:
+                    it.setForeground(QColor(ln[5]))
+                self.tab.setItem(i, c, it)
+        self.tab.resizeColumnsToContents()
+        lay.addWidget(self.tab, 1)
+
+        self._linhas = linhas
+        rod = QHBoxLayout()
+        if not linhas:
+            ok = QLabel("Inventário e planilha conferem integralmente.")
+            ok.setStyleSheet("color:#0a0; font-weight:bold;")
+            rod.addWidget(ok)
+        rod.addStretch(1)
+        b_csv = QPushButton("Exportar CSV")
+        b_csv.clicked.connect(self._exportar)
+        b_csv.setEnabled(bool(linhas))
+        b_fechar = QPushButton("Fechar")
+        b_fechar.clicked.connect(self.accept)
+        rod.addWidget(b_csv)
+        rod.addWidget(b_fechar)
+        lay.addLayout(rod)
+
+    def _exportar(self):
+        caminho, _ = QFileDialog.getSaveFileName(
+            self, "Exportar comparação", "comparacao_inventario.csv",
+            "CSV (*.csv)")
+        if not caminho:
+            return
+        try:
+            with open(caminho, "w", encoding="latin-1", newline="") as fh:
+                fh.write(";".join(self.COLS) + "\r\n")
+                for ln in self._linhas:
+                    fh.write(";".join(str(x) for x in ln[:5]) + "\r\n")
+        except Exception as exc:  # noqa: BLE001
+            QMessageBox.critical(self, "Exportar", str(exc))
+            return
+        QMessageBox.information(self, "Exportar", "Exportado:\n%s" % caminho)
+
+
 class DialogoImportarInventario(QDialog):
     """Importa uma planilha (XLSX/CSV) e gera o inventário do bloco H (H005 e
     H010), criando no 0200 apenas os itens que ainda não estão cadastrados."""
@@ -1094,12 +1175,17 @@ class DialogoImportarInventario(QDialog):
         rod = QHBoxLayout()
         b_conf = QPushButton("Conferir com o 0200")
         b_conf.clicked.connect(self._conferir)
+        b_comp = QPushButton("Comparar com inventário atual")
+        b_comp.setToolTip("Compara o H010 já escriturado com a planilha "
+                          "(código e quantidade), sem alterar o arquivo")
+        b_comp.clicked.connect(self._comparar)
         self.b_imp = QPushButton("Importar inventário")
         self.b_imp.clicked.connect(self._importar)
         self.b_imp.setEnabled(False)
         b_fechar = QPushButton("Fechar")
         b_fechar.clicked.connect(self.reject)
         rod.addWidget(b_conf)
+        rod.addWidget(b_comp)
         rod.addStretch(1)
         rod.addWidget(self.b_imp)
         rod.addWidget(b_fechar)
@@ -1234,6 +1320,30 @@ class DialogoImportarInventario(QDialog):
                       "cadastro 0200 — o cadastro atual é mantido. %s%s</span>"
                       % (len(div), amostra, " …" if len(div) > 3 else ""))
         self.lbl.setText(texto)
+
+    def _comparar(self):
+        """Compara o inventário já escriturado com a planilha, sem alterar."""
+        linhas = self._linhas_mapeadas()
+        if linhas is None:
+            return
+        res = self.doc.comparar_inventario_h010(linhas)
+        if res["sem_h010"]:
+            QMessageBox.information(
+                self, "Comparar inventário",
+                "O arquivo ainda não tem inventário escriturado (nenhum H010) "
+                "para comparar. Use \"Importar inventário\" para gerá-lo.")
+            return
+        n = (len(res["divergentes"]) + len(res["so_sped"])
+             + len(res["so_planilha"]))
+        self.lbl.setText(
+            "Comparação com o inventário atual: <b>%d</b> item(ns) conferem, "
+            "<b>%d</b> com quantidade diferente, <b>%d</b> só no SPED, "
+            "<b>%d</b> só na planilha."
+            % (res["iguais"], len(res["divergentes"]), len(res["so_sped"]),
+               len(res["so_planilha"])))
+        DialogoComparaInventario(res, self).exec()
+        if n == 0:
+            self.lbl.setText(self.lbl.text() + "  ✔ Tudo confere.")
 
     def _importar(self):
         linhas = self._linhas_mapeadas()
