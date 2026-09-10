@@ -1,4 +1,7 @@
-# Editor SPED (EFD ICMS/IPI e EFD Contribuições)
+# SPED Tables (EFD ICMS/IPI e EFD Contribuições)
+
+> Antes chamado *Editor SPED* (renomeado na v0.6.0). A versão corrente está em
+> [`version.py`](version.py); o histórico, em [CHANGELOG.md](CHANGELOG.md).
 
 Editor visual para arquivos **SPED Fiscal**, em estilo planilha, com a mesma
 navegação **mestre-detalhe** do *Validador do SPED*: cada **bloco** é uma aba,
@@ -14,17 +17,22 @@ Suporta os dois leiautes e detecta automaticamente qual é o arquivo:
 
 ## 1. Instalação
 
-Requer **Python 3.10+**. Instale a dependência (apenas PyQt6):
+Requer **Python 3.10+**:
 
 ```bash
-pip install PyQt6
-# ou:  pip install -r requirements.txt
+pip install -r requirements.txt
 ```
 
-> Observação: este projeto foi montado e testado em um ambiente **sem PyQt6 e
-> sem internet**, então a *lógica* (leitura, hierarquia, edição e gravação) foi
-> validada de forma isolada e está 100% funcional. A **interface gráfica** deve
-> ser executada na sua máquina, onde o PyQt6 estará instalado.
+- **PyQt6** — interface gráfica (obrigatório);
+- **openpyxl** — leitura de planilhas **XLSX** (importação do inventário do
+  bloco H e Tabela NCM Vigente do Siscomex). Sem ele o programa abre
+  normalmente; apenas as funções de XLSX ficam indisponíveis (CSV continua
+  funcionando).
+
+> **Antes de usar em produção:** trabalhe sempre sobre uma **cópia** do arquivo
+> SPED e valide o resultado no **PVA** antes de transmitir. O grau de maturidade
+> de cada função está em [FUNCIONALIDADES.md](FUNCIONALIDADES.md) e o roteiro de
+> validação em [TESTES.md](TESTES.md).
 
 ## 2. Como executar
 
@@ -38,7 +46,10 @@ Ou abrindo um arquivo direto pela linha de comando:
 python sped_editor.py  caminho/para/SPED_ICMS_IPI_xxxx.txt
 ```
 
-Depois, use **Arquivo → Abrir** (Ctrl+O) para escolher o `.txt` do SPED.
+Depois, use o botão **Abrir** da barra de ferramentas (ou **Ctrl+O**) para
+escolher o `.txt` do SPED. O programa não tem barra de menus: as ações ficam na
+barra de ferramentas e as rotinas de correção/conferência no botão
+**Ferramentas**.
 
 ## 3. Como usar
 
@@ -193,8 +204,8 @@ conferidos por igualdade; o que se confere por padrão é o **valor do item**
 documento** (VL_DOC × vNF). As comparações são parametrizáveis em
 `conferencia.COMPARACOES_PADRAO`.
 
-poder de ser **exportada em CSV**. Além de VL_ITEM e VL_DESC, a conferência
-verifica o **CST de ICMS** e os **valores de ICMS** (base e imposto) de cada
+O resultado é uma lista de divergências, navegável e **exportável em CSV**.
+Além de VL_ITEM e VL_DESC, a conferência verifica o **CST de ICMS** e os **valores de ICMS** (base e imposto) de cada
 item — que não podem divergir entre o XML e o SPED. Um **duplo clique** numa
 divergência leva ao registro C170 correspondente no editor. Itens presentes no
 XML mas ausentes no SPED — e vice-versa — são identificados individualmente.
@@ -215,6 +226,24 @@ válidos* (separados por vírgula), com botões para adicionar, remover, restaur
 padrão e salvar. As correlações ficam em **`correlacoes_cfop.json`** (ao lado do
 programa); o aplicativo já vem com um conjunto inicial que cobre os casos mais
 comuns e pode ser ajustado à realidade da empresa.
+
+### Conferir C190 (ICMS) com os XMLs
+
+**Ferramentas → Conferir C190 (ICMS) com XMLs…** (EFD ICMS/IPI) compara o
+analítico **C190** com os XMLs, tanto nas entradas quanto nas saídas.
+
+O ponto delicado é o agrupamento: numa compra, o CFOP do XML é o de **saída do
+fornecedor** e não corresponde ao CFOP de entrada escriturado. Por isso os itens
+do XML são agrupados pela **classificação do C170** (CST + CFOP + alíquota de
+ICMS), casada item a item por **nItem** — assim, quando o XML traz um único CFOP
+5102 e o SPED separa os itens em 1101 e 1102, os grupos do C190 são
+reconstruídos corretamente. A comparação cobre **VL_OPR, VL_BC_ICMS e VL_ICMS**
+por grupo, com o mesmo rateio de despesas acessórias do recálculo do C190, e é
+exportável em CSV.
+
+Recomenda-se **recalcular o C190 antes**, para comparar contra um analítico
+consistente. Documentos sem C170 (NFC-e modelo 65) não entram na comparação:
+aparecem no resumo como "itens sem C170".
 
 ### Recalcular totais do C100 a partir dos itens C170
 
@@ -239,9 +268,13 @@ correta dentro do C100 (entre os itens e os C195).
 - **VL_BC_ICMS, VL_ICMS, VL_BC_ICMS_ST, VL_ICMS_ST, VL_IPI**: soma exata dos
   itens do grupo (conferido contra arquivos reais: ~100%).
 - **VL_OPR**: `Σ(VL_ITEM − VL_DESC) + VL_IPI + VL_ICMS_ST`, mais o **rateio** de
-  frete, seguro e outras despesas do C100 (proporcional ao VL_ITEM). Reproduz o
-  valor original em ~98–99% dos casos; quando há rateio de despesas, pode haver
-  diferença de centavos que você pode ajustar manualmente.
+  frete, seguro e outras despesas do C100 (proporcional ao VL_ITEM). O rateio usa
+  **diferença de acumulados arredondados**, de modo que a soma dos quinhões fecha
+  **exatamente** com o total das despesas — arredondar item a item deixava sobra
+  de centavos (ex.: 1,50 de VL_OUT_DA distribuído como 1,52).
+- **VL_RED_BC**: nos grupos com CST de ICMS terminado em **20** ou **70**
+  (redução de base), é calculado como `VL_OPR − VL_BC_ICMS` (nunca negativo);
+  nos demais CST fica zerado.
 
 Assim, depois de alterar qualquer C170, basta um clique para deixar o C190
 coerente, sem somar grupo por grupo na mão.
@@ -280,12 +313,8 @@ A apuração depende do layout:
   receitas/saídas, aquisições/custos/despesas e outras operações, com valor do
   item e bases de PIS e COFINS.
 
-Ao abrir um arquivo, a primeira aba **📋 Resumo** mostra o cabeçalho do registro
-**0000** (nome do contribuinte, CNPJ, IE, UF e o período DT_INI–DT_FIN), o
-**layout** detectado, a **data de modificação** do arquivo em disco, o nome do
-arquivo, o **total de registros** e uma tabela com a **contagem por tipo de
-registro**. Funciona nos dois leiautes (os campos do 0000 são localizados pelo
-nome, já que a posição muda entre ICMS/IPI e Contribuições).
+Funciona nos dois leiautes: os campos do 0000 são localizados **pelo nome**, já
+que a posição muda entre o EFD ICMS/IPI e o EFD Contribuições.
 
 ### Pesquisa em qualquer bloco
 
@@ -295,8 +324,8 @@ documento; nas demais (ex.: **0200**, **H010**) pesquisa em **todas as colunas**
 útil para localizar um item, um produto ou um saldo entre milhares de linhas.
 
 ### Revisão de erros
-**Ferramentas → Revisar erros…** gera um relatório de inconsistências simples.
-Nesta versão há duas regras:
+**Ferramentas → Revisar erros…** gera um relatório de inconsistências. As
+regras implementadas hoje são quatro:
 
 1. **Número de campos divergente** — registros cujo número de campos destoa dos
    demais do **mesmo tipo** no próprio arquivo (detecta uma linha editada com um
@@ -304,6 +333,14 @@ Nesta versão há duas regras:
    não um leiaute fixo, o que evita falsos positivos por diferença de versão.
 2. **C190 com CST x20/x70 e VL_RED_BC zerado** — registros C190 cujo CST indica
    redução de base de cálculo, mas com o valor da redução em branco/zero.
+3. **C170 sem C190 compatível** — itens cuja combinação de CST_ICMS, CFOP e
+   alíquota de ICMS não aparece em nenhum C190 do mesmo documento, ou seja, que
+   ficaram de fora do analítico.
+4. **0200 não utilizados / duplicados** — produtos cadastrados que nenhum outro
+   registro referencia (as referências são coletadas de qualquer registro com
+   COD_ITEM, não só C170/H010) e códigos de item repetidos no cadastro.
+
+A revisão **não substitui o PVA** — é uma triagem rápida antes dele.
 
 Dê **duplo-clique** numa linha do relatório (ou use **Ir para o registro**) e o
 editor abre o bloco, a sub-aba e a linha exata do registro com problema —
@@ -342,8 +379,8 @@ linha da seleção) e **Ctrl+R** preenche para a direita.
 
 O painel de **Filtros** reproduz os do script SQL (data inicial/final, tipo de
 movimento, modelo, nº da nota, código do produto, nº do item, NCM por prefixo,
-CFOP, CST de ICMS/PIS/COFINS/IPI — aceitando listas separadas por vírgula — e
-alíquotas de PIS/COFINS). Clique em **Gerar relatório** para aplicar os filtros
+CFOP, CST de ICMS/PIS/COFINS/IPI e alíquotas de PIS/COFINS — todos aceitando
+listas separadas por **ponto e vírgula**). Clique em **Gerar relatório** para aplicar os filtros
 e **Exportar CSV** para salvar o resultado (separador `;`, latin-1), que pode ser
 confrontado com a saída do mesmo relatório no banco.
 
@@ -443,8 +480,13 @@ ferramentas num menu suspenso ao lado de *Salvar como*).
 | `correlacoes_cfop.json` | Correlações CFOP saída→entrada (gerado/editável).        |
 | `revisao.py`       | Regras de revisão de erros (extensível).                      |
 | `version.py`       | Versão do aplicativo (SemVer).                                |
-| `CHANGELOG.md`     | Histórico de versões.                                          |
-| `requirements.txt` | Dependências (PyQt6).                                          |
+| `config_tabelas_rfb.json` | Caminhos das tabelas da RFB (gerado/editável).           |
+| `CHANGELOG.md`     | Histórico de versões (Keep a Changelog).                       |
+| `FUNCIONALIDADES.md` | Inventário das funções, com maturidade e regras de uso.      |
+| `TESTES.md`        | Roteiro de testes (smoke test e checagens automáticas).        |
+| `CLAUDE.md`        | Convenções do projeto para desenvolvimento assistido.          |
+| `Versions/`        | Snapshots de cada versão (fora do controle de versão).         |
+| `requirements.txt` | Dependências (PyQt6; openpyxl para XLSX).                      |
 
 ## 5. Notas e limitações
 
@@ -464,3 +506,13 @@ ferramentas num menu suspenso ao lado de *Salvar como*).
 - Arquivos grandes (dezenas de milhares de registros) abrem em frações de
   segundo; as abas de bloco são construídas sob demanda para manter a abertura
   rápida.
+- A **ordem, a fixação e o fechamento de abas** valem apenas **durante a
+  sessão** — ao reabrir o programa, tudo volta ao padrão.
+- **Não há desfazer (undo)** para edições em lote: prefira executar as rotinas
+  com o arquivo já salvo, para poder voltar à cópia anterior.
+- Funções ainda **experimentais** (ver [FUNCIONALIDADES.md](FUNCIONALIDADES.md)):
+  a validação do C175 por item (modelo 65) e a importação do inventário do bloco
+  H. No fluxo do modelo 65, entre *Validar C175* e *Regenerar C175* o arquivo
+  fica com registros C170 em documentos modelo 65 — estrutura **inválida** para
+  o EFD Contribuições. **Não salve nem transmita nesse estado:** rode sempre o
+  *Regenerar C175* antes de gerar o arquivo final.

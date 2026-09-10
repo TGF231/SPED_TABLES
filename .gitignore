@@ -219,3 +219,6 @@ __marimo__/
 
 # Backup Folder
 Versions_BKP/
+
+# Snapshots de cada versao (fonte do historico reconstruido; ficam so na maquina)
+Versions/
