@@ -464,6 +464,96 @@ zero** escriturado como tributado. O resultado é navegável (duplo clique leva 
 registro) e exportável em CSV. Como o **C175** (NFC-e consolidada) não traz o
 item/NCM, a verificação por NCM cobre os **C170** (entradas e saídas detalhadas).
 
+### Empresas, histórico e memória persistente
+
+O botão **Empresas**, na barra principal, abre o cadastro — e funciona **sem
+nenhum arquivo aberto**, para você cadastrar a empresa antes de importar o
+primeiro SPED (*Nova empresa…*, pelo CNPJ). A lista reúne as empresas de
+`empresas.json` com as que já têm arquivo no histórico.
+
+**Memória persistente:** ao **abrir** e ao **salvar**, o programa guarda uma
+cópia do arquivo em
+
+```
+arquivos/<CNPJ>/<LEIAUTE>_<AAAAMM>.txt
+```
+
+É a mesma ideia do banco interno do PVA, adaptada a um editor que trabalha o
+texto direto: **uma cópia por empresa, leiaute e período**, sempre substituída
+pela mais recente. O painel *Histórico de arquivos* lista os períodos daquela
+empresa — duplo clique **abre a cópia interna**, não o arquivo de origem, que
+pode ter sido movido ou apagado.
+
+> **Fluxo com o PVA:** ao salvar, o aviso lembra de validar o arquivo no PVA e
+> **reabrir aqui a versão validada**. Se o PVA regravar alguma coisa, a cópia
+> interna só passa a refletir o arquivo definitivo depois que você reabri-lo no
+> sistema.
+
+A pasta `arquivos/` fica fora do controle de versão — são arquivos fiscais de
+clientes.
+
+### Configuração por empresa e rotinas de correção
+
+**Ferramentas → Empresa e rotinas…** abre o cadastro da empresa do arquivo
+(identificada pelo **CNPJ do registro 0000**) e as rotinas que dependem dele.
+
+O cadastro guarda o que o arquivo não diz: **regime federal** (Simples
+Nacional, Lucro Presumido, Lucro Real), **regime de PIS/COFINS** (cumulativo,
+não-cumulativo ou ambos), atividade, as alíquotas de saída e de crédito e o CST
+a gravar quando um crédito indevido é retirado. Uma empresa ainda não cadastrada
+vem pré-preenchida com o nome, a UF e o regime do registro **0110** — confira
+antes de gravar. Os dados ficam em `empresas.json`, ao lado do programa.
+
+Quando o **0110 do arquivo contraria o cadastro**, o diálogo avisa: é a
+escrituração discordando do que a empresa declara ser, e vale conferir qual dos
+dois está errado antes de rodar qualquer rotina.
+
+As rotinas desta versão:
+
+| Rotina | O que aponta | Corrige? |
+|---|---|---|
+| Alíquota de saída fora do regime | Itens de saída com CST 01 fora da alíquota do regime | Sim — aplica a alíquota e recalcula o valor |
+| Crédito indevido na entrada | Entradas com CST de crédito (50-56, 60-66) e valor lançado, em empresa **cumulativa** | Sim — zera base/alíquota/valor e troca o CST |
+| Alíquota de crédito fora do regime | Entradas do não-cumulativo com alíquota de crédito errada | Sim — aplica a alíquota de crédito |
+| CST incoerente com o NCM | Monofásico / alíquota zero, pelas tabelas da RFB | Não — o CST correto depende do produto |
+
+**Toda rotina roda primeiro em conferência.** O relatório é navegável (duplo
+clique vai ao registro) e exportável em CSV; a correção só é aplicada depois de
+confirmar, informando **quantos registros serão alterados**, e atua exatamente
+sobre as ocorrências que você viu — nunca sobre um segundo diagnóstico. O
+arquivo continua não salvo até você usar *Salvar como*.
+
+> **Atenção ao regime "ambos":** quando a empresa tem receita nos dois regimes,
+> as rotinas de alíquota se abstêm — 0,65/3,00 e 1,65/7,60 podem estar ambas
+> corretas no mesmo arquivo, e apontar qualquer uma delas seria falso positivo.
+> Pelo mesmo motivo, só o **CST 01** tem alíquota conferida: o 02 é justamente
+> "alíquota diferenciada" e o 03 é por quantidade.
+
+### Barra de título própria (opcional)
+
+O programa pode substituir a barra de título do Windows por uma própria, no
+estilo do tema, mostrando **empresa · período · leiaute · arquivo** e um
+indicador visível de **alterações não salvas**. Para ligar:
+
+```bash
+set SPED_TABLES_BARRA_CUSTOM=1
+python sped_editor.py
+```
+
+A janela **continua nativa**: em vez de `FramelessWindowHint` — que faria o
+Windows deixar de tratá-la como janela —, o programa intercepta três mensagens
+(`WM_NCCALCSIZE`, `WM_NCHITTEST`, `WM_GETMINMAXINFO`). Com isso **Aero Snap**,
+redimensionar pelas bordas, duplo clique para maximizar, menu de sistema e
+sombra continuam funcionando, o que importa num editor quase sempre aberto ao
+lado do PVA.
+
+Sem a variável — ou fora do Windows, ou se a preparação falhar — a barra nativa
+é usada normalmente. Os diálogos mantêm a barra do Windows em qualquer caso.
+
+> **Por que ainda é opcional:** a parte nativa não pôde ser validada por teste
+> automatizado, e uma falha nesse nível derruba o processo sem mensagem. Depois
+> de confirmada em uso, o padrão pode ser invertido em `janela_custom.VARIAVEL`.
+
 ### Tema claro e escuro
 
 A interface tem paleta própria, com **tema claro e escuro**. O botão à direita
@@ -507,7 +597,11 @@ ferramentas num menu suspenso ao lado de *Salvar como*).
 | `correlacoes_cfop.json` | Correlações CFOP saída→entrada (gerado/editável).        |
 | `revisao.py`       | Regras de revisão de erros (extensível).                      |
 | `version.py`       | Versão do aplicativo (SemVer).                                |
+| `empresas.py`      | Cadastro por CNPJ: regime tributário e alíquotas.             |
+| `rotinas.py`       | Rotinas de conferência/correção por regime (extensível).      |
+| `arquivos.py`      | Memória persistente: cópias internas por empresa e período.   |
 | `tema.py`          | Paleta clara/escura e folha de estilo (QSS).                  |
+| `janela_custom.py` | Barra de título própria via mensagens nativas (opcional).     |
 | `icones.py`        | Ícones do QSS desenhados em runtime na cor da paleta.         |
 | `config_tabelas_rfb.json` | Caminhos das tabelas da RFB (gerado/editável).           |
 | `CHANGELOG.md`     | Histórico de versões (Keep a Changelog).                       |

@@ -1,5 +1,134 @@
 # Changelog
 
+## [0.19.0] - 2026-09-17
+
+### Adicionado
+- **Barra de título própria** (`janela_custom.py` + `BarraTitulo`), no lugar da
+  barra do Windows — por enquanto **opcional**: ligue com a variável de
+  ambiente `SPED_TABLES_BARRA_CUSTOM=1`.
+  - Mostra ícone, nome do aplicativo, **empresa · período · leiaute · arquivo**
+    e um **indicador de alterações não salvas** (antes, só um asterisco no fim
+    do título, fácil de passar batido antes de fechar).
+  - Botões de minimizar, maximizar/restaurar e fechar seguem a paleta; o de
+    fechar acende em vermelho no hover.
+  - **O comportamento nativo é preservado.** Em vez de `FramelessWindowHint` —
+    que faria a janela deixar de ser uma janela para o Windows —, interceptamos
+    três mensagens: `WM_NCCALCSIZE` (a área de cliente passa a ocupar a janela
+    inteira), `WM_NCHITTEST` (nós definimos bordas, cantos e faixa de arrasto) e
+    `WM_GETMINMAXINFO` (maximizar respeita a barra de tarefas do monitor certo).
+    Assim continuam funcionando **Aero Snap**, redimensionar pelas bordas,
+    duplo clique para maximizar, menu de sistema e sombra — o que importa num
+    editor quase sempre usado lado a lado com o PVA.
+  - Fora do Windows, sem a variável, ou se a preparação falhar, o programa usa
+    a barra nativa: `showEvent` desmonta a barra própria e avisa na barra de
+    status. Enfeite não pode impedir o aplicativo de abrir.
+
+### Por que opcional
+A interceptação de mensagens nativas **não pôde ser validada de forma
+automatizada**: exibir uma janela real fora de uma sessão interativa não
+funciona no ambiente de desenvolvimento usado, e uma falha nesse nível derruba
+o processo sem traceback. O comportamento em Qt (montagem, contexto, indicador,
+proteção dos botões, fallback e as duas paletas) está coberto por teste
+offscreen. Confirmado o funcionamento em uso real, basta inverter o padrão em
+`janela_custom.VARIAVEL`.
+
+## [0.18.0] - 2026-09-17
+
+### Adicionado
+- **Memória persistente** (`arquivos.py`): ao **abrir** e ao **salvar**, o
+  sistema guarda uma cópia do arquivo em `arquivos/<CNPJ>/<LEIAUTE>_<AAAAMM>.txt`
+  — mesma ideia do banco interno do PVA, adaptada a um editor que trabalha o
+  texto direto. **Uma cópia por empresa + leiaute + período**, sempre
+  substituída pela mais recente; o índice fica em `arquivos/indice.json`.
+  - A cópia é feita a partir do **arquivo em disco**, nunca de texto gerado em
+    memória: é byte a byte o que o usuário tem, com o latin-1 e as quebras de
+    linha originais.
+  - Falha ao arquivar (pasta sem permissão, disco cheio) **não interrompe**
+    abrir nem salvar — o aviso vai para a barra de status.
+- **Histórico de arquivos por empresa**, dentro de *Empresas*: lista os
+  períodos arquivados, com leiaute, data da última atualização, caminho de
+  origem e tamanho. Duplo clique **abre a cópia interna** (não o arquivo de
+  origem, que pode ter sido movido); dá para excluir um período do histórico
+  sem afetar o arquivo original.
+- **Aviso ao salvar**: além de informar que a cópia do período foi atualizada,
+  lembra de validar no PVA e **reabrir aqui a versão validada**, para a cópia
+  interna passar a refletir o arquivo definitivo.
+- **Cadastro manual de empresas**, sem precisar abrir um SPED antes
+  (*Empresas → Nova empresa…*, pelo CNPJ). A lista reúne o que está em
+  `empresas.json` com as empresas que já têm arquivo no histórico.
+
+### Alterado
+- **Menu Ferramentas agrupado por tipo de SPED**: submenus **EFD ICMS/IPI**,
+  **EFD Contribuições (PIS/COFINS)** e **Gerais**. O submenu inteiro fica
+  desabilitado quando não corresponde ao leiaute aberto — antes, a lista única
+  obrigava a saber de cor quais ferramentas valiam para o arquivo.
+- **Empresas saiu do menu e foi para a barra principal**, ao lado de *Salvar
+  como*: é o cadastro que dá sentido às rotinas, e funciona sem arquivo aberto.
+- **Conferência com XMLs dividida por tributo**: são duas ações, uma em cada
+  grupo, cada uma conferindo só os campos do seu leiaute —
+  `conferir_itens_xml(doc, nfes, movimento=…, tributo=…)`.
+  - **ICMS/IPI:** VL_ITEM, VL_DESC, base e valor de ICMS, base e valor de
+    ICMS-ST, IPI e CST_ICMS.
+  - **PIS/COFINS:** VL_ITEM, VL_DESC, base, alíquota e valor de PIS e de
+    COFINS, mais CST_PIS e CST_COFINS.
+- **Separação de entradas e saídas**: seletor de **Movimento**
+  (Entradas / Saídas / Ambas) dentro do diálogo, que refaz a comparação sem
+  reler a pasta de XMLs. A **correlação de CFOP só se aplica às entradas** —
+  numa saída própria o CFOP do XML é o mesmo do SPED, e a comparação viraria
+  identidade.
+- `.gitignore`: `arquivos/` não entra no controle de versão (SPED de clientes).
+
+### Compatibilidade
+- `conferencia.conferir_entradas_55` continua existindo como atalho para
+  `conferir_itens_xml(movimento="entrada", tributo="ICMS")`, e a ação antiga
+  segue conectada para arquivos `.ui` que ainda a declarem — apenas não aparece
+  no menu novo.
+
+## [0.17.0] - 2026-09-17
+
+### Adicionado
+- **Configuração por empresa** (`empresas.py`) — *Ferramentas → Empresa e
+  rotinas…*. Cada empresa é identificada pelo **CNPJ do registro 0000** e guarda
+  o que o arquivo sozinho não diz: **regime federal** (Simples / Presumido /
+  Real), **regime de PIS/COFINS** (cumulativo / não-cumulativo / ambos),
+  atividade, alíquotas de saída e de crédito e o CST a usar quando um crédito
+  indevido é retirado. Cadastro em `empresas.json`, por máquina.
+  - Empresa nova é **pré-preenchida** com o que o arquivo informa (nome, UF e o
+    regime do registro **0110**), para conferência antes de gravar.
+  - **Divergência de regime**: quando o 0110 do arquivo contraria o cadastro, o
+    diálogo avisa — é o escriturado discordando do declarado.
+- **Rotinas de conferência e correção por regime** (`rotinas.py`), extensíveis
+  como as regras de `revisao.py`:
+  1. **Alíquota de saída fora do regime** — itens de saída com CST 01
+     (alíquota básica) fora da alíquota do regime. Corrige a alíquota e
+     recalcula o valor.
+  2. **Crédito indevido na entrada (cumulativo)** — entradas com CST de
+     creditamento (50-56, 60-66) e valor lançado numa empresa que não tem
+     direito a crédito. Retira o crédito (zera base, alíquota e valor) e troca
+     o CST pelo configurado (70 por padrão).
+  3. **Alíquota de crédito fora do regime** — entradas do não-cumulativo cuja
+     alíquota de crédito difere da esperada, tipicamente por terem ficado com
+     a alíquota de saída.
+  4. **CST incoerente com o NCM** — reaproveita as tabelas da RFB; sem correção
+     automática, porque o CST correto depende do produto.
+  - Toda rotina roda primeiro em **conferência**, com relatório navegável
+    (duplo clique vai ao registro) e exportável em CSV. A correção só é
+    aplicada depois de confirmar, com a **contagem do que será alterado**, e
+    atua exatamente sobre as ocorrências exibidas.
+
+### Regras fiscais codificadas
+- Cumulativo: PIS 0,65 / COFINS 3,00, **sem** direito a crédito.
+- Não-cumulativo: PIS 1,65 / COFINS 7,6, com crédito.
+- **Ambos os regimes**: as rotinas de alíquota **se abstêm** — a mesma alíquota
+  pode estar certa ou errada na mesma escrituração.
+- A verificação de alíquota só olha **CST 01**: o CST 02 é "alíquota
+  diferenciada" e o 03 é por quantidade; cobrar deles a alíquota nominal seria
+  falso positivo.
+
+### Alterado
+- `.gitignore`: `empresas.json` não entra no controle de versão — é dado do
+  usuário, com CNPJ de clientes.
+
 ## [0.16.0] - 2026-09-17
 
 ### Adicionado

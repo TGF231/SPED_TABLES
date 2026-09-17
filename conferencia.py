@@ -185,20 +185,84 @@ def valor_item_xml(it):
         (getattr(it, nome, 0.0) or 0.0) for nome in ACESSORIOS_ITEM)
 
 
-# comparações padrão item XML ↔ C170:
+def _num_xml(s):
+    """Número vindo do XML (ponto decimal). O SPED usa vírgula; o XML, não."""
+    try:
+        return float(str(s).strip()) if s not in (None, "") else 0.0
+    except ValueError:
+        return 0.0
+
+
+# comparações item XML ↔ C170:
 #   (rótulo, função-valor-do-item-XML, nome-do-campo-C170, tolerância)
-COMPARACOES_PADRAO = [
+#
+# Os conjuntos são separados por tributo porque cada leiaute do SPED escritura
+# um imposto: cobrar PIS/COFINS num arquivo de ICMS/IPI só produziria ruído,
+# já que o C170 do leiaute de ICMS sequer traz esses campos preenchidos.
+COMPARACOES_ICMS = [
     ("VL_ITEM", valor_item_xml, "VL_ITEM", 0.01),
     ("VL_DESC", lambda it: it.vdesc, "VL_DESC", 0.01),
     ("VL_BC_ICMS", lambda it: it.icms_vbc or 0.0, "VL_BC_ICMS", 0.01),
     ("VL_ICMS", lambda it: it.icms_vicms or 0.0, "VL_ICMS", 0.01),
+    ("VL_BC_ICMS_ST", lambda it: it.icms_vbcst or 0.0, "VL_BC_ICMS_ST", 0.01),
+    ("VL_ICMS_ST", lambda it: it.icms_vicmsst or 0.0, "VL_ICMS_ST", 0.01),
+    ("VL_IPI", lambda it: it.vipi or 0.0, "VL_IPI", 0.01),
 ]
+
+COMPARACOES_PIS_COFINS = [
+    ("VL_ITEM", valor_item_xml, "VL_ITEM", 0.01),
+    ("VL_DESC", lambda it: it.vdesc, "VL_DESC", 0.01),
+    ("VL_BC_PIS", lambda it: it.pis_vbc or 0.0, "VL_BC_PIS", 0.01),
+    ("ALIQ_PIS", lambda it: _num_xml(it.pis_aliq), "ALIQ_PIS", 0.0001),
+    ("VL_PIS", lambda it: it.pis_vpis or 0.0, "VL_PIS", 0.01),
+    ("VL_BC_COFINS", lambda it: it.cofins_vbc or 0.0, "VL_BC_COFINS", 0.01),
+    ("ALIQ_COFINS", lambda it: _num_xml(it.cofins_aliq), "ALIQ_COFINS",
+     0.0001),
+    ("VL_COFINS", lambda it: it.cofins_vcofins or 0.0, "VL_COFINS", 0.01),
+]
+
+# mantido pelo nome antigo (era só ICMS)
+COMPARACOES_PADRAO = COMPARACOES_ICMS
+
+# CST conferido em cada modo: (campo no C170, atributo do item do XML)
+CST_POR_TRIBUTO = {
+    "ICMS": [("CST_ICMS", "icms_cst")],
+    "PIS_COFINS": [("CST_PIS", "pis_cst"), ("CST_COFINS", "cofins_cst")],
+}
+
+COMPARACOES_POR_TRIBUTO = {
+    "ICMS": COMPARACOES_ICMS,
+    "PIS_COFINS": COMPARACOES_PIS_COFINS,
+}
+
+# IND_OPER do C100
+MOVIMENTOS = {"entrada": "0", "saida": "1"}
 
 
 def conferir_entradas_55(doc, nfes, comparacoes=None, tol_doc=0.01,
                          correlacoes_cfop=None, avisar_cfop_sem_regra=False):
+    """Compatibilidade: entradas modelo 55 conferidas pelos campos de ICMS."""
+    return conferir_itens_xml(
+        doc, nfes, movimento="entrada", tributo="ICMS",
+        comparacoes=comparacoes, tol_doc=tol_doc,
+        correlacoes_cfop=correlacoes_cfop,
+        avisar_cfop_sem_regra=avisar_cfop_sem_regra)
+
+
+def conferir_itens_xml(doc, nfes, movimento="entrada", tributo="ICMS",
+                       comparacoes=None, tol_doc=0.01,
+                       correlacoes_cfop=None, avisar_cfop_sem_regra=False,
+                       modelo="55"):
     """
-    Confere as entradas modelo 55 do documento SPED `doc` contra os XMLs `nfes`.
+    Confere os itens modelo 55 do documento SPED `doc` contra os XMLs `nfes`.
+
+    `movimento` é "entrada", "saida" ou "ambos" (IND_OPER do C100) e `tributo`
+    é "ICMS" ou "PIS_COFINS" — cada leiaute do SPED escritura um imposto, e
+    conferir o outro só geraria divergência onde o campo nem é preenchido.
+
+    A **correlação de CFOP** só se aplica às entradas: ela compara o CFOP de
+    saída do fornecedor com o de entrada do comprador. Numa saída própria, o
+    CFOP do XML é o mesmo que o escriturado, e a comparação viraria identidade.
 
     Se `correlacoes_cfop` for fornecido (dict {cfop_saida: iterável de
     cfops_entrada} ou já normalizado), confere também a **correlação de CFOP**:
@@ -215,7 +279,7 @@ def conferir_entradas_55(doc, nfes, comparacoes=None, tol_doc=0.01,
       * docs_sem_c100: XMLs modelo 55 sem C100 no SPED.
     """
     if comparacoes is None:
-        comparacoes = COMPARACOES_PADRAO
+        comparacoes = COMPARACOES_POR_TRIBUTO.get(tributo, COMPARACOES_ICMS)
 
     iC_mod = doc._ix("C100", "COD_MOD")
     iC_ser = doc._ix("C100", "SER")
@@ -224,18 +288,24 @@ def conferir_entradas_55(doc, nfes, comparacoes=None, tol_doc=0.01,
     iC_vdoc = doc._ix("C100", "VL_DOC")
     i170_item = doc._ix("C170", "NUM_ITEM")
     i170_cfop = doc._ix("C170", "CFOP")
-    i170_cst = doc._ix("C170", "CST_ICMS")
+    # CST conferido conforme o tributo: (índice no C170, atributo do item XML)
+    idx_cst = [(doc._ix("C170", campo), attr, campo)
+               for campo, attr in CST_POR_TRIBUTO.get(tributo, [])]
     idx_cmp = [(rot, fn, doc._ix("C170", campo), t)
                for (rot, fn, campo, t) in comparacoes]
-    correl = normalizar_correlacoes(correlacoes_cfop) if correlacoes_cfop \
-        else None
+    # a correlação de CFOP pressupõe saída do fornecedor -> entrada; nas
+    # saídas próprias o CFOP do XML é o mesmo do SPED
+    correl = (normalizar_correlacoes(correlacoes_cfop)
+              if correlacoes_cfop and movimento == "entrada" else None)
 
-    nfes55 = [n for n in nfes if xf.norm(n.mod) == "55"]
+    ind_oper = MOVIMENTOS.get(movimento)   # None em "ambos"
+    nfes55 = [n for n in nfes if xf.norm(n.mod) == modelo]
 
     # --- nível documento: VL_DOC (C100) x vNF (XML) ----------------------
     c100_55 = [r for r in doc.registros
-               if r.reg == "C100" and r.valor(iC_mod) == "55"
-               and (r.valor(iC_op) or "").strip() == "0"]
+               if r.reg == "C100" and r.valor(iC_mod) == modelo
+               and (ind_oper is None
+                    or (r.valor(iC_op) or "").strip() == ind_oper)]
 
     def ch_doc_c100(r):
         return (xf.norm(r.valor(iC_mod)), xf.norm(r.valor(iC_ser)),
@@ -315,17 +385,20 @@ def conferir_entradas_55(doc, nfes, comparacoes=None, tol_doc=0.01,
                     obs="sem correlação cadastrada para o CFOP de saída %s"
                         % cfop_x))
 
-        # CST de ICMS: deve ser o mesmo no XML e no C170 (situação tributária
-        # da mercadoria não muda entre saída do fornecedor e entrada)
-        if i170_cst is not None and it.icms_cst:
-            cst_x = _so_digitos(it.icms_cst)
+        # CST: deve ser o mesmo no XML e no C170 — a situação tributária da
+        # mercadoria não muda entre a saída do fornecedor e a entrada. Quais
+        # CST são conferidos depende do tributo (ICMS ou PIS/COFINS).
+        for i170_cst, attr_xml, campo_cst in idx_cst:
+            if i170_cst is None:
+                continue
+            cst_x = _so_digitos(getattr(it, attr_xml, None))
             cst_s = _so_digitos(c170.valor(i170_cst))
             if cst_x and cst_s and cst_x != cst_s:
                 divergencias.append(Divergencia(
                     mod=nfe.mod, serie=nfe.serie, nnf=nfe.nnf,
-                    nitem=it.nitem, uid=c170.uid, escopo="item", campo="CST_ICMS",
-                    valor_xml=cst_x, valor_sped=cst_s,
-                    obs="CST de ICMS divergente entre XML e SPED"))
+                    nitem=it.nitem, uid=c170.uid, escopo="item",
+                    campo=campo_cst, valor_xml=cst_x, valor_sped=cst_s,
+                    obs="%s divergente entre XML e SPED" % campo_cst))
 
     resumo = {
         "xml_55": len(nfes55),

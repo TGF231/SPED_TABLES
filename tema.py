@@ -136,6 +136,32 @@ QWidget {{
 }}
 QMainWindow, QDialog {{ background: {p.bg}; }}
 
+/* ------------------------------------------------- barra de título
+   A janela continua nativa (ver janela_custom): a faixa abaixo só desenha.
+   Os botões precisam de fundo próprio no hover para dar retorno de clique,
+   já que o resto da barra é area de arrasto do Windows. */
+QWidget#barraTitulo {{
+    background: {p.surface_2};
+    border-bottom: 1px solid {p.border};
+}}
+QWidget#barraTitulo QLabel {{ background: transparent; }}
+QLabel[role="tituloApp"] {{ color: {p.ink}; font-weight: 700; }}
+QLabel[role="tituloCtx"] {{ color: {p.ink_2}; }}
+QWidget#barraTitulo QToolButton {{
+    background: transparent;
+    color: {p.ink_2};
+    border: none;
+    border-radius: 0;
+    padding: 0;
+    font-size: 11pt;
+}}
+QWidget#barraTitulo QToolButton:hover {{
+    background: {p.border}; color: {p.ink};
+}}
+QWidget#barraTitulo QToolButton#btn_fechar:hover {{
+    background: {p.bad}; color: #FFFFFF;
+}}
+
 /* ------------------------------------------------------ barra de ações */
 QToolBar {{
     background: {p.surface_2};

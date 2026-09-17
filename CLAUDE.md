@@ -27,6 +27,10 @@ Dependências em `requirements.txt` (PyQt6; `openpyxl` para planilhas XLSX).
 | `xml_fiscal.py` | Parser de NF-e/NFC-e (`NFe`, `ItemNFe`, `ler_pasta`, `chave_doc`, `indexar`). |
 | `conferencia.py` | Conferência XML × SPED (entradas modelo 55, C190) e correlações de CFOP. |
 | `revisao.py` | Regras de revisão extensíveis (lista `REGRAS`). |
+| `empresas.py` | Cadastro por CNPJ: regime federal e de PIS/COFINS, alíquotas, atividade. Persistido em `empresas.json` (fora do git). |
+| `rotinas.py` | Rotinas de conferência/correção por regime (lista `ROTINAS`). Verificação nunca altera o arquivo; a correção recebe as ocorrências já exibidas. |
+| `arquivos.py` | Memória persistente: cópia do SPED em `arquivos/<CNPJ>/<LEIAUTE>_<AAAAMM>.txt` + `indice.json`. Uma cópia por período. Fora do git. |
+| `janela_custom.py` | Barra de título própria via mensagens nativas do Windows (WM_NCCALCSIZE/NCHITTEST/GETMINMAXINFO). Opcional: `SPED_TABLES_BARRA_CUSTOM=1`. |
 | `tabelas_rfb.py` | Tabelas oficiais da RFB (alíquota zero, monofásicos, gênero, NCM) e verificação de CST. |
 | `version.py` | `__version__` e `APP_NAME`. SemVer. |
 
@@ -64,6 +68,17 @@ Cores gravadas em `QTableWidgetItem` (coluna REG, célula somente-leitura,
 divergências) não seguem a folha de estilo: são decididas em Python e por isso
 `alternar_tema()` remonta as abas.
 
+### Ao mexer na barra ou no menu
+
+A janela nasce de **dois caminhos**: `uic.loadUi(sped_editor.ui)` quando o
+arquivo existe, e o fallback programático `_criar_barra`. Só
+`_montar_botao_ferramentas` roda nos **dois** — é ali que vão os itens que
+precisam aparecer sempre (foi o que aconteceu com a ação *Empresas*).
+
+O menu Ferramentas é agrupado por leiaute (`menu_icms`, `menu_contrib`,
+`menu_gerais`); `abrir()` habilita/desabilita o submenu inteiro conforme
+`doc.layout`.
+
 ### Ao adicionar ações na GUI
 
 Padrão em quatro pontos: criar a `QAction` em `_criar_acoes`, conectar
@@ -71,6 +86,22 @@ defensivamente em `_conectar_ui` (com `hasattr`, para `.ui` antigos), incluir em
 `_montar_botao_ferramentas` e habilitar em `abrir()` conforme
 `doc.layout` (`"ICMS"` ou `"CONTRIB"`). Diálogos não-modais (`show()`) precisam de
 referência guardada (`self._dlg_x`) para não serem coletados.
+
+## Armadilha: scripts de teste que sombreiam o stdlib
+
+Os testes põem a própria pasta no `sys.path`. Um arquivo chamado `bisect.py`,
+`types.py`, `select.py` ou qualquer outro nome da biblioteca padrão passa a ser
+importado no lugar do módulo real — e, como o import **executa** o arquivo, o
+sintoma é surreal: o teste A imprime a saída do script B, o processo morre sem
+traceback e o diagnóstico vai para o lado errado (já custou horas aqui).
+Use nomes com prefixo (`teste_`, `montar_`) nos scripts auxiliares.
+
+## Ao mexer na barra de título
+
+A interceptação só pode começar **depois** de `janela_custom.aplicar()` ter
+preparado a janela (primeiro `showEvent`): tratar WM_NCCALCSIZE durante a
+criação do HWND é falha nativa, sem traceback. Toda chamada Win32 precisa de
+`argtypes` declarados — sem isso o ctypes trunca o HWND de 64 bits para `int`.
 
 ## Armadilha recorrente (já ocorreu duas vezes)
 
@@ -131,6 +162,12 @@ Obter sempre por nome (`doc._ix(tipo, nome)`), nunca por número fixo. Referênc
   **C170** para agrupar, não o CFOP do XML.
 - **Monofásicos na revenda não geram crédito:** entrada de bebida (NCM 2202/2203/
   2208) com CST 50 é creditamento indevido (correto 73/98).
+- **Regime (empresas.py / rotinas.py):** cumulativo = PIS 0,65 / COFINS 3,00 e
+  **sem crédito** na entrada; não-cumulativo = 1,65 / 7,6 com crédito. No regime
+  **"ambos"** as rotinas de alíquota **se abstêm** — as duas alíquotas convivem
+  legitimamente no mesmo arquivo.
+- **Só o CST 01 tem alíquota conferível:** 02 é "alíquota diferenciada" e 03 é
+  por quantidade. Cobrar deles a alíquota nominal gera falso positivo.
 
 ## Empresa usada na validação
 

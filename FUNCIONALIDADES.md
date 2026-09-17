@@ -46,6 +46,17 @@ exibida primeiro ao trocar de registro pai), **fechar** (oculta até resetar) e
 o programa tudo volta ao padrão. A aba fixada é selecionada, mas não é movida
 fisicamente para a primeira posição.
 
+### 1.4A Barra de título própria — 🔴 Experimental (opt-in)
+Substitui a barra do Windows, mostrando empresa, período, leiaute, arquivo e o
+indicador de alterações não salvas. Ligue com `SPED_TABLES_BARRA_CUSTOM=1`.
+
+*Regras de uso:* a janela segue nativa (Snap, bordas, duplo clique e sombra
+preservados pela interceptação de WM_NCCALCSIZE/NCHITTEST/GETMINMAXINFO). Se a
+preparação falhar, o programa volta sozinho para a barra do Windows e avisa na
+barra de status. **A parte nativa não tem cobertura de teste automatizado** —
+exibir janela real fora de sessão interativa não funciona no ambiente de
+desenvolvimento. Os diálogos continuam com barra nativa.
+
 ### 1.5 Tema claro e escuro — ✅ Estável
 Paleta própria (acento cobre, compartilhada com o Backup Maximus) com botão de
 alternância na barra de ferramentas e preferência gravada entre sessões.
@@ -133,6 +144,15 @@ confira o 0000 (DT_INI/DT_FIN) depois.
 ---
 
 ## 4. Conferência com XMLs
+
+### 4.0 Conferir itens com XMLs, por tributo e movimento — 🟡 Em amadurecimento
+Duas ações, uma por tipo de SPED, cada uma conferindo só os campos do seu
+leiaute; o **movimento** (entradas / saídas / ambas) é um seletor dentro do
+diálogo, que refaz a comparação sem reler a pasta.
+
+*Regra de uso:* a **correlação de CFOP só vale nas entradas** — numa saída
+própria o CFOP do XML é o mesmo do escriturado. Nas saídas, portanto, esse
+grupo de divergências não aparece, e isso é esperado.
 
 ### 4.1 Conferir entradas (NF-e modelo 55) — 🟡 Em amadurecimento
 Casa item do XML com o C170 por **modelo + série + número + nItem** e compara
@@ -223,6 +243,53 @@ Ainda não validado com uma planilha real de inventário — a auto-detecção d
 colunas pode precisar de ajuste.
 
 ---
+
+## 7A. Configuração por empresa e rotinas por regime
+
+### 7A.1 Cadastro da empresa — 🟡 Em amadurecimento
+Por CNPJ (registro 0000): regime federal, regime de PIS/COFINS, atividade,
+alíquotas de saída e de crédito, CST de entrada sem crédito. Persistido em
+`empresas.json`. Empresa nova vem pré-preenchida pelo arquivo (nome, UF, 0110).
+
+*Regra de uso:* confira o pré-preenchimento antes de gravar — o 0110 pode estar
+errado no arquivo, e é justamente uma das coisas a conferir. Quando cadastro e
+0110 divergem, o diálogo avisa.
+
+### 7A.2 Rotinas de conferência e correção — 🔴 Experimental
+Quatro rotinas: alíquota de saída fora do regime, crédito indevido na entrada
+(cumulativo), alíquota de crédito fora do regime (não-cumulativo) e CST
+incoerente com o NCM. As três primeiras corrigem sob confirmação; a última só
+aponta.
+
+*Regras de uso — importantes:*
+- No regime **"ambos"** as rotinas de alíquota se abstêm: as duas alíquotas
+  convivem legitimamente no mesmo arquivo.
+- Só o **CST 01** tem a alíquota conferida (02 é alíquota diferenciada, 03 é
+  por quantidade).
+- A correção do crédito indevido grava o CST configurado (**70** por padrão);
+  conforme o motivo da vedação, o correto pode ser 73 ou 98 — ajuste no
+  cadastro antes de aplicar.
+- Validado até agora com arquivo sintético cobrindo os dois regimes; falta
+  rodar contra o arquivo real do período.
+
+## 7B. Memória persistente e histórico
+
+### 7B.1 Cópia interna por período — 🟡 Em amadurecimento
+Abrir e salvar guardam uma cópia em `arquivos/<CNPJ>/<LEIAUTE>_<AAAAMM>.txt`.
+Uma cópia por empresa + leiaute + período, sempre substituída.
+
+*Regras de uso:* o arquivo precisa ter **CNPJ no 0000** para ser arquivado (sem
+ele, o aviso vai para a barra de status e nada é guardado). A cópia **não é
+versionada**: a anterior se perde a cada atualização — para guardar um estado
+antes de uma rotina de correção, salve uma cópia própria fora do sistema.
+Depois de validar no PVA, **reabra a versão validada** para a cópia refletir o
+arquivo definitivo.
+
+### 7B.2 Histórico por empresa — 🟡 Em amadurecimento
+Em *Empresas*, lista os períodos arquivados com leiaute, data, origem e
+tamanho. Duplo clique abre a cópia interna; excluir do histórico apaga só a
+cópia, nunca o arquivo de origem. Períodos cuja cópia sumiu da pasta aparecem
+em vermelho.
 
 ## 8. Revisão de erros
 

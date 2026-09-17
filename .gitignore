@@ -222,3 +222,9 @@ Versions_BKP/
 
 # Snapshots de cada versao (fonte do historico reconstruido; ficam so na maquina)
 Versions/
+
+# Cadastro de empresas: dado do usuario (CNPJ de clientes), por maquina
+empresas.json
+
+# Cópias internas dos SPED (memória persistente) — dado de clientes
+arquivos/

@@ -28,14 +28,15 @@ import re
 import datetime
 
 from PyQt6.QtCore import Qt, QEvent, QTimer, QSettings
-from PyQt6.QtGui import QAction, QKeySequence, QColor, QFont, QShortcut
+from PyQt6.QtGui import (QAction, QKeySequence, QColor, QFont, QShortcut,
+                         QIcon)
 from PyQt6.QtWidgets import (
     QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout,
     QTabWidget, QTableWidget, QTableWidgetItem, QSplitter, QPushButton,
     QFileDialog, QMessageBox, QLabel, QHeaderView, QAbstractItemView,
     QToolBar, QStatusBar, QComboBox, QLineEdit, QMenu, QInputDialog,
     QStyledItemDelegate, QDialog, QCheckBox, QFormLayout, QToolButton,
-    QDoubleSpinBox, QGridLayout, QGroupBox, QScrollArea,
+    QDoubleSpinBox, QGridLayout, QGroupBox, QScrollArea, QTextEdit,
 )
 
 from sped_model import SpedDocument
@@ -43,6 +44,10 @@ import xml_fiscal as xf
 import conferencia as cf
 import revisao as rev
 import tabelas_rfb as trfb
+import empresas as emp_mod
+import rotinas
+import arquivos as arq_mod
+import janela_custom
 from version import __version__, APP_NAME
 import tema
 
@@ -1570,12 +1575,41 @@ class DialogoConferencia(QDialog):
     COLS = ["Escopo", "nNF", "nItem", "Campo", "Valor XML", "Valor SPED",
             "Observação"]
 
-    def __init__(self, resultado, parent=None):
+    TRIBUTOS = {"ICMS": "ICMS/IPI", "PIS_COFINS": "PIS/COFINS"}
+    MOVIMENTOS = [("entrada", "Entradas"), ("saida", "Saídas"),
+                  ("ambos", "Ambas")]
+
+    def __init__(self, resultado, parent=None, doc=None, nfes=None,
+                 tributo="ICMS", correlacoes=None):
         super().__init__(parent)
+        self.doc = doc
+        self.nfes = nfes or []
+        self.tributo = tributo
+        self.correlacoes = correlacoes
+        if resultado is None and doc is not None:
+            resultado = cf.conferir_itens_xml(
+                doc, self.nfes, movimento="entrada", tributo=tributo,
+                correlacoes_cfop=correlacoes)
         self.resultado = resultado
-        self.setWindowTitle("Conferência de entradas (NF-e modelo 55)")
+        self.setWindowTitle("Conferência de itens com XMLs — %s"
+                            % self.TRIBUTOS.get(tributo, tributo))
         self.resize(900, 520)
         lay = QVBoxLayout(self)
+
+        if doc is not None:
+            topo = QHBoxLayout()
+            topo.addWidget(QLabel("Movimento:"))
+            self.cb_mov = QComboBox()
+            for chave, rotulo in self.MOVIMENTOS:
+                self.cb_mov.addItem(rotulo, chave)
+            self.cb_mov.currentIndexChanged.connect(self._movimento_mudou)
+            topo.addWidget(self.cb_mov)
+            campos = ", ".join(
+                c[0] for c in cf.COMPARACOES_POR_TRIBUTO.get(tributo, []))
+            dica = QLabel("Campos conferidos: %s" % campos)
+            dica.setProperty("role", "dica")
+            topo.addWidget(dica, 1)
+            lay.addLayout(topo)
 
         r = resultado["resumo"]
         resumo = (
@@ -1588,6 +1622,7 @@ class DialogoConferencia(QDialog):
                r["divergencias"], r["itens_sem_c170"], r["itens_sem_xml"],
                r["docs_sem_c100"]))
         lbl = QLabel(resumo)
+        self._lbl = lbl
         if r["divergencias"] == 0:
             lbl.setProperty("role", "ok")
         else:
@@ -1621,11 +1656,63 @@ class DialogoConferencia(QDialog):
         b_csv = QPushButton("Exportar CSV…")
         b_csv.clicked.connect(self._exportar)
         b_csv.setEnabled(bool(divs))
+        self._b_csv = b_csv
         b_fechar = QPushButton("Fechar")
         b_fechar.clicked.connect(self.accept)
         botoes.addWidget(b_csv)
         botoes.addWidget(b_fechar)
         lay.addLayout(botoes)
+
+    def _movimento_mudou(self):
+        """Refaz a conferência no movimento escolhido, reusando os XMLs.
+
+        Os XMLs já estão lidos em memória: reler a pasta a cada troca de
+        movimento seria desperdício num período com centenas de notas.
+        """
+        if self.doc is None:
+            return
+        self.resultado = cf.conferir_itens_xml(
+            self.doc, self.nfes, movimento=self.cb_mov.currentData(),
+            tributo=self.tributo, correlacoes_cfop=self.correlacoes)
+        self._recarregar()
+
+    def _recarregar(self):
+        """Repinta resumo e tabela a partir de self.resultado."""
+        r = self.resultado["resumo"]
+        self._lbl.setText(
+            "XMLs modelo 55: %d   |   documentos casados: %d   |   "
+            "itens conferidos: %d\n"
+            "Divergências: %d   |   itens sem C170 (faltam no SPED): %d   |   "
+            "C170 sem XML na pasta: %d\n"
+            "XMLs sem C100 no SPED: %d"
+            % (r["xml_55"], r["docs_casados"], r["itens_conferidos"],
+               r["divergencias"], r["itens_sem_c170"], r["itens_sem_xml"],
+               r["docs_sem_c100"]))
+        self._lbl.setProperty("role",
+                              "ok" if r["divergencias"] == 0 else "erro")
+        self._lbl.style().unpolish(self._lbl)
+        self._lbl.style().polish(self._lbl)
+
+        divs = self.resultado["divergencias"]
+        self._divs = divs
+        tab = self._tab
+        # ordenação desligada durante o preenchimento (ver CLAUDE.md)
+        tab.setSortingEnabled(False)
+        tab.setRowCount(len(divs))
+        vermelho = QColor(tema.atual().bad)
+        for i, d in enumerate(divs):
+            vals = [d.escopo, d.nnf, d.nitem or "", d.campo,
+                    cf._fmt(d.valor_xml), cf._fmt(d.valor_sped), d.obs or ""]
+            for j, v in enumerate(vals):
+                it = QTableWidgetItem(str(v))
+                if j in (4, 5):
+                    it.setForeground(vermelho)
+                tab.setItem(i, j, it)
+        tab.horizontalHeader().setSortIndicator(
+            -1, Qt.SortOrder.AscendingOrder)
+        tab.setSortingEnabled(True)
+        tab.resizeColumnsToContents()
+        self._b_csv.setEnabled(bool(divs))
 
     def _ir_registro(self, row, _col):
         """Duplo clique: navega ao C170 correspondente à divergência."""
@@ -2822,6 +2909,771 @@ class RelatorioWidget(QWidget):
 # ---------------------------------------------------------------------------
 # Janela principal
 # ---------------------------------------------------------------------------
+class DialogoEmpresas(QDialog):
+    """Cadastro de empresas e histórico de arquivos arquivados.
+
+    Funciona **sem nenhum arquivo aberto**: dá para cadastrar a empresa antes
+    de importar o primeiro SPED. A lista reúne o que está em `empresas.json`
+    com as empresas que já têm arquivo no histórico — uma empresa pode existir
+    só no histórico (arquivo aberto sem cadastro) ou só no cadastro (cadastrada
+    antes do primeiro arquivo).
+    """
+
+    COLS_HIST = ["Período", "Leiaute", "Atualizado em", "Origem", "Tamanho"]
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle("Empresas")
+        self.resize(940, 600)
+        self.mapa = emp_mod.carregar()
+
+        lay = QVBoxLayout(self)
+        corpo = QHBoxLayout()
+        lay.addLayout(corpo, 1)
+
+        # ------------------------------------------------ lista de empresas
+        esq = QVBoxLayout()
+        esq.addWidget(QLabel("Empresas cadastradas"))
+        self.lista = QTableWidget(0, 3)
+        self.lista.setHorizontalHeaderLabels(["CNPJ", "Nome", "Regime"])
+        self.lista.setEditTriggers(
+            QAbstractItemView.EditTrigger.NoEditTriggers)
+        self.lista.setSelectionBehavior(
+            QAbstractItemView.SelectionBehavior.SelectRows)
+        self.lista.setAlternatingRowColors(True)
+        self.lista.itemSelectionChanged.connect(self._empresa_mudou)
+        esq.addWidget(self.lista, 1)
+
+        botoes = QHBoxLayout()
+        b_nova = QPushButton("Nova empresa…")
+        b_nova.setProperty("role", "accent")
+        b_nova.clicked.connect(self._nova)
+        botoes.addWidget(b_nova)
+        b_remover = QPushButton("Remover")
+        b_remover.clicked.connect(self._remover)
+        botoes.addWidget(b_remover)
+        botoes.addStretch(1)
+        esq.addLayout(botoes)
+        corpo.addLayout(esq, 1)
+
+        # ------------------------------------------------------- cadastro
+        dir_ = QVBoxLayout()
+        self.cx_cad = QGroupBox("Dados da empresa")
+        form = QFormLayout(self.cx_cad)
+        self.ed_cnpj = QLineEdit()
+        self.ed_cnpj.setReadOnly(True)
+        form.addRow("CNPJ:", self.ed_cnpj)
+        self.ed_nome = QLineEdit()
+        form.addRow("Nome:", self.ed_nome)
+        self.ed_uf = QLineEdit()
+        self.ed_uf.setMaximumWidth(60)
+        form.addRow("UF:", self.ed_uf)
+        self.cb_federal = QComboBox()
+        for chave, rotulo in emp_mod.REGIMES_FEDERAIS:
+            self.cb_federal.addItem(rotulo, chave)
+        self.cb_federal.currentIndexChanged.connect(self._federal_mudou)
+        form.addRow("Regime federal:", self.cb_federal)
+        self.cb_pc = QComboBox()
+        for chave, rotulo in emp_mod.REGIMES_PIS_COFINS:
+            self.cb_pc.addItem(rotulo, chave)
+        self.cb_pc.currentIndexChanged.connect(self._regime_mudou)
+        form.addRow("Regime PIS/COFINS:", self.cb_pc)
+        self.cb_ativ = QComboBox()
+        for chave, rotulo in emp_mod.ATIVIDADES:
+            self.cb_ativ.addItem(rotulo, chave)
+        form.addRow("Atividade:", self.cb_ativ)
+
+        aliq = QHBoxLayout()
+        self.ed_pis_s = QLineEdit()
+        self.ed_cof_s = QLineEdit()
+        self.ed_pis_c = QLineEdit()
+        self.ed_cof_c = QLineEdit()
+        for ed, rot in ((self.ed_pis_s, "PIS saída"),
+                        (self.ed_cof_s, "COFINS saída"),
+                        (self.ed_pis_c, "PIS créd."),
+                        (self.ed_cof_c, "COFINS créd.")):
+            ed.setMaximumWidth(70)
+            aliq.addWidget(QLabel(rot))
+            aliq.addWidget(ed)
+        aliq.addStretch(1)
+        form.addRow("Alíquotas:", aliq)
+
+        b_gravar = QPushButton("Gravar cadastro")
+        b_gravar.setProperty("role", "accent")
+        b_gravar.clicked.connect(self._gravar)
+        form.addRow("", b_gravar)
+        dir_.addWidget(self.cx_cad)
+
+        # -------------------------------------------------------- histórico
+        cx_hist = QGroupBox("Histórico de arquivos (cópias internas)")
+        vh = QVBoxLayout(cx_hist)
+        self.tab_hist = QTableWidget(0, len(self.COLS_HIST))
+        self.tab_hist.setHorizontalHeaderLabels(self.COLS_HIST)
+        self.tab_hist.setEditTriggers(
+            QAbstractItemView.EditTrigger.NoEditTriggers)
+        self.tab_hist.setSelectionBehavior(
+            QAbstractItemView.SelectionBehavior.SelectRows)
+        self.tab_hist.setAlternatingRowColors(True)
+        self.tab_hist.horizontalHeader().setStretchLastSection(True)
+        self.tab_hist.cellDoubleClicked.connect(self._abrir_do_historico)
+        vh.addWidget(self.tab_hist, 1)
+        ah = QHBoxLayout()
+        b_abrir = QPushButton("Abrir cópia selecionada")
+        b_abrir.clicked.connect(lambda: self._abrir_do_historico(
+            self.tab_hist.currentRow(), 0))
+        ah.addWidget(b_abrir)
+        b_excluir = QPushButton("Excluir do histórico")
+        b_excluir.clicked.connect(self._excluir_historico)
+        ah.addWidget(b_excluir)
+        ah.addStretch(1)
+        vh.addLayout(ah)
+        dir_.addWidget(cx_hist, 1)
+        corpo.addLayout(dir_, 2)
+
+        rod = QHBoxLayout()
+        rod.addStretch(1)
+        b_fechar = QPushButton("Fechar")
+        b_fechar.clicked.connect(self.accept)
+        rod.addWidget(b_fechar)
+        lay.addLayout(rod)
+
+        self._carregar_lista()
+
+    # ------------------------------------------------------------- lista
+    def _carregar_lista(self, selecionar=None):
+        # o histórico pode conter empresa ainda não cadastrada
+        do_hist = arq_mod.empresas_no_historico()
+        cnpjs = sorted(set(self.mapa) | set(do_hist))
+        rot_pc = dict(emp_mod.REGIMES_PIS_COFINS)
+        self.lista.setSortingEnabled(False)
+        self.lista.setRowCount(len(cnpjs))
+        for i, cnpj in enumerate(cnpjs):
+            e = self.mapa.get(cnpj)
+            nome = e.nome if e else do_hist.get(cnpj, "")
+            regime = rot_pc.get(e.regime_pis_cofins, "") if e \
+                else "(sem cadastro)"
+            for c, v in enumerate((emp_mod.formatar_cnpj(cnpj), nome, regime)):
+                it = QTableWidgetItem(v)
+                it.setData(Qt.ItemDataRole.UserRole, cnpj)
+                self.lista.setItem(i, c, it)
+        self.lista.resizeColumnsToContents()
+        if cnpjs:
+            alvo = cnpjs.index(selecionar) if selecionar in cnpjs else 0
+            self.lista.selectRow(alvo)
+        else:
+            self._empresa_mudou()
+
+    def _cnpj_selecionado(self):
+        row = self.lista.currentRow()
+        if row < 0 or self.lista.item(row, 0) is None:
+            return ""
+        return self.lista.item(row, 0).data(Qt.ItemDataRole.UserRole)
+
+    def _empresa_mudou(self):
+        cnpj = self._cnpj_selecionado()
+        e = self.mapa.get(cnpj)
+        self.cx_cad.setEnabled(bool(cnpj))
+        self.ed_cnpj.setText(emp_mod.formatar_cnpj(cnpj) if cnpj else "")
+        if e is None:
+            e = emp_mod.Empresa(cnpj=cnpj or "")
+        self.ed_nome.setText(e.nome)
+        self.ed_uf.setText(e.uf)
+        self._selecionar(self.cb_federal, e.regime_federal)
+        self._selecionar(self.cb_pc, e.regime_pis_cofins)
+        self._selecionar(self.cb_ativ, e.atividade)
+        self.ed_pis_s.setText(e.aliq_pis_saida)
+        self.ed_cof_s.setText(e.aliq_cofins_saida)
+        self.ed_pis_c.setText(e.aliq_pis_credito)
+        self.ed_cof_c.setText(e.aliq_cofins_credito)
+        self._carregar_historico(cnpj)
+
+    @staticmethod
+    def _selecionar(combo, chave):
+        i = combo.findData(chave)
+        if i >= 0:
+            combo.setCurrentIndex(i)
+
+    def _federal_mudou(self):
+        self._selecionar(self.cb_pc, emp_mod.sugerir_regime_pis_cofins(
+            self.cb_federal.currentData()))
+
+    def _regime_mudou(self):
+        padrao = emp_mod.ALIQUOTAS.get(self.cb_pc.currentData())
+        if not padrao:
+            return
+        self.ed_pis_s.setText(padrao["pis_saida"])
+        self.ed_cof_s.setText(padrao["cofins_saida"])
+        self.ed_pis_c.setText(padrao["pis_credito"])
+        self.ed_cof_c.setText(padrao["cofins_credito"])
+
+    # ------------------------------------------------------------ cadastro
+    def _nova(self):
+        texto, ok = QInputDialog.getText(
+            self, "Nova empresa", "CNPJ (só números ou formatado):")
+        if not ok:
+            return
+        cnpj = emp_mod.so_digitos(texto)
+        if len(cnpj) != 14:
+            QMessageBox.warning(self, "Nova empresa",
+                                "O CNPJ deve ter 14 dígitos.")
+            return
+        if cnpj in self.mapa:
+            QMessageBox.information(self, "Nova empresa",
+                                    "Esta empresa já está cadastrada.")
+        else:
+            self.mapa[cnpj] = emp_mod.Empresa(cnpj=cnpj)
+            emp_mod.salvar(self.mapa)
+        self._carregar_lista(selecionar=cnpj)
+
+    def _gravar(self):
+        cnpj = self._cnpj_selecionado()
+        if not cnpj:
+            return
+        e = self.mapa.get(cnpj) or emp_mod.Empresa(cnpj=cnpj)
+        e.nome = self.ed_nome.text().strip()
+        e.uf = self.ed_uf.text().strip().upper()
+        e.regime_federal = self.cb_federal.currentData()
+        e.regime_pis_cofins = self.cb_pc.currentData()
+        e.atividade = self.cb_ativ.currentData()
+        e.aliq_pis_saida = self.ed_pis_s.text().strip()
+        e.aliq_cofins_saida = self.ed_cof_s.text().strip()
+        e.aliq_pis_credito = self.ed_pis_c.text().strip()
+        e.aliq_cofins_credito = self.ed_cof_c.text().strip()
+        self.mapa[cnpj] = e
+        try:
+            emp_mod.salvar(self.mapa)
+        except Exception as exc:  # noqa: BLE001
+            QMessageBox.critical(self, "Empresas", str(exc))
+            return
+        self._carregar_lista(selecionar=cnpj)
+        QMessageBox.information(self, "Empresas", "Cadastro gravado.")
+
+    def _remover(self):
+        cnpj = self._cnpj_selecionado()
+        if not cnpj or cnpj not in self.mapa:
+            return
+        resp = QMessageBox.question(
+            self, "Remover empresa",
+            "Remover %s do cadastro?\n\nO histórico de arquivos NÃO é "
+            "apagado." % emp_mod.formatar_cnpj(cnpj),
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+            QMessageBox.StandardButton.No)
+        if resp != QMessageBox.StandardButton.Yes:
+            return
+        del self.mapa[cnpj]
+        emp_mod.salvar(self.mapa)
+        self._carregar_lista()
+
+    # ----------------------------------------------------------- histórico
+    def _carregar_historico(self, cnpj):
+        entradas = arq_mod.historico(cnpj) if cnpj else []
+        self._hist = entradas
+        self.tab_hist.setSortingEnabled(False)
+        self.tab_hist.setRowCount(len(entradas))
+        pal = tema.atual()
+        for i, h in enumerate(entradas):
+            vals = [arq_mod.formatar_periodo(h["periodo"]), h["layout"],
+                    h["atualizado_em"], h.get("origem", ""),
+                    "%.1f KB" % (h.get("tamanho", 0) / 1024.0)]
+            for c, v in enumerate(vals):
+                it = QTableWidgetItem(str(v))
+                if not h.get("existe"):
+                    it.setForeground(QColor(pal.bad))
+                self.tab_hist.setItem(i, c, it)
+        self.tab_hist.resizeColumnsToContents()
+
+    def _abrir_do_historico(self, row, _col=0):
+        if row is None or row < 0 or row >= len(getattr(self, "_hist", [])):
+            return
+        h = self._hist[row]
+        if not h.get("existe"):
+            QMessageBox.warning(self, "Histórico",
+                                "A cópia interna não está mais na pasta:\n%s"
+                                % h["caminho"])
+            return
+        janela = self.parent()
+        if janela is not None and hasattr(janela, "abrir_caminho"):
+            if janela.abrir_caminho(h["caminho"]):
+                self.accept()
+
+    def _excluir_historico(self):
+        row = self.tab_hist.currentRow()
+        if row < 0 or row >= len(getattr(self, "_hist", [])):
+            return
+        h = self._hist[row]
+        resp = QMessageBox.question(
+            self, "Excluir do histórico",
+            "Excluir a cópia interna de %s (%s)?\n\nO arquivo de origem "
+            "não é afetado." % (arq_mod.formatar_periodo(h["periodo"]),
+                                h["layout"]),
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+            QMessageBox.StandardButton.No)
+        if resp != QMessageBox.StandardButton.Yes:
+            return
+        arq_mod.remover(h["cnpj"], h["layout"], h["periodo"])
+        self._carregar_historico(h["cnpj"])
+
+
+class DialogoEmpresa(QDialog):
+    """Configuração por empresa: regime tributário e rotinas de correção.
+
+    Duas metades. Em cima, o **cadastro** — o que a empresa declara ser, que o
+    arquivo sozinho não diz (ou diz só em parte, no 0110). Embaixo, as
+    **rotinas**, que usam esse cadastro para decidir o que está errado.
+
+    A ordem importa: nenhuma rotina roda antes de o regime estar declarado,
+    porque a mesma alíquota está certa num regime e errada no outro.
+    """
+
+    COLS = ["Escopo", "Doc.", "Item", "Tributo", "Campo", "Atual",
+            "Esperado", "Detalhe"]
+
+    def __init__(self, doc, parent=None, cfg_rfb=None):
+        super().__init__(parent)
+        self.doc = doc
+        self.cfg_rfb = cfg_rfb or {}
+        self.setWindowTitle("Configuração da empresa e rotinas")
+        self.resize(980, 700)
+        self._ocorrencias = []
+        self._rotina_atual = None
+
+        self.mapa = emp_mod.carregar()
+        self.empresa, ja_cadastrada = emp_mod.obter_ou_criar(self.mapa, doc)
+
+        lay = QVBoxLayout(self)
+        if self.empresa is None:
+            lay.addWidget(QLabel(
+                "O arquivo não traz CNPJ no registro 0000 — sem ele não há "
+                "como identificar a empresa."))
+            return
+
+        cab = QLabel(self.empresa.rotulo())
+        cab.setProperty("role", "secao")
+        lay.addWidget(cab)
+        if not ja_cadastrada:
+            aviso = QLabel("Empresa ainda não cadastrada — os campos abaixo "
+                           "foram pré-preenchidos com o que o arquivo informa. "
+                           "Confira e grave.")
+            aviso.setProperty("role", "aviso")
+            aviso.setWordWrap(True)
+            lay.addWidget(aviso)
+
+        divergencia = emp_mod.conferir_regime(doc, self.empresa)
+        self.lbl_divergencia = QLabel(divergencia or "")
+        self.lbl_divergencia.setProperty("role", "erro")
+        self.lbl_divergencia.setWordWrap(True)
+        self.lbl_divergencia.setVisible(bool(divergencia))
+        lay.addWidget(self.lbl_divergencia)
+
+        lay.addWidget(self._montar_cadastro())
+        lay.addWidget(self._montar_rotinas(), 1)
+
+        rod = QHBoxLayout()
+        rod.addStretch(1)
+        b_fechar = QPushButton("Fechar")
+        b_fechar.clicked.connect(self.accept)
+        rod.addWidget(b_fechar)
+        lay.addLayout(rod)
+
+    # ------------------------------------------------------------ cadastro
+    def _montar_cadastro(self):
+        cx = QGroupBox("Cadastro")
+        form = QFormLayout(cx)
+
+        self.ed_nome = QLineEdit(self.empresa.nome)
+        form.addRow("Nome:", self.ed_nome)
+
+        self.cb_federal = QComboBox()
+        for chave, rotulo in emp_mod.REGIMES_FEDERAIS:
+            self.cb_federal.addItem(rotulo, chave)
+        self._selecionar(self.cb_federal, self.empresa.regime_federal)
+        self.cb_federal.currentIndexChanged.connect(self._federal_mudou)
+        form.addRow("Regime federal:", self.cb_federal)
+
+        self.cb_pc = QComboBox()
+        for chave, rotulo in emp_mod.REGIMES_PIS_COFINS:
+            self.cb_pc.addItem(rotulo, chave)
+        self._selecionar(self.cb_pc, self.empresa.regime_pis_cofins)
+        self.cb_pc.currentIndexChanged.connect(self._regime_mudou)
+        form.addRow("Regime PIS/COFINS:", self.cb_pc)
+
+        self.cb_ativ = QComboBox()
+        for chave, rotulo in emp_mod.ATIVIDADES:
+            self.cb_ativ.addItem(rotulo, chave)
+        self._selecionar(self.cb_ativ, self.empresa.atividade)
+        form.addRow("Atividade:", self.cb_ativ)
+
+        linha_saida = QHBoxLayout()
+        self.ed_pis_s = QLineEdit(self.empresa.aliq_pis_saida)
+        self.ed_cof_s = QLineEdit(self.empresa.aliq_cofins_saida)
+        for ed in (self.ed_pis_s, self.ed_cof_s):
+            ed.setMaximumWidth(80)
+        linha_saida.addWidget(QLabel("PIS"))
+        linha_saida.addWidget(self.ed_pis_s)
+        linha_saida.addWidget(QLabel("COFINS"))
+        linha_saida.addWidget(self.ed_cof_s)
+        linha_saida.addStretch(1)
+        form.addRow("Alíquotas de saída:", linha_saida)
+
+        linha_cred = QHBoxLayout()
+        self.ed_pis_c = QLineEdit(self.empresa.aliq_pis_credito)
+        self.ed_cof_c = QLineEdit(self.empresa.aliq_cofins_credito)
+        for ed in (self.ed_pis_c, self.ed_cof_c):
+            ed.setMaximumWidth(80)
+        linha_cred.addWidget(QLabel("PIS"))
+        linha_cred.addWidget(self.ed_pis_c)
+        linha_cred.addWidget(QLabel("COFINS"))
+        linha_cred.addWidget(self.ed_cof_c)
+        self.ed_cst_sem = QLineEdit(self.empresa.cst_entrada_sem_credito)
+        self.ed_cst_sem.setMaximumWidth(60)
+        linha_cred.addWidget(QLabel("CST sem crédito"))
+        linha_cred.addWidget(self.ed_cst_sem)
+        linha_cred.addStretch(1)
+        form.addRow("Alíquotas de crédito:", linha_cred)
+
+        acoes = QHBoxLayout()
+        acoes.addStretch(1)
+        b_gravar = QPushButton("Gravar cadastro")
+        b_gravar.setProperty("role", "accent")
+        b_gravar.clicked.connect(self._gravar)
+        acoes.addWidget(b_gravar)
+        form.addRow("", acoes)
+        return cx
+
+    @staticmethod
+    def _selecionar(combo, chave):
+        i = combo.findData(chave)
+        if i >= 0:
+            combo.setCurrentIndex(i)
+
+    def _federal_mudou(self):
+        """Sugere o regime de PIS/COFINS, sem impor: há exceções."""
+        sugerido = emp_mod.sugerir_regime_pis_cofins(
+            self.cb_federal.currentData())
+        self._selecionar(self.cb_pc, sugerido)
+
+    def _regime_mudou(self):
+        regime = self.cb_pc.currentData()
+        padrao = emp_mod.ALIQUOTAS.get(regime)
+        if not padrao:
+            return
+        self.ed_pis_s.setText(padrao["pis_saida"])
+        self.ed_cof_s.setText(padrao["cofins_saida"])
+        self.ed_pis_c.setText(padrao["pis_credito"])
+        self.ed_cof_c.setText(padrao["cofins_credito"])
+
+    def _coletar(self):
+        e = self.empresa
+        e.nome = self.ed_nome.text().strip()
+        e.regime_federal = self.cb_federal.currentData()
+        e.regime_pis_cofins = self.cb_pc.currentData()
+        e.atividade = self.cb_ativ.currentData()
+        e.aliq_pis_saida = self.ed_pis_s.text().strip()
+        e.aliq_cofins_saida = self.ed_cof_s.text().strip()
+        e.aliq_pis_credito = self.ed_pis_c.text().strip()
+        e.aliq_cofins_credito = self.ed_cof_c.text().strip()
+        e.cst_entrada_sem_credito = self.ed_cst_sem.text().strip() or "70"
+        return e
+
+    def _gravar(self):
+        e = self._coletar()
+        self.mapa[e.cnpj] = e
+        try:
+            caminho = emp_mod.salvar(self.mapa)
+        except Exception as exc:  # noqa: BLE001
+            QMessageBox.critical(self, "Cadastro", str(exc))
+            return
+        divergencia = emp_mod.conferir_regime(self.doc, e)
+        self.lbl_divergencia.setText(divergencia or "")
+        self.lbl_divergencia.setVisible(bool(divergencia))
+        self._listar_rotinas()
+        QMessageBox.information(self, "Cadastro", "Gravado em:\n%s" % caminho)
+
+    # ------------------------------------------------------------- rotinas
+    def _montar_rotinas(self):
+        cx = QGroupBox("Rotinas")
+        v = QVBoxLayout(cx)
+
+        topo = QHBoxLayout()
+        self.cb_rotina = QComboBox()
+        topo.addWidget(self.cb_rotina, 1)
+        b_verificar = QPushButton("Verificar")
+        b_verificar.clicked.connect(self._verificar)
+        topo.addWidget(b_verificar)
+        self.b_corrigir = QPushButton("Corrigir…")
+        self.b_corrigir.setProperty("role", "accent")
+        self.b_corrigir.setEnabled(False)
+        self.b_corrigir.clicked.connect(self._corrigir)
+        topo.addWidget(self.b_corrigir)
+        v.addLayout(topo)
+
+        self.lbl_desc = QLabel("")
+        self.lbl_desc.setProperty("role", "dica")
+        self.lbl_desc.setWordWrap(True)
+        v.addWidget(self.lbl_desc)
+        self.cb_rotina.currentIndexChanged.connect(self._rotina_mudou)
+
+        self.lbl_res = QLabel("")
+        v.addWidget(self.lbl_res)
+
+        self.tab = QTableWidget(0, len(self.COLS))
+        self.tab.setHorizontalHeaderLabels(self.COLS)
+        self.tab.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
+        self.tab.setAlternatingRowColors(True)
+        self.tab.horizontalHeader().setStretchLastSection(True)
+        self.tab.cellDoubleClicked.connect(self._ir)
+        v.addWidget(self.tab, 1)
+
+        b_csv = QPushButton("Exportar CSV")
+        b_csv.clicked.connect(self._exportar)
+        rod = QHBoxLayout()
+        rod.addStretch(1)
+        rod.addWidget(b_csv)
+        v.addLayout(rod)
+
+        self._listar_rotinas()
+        return cx
+
+    def _listar_rotinas(self):
+        self.cb_rotina.blockSignals(True)
+        self.cb_rotina.clear()
+        for r in rotinas.aplicaveis(self.doc, self.empresa):
+            self.cb_rotina.addItem(r.nome, r.id)
+        self.cb_rotina.blockSignals(False)
+        if self.cb_rotina.count() == 0:
+            self.lbl_desc.setText(
+                "Nenhuma rotina se aplica a este leiaute (as atuais são do "
+                "EFD Contribuições).")
+        else:
+            self._rotina_mudou()
+
+    def _rotina(self):
+        rid = self.cb_rotina.currentData()
+        for r in rotinas.ROTINAS:
+            if r.id == rid:
+                return r
+        return None
+
+    def _rotina_mudou(self):
+        r = self._rotina()
+        if r is None:
+            return
+        texto = r.descricao
+        if r.requer == "tabelas_rfb":
+            texto += ("  Requer as tabelas da RFB configuradas em "
+                      "Ferramentas → Verificar CST por NCM.")
+        if r.corrigir is None:
+            texto += "  (sem correção automática)"
+        self.lbl_desc.setText(texto)
+        self._ocorrencias = []
+        self.tab.setRowCount(0)
+        self.b_corrigir.setEnabled(False)
+        self.lbl_res.setText("")
+
+    def _verificar(self):
+        r = self._rotina()
+        if r is None:
+            return
+        self._coletar()
+        extra = {}
+        if r.requer == "tabelas_rfb":
+            clf = self._classificador()
+            if clf is None:
+                return
+            extra["classificador"] = clf
+        ocorrencias, erro = rotinas.executar(self.doc, self.empresa, r, **extra)
+        if erro:
+            QMessageBox.critical(self, r.nome, erro)
+            return
+        self._ocorrencias = ocorrencias
+        self._rotina_atual = r
+        self._preencher(ocorrencias)
+        self.lbl_res.setText("%d ocorrência(s)." % len(ocorrencias))
+        self.lbl_res.setProperty("role", "ok" if not ocorrencias else "erro")
+        self.lbl_res.style().unpolish(self.lbl_res)
+        self.lbl_res.style().polish(self.lbl_res)
+        self.b_corrigir.setEnabled(bool(ocorrencias) and r.corrigir is not None)
+        if r.corrigir is not None:
+            self.b_corrigir.setText("Corrigir %d…" % len(ocorrencias))
+
+    def _classificador(self):
+        """Monta o classificador de NCM com a mesma API do diálogo de CST."""
+        cfg = self.cfg_rfb or {}
+        try:
+            clf, _achados = trfb.carregar_tudo(
+                pasta=cfg.get("pasta") or None,
+                caminho_zero=cfg.get("zero") or None,
+                caminho_mono=cfg.get("mono") or None,
+                caminho_genero=cfg.get("genero") or None,
+                caminho_ncm=cfg.get("ncm") or None)
+            return clf
+        except Exception as exc:  # noqa: BLE001
+            QMessageBox.warning(
+                self, "Tabelas da RFB",
+                "Não foi possível carregar as tabelas da RFB:\n%s\n\n"
+                "Configure em Ferramentas → Verificar CST por NCM." % exc)
+            return None
+
+    def _preencher(self, ocorrencias):
+        # a ordenação só é ligada depois de preencher (ver CLAUDE.md)
+        self.tab.setSortingEnabled(False)
+        self.tab.setRowCount(len(ocorrencias))
+        pal = tema.atual()
+        for i, o in enumerate(ocorrencias):
+            vals = [o.escopo, o.doc, o.item, o.tributo, o.campo, o.atual,
+                    o.esperado, o.detalhe]
+            for c, v in enumerate(vals):
+                it = QTableWidgetItem(str(v))
+                if c == 5:
+                    it.setForeground(QColor(pal.bad))
+                elif c == 6:
+                    it.setForeground(QColor(pal.ok))
+                self.tab.setItem(i, c, it)
+        self.tab.horizontalHeader().setSortIndicator(
+            -1, Qt.SortOrder.AscendingOrder)
+        self.tab.setSortingEnabled(True)
+        self.tab.resizeColumnsToContents()
+
+    def _corrigir(self):
+        r = self._rotina_atual
+        if r is None or r.corrigir is None or not self._ocorrencias:
+            return
+        resp = QMessageBox.question(
+            self, r.nome,
+            "%s\n\nSerão alterados %d registro(s).\n\nConfirma?"
+            % (r.rotulo_correcao, len(self._ocorrencias)),
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+            QMessageBox.StandardButton.No)
+        if resp != QMessageBox.StandardButton.Yes:
+            return
+        n = r.corrigir(self.doc, self.empresa, self._ocorrencias)
+        janela = self.parent()
+        if janela is not None and hasattr(janela, "_marcar_alterado"):
+            janela._marcar_alterado()
+        QMessageBox.information(
+            self, r.nome,
+            "%d registro(s) alterado(s).\n\nO arquivo ainda NÃO foi salvo — "
+            "revise e use Salvar como." % n)
+        self._verificar()
+
+    def _ir(self, row, _col):
+        if 0 <= row < len(self._ocorrencias):
+            janela = self.parent()
+            if janela is not None and hasattr(janela, "ir_para_registro"):
+                janela.ir_para_registro(self._ocorrencias[row].uid)
+
+    def _exportar(self):
+        if not self._ocorrencias:
+            return
+        caminho, _ = QFileDialog.getSaveFileName(
+            self, "Exportar ocorrências", "rotina_%s.csv"
+            % (self._rotina_atual.id if self._rotina_atual else "empresa"),
+            "CSV (*.csv)")
+        if not caminho:
+            return
+        try:
+            with open(caminho, "w", encoding="latin-1", newline="") as fh:
+                fh.write(";".join(self.COLS) + "\r\n")
+                for o in self._ocorrencias:
+                    fh.write(";".join([o.escopo, o.doc, o.item, o.tributo,
+                                       o.campo, o.atual, o.esperado,
+                                       o.detalhe]) + "\r\n")
+        except Exception as exc:  # noqa: BLE001
+            QMessageBox.critical(self, "Exportar", str(exc))
+            return
+        QMessageBox.information(self, "Exportar", "Exportado:\n%s" % caminho)
+
+
+class BarraTitulo(QWidget):
+    """Barra de título do aplicativo, no lugar da barra do Windows.
+
+    A janela continua nativa (ver `janela_custom`): esta barra só desenha. O
+    arrasto, o duplo clique para maximizar e o menu de sistema são resolvidos
+    pelo Windows, porque o WM_NCHITTEST devolve HTCAPTION na faixa dela — é
+    por isso que não há aqui nenhum mousePressEvent para arrastar a janela.
+
+    Além do título, mostra o que o usuário de SPED precisa saber sem procurar:
+    **empresa e período** do arquivo aberto e se **há alterações não salvas** —
+    hoje apenas um asterisco no fim do título, fácil de passar batido.
+    """
+
+    ALTURA = 34
+
+    def __init__(self, janela):
+        super().__init__(janela)
+        self.janela = janela
+        self.setObjectName("barraTitulo")
+        self.setFixedHeight(self.ALTURA)
+
+        lay = QHBoxLayout(self)
+        lay.setContentsMargins(8, 0, 0, 0)
+        lay.setSpacing(8)
+
+        self.lbl_icone = QLabel()
+        cam = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                           "icon.ico")
+        if os.path.exists(cam):
+            self.lbl_icone.setPixmap(QIcon(cam).pixmap(18, 18))
+        lay.addWidget(self.lbl_icone)
+
+        self.lbl_app = QLabel(APP_NAME)
+        self.lbl_app.setProperty("role", "tituloApp")
+        lay.addWidget(self.lbl_app)
+
+        self.lbl_ctx = QLabel("")
+        self.lbl_ctx.setProperty("role", "tituloCtx")
+        lay.addWidget(self.lbl_ctx)
+
+        self.lbl_alterado = QLabel("")
+        self.lbl_alterado.setProperty("role", "aviso")
+        lay.addWidget(self.lbl_alterado)
+
+        lay.addStretch(1)
+
+        self.botoes = []
+        for nome, texto, slot in (
+                ("min", "\u2013", self.janela.showMinimized),
+                ("max", "\u25a1", self._alternar_maximizada),
+                ("fechar", "\u2715", self.janela.close)):
+            b = QToolButton(self)
+            b.setObjectName("btn_%s" % nome)
+            b.setText(texto)
+            b.setFixedSize(46, self.ALTURA)
+            b.clicked.connect(slot)
+            lay.addWidget(b)
+            self.botoes.append(b)
+        self.btn_max = self.botoes[1]
+
+    def _alternar_maximizada(self):
+        if self.janela.isMaximized():
+            self.janela.showNormal()
+        else:
+            self.janela.showMaximized()
+        self.sincronizar()
+
+    def sincronizar(self, contexto=None, alterado=None):
+        """Atualiza contexto (empresa · período · leiaute) e o indicador."""
+        if contexto is not None:
+            self.lbl_ctx.setText(contexto)
+        if alterado is not None:
+            self.lbl_alterado.setText("\u25cf alterações não salvas"
+                                      if alterado else "")
+        self.btn_max.setText("\u2750" if self.janela.isMaximized()
+                             else "\u25a1")
+
+    def area_arrastavel(self, x, y):
+        """Falso sobre os botões — senão o Windows engoliria o clique.
+
+        O WM_NCHITTEST pergunta isto antes de devolver HTCAPTION: tudo que for
+        HTCAPTION é tratado como legenda e nunca chega ao widget.
+        """
+        for b in self.botoes:
+            g = b.geometry()
+            if g.left() <= x <= g.right() and g.top() <= y <= g.bottom():
+                return False
+        return True
+
+
 class JanelaPrincipal(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -2879,6 +3731,8 @@ class JanelaPrincipal(QMainWindow):
         self._montar_modo_topo()
         self.setWindowTitle("%s v%s" % (APP_NAME, __version__))
         self.statusBar().showMessage("Pronto. Abra um arquivo SPED (Ctrl+O).")
+        # por último: a barra própria precisa das ações e da toolbar já montadas
+        self._montar_barra_titulo()
 
     def _montar_modo_topo(self):
         """Envolve as grades num QTabWidget de nível superior com dois modos:
@@ -2908,6 +3762,25 @@ class JanelaPrincipal(QMainWindow):
         self.act_salvar_como.setEnabled(False)
         if hasattr(self, "act_sair"):
             self.act_sair.triggered.connect(self.close)
+        if not hasattr(self, "act_empresa"):
+            self.act_empresa = QAction("Empresa e rotinas…", self)
+        self.act_empresa.triggered.connect(self.configurar_empresa)
+        self.act_empresa.setEnabled(False)
+        if not hasattr(self, "act_empresas"):
+            self.act_empresas = QAction("Empresas", self)
+        self.act_empresas.triggered.connect(self.gerenciar_empresas)
+        if not hasattr(self, "act_conferir_itens_icms"):
+            self.act_conferir_itens_icms = QAction(
+                "Conferir itens com XMLs (ICMS/IPI)…", self)
+        self.act_conferir_itens_icms.triggered.connect(
+            lambda: self.conferir_itens_xml("ICMS"))
+        self.act_conferir_itens_icms.setEnabled(False)
+        if not hasattr(self, "act_conferir_itens_pc"):
+            self.act_conferir_itens_pc = QAction(
+                "Conferir itens com XMLs (PIS/COFINS)…", self)
+        self.act_conferir_itens_pc.triggered.connect(
+            lambda: self.conferir_itens_xml("PIS_COFINS"))
+        self.act_conferir_itens_pc.setEnabled(False)
         if not hasattr(self, "act_tema"):
             self.act_tema = QAction("", self)
         self.act_tema.triggered.connect(self.alternar_tema)
@@ -2975,6 +3848,58 @@ class JanelaPrincipal(QMainWindow):
             self.toolbar = tb
         self._montar_botao_ferramentas(tb)
 
+    def _arquivar(self, motivo, caminho=None):
+        """Guarda a cópia interna do período. Nunca interrompe o fluxo.
+
+        Arquivar é conveniência: se a pasta estiver sem permissão ou o disco
+        cheio, o usuário não pode ficar sem abrir nem sem salvar o arquivo —
+        por isso a falha só vai para a barra de status.
+        """
+        if self.doc is None:
+            return None
+        try:
+            entrada = arq_mod.arquivar(
+                self.doc, caminho or self.caminho, motivo=motivo)
+        except Exception as exc:  # noqa: BLE001
+            self.statusBar().showMessage(
+                "Não foi possível arquivar a cópia interna: %s" % exc, 8000)
+            return None
+        if entrada is None and motivo == "abertura":
+            self.statusBar().showMessage(
+                "Arquivo sem CNPJ no 0000: não foi arquivado no histórico.",
+                6000)
+        return entrada
+
+    def gerenciar_empresas(self):
+        """Cadastro de empresas e histórico de arquivos — sem exigir arquivo
+        aberto, para permitir cadastrar antes de importar o primeiro SPED."""
+        self._dlg_empresas = DialogoEmpresas(self)
+        self._dlg_empresas.show()
+
+    def abrir_caminho(self, caminho):
+        """Abre um arquivo pelo caminho (usado pelo histórico)."""
+        try:
+            doc = SpedDocument.carregar(caminho)
+        except Exception as e:  # noqa: BLE001
+            QMessageBox.critical(self, "Erro ao abrir",
+                                 "Não foi possível ler o arquivo:\n%s" % e)
+            return False
+        self._carregado(doc, caminho)
+        return True
+
+    def configurar_empresa(self):
+        """Cadastro da empresa e rotinas de conferência/correção.
+
+        Não-modal (`show()`), para o usuário navegar até um registro apontado
+        sem fechar o diálogo — por isso a referência fica guardada, senão o
+        coletor de lixo leva a janela embora.
+        """
+        if self.doc is None:
+            return
+        self._dlg_empresa = DialogoEmpresa(
+            self.doc, self, cfg_rfb=getattr(self, "cfg_tabelas", None))
+        self._dlg_empresa.show()
+
     # ----------------------------------------------------------- tema
     def _sincronizar_rotulo_tema(self):
         if hasattr(self, "act_tema"):
@@ -3004,28 +3929,138 @@ class JanelaPrincipal(QMainWindow):
         self.statusBar().showMessage(
             "Tema %s aplicado." % tema.atual().nome, 4000)
 
+    # ------------------------------------------------- barra de título
+    def _montar_barra_titulo(self):
+        """Põe a barra própria no lugar da do Windows, quando der.
+
+        `setMenuWidget` ocupa exatamente a faixa acima das barras de
+        ferramentas — o mesmo lugar onde ficava a barra de menus que o
+        programa já escondia desde a 0.4.0.
+
+        Se `janela_custom.aplicar` falhar (não é Windows, ctypes bloqueado, a
+        escotilha SPED_TABLES_BARRA_NATIVA=1), nada é montado e o aplicativo
+        segue com a barra nativa: enfeite não pode impedir de abrir.
+        """
+        self.barra_titulo = None
+        self._barra_aplicada = False
+        if not janela_custom.disponivel():
+            return
+        # o widget pode ser montado agora (e so Qt); os ganchos nativos ficam
+        # para o primeiro showEvent, quando a janela ja existe de verdade
+        self.barra_titulo = BarraTitulo(self)
+        self.setMenuWidget(self.barra_titulo)
+        self.sincronizar_barra()
+
+    def showEvent(self, evento):
+        """Aplica os ganchos nativos uma unica vez, ja com a janela criada.
+
+        Fazer isso no __init__ forcava `winId()` no meio da construcao do
+        QMainWindow e o SetWindowPos(FRAMECHANGED) reentrava na montagem —
+        o processo morria sem traceback, por ser uma falha nativa.
+        """
+        super().showEvent(evento)
+        if self.barra_titulo is None or self._barra_aplicada:
+            return
+        self._barra_aplicada = True
+        if not janela_custom.aplicar(self):
+            # sem os ganchos, a barra propria conviveria com a nativa
+            self.setMenuWidget(None)
+            self.barra_titulo = None
+            self.statusBar().showMessage(
+                "Barra de titulo propria indisponivel; usando a do Windows.",
+                6000)
+
+    def sincronizar_barra(self):
+        """Empresa, período, leiaute e indicador de alterações."""
+        if not getattr(self, "barra_titulo", None):
+            return
+        ctx = ""
+        if self.doc is not None:
+            partes = []
+            try:
+                cnpj, nome, layout, periodo = arq_mod.identificar(self.doc)
+            except Exception:  # noqa: BLE001
+                cnpj = nome = layout = periodo = ""
+            if nome:
+                partes.append(nome)
+            if periodo:
+                partes.append(arq_mod.formatar_periodo(periodo))
+            partes.append("EFD Contribuições" if layout == "CONTRIB"
+                          else "EFD ICMS/IPI")
+            if self.caminho:
+                partes.append(os.path.basename(self.caminho))
+            ctx = "  ·  ".join(partes)
+        self.barra_titulo.sincronizar(contexto=ctx,
+                                      alterado=bool(self.alterado))
+
+    def nativeEvent(self, tipo, mensagem):
+        """Delega as mensagens de moldura para o módulo nativo.
+
+        Sem a barra montada não interceptamos nada — o Windows continua
+        desenhando a moldura dele.
+        """
+        # so interceptamos depois de aplicar() ter preparado a janela: tratar
+        # WM_NCCALCSIZE durante a criacao do HWND derruba o processo
+        if (getattr(self, "barra_titulo", None) is not None
+                and getattr(self, "_barra_aplicada", False)):
+            tratado, resultado = janela_custom.tratar(
+                self, int(mensagem), BarraTitulo.ALTURA,
+                self.barra_titulo.area_arrastavel)
+            if tratado:
+                return True, resultado
+        return super().nativeEvent(tipo, mensagem)
+
+    def changeEvent(self, evento):
+        # trocar entre maximizada e restaurada muda o ícone do botão
+        super().changeEvent(evento)
+        if evento.type() == QEvent.Type.WindowStateChange:
+            if getattr(self, "barra_titulo", None):
+                self.barra_titulo.sincronizar()
+
     def _montar_botao_ferramentas(self, toolbar):
-        """Cria o botão suspenso 'Ferramentas' e o posiciona na toolbar."""
+        """Cria o botão suspenso 'Ferramentas', agrupado por tipo de SPED.
+
+        Cada leiaute escritura um imposto e tem suas próprias ferramentas;
+        misturá-las numa lista única obrigava o usuário a saber de cor quais
+        valem para o arquivo aberto. Os submenus inteiros ficam desabilitados
+        quando não se aplicam ao leiaute atual.
+        """
         menu = QMenu(self)
-        menu.addAction(self.act_importar_xml)
-        menu.addAction(self.act_recalc_m)
-        menu.addAction(self.act_trocar_aliquotas)
-        menu.addAction(self.act_alterar_datas)
+
+        self.menu_icms = menu.addMenu("EFD ICMS/IPI")
+        self.menu_icms.addAction(self.act_conferir_itens_icms)
+        self.menu_icms.addAction(self.act_conferir_c190)
+        self.menu_icms.addSeparator()
+        self.menu_icms.addAction(self.act_importar_inventario)
+
+        self.menu_contrib = menu.addMenu("EFD Contribuições (PIS/COFINS)")
+        self.menu_contrib.addAction(self.act_conferir_itens_pc)
+        self.menu_contrib.addAction(self.act_importar_xml)
+        self.menu_contrib.addAction(self.act_validar_c175_65)
+        self.menu_contrib.addAction(self.act_regenerar_c175_65)
+        self.menu_contrib.addSeparator()
+        self.menu_contrib.addAction(self.act_trocar_aliquotas)
+        self.menu_contrib.addAction(self.act_recalc_m)
+        self.menu_contrib.addSeparator()
+        self.menu_contrib.addAction(self.act_verificar_cst)
+        self.menu_contrib.addAction(self.act_empresa)
+
         menu.addSeparator()
-        menu.addAction(self.act_conferir_55)
-        menu.addAction(self.act_conferir_c190)
-        menu.addAction(self.act_correlacoes_cfop)
-        menu.addAction(self.act_verificar_cst)
-        menu.addAction(self.act_importar_inventario)
-        menu.addAction(self.act_validar_c175_65)
-        menu.addAction(self.act_regenerar_c175_65)
-        menu.addSeparator()
-        menu.addAction(self.act_revisar)
+        self.menu_gerais = menu.addMenu("Gerais")
+        self.menu_gerais.addAction(self.act_alterar_datas)
+        self.menu_gerais.addAction(self.act_revisar)
+        self.menu_gerais.addSeparator()
+        self.menu_gerais.addAction(self.act_correlacoes_cfop)
+
         botao = QToolButton(self)
         botao.setText("Ferramentas ▾")
         botao.setMenu(menu)
         botao.setPopupMode(QToolButton.ToolButtonPopupMode.InstantPopup)
         botao.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextOnly)
+        toolbar.addSeparator()
+        # Empresas fica na barra, não dentro do menu: é o cadastro que dá
+        # sentido às rotinas e funciona sem nenhum arquivo aberto
+        toolbar.addAction(self.act_empresas)
         toolbar.addSeparator()
         toolbar.addWidget(botao)
         self._botao_ferramentas = botao
@@ -3050,6 +4085,26 @@ class JanelaPrincipal(QMainWindow):
 
         self.act_sair = QAction("Sair", self)
         self.act_sair.triggered.connect(self.close)
+
+        # cadastro de empresas + histórico: não depende de arquivo aberto
+        self.act_empresas = QAction("Empresas", self)
+        self.act_empresas.triggered.connect(self.gerenciar_empresas)
+
+        self.act_conferir_itens_icms = QAction(
+            "Conferir itens com XMLs (ICMS/IPI)…", self)
+        self.act_conferir_itens_icms.triggered.connect(
+            lambda: self.conferir_itens_xml("ICMS"))
+        self.act_conferir_itens_icms.setEnabled(False)
+
+        self.act_conferir_itens_pc = QAction(
+            "Conferir itens com XMLs (PIS/COFINS)…", self)
+        self.act_conferir_itens_pc.triggered.connect(
+            lambda: self.conferir_itens_xml("PIS_COFINS"))
+        self.act_conferir_itens_pc.setEnabled(False)
+
+        self.act_empresa = QAction("Empresa e rotinas…", self)
+        self.act_empresa.triggered.connect(self.configurar_empresa)
+        self.act_empresa.setEnabled(False)
 
         # o rótulo anuncia o destino, não o estado atual
         self.act_tema = QAction("", self)
@@ -3243,6 +4298,35 @@ class JanelaPrincipal(QMainWindow):
             % (resultado["resumo"]["itens_conferidos"],
                resultado["resumo"]["divergencias"]))
         DialogoConferencia(resultado, self).exec()
+
+    def conferir_itens_xml(self, tributo):
+        """Confere os itens dos XMLs contra os C170, por tributo.
+
+        O movimento (entradas/saídas) é escolhido dentro do diálogo, que
+        refaz a comparação sem pedir a pasta de novo — reler dezenas de XMLs a
+        cada troca seria desperdício.
+        """
+        if not self.doc:
+            return
+        pasta = QFileDialog.getExistingDirectory(
+            self, "Selecione a pasta com os XMLs das NF-e (modelo 55)")
+        if not pasta:
+            return
+        try:
+            nfes, _erros = xf.ler_pasta(pasta)
+        except Exception as e:  # noqa: BLE001
+            QMessageBox.critical(self, "Conferir itens",
+                                 "Erro ao ler a pasta:\n%s" % e)
+            return
+        if not any(xf.norm(n.mod) == "55" for n in nfes):
+            QMessageBox.warning(
+                self, "Conferir itens",
+                "Nenhum XML de NF-e modelo 55 foi encontrado na pasta.")
+            return
+        self._dlg_conferencia = DialogoConferencia(
+            None, self, doc=self.doc, nfes=nfes, tributo=tributo,
+            correlacoes=self.correlacoes_cfop)
+        self._dlg_conferencia.show()
 
     def conferir_c190_xml(self):
         """Compara os C190 (ICMS analítico) com os XMLs, agrupando os itens do
@@ -3551,9 +4635,14 @@ class JanelaPrincipal(QMainWindow):
             QMessageBox.critical(self, "Erro ao abrir",
                                  "Não foi possível ler o arquivo:\n%s" % e)
             return
+        self._carregado(doc, caminho)
+
+    def _carregado(self, doc, caminho):
+        """Passo comum a abrir() e a abrir_caminho(): estado, abas, acoes."""
         self.doc = doc
         self.caminho = caminho
         self.alterado = False
+        self._arquivar("abertura")
         self._montar_abas()
         self.act_salvar.setEnabled(True)
         self.act_salvar_como.setEnabled(True)
@@ -3568,6 +4657,15 @@ class JanelaPrincipal(QMainWindow):
         self.act_conferir_55.setEnabled(True)
         self.act_conferir_c190.setEnabled(doc.layout == "ICMS")
         self.act_revisar.setEnabled(True)
+        # o cadastro vale para os dois leiautes (é por CNPJ); as rotinas é que
+        # se filtram por layout dentro do diálogo
+        self.act_empresa.setEnabled(doc.layout == "CONTRIB")
+        self.act_conferir_itens_icms.setEnabled(doc.layout == "ICMS")
+        self.act_conferir_itens_pc.setEnabled(doc.layout == "CONTRIB")
+        # submenu inteiro desabilitado quando não é o leiaute do arquivo
+        if hasattr(self, "menu_icms"):
+            self.menu_icms.setEnabled(doc.layout == "ICMS")
+            self.menu_contrib.setEnabled(doc.layout == "CONTRIB")
         nome = os.path.basename(caminho)
         tipo = "EFD Contribuições" if doc.layout == "CONTRIB" \
             else "EFD ICMS/IPI"
@@ -3576,6 +4674,7 @@ class JanelaPrincipal(QMainWindow):
         self.statusBar().showMessage(
             "%s carregado: %d registros, layout %s."
             % (nome, len(doc.registros), tipo))
+        self.sincronizar_barra()
 
     def _montar_abas(self):
         # reutiliza o QTabWidget central (criado no __init__ ou vindo do .ui)
@@ -3621,6 +4720,7 @@ class JanelaPrincipal(QMainWindow):
     # ------------------------------------------------------------ salvar
     def _marcar_alterado(self):
         self.alterado = True
+        self.sincronizar_barra()
         t = self.windowTitle()
         if not t.endswith(" *"):
             self.setWindowTitle(t + " *")
@@ -3654,9 +4754,17 @@ class JanelaPrincipal(QMainWindow):
         nome = os.path.basename(caminho)
         self.setWindowTitle(self.windowTitle().rstrip(" *"))
         self.statusBar().showMessage("Salvo em %s." % nome)
-        QMessageBox.information(
-            self, "Salvo",
-            "Arquivo salvo com sucesso em\n%s" % caminho)
+        self.sincronizar_barra()
+        entrada = self._arquivar("salvamento", caminho)
+        msg = "Arquivo salvo com sucesso em\n%s" % caminho
+        if entrada:
+            msg += ("\n\nA cópia interna do período %s foi atualizada."
+                    % arq_mod.formatar_periodo(entrada["periodo"]))
+        msg += ("\n\nValide este arquivo no PVA. Se o PVA corrigir ou "
+                "regravar alguma coisa, **reabra aqui a versão validada** "
+                "para que a cópia interna passe a refletir o arquivo "
+                "definitivo do período.")
+        QMessageBox.information(self, "Salvo", msg)
 
     # ------------------------------------------------------------ fechar
     def closeEvent(self, event):
