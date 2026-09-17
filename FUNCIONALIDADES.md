@@ -130,9 +130,11 @@ Casa item do XML com o C170 por **modelo + série + número + nItem** e compara
 VL_ITEM, VL_DESC, base e valor de **ICMS**, além do **CST de ICMS** e da
 correlação de CFOP. Duplo clique vai ao registro.
 
-*Regra de uso:* o VL_ITEM é comparado com **vProd + vOutro** do item, porque o
-C170 não tem campo de despesas acessórias por item (só o C100 tem VL_OUT_DA) e
-o "outros" acaba escriturado dentro do valor do produto.
+*Regra de uso:* o VL_ITEM é comparado com **vProd + vOutro + vFrete + vSeg**
+do item, porque o C170 não tem campo de despesas acessórias por item (só o C100
+tem VL_OUT_DA, VL_FRT e VL_SEG) e elas acabam escrituradas dentro do valor do
+produto. Os campos somados ficam em `conferencia.ACESSORIOS_ITEM` — ajuste a
+lista se a sua escrituração lançar frete/seguro no C100.
 
 *Limitação conhecida:* o CST é comparado por igualdade — fornecedor do **Simples
 Nacional** emite CSOSN e pode gerar divergência legítima. Ainda não tratado.

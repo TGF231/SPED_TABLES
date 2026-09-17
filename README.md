@@ -200,15 +200,18 @@ A ordem do item (nItem) é a chave porque, da saída do fornecedor para a entrad
 do comprador, **o código do produto muda** (cProd ≠ COD_ITEM) e **o CFOP muda**
 (5xxx → 1xxx/2xxx). Por isso esses campos não entram como chave nem são
 conferidos por igualdade; o que se confere por padrão é o **valor do item**
-(VL_ITEM × vProd + vOutro) e o **desconto** (VL_DESC × vDesc), além do **total
-do documento** (VL_DOC × vNF). As comparações são parametrizáveis em
-`conferencia.COMPARACOES_PADRAO`.
+(VL_ITEM × vProd + vOutro + vFrete + vSeg) e o **desconto** (VL_DESC × vDesc),
+além do **total do documento** (VL_DOC × vNF). As comparações são
+parametrizáveis em `conferencia.COMPARACOES_PADRAO`.
 
-> **Por que vProd + vOutro:** o C170 não tem campo de despesas acessórias por
-> item — o leiaute só prevê VL_OUT_DA no C100, por documento. O valor que a
-> NF-e traz em `det/prod/vOutro` é, portanto, escriturado dentro do próprio
-> VL_ITEM, e comparar só com o `vProd` acusaria uma divergência do tamanho
-> exato do "outros".
+> **Por que somar as despesas acessórias:** o C170 não tem campo para elas por
+> item — o leiaute só prevê VL_OUT_DA, VL_FRT e VL_SEG no C100, por documento.
+> O que a NF-e traz em `det/prod/vOutro`, `det/prod/vFrete` e `det/prod/vSeg` é,
+> portanto, escriturado dentro do próprio VL_ITEM, e comparar só com o `vProd`
+> acusaria uma divergência do tamanho exato dessas despesas. Os três campos
+> somados estão na constante `conferencia.ACESSORIOS_ITEM`: se a sua
+> escrituração lançar frete e seguro no C100 em vez de dentro do item, deixe
+> apenas `"voutro"` na lista.
 
 O resultado é uma lista de divergências, navegável e **exportável em CSV**.
 Além de VL_ITEM e VL_DESC, a conferência verifica o **CST de ICMS** e os **valores de ICMS** (base e imposto) de cada

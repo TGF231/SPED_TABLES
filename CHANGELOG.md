@@ -1,5 +1,23 @@
 # Changelog
 
+## [0.15.4] - 2026-09-17
+
+### Alterado
+- **Conferência de entradas (NF-e 55): o frete e o seguro do item também entram
+  no VL_ITEM.** Mesmo caso do `vOutro` tratado na 0.15.3 — o C170 não tem campo
+  de despesa acessória por item (o leiaute só prevê VL_FRT, VL_SEG e VL_OUT_DA
+  no C100, por documento), então o que a NF-e traz em `det/prod/vFrete` e
+  `det/prod/vSeg` é escriturado dentro do valor do item. O critério passa a ser
+  `vProd + vOutro + vFrete + vSeg`, com os três acessórios reunidos na constante
+  `conferencia.ACESSORIOS_ITEM`.
+- O parser de XML passou a extrair **`vFrete` e `vSeg` por item**; antes só lia
+  os totais da nota (`ICMSTot`).
+
+  Se a sua escrituração lançar frete e seguro nos campos do **C100**
+  (VL_FRT/VL_SEG) em vez de dentro do item, a conferência passará a apontar
+  divergência — nesse caso, ajuste `ACESSORIOS_ITEM` para conter apenas
+  `"voutro"`.
+
 ## [0.15.3] - 2026-09-17
 
 ### Corrigido

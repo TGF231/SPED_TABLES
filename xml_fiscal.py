@@ -52,7 +52,7 @@ def norm(s):
 # ------------------------------------------------------------------ modelos
 class ItemNFe:
     __slots__ = ("nitem", "cprod", "xprod", "cfop", "vprod", "vdesc",
-                 "voutro", "qtd", "unid", "ncm",
+                 "voutro", "vfrete", "vseg", "qtd", "unid", "ncm",
                  "pis_cst", "pis_vbc", "pis_aliq", "pis_vpis",
                  "cofins_cst", "cofins_vbc", "cofins_aliq", "cofins_vcofins",
                  "icms_cst", "icms_vbc", "icms_aliq", "icms_vicms",
@@ -145,6 +145,8 @@ def ler_nfe(caminho):
             cfop=prod.findtext("CFOP"), vprod=_num(prod.findtext("vProd")),
             vdesc=_num(prod.findtext("vDesc")),
             voutro=_num(prod.findtext("vOutro")),
+            vfrete=_num(prod.findtext("vFrete")),
+            vseg=_num(prod.findtext("vSeg")),
             qtd=_num(prod.findtext("qCom")), unid=prod.findtext("uCom"),
             ncm=prod.findtext("NCM"),
             icms_cst=icms_cst,

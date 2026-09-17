@@ -169,15 +169,20 @@ def salvar_correlacoes(mapa, caminho):
     return caminho
 
 
+# despesas acessórias que a NF-e traz por item e o C170 não tem onde guardar
+ACESSORIOS_ITEM = ("voutro", "vfrete", "vseg")
+
+
 def valor_item_xml(it):
     """Valor do item do XML no critério do C170.
 
-    O C170 não tem campo de "outras despesas acessórias" por item — o leiaute
-    só prevê VL_OUT_DA no C100, por documento. O que a NF-e traz em
-    det/prod/vOutro é, portanto, escriturado **dentro do VL_ITEM**, e é assim
-    que a comparação tem de ser feita.
+    O C170 não tem campo de despesas acessórias por item — o leiaute só prevê
+    VL_OUT_DA, VL_FRT e VL_SEG no C100, por documento. O que a NF-e traz em
+    det/prod/vOutro, det/prod/vFrete e det/prod/vSeg é, portanto, escriturado
+    **dentro do VL_ITEM**, e é assim que a comparação tem de ser feita.
     """
-    return (it.vprod or 0.0) + (getattr(it, "voutro", 0.0) or 0.0)
+    return (it.vprod or 0.0) + sum(
+        (getattr(it, nome, 0.0) or 0.0) for nome in ACESSORIOS_ITEM)
 
 
 # comparações padrão item XML ↔ C170:
