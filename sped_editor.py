@@ -27,7 +27,8 @@ import os
 import re
 import datetime
 
-from PyQt6.QtCore import Qt, QEvent, QTimer, QSettings
+from PyQt6.QtCore import (Qt, QEvent, QTimer, QSettings, QTranslator,
+                          QLibraryInfo, QLocale)
 from PyQt6.QtGui import (QAction, QKeySequence, QColor, QFont, QShortcut,
                          QIcon)
 from PyQt6.QtWidgets import (
@@ -4177,18 +4178,43 @@ class JanelaPrincipal(QMainWindow):
         """
         if not self.alterado or self.doc is None:
             return True
-        resp = QMessageBox.question(
-            self, titulo, texto,
-            QMessageBox.StandardButton.Save
-            | QMessageBox.StandardButton.Discard
-            | QMessageBox.StandardButton.Cancel,
-            QMessageBox.StandardButton.Save)
-        if resp == QMessageBox.StandardButton.Cancel:
+        escolha = self._perguntar_salvar(titulo, texto)
+        if escolha == "cancelar":
             return False
-        if resp == QMessageBox.StandardButton.Save:
+        if escolha == "salvar":
             self.salvar()
             return not self.alterado
         return True
+
+    def _perguntar_salvar(self, titulo, texto):
+        """Mostra a pergunta e devolve 'salvar', 'descartar' ou 'cancelar'.
+
+        Os rótulos são escritos à mão em vez de usar os botões padrão do Qt:
+        a tradução pt-BR vem de arquivos .qm que podem não ser empacotados no
+        executável, e esta é a pergunta em que sair em inglês seria pior — é a
+        que decide se o trabalho do usuário é gravado ou perdido.
+
+        Separar a pergunta da decisão também deixa o fluxo testável sem
+        depender de diálogo modal.
+        """
+        caixa = QMessageBox(self)
+        caixa.setWindowTitle(titulo)
+        caixa.setTextFormat(Qt.TextFormat.RichText)
+        caixa.setText(texto)
+        caixa.setIcon(QMessageBox.Icon.Question)
+        b_salvar = caixa.addButton("Salvar",
+                                   QMessageBox.ButtonRole.AcceptRole)
+        b_descartar = caixa.addButton("Descartar",
+                                      QMessageBox.ButtonRole.DestructiveRole)
+        caixa.addButton("Cancelar", QMessageBox.ButtonRole.RejectRole)
+        caixa.setDefaultButton(b_salvar)
+        caixa.exec()
+        clicado = caixa.clickedButton()
+        if clicado is b_salvar:
+            return "salvar"
+        if clicado is b_descartar:
+            return "descartar"
+        return "cancelar"
 
     def fechar_arquivo(self):
         """Fecha a escrituração aberta e volta para a tela inicial."""
@@ -5200,8 +5226,34 @@ class JanelaPrincipal(QMainWindow):
         event.accept()
 
 
+def instalar_traducao(app):
+    """Carrega a tradução pt-BR do próprio Qt.
+
+    Sem isso, os botões padrão dos diálogos saem em inglês — "Save",
+    "Discard", "Cancel" —, o que destoa de um programa cuja interface é toda
+    em português. A tradução cobre tudo que o Qt desenha: caixas de mensagem,
+    diálogos de arquivo não-nativos, menus de contexto de campos de texto.
+
+    Os tradutores precisam ficar vivos enquanto o aplicativo existir; guardá-los
+    no próprio `app` evita que o coletor de lixo os leve embora e a interface
+    volte ao inglês no meio do uso.
+    """
+    QLocale.setDefault(QLocale(QLocale.Language.Portuguese,
+                               QLocale.Country.Brazil))
+    pasta = QLibraryInfo.path(QLibraryInfo.LibraryPath.TranslationsPath)
+    carregados = []
+    app._tradutores = []
+    for nome in ("qtbase_pt_BR", "qt_pt_BR"):
+        t = QTranslator(app)
+        if t.load(nome, pasta) and app.installTranslator(t):
+            app._tradutores.append(t)
+            carregados.append(nome)
+    return carregados
+
+
 def main():
     app = QApplication(sys.argv)
+    instalar_traducao(app)
     app.setApplicationName(APP_NAME)
     app.setOrganizationName(APP_NAME)
     # fonte um pouco menor deixa as grades mais densas (estilo planilha)

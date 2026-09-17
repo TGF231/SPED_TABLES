@@ -68,6 +68,14 @@ Cores gravadas em `QTableWidgetItem` (coluna REG, célula somente-leitura,
 divergências) não seguem a folha de estilo: são decididas em Python e por isso
 `alternar_tema()` remonta as abas.
 
+### Idioma da interface
+
+A tradução pt-BR do Qt é carregada em `instalar_traducao()`, chamada no
+`main()`. Os tradutores ficam guardados em `app._tradutores` — sem manter a
+referência, o coletor de lixo os leva e a interface volta ao inglês no meio do
+uso. Em diálogos críticos, escreva o rótulo do botão à mão: os `.qm` podem não
+ser empacotados no executável.
+
 ### Ao mexer na barra ou no menu
 
 A janela nasce de **dois caminhos**: `uic.loadUi(sped_editor.ui)` quando o

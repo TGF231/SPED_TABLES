@@ -1,5 +1,24 @@
 # Changelog
 
+## [0.22.1] - 2026-09-17
+
+### Corrigido
+- **Os diálogos do Qt apareciam em inglês** ("Save", "Discard", "Cancel",
+  "Yes", "No"), destoando de uma interface toda em português. Duas camadas de
+  correção:
+  1. A **tradução pt-BR do próprio Qt** (`qtbase_pt_BR` e `qt_pt_BR`) passa a
+     ser carregada na inicialização, junto com a locale pt-BR — isso cobre
+     tudo que o Qt desenha, não só a pergunta de salvar.
+  2. A pergunta de **salvar antes de fechar** escreve os próprios rótulos
+     (*Salvar*, *Descartar*, *Cancelar*), sem depender dos arquivos `.qm`, que
+     podem não ser empacotados no executável. É a pergunta em que sair em
+     inglês seria pior: é ela que decide se o trabalho é gravado ou perdido.
+
+### Alterado
+- A pergunta foi separada da decisão (`_perguntar_salvar` devolve
+  `"salvar"`/`"descartar"`/`"cancelar"`), o que também torna o fluxo testável
+  sem depender de diálogo modal.
+
 ## [0.22.0] - 2026-09-17
 
 ### Adicionado
