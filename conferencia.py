@@ -169,10 +169,21 @@ def salvar_correlacoes(mapa, caminho):
     return caminho
 
 
+def valor_item_xml(it):
+    """Valor do item do XML no critério do C170.
+
+    O C170 não tem campo de "outras despesas acessórias" por item — o leiaute
+    só prevê VL_OUT_DA no C100, por documento. O que a NF-e traz em
+    det/prod/vOutro é, portanto, escriturado **dentro do VL_ITEM**, e é assim
+    que a comparação tem de ser feita.
+    """
+    return (it.vprod or 0.0) + (getattr(it, "voutro", 0.0) or 0.0)
+
+
 # comparações padrão item XML ↔ C170:
 #   (rótulo, função-valor-do-item-XML, nome-do-campo-C170, tolerância)
 COMPARACOES_PADRAO = [
-    ("VL_ITEM", lambda it: it.vprod, "VL_ITEM", 0.01),
+    ("VL_ITEM", valor_item_xml, "VL_ITEM", 0.01),
     ("VL_DESC", lambda it: it.vdesc, "VL_DESC", 0.01),
     ("VL_BC_ICMS", lambda it: it.icms_vbc or 0.0, "VL_BC_ICMS", 0.01),
     ("VL_ICMS", lambda it: it.icms_vicms or 0.0, "VL_ICMS", 0.01),

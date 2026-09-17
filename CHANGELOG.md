@@ -1,5 +1,22 @@
 # Changelog
 
+## [0.15.3] - 2026-09-17
+
+### Corrigido
+- **Conferência de entradas (NF-e 55): o "outros" do item era acusado como
+  divergência.** O C170 não tem campo de despesas acessórias por item — o
+  leiaute só prevê VL_OUT_DA no C100, por documento —, de modo que o valor que
+  a NF-e traz em `det/prod/vOutro` é escriturado **dentro do VL_ITEM**. A
+  comparação usava apenas o `vProd` e apontava um falso positivo do tamanho
+  exato do "outros" em cada item que o tivesse. Agora o critério é
+  `vProd + vOutro` (função `conferencia.valor_item_xml`).
+- O parser de XML passou a extrair o **`vOutro` por item** (`det/prod/vOutro`);
+  antes só lia o total da nota (`ICMSTot/vOutro`).
+
+  A conferência do **C190** não muda: lá o "outros" continua entrando pelo
+  rateio das despesas acessórias do documento, que distribui exatamente o mesmo
+  montante — os dois caminhos permanecem coerentes.
+
 ## [0.15.2] - 2026-09-10
 
 ### Corrigido
