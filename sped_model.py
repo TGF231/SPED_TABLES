@@ -12,6 +12,7 @@ Modelo de dados do SPED em árvore.
 """
 
 import itertools
+import re
 from sped_layouts import nivel, campos, detectar_layout
 
 _id_seq = itertools.count(1)
@@ -860,6 +861,116 @@ class SpedDocument:
         "VL_BC_ICMS_ST": "VL_BC_ICMS_ST", "VL_ICMS_ST": "VL_ICMS_ST",
         "VL_IPI": "VL_IPI", "VL_PIS": "VL_PIS", "VL_COFINS": "VL_COFINS",
     }
+
+    # ---------------------------------------------------- recálculo de ICMS
+    # Situação tributária do ICMS pelos **dois últimos dígitos** do CST (o
+    # primeiro é a origem da mercadoria, que não interfere no cálculo).
+    CST_ICMS_REDUCAO = ("20", "70")          # base reduzida
+    CST_ICMS_SEM_DEBITO = ("30", "40", "41", "50", "60")
+    # 00 integral · 10 e 70 com ST · 90 outras · 51 diferimento (parcial)
+
+    @staticmethod
+    def situacao_icms(cst):
+        """'tributado', 'reduzido' ou 'sem_debito' a partir do CST_ICMS."""
+        d = re.sub(r"\D", "", cst or "")
+        chave = d[-2:] if len(d) >= 2 else d
+        if chave in SpedDocument.CST_ICMS_REDUCAO:
+            return "reduzido"
+        if chave in SpedDocument.CST_ICMS_SEM_DEBITO:
+            return "sem_debito"
+        return "tributado"
+
+    def recalcular_icms_itens(self, uids=None, recalcular_base=False,
+                              reducao_pct=None, zerar_sem_debito=True,
+                              tol=0.005):
+        """Recalcula o ICMS dos itens C170.
+
+        O fluxo pensado é: corrigir alíquota, base ou CST no **Modo Relatório**
+        e depois pedir o recálculo — daí `uids` aceitar exatamente o conjunto
+        que está na tela.
+
+        * **VL_ICMS = VL_BC_ICMS × ALIQ_ICMS ÷ 100**, sempre. É o cálculo que
+          amarra os três campos e o que mais sai errado quando a alíquota é
+          corrigida na mão.
+        * `recalcular_base` refaz a **base** a partir de `VL_ITEM − VL_DESC`.
+          Nos CST de **redução** (x20 e x70) aplica `reducao_pct`; nos demais,
+          a base é o valor líquido do item. Sem essa opção, a base informada é
+          respeitada — inclusive uma base reduzida digitada à mão.
+        * `zerar_sem_debito` zera base, alíquota e valor nos CST que não geram
+          débito próprio (x30, x40, x41, x50, x60). Um CST desses com valor
+          lançado é erro de escrituração, não redução.
+
+        O ICMS-ST **não é tocado**: ele tem base e alíquota próprias, muitas
+        vezes com MVA, e misturá-lo aqui produziria número errado em silêncio.
+
+        Devolve um resumo com o que mudou.
+        """
+        i_item = self._ix("C170", "VL_ITEM")
+        i_desc = self._ix("C170", "VL_DESC")
+        i_cst = self._ix("C170", "CST_ICMS")
+        i_bc = self._ix("C170", "VL_BC_ICMS")
+        i_aliq = self._ix("C170", "ALIQ_ICMS")
+        i_vl = self._ix("C170", "VL_ICMS")
+        if None in (i_cst, i_bc, i_aliq, i_vl):
+            return {"itens": 0, "alterados": 0, "sem_campos": True}
+
+        alvo = set(uids) if uids is not None else None
+        resumo = {"itens": 0, "alterados": 0, "base_alterada": 0,
+                  "valor_alterado": 0, "zerados": 0, "por_situacao": {},
+                  "delta_icms": 0.0}
+
+        for r in self.registros:
+            if r.reg != "C170":
+                continue
+            if alvo is not None and r.uid not in alvo:
+                continue
+            resumo["itens"] += 1
+            situacao = self.situacao_icms(r.valor(i_cst))
+            resumo["por_situacao"][situacao] = \
+                resumo["por_situacao"].get(situacao, 0) + 1
+
+            bc_antes = _to_num(r.valor(i_bc))
+            vl_antes = _to_num(r.valor(i_vl))
+            mudou = False
+
+            if situacao == "sem_debito" and zerar_sem_debito:
+                if bc_antes or vl_antes or _to_num(r.valor(i_aliq)):
+                    r.set_valor(i_bc, _fmt_val(0))
+                    r.set_valor(i_aliq, "")
+                    r.set_valor(i_vl, _fmt_val(0))
+                    resumo["zerados"] += 1
+                    resumo["delta_icms"] -= vl_antes
+                    mudou = True
+                if mudou:
+                    resumo["alterados"] += 1
+                continue
+
+            base = bc_antes
+            if recalcular_base and i_item is not None:
+                liquido = _to_num(r.valor(i_item))
+                if i_desc is not None:
+                    liquido -= _to_num(r.valor(i_desc))
+                if situacao == "reduzido" and reducao_pct:
+                    liquido *= (1.0 - float(reducao_pct) / 100.0)
+                base = round(liquido, 2)
+                if abs(base - bc_antes) > tol:
+                    r.set_valor(i_bc, _fmt_val(base))
+                    resumo["base_alterada"] += 1
+                    mudou = True
+
+            aliq = _to_num(r.valor(i_aliq))
+            valor = round(base * aliq / 100.0, 2)
+            if abs(valor - vl_antes) > tol:
+                r.set_valor(i_vl, _fmt_val(valor))
+                resumo["valor_alterado"] += 1
+                resumo["delta_icms"] += valor - vl_antes
+                mudou = True
+
+            if mudou:
+                resumo["alterados"] += 1
+
+        resumo["delta_icms"] = round(resumo["delta_icms"], 2)
+        return resumo
 
     def recalcular_totais_c100(self, c100):
         """Recalcula os totais de um C100 a partir dos seus itens C170.

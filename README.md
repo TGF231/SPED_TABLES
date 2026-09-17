@@ -266,6 +266,28 @@ depois de editar itens C170, quando as bases de cálculo do documento mudam. Se
 nenhum C100 estiver selecionado, o programa oferece recalcular **todos** os
 documentos com itens.
 
+### Recalcular ICMS dos itens (C170)
+
+**Ferramentas → EFD ICMS/IPI → Recalcular ICMS dos itens…** fecha o fluxo de
+correção pelo **Modo Relatório**: você corrige alíquota, base ou CST direto na
+grade — que já grava no registro — e pede o recálculo para os campos derivados
+voltarem a bater.
+
+- **VL_ICMS = base × alíquota** é sempre refeito;
+- opcionalmente a **base** é refeita a partir de `VL_ITEM − VL_DESC`, com o
+  percentual de **redução** aplicado nos CST **x20** e **x70**. Sem essa opção,
+  a base informada é respeitada — inclusive uma base reduzida digitada à mão;
+- nos CST **sem débito próprio** (x30, x40, x41, x50, x60), base, alíquota e
+  valor são zerados: um CST desses com valor lançado é erro de escrituração;
+- ao final, o **C190** e os **totais do C100** dos documentos afetados são
+  refeitos.
+
+O escopo padrão são **os itens do Modo Relatório**, isto é, o conjunto que você
+acabou de revisar; sem relatório gerado, vale para todos os C170.
+
+> O **ICMS-ST não é tocado**: tem base e alíquota próprias, frequentemente com
+> MVA, e recalculá-lo junto produziria número errado em silêncio.
+
 ### Recalcular C190 (analítico) a partir dos itens C170
 
 Na grade **C190** de um documento C100 (EFD ICMS/IPI), ao lado de *Adicionar/

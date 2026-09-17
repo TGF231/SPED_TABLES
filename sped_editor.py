@@ -3145,6 +3145,160 @@ class TelaInicial(QWidget):
         return ""
 
 
+class DialogoRecalcularICMS(QDialog):
+    """Recalcula o ICMS dos itens C170 depois da correção no Modo Relatório.
+
+    O fluxo que este diálogo fecha: o usuário corrige alíquota, base ou CST
+    direto na grade do **Modo Relatório** — que já grava no registro — e aqui
+    pede que os campos derivados voltem a bater entre si.
+
+    Por padrão o escopo são **os itens que estão no relatório**, não o arquivo
+    inteiro: é o conjunto que a pessoa acabou de revisar e tem na tela.
+    """
+
+    def __init__(self, doc, uids_relatorio, parent=None):
+        super().__init__(parent)
+        self.doc = doc
+        self.uids_relatorio = list(uids_relatorio or [])
+        self.setWindowTitle("Recalcular ICMS")
+        self.resize(560, 0)
+
+        lay = QVBoxLayout(self)
+        intro = QLabel(
+            "Recalcula <b>VL_ICMS = base × alíquota</b> nos itens C170. "
+            "Use depois de corrigir alíquota, base ou CST no Modo Relatório.")
+        intro.setWordWrap(True)
+        lay.addWidget(intro)
+
+        cx_escopo = QGroupBox("Itens a recalcular")
+        ve = QVBoxLayout(cx_escopo)
+        self.rb_relatorio = QCheckBox(
+            "Somente os itens do Modo Relatório (%d)"
+            % len(self.uids_relatorio))
+        self.rb_relatorio.setChecked(bool(self.uids_relatorio))
+        self.rb_relatorio.setEnabled(bool(self.uids_relatorio))
+        ve.addWidget(self.rb_relatorio)
+        if not self.uids_relatorio:
+            aviso = QLabel("Nenhum relatório gerado: o recálculo vale para "
+                           "todos os itens C170 do arquivo.")
+            aviso.setProperty("role", "dica")
+            aviso.setWordWrap(True)
+            ve.addWidget(aviso)
+        lay.addWidget(cx_escopo)
+
+        cx_opc = QGroupBox("O que recalcular")
+        vo = QVBoxLayout(cx_opc)
+        self.ck_base = QCheckBox(
+            "Refazer a base a partir de VL_ITEM − VL_DESC")
+        self.ck_base.toggled.connect(self._base_mudou)
+        vo.addWidget(self.ck_base)
+
+        linha_red = QHBoxLayout()
+        linha_red.addSpacing(22)
+        self.lbl_red = QLabel("Redução de base nos CST x20 e x70:")
+        linha_red.addWidget(self.lbl_red)
+        self.ed_reducao = QDoubleSpinBox()
+        self.ed_reducao.setRange(0.0, 100.0)
+        self.ed_reducao.setDecimals(2)
+        self.ed_reducao.setSuffix(" %")
+        self.ed_reducao.setValue(0.0)
+        linha_red.addWidget(self.ed_reducao)
+        linha_red.addStretch(1)
+        vo.addLayout(linha_red)
+        self._base_mudou(False)
+
+        self.ck_zerar = QCheckBox(
+            "Zerar base, alíquota e valor nos CST sem débito "
+            "(x30, x40, x41, x50, x60)")
+        self.ck_zerar.setChecked(True)
+        vo.addWidget(self.ck_zerar)
+        lay.addWidget(cx_opc)
+
+        cx_dep = QGroupBox("Depois de recalcular")
+        vd = QVBoxLayout(cx_dep)
+        self.ck_c190 = QCheckBox(
+            "Refazer o C190 e os totais do C100 dos documentos afetados")
+        self.ck_c190.setChecked(True)
+        vd.addWidget(self.ck_c190)
+        nota = QLabel("O ICMS-ST não é tocado: tem base e alíquota próprias, "
+                      "muitas vezes com MVA.")
+        nota.setProperty("role", "dica")
+        nota.setWordWrap(True)
+        vd.addWidget(nota)
+        lay.addWidget(cx_dep)
+
+        rod = QHBoxLayout()
+        rod.addStretch(1)
+        b_ok = QPushButton("Recalcular")
+        b_ok.setProperty("role", "accent")
+        b_ok.clicked.connect(self._executar)
+        rod.addWidget(b_ok)
+        b_cancelar = QPushButton("Cancelar")
+        b_cancelar.clicked.connect(self.reject)
+        rod.addWidget(b_cancelar)
+        lay.addLayout(rod)
+
+    def _base_mudou(self, ligado):
+        self.lbl_red.setEnabled(bool(ligado))
+        self.ed_reducao.setEnabled(bool(ligado))
+
+    def _executar(self):
+        uids = (self.uids_relatorio
+                if self.rb_relatorio.isChecked() and self.uids_relatorio
+                else None)
+        res = self.doc.recalcular_icms_itens(
+            uids=uids,
+            recalcular_base=self.ck_base.isChecked(),
+            reducao_pct=(self.ed_reducao.value()
+                         if self.ck_base.isChecked() else None),
+            zerar_sem_debito=self.ck_zerar.isChecked())
+        self.resultado = res
+
+        docs = 0
+        if self.ck_c190.isChecked() and res.get("alterados"):
+            docs = self._refazer_c190(uids)
+
+        jan = self.parent()
+        if res.get("alterados") and jan is not None:
+            if hasattr(jan, "_marcar_alterado"):
+                jan._marcar_alterado()
+            if hasattr(jan, "_montar_abas"):
+                jan._montar_abas()
+
+        sit = res.get("por_situacao", {})
+        QMessageBox.information(
+            self, "Recalcular ICMS",
+            "Itens percorridos: <b>%d</b><br>"
+            "Alterados: <b>%d</b> (valor %d, base %d, zerados %d)<br>"
+            "Situação: tributado %d · reduzido %d · sem débito %d<br><br>"
+            "Diferença no ICMS: <b>%s</b>%s"
+            % (res.get("itens", 0), res.get("alterados", 0),
+               res.get("valor_alterado", 0), res.get("base_alterada", 0),
+               res.get("zerados", 0), sit.get("tributado", 0),
+               sit.get("reduzido", 0), sit.get("sem_debito", 0),
+               _br(res.get("delta_icms", 0.0)),
+               "<br>C190 e totais refeitos em %d documento(s)." % docs
+               if docs else ""))
+        self.accept()
+
+    def _refazer_c190(self, uids):
+        """Refaz o analítico dos documentos que tiveram itens alterados."""
+        alvo = set(uids) if uids else None
+        docs = []
+        for r in self.doc.registros:
+            if r.reg != "C100":
+                continue
+            filhos = [f for f in (r.filhos or []) if f.reg == "C170"]
+            if not filhos:
+                continue
+            if alvo is None or any(f.uid in alvo for f in filhos):
+                docs.append(r)
+        for c100 in docs:
+            self.doc.consolidar_c190(c100)
+            self.doc.recalcular_totais_c100(c100)
+        return len(docs)
+
+
 class PainelEmpresas(QWidget):
     """Cadastro de empresas e histórico de arquivos arquivados.
 
@@ -4072,6 +4226,10 @@ class JanelaPrincipal(QMainWindow):
         self.act_conferir_itens_icms.triggered.connect(
             lambda: self.conferir_itens_xml("ICMS"))
         self.act_conferir_itens_icms.setEnabled(False)
+        if not hasattr(self, "act_recalc_icms"):
+            self.act_recalc_icms = QAction("Recalcular ICMS dos itens…", self)
+        self.act_recalc_icms.triggered.connect(self.recalcular_icms)
+        self.act_recalc_icms.setEnabled(False)
         if not hasattr(self, "act_conferir_itens_pc"):
             self.act_conferir_itens_pc = QAction(
                 "Conferir itens com XMLs (PIS/COFINS)…", self)
@@ -4240,7 +4398,7 @@ class JanelaPrincipal(QMainWindow):
                      "act_validar_c175_65", "act_regenerar_c175_65",
                      "act_conferir_55", "act_conferir_c190", "act_revisar",
                      "act_empresa", "act_conferir_itens_icms",
-                     "act_conferir_itens_pc"):
+                     "act_conferir_itens_pc", "act_recalc_icms"):
             if hasattr(self, acao):
                 getattr(self, acao).setEnabled(False)
         if hasattr(self, "menu_icms"):
@@ -4464,6 +4622,8 @@ class JanelaPrincipal(QMainWindow):
         menu = QMenu(self)
 
         self.menu_icms = menu.addMenu("EFD ICMS/IPI")
+        self.menu_icms.addAction(self.act_recalc_icms)
+        self.menu_icms.addSeparator()
         self.menu_icms.addAction(self.act_conferir_itens_icms)
         self.menu_icms.addAction(self.act_conferir_c190)
         self.menu_icms.addSeparator()
@@ -4540,6 +4700,10 @@ class JanelaPrincipal(QMainWindow):
         self.act_conferir_itens_icms.triggered.connect(
             lambda: self.conferir_itens_xml("ICMS"))
         self.act_conferir_itens_icms.setEnabled(False)
+
+        self.act_recalc_icms = QAction("Recalcular ICMS dos itens…", self)
+        self.act_recalc_icms.triggered.connect(self.recalcular_icms)
+        self.act_recalc_icms.setEnabled(False)
 
         self.act_conferir_itens_pc = QAction(
             "Conferir itens com XMLs (PIS/COFINS)…", self)
@@ -4743,6 +4907,28 @@ class JanelaPrincipal(QMainWindow):
             % (resultado["resumo"]["itens_conferidos"],
                resultado["resumo"]["divergencias"]))
         DialogoConferencia(resultado, self).exec()
+
+    def recalcular_icms(self):
+        """Recalcula o ICMS dos itens, no escopo do Modo Relatório.
+
+        Os uids vêm do relatório já gerado: é o conjunto que o usuário acabou
+        de revisar. Sem relatório, o diálogo avisa que vale para o arquivo
+        inteiro.
+        """
+        if not self.doc or self.doc.layout != "ICMS":
+            QMessageBox.information(
+                self, "Recalcular ICMS",
+                "O recálculo de ICMS aplica-se ao EFD ICMS/IPI.")
+            return
+        uids = []
+        rel = getattr(self, "relatorio", None)
+        if rel is not None and getattr(rel, "_uids", None):
+            # só itens C170: as outras fontes do relatório (C175/C190) não
+            # entram, porque o recálculo é por item
+            por_uid = {r.uid: r for r in self.doc.registros}
+            uids = [u for u in rel._uids
+                    if getattr(por_uid.get(u), "reg", "") == "C170"]
+        DialogoRecalcularICMS(self.doc, uids, self).exec()
 
     def conferir_itens_xml(self, tributo):
         """Confere os itens dos XMLs contra os C170, por tributo.
@@ -5108,6 +5294,7 @@ class JanelaPrincipal(QMainWindow):
         # se filtram por layout dentro do diálogo
         self.act_empresa.setEnabled(doc.layout == "CONTRIB")
         self.act_conferir_itens_icms.setEnabled(doc.layout == "ICMS")
+        self.act_recalc_icms.setEnabled(doc.layout == "ICMS")
         self.act_conferir_itens_pc.setEnabled(doc.layout == "CONTRIB")
         # submenu inteiro desabilitado quando não é o leiaute do arquivo
         if hasattr(self, "menu_icms"):

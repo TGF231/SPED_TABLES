@@ -169,6 +169,12 @@ Obter sempre por nome (`doc._ix(tipo, nome)`), nunca por número fixo. Referênc
   (caso real: 1,50 de VL_OUT_DA virava 1,52).
 - **VL_RED_BC (C190):** nos CST terminados em **20** ou **70**,
   `VL_OPR − VL_BC_ICMS` (nunca negativo).
+- **Situação do ICMS pelo CST** (`situacao_icms`): os **dois últimos dígitos**
+  decidem — x20/x70 têm base reduzida; x30/x40/x41/x50/x60 não geram débito
+  próprio; o resto é tributado. O primeiro dígito é a origem da mercadoria e
+  não entra no cálculo.
+- **Recalcular ICMS não toca no ICMS-ST:** base e alíquota da ST são outras,
+  muitas vezes com MVA.
 - **Bloco M:** ordem do leiaute é M200 → M205 → M210 (o M205 vem **antes** do
   M210); idem M600 → M605 → M610.
 - **NFC-e modelo 65:** não tem C170 — é consolidada em C175 (PIS/COFINS) e C190

@@ -1,5 +1,28 @@
 # Changelog
 
+## [0.23.0] - 2026-09-17
+
+### Adicionado
+- **Recalcular ICMS dos itens** (Ferramentas → EFD ICMS/IPI). Fecha o fluxo de
+  correção pelo **Modo Relatório**: corrija alíquota, base ou CST direto na
+  grade e peça o recálculo para os campos derivados voltarem a bater.
+  - **VL_ICMS = VL_BC_ICMS × ALIQ_ICMS ÷ 100**, sempre — é o cálculo que amarra
+    os três campos e o que mais sai errado quando a alíquota é corrigida à mão.
+  - Opcional: **refazer a base** a partir de `VL_ITEM − VL_DESC`, aplicando um
+    percentual de **redução** nos CST **x20** e **x70**. Sem essa opção, a base
+    informada é respeitada — inclusive uma base reduzida digitada à mão.
+  - Opcional (ligado): **zerar** base, alíquota e valor nos CST **sem débito
+    próprio** (x30, x40, x41, x50, x60). Um CST desses com valor lançado é erro
+    de escrituração, não redução.
+  - Ao final, refaz o **C190** e os **totais do C100** dos documentos afetados.
+  - **Escopo padrão: os itens do Modo Relatório** — o conjunto que acabou de
+    ser revisado. Sem relatório gerado, vale para todos os C170.
+  - O **ICMS-ST não é tocado**: tem base e alíquota próprias, muitas vezes com
+    MVA, e misturá-lo produziria número errado em silêncio.
+- No modelo: `SpedDocument.recalcular_icms_itens()` e `situacao_icms()`, que
+  classifica o CST em tributado / reduzido / sem débito pelos **dois últimos
+  dígitos** (o primeiro é a origem da mercadoria e não interfere no cálculo).
+
 ## [0.22.2] - 2026-09-17
 
 ### Corrigido

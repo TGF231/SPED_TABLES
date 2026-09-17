@@ -109,6 +109,17 @@ seguro e outras despesas do C100 por **diferença de acumulados arredondados**
 (a soma fecha exatamente com o total). Calcula **VL_RED_BC** nos CST terminados em
 20 ou 70 (`VL_OPR − VL_BC_ICMS`).
 
+### 3.1A Recalcular ICMS dos itens — 🟡 Em amadurecimento
+Refaz VL_ICMS = base × alíquota nos C170; opcionalmente refaz a base
+(VL_ITEM − VL_DESC, com redução nos CST x20/x70) e zera os CST sem débito.
+Depois refaz C190 e totais do C100.
+
+*Regras de uso:* o escopo padrão são os itens do Modo Relatório — confira o
+contador no diálogo antes de aplicar. O **ICMS-ST não é recalculado**. A
+redução de base é um percentual único para todos os itens do escopo: se a
+empresa tiver reduções diferentes por produto, rode em lotes filtrados no
+relatório.
+
 ### 3.2 Recalcular totais do C100 — ✅ Estável
 Soma os itens C170 para VL_MERC, desconto, base e valor de ICMS, ICMS-ST, IPI e
 PIS/COFINS, e recompõe o **VL_DOC** mantendo frete/seguro/outras despesas.
