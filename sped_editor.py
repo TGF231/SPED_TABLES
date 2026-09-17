@@ -5240,14 +5240,22 @@ def instalar_traducao(app):
     """
     QLocale.setDefault(QLocale(QLocale.Language.Portuguese,
                                QLocale.Country.Brazil))
-    pasta = QLibraryInfo.path(QLibraryInfo.LibraryPath.TranslationsPath)
+    # No executável empacotado os .qm vêm na pasta "traducoes" (ver o .spec);
+    # rodando do código-fonte, ficam no diretório de traduções do próprio Qt.
+    aqui = os.path.dirname(os.path.abspath(__file__))
+    pastas = [os.path.join(aqui, "traducoes"),
+              QLibraryInfo.path(QLibraryInfo.LibraryPath.TranslationsPath)]
     carregados = []
     app._tradutores = []
     for nome in ("qtbase_pt_BR", "qt_pt_BR"):
-        t = QTranslator(app)
-        if t.load(nome, pasta) and app.installTranslator(t):
-            app._tradutores.append(t)
-            carregados.append(nome)
+        for pasta in pastas:
+            if not pasta or not os.path.isdir(pasta):
+                continue
+            t = QTranslator(app)
+            if t.load(nome, pasta) and app.installTranslator(t):
+                app._tradutores.append(t)
+                carregados.append(nome)
+                break
     return carregados
 
 

@@ -1,11 +1,50 @@
 # -*- mode: python ; coding: utf-8 -*-
+"""Empacotamento do SPED Tables (PyInstaller, arquivo único).
 
+O que precisa viajar junto com o executável e não é código:
+
+* **Tradução pt-BR do Qt** (`qtbase_pt_BR.qm`). Sem ela, os botões dos
+  diálogos voltam ao inglês ("Save", "Discard", "Cancel") — o PyInstaller não
+  a inclui sozinho. Vai para a pasta `traducoes/` do pacote, onde
+  `sped_editor.instalar_traducao()` procura antes do caminho do sistema.
+  O `qt_pt_BR.qm` **não** é empacotado de propósito: ele é um meta-catálogo que
+  só carrega se os `.qm` irmãos (qtdeclarative, qtmultimedia…) estiverem na
+  mesma pasta. É o `qtbase` que traz as strings de diálogo.
+* **`icon.ico`**, que além de ícone do executável é carregado em tempo de
+  execução pela barra de título própria e pelo `setWindowIcon`.
+* **`correlacoes_cfop.json`**, o conjunto inicial de correlações CFOP
+  saída→entrada, para o programa já nascer com a tabela padrão.
+
+Gerar com:  pyinstaller "SPED Tables.spec"
+"""
+
+import os
+
+import PyQt6
+
+# ------------------------------------------------- traduções do próprio Qt
+_traducoes_qt = os.path.join(os.path.dirname(PyQt6.__file__), "Qt6",
+                             "translations")
+_qm = [
+    (os.path.join(_traducoes_qt, nome), "traducoes")
+    for nome in ("qtbase_pt_BR.qm",)
+    if os.path.isfile(os.path.join(_traducoes_qt, nome))
+]
+if not _qm:
+    # falhar aqui é melhor que descobrir o inglês só depois de distribuir
+    raise SystemExit(
+        "qtbase_pt_BR.qm não encontrado em %s — o executável sairia com os "
+        "diálogos em inglês." % _traducoes_qt)
+
+_recursos = [("icon.ico", "."), ("sped_editor.ui", ".")]
+_opcionais = [("correlacoes_cfop.json", ".")]
+_recursos += [(o, d) for o, d in _opcionais if os.path.isfile(o)]
 
 a = Analysis(
     ['sped_editor.py'],
     pathex=[],
     binaries=[],
-    datas=[],
+    datas=_qm + _recursos,
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},

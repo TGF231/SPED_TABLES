@@ -1,5 +1,24 @@
 # Changelog
 
+## [0.22.2] - 2026-09-17
+
+### Corrigido
+- **O executável empacotado não levava recursos nenhum** (`datas` estava
+  vazio no `.spec`). Passam a ser incluídos:
+  - **`qtbase_pt_BR.qm`**, na pasta `traducoes/` do pacote — sem ele os
+    diálogos do executável sairiam em inglês, mesmo com a correção da 0.22.1.
+    O `instalar_traducao()` procura ali **antes** do caminho do sistema.
+    O `qt_pt_BR.qm` fica de fora de propósito: é um meta-catálogo que só
+    carrega com os `.qm` irmãos na mesma pasta; quem traz as strings de
+    diálogo é o `qtbase`.
+  - **`icon.ico`**, que além de ícone do executável é lido em tempo de execução
+    pela barra de título e pelo `setWindowIcon`;
+  - **`sped_editor.ui`**, o layout do Qt Designer (sem ele o programa cai no
+    fallback programático);
+  - **`correlacoes_cfop.json`**, para o programa nascer com a tabela padrão.
+- O `.spec` agora **falha na geração** se a tradução não for encontrada —
+  melhor que descobrir o inglês depois de distribuir.
+
 ## [0.22.1] - 2026-09-17
 
 ### Corrigido
