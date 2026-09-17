@@ -37,6 +37,7 @@ from PyQt6.QtWidgets import (
     QToolBar, QStatusBar, QComboBox, QLineEdit, QMenu, QInputDialog,
     QStyledItemDelegate, QDialog, QCheckBox, QFormLayout, QToolButton,
     QDoubleSpinBox, QGridLayout, QGroupBox, QScrollArea, QTextEdit,
+    QStackedWidget,
 )
 
 from sped_model import SpedDocument
@@ -2909,8 +2910,14 @@ class RelatorioWidget(QWidget):
 # ---------------------------------------------------------------------------
 # Janela principal
 # ---------------------------------------------------------------------------
-class DialogoEmpresas(QDialog):
+class PainelEmpresas(QWidget):
     """Cadastro de empresas e histórico de arquivos arquivados.
+
+    É um **painel da janela principal**, não um diálogo: como diálogo ficava
+    apertado — lista, cadastro e histórico lado a lado pedem a largura inteira
+    da janela. Fica numa página própria do widget central, fora das abas de
+    bloco e dos modos Tabela/Relatório, e o botão *Empresas* da barra alterna
+    entre ele e o editor.
 
     Funciona **sem nenhum arquivo aberto**: dá para cadastrar a empresa antes
     de importar o primeiro SPED. A lista reúne o que está em `empresas.json`
@@ -2921,10 +2928,11 @@ class DialogoEmpresas(QDialog):
 
     COLS_HIST = ["Período", "Leiaute", "Atualizado em", "Origem", "Tamanho"]
 
-    def __init__(self, parent=None):
+    def __init__(self, janela, parent=None):
         super().__init__(parent)
-        self.setWindowTitle("Empresas")
-        self.resize(940, 600)
+        # referência explícita: como página de um QStackedWidget, `parent()`
+        # não é a janela principal
+        self.janela = janela
         self.mapa = emp_mod.carregar()
 
         lay = QVBoxLayout(self)
@@ -3032,12 +3040,17 @@ class DialogoEmpresas(QDialog):
 
         rod = QHBoxLayout()
         rod.addStretch(1)
-        b_fechar = QPushButton("Fechar")
-        b_fechar.clicked.connect(self.accept)
-        rod.addWidget(b_fechar)
+        b_voltar = QPushButton("Voltar ao editor")
+        b_voltar.clicked.connect(lambda: self.janela.mostrar_empresas(False))
+        rod.addWidget(b_voltar)
         lay.addLayout(rod)
 
         self._carregar_lista()
+
+    def recarregar(self):
+        """Relê o cadastro do disco e repinta a lista."""
+        self.mapa = emp_mod.carregar()
+        self._carregar_lista(selecionar=self._cnpj_selecionado() or None)
 
     # ------------------------------------------------------------- lista
     def _carregar_lista(self, selecionar=None):
@@ -3191,10 +3204,9 @@ class DialogoEmpresas(QDialog):
                                 "A cópia interna não está mais na pasta:\n%s"
                                 % h["caminho"])
             return
-        janela = self.parent()
-        if janela is not None and hasattr(janela, "abrir_caminho"):
-            if janela.abrir_caminho(h["caminho"]):
-                self.accept()
+        if self.janela.abrir_caminho(h["caminho"]):
+            # abriu: o lugar de olhar agora é o editor
+            self.janela.mostrar_empresas(False)
 
     def _excluir_historico(self):
         row = self.tab_hist.currentRow()
@@ -3775,7 +3787,16 @@ class JanelaPrincipal(QMainWindow):
         # Modo Relatório
         self.relatorio = RelatorioWidget()
         self.tabs_topo.addTab(self.relatorio, "📊 Modo Relatório")
-        self.setCentralWidget(self.tabs_topo)
+
+        # O widget central passa a ser uma pilha de duas páginas: o editor
+        # (abas de bloco e modos) e o painel de empresas. Empilhar, em vez de
+        # acrescentar mais uma aba, mantém o painel fora da navegação por
+        # blocos — ele não é um bloco do arquivo, é o cadastro.
+        self.pilha = QStackedWidget()
+        self.pilha.addWidget(self.tabs_topo)
+        self.painel_empresas = PainelEmpresas(self)
+        self.pilha.addWidget(self.painel_empresas)
+        self.setCentralWidget(self.pilha)
 
     def _conectar_ui(self):
         """Liga as QActions e widgets carregados do .ui aos slots."""
@@ -3794,7 +3815,8 @@ class JanelaPrincipal(QMainWindow):
         self.act_empresa.setEnabled(False)
         if not hasattr(self, "act_empresas"):
             self.act_empresas = QAction("Empresas", self)
-        self.act_empresas.triggered.connect(self.gerenciar_empresas)
+        self.act_empresas.setCheckable(True)
+        self.act_empresas.toggled.connect(self.mostrar_empresas)
         if not hasattr(self, "act_conferir_itens_icms"):
             self.act_conferir_itens_icms = QAction(
                 "Conferir itens com XMLs (ICMS/IPI)…", self)
@@ -3896,11 +3918,23 @@ class JanelaPrincipal(QMainWindow):
                 6000)
         return entrada
 
-    def gerenciar_empresas(self):
-        """Cadastro de empresas e histórico de arquivos — sem exigir arquivo
-        aberto, para permitir cadastrar antes de importar o primeiro SPED."""
-        self._dlg_empresas = DialogoEmpresas(self)
-        self._dlg_empresas.show()
+    def mostrar_empresas(self, ligado):
+        """Alterna entre o editor e o painel de empresas.
+
+        Ao entrar, a lista é recarregada: o histórico pode ter ganhado
+        períodos desde a última visita (abrir ou salvar um arquivo arquiva uma
+        cópia) e uma empresa nova pode ter aparecido por aí.
+        """
+        if not hasattr(self, "pilha"):
+            return
+        if ligado:
+            self.painel_empresas.recarregar()
+        self.pilha.setCurrentIndex(1 if ligado else 0)
+        if self.act_empresas.isChecked() != bool(ligado):
+            self.act_empresas.setChecked(bool(ligado))
+        self.statusBar().showMessage(
+            "Cadastro de empresas e histórico de arquivos." if ligado
+            else "", 4000)
 
     def abrir_caminho(self, caminho):
         """Abre um arquivo pelo caminho (usado pelo histórico)."""
@@ -4118,9 +4152,11 @@ class JanelaPrincipal(QMainWindow):
         self.act_sair = QAction("Sair", self)
         self.act_sair.triggered.connect(self.close)
 
-        # cadastro de empresas + histórico: não depende de arquivo aberto
+        # cadastro de empresas + histórico: não depende de arquivo aberto.
+        # Checável: o botão funciona como interruptor entre editor e painel.
         self.act_empresas = QAction("Empresas", self)
-        self.act_empresas.triggered.connect(self.gerenciar_empresas)
+        self.act_empresas.setCheckable(True)
+        self.act_empresas.toggled.connect(self.mostrar_empresas)
 
         self.act_conferir_itens_icms = QAction(
             "Conferir itens com XMLs (ICMS/IPI)…", self)

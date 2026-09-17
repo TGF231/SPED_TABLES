@@ -192,6 +192,15 @@ QToolButton:hover {{
 }}
 QToolButton:pressed {{ background: {p.border}; }}
 QToolButton:disabled {{ color: {p.ink_3}; }}
+/* botão-interruptor (Empresas): moldura de acento enquanto o painel está
+   aberto, para ficar claro que é um estado, não um clique que passou */
+QToolBar QToolButton:checked {{
+    background: {p.accent_soft};
+    color: {p.ink};
+    border: 1px solid {p.accent};
+    font-weight: 600;
+}}
+QToolBar QToolButton:checked:hover {{ background: {p.accent_soft}; }}
 
 QMenu {{
     background: {p.surface};

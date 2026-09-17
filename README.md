@@ -466,10 +466,14 @@ item/NCM, a verificação por NCM cobre os **C170** (entradas e saídas detalhad
 
 ### Empresas, histórico e memória persistente
 
-O botão **Empresas**, na barra principal, abre o cadastro — e funciona **sem
-nenhum arquivo aberto**, para você cadastrar a empresa antes de importar o
-primeiro SPED (*Nova empresa…*, pelo CNPJ). A lista reúne as empresas de
-`empresas.json` com as que já têm arquivo no histórico.
+O botão **Empresas**, na barra principal, funciona como um **interruptor**:
+clique e o editor dá lugar ao painel de empresas; clique de novo e você volta
+de onde parou. Enquanto o painel está aberto, o botão fica com **moldura na cor
+do acento**. O painel ocupa a janela inteira — lista de empresas à esquerda,
+cadastro e histórico à direita — e funciona **sem nenhum arquivo aberto**, para
+você cadastrar a empresa antes de importar o primeiro SPED (*Nova empresa…*,
+pelo CNPJ). A lista reúne as empresas de `empresas.json` com as que já têm
+arquivo no histórico.
 
 **Memória persistente:** ao **abrir** e ao **salvar**, o programa guarda uma
 cópia do arquivo em

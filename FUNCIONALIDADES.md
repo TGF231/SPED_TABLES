@@ -246,6 +246,12 @@ colunas pode precisar de ajuste.
 
 ## 7A. Configuração por empresa e rotinas por regime
 
+### 7A.0 Painel de empresas — ✅ Estável
+Página própria da janela principal (não é diálogo nem aba de bloco), alternada
+pelo botão *Empresas* da barra, que funciona como interruptor e ganha moldura
+de acento enquanto o painel está aberto. Ao entrar, o cadastro é relido do
+disco.
+
 ### 7A.1 Cadastro da empresa — 🟡 Em amadurecimento
 Por CNPJ (registro 0000): regime federal, regime de PIS/COFINS, atividade,
 alíquotas de saída e de crédito, CST de entrada sem crédito. Persistido em

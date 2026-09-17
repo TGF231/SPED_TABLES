@@ -1,5 +1,22 @@
 # Changelog
 
+## [0.20.0] - 2026-09-17
+
+### Alterado
+- **Empresas deixou de ser janela separada e virou painel da janela
+  principal.** Como diálogo ficava apertado: lista, cadastro e histórico lado a
+  lado pedem a largura inteira. O painel ocupa uma **página própria do widget
+  central** (QStackedWidget), fora das abas de bloco e dos modos
+  Tabela/Relatório — não é um bloco do arquivo, é o cadastro.
+- **O botão *Empresas* da barra virou interruptor.** Clicar abre o painel,
+  clicar de novo volta ao editor. Enquanto está aberto, o botão fica com
+  **moldura na cor do acento** e fundo suave, para deixar claro que é um
+  estado, não um clique que passou. O botão *Voltar ao editor*, no rodapé do
+  painel, também desmarca o botão da barra.
+- Ao entrar no painel, o cadastro é **relido do disco** e a lista repintada:
+  abrir ou salvar um arquivo arquiva uma cópia, e o histórico pode ter mudado
+  desde a última visita.
+
 ## [0.19.2] - 2026-09-17
 
 ### Corrigido
