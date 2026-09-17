@@ -3599,9 +3599,33 @@ class BarraTitulo(QWidget):
 
     ALTURA = 34
 
+    # O Windows 10/11 traz "Segoe MDL2 Assets", a fonte que o próprio sistema
+    # usa nos botões de janela: com ela os três glifos têm o mesmo peso,
+    # tamanho e alinhamento óptico. Misturar caracteres de fontes diferentes
+    # (– □ ✕) dava um minimizar fino, um maximizar alto e um fechar grosso.
+    FONTE_ICONES = "Segoe MDL2 Assets"
+    GLIFOS = {
+        "mdl2": {"min": "\uE921", "max": "\uE922", "restaurar": "\uE923",
+                 "fechar": "\uE8BB"},
+        # reserva para sistemas sem a fonte (ou fora do Windows)
+        "texto": {"min": "\u2013", "max": "\u25a1", "restaurar": "\u2750",
+                  "fechar": "\u2715"},
+    }
+
+    @staticmethod
+    def _detectar_fonte():
+        try:
+            from PyQt6.QtGui import QFontDatabase
+            if BarraTitulo.FONTE_ICONES in QFontDatabase.families():
+                return "mdl2"
+        except Exception:  # noqa: BLE001
+            pass
+        return "texto"
+
     def __init__(self, janela):
         super().__init__(janela)
         self.janela = janela
+        self._fonte_icones = self._detectar_fonte()
         self.setObjectName("barraTitulo")
         self.setFixedHeight(self.ALTURA)
 
@@ -3631,13 +3655,14 @@ class BarraTitulo(QWidget):
         lay.addStretch(1)
 
         self.botoes = []
-        for nome, texto, slot in (
-                ("min", "\u2013", self.janela.showMinimized),
-                ("max", "\u25a1", self._alternar_maximizada),
-                ("fechar", "\u2715", self.janela.close)):
+        for nome, slot in (("min", self.janela.showMinimized),
+                           ("max", self._alternar_maximizada),
+                           ("fechar", self.janela.close)):
             b = QToolButton(self)
             b.setObjectName("btn_%s" % nome)
-            b.setText(texto)
+            b.setText(self.GLIFOS[self._fonte_icones][nome])
+            # a propriedade escolhe a regra de fonte na folha de estilo
+            b.setProperty("iconfont", self._fonte_icones)
             b.setFixedSize(46, self.ALTURA)
             b.clicked.connect(slot)
             lay.addWidget(b)
@@ -3658,8 +3683,9 @@ class BarraTitulo(QWidget):
         if alterado is not None:
             self.lbl_alterado.setText("\u25cf alterações não salvas"
                                       if alterado else "")
-        self.btn_max.setText("\u2750" if self.janela.isMaximized()
-                             else "\u25a1")
+        glifos = self.GLIFOS[self._fonte_icones]
+        self.btn_max.setText(glifos["restaurar"] if self.janela.isMaximized()
+                             else glifos["max"])
 
     def area_arrastavel(self, x, y):
         """Falso sobre os botões — senão o Windows engoliria o clique.
@@ -4057,7 +4083,9 @@ class JanelaPrincipal(QMainWindow):
         self.menu_gerais.addAction(self.act_correlacoes_cfop)
 
         botao = QToolButton(self)
-        botao.setText("Ferramentas ▾")
+        # sem "▾" no texto: o Qt já desenha o indicador do menu, e o
+        # caractere literal produzia duas setas
+        botao.setText("Ferramentas")
         botao.setMenu(menu)
         botao.setPopupMode(QToolButton.ToolButtonPopupMode.InstantPopup)
         botao.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextOnly)

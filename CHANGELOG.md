@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.19.2] - 2026-09-17
+
+### Corrigido
+- **Botões de minimizar e maximizar destoavam do de fechar.** Os três usavam
+  caracteres de fontes diferentes (`–`, `□`, `✕`), com peso, altura e
+  alinhamento óptico distintos. Passaram a usar os glifos de **Segoe MDL2
+  Assets**, a mesma fonte que o Windows usa nos próprios botões de janela, com
+  reserva em texto para sistemas sem ela. O botão central agora também troca
+  entre os glifos de *maximizar* e *restaurar*.
+- **Duas setas no botão Ferramentas.** O texto trazia um `▾` literal e o Qt
+  desenhava o indicador de menu por cima. O caractere foi removido — o
+  indicador nativo basta.
+
 ## [0.19.1] - 2026-09-17
 
 ### Corrigido

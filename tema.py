@@ -155,6 +155,11 @@ QWidget#barraTitulo QToolButton {{
     padding: 0;
     font-size: 11pt;
 }}
+/* glifos da fonte de ícones do Windows: mesmo peso e tamanho nos três */
+QWidget#barraTitulo QToolButton[iconfont="mdl2"] {{
+    font-family: "Segoe MDL2 Assets";
+    font-size: 10px;
+}}
 QWidget#barraTitulo QToolButton:hover {{
     background: {p.border}; color: {p.ink};
 }}
