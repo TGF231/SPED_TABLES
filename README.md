@@ -583,26 +583,28 @@ arquivo continua não salvo até você usar *Salvar como*.
 > Pelo mesmo motivo, só o **CST 01** tem alíquota conferida: o 02 é justamente
 > "alíquota diferenciada" e o 03 é por quantidade.
 
-### Barra de título própria (opcional)
+### Barra de título própria
 
-O programa pode substituir a barra de título do Windows por uma própria, no
-estilo do tema, mostrando **empresa · período · leiaute · arquivo** e um
-indicador visível de **alterações não salvas**. Para ligar:
-
-```bash
-set SPED_TABLES_BARRA_CUSTOM=1
-python sped_editor.py
-```
+A janela principal usa uma barra de título própria, no estilo do tema,
+mostrando **empresa · período · leiaute · arquivo** e um indicador visível de
+**alterações não salvas**.
 
 A janela **continua nativa**: em vez de `FramelessWindowHint` — que faria o
 Windows deixar de tratá-la como janela —, o programa intercepta três mensagens
 (`WM_NCCALCSIZE`, `WM_NCHITTEST`, `WM_GETMINMAXINFO`). Com isso **Aero Snap**,
 redimensionar pelas bordas, duplo clique para maximizar, menu de sistema e
 sombra continuam funcionando, o que importa num editor quase sempre aberto ao
-lado do PVA.
+lado do PVA. A margem usada ao maximizar acompanha o **DPI do monitor**, para
+o conteúdo não transbordar em telas com escala acima de 100%.
 
-Sem a variável — ou fora do Windows, ou se a preparação falhar — a barra nativa
-é usada normalmente. Os diálogos mantêm a barra do Windows em qualquer caso.
+Os **diálogos mantêm a barra do Windows** — a substituição vale só para a
+janela principal. Fora do Windows, ou se a preparação falhar, a barra nativa é
+usada e o programa avisa na barra de status. Para forçá-la:
+
+```bash
+set SPED_TABLES_BARRA_NATIVA=1
+python sped_editor.py
+```
 
 > **Por que ainda é opcional:** a parte nativa não pôde ser validada por teste
 > automatizado, e uma falha nesse nível derruba o processo sem mensagem. Depois

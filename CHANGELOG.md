@@ -1,5 +1,32 @@
 # Changelog
 
+## [0.23.1] - 2026-09-17
+
+### Corrigido
+- **A margem da janela maximizada ignorava o DPI do monitor.**
+  `GetSystemMetrics` devolve sempre a medida de 96 DPI; num monitor a 125% ou
+  150% a margem sairia pequena demais e parte do conteúdo ficaria fora da tela
+  — erro que, num arranjo de dois monitores com escalas diferentes, só aparece
+  depois de arrastar a janela. Passa a usar `GetSystemMetricsForDpi` com o DPI
+  da própria janela, caindo na medida clássica onde a função não existir
+  (anterior ao Windows 10 1607).
+
+### Alterado
+- **A barra de título própria passa a ser considerada estável.** A
+  documentação ainda a descrevia como experimental e opt-in, o que deixou de
+  ser verdade na 0.19.1, quando virou padrão.
+
+### Verificado
+Suíte própria, em janela real do Windows: hit-test correto nas **oito** bordas
+e cantos, HTCAPTION na faixa da barra e HTCLIENT sobre os botões, três ciclos
+de maximizar/restaurar sem o conteúdo transbordar a área de trabalho (0 px em
+todos), troca de tema com a barra preservada, escotilha
+`SPED_TABLES_BARRA_NATIVA=1` e tolerância a ponteiro de mensagem inválido.
+
+Fica registrado o que **não** foi observado: a máquina de desenvolvimento roda
+a 96 DPI, então o caminho sensível a DPI é exercitado mas o valor escalado não
+pôde ser comparado num monitor a 125%.
+
 ## [0.23.0] - 2026-09-17
 
 ### Adicionado

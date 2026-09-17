@@ -77,13 +77,12 @@ BORDA = 6
 # maximização respeitando a área de trabalho. Escotilha para voltar à barra do
 # Windows sem mexer no código:
 VARIAVEL_DESLIGAR = "SPED_TABLES_BARRA_NATIVA"
-# compatibilidade com a 0.19.0, que era opt-in
-VARIAVEL = "SPED_TABLES_BARRA_CUSTOM"
 
 # --------------------------------------------------------------- estruturas
 # Definidas **uma vez**, no import (ver armadilha 1 no topo do módulo).
 _WIN = sys.platform == "win32"
 _pronto = False
+_dpi_disponivel = False
 
 if _WIN:
     try:
@@ -139,6 +138,16 @@ if _WIN:
         _user32.GetMonitorInfoW.restype = wintypes.BOOL
         _user32.GetSystemMetrics.argtypes = [ctypes.c_int]
         _user32.GetSystemMetrics.restype = ctypes.c_int
+        # por DPI: existem a partir do Windows 10 1607
+        try:
+            _user32.GetDpiForWindow.argtypes = [wintypes.HWND]
+            _user32.GetDpiForWindow.restype = ctypes.c_uint
+            _user32.GetSystemMetricsForDpi.argtypes = [ctypes.c_int,
+                                                       ctypes.c_uint]
+            _user32.GetSystemMetricsForDpi.restype = ctypes.c_int
+            _dpi_disponivel = True
+        except AttributeError:
+            _dpi_disponivel = False
         _dwmapi.DwmExtendFrameIntoClientArea.argtypes = [
             wintypes.HWND, ctypes.POINTER(MARGINS)]
         _dwmapi.DwmExtendFrameIntoClientArea.restype = ctypes.c_long
@@ -180,8 +189,31 @@ def aplicar(janela):
         return False
 
 
-def _margem_moldura():
-    """Espessura da moldura que o Windows usa quando a janela é maximizada."""
+def _margem_moldura(hwnd=None):
+    """Espessura da moldura que o Windows usa quando a janela é maximizada.
+
+    Sensível ao **DPI do monitor onde a janela está**: `GetSystemMetrics`
+    devolve sempre a medida de 96 DPI, e num monitor a 125% ou 150% a margem
+    sairia pequena demais — maximizada, a janela transbordaria a área útil e
+    parte do conteúdo ficaria fora da tela. Num arranjo de dois monitores com
+    escalas diferentes, o erro aparece só depois de arrastar a janela.
+
+    `GetSystemMetricsForDpi` existe a partir do Windows 10 1607; onde não
+    existir, cai na medida clássica, que continua correta a 100%.
+    """
+    if hwnd is not None and _dpi_disponivel:
+        try:
+            dpi = _user32.GetDpiForWindow(hwnd)
+            if dpi:
+                larg = (_user32.GetSystemMetricsForDpi(SM_CXSIZEFRAME, dpi)
+                        + _user32.GetSystemMetricsForDpi(SM_CXPADDEDBORDER,
+                                                         dpi))
+                alt = (_user32.GetSystemMetricsForDpi(SM_CYSIZEFRAME, dpi)
+                       + _user32.GetSystemMetricsForDpi(SM_CXPADDEDBORDER,
+                                                        dpi))
+                return larg, alt
+        except Exception:  # noqa: BLE001
+            pass
     larg = (_user32.GetSystemMetrics(SM_CXSIZEFRAME)
             + _user32.GetSystemMetrics(SM_CXPADDEDBORDER))
     alt = (_user32.GetSystemMetrics(SM_CYSIZEFRAME)
@@ -218,7 +250,7 @@ def tratar(janela, mensagem_ptr, altura_barra, ponto_arrastavel=None):
                 # encolher, as bordas ficariam fora da tela
                 p = ctypes.cast(msg.lParam,
                                 ctypes.POINTER(NCCALCSIZE_PARAMS)).contents
-                larg, alt = _margem_moldura()
+                larg, alt = _margem_moldura(hwnd)
                 p.rgrc[0].left += larg
                 p.rgrc[0].right -= larg
                 p.rgrc[0].top += alt

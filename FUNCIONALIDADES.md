@@ -46,16 +46,25 @@ exibida primeiro ao trocar de registro pai), **fechar** (oculta até resetar) e
 o programa tudo volta ao padrão. A aba fixada é selecionada, mas não é movida
 fisicamente para a primeira posição.
 
-### 1.4A Barra de título própria — 🔴 Experimental (opt-in)
-Substitui a barra do Windows, mostrando empresa, período, leiaute, arquivo e o
-indicador de alterações não salvas. Ligue com `SPED_TABLES_BARRA_CUSTOM=1`.
+### 1.4A Barra de título própria — ✅ Estável
+Substitui a barra do Windows (ligada por padrão), mostrando empresa, período,
+leiaute, arquivo e o indicador de alterações não salvas.
 
-*Regras de uso:* a janela segue nativa (Snap, bordas, duplo clique e sombra
-preservados pela interceptação de WM_NCCALCSIZE/NCHITTEST/GETMINMAXINFO). Se a
-preparação falhar, o programa volta sozinho para a barra do Windows e avisa na
-barra de status. **A parte nativa não tem cobertura de teste automatizado** —
-exibir janela real fora de sessão interativa não funciona no ambiente de
-desenvolvimento. Os diálogos continuam com barra nativa.
+A janela **continua nativa**: a interceptação de WM_NCCALCSIZE, WM_NCHITTEST e
+WM_GETMINMAXINFO preserva Aero Snap, redimensionamento pelas bordas, duplo
+clique para maximizar, menu de sistema e sombra. Coberta por suíte em janela
+real: oito bordas, ciclos de maximizar sem transbordar a área de trabalho,
+troca de tema e margem sensível ao DPI do monitor.
+
+*Regras de uso:* os **diálogos mantêm a barra do Windows** — a substituição
+vale só para a janela principal. Se a preparação falhar (fora do Windows,
+ctypes bloqueado), o programa volta sozinho para a barra nativa e avisa na
+barra de status. Para forçar a barra do Windows:
+`SPED_TABLES_BARRA_NATIVA=1`.
+
+*Limitação conhecida:* o comportamento em monitores com escala acima de 100%
+não foi observado diretamente — o código usa as métricas por DPI, mas a
+máquina de validação roda a 96 DPI.
 
 ### 1.5 Tema claro e escuro — ✅ Estável
 Paleta própria (acento cobre, compartilhada com o Backup Maximus) com botão de
