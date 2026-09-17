@@ -19,7 +19,10 @@ Sem dependência de GUI: a interface lê e grava por estas funções.
 import json
 import os
 import re
+
 from dataclasses import dataclass, asdict, field, fields
+
+import dados
 
 ARQUIVO_PADRAO = "empresas.json"
 
@@ -130,10 +133,10 @@ class Empresa:
 
 # ------------------------------------------------------------- persistência
 def _caminho(caminho=None):
+    """Onde fica o cadastro. Empacotado, vai para %APPDATA% (ver `dados`)."""
     if caminho:
         return caminho
-    return os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                        ARQUIVO_PADRAO)
+    return dados.caminho(ARQUIVO_PADRAO)
 
 
 def carregar(caminho=None):
@@ -149,10 +152,10 @@ def carregar(caminho=None):
         return {}
     validos = {f.name for f in fields(Empresa)}
     mapa = {}
-    for cnpj, dados in (bruto or {}).items():
-        if not isinstance(dados, dict):
+    for cnpj, registro in (bruto or {}).items():
+        if not isinstance(registro, dict):
             continue
-        d = {k: v for k, v in dados.items() if k in validos}
+        d = {k: v for k, v in registro.items() if k in validos}
         d["cnpj"] = so_digitos(cnpj) or so_digitos(d.get("cnpj", ""))
         if not d["cnpj"]:
             continue

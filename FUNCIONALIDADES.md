@@ -373,14 +373,11 @@ dele. Novas regras entram na lista `REGRAS` de `revisao.py`.
 ## 9. Pendências e ideias
 
 ### 9.1 Bloqueadores da primeira release
-- **Dados do usuário no executável.** `empresas.json` e a pasta `arquivos/`
-  são gravados ao lado do módulo. Num executável *onefile* isso é a pasta
-  temporária de extração, **apagada ao sair** — o cadastro e todo o histórico
-  se perderiam a cada fechamento. Precisa gravar em `%APPDATA%` quando
-  empacotado.
-- **Instalador**: criar a pasta em `%APPDATA%` e o atalho na área de trabalho.
+- ~~Dados do usuário no executável~~ — resolvido na 0.24.0 (`dados.py`).
+- ~~Instalador: pasta em `%APPDATA%` e atalho~~ — resolvido na 0.24.0, na
+  primeira execução do executável.
 - **Validar os 🔴 contra arquivo real** (ver seção 10) ou deixá-los desligados
-  na primeira versão distribuída.
+  na primeira versão distribuída. **Único bloqueador restante.**
 
 ### 9.2 Melhorias desejáveis
 - Persistir entre sessões a ordem/fixação de abas e as preferências.

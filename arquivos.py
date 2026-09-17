@@ -27,6 +27,8 @@ import json
 import os
 import re
 import shutil
+
+import dados
 from datetime import datetime
 
 PASTA = "arquivos"
@@ -39,7 +41,8 @@ MOTIVOS = {
 
 
 def _base():
-    return os.path.join(os.path.dirname(os.path.abspath(__file__)), PASTA)
+    """Raiz das cópias internas. Empacotado, vai para %APPDATA% (ver `dados`)."""
+    return os.path.join(dados.pasta_dados(), PASTA)
 
 
 def _caminho_indice():

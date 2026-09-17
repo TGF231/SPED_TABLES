@@ -50,6 +50,7 @@ import empresas as emp_mod
 import rotinas
 import arquivos as arq_mod
 import janela_custom
+import dados
 from version import __version__, APP_NAME
 import tema
 
@@ -4128,15 +4129,11 @@ class JanelaPrincipal(QMainWindow):
         self.resize(1200, 760)
 
         # correlações de CFOP (saída -> entradas válidas), persistidas em JSON
-        self._caminho_correl = os.path.join(
-            os.path.dirname(os.path.abspath(__file__)),
-            "correlacoes_cfop.json")
+        self._caminho_correl = dados.caminho("correlacoes_cfop.json")
         self.correlacoes_cfop = cf.carregar_correlacoes(self._caminho_correl)
 
         # configuração das tabelas da RFB (verificação de CST por NCM)
-        self._caminho_cfg_tabelas = os.path.join(
-            os.path.dirname(os.path.abspath(__file__)),
-            "config_tabelas_rfb.json")
+        self._caminho_cfg_tabelas = dados.caminho("config_tabelas_rfb.json")
         self.cfg_tabelas = self._carregar_cfg_tabelas()
 
         # Carrega o layout do Qt Designer (sped_editor.ui) quando presente;
@@ -5446,6 +5443,38 @@ def instalar_traducao(app):
     return carregados
 
 
+def primeira_instalacao(janela):
+    """Prepara a pasta de dados e oferece o atalho, na primeira execução.
+
+    Só faz sentido no executável: rodando do código-fonte, os dados já ficam na
+    pasta do projeto e o atalho seria do interpretador. A marca de instalação
+    vive na própria pasta de dados — apagá-la refaz a pergunta, e atualizar o
+    executável não a repete.
+    """
+    if not dados.empacotado() or not dados.primeira_execucao():
+        return
+    copiados = dados.instalar()
+    resp = QMessageBox.question(
+        janela, "Instalação",
+        "As configurações e o histórico serão guardados em:<br><b>%s</b>"
+        "<br><br>Criar um atalho na área de trabalho?"
+        % dados.pasta_dados(),
+        QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+        QMessageBox.StandardButton.Yes)
+    if resp == QMessageBox.StandardButton.Yes:
+        ok, detalhe = dados.criar_atalho_area_trabalho()
+        if not ok:
+            QMessageBox.warning(
+                janela, "Atalho",
+                "Não foi possível criar o atalho:<br>%s" % detalhe)
+    dados.marcar_instalado()
+    janela.statusBar().showMessage(
+        "Instalação concluída. Dados em %s%s"
+        % (dados.pasta_dados(),
+           " (%d item[ns] copiado[s])" % len(copiados) if copiados else ""),
+        10000)
+
+
 def main():
     app = QApplication(sys.argv)
     instalar_traducao(app)
@@ -5464,6 +5493,7 @@ def main():
     # e troca o tema para a densidade compacta
     janela.dimensionar_para_a_tela()
     janela.show()
+    primeira_instalacao(janela)
     # abre direto se um caminho for passado na linha de comando
     if len(sys.argv) > 1 and os.path.isfile(sys.argv[1]):
         try:

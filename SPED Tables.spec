@@ -13,7 +13,10 @@ O que precisa viajar junto com o executável e não é código:
 * **`icon.ico`**, que além de ícone do executável é carregado em tempo de
   execução pela barra de título própria e pelo `setWindowIcon`.
 * **`correlacoes_cfop.json`**, o conjunto inicial de correlações CFOP
-  saída→entrada, para o programa já nascer com a tabela padrão.
+  saída→entrada. Na primeira execução, `dados.instalar()` copia daqui para
+  `%APPDATA%\SPED Tables` o que ainda não existir lá — os dados do usuário
+  **nunca** ficam junto do executável, porque no modo onefile essa pasta é
+  temporária e some ao sair.
 
 Gerar com:  pyinstaller "SPED Tables.spec"
 """

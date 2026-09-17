@@ -1,5 +1,28 @@
 # Changelog
 
+## [0.24.0] - 2026-09-17
+
+### Corrigido
+- **No executável, os dados do usuário seriam perdidos a cada fechamento.**
+  `empresas.json`, `correlacoes_cfop.json`, `config_tabelas_rfb.json` e a pasta
+  `arquivos/` eram gravados ao lado do módulo — que num executável *onefile* é
+  a pasta temporária de extração, apagada na saída. O defeito só apareceria na
+  **segunda** execução, sem erro nenhum: o programa simplesmente esqueceria
+  tudo. Agora o novo módulo `dados.py` decide o caminho:
+  - **empacotado** → `%APPDATA%\SPED Tables` (ou `~/.sped_tables` fora do
+    Windows);
+  - **do código-fonte** → a pasta do projeto, como sempre, para não espalhar
+    arquivo de teste pelo perfil durante o desenvolvimento.
+
+### Adicionado
+- **Instalação na primeira execução** (só no executável): cria a pasta de
+  dados, copia para lá os padrões que vieram no pacote **sem sobrescrever** o
+  que já for do usuário, e oferece **criar o atalho na área de trabalho**. Uma
+  marca na pasta de dados evita repetir a pergunta a cada atualização.
+- `dados.criar_atalho_area_trabalho()`, via WScript.Shell pelo PowerShell —
+  sem depender de pywin32 — tratando o redirecionamento da área de trabalho
+  pelo OneDrive.
+
 ## [0.23.1] - 2026-09-17
 
 ### Corrigido

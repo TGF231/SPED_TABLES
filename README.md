@@ -639,6 +639,20 @@ ações mantêm nomes fixos (`act_abrir`, `act_salvar`, `act_revisar`, …) e o
 botão **Ferramentas** da barra é montado em código (reúne as ações de
 ferramentas num menu suspenso ao lado de *Salvar como*).
 
+## 3A. Onde ficam os dados
+
+Rodando **do código-fonte**, cadastro, configurações e cópias dos SPED ficam na
+pasta do projeto — como sempre foi.
+
+No **executável**, vão para `%APPDATA%\SPED Tables`. O motivo é técnico e
+importante: o pacote *onefile* é extraído numa pasta temporária que o Windows
+apaga ao sair, de modo que gravar ao lado do programa perderia o cadastro e o
+histórico a cada fechamento — sem erro nenhum, apenas esquecendo tudo.
+
+Na **primeira execução** do executável, o programa cria essa pasta, copia para
+lá os padrões que vieram no pacote (sem sobrescrever nada que já seja seu) e
+oferece criar um **atalho na área de trabalho**.
+
 ## 4. Estrutura do projeto
 
 | Arquivo            | Função                                                         |
@@ -656,6 +670,7 @@ ferramentas num menu suspenso ao lado de *Salvar como*).
 | `empresas.py`      | Cadastro por CNPJ: regime tributário e alíquotas.             |
 | `rotinas.py`       | Rotinas de conferência/correção por regime (extensível).      |
 | `arquivos.py`      | Memória persistente: cópias internas por empresa e período.   |
+| `dados.py`         | Onde gravar (projeto × %APPDATA%), instalação e atalho.       |
 | `tema.py`          | Paleta clara/escura e folha de estilo (QSS).                  |
 | `janela_custom.py` | Barra de título própria via mensagens nativas (opcional).     |
 | `icones.py`        | Ícones do QSS desenhados em runtime na cor da paleta.         |
