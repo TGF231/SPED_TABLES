@@ -2934,6 +2934,11 @@ class PainelEmpresas(QWidget):
         # não é a janela principal
         self.janela = janela
         self.mapa = emp_mod.carregar()
+        # a empresa escolhida é lembrada entre idas ao editor e entre sessões:
+        # ler a seleção do widget na hora de recarregar falhava nos fluxos em
+        # que a lista é remontada antes (cadastrar, remover, abrir do histórico)
+        self._ultimo_cnpj = QSettings(APP_NAME, APP_NAME).value(
+            "empresa_selecionada", "", type=str)
 
         lay = QVBoxLayout(self)
         corpo = QHBoxLayout()
@@ -3045,12 +3050,12 @@ class PainelEmpresas(QWidget):
         rod.addWidget(b_voltar)
         lay.addLayout(rod)
 
-        self._carregar_lista()
+        self._carregar_lista(selecionar=self._ultimo_cnpj or None)
 
     def recarregar(self):
-        """Relê o cadastro do disco e repinta a lista."""
+        """Relê o cadastro do disco e repinta, preservando a empresa atual."""
         self.mapa = emp_mod.carregar()
-        self._carregar_lista(selecionar=self._cnpj_selecionado() or None)
+        self._carregar_lista(selecionar=self._ultimo_cnpj or None)
 
     # ------------------------------------------------------------- lista
     def _carregar_lista(self, selecionar=None):
@@ -3084,6 +3089,9 @@ class PainelEmpresas(QWidget):
 
     def _empresa_mudou(self):
         cnpj = self._cnpj_selecionado()
+        if cnpj:
+            self._ultimo_cnpj = cnpj
+            QSettings(APP_NAME, APP_NAME).setValue("empresa_selecionada", cnpj)
         e = self.mapa.get(cnpj)
         self.cx_cad.setEnabled(bool(cnpj))
         self.ed_cnpj.setText(emp_mod.formatar_cnpj(cnpj) if cnpj else "")

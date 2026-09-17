@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.20.1] - 2026-09-17
+
+### Corrigido
+- **O painel de empresas não lembrava a empresa selecionada.** A seleção era
+  relida do próprio widget na hora de recarregar, o que falha nos fluxos em que
+  a lista é remontada antes disso (cadastrar, remover, abrir do histórico).
+  Agora a escolha é guardada explicitamente e **também sobrevive a reabrir o
+  programa** (QSettings).
+
 ## [0.20.0] - 2026-09-17
 
 ### Alterado
