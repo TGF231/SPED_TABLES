@@ -464,6 +464,24 @@ zero** escriturado como tributado. O resultado é navegável (duplo clique leva 
 registro) e exportável em CSV. Como o **C175** (NFC-e consolidada) não traz o
 item/NCM, a verificação por NCM cobre os **C170** (entradas e saídas detalhadas).
 
+### Tema claro e escuro
+
+A interface tem paleta própria, com **tema claro e escuro**. O botão à direita
+da barra de ferramentas alterna entre os dois — o rótulo anuncia o destino
+(*Tema escuro* quando você está no claro) — e a escolha é **gravada entre
+sessões**, por máquina.
+
+O acento é o **cobre**, o mesmo do Backup Maximus: os dois aplicativos são da
+mesma família de ferramentas. As cores de significado são separadas do acento —
+verde para "confere", âmbar para "atenção", vermelho para "divergência", azul
+para a coluna **REG** (a chave estrutural) —, de modo que a cor de ação nunca se
+confunde com a cor de estado. No tema escuro elas não são invertidas
+automaticamente: sobem de saturação para continuar legíveis sobre fundo escuro.
+
+A paleta e a folha de estilo ficam em **`tema.py`**; os ícones do "✓" e da seta
+dos combos são desenhados em tempo de execução na cor da paleta ativa
+(**`icones.py`**), porque o Qt Style Sheets não aceita imagem embutida.
+
 ### Editar o layout no Qt Designer
 A janela principal é descrita em **`sped_editor.ui`** (formato padrão do Qt). O
 aplicativo carrega esse arquivo automaticamente quando ele está presente, de modo
@@ -489,6 +507,8 @@ ferramentas num menu suspenso ao lado de *Salvar como*).
 | `correlacoes_cfop.json` | Correlações CFOP saída→entrada (gerado/editável).        |
 | `revisao.py`       | Regras de revisão de erros (extensível).                      |
 | `version.py`       | Versão do aplicativo (SemVer).                                |
+| `tema.py`          | Paleta clara/escura e folha de estilo (QSS).                  |
+| `icones.py`        | Ícones do QSS desenhados em runtime na cor da paleta.         |
 | `config_tabelas_rfb.json` | Caminhos das tabelas da RFB (gerado/editável).           |
 | `CHANGELOG.md`     | Histórico de versões (Keep a Changelog).                       |
 | `FUNCIONALIDADES.md` | Inventário das funções, com maturidade e regras de uso.      |

@@ -22,6 +22,8 @@ Dependências em `requirements.txt` (PyQt6; `openpyxl` para planilhas XLSX).
 | `sped_layouts.py` | Layout dos registros por tipo e por leiaute (ICMS/CONTRIB): nomes de campos, nível hierárquico. |
 | `sped_editor.py` | Toda a GUI (PyQt6): janela principal, grades, diálogos. |
 | `sped_editor.ui` | Layout Qt Designer (carregado por `uic.loadUi`, com fallback programático). |
+| `tema.py` | Paleta (claro/escuro) e folha de estilo QSS. **Toda cor da GUI sai daqui** — nunca literais no `sped_editor.py`. |
+| `icones.py` | Ícones do QSS (✓ e chevron) desenhados em runtime na cor da paleta. |
 | `xml_fiscal.py` | Parser de NF-e/NFC-e (`NFe`, `ItemNFe`, `ler_pasta`, `chave_doc`, `indexar`). |
 | `conferencia.py` | Conferência XML × SPED (entradas modelo 55, C190) e correlações de CFOP. |
 | `revisao.py` | Regras de revisão extensíveis (lista `REGRAS`). |
@@ -49,6 +51,18 @@ Usar **`self._ncampos(tipo)`** para o tamanho do registro. Nunca
 `len(campos(tipo, layout, 40))` — esse helper completa a lista com rótulos
 `"Campo NN"` apenas para exibição, e usá-lo gera linhas com pipes sobrando (erro
 de layout no PVA).
+
+### Ao mexer em cores ou estilo
+
+Cor **nunca** entra literal no `sped_editor.py`: use os tokens de
+`tema.atual()` (`ok`, `warn`, `bad`, `info`, `produto`, `somente_leitura`…) ou
+a propriedade dinâmica `role` (`QLabel[role="ok"]`, `"erro"`, `"aviso"`,
+`"dica"`, `"info"`, `"produto"`). Literal quebra o tema escuro. Só existe um
+`setStyleSheet` no projeto — o global, em `main()`.
+
+Cores gravadas em `QTableWidgetItem` (coluna REG, célula somente-leitura,
+divergências) não seguem a folha de estilo: são decididas em Python e por isso
+`alternar_tema()` remonta as abas.
 
 ### Ao adicionar ações na GUI
 

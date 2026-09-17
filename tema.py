@@ -1,0 +1,427 @@
+# -*- coding: utf-8 -*-
+"""Paleta e folha de estilo (QSS) do SPED Tables.
+
+Portado do Backup Maximus, com o mesmo acento **cobre** — os dois aplicativos
+são da mesma família de ferramentas. As cores semânticas (ok/aviso/erro) são
+separadas do acento de propósito, para que "atenção" nunca se confunda com
+"isto é clicável".
+
+O que muda em relação ao original é o que este aplicativo é: lá, formulários;
+aqui, **grades**. Por isso a folha de estilo trata QTableWidget, QHeaderView,
+linhas alternadas e célula somente-leitura com o mesmo cuidado que o outro
+projeto dedica a campos e botões. Um editor de SPED é lido em varredura
+vertical: a linha de grade precisa ser discreta o bastante para não competir
+com o número, e visível o bastante para o olho não pular de coluna.
+
+O tema escuro não é uma inversão automática: os neutros mantêm o viés azulado,
+o acento sobe de saturação para continuar legível sobre fundo escuro, e o texto
+sobre o acento vira escuro, porque branco sobre laranja claro perde contraste.
+
+As cores dos relatórios (divergência, conferido, aviso) vêm daqui — nunca
+literais no código da GUI —, senão o tema escuro as deixaria ilegíveis.
+"""
+
+from dataclasses import dataclass
+
+# ------------------------------------------------------------------ fontes
+FONT_UI = '"Segoe UI", "Noto Sans", sans-serif'
+FONT_MONO = '"Cascadia Mono", "Consolas", monospace'
+
+
+@dataclass(frozen=True)
+class Paleta:
+    nome: str
+    bg: str            # fundo da janela
+    surface: str       # painéis, campos e fundo das grades
+    surface_2: str     # faixas, cabeçalhos e rodapé
+    sunken: str        # fundo de listas e campos rebaixados
+    linha_alt: str     # linha alternada da grade
+    somente_leitura: str   # célula derivada, não editável
+    ink: str           # texto principal
+    ink_2: str         # texto secundário
+    ink_3: str         # dicas e rótulos apagados
+    border: str        # linha de grade e divisórias
+    border_2: str      # borda de campo e contorno de widget
+    accent: str        # cobre: ações primárias e seleção
+    accent_hover: str
+    accent_soft: str   # fundo de seleção
+    on_accent: str     # texto sobre o acento
+    ok: str            # confere / sem divergência
+    warn: str          # atenção / sem regra cadastrada
+    bad: str           # divergência / erro
+    info: str          # chave estrutural (coluna REG), links
+    produto: str       # nome do produto no topo das grades C170
+
+
+CLARO = Paleta(
+    nome="claro",
+    bg="#F4F6F8",
+    surface="#FFFFFF",
+    surface_2="#E9EDF1",
+    sunken="#FBFCFD",
+    linha_alt="#F7F9FB",
+    somente_leitura="#EFF2F5",
+    ink="#16202A",
+    ink_2="#4A5A6A",
+    ink_3="#74848F",
+    border="#D2DAE2",
+    border_2="#BAC5D0",
+    accent="#C2410C",
+    accent_hover="#9A3412",
+    accent_soft="#FBEBE2",
+    on_accent="#FFFFFF",
+    ok="#15803D",
+    warn="#A16207",
+    bad="#B4232B",
+    info="#1565C0",
+    produto="#2E7D32",
+)
+
+ESCURO = Paleta(
+    nome="escuro",
+    bg="#0F1620",
+    surface="#18212C",
+    surface_2="#212C39",
+    sunken="#131C25",
+    linha_alt="#1C2632",
+    somente_leitura="#222C38",
+    ink="#E3E9EF",
+    ink_2="#94A4B5",
+    ink_3="#6E7F91",
+    border="#2B3745",
+    border_2="#3A4857",
+    accent="#F97316",
+    accent_hover="#FB923C",
+    accent_soft="#2E1B10",
+    on_accent="#1A1005",
+    ok="#4ADE80",
+    warn="#FBBF24",
+    bad="#F87171",
+    info="#60A5FA",
+    produto="#86EFAC",
+)
+
+_ativa = CLARO
+
+
+def atual():
+    return _ativa
+
+
+def definir_escuro(escuro):
+    """Troca a paleta ativa e devolve a nova."""
+    global _ativa
+    _ativa = ESCURO if escuro else CLARO
+    return _ativa
+
+
+def e_escuro():
+    return _ativa is ESCURO
+
+
+def folha_estilo():
+    """Folha de estilo completa, com os ícones desenhados em runtime."""
+    import icones
+    p = _ativa
+    art = icones.caminhos(p)
+    check = art["check"]
+    chevron = art["chevron"]
+    chevron_off = art["chevron_off"]
+
+    return f"""
+QWidget {{
+    background: {p.bg};
+    color: {p.ink};
+    font-family: {FONT_UI};
+}}
+QMainWindow, QDialog {{ background: {p.bg}; }}
+
+/* ------------------------------------------------------ barra de ações */
+QToolBar {{
+    background: {p.surface_2};
+    border: none;
+    border-bottom: 1px solid {p.border};
+    padding: 3px 4px;
+    spacing: 2px;
+}}
+QToolBar::separator {{
+    background: {p.border_2};
+    width: 1px;
+    margin: 4px 6px;
+}}
+QToolButton {{
+    background: transparent;
+    color: {p.ink_2};
+    border: 1px solid transparent;
+    border-radius: 4px;
+    padding: 5px 11px;
+}}
+QToolButton:hover {{
+    background: {p.surface}; color: {p.ink}; border-color: {p.border_2};
+}}
+QToolButton:pressed {{ background: {p.border}; }}
+QToolButton:disabled {{ color: {p.ink_3}; }}
+
+QMenu {{
+    background: {p.surface};
+    color: {p.ink};
+    border: 1px solid {p.border_2};
+    padding: 4px;
+}}
+QMenu::item {{ padding: 6px 22px 6px 14px; border-radius: 3px; }}
+QMenu::item:selected {{ background: {p.accent_soft}; color: {p.ink}; }}
+QMenu::item:disabled {{ color: {p.ink_3}; }}
+QMenu::separator {{ height: 1px; background: {p.border}; margin: 4px 8px; }}
+
+QStatusBar {{
+    background: {p.surface_2};
+    color: {p.ink_2};
+    border-top: 1px solid {p.border};
+}}
+QStatusBar::item {{ border: none; }}
+
+/* ---------------------------------------------------------------- abas */
+QTabWidget::pane {{
+    background: {p.surface};
+    border: 1px solid {p.border};
+    border-radius: 4px;
+    top: -1px;
+}}
+QTabBar::tab {{
+    background: {p.sunken};
+    color: {p.ink_3};
+    border: 1px solid {p.border};
+    border-bottom: none;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    padding: 6px 14px;
+    margin-right: 2px;
+}}
+QTabBar::tab:selected {{
+    background: {p.surface};
+    color: {p.ink};
+    font-weight: 600;
+    border-top: 2px solid {p.accent};
+    padding-top: 5px;
+}}
+QTabBar::tab:hover:!selected {{ color: {p.ink_2}; background: {p.surface_2}; }}
+
+/* -------------------------------------------------------------- grades
+   Uma grade de SPED é lida em varredura vertical: a linha divisória precisa
+   ser discreta para não competir com o número, e a célula selecionada tem de
+   se destacar sem esconder o valor — daí o acento suave com texto preservado
+   em vez de fundo sólido. */
+QTableWidget, QTableView {{
+    background: {p.surface};
+    alternate-background-color: {p.linha_alt};
+    color: {p.ink};
+    gridline-color: {p.border};
+    border: 1px solid {p.border_2};
+    border-radius: 4px;
+    selection-background-color: {p.accent_soft};
+    selection-color: {p.ink};
+    outline: none;
+}}
+QTableWidget::item, QTableView::item {{ padding: 2px 4px; }}
+QTableWidget::item:selected, QTableView::item:selected {{
+    background: {p.accent_soft};
+    color: {p.ink};
+}}
+QTableWidget QLineEdit {{
+    border: 1px solid {p.accent};
+    border-radius: 0;
+    padding: 1px 3px;
+}}
+
+QHeaderView::section {{
+    background: {p.surface_2};
+    color: {p.ink_2};
+    border: none;
+    border-right: 1px solid {p.border};
+    border-bottom: 1px solid {p.border_2};
+    padding: 5px 6px;
+    font-weight: 600;
+}}
+QHeaderView::section:hover {{ background: {p.border}; color: {p.ink}; }}
+QHeaderView::section:vertical {{
+    border-right: 1px solid {p.border_2};
+    color: {p.ink_3};
+    font-weight: 400;
+}}
+QTableCornerButton::section {{
+    background: {p.surface_2};
+    border: none;
+    border-bottom: 1px solid {p.border_2};
+}}
+
+QTreeWidget, QListWidget {{
+    background: {p.sunken};
+    color: {p.ink};
+    border: 1px solid {p.border_2};
+    border-radius: 4px;
+    outline: none;
+}}
+QTreeWidget::item:selected, QListWidget::item:selected {{
+    background: {p.accent_soft}; color: {p.ink};
+}}
+
+/* ------------------------------------------------------------- rótulos
+   Os papéis visuais vêm de uma propriedade dinâmica `role`: no Qt Designer o
+   objectName precisa ser único por widget, e vários rótulos compartilham o
+   mesmo estilo. Trocar a propriedade em runtime exige unpolish/polish. */
+QLabel {{ background: transparent; color: {p.ink}; }}
+QLabel[role="secao"] {{ font-weight: 700; letter-spacing: 1px; }}
+QLabel[role="info"] {{ color: {p.ink_2}; }}
+QLabel[role="dica"] {{ color: {p.ink_3}; }}
+QLabel[role="mono"] {{ font-family: {FONT_MONO}; color: {p.ink_2}; }}
+QLabel[role="ok"] {{ color: {p.ok}; font-weight: bold; }}
+QLabel[role="aviso"] {{ color: {p.warn}; }}
+QLabel[role="erro"] {{ color: {p.bad}; font-weight: bold; }}
+QLabel[role="produto"] {{
+    color: {p.produto}; font-weight: bold; padding: 0 8px;
+}}
+
+/* ------------------------------------------------------------- botões */
+QPushButton {{
+    background: {p.surface};
+    color: {p.ink_2};
+    border: 1px solid {p.border_2};
+    border-radius: 4px;
+    padding: 5px 13px;
+    min-height: 15px;
+}}
+QPushButton:hover {{ background: {p.surface_2}; color: {p.ink}; }}
+QPushButton:pressed {{ background: {p.border}; }}
+QPushButton:disabled {{
+    background: {p.bg}; color: {p.ink_3}; border-color: {p.border};
+}}
+QPushButton[role="accent"] {{
+    background: {p.accent};
+    color: {p.on_accent};
+    border: 1px solid {p.accent};
+    font-weight: 600;
+    padding: 6px 15px;
+}}
+QPushButton[role="accent"]:hover {{
+    background: {p.accent_hover}; border-color: {p.accent_hover};
+}}
+QPushButton[role="accent"]:disabled {{
+    background: {p.border_2}; border-color: {p.border_2}; color: {p.bg};
+}}
+
+/* ------------------------------------------------------------- campos */
+QLineEdit, QSpinBox, QDateEdit, QPlainTextEdit, QTextEdit {{
+    background: {p.sunken};
+    color: {p.ink};
+    border: 1px solid {p.border_2};
+    border-radius: 4px;
+    padding: 4px 7px;
+    selection-background-color: {p.accent_soft};
+    selection-color: {p.ink};
+}}
+QLineEdit:focus, QSpinBox:focus, QDateEdit:focus,
+QPlainTextEdit:focus, QTextEdit:focus {{ border-color: {p.accent}; }}
+QLineEdit:disabled, QSpinBox:disabled {{
+    background: {p.bg}; color: {p.ink_3}; border-color: {p.border};
+}}
+QLineEdit[mono="true"] {{ font-family: {FONT_MONO}; }}
+
+QComboBox {{
+    background: {p.surface};
+    color: {p.ink};
+    border: 1px solid {p.border_2};
+    border-radius: 4px;
+    padding: 4px 7px;
+}}
+QComboBox:focus {{ border-color: {p.accent}; }}
+QComboBox:disabled {{
+    background: {p.bg}; color: {p.ink_3}; border-color: {p.border};
+}}
+QComboBox::drop-down {{ border: none; width: 20px; }}
+QComboBox::down-arrow {{ image: url("{chevron}"); width: 12px; height: 12px; }}
+QComboBox::down-arrow:disabled {{ image: url("{chevron_off}"); }}
+QComboBox QAbstractItemView {{
+    background: {p.surface};
+    color: {p.ink};
+    border: 1px solid {p.border_2};
+    selection-background-color: {p.accent_soft};
+    selection-color: {p.ink};
+    outline: none;
+    padding: 2px;
+}}
+
+QCheckBox, QRadioButton {{
+    background: transparent; color: {p.ink_2}; spacing: 7px;
+}}
+QCheckBox:disabled, QRadioButton:disabled {{ color: {p.ink_3}; }}
+QCheckBox::indicator {{
+    width: 14px; height: 14px;
+    border: 1px solid {p.border_2};
+    border-radius: 3px;
+    background: {p.surface};
+}}
+QCheckBox::indicator:hover {{ border-color: {p.accent}; }}
+QCheckBox::indicator:checked {{
+    background: {p.accent};
+    border-color: {p.accent};
+    image: url("{check}");
+}}
+QCheckBox::indicator:disabled {{
+    background: {p.bg}; border-color: {p.border};
+}}
+
+QGroupBox {{
+    background: transparent;
+    border: 1px solid {p.border};
+    border-radius: 4px;
+    margin-top: 10px;
+    padding-top: 8px;
+}}
+QGroupBox::title {{
+    subcontrol-origin: margin;
+    left: 9px;
+    padding: 0 5px;
+    color: {p.ink_2};
+    font-weight: 600;
+}}
+
+/* -------------------------------------------------------------- barras */
+QProgressBar {{
+    background: {p.surface_2};
+    border: 1px solid {p.border};
+    border-radius: 7px;
+    height: 14px;
+    text-align: center;
+    color: {p.ink_2};
+}}
+QProgressBar::chunk {{ background: {p.accent}; border-radius: 6px; }}
+
+QScrollBar:vertical {{ background: {p.bg}; width: 11px; margin: 0; }}
+QScrollBar::handle:vertical {{
+    background: {p.border_2}; border-radius: 5px; min-height: 24px;
+}}
+QScrollBar::handle:vertical:hover {{ background: {p.ink_3}; }}
+QScrollBar:horizontal {{ background: {p.bg}; height: 11px; margin: 0; }}
+QScrollBar::handle:horizontal {{
+    background: {p.border_2}; border-radius: 5px; min-width: 24px;
+}}
+QScrollBar::handle:horizontal:hover {{ background: {p.ink_3}; }}
+QScrollBar::add-line, QScrollBar::sub-line {{ height: 0; width: 0; }}
+QScrollBar::add-page, QScrollBar::sub-page {{ background: transparent; }}
+
+QSplitter::handle {{ background: {p.border}; }}
+QSplitter::handle:hover {{ background: {p.accent}; }}
+
+/* ------------------------------------------------------------ diversos */
+QFrame[role="divisor"] {{
+    background: {p.border}; max-height: 1px; border: none;
+}}
+QToolTip {{
+    background: {p.ink};
+    color: {p.surface};
+    border: none;
+    padding: 5px 7px;
+}}
+QMessageBox {{ background: {p.bg}; }}
+QMessageBox QLabel {{ color: {p.ink}; }}
+"""

@@ -46,7 +46,16 @@ exibida primeiro ao trocar de registro pai), **fechar** (oculta até resetar) e
 o programa tudo volta ao padrão. A aba fixada é selecionada, mas não é movida
 fisicamente para a primeira posição.
 
-### 1.5 Aba Resumo — 🟡 Em amadurecimento
+### 1.5 Tema claro e escuro — ✅ Estável
+Paleta própria (acento cobre, compartilhada com o Backup Maximus) com botão de
+alternância na barra de ferramentas e preferência gravada entre sessões.
+
+*Regra de uso:* ao trocar de tema com um arquivo aberto, as abas são
+**remontadas** — as cores gravadas em célula (coluna REG, célula derivada,
+divergências) não seguem a folha de estilo. A aba de bloco é preservada; a
+seleção de linha, não.
+
+### 1.6 Aba Resumo — 🟡 Em amadurecimento
 Dados do 0000, metadados do arquivo, lista de registros por bloco e a **apuração
 do período**: no ICMS, consolidação de entradas e saídas por CST/CFOP/alíquota
 mais o E110; no Contribuições, consolidação por CST.

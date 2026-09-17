@@ -1,5 +1,34 @@
 # Changelog
 
+## [0.16.0] - 2026-09-17
+
+### Adicionado
+- **Tema visual próprio, claro e escuro** (`tema.py` + `icones.py`), portado do
+  projeto **Backup Maximus** — os dois aplicativos passam a compartilhar a mesma
+  identidade, com o acento **cobre** e as cores semânticas (ok/aviso/erro)
+  separadas do acento, para que "atenção" nunca se confunda com "clicável".
+  - Botão **Tema escuro / Tema claro** na barra de ferramentas; a preferência é
+    gravada entre sessões (QSettings) e vale para a máquina, não para a sessão.
+  - A folha de estilo trata o que este aplicativo realmente é — **grades**:
+    linha alternada, linha de grade discreta, cabeçalho de coluna destacado,
+    célula somente-leitura e seleção em acento suave que preserva a leitura do
+    número.
+  - Abas, barra de ferramentas, menu Ferramentas, campos, botões, barra de
+    status, diálogos, rolagem e dicas seguem a mesma paleta.
+  - Os ícones de "✓" e da seta do combo são **desenhados em runtime** na cor da
+    paleta ativa: o QSS não aceita data URI e o indicador nativo se perde ao
+    trocar o fundo.
+
+### Alterado
+- As cores dos relatórios deixaram de ser literais espalhados pela GUI
+  (`#b00`, `#0a0`, `#b60`, `#1565c0`, o cinza da célula derivada) e passaram a
+  vir de **tokens da paleta** — sem isso, ficariam ilegíveis no tema escuro.
+  Restou um único `setStyleSheet` no aplicativo: o global.
+- Rótulos de estado usam a propriedade dinâmica `role` (`ok`, `erro`, `aviso`,
+  `dica`, `info`, `produto`), não estilo embutido.
+- O nome da aplicação registrado no Qt era "Editor SPED"; passou a usar o
+  `APP_NAME` de `version.py`.
+
 ## [0.15.4] - 2026-09-17
 
 ### Alterado

@@ -27,7 +27,7 @@ import os
 import re
 import datetime
 
-from PyQt6.QtCore import Qt, QEvent, QTimer
+from PyQt6.QtCore import Qt, QEvent, QTimer, QSettings
 from PyQt6.QtGui import QAction, QKeySequence, QColor, QFont, QShortcut
 from PyQt6.QtWidgets import (
     QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout,
@@ -44,6 +44,7 @@ import conferencia as cf
 import revisao as rev
 import tabelas_rfb as trfb
 from version import __version__, APP_NAME
+import tema
 
 
 def _br(v):
@@ -225,13 +226,12 @@ class MasterDetailWidget(QWidget):
         # --- barra de ações da grade ---
         barra = QHBoxLayout()
         self.lbl = QLabel()
-        self.lbl.setStyleSheet("color:#444;")
+        self.lbl.setProperty("role", "info")
 
         # rótulo central: nome do produto da linha selecionada (grades C170 etc.)
         self.lbl_item = QLabel("")
         self.lbl_item.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.lbl_item.setStyleSheet(
-            "color:#2e7d32; font-weight:bold; padding:0 8px;")
+        self.lbl_item.setProperty("role", "produto")
         self.lbl_item.setVisible(False)
 
         # campo de pesquisa (nº do documento etc.) — visível quando há NUM_DOC
@@ -445,7 +445,7 @@ class MasterDetailWidget(QWidget):
                     f = item.font()
                     f.setBold(True)
                     item.setFont(f)
-                    item.setForeground(QColor("#1565c0"))
+                    item.setForeground(QColor(tema.atual().info))
                     item.setData(Qt.ItemDataRole.UserRole, r.uid)
                 self.tabela.setItem(i, j, item)
 
@@ -1002,14 +1002,15 @@ class DialogoComparaInventario(QDialog):
         resumo.setTextFormat(Qt.TextFormat.RichText)
         lay.addWidget(resumo)
 
+        pal = tema.atual()
         linhas = []
         for cod, qs, qp, dif in res["divergentes"]:
             linhas.append(("Quantidade difere", cod, _br(qs), _br(qp),
-                           _br(dif), "#b00"))
+                           _br(dif), pal.bad))
         for cod, q in res["so_sped"]:
-            linhas.append(("Só no SPED", cod, _br(q), "—", "", "#b60"))
+            linhas.append(("Só no SPED", cod, _br(q), "—", "", pal.warn))
         for cod, q in res["so_planilha"]:
-            linhas.append(("Só na planilha", cod, "—", _br(q), "", "#06c"))
+            linhas.append(("Só na planilha", cod, "—", _br(q), "", pal.info))
 
         self.tab = QTableWidget(len(linhas), len(self.COLS))
         self.tab.setHorizontalHeaderLabels(self.COLS)
@@ -1039,7 +1040,7 @@ class DialogoComparaInventario(QDialog):
         rod = QHBoxLayout()
         if not linhas:
             ok = QLabel("Inventário e planilha conferem integralmente.")
-            ok.setStyleSheet("color:#0a0; font-weight:bold;")
+            ok.setProperty("role", "ok")
             rod.addWidget(ok)
         rod.addStretch(1)
         b_csv = QPushButton("Exportar CSV")
@@ -1428,7 +1429,7 @@ class DialogoDiscrepanciasC175(QDialog):
         if sem_xml:
             aviso = QLabel("Documentos modelo 65 sem XML correspondente na "
                            "pasta: %d." % len(sem_xml))
-            aviso.setStyleSheet("color:#b60;")
+            aviso.setProperty("role", "aviso")
             lay.addWidget(aviso)
 
         self.tab = QTableWidget(len(divergencias), len(self.COLS))
@@ -1442,7 +1443,7 @@ class DialogoDiscrepanciasC175(QDialog):
             for c, v in enumerate(vals):
                 it = QTableWidgetItem(str(v))
                 if c >= 3:
-                    it.setForeground(QColor("#b00"))
+                    it.setForeground(QColor(tema.atual().bad))
                 self.tab.setItem(i, c, it)
         # o indicador -1 precisa vir ANTES de ligar a ordenação: o
         # QTableWidget ordena o próprio modelo e, depois de ordenado,
@@ -1455,8 +1456,7 @@ class DialogoDiscrepanciasC175(QDialog):
         lay.addWidget(self.tab, 1)
 
         lbl = QLabel("%d discrepância(s)." % len(divergencias))
-        lbl.setStyleSheet("font-weight:bold; color:%s;"
-                          % ("#0a0" if not divergencias else "#b00"))
+        lbl.setProperty("role", "ok" if not divergencias else "erro")
         rod = QHBoxLayout()
         rod.addWidget(lbl)
         rod.addStretch(1)
@@ -1589,9 +1589,9 @@ class DialogoConferencia(QDialog):
                r["docs_sem_c100"]))
         lbl = QLabel(resumo)
         if r["divergencias"] == 0:
-            lbl.setStyleSheet("color:#0a0; font-weight:bold;")
+            lbl.setProperty("role", "ok")
         else:
-            lbl.setStyleSheet("color:#b00; font-weight:bold;")
+            lbl.setProperty("role", "erro")
         lay.addWidget(lbl)
 
         divs = resultado["divergencias"]
@@ -1608,7 +1608,7 @@ class DialogoConferencia(QDialog):
             for j, v in enumerate(vals):
                 it = QTableWidgetItem(str(v))
                 if j in (4, 5):
-                    it.setForeground(QColor("#b00"))
+                    it.setForeground(QColor(tema.atual().bad))
                 tab.setItem(i, j, it)
         tab.resizeColumnsToContents()
         tab.horizontalHeader().setStretchLastSection(True)
@@ -1860,11 +1860,10 @@ class DialogoRevisao(QDialog):
         total = len(problemas)
         partes = "  |  ".join("%s: %d" % (rot, n) for rot, n in resumo)
         lbl = QLabel("%d ocorrência(s).   %s" % (total, partes))
-        lbl.setStyleSheet("color:#0a0; font-weight:bold;" if total == 0
-                          else "color:#b00; font-weight:bold;")
+        lbl.setProperty("role", "ok" if total == 0 else "erro")
         lay.addWidget(lbl)
         dica = QLabel("Dê duplo-clique numa linha para ir ao registro.")
-        dica.setStyleSheet("color:#666;")
+        dica.setProperty("role", "dica")
         lay.addWidget(dica)
 
         self.tab = QTableWidget(total, len(self.COLS))
@@ -2749,7 +2748,7 @@ class RelatorioWidget(QWidget):
         self.tabela.setColumnCount(len(cols))
         self.tabela.setHorizontalHeaderLabels(cols)
         self.tabela.setRowCount(len(linhas))
-        cinza = QColor(245, 245, 245)
+        cinza = QColor(tema.atual().somente_leitura)
         for r, linha in enumerate(linhas):
             for c, val in enumerate(linha):
                 item = QTableWidgetItem(str(val))
@@ -2909,6 +2908,10 @@ class JanelaPrincipal(QMainWindow):
         self.act_salvar_como.setEnabled(False)
         if hasattr(self, "act_sair"):
             self.act_sair.triggered.connect(self.close)
+        if not hasattr(self, "act_tema"):
+            self.act_tema = QAction("", self)
+        self.act_tema.triggered.connect(self.alternar_tema)
+        self._sincronizar_rotulo_tema()
         self.act_importar_xml.triggered.connect(self.importar_xml_c175)
         self.act_importar_xml.setEnabled(False)
         self.act_recalc_m.triggered.connect(self.recalcular_bloco_m)
@@ -2972,6 +2975,35 @@ class JanelaPrincipal(QMainWindow):
             self.toolbar = tb
         self._montar_botao_ferramentas(tb)
 
+    # ----------------------------------------------------------- tema
+    def _sincronizar_rotulo_tema(self):
+        if hasattr(self, "act_tema"):
+            self.act_tema.setText(
+                "Tema claro" if tema.e_escuro() else "Tema escuro")
+
+    def alternar_tema(self):
+        """Troca a paleta, repinta tudo e grava a preferência.
+
+        A folha de estilo cobre os widgets, mas não as cores gravadas em
+        QTableWidgetItem (coluna REG, célula somente-leitura, divergências):
+        essas são pixels já decididos em Python. Por isso as abas são
+        remontadas — é o único caminho que garante a grade inteira na paleta
+        nova, e o custo é o mesmo de abrir o arquivo.
+        """
+        tema.definir_escuro(not tema.e_escuro())
+        app = QApplication.instance()
+        if app is not None:
+            app.setStyleSheet(tema.folha_estilo())
+        self._sincronizar_rotulo_tema()
+        QSettings(APP_NAME, APP_NAME).setValue("tema_escuro", tema.e_escuro())
+        if self.doc is not None:
+            bloco = self.tabs_bloco.currentIndex()
+            self._montar_abas()
+            if 0 <= bloco < self.tabs_bloco.count():
+                self.tabs_bloco.setCurrentIndex(bloco)
+        self.statusBar().showMessage(
+            "Tema %s aplicado." % tema.atual().nome, 4000)
+
     def _montar_botao_ferramentas(self, toolbar):
         """Cria o botão suspenso 'Ferramentas' e o posiciona na toolbar."""
         menu = QMenu(self)
@@ -2997,6 +3029,8 @@ class JanelaPrincipal(QMainWindow):
         toolbar.addSeparator()
         toolbar.addWidget(botao)
         self._botao_ferramentas = botao
+        toolbar.addSeparator()
+        toolbar.addAction(self.act_tema)
 
     # --------------------------------------------------------------- ações
     def _criar_acoes(self):
@@ -3016,6 +3050,11 @@ class JanelaPrincipal(QMainWindow):
 
         self.act_sair = QAction("Sair", self)
         self.act_sair.triggered.connect(self.close)
+
+        # o rótulo anuncia o destino, não o estado atual
+        self.act_tema = QAction("", self)
+        self.act_tema.triggered.connect(self.alternar_tema)
+        self._sincronizar_rotulo_tema()
 
         self.act_importar_xml = QAction(
             "Importar XMLs → consolidar C175…", self)
@@ -3635,11 +3674,16 @@ class JanelaPrincipal(QMainWindow):
 
 def main():
     app = QApplication(sys.argv)
-    app.setApplicationName("Editor SPED")
+    app.setApplicationName(APP_NAME)
+    app.setOrganizationName(APP_NAME)
     # fonte um pouco menor deixa as grades mais densas (estilo planilha)
     f = QFont()
     f.setPointSize(max(8, f.pointSize() - 1))
     app.setFont(f)
+    # tema: a preferência é da máquina, não da sessão
+    ajustes = QSettings(APP_NAME, APP_NAME)
+    tema.definir_escuro(ajustes.value("tema_escuro", False, type=bool))
+    app.setStyleSheet(tema.folha_estilo())
     janela = JanelaPrincipal()
     janela.show()
     # abre direto se um caminho for passado na linha de comando
