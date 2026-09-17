@@ -34,6 +34,9 @@ CST_SAIDA_ALIQ_BASICA = {"01"}
 # Entrada com apropriação de crédito (vinculado a receita, presumido…).
 CST_ENTRADA_COM_CREDITO = {"50", "51", "52", "53", "54", "55", "56",
                            "60", "61", "62", "63", "64", "65", "66"}
+# Entrada que **não** dá direito a crédito: 70-75 (aquisição sem direito),
+# 98 (outras operações de entrada) e 99 (outras operações).
+CST_ENTRADA_SEM_CREDITO = {"70", "71", "72", "73", "74", "75", "98", "99"}
 
 
 @dataclass
@@ -281,6 +284,69 @@ def verificar_cst_ncm(doc, empresa, classificador=None, data_ref=None):
     return achados
 
 
+# ================================================================ rotina 5
+def verificar_credito_em_cst_sem_direito(doc, empresa):
+    """Entrada com CST sem direito a crédito, mas com base/valor lançados.
+
+    Achado em arquivo real: 256 itens com **CST 70** ("operação de aquisição
+    sem direito a crédito") trazendo base de cálculo, alíquota e valor de
+    PIS/COFINS preenchidos. Os dois não podem conviver — ou há direito ao
+    crédito, e o CST deveria ser 50-56, ou não há, e os campos de valor
+    deveriam estar zerados.
+
+    Na prática o crédito não é aproveitado, porque a apuração soma pelos CST
+    de creditamento; o problema é de **coerência da escrituração**, e é o tipo
+    de coisa que o fisco pergunta. Vale para qualquer regime: nem o
+    não-cumulativo aproveita crédito num CST 70.
+    """
+    if doc.layout != "CONTRIB":
+        return []
+    achados = []
+    for reg, num, entrada in _itens_por_operacao(doc):
+        if not entrada or reg.reg != "C170":
+            continue
+        for tributo in ("PIS", "COFINS"):
+            i_cst, i_bc, i_aliq, i_vl = _par_tributo(doc, reg.reg, tributo)
+            if i_cst is None:
+                continue
+            cst = (reg.valor(i_cst) or "").strip()
+            if cst not in CST_ENTRADA_SEM_CREDITO:
+                continue
+            base = _to_num(reg.valor(i_bc)) if i_bc is not None else 0.0
+            valor = _to_num(reg.valor(i_vl)) if i_vl is not None else 0.0
+            if base <= 0 and valor <= 0:
+                continue
+            achados.append(Ocorrencia(
+                uid=reg.uid, reg=reg.reg, escopo="entrada", doc=num,
+                item=_rotulo_item(reg.reg, num, reg, doc), tributo=tributo,
+                campo="VL_BC_%s / VL_%s" % (tributo, tributo),
+                atual="base %s / valor %s" % (_fmt_val(base), _fmt_val(valor)),
+                esperado="0,00",
+                detalhe="CST %s não dá direito a crédito" % cst))
+    return achados
+
+
+def corrigir_zerar_credito(doc, empresa, ocorrencias):
+    """Zera base, alíquota e valor, preservando o CST informado.
+
+    Ao contrário da rotina de crédito indevido, aqui o **CST não é alterado**:
+    ele já diz que não há crédito; o que está sobrando são os valores.
+    """
+    n = 0
+    por_uid = {r.uid: r for r in doc.registros}
+    for oc in ocorrencias:
+        reg = por_uid.get(oc.uid)
+        if reg is None:
+            continue
+        _i_cst, i_bc, i_aliq, i_vl = _par_tributo(doc, reg.reg, oc.tributo)
+        for idx, zero in ((i_bc, _fmt_val(0)), (i_aliq, ""),
+                          (i_vl, _fmt_val(0))):
+            if idx is not None:
+                reg.set_valor(idx, zero)
+        n += 1
+    return n
+
+
 # ------------------------------------------------------------------- lista
 ROTINAS = [
     Rotina(
@@ -315,6 +381,17 @@ ROTINAS = [
         verificar=verificar_aliquota_credito,
         corrigir=corrigir_aliquota,
         rotulo_correcao="Aplicar a alíquota de crédito e recalcular o valor",
+    ),
+    Rotina(
+        id="cst_sem_direito",
+        nome="Valor lançado em CST sem direito a crédito (entradas)",
+        descricao="Entradas cujo CST de PIS/COFINS é de aquisição sem direito "
+                  "a crédito (70-75, 98, 99), mas que trazem base e valor "
+                  "preenchidos. Vale para qualquer regime.",
+        layouts=("CONTRIB",),
+        verificar=verificar_credito_em_cst_sem_direito,
+        corrigir=corrigir_zerar_credito,
+        rotulo_correcao="Zerar base, alíquota e valor (mantendo o CST)",
     ),
     Rotina(
         id="cst_ncm",

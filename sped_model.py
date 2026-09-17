@@ -1286,6 +1286,56 @@ class SpedDocument:
                                     "uid": r.uid})
         return div
 
+    def previa_regeneracao_c175_65(self):
+        """Quanto o *Regenerar C175* mudaria, **sem** aplicar nada.
+
+        Existe por um motivo aprendido em arquivo real: o fluxo do modelo 65
+        assume que o XML é a verdade e o C175 é que pode estar errado. Nem
+        sempre é. Num caso concreto, o PDV emitiu parte das NFC-e com alíquota
+        de não-cumulativo enquanto a empresa é cumulativa — a escrituração
+        estava certa e o XML errado, e regenerar **aumentaria** o tributo
+        declarado. Ver o valor antes de aplicar é o que separa uma correção de
+        um estrago.
+
+        Como a consolidação apenas agrupa (não altera somas), o total do C175
+        regenerado é a soma dos itens; por isso a prévia não precisa repetir a
+        lógica de agrupamento.
+
+        Devolve `{"atual": {...}, "novo": {...}, "delta": {...}, "docs": n}`.
+        """
+        if self.layout != "CONTRIB":
+            return None
+        i_mod = self._ix("C100", "COD_MOD")
+        a = {"pis": 0.0, "cofins": 0.0, "opr": 0.0}
+        n = {"pis": 0.0, "cofins": 0.0, "opr": 0.0}
+        c175_idx = {c: self._ix("C175", c)
+                    for c in ("VL_PIS", "VL_COFINS", "VL_OPR")}
+        c170_idx = {c: self._ix("C170", c)
+                    for c in ("VL_PIS", "VL_COFINS", "VL_ITEM", "VL_DESC")}
+        docs = 0
+        for c100 in self.registros:
+            if c100.reg != "C100":
+                continue
+            if (c100.valor(i_mod) or "").strip() != "65":
+                continue
+            itens = [f for f in (c100.filhos or []) if f.reg == "C170"]
+            if not itens:
+                continue          # sem fictícios, nada mudaria neste documento
+            docs += 1
+            for f in c100.filhos or []:
+                if f.reg == "C175":
+                    a["pis"] += _to_num(f.valor(c175_idx["VL_PIS"]))
+                    a["cofins"] += _to_num(f.valor(c175_idx["VL_COFINS"]))
+                    a["opr"] += _to_num(f.valor(c175_idx["VL_OPR"]))
+            for f in itens:
+                n["pis"] += _to_num(f.valor(c170_idx["VL_PIS"]))
+                n["cofins"] += _to_num(f.valor(c170_idx["VL_COFINS"]))
+                n["opr"] += (_to_num(f.valor(c170_idx["VL_ITEM"]))
+                             - _to_num(f.valor(c170_idx["VL_DESC"])))
+        arred = lambda d: {k: round(v, 2) for k, v in d.items()}
+        return {"atual": arred(a), "novo": arred(n), "docs": docs,
+                "delta": {k: round(n[k] - a[k], 2) for k in a}}
+
     def regenerar_c175_de_c170_65(self):
         """Para cada C100 modelo 65 com C170 fictícios, regenera o C175 a partir
         dos itens (aplicando eventuais correções feitas neles) e **remove** os

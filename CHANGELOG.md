@@ -1,5 +1,40 @@
 # Changelog
 
+## [0.25.0] - 2026-09-17
+
+Primeira validação contra **arquivo real** (EFD ICMS/IPI e Contribuições de um
+mesmo período, com 286 XMLs). Três correções nasceram do que os dados
+mostraram, e nenhuma delas apareceria em arquivo sintético.
+
+### Corrigido
+- **Despesas acessórias: o critério virou auto-detectável por documento.** A
+  0.15.3/0.15.4 assumia que `vOutro`/`vFrete`/`vSeg` do item sempre estão
+  embutidos no VL_ITEM. O arquivo real mostrou o contrário: o ERP mantém
+  `VL_ITEM = vProd` e lança a despesa em **VL_OUT_DA do C100**, como o leiaute
+  prevê — o que produzia **227 falsos positivos**. Agora `conferir_itens_xml`
+  compara `VL_OUT_DA + VL_FRT + VL_SEG` do C100 com a soma dos acessórios dos
+  itens e decide, documento a documento, se soma ou não.
+- **CSOSN deixou de gerar divergência falsa.** Fornecedor do Simples emite
+  CSOSN (origem + 3 dígitos) e o comprador escritura CST normal (origem + 2):
+  são tabelas diferentes. Os itens assim são contados em
+  `cst_csosn_ignorados` em vez de comparados — era a limitação registrada na
+  seção 4.1 do FUNCIONALIDADES.
+- Com as duas correções, as divergências das entradas caíram de **404 para
+  149** no arquivo real, sem perder nenhum achado verdadeiro.
+
+### Adicionado
+- **Guarda no *Regenerar C175* (modelo 65).** O fluxo assume que o XML é a
+  verdade; no arquivo real, **28 das 205 NFC-e** foram emitidas pelo PDV com
+  alíquota de não-cumulativo enquanto a empresa é cumulativa — a escrituração
+  estava certa e o XML errado. Regenerar às cegas **aumentaria** o tributo
+  declarado em R$ 1.117,31. Agora o diálogo mostra PIS, COFINS e valor da
+  operação antes e depois, com a diferença, e o botão de confirmação deixa de
+  ser o padrão quando há mudança. No modelo: `previa_regeneracao_c175_65()`.
+- **Nova rotina: valor lançado em CST sem direito a crédito** (entradas com
+  CST 70-75/98/99 trazendo base e valor). Encontrou **512 ocorrências** (256
+  itens × 2 tributos) em 33 documentos do arquivo real. Vale para qualquer
+  regime; a correção zera os valores **mantendo o CST**.
+
 ## [0.24.0] - 2026-09-17
 
 ### Corrigido

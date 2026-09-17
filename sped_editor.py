@@ -5040,13 +5040,54 @@ class JanelaPrincipal(QMainWindow):
                 "Não há C170 fictícios (modelo 65) para consolidar. Rode antes "
                 "\"Validar C175 (modelo 65) com XMLs\".")
             return
-        resp = QMessageBox.question(
-            self, "Regenerar C175",
-            "Isto vai regenerar o C175 de %d documento(s) modelo 65 a partir "
-            "dos itens C170 (com as correções feitas) e remover os C170 "
-            "fictícios. Continuar?" % pendentes,
-            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
-        if resp != QMessageBox.StandardButton.Yes:
+        # o impacto em valores antes de aplicar: num arquivo real, o PDV havia
+        # emitido parte das NFC-e com alíquota de não-cumulativo enquanto a
+        # empresa é cumulativa — regenerar às cegas aumentaria o tributo
+        # declarado, desfazendo uma escrituração que estava correta
+        p = self.doc.previa_regeneracao_c175_65() or {}
+        d = p.get("delta") or {}
+        muda = any(abs(d.get(k, 0.0)) > 0.005 for k in ("pis", "cofins", "opr"))
+        detalhe = ""
+        if muda:
+            detalhe = (
+                "<br><br><b>Atenção: os valores vão mudar.</b>"
+                "<table cellpadding=3>"
+                "<tr><td></td><td align=right><b>escriturado</b></td>"
+                "<td align=right><b>após regenerar</b></td>"
+                "<td align=right><b>diferença</b></td></tr>"
+                "<tr><td>PIS</td><td align=right>%s</td><td align=right>%s</td>"
+                "<td align=right><b>%+.2f</b></td></tr>"
+                "<tr><td>COFINS</td><td align=right>%s</td>"
+                "<td align=right>%s</td><td align=right><b>%+.2f</b></td></tr>"
+                "<tr><td>Valor da operação</td><td align=right>%s</td>"
+                "<td align=right>%s</td><td align=right><b>%+.2f</b></td></tr>"
+                "</table>"
+                "<br>Confira se a diferença é a correção que você quer: os "
+                "valores vêm dos <b>XMLs</b>, e é possível que a escrituração "
+                "esteja certa e o XML errado."
+                % (_br(p["atual"]["pis"]), _br(p["novo"]["pis"]),
+                   d.get("pis", 0.0),
+                   _br(p["atual"]["cofins"]), _br(p["novo"]["cofins"]),
+                   d.get("cofins", 0.0),
+                   _br(p["atual"]["opr"]), _br(p["novo"]["opr"]),
+                   d.get("opr", 0.0)))
+        else:
+            detalhe = ("<br><br>Os totais de PIS, COFINS e valor da operação "
+                       "<b>não mudam</b>.")
+
+        caixa = QMessageBox(self)
+        caixa.setWindowTitle("Regenerar C175")
+        caixa.setTextFormat(Qt.TextFormat.RichText)
+        caixa.setIcon(QMessageBox.Icon.Warning if muda
+                      else QMessageBox.Icon.Question)
+        caixa.setText(
+            "Regenerar o C175 de <b>%d</b> documento(s) modelo 65 a partir dos "
+            "itens C170 e remover os fictícios.%s" % (pendentes, detalhe))
+        b_sim = caixa.addButton("Regenerar", QMessageBox.ButtonRole.AcceptRole)
+        caixa.addButton("Cancelar", QMessageBox.ButtonRole.RejectRole)
+        caixa.setDefaultButton(b_sim if not muda else caixa.buttons()[-1])
+        caixa.exec()
+        if caixa.clickedButton() is not b_sim:
             return
         r = self.doc.regenerar_c175_de_c170_65()
         self._marcar_alterado()

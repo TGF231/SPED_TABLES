@@ -173,16 +173,48 @@ def salvar_correlacoes(mapa, caminho):
 ACESSORIOS_ITEM = ("voutro", "vfrete", "vseg")
 
 
-def valor_item_xml(it):
+def acessorios_do_item(it):
+    """Soma de vOutro + vFrete + vSeg do item do XML."""
+    return sum((getattr(it, nome, 0.0) or 0.0) for nome in ACESSORIOS_ITEM)
+
+
+def valor_item_xml(it, somar_acessorios=True):
     """Valor do item do XML no critério do C170.
 
-    O C170 não tem campo de despesas acessórias por item — o leiaute só prevê
-    VL_OUT_DA, VL_FRT e VL_SEG no C100, por documento. O que a NF-e traz em
-    det/prod/vOutro, det/prod/vFrete e det/prod/vSeg é, portanto, escriturado
-    **dentro do VL_ITEM**, e é assim que a comparação tem de ser feita.
+    O C170 não tem campo de despesa acessória por item, então o que a NF-e traz
+    em `det/prod/vOutro`, `vFrete` e `vSeg` precisa ir para algum lugar — e há
+    **duas** escriturações legítimas, que só o arquivo revela:
+
+    * o ERP soma a despesa **dentro do VL_ITEM** (e o C100 não repete o valor);
+    * o ERP mantém `VL_ITEM = vProd` e lança a despesa em **VL_OUT_DA / VL_FRT
+      / VL_SEG do C100**, que é o que o leiaute prevê.
+
+    Assumir só a primeira produzia centenas de falsos positivos num arquivo
+    real, em que o C100 trazia `VL_OUT_DA` exatamente igual à soma dos vOutro
+    dos itens. Por isso quem decide é `acessorios_no_documento()`, documento a
+    documento.
     """
-    return (it.vprod or 0.0) + sum(
-        (getattr(it, nome, 0.0) or 0.0) for nome in ACESSORIOS_ITEM)
+    base = it.vprod or 0.0
+    return base + acessorios_do_item(it) if somar_acessorios else base
+
+
+def acessorios_no_documento(doc, c100, nfe, tol=0.02):
+    """O documento lança as despesas acessórias no **C100**?
+
+    Compara `VL_OUT_DA + VL_FRT + VL_SEG` do C100 com a soma das mesmas
+    despesas nos itens do XML. Batendo, elas já estão no documento e **não**
+    devem ser somadas ao item; caso contrário, presume-se que foram embutidas
+    no VL_ITEM.
+    """
+    soma_itens = sum(acessorios_do_item(it) for it in (nfe.itens or []))
+    if soma_itens <= 0:
+        return True          # nada a somar: o critério não muda nada
+    total = 0.0
+    for campo in ("VL_OUT_DA", "VL_FRT", "VL_SEG"):
+        i = doc._ix("C100", campo)
+        if i is not None:
+            total += _to_num(c100.valor(i))
+    return abs(total - soma_itens) <= max(tol, soma_itens * 0.005)
 
 
 def _num_xml(s):
@@ -349,13 +381,23 @@ def conferir_itens_xml(doc, nfes, movimento="entrada", tributo="ICMS",
         itens_xml, ch_item_xml, c170s, ch_item_c170)
 
     itens_conferidos = 0
+    csosn = 0                 # itens de fornecedor do Simples, não comparáveis
+    # cache por documento: a decisão sobre as despesas acessórias é do C100
+    criterio = {}
     for (nfe, it), c170list in pares:
         c170 = c170list[0]
         itens_conferidos += 1
+        chave = id(c170.pai)
+        if chave not in criterio:
+            criterio[chave] = not acessorios_no_documento(doc, c170.pai, nfe)
+        somar = criterio[chave]
         for rot, fn_xml, idx, t in idx_cmp:
             if idx is None:
                 continue
-            vx = fn_xml(it) or 0.0
+            # a auto-detecção de acessórios só vale para a função padrão:
+            # quem passa a própria função em `comparacoes` manda nela
+            vx = (valor_item_xml(it, somar) if fn_xml is valor_item_xml
+                  else fn_xml(it)) or 0.0
             vs = _to_num(c170.valor(idx))
             if abs(vx - vs) > t:
                 divergencias.append(Divergencia(
@@ -393,6 +435,13 @@ def conferir_itens_xml(doc, nfes, movimento="entrada", tributo="ICMS",
                 continue
             cst_x = _so_digitos(getattr(it, attr_xml, None))
             cst_s = _so_digitos(c170.valor(i170_cst))
+            # Fornecedor do Simples Nacional emite **CSOSN** (origem + 3
+            # dígitos) e o comprador escritura um CST normal (origem + 2): são
+            # tabelas diferentes, e comparar dígito a dígito só produz ruído.
+            # Num arquivo real isso gerava 7 divergências inteiramente falsas.
+            if len(cst_x) >= 4:
+                csosn += 1
+                continue
             if cst_x and cst_s and cst_x != cst_s:
                 divergencias.append(Divergencia(
                     mod=nfe.mod, serie=nfe.serie, nnf=nfe.nnf,
@@ -406,6 +455,7 @@ def conferir_itens_xml(doc, nfes, movimento="entrada", tributo="ICMS",
         "docs_sem_c100": len(docs_sem_c100),
         "docs_sem_xml": len(docs_sem_xml),
         "itens_conferidos": itens_conferidos,
+        "cst_csosn_ignorados": csosn,
         "itens_sem_c170": len(sem_c170),
         "itens_sem_xml": len(sem_xml),
         "divergencias": len(divergencias),

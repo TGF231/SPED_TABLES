@@ -225,8 +225,13 @@ tem VL_OUT_DA, VL_FRT e VL_SEG) e elas acabam escrituradas dentro do valor do
 produto. Os campos somados ficam em `conferencia.ACESSORIOS_ITEM` — ajuste a
 lista se a sua escrituração lançar frete/seguro no C100.
 
-*Limitação conhecida:* o CST é comparado por igualdade — fornecedor do **Simples
-Nacional** emite CSOSN e pode gerar divergência legítima. Ainda não tratado.
+*Tratado desde a 0.25.0:* fornecedor do **Simples Nacional** emite CSOSN
+(origem + 3 dígitos) e o comprador escritura CST normal (origem + 2). Esses
+itens não são comparados e aparecem no resumo como `cst_csosn_ignorados`.
+
+*Despesas acessórias:* o critério do VL_ITEM é **auto-detectado por
+documento** — se o C100 traz VL_OUT_DA/VL_FRT/VL_SEG batendo com a soma dos
+itens do XML, elas não são somadas ao item; senão, são.
 
 ### 4.2 Conferir C190 com XMLs — 🟡 Em amadurecimento
 Agrupa os itens do XML pela **classificação do C170** (casada por nItem), não pelo
