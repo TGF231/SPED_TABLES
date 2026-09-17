@@ -1,9 +1,13 @@
 # Funcionalidades — SPED Tables
 
-Inventário do que existe hoje (v0.15.1), com **grau de maturidade** e as
-**regras de uso** de cada função. A maioria está em amadurecimento: o objetivo
-deste documento é registrar o que já é confiável, o que ainda precisa de
-polimento e quais restrições evitam resultado errado.
+Inventário do que existe hoje (v0.23.1), com **grau de maturidade** e as
+**regras de uso** de cada função. O objetivo deste documento é registrar o que
+já é confiável, o que ainda precisa de polimento e quais restrições evitam
+resultado errado.
+
+> **Antes da primeira release:** o que estiver marcado 🔴 precisa ser validado
+> contra arquivo real ou isolado do pacote. Veja o roteiro no fim do
+> documento, em *10. Caminho até a primeira release*.
 
 ## Legenda de maturidade
 
@@ -66,6 +70,34 @@ barra de status. Para forçar a barra do Windows:
 não foi observado diretamente — o código usa as métricas por DPI, mas a
 máquina de validação roda a 96 DPI.
 
+### 1.4B Tela inicial — 🟡 Em amadurecimento
+Sem arquivo aberto, a janela mostra: **Continuar** (último período arquivado),
+área para **arrastar e soltar** o .txt, **matriz empresa × período** dos
+últimos 8 meses, **pendências** de cadastro e atalhos.
+
+*Regras de uso:* a matriz mostra o que está **arquivado neste sistema** — um
+período pode ter sido transmitido sem nunca ter sido aberto aqui, e a ausência
+não é indício de falta de entrega. A matriz só se povoa conforme os arquivos
+são abertos.
+
+### 1.4C Fechar arquivo — ✅ Estável
+Botão na barra que encerra a escrituração e volta à tela inicial, perguntando
+antes o que fazer com as alterações: **Salvar**, **Descartar** ou **Cancelar**.
+A mesma pergunta é usada ao sair do programa.
+
+*Regra de uso:* escolher *Salvar* num arquivo que nunca foi gravado abre o
+*Salvar como*; fechar esse diálogo cancela também o fechamento, preservando o
+trabalho.
+
+### 1.4D Dimensionamento e densidade — 🟡 Em amadurecimento
+A janela abre grande e centralizada (até 1600×960, limitada a 88% da área
+útil). Em tela menor que isso, abre **maximizada** e a interface passa à
+**densidade compacta**, com fonte e espaçamentos menores.
+
+*Limitação conhecida:* a decisão é tomada uma única vez, na abertura. Mudar a
+resolução ou mover a janela para um monitor menor durante o uso não refaz a
+densidade.
+
 ### 1.5 Tema claro e escuro — ✅ Estável
 Paleta própria (acento cobre, compartilhada com o Backup Maximus) com botão de
 alternância na barra de ferramentas e preferência gravada entre sessões.
@@ -82,6 +114,14 @@ mais o E110; no Contribuições, consolidação por CST.
 
 *Validação feita:* o ICMS dos C190 de saída bateu com os débitos do E110 e o das
 entradas com os créditos, no arquivo real de abril/2026.
+
+---
+
+### 1.7 Menu agrupado por tipo de SPED — ✅ Estável
+O botão **Ferramentas** organiza as ações em **EFD ICMS/IPI**, **EFD
+Contribuições** e **Gerais**; o submenu inteiro fica desabilitado quando não
+corresponde ao leiaute aberto. **Empresas** fica fora do menu, na barra
+principal, e funciona sem arquivo aberto.
 
 ---
 
@@ -332,11 +372,54 @@ dele. Novas regras entram na lista `REGRAS` de `revisao.py`.
 
 ## 9. Pendências e ideias
 
+### 9.1 Bloqueadores da primeira release
+- **Dados do usuário no executável.** `empresas.json` e a pasta `arquivos/`
+  são gravados ao lado do módulo. Num executável *onefile* isso é a pasta
+  temporária de extração, **apagada ao sair** — o cadastro e todo o histórico
+  se perderiam a cada fechamento. Precisa gravar em `%APPDATA%` quando
+  empacotado.
+- **Instalador**: criar a pasta em `%APPDATA%` e o atalho na área de trabalho.
+- **Validar os 🔴 contra arquivo real** (ver seção 10) ou deixá-los desligados
+  na primeira versão distribuída.
+
+### 9.2 Melhorias desejáveis
 - Persistir entre sessões a ordem/fixação de abas e as preferências.
-- Tratar **CSOSN** (fornecedor do Simples) na conferência de CST.
-- Tornar `CST_ACEITOS`/`CST_SUGERIDO` editáveis pela interface.
+- Tratar **CSOSN** (fornecedor do Simples) na conferência de CST — hoje gera
+  divergência legítima.
+- Tornar `CST_ACEITOS`/`CST_SUGERIDO` editáveis pela interface, em vez de
+  constantes montadas para comércio/revenda.
 - Copiar/colar em bloco (Ctrl+C/Ctrl+V) no Modo Relatório, compatível com Excel.
 - Aviso ao salvar se ainda houver C170 fictícios (modelo 65) pendentes.
 - Conferência do **ICMS** das NFC-e usando os C170 fictícios.
-- Desfazer (undo) para edições em lote.
-- Encadear "recalcular tudo do documento" (C190 + totais do C100).
+- Desfazer (undo) para edições em lote — hoje a única rede é salvar antes.
+- Redução de base por produto no recálculo de ICMS (hoje é um percentual único
+  por lote).
+- Refazer a densidade ao mover a janela entre monitores.
+
+### 9.3 Atendidas desde a última revisão
+- Recalcular ICMS dos itens, encadeando C190 e totais do C100 (0.23.0).
+- Fechar arquivo com pergunta de salvamento (0.22.0).
+- Diálogos em português (0.22.1).
+- Tela inicial no lugar das abas vazias (0.21.0).
+
+---
+
+## 10. Caminho até a primeira release
+
+O critério: **nada 🔴 sai na versão distribuída**. Ou a função é validada
+contra arquivo real e sobe para 🟡, ou fica desligada no pacote.
+
+| Etapa | O que fazer | Encerra |
+|---|---|---|
+| 1 | Corrigir o caminho dos dados (`%APPDATA%` quando empacotado) | 9.1 |
+| 2 | Validar 7A.2 (rotinas por regime) no SPED real de um período | 🔴 → 🟡 |
+| 3 | Validar 6.1/6.2 (NFC-e 65) com os XMLs reais do período | 🔴 → 🟡 |
+| 4 | Validar 7.1/7.2 (inventário) com uma planilha real | 🔴 → 🟡 |
+| 5 | Rodar o `TESTES.md` inteiro num arquivo real de cada leiaute | — |
+| 6 | Validar no **PVA** os arquivos gerados em cada fluxo | — |
+| 7 | Gerar o executável e repetir o smoke test sobre ele | — |
+| 8 | Instalador (pasta em `%APPDATA%` + atalho) | 9.1 |
+| 9 | Marcar a versão `1.0.0` e publicar a release | — |
+
+Etapas 2 a 4 são as que dependem de dados que não estão no repositório; as
+demais podem ser feitas a qualquer momento.
