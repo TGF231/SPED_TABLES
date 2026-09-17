@@ -464,6 +464,26 @@ zero** escriturado como tributado. O resultado é navegável (duplo clique leva 
 registro) e exportável em CSV. Como o **C175** (NFC-e consolidada) não traz o
 item/NCM, a verificação por NCM cobre os **C170** (entradas e saídas detalhadas).
 
+### Tela inicial
+
+Sem nenhum arquivo aberto, a janela mostra uma **tela inicial** em vez das abas
+de modo vazias:
+
+- **Continuar** — abre o último período arquivado, com empresa e mês no rótulo;
+- **Arrastar e soltar** — largue um `.txt` de SPED na janela para abrir;
+- **Matriz empresa × período** (últimos 8 meses) — `●●` os dois leiautes
+  arquivados, `●` só um, `—` nenhum; duplo clique abre o período;
+- **Pendências** — empresa com arquivo mas sem cadastro (as rotinas por regime
+  não rodam para ela) e cadastro que nunca recebeu arquivo;
+- **Atalhos** — Empresas, Correlações de CFOP e tema.
+
+> A matriz diz o que está **arquivado neste sistema**, não o que foi entregue
+> ao Fisco: um período pode ter sido transmitido sem nunca ter sido aberto aqui.
+
+A janela abre grande e centralizada; se a resolução for pequena, abre
+**maximizada** e a interface passa à **densidade compacta**, com fonte e
+espaçamentos menores para caber mais colunas na grade.
+
 ### Empresas, histórico e memória persistente
 
 O botão **Empresas**, na barra principal, funciona como um **interruptor**:

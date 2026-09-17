@@ -1,5 +1,36 @@
 # Changelog
 
+## [0.21.0] - 2026-09-17
+
+### Adicionado
+- **Tela inicial**, no lugar das abas *Modo Tabela* e *Modo Relatório* vazias.
+  Ela usa o que o programa já sabe sem abrir arquivo — o histórico arquivado e
+  o cadastro — para responder três perguntas de quem chega:
+  - **Em que eu estava?** Botão *Continuar* com o último período arquivado
+    (empresa e mês no próprio rótulo) e área para **arrastar e soltar** o .txt.
+  - **O que falta?** **Matriz empresa × período** dos últimos 8 meses:
+    `●●` os dois leiautes arquivados, `●` só um (azul ICMS, âmbar
+    Contribuições), `—` nenhum. Duplo clique numa célula abre aquele período.
+    O rótulo é deliberado: **"arquivado neste sistema"**, nunca "entregue" — um
+    arquivo pode ter sido transmitido sem jamais passar por aqui.
+  - **O que dá para fazer agora?** Pendências (empresa com arquivo e sem
+    cadastro, cadastro que nunca recebeu arquivo) e atalhos que não dependem de
+    arquivo aberto.
+- **Dimensionamento conforme a resolução** (`dimensionar_para_a_tela`): numa
+  tela folgada a janela abre grande e centralizada (até 1600×960, limitada a
+  88% da área útil); numa tela apertada **abre maximizada** e o tema entra em
+  **densidade compacta** — fonte e espaçamentos menores, porque numa grade de
+  SPED alguns pixels de padding por célula valem uma coluna a mais visível.
+- `tema.definir_densidade("normal"|"compacta")`, que ajusta apenas corpo de
+  fonte e espaçamento; cor e borda seguem idênticas nas duas.
+- No modelo: `arquivos.cobertura()`, `arquivos.pendencias()` e
+  `arquivos.resumo_acervo()` — a tela inicial é só a apresentação disso.
+
+### Alterado
+- O widget central tem agora três páginas: **tela inicial** (sem arquivo),
+  **editor** (com arquivo) e **empresas**. Abrir um arquivo leva ao editor;
+  sair de Empresas volta para onde fizer sentido.
+
 ## [0.20.1] - 2026-09-17
 
 ### Corrigido

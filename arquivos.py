@@ -190,6 +190,87 @@ def remover(cnpj, layout, periodo, apagar_arquivo=True):
     return len(removidas)
 
 
+def _periodos_ate(quantidade, fim=None):
+    """Lista dos últimos N períodos AAAAMM, do mais antigo ao mais recente."""
+    hoje = fim or datetime.now()
+    ano, mes = hoje.year, hoje.month
+    saida = []
+    for _ in range(quantidade):
+        saida.append("%04d%02d" % (ano, mes))
+        mes -= 1
+        if mes == 0:
+            ano, mes = ano - 1, 12
+    return list(reversed(saida))
+
+
+def cobertura(meses=8, empresas_extras=None, fim=None):
+    """Matriz empresa × período: que leiautes estão arquivados em cada mês.
+
+    Serve à tela inicial. "Ausente" aqui significa **não arquivado neste
+    sistema** — nunca "não entregue": o arquivo pode ter sido transmitido sem
+    jamais passar por aqui, e o programa não tem como saber. O rótulo na
+    interface precisa refletir isso.
+
+    `empresas_extras` é um {cnpj: nome} de empresas cadastradas que ainda não
+    têm nenhum arquivo — elas aparecem na matriz com a linha inteira vazia, que
+    é justamente a informação útil.
+    """
+    periodos = _periodos_ate(meses, fim)
+    indice = carregar_indice()
+
+    nomes = dict(empresas_extras or {})
+    dados = {}
+    for e in indice:
+        cnpj = e.get("cnpj")
+        if not cnpj:
+            continue
+        nomes.setdefault(cnpj, e.get("nome", ""))
+        if e.get("nome"):
+            nomes[cnpj] = e["nome"]
+        dados.setdefault(cnpj, {}).setdefault(e.get("periodo", ""), set()).add(
+            e.get("layout", ""))
+
+    linhas = []
+    for cnpj in sorted(nomes, key=lambda c: (nomes.get(c) or "", c)):
+        celulas = []
+        for p in periodos:
+            leiautes = dados.get(cnpj, {}).get(p, set())
+            celulas.append({
+                "periodo": p,
+                "icms": "ICMS" in leiautes,
+                "contrib": "CONTRIB" in leiautes,
+            })
+        linhas.append({"cnpj": cnpj, "nome": nomes.get(cnpj, ""),
+                       "celulas": celulas,
+                       "total": sum(1 for c in celulas
+                                    if c["icms"] or c["contrib"])})
+    return {"periodos": periodos, "empresas": linhas}
+
+
+def pendencias(cadastradas):
+    """Avisos acionáveis da tela inicial.
+
+    `cadastradas` é o {cnpj: Empresa} do cadastro. Só apontamos o que dá para
+    saber **sem abrir arquivo**: empresa com arquivo mas sem cadastro (as
+    rotinas por regime não funcionam para ela) e o inverso, cadastro que nunca
+    recebeu arquivo.
+    """
+    do_hist = empresas_no_historico()
+    sem_cadastro = [(c, n) for c, n in sorted(do_hist.items())
+                    if c not in cadastradas]
+    sem_arquivo = [(c, e.nome) for c, e in sorted(cadastradas.items())
+                   if c not in do_hist]
+    return {"sem_cadastro": sem_cadastro, "sem_arquivo": sem_arquivo}
+
+
+def resumo_acervo():
+    """(empresas, períodos, bytes) do que está arquivado."""
+    indice = carregar_indice()
+    return (len({e.get("cnpj") for e in indice if e.get("cnpj")}),
+            len(indice),
+            sum(int(e.get("tamanho") or 0) for e in indice))
+
+
 def formatar_periodo(periodo):
     """202608 -> 08/2026."""
     p = so_digitos(periodo)

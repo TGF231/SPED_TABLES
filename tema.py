@@ -101,6 +101,32 @@ ESCURO = Paleta(
     produto="#86EFAC",
 )
 
+# ------------------------------------------------------------- densidade
+# Numa tela apertada, alguns pixels de padding a menos por célula valem uma
+# coluna inteira a mais visível numa grade de SPED. A densidade só mexe em
+# espaçamento e corpo de fonte — cor e borda seguem iguais nas duas.
+DENSIDADES = {
+    "normal": {"fonte": "9pt", "celula": "2px 4px", "aba": "6px 14px",
+               "botao": "5px 13px", "campo": "4px 7px", "cabecalho": "5px 6px"},
+    "compacta": {"fonte": "8pt", "celula": "1px 3px", "aba": "4px 10px",
+                 "botao": "4px 10px", "campo": "3px 5px",
+                 "cabecalho": "3px 5px"},
+}
+_densidade = "normal"
+
+
+def definir_densidade(nome):
+    """'normal' ou 'compacta'. Devolve a densidade ativa."""
+    global _densidade
+    if nome in DENSIDADES:
+        _densidade = nome
+    return _densidade
+
+
+def densidade():
+    return _densidade
+
+
 _ativa = CLARO
 
 
@@ -123,6 +149,7 @@ def folha_estilo():
     """Folha de estilo completa, com os ícones desenhados em runtime."""
     import icones
     p = _ativa
+    d = DENSIDADES[_densidade]
     art = icones.caminhos(p)
     check = art["check"]
     chevron = art["chevron"]
@@ -133,6 +160,7 @@ QWidget {{
     background: {p.bg};
     color: {p.ink};
     font-family: {FONT_UI};
+    font-size: {d['fonte']};
 }}
 QMainWindow, QDialog {{ background: {p.bg}; }}
 
@@ -234,7 +262,7 @@ QTabBar::tab {{
     border-bottom: none;
     border-top-left-radius: 4px;
     border-top-right-radius: 4px;
-    padding: 6px 14px;
+    padding: {d['aba']};
     margin-right: 2px;
 }}
 QTabBar::tab:selected {{
@@ -262,7 +290,7 @@ QTableWidget, QTableView {{
     selection-color: {p.ink};
     outline: none;
 }}
-QTableWidget::item, QTableView::item {{ padding: 2px 4px; }}
+QTableWidget::item, QTableView::item {{ padding: {d['celula']}; }}
 QTableWidget::item:selected, QTableView::item:selected {{
     background: {p.accent_soft};
     color: {p.ink};
@@ -279,7 +307,7 @@ QHeaderView::section {{
     border: none;
     border-right: 1px solid {p.border};
     border-bottom: 1px solid {p.border_2};
-    padding: 5px 6px;
+    padding: {d['cabecalho']};
     font-weight: 600;
 }}
 QHeaderView::section:hover {{ background: {p.border}; color: {p.ink}; }}
@@ -317,6 +345,15 @@ QLabel[role="mono"] {{ font-family: {FONT_MONO}; color: {p.ink_2}; }}
 QLabel[role="ok"] {{ color: {p.ok}; font-weight: bold; }}
 QLabel[role="aviso"] {{ color: {p.warn}; }}
 QLabel[role="erro"] {{ color: {p.bad}; font-weight: bold; }}
+QLabel[role="tituloInicial"] {{
+    color: {p.ink}; font-size: 15pt; font-weight: 700;
+}}
+QLabel[role="solte"] {{
+    color: {p.ink_3};
+    border: 2px dashed {p.border_2};
+    border-radius: 6px;
+    padding: 10px;
+}}
 QLabel[role="produto"] {{
     color: {p.produto}; font-weight: bold; padding: 0 8px;
 }}
@@ -327,7 +364,7 @@ QPushButton {{
     color: {p.ink_2};
     border: 1px solid {p.border_2};
     border-radius: 4px;
-    padding: 5px 13px;
+    padding: {d['botao']};
     min-height: 15px;
 }}
 QPushButton:hover {{ background: {p.surface_2}; color: {p.ink}; }}
