@@ -1,6 +1,6 @@
 # Funcionalidades — SPED Tables
 
-Inventário do que existe hoje (v0.23.1), com **grau de maturidade** e as
+Inventário do que existe hoje (v0.25.0), com **grau de maturidade** e as
 **regras de uso** de cada função. O objetivo deste documento é registrar o que
 já é confiável, o que ainda precisa de polimento e quais restrições evitam
 resultado errado.
@@ -205,7 +205,7 @@ confira o 0000 (DT_INI/DT_FIN) depois.
 
 ## 4. Conferência com XMLs
 
-### 4.0 Conferir itens com XMLs, por tributo e movimento — 🟡 Em amadurecimento
+### 4.0 Conferir itens com XMLs, por tributo e movimento — ✅ Estável
 Duas ações, uma por tipo de SPED, cada uma conferindo só os campos do seu
 leiaute; o **movimento** (entradas / saídas / ambas) é um seletor dentro do
 diálogo, que refaz a comparação sem reler a pasta.
@@ -214,7 +214,7 @@ diálogo, que refaz a comparação sem reler a pasta.
 própria o CFOP do XML é o mesmo do escriturado. Nas saídas, portanto, esse
 grupo de divergências não aparece, e isso é esperado.
 
-### 4.1 Conferir entradas (NF-e modelo 55) — 🟡 Em amadurecimento
+### 4.1 Conferir entradas (NF-e modelo 55) — ✅ Estável
 Casa item do XML com o C170 por **modelo + série + número + nItem** e compara
 VL_ITEM, VL_DESC, base e valor de **ICMS**, além do **CST de ICMS** e da
 correlação de CFOP. Duplo clique vai ao registro.
@@ -224,6 +224,11 @@ do item, porque o C170 não tem campo de despesas acessórias por item (só o C1
 tem VL_OUT_DA, VL_FRT e VL_SEG) e elas acabam escrituradas dentro do valor do
 produto. Os campos somados ficam em `conferencia.ACESSORIOS_ITEM` — ajuste a
 lista se a sua escrituração lançar frete/seguro no C100.
+
+*Validado em arquivo real (08/2026):* 81 NF-e de entrada, 577 itens
+conferidos, 79 documentos casados. Depois das correções da 0.25.0, as
+divergências caíram de 404 para 149 — nenhuma delas falso positivo conhecido.
+A conferência **não altera o arquivo**, o que mantém o risco baixo.
 
 *Tratado desde a 0.25.0:* fornecedor do **Simples Nacional** emite CSOSN
 (origem + 3 dígitos) e o comprador escritura CST normal (origem + 2). Esses
@@ -272,19 +277,29 @@ opcional.
 
 ## 6. NFC-e modelo 65 — validação do C175 por item
 
-### 6.1 Validar C175 com XMLs (C170 fictícios) — 🔴 Experimental
+### 6.1 Validar C175 com XMLs (C170 fictícios) — 🟡 Em amadurecimento
 Cria C170 "fictícios" (um por item do XML, com todos os dados: descrição,
 quantidade, unidade, ICMS, ICMS-ST, IPI, PIS/COFINS) e mostra as discrepâncias
 com o C175 escriturado.
 
-### 6.2 Regenerar C175 dos itens — 🔴 Experimental
+### 6.2 Regenerar C175 dos itens — 🟡 Em amadurecimento
 Reconsolida o C175 a partir dos itens corrigidos e **remove** os C170 fictícios.
 
 *Regra de uso — crítica:* entre 6.1 e 6.2 o arquivo fica com C170 em documentos
 modelo 65, o que **não é estrutura válida** para o EFD Contribuições. **Não salve
 nem transmita nesse estado** — sempre execute 6.2 antes de gerar o arquivo final.
-Testado até agora com XML sintético casado; falta validar em lote com os XMLs
-reais do período.
+
+*Regra de uso — igualmente crítica:* **o XML nem sempre é a verdade.** No
+arquivo real de 08/2026, 28 das 205 NFC-e foram emitidas pelo PDV com alíquota
+de não-cumulativo enquanto a empresa é cumulativa: a escrituração estava certa
+e o XML errado. Regenerar sem revisar aumentaria o tributo declarado em
+R$ 1.117,31. Desde a 0.25.0 o diálogo mostra PIS, COFINS e valor da operação
+antes e depois — **leia a diferença antes de confirmar**.
+
+*Validado em arquivo real (08/2026):* 205 documentos modelo 65, 520 C170
+fictícios criados e removidos, contagem de registros idêntica no fim
+(1615 → 1615), nenhum C170 sobrando em documento modelo 65, e o relatório de
+discrepâncias apontou exatamente as 56 notas com problema.
 
 ---
 
@@ -326,11 +341,11 @@ alíquotas de saída e de crédito, CST de entrada sem crédito. Persistido em
 errado no arquivo, e é justamente uma das coisas a conferir. Quando cadastro e
 0110 divergem, o diálogo avisa.
 
-### 7A.2 Rotinas de conferência e correção — 🔴 Experimental
-Quatro rotinas: alíquota de saída fora do regime, crédito indevido na entrada
-(cumulativo), alíquota de crédito fora do regime (não-cumulativo) e CST
-incoerente com o NCM. As três primeiras corrigem sob confirmação; a última só
-aponta.
+### 7A.2 Rotinas de conferência e correção — 🟡 Em amadurecimento
+Cinco rotinas: alíquota de saída fora do regime, crédito indevido na entrada
+(cumulativo), alíquota de crédito fora do regime (não-cumulativo), **valor
+lançado em CST sem direito a crédito** e CST incoerente com o NCM. As quatro
+primeiras corrigem sob confirmação; a última só aponta.
 
 *Regras de uso — importantes:*
 - No regime **"ambos"** as rotinas de alíquota se abstêm: as duas alíquotas
@@ -340,8 +355,14 @@ aponta.
 - A correção do crédito indevido grava o CST configurado (**70** por padrão);
   conforme o motivo da vedação, o correto pode ser 73 ou 98 — ajuste no
   cadastro antes de aplicar.
-- Validado até agora com arquivo sintético cobrindo os dois regimes; falta
-  rodar contra o arquivo real do período.
+*Validado em arquivo real (08/2026):* as três rotinas de regime devolveram
+zero no arquivo — e um **controle negativo** (declarar a empresa como
+não-cumulativa) fez a de alíquota de saída apontar 412 ocorrências nos 232
+C175, provando que o zero era acerto e não cegueira. A rotina nova encontrou
+512 ocorrências reais (256 itens × 2 tributos) em 33 documentos.
+
+- Falta exercitar as **correções** em arquivo real: até agora só as
+  verificações rodaram sobre os dados do cliente.
 
 ## 7B. Memória persistente e histórico
 
@@ -381,8 +402,9 @@ dele. Novas regras entram na lista `REGRAS` de `revisao.py`.
 - ~~Dados do usuário no executável~~ — resolvido na 0.24.0 (`dados.py`).
 - ~~Instalador: pasta em `%APPDATA%` e atalho~~ — resolvido na 0.24.0, na
   primeira execução do executável.
-- **Validar os 🔴 contra arquivo real** (ver seção 10) ou deixá-los desligados
-  na primeira versão distribuída. **Único bloqueador restante.**
+- **Validar o inventário (7.1/7.2) contra planilha real** — último 🔴 e único
+  bloqueador restante. As demais funções experimentais foram validadas na
+  0.25.0 contra o SPED real de 08/2026.
 
 ### 9.2 Melhorias desejáveis
 - Persistir entre sessões a ordem/fixação de abas e as preferências.
@@ -411,17 +433,22 @@ dele. Novas regras entram na lista `REGRAS` de `revisao.py`.
 O critério: **nada 🔴 sai na versão distribuída**. Ou a função é validada
 contra arquivo real e sobe para 🟡, ou fica desligada no pacote.
 
-| Etapa | O que fazer | Encerra |
+| Etapa | O que fazer | Situação |
 |---|---|---|
-| 1 | Corrigir o caminho dos dados (`%APPDATA%` quando empacotado) | 9.1 |
-| 2 | Validar 7A.2 (rotinas por regime) no SPED real de um período | 🔴 → 🟡 |
-| 3 | Validar 6.1/6.2 (NFC-e 65) com os XMLs reais do período | 🔴 → 🟡 |
-| 4 | Validar 7.1/7.2 (inventário) com uma planilha real | 🔴 → 🟡 |
-| 5 | Rodar o `TESTES.md` inteiro num arquivo real de cada leiaute | — |
-| 6 | Validar no **PVA** os arquivos gerados em cada fluxo | — |
-| 7 | Gerar o executável e repetir o smoke test sobre ele | — |
-| 8 | Instalador (pasta em `%APPDATA%` + atalho) | 9.1 |
+| 1 | Caminho dos dados (`%APPDATA%` quando empacotado) | ✔ 0.24.0 |
+| 2 | Validar 7A.2 (rotinas por regime) no SPED real | ✔ 0.25.0 |
+| 3 | Validar 6.1/6.2 (NFC-e 65) com os XMLs reais | ✔ 0.25.0 |
+| 4 | Validar 7.1/7.2 (inventário) com planilha real | **pendente** |
+| 5 | Exercitar as **correções** (não só as verificações) em arquivo real | **pendente** |
+| 6 | Atualizar o `TESTES.md`, hoje parado na v0.15.1 | **pendente** |
+| 7 | Validar no **PVA** os arquivos gerados em cada fluxo | **pendente** |
+| 8 | Gerar o executável e repetir o smoke test sobre ele | **pendente** |
 | 9 | Marcar a versão `1.0.0` e publicar a release | — |
+
+A etapa 5 merece destaque: até aqui o arquivo real passou pelas **verificações**,
+que não alteram nada. As correções (trocar alíquota, zerar crédito, regenerar
+C175, recalcular ICMS) só foram exercitadas em arquivo sintético — e são elas
+que gravam.
 
 Etapas 2 a 4 são as que dependem de dados que não estão no repositório; as
 demais podem ser feitas a qualquer momento.
