@@ -57,6 +57,24 @@ Usar **`self._ncampos(tipo)`** para o tamanho do registro. Nunca
 `"Campo NN"` apenas para exibição, e usá-lo gera linhas com pipes sobrando (erro
 de layout no PVA).
 
+**Abriu um bloco, feche o bloco.** Quem cria o primeiro registro de um bloco que
+ainda não existe no arquivo precisa criar também o **X990**. `gerar_texto`
+reconstrói só o bloco 9, e `atualizar_bloco9_inplace` apenas *atualiza* os X990
+que já existem — nenhum dos dois cria o que falta. Bloco aberto e não encerrado
+é recusa certa no PVA (aconteceu com o H990 na importação de inventário).
+
+### Ao ler valores de planilha
+
+A célula numérica do Excel **come o zero à esquerda**: o NCM `04012010` chega
+como `4012010` e o CEST `0200420` como `200420` (593 e 530 casos num arquivo
+real). Use `_zero_a_esquerda(valor, tamanho)`, que só repõe quando falta
+exatamente um dígito — nem NCM nem CEST começam com `00`. Para código de barras
+o comprimento não decide (8, 12, 13 e 14 são todos válidos): `_gtin_corrigido`
+só completa quando o **dígito verificador** confirma.
+
+Número de planilha nunca vai para o arquivo via `str()`: `11.24` e `155.7` são
+inválidos no SPED. Passe por `_fmt_val` / `_fmt_qtd` / `_fmt_aliq`.
+
 ### Ao mexer em cores ou estilo
 
 Cor **nunca** entra literal no `sped_editor.py`: use os tokens de
@@ -168,6 +186,10 @@ Obter sempre por nome (`doc._ix(tipo, nome)`), nunca por número fixo. Referênc
 - **Rateio de despesas acessórias (C190):** usar **diferença de acumulados
   arredondados**, não `round()` item a item — senão a soma não fecha com o total
   (caso real: 1,50 de VL_OUT_DA virava 1,52).
+- **Total que soma itens arredonda uma vez só:** o `VL_INV` do H005 acumulava o
+  valor bruto e arredondava no fim, enquanto cada H010 gravava o arredondado —
+  um centavo de diferença em 11.585 itens. Arredonde no ponto em que o valor é
+  calculado e use o mesmo número nos dois lugares.
 - **VL_RED_BC (C190):** nos CST terminados em **20** ou **70**,
   `VL_OPR − VL_BC_ICMS` (nunca negativo).
 - **Situação do ICMS pelo CST** (`situacao_icms`): os **dois últimos dígitos**

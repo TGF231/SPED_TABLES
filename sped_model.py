@@ -94,6 +94,55 @@ def _fmt_qtd(v):
         return ""
 
 
+def _to_num_planilha(v):
+    """Número vindo de planilha: a célula pode chegar como número nativo do
+    openpyxl ou como texto no padrão brasileiro."""
+    if isinstance(v, (int, float)):
+        return float(v)
+    return _to_num(v)
+
+
+def _zero_a_esquerda(valor, tamanho):
+    """Repõe o zero que a planilha comeu ao tratar o código como número:
+    o NCM `04012010` volta da célula como `4012010`.
+
+    Só age quando falta **exatamente um** dígito e o conteúdo é todo numérico —
+    nem NCM nem CEST começam com `00` (não existe capítulo 00 nem segmento 00),
+    então um único zero é tudo o que pode ter se perdido. Qualquer outro
+    comprimento é dado ruim de origem e fica como está, para não inventar.
+    """
+    v = str(valor or "").strip()
+    if v.isdigit() and len(v) == tamanho - 1:
+        return v.zfill(tamanho)
+    return v
+
+
+def _gtin_valido(v):
+    """Confere o dígito verificador de um GTIN-8/12/13/14."""
+    if not v.isdigit() or len(v) not in (8, 12, 13, 14):
+        return False
+    d = [int(c) for c in v]
+    corpo = d[:-1][::-1]
+    soma = sum(x * (3 if i % 2 == 0 else 1) for i, x in enumerate(corpo))
+    return (10 - soma % 10) % 10 == d[-1]
+
+
+def _gtin_corrigido(valor):
+    """Mesmo problema do NCM, agora no código de barras — mas aqui o
+    comprimento não basta para decidir, porque 8, 12, 13 e 14 são todos
+    válidos. Só repõe o zero quando o **dígito verificador** confirma o
+    palpite; caso contrário devolve o valor intocado."""
+    v = str(valor or "").strip()
+    if not v.isdigit() or len(v) in (8, 12, 13, 14):
+        return v
+    alvo = {7: 8, 11: 12}.get(len(v))
+    if alvo:
+        tentativa = v.zfill(alvo)
+        if _gtin_valido(tentativa):
+            return tentativa
+    return v
+
+
 class _ItemC170View:
     """Expõe um registro C170 com a interface de "item" (atributos vprod, vdesc,
     cfop e pis_*/cofins_*) esperada por `consolidar_c175_de_itens`, permitindo
@@ -1433,7 +1482,11 @@ class SpedDocument:
           existentes  -> códigos já cadastrados;
           divergentes -> [(cod, campo, valor_0200, valor_planilha)] quando a
                          descrição/unidade/NCM da planilha diferem do 0200;
-          duplicados  -> códigos repetidos dentro da própria planilha.
+          duplicados  -> códigos repetidos dentro da própria planilha;
+          ncm_truncado-> [(cod, ncm_0200, ncm_planilha)] itens cujo NCM no
+                         **0200 do arquivo** perdeu o zero à esquerda (tem 7
+                         dígitos) — é erro do arquivo, não da planilha;
+          sem_qtd / sem_valor -> itens com quantidade ou valor zerado.
         """
         i_cod = self._ix("0200", "COD_ITEM")
         i_desc = self._ix("0200", "DESCR_ITEM")
@@ -1444,7 +1497,9 @@ class SpedDocument:
             if r.reg == "0200":
                 cad[(r.valor(i_cod) or "").strip()] = r
         novos, existentes, divergentes, duplicados = [], [], [], []
+        ncm_truncado = []
         vistos = set()
+        sem_qtd = sem_valor = 0
         for ln in linhas:
             cod = str(ln.get("cod_item") or "").strip()
             if not cod:
@@ -1453,6 +1508,10 @@ class SpedDocument:
                 duplicados.append(cod)
                 continue
             vistos.add(cod)
+            if not _to_num_planilha(ln.get("qtd")):
+                sem_qtd += 1
+            if not _to_num_planilha(ln.get("vl_item")):
+                sem_valor += 1
             r = cad.get(cod)
             if r is None:
                 novos.append(cod)
@@ -1462,13 +1521,22 @@ class SpedDocument:
                                     ("unid", i_unid, "UNID_INV"),
                                     ("cod_ncm", i_ncm, "COD_NCM")):
                 novo = str(ln.get(chave) or "").strip()
+                if chave == "cod_ncm":          # a célula numérica perde o zero
+                    novo = _zero_a_esquerda(novo, 8)
                 if not novo or idx is None:
                     continue
                 atual = (r.valor(idx) or "").strip()
-                if atual and atual.upper() != novo.upper():
+                if not atual or atual.upper() == novo.upper():
+                    continue
+                if chave == "cod_ncm" and _zero_a_esquerda(atual, 8) == novo:
+                    # mesmo NCM: quem está truncado é o 0200 do arquivo
+                    ncm_truncado.append((cod, atual, novo))
+                else:
                     divergentes.append((cod, rot, atual, novo))
         return {"novos": novos, "existentes": existentes,
-                "divergentes": divergentes, "duplicados": duplicados}
+                "divergentes": divergentes, "duplicados": duplicados,
+                "ncm_truncado": ncm_truncado,
+                "sem_qtd": sem_qtd, "sem_valor": sem_valor}
 
     def importar_inventario_h010(self, linhas, dt_inv, mot_inv="01",
                                  ind_prop_padrao="0", criar_0200=True,
@@ -1548,11 +1616,7 @@ class SpedDocument:
         vistos = set()
         ignorados = []
 
-        def num(v):
-            """Aceita número nativo da planilha ou texto no padrão BR."""
-            if isinstance(v, (int, float)):
-                return float(v)
-            return _to_num(v)
+        num = _to_num_planilha
 
         for ln in linhas:
             cod = str(ln.get("cod_item") or "").strip()
@@ -1566,7 +1630,11 @@ class SpedDocument:
             vl_unit = num(ln.get("vl_unit"))
             vl_item = num(ln.get("vl_item"))
             if not vl_item and qtd and vl_unit:
-                vl_item = round(qtd * vl_unit, 2)
+                vl_item = qtd * vl_unit
+            # arredonda **aqui**, num ponto só: é o mesmo número que vai para o
+            # H010 e para o total do H005. Somar o valor bruto e arredondar no
+            # fim deixava o VL_INV um centavo fora da soma dos itens.
+            vl_item = round(vl_item, 2)
             if not vl_unit and qtd:
                 vl_unit = round(vl_item / qtd, 6) if qtd else 0.0
 
@@ -1581,11 +1649,14 @@ class SpedDocument:
                  str(ln.get("ind_prop") or ind_prop_padrao).strip())
             for chave, campo in (("cod_part", "COD_PART"),
                                  ("txt_compl", "TXT_COMPL"),
-                                 ("cod_cta", "COD_CTA"),
-                                 ("vl_item_ir", "VL_ITEM_IR")):
+                                 ("cod_cta", "COD_CTA")):
                 v = str(ln.get(chave) or "").strip()
                 if v:
                     setv(reg, h[campo], v)
+            # VL_ITEM_IR é valor: sem isto ia para o arquivo o `str()` do float
+            # da planilha ("11.24", "155.7"), com ponto e sem as duas casas.
+            if str(ln.get("vl_item_ir") or "").strip():
+                setv(reg, h["VL_ITEM_IR"], _fmt_val(num(ln.get("vl_item_ir"))))
             ancora_h = reg
             total += vl_item
             n_itens += 1
@@ -1608,6 +1679,16 @@ class SpedDocument:
                                      ("aliq_icms", "ALIQ_ICMS"),
                                      ("cest", "CEST")):
                     v = str(ln.get(chave) or "").strip()
+                    # códigos de tamanho fixo que a planilha devolve como
+                    # número perdem o zero da frente; a alíquota é numérica
+                    if chave == "cod_ncm":
+                        v = _zero_a_esquerda(v, 8)
+                    elif chave == "cest":
+                        v = _zero_a_esquerda(v, 7)
+                    elif chave == "cod_barra":
+                        v = _gtin_corrigido(v)
+                    elif chave == "aliq_icms" and v:
+                        v = _fmt_aliq(num(ln.get(chave)))
                     if v:
                         setv(novo, z[campo], v)
                 cad[cod] = novo
@@ -1626,6 +1707,15 @@ class SpedDocument:
                 n_novos_0190 += 1
 
         setv(h005, self._ix("H005", "VL_INV"), _fmt_val(round(total, 2)))
+
+        # ---- encerramento do bloco -------------------------------------
+        # Arquivo sem bloco H nenhum não tem H990, e sem ele o PVA recusa o
+        # arquivo inteiro. A contagem quem preenche é atualizar_bloco9_inplace.
+        h990 = next((r for r in self.registros if r.reg == "H990"), None)
+        if h990 is None:
+            h990 = self.novo_registro("H990", depois=ancora_h)
+            h990.campos = ["H990"] + [""] * (self._ncampos("H990") - 1)
+
         self._cad_itens = None
         self.atualizar_bloco9_inplace()
         return {"itens": n_itens, "vl_inv": round(total, 2),

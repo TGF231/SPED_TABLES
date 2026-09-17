@@ -1,5 +1,46 @@
 # Changelog
 
+## [0.26.0] - 2026-09-17
+
+Validação da **importação de inventário** contra a planilha real de uma segunda
+empresa (11.585 itens, 22 colunas) e o SPED ICMS/IPI dela (28.475 registros,
+sem bloco H). Quatro defeitos apareceram — e três deles fariam o PVA recusar o
+arquivo gerado.
+
+### Corrigido
+- **O bloco H saía sem o `H990`.** Em arquivo que ainda não tem inventário
+  nenhum, `importar_inventario_h010` criava H001/H005/H010 e parava aí: o
+  arquivo ia de `H010` direto para `K001`. `atualizar_bloco9_inplace` só
+  **atualiza** os X990 existentes, nunca cria o que falta, e `gerar_texto`
+  reconstrói apenas o bloco 9. Bloco aberto e não encerrado é recusa certa no
+  PVA. Agora o H990 é criado quando não existe, e a contagem sai correta
+  (11.588 linhas no arquivo real).
+- **`VL_INV` do H005 ficava um centavo fora da soma dos H010.** O total era
+  acumulado com o valor **bruto** e arredondado no fim, enquanto cada H010
+  gravava o valor arredondado — 958.285,73 contra 958.285,74. O arredondamento
+  passou a acontecer num ponto só, antes de usar o valor nos dois lugares.
+  É o mesmo erro do rateio de despesas acessórias, em outro lugar.
+- **`VL_ITEM_IR` ia para o arquivo como `str()` do float da planilha** —
+  `11.24`, `155.7`, `6` — com ponto decimal e sem as duas casas. Agora passa
+  por `_fmt_val` como todo campo de valor.
+- **Códigos de tamanho fixo perdiam o zero à esquerda.** A célula numérica da
+  planilha devolve `4012010` no lugar de `04012010`: eram **593 NCM** e **530
+  CEST** no arquivo real. Como nem NCM nem CEST começam com `00`, falta no
+  máximo um dígito — `_zero_a_esquerda` repõe só nesse caso e não inventa nada
+  fora dele. O código de barras, cujos comprimentos 8/12/13/14 são todos
+  válidos, só é corrigido quando o **dígito verificador** confirma o palpite
+  (`_gtin_corrigido`).
+
+### Adicionado
+- **A conferência separa o que é erro da planilha do que é erro do arquivo.**
+  Quando o NCM só difere pelo zero à esquerda, quem está truncado é o **0200
+  do SPED** — no arquivo real são **442 itens**, contra apenas **4** NCM
+  realmente divergentes. Antes os 446 apareciam no mesmo balaio. O retorno de
+  `conferir_itens_inventario` ganhou `ncm_truncado`, `sem_qtd` e `sem_valor`, e
+  o diálogo mostra os três.
+- A comparação de inventário limita a precisão do ajuste de colunas: com 11.585
+  linhas, medir todas as células travava a abertura do diálogo.
+
 ## [0.25.0] - 2026-09-17
 
 Primeira validação contra **arquivo real** (EFD ICMS/IPI e Contribuições de um

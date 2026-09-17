@@ -1,6 +1,6 @@
 # Funcionalidades — SPED Tables
 
-Inventário do que existe hoje (v0.25.0), com **grau de maturidade** e as
+Inventário do que existe hoje (v0.26.0), com **grau de maturidade** e as
 **regras de uso** de cada função. O objetivo deste documento é registrar o que
 já é confiável, o que ainda precisa de polimento e quais restrições evitam
 resultado errado.
@@ -305,13 +305,13 @@ discrepâncias apontou exatamente as 56 notas com problema.
 
 ## 7. Inventário — bloco H
 
-### 7.1 Importar inventário de planilha — 🔴 Experimental
+### 7.1 Importar inventário de planilha — 🟡 Em amadurecimento
 Lê XLSX/CSV e gera H001 (com movimento), H005 (data, motivo, valor total) e um
 H010 por item. Colunas reconhecidas automaticamente pelo cabeçalho, com
 mapeamento manual ajustável. Itens ausentes do **0200** são cadastrados (sem
 duplicar os existentes) e unidades novas geram **0190**.
 
-### 7.2 Comparar inventário atual com a planilha — 🔴 Experimental
+### 7.2 Comparar inventário atual com a planilha — 🟡 Em amadurecimento
 Confronta o H010 escriturado com a planilha por **código e quantidade**, sem
 alterar o arquivo: itens que conferem, quantidade divergente (com a diferença),
 só no SPED e só na planilha. Exporta CSV.
@@ -319,8 +319,31 @@ só no SPED e só na planilha. Exporta CSV.
 *Regras de uso:* use **Conferir com o 0200** e **Comparar com inventário atual**
 antes de importar. A importação **substitui** H005/H010 anteriores. Só código,
 unidade e quantidade são obrigatórios; o valor total é calculado quando ausente.
-Ainda não validado com uma planilha real de inventário — a auto-detecção de
-colunas pode precisar de ajuste.
+
+*Validado em planilha real (08/2026, segunda empresa):* 11.585 itens em 22
+colunas, todas reconhecidas sem ajuste manual, sobre um SPED de 28.475
+registros **sem bloco H nenhum**. Gerou H001/H005/H010/H990 com 11.588 linhas
+de bloco, R$ 958.285,74 de inventário, largura correta em todos os registros,
+bloco contíguo entre `G990` e `K001` e ida-e-volta (salvar → recarregar) sem
+perda. A comparação seguinte acusou **11.585 de 11.585 conferindo**.
+
+Quatro defeitos saíram dessa validação e foram corrigidos na 0.26.0 — bloco sem
+`H990`, `VL_INV` um centavo fora da soma, `VL_ITEM_IR` com ponto decimal e
+NCM/CEST sem o zero à esquerda. Os três primeiros fariam o PVA recusar o
+arquivo.
+
+*O que a planilha revelou do arquivo do cliente:* **442 itens do 0200 com NCM
+de 7 dígitos** (zero à esquerda perdido na origem) e apenas **4** com NCM
+realmente divergente — a conferência separa os dois casos. Há ainda 85 itens
+com quantidade zero e 1.656 sem valor, escriturados como vieram e apenas
+sinalizados.
+
+*Ainda não exercitado em arquivo real:* o cadastro automático de itens no 0200
+não rodou, porque os 11.585 itens já existiam. Foi validado por controle —
+descadastrando 598 itens de propósito, todos voltaram com NCM de 8 dígitos,
+CEST de 7 e as 8 unidades do 0190 recriadas. Código de barras que não fecha o
+dígito verificador é mantido como veio: o PVA vai apontá-lo, e a origem é o
+cadastro do cliente.
 
 ---
 
@@ -402,9 +425,12 @@ dele. Novas regras entram na lista `REGRAS` de `revisao.py`.
 - ~~Dados do usuário no executável~~ — resolvido na 0.24.0 (`dados.py`).
 - ~~Instalador: pasta em `%APPDATA%` e atalho~~ — resolvido na 0.24.0, na
   primeira execução do executável.
-- **Validar o inventário (7.1/7.2) contra planilha real** — último 🔴 e único
-  bloqueador restante. As demais funções experimentais foram validadas na
-  0.25.0 contra o SPED real de 08/2026.
+- ~~Validar o inventário (7.1/7.2) contra planilha real~~ — resolvido na
+  0.26.0, com a planilha de 11.585 itens da segunda empresa.
+- **Nenhum 🔴 restante.** O que falta para a release não é mais funcionalidade
+  e sim prova: exercitar as **correções** em arquivo real (etapa 5), validar no
+  **PVA** os arquivos gerados (etapa 7) e repetir o smoke test sobre o
+  executável (etapa 8).
 
 ### 9.2 Melhorias desejáveis
 - Persistir entre sessões a ordem/fixação de abas e as preferências.
@@ -438,7 +464,7 @@ contra arquivo real e sobe para 🟡, ou fica desligada no pacote.
 | 1 | Caminho dos dados (`%APPDATA%` quando empacotado) | ✔ 0.24.0 |
 | 2 | Validar 7A.2 (rotinas por regime) no SPED real | ✔ 0.25.0 |
 | 3 | Validar 6.1/6.2 (NFC-e 65) com os XMLs reais | ✔ 0.25.0 |
-| 4 | Validar 7.1/7.2 (inventário) com planilha real | **pendente** |
+| 4 | Validar 7.1/7.2 (inventário) com planilha real | ✔ 0.26.0 |
 | 5 | Exercitar as **correções** (não só as verificações) em arquivo real | **pendente** |
 | 6 | Atualizar o `TESTES.md`, hoje parado na v0.15.1 | **pendente** |
 | 7 | Validar no **PVA** os arquivos gerados em cada fluxo | **pendente** |

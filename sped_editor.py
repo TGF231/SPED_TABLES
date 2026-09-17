@@ -1041,6 +1041,10 @@ class DialogoComparaInventario(QDialog):
         self.tab.horizontalHeader().setSortIndicator(
             -1, Qt.SortOrder.AscendingOrder)
         self.tab.setSortingEnabled(True)
+        # sem limitar a precisão, o ajuste de largura mede as 5 células de
+        # cada linha — num inventário inteiro (11 mil itens) isso trava a
+        # abertura do diálogo por segundos. As 200 primeiras bastam.
+        self.tab.horizontalHeader().setResizeContentsPrecision(200)
         self.tab.resizeColumnsToContents()
         lay.addWidget(self.tab, 1)
 
@@ -1331,6 +1335,15 @@ class DialogoImportarInventario(QDialog):
             texto += ("<br><span style='color:#b60'>%d código(s) repetido(s) na "
                       "planilha — só a primeira ocorrência será usada.</span>"
                       % len(c["duplicados"]))
+        if c.get("sem_qtd") or c.get("sem_valor"):
+            texto += ("<br><span style='color:#b60'>%d item(ns) com quantidade "
+                      "zero e %d sem valor — serão escriturados como estão."
+                      "</span>" % (c.get("sem_qtd", 0), c.get("sem_valor", 0)))
+        if c.get("ncm_truncado"):
+            texto += ("<br><span style='color:#b60'>%d item(ns) com NCM de 7 "
+                      "dígitos no <b>0200 deste arquivo</b> (zero à esquerda "
+                      "perdido) — o NCM da planilha confere; corrija o cadastro."
+                      "</span>" % len(c["ncm_truncado"]))
         if div:
             amostra = "; ".join("%s: %s (0200) ≠ %s (planilha)"
                                 % (d[0], d[2][:24], d[3][:24]) for d in div[:3])
