@@ -3998,6 +3998,10 @@ class JanelaPrincipal(QMainWindow):
 
         Sem a barra montada não interceptamos nada — o Windows continua
         desenhando a moldura dele.
+
+        **Nunca chamar `super().nativeEvent(...)` aqui.** No PyQt6 isso derruba
+        o processo sem traceback (o console só pisca e fecha). Para "não
+        tratei", devolva `(False, 0)`: o Qt segue com o tratamento padrão.
         """
         # so interceptamos depois de aplicar() ter preparado a janela: tratar
         # WM_NCCALCSIZE durante a criacao do HWND derruba o processo
@@ -4008,7 +4012,7 @@ class JanelaPrincipal(QMainWindow):
                 self.barra_titulo.area_arrastavel)
             if tratado:
                 return True, resultado
-        return super().nativeEvent(tipo, mensagem)
+        return False, 0
 
     def changeEvent(self, evento):
         # trocar entre maximizada e restaurada muda o ícone do botão

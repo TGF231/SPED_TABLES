@@ -26,14 +26,24 @@ Fora do Windows — ou se qualquer passo falhar — `aplicar()` devolve False e 
 programa segue com a barra nativa. Uma barra de título é enfeite: nunca pode
 impedir o aplicativo de abrir.
 
-Estado: **opcional**. Ligue com **SPED_TABLES_BARRA_CUSTOM=1**; sem isso o
-programa usa a barra do Windows. A interceptação de mensagens nativas não pôde
-ser validada em ambiente automatizado (mostrar uma janela real fora de uma
-sessão interativa não funciona), e uma falha nativa derruba o processo sem
-traceback — por isso o padrão conservador.
+Ligada por padrão. Para voltar à barra do Windows:
+**SPED_TABLES_BARRA_NATIVA=1**.
+
+## Três armadilhas que já derrubaram este programa
+
+1. **As estruturas ctypes são criadas uma única vez, no import.** Criá-las
+   dentro de uma função produz, a cada chamada, um *tipo novo* com o mesmo
+   layout — e o ctypes compara tipos por identidade: passar `byref(RECT_A)`
+   onde `argtypes` espera `POINTER(RECT_B)` falha dentro do despacho de
+   mensagens do Windows, onde não há quem mostre o erro. Como WM_NCHITTEST
+   chega a cada movimento do mouse, o sintoma era "o console abre e fecha".
+2. **`argtypes` sempre declarados.** Sem eles o ctypes converte inteiros para
+   C `int` (32 bits) e o HWND de um Windows 64-bit é truncado.
+3. **Nunca chamar `super().nativeEvent(...)`** no PyQt6 (isso fica do lado do
+   `sped_editor.py`): por si só derruba o processo. Para "não tratei",
+   devolva `(False, 0)`.
 """
 
-import ctypes.wintypes
 import os
 import sys
 
@@ -62,98 +72,95 @@ MONITOR_DEFAULTTONEAREST = 2
 # espessura da faixa sensível ao redimensionamento, em pixels lógicos
 BORDA = 6
 
-
-# Enquanto a interceptação não for validada em uso real, a barra própria é
-# **opcional**: ligue com SPED_TABLES_BARRA_CUSTOM=1. O motivo é conservador —
-# um erro no tratamento de mensagens nativas derruba o processo sem traceback,
-# e este é um programa que edita arquivos que vão para a Receita. Depois de
-# confirmada em uso, basta inverter o padrão aqui.
+# Barra própria ligada por padrão, depois de validada por medição: área de
+# cliente cobrindo a janela, HTCAPTION/HTRIGHT/HTCLIENT nas regiões certas e
+# maximização respeitando a área de trabalho. Escotilha para voltar à barra do
+# Windows sem mexer no código:
+VARIAVEL_DESLIGAR = "SPED_TABLES_BARRA_NATIVA"
+# compatibilidade com a 0.19.0, que era opt-in
 VARIAVEL = "SPED_TABLES_BARRA_CUSTOM"
+
+# --------------------------------------------------------------- estruturas
+# Definidas **uma vez**, no import (ver armadilha 1 no topo do módulo).
+_WIN = sys.platform == "win32"
+_pronto = False
+
+if _WIN:
+    try:
+        import ctypes
+        from ctypes import wintypes
+
+        class POINT(ctypes.Structure):
+            _fields_ = [("x", ctypes.c_long), ("y", ctypes.c_long)]
+
+        class RECT(ctypes.Structure):
+            _fields_ = [("left", ctypes.c_long), ("top", ctypes.c_long),
+                        ("right", ctypes.c_long), ("bottom", ctypes.c_long)]
+
+        class MINMAXINFO(ctypes.Structure):
+            _fields_ = [("ptReserved", POINT), ("ptMaxSize", POINT),
+                        ("ptMaxPosition", POINT), ("ptMinTrackSize", POINT),
+                        ("ptMaxTrackSize", POINT)]
+
+        class MONITORINFO(ctypes.Structure):
+            _fields_ = [("cbSize", wintypes.DWORD), ("rcMonitor", RECT),
+                        ("rcWork", RECT), ("dwFlags", wintypes.DWORD)]
+
+        class NCCALCSIZE_PARAMS(ctypes.Structure):
+            _fields_ = [("rgrc", RECT * 3), ("lppos", ctypes.c_void_p)]
+
+        class MARGINS(ctypes.Structure):
+            _fields_ = [("cxLeftWidth", ctypes.c_int),
+                        ("cxRightWidth", ctypes.c_int),
+                        ("cyTopHeight", ctypes.c_int),
+                        ("cyBottomHeight", ctypes.c_int)]
+
+        class MSG(ctypes.Structure):
+            _fields_ = [("hWnd", wintypes.HWND), ("message", wintypes.UINT),
+                        ("wParam", ctypes.c_void_p),
+                        ("lParam", ctypes.c_void_p),
+                        ("time", wintypes.DWORD), ("pt", POINT)]
+
+        _user32 = ctypes.windll.user32
+        _dwmapi = ctypes.windll.dwmapi
+
+        _user32.GetWindowRect.argtypes = [wintypes.HWND, ctypes.POINTER(RECT)]
+        _user32.GetWindowRect.restype = wintypes.BOOL
+        _user32.IsZoomed.argtypes = [wintypes.HWND]
+        _user32.IsZoomed.restype = wintypes.BOOL
+        _user32.SetWindowPos.argtypes = [
+            wintypes.HWND, wintypes.HWND, ctypes.c_int, ctypes.c_int,
+            ctypes.c_int, ctypes.c_int, ctypes.c_uint]
+        _user32.SetWindowPos.restype = wintypes.BOOL
+        _user32.MonitorFromWindow.argtypes = [wintypes.HWND, wintypes.DWORD]
+        _user32.MonitorFromWindow.restype = wintypes.HANDLE
+        _user32.GetMonitorInfoW.argtypes = [wintypes.HANDLE,
+                                            ctypes.POINTER(MONITORINFO)]
+        _user32.GetMonitorInfoW.restype = wintypes.BOOL
+        _user32.GetSystemMetrics.argtypes = [ctypes.c_int]
+        _user32.GetSystemMetrics.restype = ctypes.c_int
+        _dwmapi.DwmExtendFrameIntoClientArea.argtypes = [
+            wintypes.HWND, ctypes.POINTER(MARGINS)]
+        _dwmapi.DwmExtendFrameIntoClientArea.restype = ctypes.c_long
+
+        _pronto = True
+    except Exception:  # noqa: BLE001
+        _pronto = False
 
 
 def disponivel():
-    """Windows, ctypes utilizável e barra própria habilitada."""
-    if sys.platform != "win32":
+    """Windows, estruturas preparadas e barra própria não desligada."""
+    if not (_WIN and _pronto):
         return False
-    if os.environ.get(VARIAVEL) != "1":
-        return False
-    try:
-        import ctypes  # noqa: F401
-        return True
-    except Exception:  # noqa: BLE001
-        return False
-
-
-def _structs():
-    import ctypes
-    from ctypes import wintypes
-
-    class POINT(ctypes.Structure):
-        _fields_ = [("x", ctypes.c_long), ("y", ctypes.c_long)]
-
-    class RECT(ctypes.Structure):
-        _fields_ = [("left", ctypes.c_long), ("top", ctypes.c_long),
-                    ("right", ctypes.c_long), ("bottom", ctypes.c_long)]
-
-    class MINMAXINFO(ctypes.Structure):
-        _fields_ = [("ptReserved", POINT), ("ptMaxSize", POINT),
-                    ("ptMaxPosition", POINT), ("ptMinTrackSize", POINT),
-                    ("ptMaxTrackSize", POINT)]
-
-    class MONITORINFO(ctypes.Structure):
-        _fields_ = [("cbSize", wintypes.DWORD), ("rcMonitor", RECT),
-                    ("rcWork", RECT), ("dwFlags", wintypes.DWORD)]
-
-    class NCCALCSIZE_PARAMS(ctypes.Structure):
-        _fields_ = [("rgrc", RECT * 3), ("lppos", ctypes.c_void_p)]
-
-    class MARGINS(ctypes.Structure):
-        _fields_ = [("cxLeftWidth", ctypes.c_int),
-                    ("cxRightWidth", ctypes.c_int),
-                    ("cyTopHeight", ctypes.c_int),
-                    ("cyBottomHeight", ctypes.c_int)]
-
-    return POINT, RECT, MINMAXINFO, MONITORINFO, NCCALCSIZE_PARAMS, MARGINS
-
-
-def _api():
-    """Funções do Win32 com assinatura declarada.
-
-    Sem `argtypes`, o ctypes converte inteiros para C int (32 bits) e o HWND
-    de um Windows 64-bit é truncado — a chamada passa a operar sobre um handle
-    inválido, com resultado imprevisível.
-    """
-    import ctypes
-    from ctypes import wintypes
-    u = ctypes.windll.user32
-    d = ctypes.windll.dwmapi
-    _P, _R, _MMI, _MI, _NC, MARGINS = _structs()
-
-    u.GetWindowRect.argtypes = [wintypes.HWND, ctypes.POINTER(_R)]
-    u.GetWindowRect.restype = wintypes.BOOL
-    u.IsZoomed.argtypes = [wintypes.HWND]
-    u.IsZoomed.restype = wintypes.BOOL
-    u.SetWindowPos.argtypes = [wintypes.HWND, wintypes.HWND, ctypes.c_int,
-                               ctypes.c_int, ctypes.c_int, ctypes.c_int,
-                               ctypes.c_uint]
-    u.SetWindowPos.restype = wintypes.BOOL
-    u.MonitorFromWindow.argtypes = [wintypes.HWND, wintypes.DWORD]
-    u.MonitorFromWindow.restype = wintypes.HANDLE
-    u.GetMonitorInfoW.argtypes = [wintypes.HANDLE, ctypes.POINTER(_MI)]
-    u.GetMonitorInfoW.restype = wintypes.BOOL
-    d.DwmExtendFrameIntoClientArea.argtypes = [wintypes.HWND,
-                                               ctypes.POINTER(MARGINS)]
-    d.DwmExtendFrameIntoClientArea.restype = ctypes.c_long
-    return u, d, MARGINS
+    return os.environ.get(VARIAVEL_DESLIGAR) != "1"
 
 
 def aplicar(janela):
     """Prepara a janela para a barra própria. Devolve True se conseguiu.
 
     Deve ser chamada **depois** de a janela existir de fato (primeiro
-    showEvent): forçar `winId()` no meio da construção do QMainWindow cria a
-    janela nativa cedo demais, e o SetWindowPos com FRAMECHANGED reentra na
-    montagem do Qt.
+    `showEvent`): forçar `winId()` no meio da construção do QMainWindow cria a
+    janela nativa cedo demais.
 
     Não altera window flags: os estilos nativos precisam continuar lá, senão o
     Snap e o redimensionamento vão embora junto.
@@ -161,39 +168,24 @@ def aplicar(janela):
     if not disponivel():
         return False
     try:
-        import ctypes
-        u, d, MARGINS = _api()
-        hwnd = ctypes.wintypes.HWND(int(janela.winId()))
+        hwnd = wintypes.HWND(int(janela.winId()))
         # sombra: sem isso a janela fica "chapada" contra o fundo
         margens = MARGINS(1, 1, 1, 1)
-        d.DwmExtendFrameIntoClientArea(hwnd, ctypes.byref(margens))
+        _dwmapi.DwmExtendFrameIntoClientArea(hwnd, ctypes.byref(margens))
         # SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED
-        u.SetWindowPos(hwnd, None, 0, 0, 0, 0, 0x0002 | 0x0001 | 0x0004 | 0x0020)
+        _user32.SetWindowPos(hwnd, None, 0, 0, 0, 0,
+                             0x0002 | 0x0001 | 0x0004 | 0x0020)
         return True
     except Exception:  # noqa: BLE001
         return False
 
 
-def _margem_moldura(hwnd):
+def _margem_moldura():
     """Espessura da moldura que o Windows usa quando a janela é maximizada."""
-    import ctypes
-    u = ctypes.windll.user32
-    try:
-        u.GetDpiForWindow.argtypes = [ctypes.wintypes.HWND]
-        u.GetDpiForWindow.restype = ctypes.c_uint
-        dpi = u.GetDpiForWindow(hwnd)
-        if dpi:
-            larg = u.GetSystemMetricsForDpi(SM_CXSIZEFRAME, dpi) + \
-                u.GetSystemMetricsForDpi(SM_CXPADDEDBORDER, dpi)
-            alt = u.GetSystemMetricsForDpi(SM_CYSIZEFRAME, dpi) + \
-                u.GetSystemMetricsForDpi(SM_CXPADDEDBORDER, dpi)
-            return larg, alt
-    except Exception:  # noqa: BLE001
-        pass
-    larg = u.GetSystemMetrics(SM_CXSIZEFRAME) + \
-        u.GetSystemMetrics(SM_CXPADDEDBORDER)
-    alt = u.GetSystemMetrics(SM_CYSIZEFRAME) + \
-        u.GetSystemMetrics(SM_CXPADDEDBORDER)
+    larg = (_user32.GetSystemMetrics(SM_CXSIZEFRAME)
+            + _user32.GetSystemMetrics(SM_CXPADDEDBORDER))
+    alt = (_user32.GetSystemMetrics(SM_CYSIZEFRAME)
+           + _user32.GetSystemMetrics(SM_CXPADDEDBORDER))
     return larg, alt
 
 
@@ -203,101 +195,95 @@ def tratar(janela, mensagem_ptr, altura_barra, ponto_arrastavel=None):
     `ponto_arrastavel(x, y)` recebe coordenadas **locais** da janela e informa
     se ali a barra pode ser arrastada — falso sobre os botões, senão ninguém
     conseguiria clicar em fechar.
+
+    O corpo inteiro é defensivo: uma exceção aqui acontece dentro do despacho
+    de mensagens do Windows, onde não há quem a mostre — e devolver "não
+    tratei" é sempre seguro, porque o Windows aplica o comportamento padrão.
     """
     if not disponivel():
         return False, 0
-    import ctypes
-    from ctypes import wintypes
-
-    POINT, RECT, MINMAXINFO, MONITORINFO, NCCALC, _M = _structs()
-
-    class MSG(ctypes.Structure):
-        _fields_ = [("hWnd", wintypes.HWND), ("message", wintypes.UINT),
-                    ("wParam", ctypes.c_void_p), ("lParam", ctypes.c_void_p),
-                    ("time", wintypes.DWORD), ("pt", POINT)]
-
-    msg = ctypes.cast(int(mensagem_ptr), ctypes.POINTER(MSG)).contents
-    hwnd = msg.hWnd
-
-    # ------------------------------------------------------ WM_NCCALCSIZE
-    if msg.message == WM_NCCALCSIZE and msg.wParam:
-        u, _d, _M = _api()
-        maximizada = bool(u.IsZoomed(hwnd))
-        if maximizada:
-            # maximizada, a janela nativa extrapola a área útil; sem encolher,
-            # as bordas (e parte do conteúdo) ficariam fora da tela
-            p = ctypes.cast(msg.lParam, ctypes.POINTER(NCCALC)).contents
-            larg, alt = _margem_moldura(hwnd)
-            p.rgrc[0].left += larg
-            p.rgrc[0].right -= larg
-            p.rgrc[0].top += alt
-            p.rgrc[0].bottom -= alt
-        # 0 = a área de cliente ocupa o retângulo proposto (sem legenda)
-        return True, 0
-
-    # -------------------------------------------------------- WM_NCHITTEST
-    if msg.message == WM_NCHITTEST:
-        lp = int(msg.lParam or 0)
-        # coordenadas de tela vêm empacotadas em 16 bits com sinal
-        x = ctypes.c_short(lp & 0xFFFF).value
-        y = ctypes.c_short((lp >> 16) & 0xFFFF).value
-        u, _d, _M = _api()
-        r = RECT()
-        u.GetWindowRect(hwnd, ctypes.byref(r))
-        escala = janela.devicePixelRatioF() or 1.0
-        borda = int(BORDA * escala)
-
-        if not bool(u.IsZoomed(hwnd)):
-            esq = x < r.left + borda
-            dir_ = x >= r.right - borda
-            topo = y < r.top + borda
-            base = y >= r.bottom - borda
-            if topo and esq:
-                return True, HTTOPLEFT
-            if topo and dir_:
-                return True, HTTOPRIGHT
-            if base and esq:
-                return True, HTBOTTOMLEFT
-            if base and dir_:
-                return True, HTBOTTOMRIGHT
-            if esq:
-                return True, HTLEFT
-            if dir_:
-                return True, HTRIGHT
-            if topo:
-                return True, HTTOP
-            if base:
-                return True, HTBOTTOM
-
-        # faixa da barra de título: arrastar, duplo clique e menu de sistema
-        # saem de graça do HTCAPTION
-        local_x = int((x - r.left) / escala)
-        local_y = int((y - r.top) / escala)
-        if 0 <= local_y < altura_barra:
-            if ponto_arrastavel is None or ponto_arrastavel(local_x, local_y):
-                return True, HTCAPTION
-        return True, HTCLIENT
-
-    # ---------------------------------------------------- WM_GETMINMAXINFO
-    if msg.message == WM_GETMINMAXINFO:
-        try:
-            u, _d, _M = _api()
-            monitor = u.MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST)
-            info = MONITORINFO()
-            info.cbSize = ctypes.sizeof(MONITORINFO)
-            u.GetMonitorInfoW(monitor, ctypes.byref(info))
-            trabalho, tela = info.rcWork, info.rcMonitor
-            mmi = ctypes.cast(msg.lParam, ctypes.POINTER(MINMAXINFO)).contents
-            # tamanho e posição de "maximizada" limitados à área de trabalho,
-            # para a barra de tarefas continuar visível
-            mmi.ptMaxSize.x = trabalho.right - trabalho.left
-            mmi.ptMaxSize.y = trabalho.bottom - trabalho.top
-            mmi.ptMaxPosition.x = trabalho.left - tela.left
-            mmi.ptMaxPosition.y = trabalho.top - tela.top
-            mmi.ptMaxTrackSize.x = mmi.ptMaxSize.x
-            mmi.ptMaxTrackSize.y = mmi.ptMaxSize.y
-            return True, 0
-        except Exception:  # noqa: BLE001
+    try:
+        msg = ctypes.cast(int(mensagem_ptr), ctypes.POINTER(MSG)).contents
+        codigo = msg.message
+        if codigo not in (WM_NCCALCSIZE, WM_NCHITTEST, WM_GETMINMAXINFO):
             return False, 0
+        hwnd = msg.hWnd
 
-    return False, 0
+        # -------------------------------------------------- WM_NCCALCSIZE
+        if codigo == WM_NCCALCSIZE:
+            if not msg.wParam:
+                return False, 0
+            if _user32.IsZoomed(hwnd):
+                # maximizada, a janela nativa extrapola a área útil; sem
+                # encolher, as bordas ficariam fora da tela
+                p = ctypes.cast(msg.lParam,
+                                ctypes.POINTER(NCCALCSIZE_PARAMS)).contents
+                larg, alt = _margem_moldura()
+                p.rgrc[0].left += larg
+                p.rgrc[0].right -= larg
+                p.rgrc[0].top += alt
+                p.rgrc[0].bottom -= alt
+            # 0 = a área de cliente ocupa o retângulo proposto (sem legenda)
+            return True, 0
+
+        # --------------------------------------------------- WM_NCHITTEST
+        if codigo == WM_NCHITTEST:
+            lp = int(msg.lParam or 0)
+            # coordenadas de tela vêm empacotadas em 16 bits com sinal
+            x = ctypes.c_short(lp & 0xFFFF).value
+            y = ctypes.c_short((lp >> 16) & 0xFFFF).value
+            r = RECT()
+            _user32.GetWindowRect(hwnd, ctypes.byref(r))
+            escala = janela.devicePixelRatioF() or 1.0
+            borda = max(1, int(BORDA * escala))
+
+            if not _user32.IsZoomed(hwnd):
+                esq = x < r.left + borda
+                dir_ = x >= r.right - borda
+                topo = y < r.top + borda
+                base = y >= r.bottom - borda
+                if topo and esq:
+                    return True, HTTOPLEFT
+                if topo and dir_:
+                    return True, HTTOPRIGHT
+                if base and esq:
+                    return True, HTBOTTOMLEFT
+                if base and dir_:
+                    return True, HTBOTTOMRIGHT
+                if esq:
+                    return True, HTLEFT
+                if dir_:
+                    return True, HTRIGHT
+                if topo:
+                    return True, HTTOP
+                if base:
+                    return True, HTBOTTOM
+
+            # faixa da barra: arrastar, duplo clique e menu de sistema saem de
+            # graça do HTCAPTION
+            local_x = int((x - r.left) / escala)
+            local_y = int((y - r.top) / escala)
+            if 0 <= local_y < altura_barra:
+                if (ponto_arrastavel is None
+                        or ponto_arrastavel(local_x, local_y)):
+                    return True, HTCAPTION
+            return True, HTCLIENT
+
+        # ------------------------------------------------ WM_GETMINMAXINFO
+        monitor = _user32.MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST)
+        info = MONITORINFO()
+        info.cbSize = ctypes.sizeof(MONITORINFO)
+        _user32.GetMonitorInfoW(monitor, ctypes.byref(info))
+        trabalho, tela = info.rcWork, info.rcMonitor
+        mmi = ctypes.cast(msg.lParam, ctypes.POINTER(MINMAXINFO)).contents
+        # "maximizada" limitada à área de trabalho, para a barra de tarefas
+        # continuar visível
+        mmi.ptMaxSize.x = trabalho.right - trabalho.left
+        mmi.ptMaxSize.y = trabalho.bottom - trabalho.top
+        mmi.ptMaxPosition.x = trabalho.left - tela.left
+        mmi.ptMaxPosition.y = trabalho.top - tela.top
+        mmi.ptMaxTrackSize.x = mmi.ptMaxSize.x
+        mmi.ptMaxTrackSize.y = mmi.ptMaxSize.y
+        return True, 0
+    except Exception:  # noqa: BLE001
+        return False, 0

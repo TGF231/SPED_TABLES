@@ -98,6 +98,15 @@ Use nomes com prefixo (`teste_`, `montar_`) nos scripts auxiliares.
 
 ## Ao mexer na barra de título
 
+**Nunca chamar `super().nativeEvent(...)`** — no PyQt6 isso derruba o processo
+sem traceback. Devolva `(False, 0)` para "não tratei".
+
+**Estruturas ctypes e `argtypes` definidos uma única vez, no import.** Criar
+`RECT` dentro de uma função gera um tipo novo a cada chamada, e o ctypes
+compara tipos por identidade — o erro estoura dentro do despacho de mensagens,
+onde ninguém o vê. Foi o que fez o console "piscar e fechar" na 0.19.0.
+
+
 A interceptação só pode começar **depois** de `janela_custom.aplicar()` ter
 preparado a janela (primeiro `showEvent`): tratar WM_NCCALCSIZE durante a
 criação do HWND é falha nativa, sem traceback. Toda chamada Win32 precisa de

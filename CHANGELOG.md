@@ -1,5 +1,35 @@
 # Changelog
 
+## [0.19.1] - 2026-09-17
+
+### Corrigido
+- **O programa não abria: o console piscava e fechava.** Duas falhas nativas,
+  ambas sem traceback porque acontecem dentro do despacho de mensagens do
+  Windows ou no envio de eventos do Qt.
+  1. **`super().nativeEvent(...)` derruba o processo no PyQt6.** O override
+     existia mesmo com a barra própria desligada, então o crash atingia
+     **todos** os usuários, não só quem ligasse a barra. Para "não tratei",
+     agora devolvemos `(False, 0)` — o Qt segue com o tratamento padrão.
+  2. **Estruturas ctypes criadas a cada chamada.** Uma função que define
+     `RECT` internamente devolve um *tipo novo* a cada invocação, e o ctypes
+     compara tipos por identidade: `byref(RECT_A)` onde `argtypes` espera
+     `POINTER(RECT_B)` falha. Como `WM_NCHITTEST` chega a cada movimento do
+     mouse, o erro era imediato. As estruturas e os `argtypes` passaram a ser
+     definidos **uma única vez, no import**.
+
+### Alterado
+- **A barra de título própria passou a ser o padrão**, agora que o caminho
+  nativo foi validado por medição em janela real:
+  - área de cliente cobrindo a janela inteira (WM_NCCALCSIZE);
+  - `HTCAPTION` na faixa da barra, `HTRIGHT` na borda e `HTCLIENT` no conteúdo;
+  - maximizada, o **conteúdo** ocupa exatamente a área de trabalho
+    (0,0 → 1920,1050 num monitor 1080p), com a barra de tarefas visível — o
+    retângulo da janela é maior de propósito, porque a moldura fica fora da
+    tela, como em qualquer janela com WS_THICKFRAME.
+  - Escotilha: **`SPED_TABLES_BARRA_NATIVA=1`** volta à barra do Windows.
+- `tratar()` ficou inteiramente defensivo: qualquer exceção devolve "não
+  tratei", e o Windows aplica o comportamento padrão.
+
 ## [0.19.0] - 2026-09-17
 
 ### Adicionado
