@@ -464,6 +464,14 @@ zero** escriturado como tributado. O resultado é navegável (duplo clique leva 
 registro) e exportável em CSV. Como o **C175** (NFC-e consolidada) não traz o
 item/NCM, a verificação por NCM cobre os **C170** (entradas e saídas detalhadas).
 
+### Fechar a escrituração
+
+O botão **Fechar arquivo**, na barra, encerra a escrituração aberta e volta à
+tela inicial. Se houver alterações não salvas, ele pergunta antes: **Salvar**,
+**Descartar** ou **Cancelar**. Cancelar — ou fechar o diálogo de *Salvar como*
+que aparece depois de escolher salvar — mantém o arquivo aberto, sem perder
+nada. A mesma pergunta é feita ao sair do programa.
+
 ### Tela inicial
 
 Sem nenhum arquivo aberto, a janela mostra uma **tela inicial** em vez das abas

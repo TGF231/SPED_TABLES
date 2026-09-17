@@ -4057,6 +4057,10 @@ class JanelaPrincipal(QMainWindow):
             self.act_empresa = QAction("Empresa e rotinas…", self)
         self.act_empresa.triggered.connect(self.configurar_empresa)
         self.act_empresa.setEnabled(False)
+        if not hasattr(self, "act_fechar"):
+            self.act_fechar = QAction("Fechar arquivo", self)
+        self.act_fechar.triggered.connect(self.fechar_arquivo)
+        self.act_fechar.setEnabled(False)
         if not hasattr(self, "act_empresas"):
             self.act_empresas = QAction("Empresas", self)
         self.act_empresas.setCheckable(True)
@@ -4161,6 +4165,66 @@ class JanelaPrincipal(QMainWindow):
                 "Arquivo sem CNPJ no 0000: não foi arquivado no histórico.",
                 6000)
         return entrada
+
+    # ------------------------------------------------- fechar arquivo
+    def _resolver_alteracoes(self, titulo, texto):
+        """Pergunta o que fazer com as alterações pendentes.
+
+        Devolve True quando é seguro prosseguir (salvou ou descartou) e False
+        quando o usuário desistiu. Um "Salvar" que acabe cancelado — o diálogo
+        de *Salvar como* fechado no X, por exemplo — também devolve False: a
+        intenção era guardar, e seguir em frente perderia o trabalho.
+        """
+        if not self.alterado or self.doc is None:
+            return True
+        resp = QMessageBox.question(
+            self, titulo, texto,
+            QMessageBox.StandardButton.Save
+            | QMessageBox.StandardButton.Discard
+            | QMessageBox.StandardButton.Cancel,
+            QMessageBox.StandardButton.Save)
+        if resp == QMessageBox.StandardButton.Cancel:
+            return False
+        if resp == QMessageBox.StandardButton.Save:
+            self.salvar()
+            return not self.alterado
+        return True
+
+    def fechar_arquivo(self):
+        """Fecha a escrituração aberta e volta para a tela inicial."""
+        if self.doc is None:
+            return False
+        nome = os.path.basename(self.caminho or "") or "o arquivo aberto"
+        if not self._resolver_alteracoes(
+                "Fechar arquivo",
+                "As alterações em <b>%s</b> ainda não foram salvas.<br><br>"
+                "Deseja salvar antes de fechar?" % nome):
+            return False
+
+        self.doc = None
+        self.caminho = ""
+        self.alterado = False
+        self.tabs_bloco.blockSignals(True)
+        self.tabs_bloco.clear()
+        self.tabs_bloco.blockSignals(False)
+        for acao in ("act_fechar", "act_salvar", "act_salvar_como",
+                     "act_importar_xml", "act_recalc_m",
+                     "act_trocar_aliquotas", "act_alterar_datas",
+                     "act_verificar_cst", "act_importar_inventario",
+                     "act_validar_c175_65", "act_regenerar_c175_65",
+                     "act_conferir_55", "act_conferir_c190", "act_revisar",
+                     "act_empresa", "act_conferir_itens_icms",
+                     "act_conferir_itens_pc"):
+            if hasattr(self, acao):
+                getattr(self, acao).setEnabled(False)
+        if hasattr(self, "menu_icms"):
+            self.menu_icms.setEnabled(False)
+            self.menu_contrib.setEnabled(False)
+        self.setWindowTitle("%s v%s" % (APP_NAME, __version__))
+        self.mostrar_editor()          # sem doc, cai na tela inicial
+        self.sincronizar_barra()
+        self.statusBar().showMessage("Arquivo fechado.", 4000)
+        return True
 
     def mostrar_editor(self):
         """Editor se há arquivo aberto; senão, tela inicial (recarregada)."""
@@ -4405,6 +4469,7 @@ class JanelaPrincipal(QMainWindow):
         botao.setMenu(menu)
         botao.setPopupMode(QToolButton.ToolButtonPopupMode.InstantPopup)
         botao.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextOnly)
+        toolbar.addAction(self.act_fechar)
         toolbar.addSeparator()
         # Empresas fica na barra, não dentro do menu: é o cadastro que dá
         # sentido às rotinas e funciona sem nenhum arquivo aberto
@@ -4430,6 +4495,10 @@ class JanelaPrincipal(QMainWindow):
         self.act_salvar_como.setShortcut(QKeySequence.StandardKey.SaveAs)
         self.act_salvar_como.triggered.connect(self.salvar_como)
         self.act_salvar_como.setEnabled(False)
+
+        self.act_fechar = QAction("Fechar arquivo", self)
+        self.act_fechar.triggered.connect(self.fechar_arquivo)
+        self.act_fechar.setEnabled(False)
 
         self.act_sair = QAction("Sair", self)
         self.act_sair.triggered.connect(self.close)
@@ -4995,6 +5064,7 @@ class JanelaPrincipal(QMainWindow):
         self._arquivar("abertura")
         self._montar_abas()
         self.mostrar_editor()
+        self.act_fechar.setEnabled(True)
         self.act_salvar.setEnabled(True)
         self.act_salvar_como.setEnabled(True)
         self.act_importar_xml.setEnabled(doc.layout == "CONTRIB")
@@ -5119,15 +5189,14 @@ class JanelaPrincipal(QMainWindow):
 
     # ------------------------------------------------------------ fechar
     def closeEvent(self, event):
-        if self.alterado:
-            resp = QMessageBox.question(
-                self, "Sair",
-                "Há alterações não salvas. Deseja sair mesmo assim?",
-                QMessageBox.StandardButton.Yes
-                | QMessageBox.StandardButton.No)
-            if resp != QMessageBox.StandardButton.Yes:
-                event.ignore()
-                return
+        # mesma pergunta do fechar arquivo: oferecer salvar é melhor que a
+        # escolha binária "sair mesmo assim?", que só permitia descartar
+        if not self._resolver_alteracoes(
+                "Sair",
+                "Há alterações não salvas.<br><br>"
+                "Deseja salvar antes de sair?"):
+            event.ignore()
+            return
         event.accept()
 
 

@@ -1,5 +1,22 @@
 # Changelog
 
+## [0.22.0] - 2026-09-17
+
+### Adicionado
+- **Fechar arquivo** na barra de ferramentas: encerra a escrituração aberta e
+  volta para a tela inicial. Havendo alterações não salvas, pergunta antes,
+  com as três saídas de sempre — **Salvar**, **Descartar** e **Cancelar**.
+  - Um *Salvar* que acabe cancelado (o diálogo de *Salvar como* fechado no X)
+    **não fecha o arquivo**: a intenção era guardar, e seguir em frente
+    perderia o trabalho.
+  - Ao fechar, as ferramentas que dependem de arquivo são desabilitadas e o
+    título volta ao nome do programa.
+
+### Alterado
+- **Sair do programa passou a oferecer salvar.** Antes a pergunta era binária
+  ("deseja sair mesmo assim?"), e a única saída com alterações pendentes era
+  descartá-las. Agora usa a mesma pergunta do fechar arquivo.
+
 ## [0.21.0] - 2026-09-17
 
 ### Adicionado
