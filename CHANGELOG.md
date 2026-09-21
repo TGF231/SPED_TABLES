@@ -1,5 +1,34 @@
 # Changelog
 
+## [0.32.0] - 2026-09-21
+
+O PVA recusou o H010 com *"O campo é obrigatório para EFD ICMS/IPI com Perfil
+igual a 'A' ou 'B'"* no `COD_CTA`. O arquivo é perfil **B** e não tinha conta
+contábil em nenhum dos 9.929 itens do inventário — nem em 2.486 C170.
+
+### Adicionado
+- **Ferramentas → Gerais → Preencher conta contábil (COD_CTA)…** Lista os
+  tipos de registro que estão sem conta e preenche **um tipo por vez**, porque
+  cada um leva uma conta diferente — estoque no H010, custo no C170. A
+  natureza (`COD_NAT_CC`) vem sugerida conforme o registro. Registros que já
+  têm conta não são tocados.
+- **O registro 0500 (plano de contas) é criado junto**, na posição do leiaute
+  (depois do último registro de código menor) e com `DT_ALT` igual ao início
+  do período. Informar conta que não existe no plano seria o próximo erro.
+  Quando o arquivo já tem 0500, as contas aparecem num seletor.
+- No modelo: `perfil()`, `contas_0500()`, `registros_sem_cod_cta()`,
+  `criar_conta_0500()` e `preencher_cod_cta()`.
+- **Leiaute do 0500 do EFD ICMS/IPI** acrescentado ao `sped_layouts.py`: são
+  **7 campos** (`REG`, `DT_ALT`, `COD_NAT_CC`, `IND_CTA`, `NIVEL`, `COD_CTA`,
+  `NOME_CTA`). O do EFD Contribuições, já mapeado, tem **9** — ganha
+  `COD_CTA_REF` e `CNPJ_EST`. Confundir os dois geraria pipe sobrando.
+
+### Corrigido
+- **`_ncampos` medido depois de criar devolvia 1.** O helper usa a moda dos
+  registros do tipo já presentes, e `novo_registro` insere o registro com um
+  campo só — o primeiro 0500 do arquivo saiu como `|0500|`. O tamanho passou a
+  ser medido antes da criação. A armadilha ficou registrada no `CLAUDE.md`.
+
 ## [0.31.0] - 2026-09-21
 
 Até aqui cada campo torto virava uma regra própria — `TIPO_ITEM` fora da

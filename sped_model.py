@@ -1515,6 +1515,118 @@ class SpedDocument:
                 "por_campo": por_campo}
 
     # -------------------------------------------------------------------
+    # COD_CTA — conta contábil (obrigatória nos perfis A e B)
+    # -------------------------------------------------------------------
+    def perfil(self):
+        """Perfil declarado no 0000 (`A`, `B` ou `C`). O COD_CTA só é exigido
+        nos perfis A e B."""
+        i = self._ix("0000", "IND_PERFIL")
+        for r in self.registros:
+            if r.reg == "0000" and i is not None:
+                return (r.valor(i) or "").strip().upper()
+        return ""
+
+    def contas_0500(self):
+        """Plano de contas do arquivo. Devolve
+        `[(cod_cta, nome, nat_cc, ind_cta, nivel)]`."""
+        idx = {c: self._ix("0500", c) for c in ("COD_CTA", "NOME_CTA",
+                                                "COD_NAT_CC", "IND_CTA",
+                                                "NIVEL")}
+        out = []
+        for r in self.registros:
+            if r.reg != "0500":
+                continue
+            out.append(tuple((r.valor(idx[c]) or "").strip()
+                             for c in ("COD_CTA", "NOME_CTA", "COD_NAT_CC",
+                                       "IND_CTA", "NIVEL")))
+        return out
+
+    def registros_sem_cod_cta(self, tipo=None):
+        """Registros com o campo COD_CTA vazio, agrupados por tipo quando
+        `tipo` é None. Devolve `{tipo: [registros]}` ou a lista do tipo."""
+        por_tipo = {}
+        for r in self.registros:
+            i = self._ix(r.reg, "COD_CTA")
+            if i is None or i >= len(r.campos):
+                continue
+            if (r.valor(i) or "").strip():
+                continue
+            por_tipo.setdefault(r.reg, []).append(r)
+        if tipo is not None:
+            return por_tipo.get(tipo, [])
+        return por_tipo
+
+    def criar_conta_0500(self, cod_cta, nome_cta, nat_cc="01", ind_cta="A",
+                         nivel="1", dt_alt=None):
+        """Cria a conta no plano de contas (0500), se ainda não existir.
+
+        O 0500 entra no bloco 0 **na posição do leiaute** — depois do último
+        registro de código menor que 0500 —, senão o PVA recusa a ordem.
+        """
+        i_cod = self._ix("0500", "COD_CTA")
+        for r in self.registros:
+            if (r.reg == "0500"
+                    and (r.valor(i_cod) or "").strip() == cod_cta):
+                return None                     # já existe
+        r0001 = next((r for r in self.registros if r.reg == "0001"), None)
+        if r0001 is None:
+            return None
+        # o tamanho tem de ser medido ANTES de criar: `_ncampos` usa a moda
+        # dos registros do tipo já presentes, e o recém-criado nasce com um
+        # campo só — consultar depois devolveria 1 e geraria `|0500|`.
+        n_campos = self._ncampos("0500")
+        ancora = r0001
+        for r in self.registros:
+            if r.bloco == "0" and r.reg < "0500" and r.reg != "0000":
+                ancora = r
+        novo = self.novo_registro("0500", pai=r0001, depois=ancora)
+        novo.campos = ["0500"] + [""] * (n_campos - 1)
+        if dt_alt is None:
+            i_ini = self._ix("0000", "DT_INI")
+            dt_alt = next(((r.valor(i_ini) or "").strip()
+                           for r in self.registros if r.reg == "0000"), "")
+        for campo, valor in (("DT_ALT", dt_alt), ("COD_NAT_CC", nat_cc),
+                             ("IND_CTA", ind_cta), ("NIVEL", str(nivel)),
+                             ("COD_CTA", cod_cta), ("NOME_CTA", nome_cta)):
+            i = self._ix("0500", campo)
+            if i is not None and i < len(novo.campos):
+                novo.set_valor(i, valor)
+        return novo
+
+    def preencher_cod_cta(self, tipo, cod_cta, registros=None,
+                          criar_0500=True, nome_cta=None, nat_cc="01",
+                          ind_cta="A", nivel="1"):
+        """Preenche o COD_CTA dos registros de `tipo` que estão sem conta.
+
+        Só toca no que está **vazio** — conta já informada é escolha do
+        contribuinte. Com `criar_0500`, cadastra a conta no plano de contas
+        quando ela ainda não existe ali.
+        """
+        cod_cta = (cod_cta or "").strip()
+        if not cod_cta:
+            return {"erro": "Informe o código da conta contábil."}
+        i = self._ix(tipo, "COD_CTA")
+        if i is None:
+            return {"erro": "O registro %s não tem o campo COD_CTA." % tipo}
+        if registros is None:
+            registros = self.registros_sem_cod_cta(tipo)
+        n = 0
+        for r in registros:
+            if r.reg != tipo or i >= len(r.campos):
+                continue
+            if (r.valor(i) or "").strip():
+                continue
+            r.set_valor(i, cod_cta)
+            n += 1
+        conta = None
+        if criar_0500 and n:
+            conta = self.criar_conta_0500(cod_cta, nome_cta or cod_cta,
+                                          nat_cc, ind_cta, nivel)
+        self.atualizar_bloco9_inplace()
+        return {"registros": n, "tipo": tipo, "cod_cta": cod_cta,
+                "conta_criada": conta is not None}
+
+    # -------------------------------------------------------------------
     # COD_GEN do 0200 — capítulo do NCM (Tabela 4.2.1)
     # -------------------------------------------------------------------
     def divergencias_cod_gen(self):

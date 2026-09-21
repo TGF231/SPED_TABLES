@@ -1098,6 +1098,174 @@ class DialogoComparaInventario(QDialog):
         QMessageBox.information(self, "Exportar", "Exportado:\n%s" % caminho)
 
 
+class DialogoCodCta(QDialog):
+    """Preenche a conta contábil (COD_CTA) dos registros que estão sem ela.
+
+    O PVA exige o campo nos perfis **A e B** — o erro típico é o H010, porque
+    o cadastro do produto não tem conta de estoque vinculada no ERP. Cada tipo
+    de registro leva a sua conta: estoque no H010, custo/receita no C170, e é
+    por isso que o preenchimento é um tipo por vez.
+    """
+
+    NATUREZAS = [("01", "01 - Contas de ativo"),
+                 ("02", "02 - Contas de passivo"),
+                 ("03", "03 - Patrimônio líquido"),
+                 ("04", "04 - Contas de resultado"),
+                 ("05", "05 - Contas de compensação"),
+                 ("09", "09 - Outras")]
+    # natureza que faz sentido por registro: estoque é ativo, item de nota é
+    # resultado. É só o padrão do diálogo; o usuário troca.
+    NAT_PADRAO = {"H010": "01", "C170": "04", "D100": "04"}
+
+    def __init__(self, doc, parent=None):
+        super().__init__(parent)
+        self.doc = doc
+        self.setWindowTitle("Preencher conta contábil (COD_CTA)")
+        self.resize(620, 420)
+        lay = QVBoxLayout(self)
+
+        perfil = doc.perfil()
+        info = QLabel(
+            "O <b>COD_CTA</b> é obrigatório nos perfis <b>A</b> e <b>B</b>. "
+            "Este arquivo é do perfil <b>%s</b>.<br>Cada registro leva a sua "
+            "conta — estoque no H010, custo no C170 —, por isso o "
+            "preenchimento é de um tipo por vez."
+            % (perfil or "não declarado"))
+        info.setWordWrap(True)
+        lay.addWidget(info)
+
+        form = QFormLayout()
+        self.cb_reg = QComboBox()
+        self.faltantes = doc.registros_sem_cod_cta()
+        for tipo in sorted(self.faltantes, key=lambda t: -len(
+                self.faltantes[t])):
+            self.cb_reg.addItem("%s — %d sem conta"
+                                % (tipo, len(self.faltantes[tipo])), tipo)
+        self.cb_reg.currentIndexChanged.connect(self._reg_mudou)
+        form.addRow("Registro:", self.cb_reg)
+
+        self.ed_cod = QLineEdit()
+        self.ed_cod.setPlaceholderText("ex.: 1.1.03.01")
+        form.addRow("Código da conta (COD_CTA):", self.ed_cod)
+        self.ed_nome = QLineEdit()
+        self.ed_nome.setPlaceholderText("ex.: ESTOQUE DE MERCADORIAS")
+        form.addRow("Nome da conta (NOME_CTA):", self.ed_nome)
+        self.cb_nat = QComboBox()
+        for _c, rot in self.NATUREZAS:
+            self.cb_nat.addItem(rot)
+        form.addRow("Natureza (COD_NAT_CC):", self.cb_nat)
+        self.ed_nivel = QLineEdit("1")
+        self.ed_nivel.setMaximumWidth(60)
+        form.addRow("Nível:", self.ed_nivel)
+        lay.addLayout(form)
+
+        self.chk_0500 = QCheckBox(
+            "Cadastrar a conta no plano de contas (registro 0500) se ainda "
+            "não existir")
+        self.chk_0500.setChecked(True)
+        lay.addWidget(self.chk_0500)
+
+        contas = doc.contas_0500()
+        if contas:
+            self.cb_conta = QComboBox()
+            self.cb_conta.addItem("(digitar outra)", "")
+            for cod, nome, _nat, _ind, _niv in contas:
+                self.cb_conta.addItem("%s — %s" % (cod, nome), cod)
+            self.cb_conta.currentIndexChanged.connect(self._conta_escolhida)
+            lay.addWidget(QLabel("Contas já cadastradas no 0500:"))
+            lay.addWidget(self.cb_conta)
+        else:
+            aviso = QLabel(
+                "Este arquivo não tem <b>nenhum registro 0500</b> (plano de "
+                "contas). Deixe a opção acima marcada para criar a conta "
+                "junto — informar uma conta que não existe no plano é o "
+                "próximo erro a aparecer.")
+            aviso.setWordWrap(True)
+            aviso.setProperty("role", "aviso")
+            lay.addWidget(aviso)
+
+        self.lbl = QLabel()
+        self.lbl.setWordWrap(True)
+        self.lbl.setProperty("role", "dica")
+        lay.addWidget(self.lbl)
+        lay.addStretch(1)
+
+        rod = QHBoxLayout()
+        rod.addStretch(1)
+        self.b_ok = QPushButton("Preencher")
+        self.b_ok.clicked.connect(self._preencher)
+        rod.addWidget(self.b_ok)
+        b_fechar = QPushButton("Fechar")
+        b_fechar.clicked.connect(self.close)
+        rod.addWidget(b_fechar)
+        lay.addLayout(rod)
+
+        self._reg_mudou()
+
+    def _reg_mudou(self):
+        tipo = self.cb_reg.currentData()
+        if not tipo:
+            self.lbl.setText("Nenhum registro deste arquivo está sem conta.")
+            self.b_ok.setEnabled(False)
+            return
+        n = len(self.faltantes.get(tipo, []))
+        self.lbl.setText("%d registro(s) %s serão preenchidos. Registros que "
+                         "já têm conta não são tocados." % (n, tipo))
+        self.b_ok.setEnabled(n > 0)
+        alvo = self.NAT_PADRAO.get(tipo)
+        if alvo:
+            for i, (c, _r) in enumerate(self.NATUREZAS):
+                if c == alvo:
+                    self.cb_nat.setCurrentIndex(i)
+                    break
+
+    def _conta_escolhida(self):
+        cod = self.cb_conta.currentData()
+        if cod:
+            self.ed_cod.setText(cod)
+            for c, nome, _n, _i, _v in self.doc.contas_0500():
+                if c == cod:
+                    self.ed_nome.setText(nome)
+                    break
+
+    def _preencher(self):
+        tipo = self.cb_reg.currentData()
+        cod = self.ed_cod.text().strip()
+        if not cod:
+            QMessageBox.warning(self, "Conta contábil",
+                                "Informe o código da conta (COD_CTA).")
+            return
+        res = self.doc.preencher_cod_cta(
+            tipo, cod, criar_0500=self.chk_0500.isChecked(),
+            nome_cta=self.ed_nome.text().strip() or cod,
+            nat_cc=self.NATUREZAS[self.cb_nat.currentIndex()][0],
+            nivel=self.ed_nivel.text().strip() or "1")
+        if res.get("erro"):
+            QMessageBox.critical(self, "Conta contábil", res["erro"])
+            return
+        jan = self.parent()
+        if jan is not None:
+            if hasattr(jan, "_marcar_alterado"):
+                jan._marcar_alterado()
+            if hasattr(jan, "_montar_abas"):
+                jan._montar_abas()
+        QMessageBox.information(
+            self, "Conta contábil",
+            "%d registro(s) %s preenchidos com a conta %s.%s"
+            % (res["registros"], res["tipo"], res["cod_cta"],
+               "\n\nA conta foi cadastrada no plano de contas (0500)."
+               if res["conta_criada"] else ""))
+        self.faltantes = self.doc.registros_sem_cod_cta()
+        self.cb_reg.blockSignals(True)
+        self.cb_reg.clear()
+        for t in sorted(self.faltantes, key=lambda x: -len(self.faltantes[x])):
+            self.cb_reg.addItem("%s — %d sem conta" % (t,
+                                                       len(self.faltantes[t])),
+                                t)
+        self.cb_reg.blockSignals(False)
+        self._reg_mudou()
+
+
 class DialogoValidacao(QDialog):
     """Campos fora do domínio do leiaute, em duas naturezas:
 
@@ -4603,6 +4771,11 @@ class JanelaPrincipal(QMainWindow):
             self.act_limpar_nulos = QAction("Limpar campos com NULL…", self)
         self.act_limpar_nulos.triggered.connect(self.limpar_campos_nulos)
         self.act_limpar_nulos.setEnabled(False)
+        if not hasattr(self, "act_cod_cta"):
+            self.act_cod_cta = QAction(
+                "Preencher conta contábil (COD_CTA)…", self)
+        self.act_cod_cta.triggered.connect(self.preencher_cod_cta)
+        self.act_cod_cta.setEnabled(False)
         if not hasattr(self, "act_validar_campos"):
             self.act_validar_campos = QAction(
                 "Validar campos pelo leiaute…", self)
@@ -4754,7 +4927,7 @@ class JanelaPrincipal(QMainWindow):
                      "act_empresa", "act_conferir_itens_icms",
                      "act_conferir_itens_pc", "act_recalc_icms",
                      "act_limpar_nulos", "act_cod_gen",
-                     "act_validar_campos"):
+                     "act_validar_campos", "act_cod_cta"):
             if hasattr(self, acao):
                 getattr(self, acao).setEnabled(False)
         if hasattr(self, "menu_icms"):
@@ -5001,6 +5174,7 @@ class JanelaPrincipal(QMainWindow):
         self.menu_gerais = menu.addMenu("Gerais")
         self.menu_gerais.addAction(self.act_alterar_datas)
         self.menu_gerais.addAction(self.act_validar_campos)
+        self.menu_gerais.addAction(self.act_cod_cta)
         self.menu_gerais.addAction(self.act_revisar)
         self.menu_gerais.addAction(self.act_limpar_nulos)
         self.menu_icms.addAction(self.act_cod_gen)
@@ -5120,6 +5294,11 @@ class JanelaPrincipal(QMainWindow):
         self.act_limpar_nulos = QAction("Limpar campos com NULL…", self)
         self.act_limpar_nulos.triggered.connect(self.limpar_campos_nulos)
         self.act_limpar_nulos.setEnabled(False)
+
+        self.act_cod_cta = QAction("Preencher conta contábil (COD_CTA)…",
+                                   self)
+        self.act_cod_cta.triggered.connect(self.preencher_cod_cta)
+        self.act_cod_cta.setEnabled(False)
 
         self.act_validar_campos = QAction("Validar campos pelo leiaute…",
                                           self)
@@ -5658,6 +5837,26 @@ class JanelaPrincipal(QMainWindow):
             "Limpeza: %d campo(s) esvaziados em %d registro(s)."
             % (res["campos"], res["registros"]), 6000)
 
+    def preencher_cod_cta(self):
+        """Conta contábil dos registros que estão sem ela. Obrigatória nos
+        perfis A e B — é o erro clássico do H010, cujo item não tem conta de
+        estoque vinculada no ERP."""
+        if not self.doc:
+            return
+        faltantes = self.doc.registros_sem_cod_cta()
+        if not faltantes:
+            QMessageBox.information(
+                self, "Conta contábil",
+                "Todos os registros que têm o campo COD_CTA já estão "
+                "preenchidos.")
+            return
+        self._dlg_cod_cta = DialogoCodCta(self.doc, self)
+        self._dlg_cod_cta.show()
+        resumo = ", ".join("%s (%d)" % (t, len(v))
+                           for t, v in sorted(faltantes.items(),
+                                              key=lambda x: -len(x[1])))
+        self.statusBar().showMessage("Sem conta contábil: %s." % resumo, 8000)
+
     def validar_campos(self):
         """Confere todo o arquivo contra o domínio de cada campo do leiaute.
         Não altera nada: quem grava é o botão de normalizar, dentro do
@@ -5818,6 +6017,7 @@ class JanelaPrincipal(QMainWindow):
         self.act_revisar.setEnabled(True)
         self.act_limpar_nulos.setEnabled(True)
         self.act_validar_campos.setEnabled(True)
+        self.act_cod_cta.setEnabled(True)
         self.act_cod_gen.setEnabled(doc.layout == "ICMS")
         # o cadastro vale para os dois leiautes (é por CNPJ); as rotinas é que
         # se filtram por layout dentro do diálogo

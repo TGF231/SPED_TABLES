@@ -58,6 +58,13 @@ Usar **`self._ncampos(tipo)`** para o tamanho do registro. Nunca
 `"Campo NN"` apenas para exibição, e usá-lo gera linhas com pipes sobrando (erro
 de layout no PVA).
 
+**Meça o tamanho ANTES de criar o primeiro registro do tipo.** `_ncampos` usa
+a **moda dos registros já presentes** e só cai no layout quando não há nenhum.
+Como `novo_registro` já insere o registro com um campo só, chamar
+`self._ncampos(tipo)` **depois** dele devolve `1` — e sai `|0500|` no arquivo.
+Guarde o número numa variável antes da criação (foi o que aconteceu ao criar o
+0500 do plano de contas).
+
 **Abriu um bloco, feche o bloco.** Quem cria o primeiro registro de um bloco que
 ainda não existe no arquivo precisa criar também o **X990**. `gerar_texto`
 reconstrói só o bloco 9, e `atualizar_bloco9_inplace` apenas *atualiza* os X990

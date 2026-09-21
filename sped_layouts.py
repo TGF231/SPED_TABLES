@@ -183,6 +183,10 @@ CAMPOS_ICMS = {
     "0400": ["REG", "COD_NAT", "DESCR_NAT"],
     "0450": ["REG", "COD_INF", "TXT"],
     "0460": ["REG", "COD_OBS", "TXT"],
+    # o 0500 do EFD ICMS/IPI tem 7 campos; o do EFD Contribuições tem 9
+    # (ganha COD_CTA_REF e CNPJ_EST). Confundir os dois gera pipe sobrando.
+    "0500": ["REG", "DT_ALT", "COD_NAT_CC", "IND_CTA", "NIVEL", "COD_CTA",
+             "NOME_CTA"],
     "0990": ["REG", "QTD_LIN_0"],
     # ---- Bloco C ----
     "C001": ["REG", "IND_MOV"],

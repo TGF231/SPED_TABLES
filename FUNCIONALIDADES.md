@@ -1,6 +1,6 @@
 # Funcionalidades — SPED Tables
 
-Inventário do que existe hoje (v0.31.0), com **grau de maturidade** e as
+Inventário do que existe hoje (v0.32.0), com **grau de maturidade** e as
 **regras de uso** de cada função. O objetivo deste documento é registrar o que
 já é confiável, o que ainda precisa de polimento e quais restrições evitam
 resultado errado.
@@ -434,10 +434,26 @@ em vermelho.
 - **TIPO_ITEM fora da tabela do 0200** (só 00 a 10 e 99) — no arquivo real,
   10.312 itens com `N`, herdados da exportação do ERP;
 - **COD_GEN incoerente com o NCM** — o gênero são os dois primeiros dígitos do
-  NCM, então dá para conferir e preencher sozinho (8.3).
+  NCM, então dá para conferir e preencher sozinho (8.4).
 
 *Regra de uso:* a revisão **não substitui o PVA** — é uma triagem rápida antes
 dele. Novas regras entram na lista `REGRAS` de `revisao.py`.
+
+### 8.2 Preencher conta contábil (COD_CTA) — 🟡 Em amadurecimento
+O `COD_CTA` é obrigatório nos perfis **A** e **B**, e o erro clássico é o
+**H010**: o cadastro do produto não tem conta de estoque vinculada no ERP.
+Preenche um tipo de registro por vez — cada um leva a sua conta —, sem tocar
+no que já está preenchido, e cria o **0500** (plano de contas) junto, na
+posição do leiaute.
+
+*Validado em arquivo real (08/2026):* perfil B, 9.929 H010 e 2.486 C170 sem
+conta. Preenchendo o H010 com `1.1.03.01`: 9.929 registros, 0500 criado com
+os 7 campos do EFD ICMS/IPI, entre o último `0460` e o `0990`, contagem do
+bloco 0 batendo (13.543) e idempotente na segunda passada.
+
+*Leiaute conferido na fonte:* o 0500 tem **7 campos** na EFD ICMS/IPI e **9**
+na EFD Contribuições (ganha `COD_CTA_REF` e `CNPJ_EST`) — o do ICMS faltava
+em `sped_layouts.py` e foi acrescentado.
 
 ### 8.3 Validar campos pelo leiaute — 🟡 Em amadurecimento
 Tabela de **domínios por nome de campo** (`validacao.py`), aplicada a qualquer
@@ -478,7 +494,7 @@ corte, é imune.
 *Validado em arquivo real (08/2026):* 12.478 itens preenchidos, nenhuma
 divergência restante, larguras preservadas.
 
-### 8.2 Limpar campos com NULL — 🟡 Em amadurecimento
+### 8.5 Limpar campos com NULL — 🟡 Em amadurecimento
 Encontra e esvazia os campos em que o sistema de origem gravou o "vazio" por
 extenso — `NULL`, `None`, `#N/A`, `#REF!` e afins. É erro de exportação: o ERP
 despeja o `NULL` do banco no arquivo e o PVA recusa cada ocorrência com

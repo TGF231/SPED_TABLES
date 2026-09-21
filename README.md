@@ -379,6 +379,26 @@ regras implementadas hoje são cinco:
 
 A revisão **não substitui o PVA** — é uma triagem rápida antes dele.
 
+### Preencher conta contábil (COD_CTA)
+
+**Ferramentas → Gerais → Preencher conta contábil (COD_CTA)…** resolve o erro
+*"O campo é obrigatório para EFD ICMS/IPI com Perfil igual a 'A' ou 'B'"* no
+**H010** — e em qualquer outro registro que tenha o campo.
+
+O diálogo lista os tipos de registro que estão sem conta (ex.: `H010 — 9929 sem
+conta`, `C170 — 2486 sem conta`) e preenche **um tipo por vez**, porque cada um
+leva uma conta diferente: estoque no H010, custo no C170. A natureza da conta
+(`COD_NAT_CC`) já vem sugerida conforme o registro — ativo para o inventário,
+resultado para o item de nota.
+
+Registros que **já têm** conta não são tocados.
+
+Marcando *Cadastrar a conta no plano de contas*, o registro **0500** é criado
+junto, na posição correta do bloco 0, com data de alteração igual ao início do
+período. Isso importa: informar uma conta que não existe no plano de contas é
+o próximo erro a aparecer. Se o arquivo já tiver 0500, as contas existentes
+aparecem num seletor.
+
 ### Validar campos pelo leiaute
 
 **Ferramentas → Gerais → Validar campos pelo leiaute…** confere **todo o
