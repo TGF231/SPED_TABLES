@@ -254,7 +254,11 @@ Obter sempre por nome (`doc._ix(tipo, nome)`), nunca por número fixo. Referênc
   um centavo de diferença em 11.585 itens. Arredonde no ponto em que o valor é
   calculado e use o mesmo número nos dois lugares.
 - **VL_RED_BC (C190):** nos CST terminados em **20** ou **70**,
-  `VL_OPR − VL_BC_ICMS` (nunca negativo).
+  `VL_OPR − VL_BC_ICMS` (nunca negativo). No **x70** o ICMS foi cobrado por
+  ST e não há base própria: quando o item tem **base de PIS/COFINS**, ela
+  entra no lugar da base de ICMS só para achar a diferença — o `VL_BC_ICMS`
+  do C190 continua zero. Sem nenhuma das duas bases, a redução fica em zero e
+  o caso é apontado para conferência manual, nunca chutado.
 - **Situação do ICMS pelo CST** (`situacao_icms`): os **dois últimos dígitos**
   decidem — x20/x70 têm base reduzida; x30/x40/x41/x50/x60 não geram débito
   próprio; o resto é tributado. O primeiro dígito é a origem da mercadoria e

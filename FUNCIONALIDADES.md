@@ -1,6 +1,6 @@
 # Funcionalidades — SPED Tables
 
-Inventário do que existe hoje (v0.33.0), com **grau de maturidade** e as
+Inventário do que existe hoje (v0.34.0), com **grau de maturidade** e as
 **regras de uso** de cada função. O objetivo deste documento é registrar o que
 já é confiável, o que ainda precisa de polimento e quais restrições evitam
 resultado errado.
@@ -430,16 +430,40 @@ em vermelho.
 - Número de campos divergente do layout (usa a **moda** do arquivo);
 - C190 com CST \*20/\*70 e VL_RED_BC zerado;
 - **C170 sem C190 compatível** (item não consolidado no analítico);
-- 0200 não utilizados / duplicados (usa a mesma varredura da 8.2);
+- 0200 não utilizados / duplicados (usa a mesma varredura da 8.3);
 - **TIPO_ITEM fora da tabela do 0200** (só 00 a 10 e 99) — no arquivo real,
   10.312 itens com `N`, herdados da exportação do ERP;
 - **COD_GEN incoerente com o NCM** — o gênero são os dois primeiros dígitos do
-  NCM, então dá para conferir e preencher sozinho (8.5).
+  NCM, então dá para conferir e preencher sozinho (8.6).
 
 *Regra de uso:* a revisão **não substitui o PVA** — é uma triagem rápida antes
 dele. Novas regras entram na lista `REGRAS` de `revisao.py`.
 
-### 8.2 Itens do 0200 sem referência — 🟡 Em amadurecimento
+O relatório oferece as **correções em massa** cabíveis ao que encontrou
+(recalcular C190, preencher COD_GEN, itens sem referência): ver o erro e ter o
+conserto no mesmo lugar.
+
+### 8.2 Recalcular C190 com redução zerada (em massa) — 🟡 Em amadurecimento
+`documentos_c190_com_reducao_zerada()` acha os C100 cujo analítico tem CST
+x20/x70 com `VL_RED_BC` em branco; `consolidar_c190_em_massa()` refaz só
+esses. O recálculo por documento já existia (7.x); o que faltava era o lote.
+
+*Regra do CST x70:* o ICMS foi cobrado por ST e não há base própria. Quando o
+item tem base de **PIS/COFINS**, ela substitui a base de ICMS apenas para
+achar a diferença — o `VL_BC_ICMS` do C190 continua zero. Sem nenhuma das
+duas, a redução fica zerada e o caso vai para conferência manual.
+
+*Validado em arquivo real (08/2026):* 66 C190 com redução zerada em 53
+documentos, todos CST x70. Depois do lote: **29 grupos** corrigidos pela base
+de PIS/COFINS, sobrando 37 (itens com CST_PIS 73, sem base nenhuma).
+`VL_OPR`, `VL_BC_ICMS` e `VL_ICMS` do arquivo **idênticos** antes e depois
+(919.795,97 / 202.854,14 / 32.240,62) — o recálculo repôs a redução sem mexer
+em valor —, contagem de C190 igual (6.678) e E110 batendo com a soma das
+saídas (11.878,73).
+
+*Idempotente:* a segunda passada devolve `corrigidos: 0`.
+
+### 8.3 Itens do 0200 sem referência — 🟡 Em amadurecimento
 Aplica a regra do Guia Prático: *"Não informar item, se não referenciado em
 pelo menos um dos demais blocos"*. `referencias_de_itens()` varre o arquivo
 inteiro, `itens_0200_nao_utilizados()` lista sem alterar e
@@ -461,7 +485,7 @@ item sair da lista — a proteção funciona.
 *Efeito colateral bem-vindo:* os 1.630 órfãos eram exatamente os 1.630 com
 `TIPO_ITEM` inválido herdado do ERP. Removê-los zerou aquele achado também.
 
-### 8.3 Preencher conta contábil (COD_CTA) — 🟡 Em amadurecimento
+### 8.4 Preencher conta contábil (COD_CTA) — 🟡 Em amadurecimento
 O `COD_CTA` é obrigatório nos perfis **A** e **B**, e o erro clássico é o
 **H010**: o cadastro do produto não tem conta de estoque vinculada no ERP.
 Preenche um tipo de registro por vez — cada um leva a sua conta —, sem tocar
@@ -477,7 +501,7 @@ bloco 0 batendo (13.543) e idempotente na segunda passada.
 na EFD Contribuições (ganha `COD_CTA_REF` e `CNPJ_EST`) — o do ICMS faltava
 em `sped_layouts.py` e foi acrescentado.
 
-### 8.4 Validar campos pelo leiaute — 🟡 Em amadurecimento
+### 8.5 Validar campos pelo leiaute — 🟡 Em amadurecimento
 Tabela de **domínios por nome de campo** (`validacao.py`), aplicada a qualquer
 registro que possua o campo: NCM, CEST, COD_GEN, TIPO_ITEM, CST de ICMS/PIS/
 COFINS, CFOP, COD_SIT, indicadores, datas e campos numéricos (por prefixo
@@ -501,7 +525,7 @@ nenhuma outra função via, entre elas um `CST_ICMS` truncado em `0`.
 *Limite conhecido:* obrigatoriedade de campo não é verificada — depende do
 registro e da operação, e cobrá-la pelo nome geraria falso positivo em massa.
 
-### 8.5 Preencher COD_GEN pelo NCM — 🟡 Em amadurecimento
+### 8.6 Preencher COD_GEN pelo NCM — 🟡 Em amadurecimento
 O gênero do item são os **dois primeiros dígitos do NCM** (Tabela 4.2.1), logo
 é derivável do próprio arquivo. `divergencias_cod_gen()` lista sem alterar;
 `preencher_cod_gen()` grava o que foi exibido. Item sem NCM de 8 dígitos fica
@@ -516,7 +540,7 @@ corte, é imune.
 *Validado em arquivo real (08/2026):* 12.478 itens preenchidos, nenhuma
 divergência restante, larguras preservadas.
 
-### 8.6 Limpar campos com NULL — 🟡 Em amadurecimento
+### 8.7 Limpar campos com NULL — 🟡 Em amadurecimento
 Encontra e esvazia os campos em que o sistema de origem gravou o "vazio" por
 extenso — `NULL`, `None`, `#N/A`, `#REF!` e afins. É erro de exportação: o ERP
 despeja o `NULL` do banco no arquivo e o PVA recusa cada ocorrência com

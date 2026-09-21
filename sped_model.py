@@ -882,6 +882,12 @@ class SpedDocument:
         i_bcst = self._ix("C170", "VL_BC_ICMS_ST")
         i_icmsst = self._ix("C170", "VL_ICMS_ST")
         i_ipi = self._ix("C170", "VL_IPI")
+        # base de PIS/COFINS: nos CST terminados em 70 o ICMS foi cobrado por
+        # ST, então não há base própria de onde tirar a redução. Quando o item
+        # tem base de PIS/COFINS, ela serve de substituta para achar a
+        # diferença entre a operação e a parcela efetivamente tributada.
+        i_bcpis = self._ix("C170", "VL_BC_PIS")
+        i_bccof = self._ix("C170", "VL_BC_COFINS")
 
         # despesas acessórias do documento, rateadas entre os itens pelo valor.
         # O rateio usa DIFERENÇA DE ACUMULADOS ARREDONDADOS: o quinhão de cada
@@ -904,7 +910,8 @@ class SpedDocument:
             if g is None:
                 g = {"cst": cst, "cfop": cfop, "aliq": aliq,
                      "VL_OPR": 0.0, "VL_BC": 0.0, "VL_ICMS": 0.0,
-                     "VL_BCST": 0.0, "VL_ICMSST": 0.0, "VL_IPI": 0.0}
+                     "VL_BCST": 0.0, "VL_ICMSST": 0.0, "VL_IPI": 0.0,
+                     "VL_BC_PC": 0.0}
                 grupos[chave] = g
             vit = _to_num(it.valor(i_item))
             if acess:
@@ -922,6 +929,10 @@ class SpedDocument:
             g["VL_BCST"] += _to_num(it.valor(i_bcst))
             g["VL_ICMSST"] += _to_num(it.valor(i_icmsst))
             g["VL_IPI"] += _to_num(it.valor(i_ipi))
+            bc_pc = _to_num(it.valor(i_bcpis)) if i_bcpis is not None else 0.0
+            if not bc_pc and i_bccof is not None:
+                bc_pc = _to_num(it.valor(i_bccof))
+            g["VL_BC_PC"] += bc_pc
 
         chaves = sorted(grupos.keys(),
                         key=lambda k: (k[0], k[1], float(k[2])))
@@ -943,15 +954,25 @@ class SpedDocument:
         ancora = anteriores[-1] if anteriores else c100
 
         n_cri = 0
+        usou_pc = 0          # grupos em que a base de PIS/COFINS substituiu
+        sem_base = 0         # grupos x20/x70 sem base de onde tirar a redução
         for chave in chaves:
             g = grupos[chave]
             # redução de base: nos CST terminados em 20 ou 70, o valor reduzido
             # é a parcela da operação que ficou fora da base de cálculo.
             cst2 = (g["cst"] or "").strip()[-2:]
             if cst2 in ("20", "70"):
-                vl_red = round(g["VL_OPR"] - g["VL_BC"], 2)
+                base = g["VL_BC"]
+                if not base and cst2 == "70" and g["VL_BC_PC"]:
+                    # ICMS cobrado por ST: sem base própria, a de PIS/COFINS
+                    # é a melhor medida da parcela efetivamente tributada
+                    base = g["VL_BC_PC"]
+                    usou_pc += 1
+                vl_red = round(g["VL_OPR"] - base, 2) if base else 0.0
                 if vl_red < 0:
                     vl_red = 0.0
+                if cst2 in ("20", "70") and not vl_red:
+                    sem_base += 1
             else:
                 vl_red = 0.0
             novo = self.novo_registro("C190", pai=c100, depois=ancora)
@@ -964,7 +985,76 @@ class SpedDocument:
             n_cri += 1
 
         self.atualizar_bloco9_inplace()
-        return {"grupos": len(chaves), "removidos": n_rem, "criados": n_cri}
+        return {"grupos": len(chaves), "removidos": n_rem, "criados": n_cri,
+                "base_pis_cofins": usou_pc, "sem_base": sem_base}
+
+    def documentos_c190_com_reducao_zerada(self):
+        """C100 que têm algum C190 com CST x20/x70 e `VL_RED_BC` zerado —
+        os candidatos ao recálculo. **Não altera nada.**
+
+        Devolve `[(c100, [c190…])]`.
+        """
+        if self.layout != "ICMS":
+            return []
+        i_cst = self._ix("C190", "CST_ICMS")
+        i_red = self._ix("C190", "VL_RED_BC")
+        if i_cst is None or i_red is None:
+            return []
+        out = []
+        for c100 in self.registros:
+            if c100.reg != "C100":
+                continue
+            ruins = [f for f in c100.filhos
+                     if f.reg == "C190"
+                     and (f.valor(i_cst) or "").strip()[-2:] in ("20", "70")
+                     and _to_num(f.valor(i_red)) == 0]
+            if ruins:
+                out.append((c100, ruins))
+        return out
+
+    def consolidar_c190_em_massa(self, documentos=None):
+        """Roda `consolidar_c190` em vários documentos de uma vez.
+
+        Sem `documentos`, corrige apenas os que têm C190 com redução de base
+        zerada — o recálculo substitui os C190 do documento, e refazer os que
+        já estão certos seria mexer no que não pede conserto.
+
+        Devolve o somatório, com quantos grupos usaram a base de PIS/COFINS no
+        lugar da base de ICMS (CST x70) e quantos ficaram sem base alguma.
+        """
+        if self.layout != "ICMS":
+            return {"erro": "O C190 é do EFD ICMS/IPI."}
+        if documentos is None:
+            documentos = [c for c, _r in
+                          self.documentos_c190_com_reducao_zerada()]
+        tot = {"documentos": 0, "corrigidos": 0, "grupos": 0, "removidos": 0,
+               "criados": 0, "base_pis_cofins": 0, "sem_base": 0,
+               "sem_c170": 0}
+        i_red = self._ix("C190", "VL_RED_BC")
+
+        def red_do_doc(c100):
+            return sum(_to_num(f.valor(i_red)) for f in c100.filhos
+                       if f.reg == "C190")
+
+        for c100 in documentos:
+            antes = red_do_doc(c100)
+            res = self.consolidar_c190(c100)
+            if not res:
+                continue
+            if res.get("sem_c170"):
+                tot["sem_c170"] += 1
+                continue
+            tot["documentos"] += 1
+            # documento em que a redução realmente mudou — sem isso, rodar de
+            # novo diria "33 recalculados" sobre documentos que não têm
+            # conserto possível, e o usuário não saberia o que aconteceu
+            if round(red_do_doc(c100), 2) != round(antes, 2):
+                tot["corrigidos"] += 1
+            for k in ("grupos", "removidos", "criados", "base_pis_cofins",
+                      "sem_base"):
+                tot[k] += res.get(k, 0)
+        self.atualizar_bloco9_inplace()
+        return tot
 
     # somas diretas: campo do C100 <- soma do campo correspondente nos C170
     TOTAIS_C100 = {

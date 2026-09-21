@@ -379,6 +379,24 @@ regras implementadas hoje são cinco:
 
 A revisão **não substitui o PVA** — é uma triagem rápida antes dele.
 
+### Recalcular C190 com redução de base zerada (em massa)
+
+**Ferramentas → EFD ICMS/IPI → Recalcular C190 com redução de base zerada…**
+refaz o analítico dos documentos em que algum C190 tem CST terminado em **20**
+ou **70** e o `VL_RED_BC` em branco — erro que o PVA acusa. Só esses documentos
+são tocados: refazer o analítico que já está certo seria substituir registro
+sem motivo.
+
+Nos CST terminados em **70** o ICMS foi cobrado por substituição tributária e
+**não existe base de ICMS própria** de onde tirar a diferença. Quando o item
+tem **base de PIS/COFINS**, ela é usada no lugar para achar a parcela reduzida
+— o `VL_BC_ICMS` do C190 continua zero, como deve ser. Quando não há nenhuma
+das duas bases, a redução fica em zero e o caso é apontado para conferência
+manual, em vez de chutado.
+
+O mesmo conserto é oferecido como botão dentro de **Revisar erros**, junto da
+lista que o apontou.
+
 ### Itens do 0200 sem referência
 
 **Ferramentas → Gerais → Itens do 0200 sem referência…** aplica a regra do Guia

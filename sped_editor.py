@@ -2609,7 +2609,11 @@ class DialogoRevisao(QDialog):
 
     COLS = ["Bloco", "Registro", "Regra", "Descrição"]
 
-    def __init__(self, problemas, resumo, ir_callback, parent=None):
+    def __init__(self, problemas, resumo, ir_callback, parent=None,
+                 acoes=None):
+        """`acoes` é uma lista de (rótulo, função) com correções em massa
+        oferecidas para o que a revisão acabou de encontrar — é o caminho
+        natural: quem vê o erro quer corrigi-lo ali mesmo."""
         super().__init__(parent)
         self.problemas = problemas
         self.ir_callback = ir_callback
@@ -2645,6 +2649,10 @@ class DialogoRevisao(QDialog):
         lay.addWidget(self.tab, 1)
 
         botoes = QHBoxLayout()
+        for rotulo, fn in (acoes or []):
+            b = QPushButton(rotulo)
+            b.clicked.connect(fn)
+            botoes.addWidget(b)
         botoes.addStretch(1)
         b_ir = QPushButton("Ir para o registro")
         b_ir.clicked.connect(self._ir_selecionado)
@@ -4930,6 +4938,12 @@ class JanelaPrincipal(QMainWindow):
             self.act_limpar_nulos = QAction("Limpar campos com NULL…", self)
         self.act_limpar_nulos.triggered.connect(self.limpar_campos_nulos)
         self.act_limpar_nulos.setEnabled(False)
+        if not hasattr(self, "act_recalc_c190_massa"):
+            self.act_recalc_c190_massa = QAction(
+                "Recalcular C190 com redução de base zerada…", self)
+        self.act_recalc_c190_massa.triggered.connect(
+            self.recalcular_c190_massa)
+        self.act_recalc_c190_massa.setEnabled(False)
         if not hasattr(self, "act_itens_sem_ref"):
             self.act_itens_sem_ref = QAction(
                 "Itens do 0200 sem referência…", self)
@@ -5092,7 +5106,7 @@ class JanelaPrincipal(QMainWindow):
                      "act_conferir_itens_pc", "act_recalc_icms",
                      "act_limpar_nulos", "act_cod_gen",
                      "act_validar_campos", "act_cod_cta",
-                     "act_itens_sem_ref"):
+                     "act_itens_sem_ref", "act_recalc_c190_massa"):
             if hasattr(self, acao):
                 getattr(self, acao).setEnabled(False)
         if hasattr(self, "menu_icms"):
@@ -5344,6 +5358,7 @@ class JanelaPrincipal(QMainWindow):
         self.menu_gerais.addAction(self.act_revisar)
         self.menu_gerais.addAction(self.act_limpar_nulos)
         self.menu_icms.addAction(self.act_cod_gen)
+        self.menu_icms.addAction(self.act_recalc_c190_massa)
         self.menu_gerais.addSeparator()
         self.menu_gerais.addAction(self.act_correlacoes_cfop)
 
@@ -5460,6 +5475,12 @@ class JanelaPrincipal(QMainWindow):
         self.act_limpar_nulos = QAction("Limpar campos com NULL…", self)
         self.act_limpar_nulos.triggered.connect(self.limpar_campos_nulos)
         self.act_limpar_nulos.setEnabled(False)
+
+        self.act_recalc_c190_massa = QAction(
+            "Recalcular C190 com redução de base zerada…", self)
+        self.act_recalc_c190_massa.triggered.connect(
+            self.recalcular_c190_massa)
+        self.act_recalc_c190_massa.setEnabled(False)
 
         self.act_itens_sem_ref = QAction("Itens do 0200 sem referência…",
                                          self)
@@ -5954,8 +5975,19 @@ class JanelaPrincipal(QMainWindow):
         if not self.doc:
             return
         problemas, resumo = rev.revisar(self.doc)
+        # correções em massa oferecidas conforme o que a revisão achou —
+        # ver o erro e ter o conserto à mão no mesmo lugar
+        acoes = []
+        if any(p.regra == "C190 redução de BC" for p in problemas):
+            acoes.append(("Recalcular os C190 com redução zerada…",
+                          self._corrigir_c190_da_revisao))
+        if any(p.regra == "COD_GEN x NCM" for p in problemas):
+            acoes.append(("Preencher COD_GEN pelo NCM…",
+                          self.preencher_cod_gen))
+        if any(p.regra == "0200 não utilizado" for p in problemas):
+            acoes.append(("Itens sem referência…", self.itens_sem_referencia))
         self._dlg_revisao = DialogoRevisao(
-            problemas, resumo, self.ir_para_registro, self)
+            problemas, resumo, self.ir_para_registro, self, acoes=acoes)
         self._dlg_revisao.show()
         self.statusBar().showMessage(
             "Revisão: %d ocorrência(s)." % len(problemas))
@@ -6007,6 +6039,64 @@ class JanelaPrincipal(QMainWindow):
         self.statusBar().showMessage(
             "Limpeza: %d campo(s) esvaziados em %d registro(s)."
             % (res["campos"], res["registros"]), 6000)
+
+    def _corrigir_c190_da_revisao(self):
+        """Corrige e reabre o relatório, para o usuário ver o que restou."""
+        self.recalcular_c190_massa()
+        if getattr(self, "_dlg_revisao", None) is not None:
+            self._dlg_revisao.close()
+        self.revisar_erros()
+
+    def recalcular_c190_massa(self):
+        """Refaz os C190 dos documentos em que a redução de base está zerada
+        num CST x20/x70. Só mexe nesses documentos: recalcular o que já está
+        certo seria substituir analítico sem motivo."""
+        if not self.doc:
+            return
+        docs = self.doc.documentos_c190_com_reducao_zerada()
+        if not docs:
+            QMessageBox.information(
+                self, "Recalcular C190",
+                "Nenhum C190 com CST x20/x70 está com a redução de base "
+                "zerada.")
+            return
+        n_c190 = sum(len(v) for _c, v in docs)
+        caixa = QMessageBox(self)
+        caixa.setWindowTitle("Recalcular C190")
+        caixa.setTextFormat(Qt.TextFormat.RichText)
+        caixa.setIcon(QMessageBox.Icon.Question)
+        caixa.setText(
+            "<b>%d</b> documento(s) têm <b>%d</b> registro(s) C190 com CST "
+            "x20/x70 e redução de base zerada.<br><br>"
+            "O analítico desses documentos será <b>refeito a partir dos "
+            "itens (C170)</b>, o que recompõe o VL_RED_BC.<br><br>"
+            "Nos CST terminados em <b>70</b> o ICMS foi cobrado por "
+            "substituição e não há base própria; quando o item tiver base de "
+            "PIS/COFINS, ela é usada para achar a diferença.<br><br>"
+            "Continuar?" % (len(docs), n_c190))
+        b_ok = caixa.addButton("Recalcular",
+                               QMessageBox.ButtonRole.AcceptRole)
+        caixa.addButton("Cancelar", QMessageBox.ButtonRole.RejectRole)
+        caixa.setDefaultButton(b_ok)
+        caixa.exec()
+        if caixa.clickedButton() is not b_ok:
+            return
+
+        res = self.doc.consolidar_c190_em_massa([c for c, _v in docs])
+        self._marcar_alterado()
+        self._montar_abas()
+        restantes = len(rev.verificar_c190_reducao(self.doc))
+        msg = ("%d documento(s) recalculados, %d grupo(s) C190 refeitos.\n\n"
+               "• %d documento(s) tiveram a redução de base corrigida\n"
+               "• %d grupo(s) usaram a base de PIS/COFINS (CST x70)\n"
+               "• %d grupo(s) continuam sem base de onde tirar a redução"
+               % (res["documentos"], res["criados"], res["corrigidos"],
+                  res["base_pis_cofins"], res["sem_base"]))
+        if restantes:
+            msg += ("\n\nAinda há %d C190 com redução zerada: são itens sem "
+                    "base de ICMS e sem base de PIS/COFINS, que precisam de "
+                    "conferência manual." % restantes)
+        QMessageBox.information(self, "Recalcular C190", msg)
 
     def itens_sem_referencia(self):
         """Itens do 0200 que nenhum outro registro cita. O Guia Prático manda
@@ -6212,6 +6302,7 @@ class JanelaPrincipal(QMainWindow):
         self.act_cod_cta.setEnabled(True)
         self.act_itens_sem_ref.setEnabled(True)
         self.act_cod_gen.setEnabled(doc.layout == "ICMS")
+        self.act_recalc_c190_massa.setEnabled(doc.layout == "ICMS")
         # o cadastro vale para os dois leiautes (é por CNPJ); as rotinas é que
         # se filtram por layout dentro do diálogo
         self.act_empresa.setEnabled(doc.layout == "CONTRIB")

@@ -1,5 +1,37 @@
 # Changelog
 
+## [0.34.0] - 2026-09-21
+
+O recálculo do C190 já corrigia o `VL_RED_BC`, mas só documento a documento —
+e no arquivo real eram 66 registros espalhados por 53 documentos.
+
+### Adicionado
+- **Ferramentas → EFD ICMS/IPI → Recalcular C190 com redução de base
+  zerada…** Refaz o analítico apenas dos documentos com CST x20/x70 e
+  `VL_RED_BC` em branco; refazer o que já está certo seria substituir registro
+  sem motivo. No modelo: `documentos_c190_com_reducao_zerada()` (não altera
+  nada) e `consolidar_c190_em_massa()`.
+- **Base de PIS/COFINS como substituta no CST x70.** Ali o ICMS foi cobrado
+  por ST e não existe base própria de onde tirar a diferença. Quando o item
+  tem `VL_BC_PIS` (ou `VL_BC_COFINS`), ela entra no lugar **apenas para
+  calcular a redução** — o `VL_BC_ICMS` do C190 continua zero, como deve ser.
+  Sem nenhuma das duas bases, a redução fica zerada e o caso é apontado para
+  conferência manual, nunca chutado.
+- O relatório de **Revisar erros** passou a oferecer as correções em massa
+  cabíveis ao que encontrou (recalcular C190, preencher COD_GEN, itens sem
+  referência), com `DialogoRevisao(..., acoes=[...])`.
+
+### Notas
+- No arquivo real: 66 C190 com redução zerada em 53 documentos, **todos CST
+  x70**. Depois do lote, **29 grupos** corrigidos pela base de PIS/COFINS e 37
+  restantes (itens com `CST_PIS` 73, sem base nenhuma).
+- `VL_OPR`, `VL_BC_ICMS` e `VL_ICMS` do arquivo ficaram **idênticos** antes e
+  depois — 919.795,97 / 202.854,14 / 32.240,62 —, a contagem de C190 não mudou
+  (6.678) e o E110 continua batendo com a soma das saídas (11.878,73). O
+  recálculo repôs a redução sem mexer em valor nenhum.
+- O resumo distingue `documentos` de `corrigidos`: rodar de novo devolve
+  `corrigidos: 0`, em vez de dar a impressão de ter mudado algo.
+
 ## [0.33.0] - 2026-09-21
 
 *"Não informar item, se não referenciado em pelo menos um dos demais blocos."*
