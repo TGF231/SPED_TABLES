@@ -379,6 +379,36 @@ regras implementadas hoje são cinco:
 
 A revisão **não substitui o PVA** — é uma triagem rápida antes dele.
 
+### Validar campos pelo leiaute
+
+**Ferramentas → Gerais → Validar campos pelo leiaute…** confere **todo o
+arquivo** contra o domínio de cada campo — NCM com 8 dígitos, CEST com 7, CFOP
+com 4 começando por 1/2/3/5/6/7, CST de PIS e COFINS na tabela oficial, datas
+que existem de verdade, campos de valor no formato numérico do SPED, e assim por
+diante. A regra vale por **nome de campo**, então alcança qualquer registro que
+o possua.
+
+O resultado vem separado em duas naturezas:
+
+- **Com conserto automático** — o valor está certo mas perdeu o zero à esquerda
+  (CEST com 6 dígitos, NCM com 7, `TIPO_ITEM` com 1) ou é texto de vazio
+  (`NULL`, `#N/A`). O botão **Normalizar** corrige todos de uma vez, e a
+  sugestão só existe quando falta **exatamente um** dígito — repor dois zeros
+  seria inventar.
+- **Exigem correção manual** — CST do ICMS incompleto, CFOP inexistente, data
+  impossível. Esses ficam na lista, e o **duplo-clique leva até o registro**
+  para você corrigir na grade.
+
+Os dois filtros do topo (natureza e campo) servem para triagem em arquivo
+grande. Num SPED real de 28.475 registros a varredura levou 0,11 s e encontrou
+24.751 campos fora do domínio, 14.253 deles corrigidos num clique.
+
+O diagnóstico procura ser específico. O erro mais comum no `CST_ICMS`, por
+exemplo, não é lixo: é o **CSOSN do fornecedor do Simples** (`101`, `201`)
+copiado sem o dígito de origem. O programa diz isso em vez de apenas "valor
+inválido" — mas não sugere a correção, porque a origem da mercadoria é
+informação fiscal, não formatação.
+
 ### Preencher COD_GEN pelo NCM (0200)
 
 **Ferramentas → EFD ICMS/IPI → Preencher COD_GEN pelo NCM (0200)…** preenche o

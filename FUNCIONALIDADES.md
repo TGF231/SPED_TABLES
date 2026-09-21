@@ -1,6 +1,6 @@
 # Funcionalidades — SPED Tables
 
-Inventário do que existe hoje (v0.30.0), com **grau de maturidade** e as
+Inventário do que existe hoje (v0.31.0), com **grau de maturidade** e as
 **regras de uso** de cada função. O objetivo deste documento é registrar o que
 já é confiável, o que ainda precisa de polimento e quais restrições evitam
 resultado errado.
@@ -439,7 +439,31 @@ em vermelho.
 *Regra de uso:* a revisão **não substitui o PVA** — é uma triagem rápida antes
 dele. Novas regras entram na lista `REGRAS` de `revisao.py`.
 
-### 8.3 Preencher COD_GEN pelo NCM — 🟡 Em amadurecimento
+### 8.3 Validar campos pelo leiaute — 🟡 Em amadurecimento
+Tabela de **domínios por nome de campo** (`validacao.py`), aplicada a qualquer
+registro que possua o campo: NCM, CEST, COD_GEN, TIPO_ITEM, CST de ICMS/PIS/
+COFINS, CFOP, COD_SIT, indicadores, datas e campos numéricos (por prefixo
+`VL_`, `ALIQ_`, `QTD`).
+
+A saída separa **conserto mecânico** (zero à esquerda perdido, texto de vazio —
+normalizados em lote) de **decisão fiscal** (lista com duplo-clique que navega
+até o registro). Sugestão só existe quando falta **exatamente um** dígito.
+
+*Validado em arquivo real (08/2026):* 28.475 registros varridos em 0,11 s,
+24.751 campos fora do domínio — 14.253 corrigidos de uma vez (COD_GEN 10.312,
+CEST 3.499, COD_NCM 442) e 10.498 restantes com diagnóstico nominal. Depois da
+normalização: NCM todos com 8 dígitos, CEST com 7, nenhum `NULL` e larguras
+preservadas.
+
+*Falso positivo que a validação evita:* `CST_ICMS` com `101`/`201` não é lixo —
+é o **CSOSN do fornecedor do Simples sem o dígito de origem**, e o diagnóstico
+diz isso. Nos dois arquivos da CASA DO ESPETO a regra achou 8 ocorrências que
+nenhuma outra função via, entre elas um `CST_ICMS` truncado em `0`.
+
+*Limite conhecido:* obrigatoriedade de campo não é verificada — depende do
+registro e da operação, e cobrá-la pelo nome geraria falso positivo em massa.
+
+### 8.4 Preencher COD_GEN pelo NCM — 🟡 Em amadurecimento
 O gênero do item são os **dois primeiros dígitos do NCM** (Tabela 4.2.1), logo
 é derivável do próprio arquivo. `divergencias_cod_gen()` lista sem alterar;
 `preencher_cod_gen()` grava o que foi exibido. Item sem NCM de 8 dígitos fica

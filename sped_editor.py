@@ -45,6 +45,7 @@ from sped_model import SpedDocument
 import xml_fiscal as xf
 import conferencia as cf
 import revisao as rev
+import validacao
 import tabelas_rfb as trfb
 import empresas as emp_mod
 import rotinas
@@ -1095,6 +1096,198 @@ class DialogoComparaInventario(QDialog):
             QMessageBox.critical(self, "Exportar", str(exc))
             return
         QMessageBox.information(self, "Exportar", "Exportado:\n%s" % caminho)
+
+
+class DialogoValidacao(QDialog):
+    """Campos fora do domínio do leiaute, em duas naturezas:
+
+    o que tem **conserto mecânico** (zero à esquerda perdido, texto de vazio)
+    é normalizado em lote pelo botão; o que exige **decisão fiscal** fica na
+    lista, e o duplo-clique leva até o registro para corrigir à mão.
+    """
+
+    COLS = ["Bloco", "Registro", "Campo", "Valor", "Problema", "Sugestão"]
+    LIMITE = 20000          # além disto a tabela vira peso morto
+
+    def __init__(self, doc, achados, ir_callback, parent=None):
+        super().__init__(parent)
+        self.doc = doc
+        self.achados = achados
+        self.ir_callback = ir_callback
+        self.setWindowTitle("Validar campos pelo leiaute")
+        self.resize(940, 580)
+        lay = QVBoxLayout(self)
+
+        self.lbl = QLabel()
+        self.lbl.setWordWrap(True)
+        lay.addWidget(self.lbl)
+
+        filtros = QHBoxLayout()
+        filtros.addWidget(QLabel("Mostrar:"))
+        self.cb_nat = QComboBox()
+        self.cb_nat.addItem("Todos", "todos")
+        self.cb_nat.addItem("Com conserto automático", "auto")
+        self.cb_nat.addItem("Exigem correção manual", "manual")
+        self.cb_nat.currentIndexChanged.connect(self._repovoar)
+        filtros.addWidget(self.cb_nat)
+        filtros.addSpacing(12)
+        filtros.addWidget(QLabel("Campo:"))
+        self.cb_campo = QComboBox()
+        self.cb_campo.currentIndexChanged.connect(self._repovoar)
+        filtros.addWidget(self.cb_campo, 1)
+        lay.addLayout(filtros)
+
+        dica = QLabel("Dê duplo-clique numa linha para ir ao registro.")
+        dica.setProperty("role", "dica")
+        lay.addWidget(dica)
+
+        self.tab = QTableWidget(0, len(self.COLS))
+        self.tab.setHorizontalHeaderLabels(self.COLS)
+        self.tab.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
+        self.tab.setSelectionBehavior(
+            QAbstractItemView.SelectionBehavior.SelectRows)
+        self.tab.verticalHeader().setVisible(False)
+        self.tab.horizontalHeader().setStretchLastSection(True)
+        self.tab.horizontalHeader().setResizeContentsPrecision(200)
+        self.tab.cellDoubleClicked.connect(self._ir)
+        lay.addWidget(self.tab, 1)
+
+        rod = QHBoxLayout()
+        self.b_norm = QPushButton()
+        self.b_norm.clicked.connect(self._normalizar)
+        rod.addWidget(self.b_norm)
+        rod.addStretch(1)
+        b_ir = QPushButton("Ir para o registro")
+        b_ir.clicked.connect(self._ir_selecionado)
+        rod.addWidget(b_ir)
+        b_fechar = QPushButton("Fechar")
+        b_fechar.clicked.connect(self.close)
+        rod.addWidget(b_fechar)
+        lay.addLayout(rod)
+
+        self._montar_combo_campos()
+        self._repovoar()
+
+    # ------------------------------------------------------------ montagem
+    def _montar_combo_campos(self):
+        atual = self.cb_campo.currentData()
+        self.cb_campo.blockSignals(True)
+        self.cb_campo.clear()
+        self.cb_campo.addItem("(todos)", "")
+        vistos = {}
+        for o in self.achados:
+            vistos[o.campo] = vistos.get(o.campo, 0) + 1
+        for campo, n in sorted(vistos.items(), key=lambda x: -x[1]):
+            self.cb_campo.addItem("%s (%d)" % (campo, n), campo)
+        if atual:
+            i = self.cb_campo.findData(atual)
+            if i >= 0:
+                self.cb_campo.setCurrentIndex(i)
+        self.cb_campo.blockSignals(False)
+
+    def _filtrados(self):
+        nat = self.cb_nat.currentData()
+        campo = self.cb_campo.currentData()
+        out = []
+        for o in self.achados:
+            if campo and o.campo != campo:
+                continue
+            if nat == "auto" and o.sugestao is None:
+                continue
+            if nat == "manual" and o.sugestao is not None:
+                continue
+            out.append(o)
+        return out
+
+    def _repovoar(self):
+        pal = tema.atual()
+        lista = self._filtrados()
+        auto = sum(1 for o in self.achados if o.sugestao is not None)
+        self.lbl.setText(
+            "<b>%d</b> campo(s) fora do domínio do leiaute: <b>%d</b> com "
+            "conserto automático e <b>%d</b> que dependem de decisão sua."
+            % (len(self.achados), auto, len(self.achados) - auto))
+        mostrados = lista[:self.LIMITE]
+        self.tab.setSortingEnabled(False)
+        self.tab.setRowCount(len(mostrados))
+        for i, o in enumerate(mostrados):
+            vals = [o.bloco, o.reg, o.campo, o.valor, o.motivo,
+                    ("(esvaziar)" if o.sugestao == "" else o.sugestao)
+                    if o.sugestao is not None else "—"]
+            for j, v in enumerate(vals):
+                it = QTableWidgetItem(str(v))
+                if j == 0:
+                    it.setData(Qt.ItemDataRole.UserRole, o.uid)
+                if j == 5:
+                    it.setForeground(QColor(pal.ok if o.sugestao is not None
+                                            else pal.warn))
+                self.tab.setItem(i, j, it)
+        # o indicador -1 antes de ligar preserva a ordem de montagem
+        self.tab.horizontalHeader().setSortIndicator(
+            -1, Qt.SortOrder.AscendingOrder)
+        self.tab.setSortingEnabled(True)
+        self.tab.resizeColumnsToContents()
+        if len(lista) > self.LIMITE:
+            self.lbl.setText(self.lbl.text() +
+                             "<br>Mostrando as %d primeiras de %d — use os "
+                             "filtros para reduzir." % (self.LIMITE,
+                                                        len(lista)))
+        n_auto = sum(1 for o in lista if o.sugestao is not None)
+        self.b_norm.setText("Normalizar %d campo(s) desta lista" % n_auto)
+        self.b_norm.setEnabled(n_auto > 0)
+
+    # -------------------------------------------------------------- ações
+    def _normalizar(self):
+        lista = [o for o in self._filtrados() if o.sugestao is not None]
+        if not lista:
+            return
+        por_campo = {}
+        for o in lista:
+            por_campo[o.campo] = por_campo.get(o.campo, 0) + 1
+        detalhe = ", ".join("%s (%d)" % (c, n) for c, n in
+                            sorted(por_campo.items(), key=lambda x: -x[1]))
+        caixa = QMessageBox(self)
+        caixa.setWindowTitle("Normalizar campos")
+        caixa.setTextFormat(Qt.TextFormat.RichText)
+        caixa.setIcon(QMessageBox.Icon.Question)
+        caixa.setText("Serão corrigidos <b>%d</b> campo(s):<br><br>%s"
+                      "<br><br>Continuar?" % (len(lista), detalhe))
+        b_ok = caixa.addButton("Normalizar",
+                               QMessageBox.ButtonRole.AcceptRole)
+        caixa.addButton("Cancelar", QMessageBox.ButtonRole.RejectRole)
+        caixa.setDefaultButton(b_ok)
+        caixa.exec()
+        if caixa.clickedButton() is not b_ok:
+            return
+
+        res = validacao.normalizar(self.doc, lista)
+        jan = self.parent()
+        if jan is not None:
+            if hasattr(jan, "_marcar_alterado"):
+                jan._marcar_alterado()
+            if hasattr(jan, "_montar_abas"):
+                jan._montar_abas()
+        # revalida: o que sobrou é o que precisa de decisão humana
+        self.achados = validacao.validar(self.doc)
+        self._montar_combo_campos()
+        self._repovoar()
+        QMessageBox.information(
+            self, "Normalizar campos",
+            "%d campo(s) corrigido(s).\n\n%s"
+            % (res["campos"],
+               "\n".join("• %s: %d" % (c, n)
+                         for c, n in sorted(res["por_campo"].items(),
+                                            key=lambda x: -x[1]))))
+
+    def _ir(self, row, _col):
+        it = self.tab.item(row, 0)
+        if it is not None and self.ir_callback is not None:
+            self.ir_callback(it.data(Qt.ItemDataRole.UserRole))
+
+    def _ir_selecionado(self):
+        linhas = {i.row() for i in self.tab.selectedIndexes()}
+        if linhas:
+            self._ir(min(linhas), 0)
 
 
 class DialogoAtualizar0200(QDialog):
@@ -4410,6 +4603,11 @@ class JanelaPrincipal(QMainWindow):
             self.act_limpar_nulos = QAction("Limpar campos com NULL…", self)
         self.act_limpar_nulos.triggered.connect(self.limpar_campos_nulos)
         self.act_limpar_nulos.setEnabled(False)
+        if not hasattr(self, "act_validar_campos"):
+            self.act_validar_campos = QAction(
+                "Validar campos pelo leiaute…", self)
+        self.act_validar_campos.triggered.connect(self.validar_campos)
+        self.act_validar_campos.setEnabled(False)
         if not hasattr(self, "act_cod_gen"):
             self.act_cod_gen = QAction("Preencher COD_GEN pelo NCM (0200)…",
                                        self)
@@ -4555,7 +4753,8 @@ class JanelaPrincipal(QMainWindow):
                      "act_conferir_55", "act_conferir_c190", "act_revisar",
                      "act_empresa", "act_conferir_itens_icms",
                      "act_conferir_itens_pc", "act_recalc_icms",
-                     "act_limpar_nulos", "act_cod_gen"):
+                     "act_limpar_nulos", "act_cod_gen",
+                     "act_validar_campos"):
             if hasattr(self, acao):
                 getattr(self, acao).setEnabled(False)
         if hasattr(self, "menu_icms"):
@@ -4801,6 +5000,7 @@ class JanelaPrincipal(QMainWindow):
         menu.addSeparator()
         self.menu_gerais = menu.addMenu("Gerais")
         self.menu_gerais.addAction(self.act_alterar_datas)
+        self.menu_gerais.addAction(self.act_validar_campos)
         self.menu_gerais.addAction(self.act_revisar)
         self.menu_gerais.addAction(self.act_limpar_nulos)
         self.menu_icms.addAction(self.act_cod_gen)
@@ -4920,6 +5120,11 @@ class JanelaPrincipal(QMainWindow):
         self.act_limpar_nulos = QAction("Limpar campos com NULL…", self)
         self.act_limpar_nulos.triggered.connect(self.limpar_campos_nulos)
         self.act_limpar_nulos.setEnabled(False)
+
+        self.act_validar_campos = QAction("Validar campos pelo leiaute…",
+                                          self)
+        self.act_validar_campos.triggered.connect(self.validar_campos)
+        self.act_validar_campos.setEnabled(False)
 
         self.act_cod_gen = QAction("Preencher COD_GEN pelo NCM (0200)…", self)
         self.act_cod_gen.triggered.connect(self.preencher_cod_gen)
@@ -5453,6 +5658,26 @@ class JanelaPrincipal(QMainWindow):
             "Limpeza: %d campo(s) esvaziados em %d registro(s)."
             % (res["campos"], res["registros"]), 6000)
 
+    def validar_campos(self):
+        """Confere todo o arquivo contra o domínio de cada campo do leiaute.
+        Não altera nada: quem grava é o botão de normalizar, dentro do
+        diálogo, e só sobre o que tem conserto mecânico."""
+        if not self.doc:
+            return
+        achados = validacao.validar(self.doc)
+        if not achados:
+            QMessageBox.information(
+                self, "Validar campos pelo leiaute",
+                "Nenhum campo preenchido está fora do domínio do leiaute.")
+            return
+        self._dlg_validacao = DialogoValidacao(
+            self.doc, achados, self.ir_para_registro, self)
+        self._dlg_validacao.show()
+        auto = sum(1 for o in achados if o.sugestao is not None)
+        self.statusBar().showMessage(
+            "Validação: %d campo(s) fora do domínio, %d com conserto "
+            "automático." % (len(achados), auto), 8000)
+
     def preencher_cod_gen(self):
         """Deriva o COD_GEN do 0200 a partir do NCM (Tabela 4.2.1: o gênero
         são os dois primeiros dígitos). Como é derivável, não depende de a
@@ -5592,6 +5817,7 @@ class JanelaPrincipal(QMainWindow):
         self.act_conferir_c190.setEnabled(doc.layout == "ICMS")
         self.act_revisar.setEnabled(True)
         self.act_limpar_nulos.setEnabled(True)
+        self.act_validar_campos.setEnabled(True)
         self.act_cod_gen.setEnabled(doc.layout == "ICMS")
         # o cadastro vale para os dois leiautes (é por CNPJ); as rotinas é que
         # se filtram por layout dentro do diálogo

@@ -1,5 +1,42 @@
 # Changelog
 
+## [0.31.0] - 2026-09-21
+
+Até aqui cada campo torto virava uma regra própria — `TIPO_ITEM` fora da
+tabela, `COD_GEN` sem o capítulo, `NULL` gravado por extenso. Não escala. Esta
+versão troca isso por uma tabela de **domínios por nome de campo**, aplicada a
+qualquer registro que possua o campo.
+
+### Adicionado
+- **`validacao.py`** — módulo novo. `DOMINIOS` associa o nome do campo ao seu
+  domínio (NCM 8 dígitos, CEST 7, CFOP 4 começando por 1/2/3/5/6/7, CST de
+  PIS/COFINS na tabela oficial, `COD_SIT`, indicadores, datas reais, e campos
+  numéricos pelo prefixo `VL_`/`ALIQ_`/`QTD`). Funciona por nome porque no SPED
+  o nome carrega o domínio: `CFOP` é CFOP no C170, no C190 e no D190.
+  `validar()` varre sem alterar; `normalizar()` grava só o que tem conserto
+  mecânico; `resumo()` agrupa para o panorama.
+- **Ferramentas → Gerais → Validar campos pelo leiaute…** O diálogo separa o
+  que tem **conserto automático** (zero à esquerda perdido, texto de vazio) do
+  que exige **decisão fiscal**, com filtros por natureza e por campo. O botão
+  normaliza em lote; o **duplo-clique navega até o registro** para corrigir à
+  mão o que não dá para adivinhar.
+- Diagnóstico específico onde ele muda a ação do usuário: `CST_ICMS` com `101`
+  ou `201` não é lixo, é o **CSOSN do fornecedor do Simples sem o dígito de
+  origem** — e o texto diz isso, sem sugerir correção, porque origem de
+  mercadoria é informação fiscal e não formatação.
+
+### Notas
+- Sugestão só nasce quando falta **exatamente um** dígito; repor dois zeros
+  seria inventar. `sugestao=""` significa "esvaziar" e `None`, "não sei
+  consertar".
+- Só o que está **preenchido** é validado. Obrigatoriedade depende do registro
+  e da operação, não do nome do campo.
+- No SPED real de 08/2026: 28.475 registros varridos em 0,11 s, 24.751 campos
+  fora do domínio, **14.253 corrigidos num clique** (COD_GEN 10.312, CEST
+  3.499, COD_NCM 442). Nos arquivos da CASA DO ESPETO a regra achou 8
+  ocorrências que nenhuma outra função via, entre elas um `CST_ICMS` truncado
+  em `0`.
+
 ## [0.30.0] - 2026-09-21
 
 O `COD_GEN` é derivável — são os **dois primeiros dígitos do NCM** (Tabela

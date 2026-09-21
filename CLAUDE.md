@@ -27,6 +27,7 @@ Dependências em `requirements.txt` (PyQt6; `openpyxl` para planilhas XLSX).
 | `xml_fiscal.py` | Parser de NF-e/NFC-e (`NFe`, `ItemNFe`, `ler_pasta`, `chave_doc`, `indexar`). |
 | `conferencia.py` | Conferência XML × SPED (entradas modelo 55, C190) e correlações de CFOP. |
 | `revisao.py` | Regras de revisão extensíveis (lista `REGRAS`). |
+| `validacao.py` | Domínio de cada campo **por nome** (`DOMINIOS`), varredura do arquivo e normalização em lote. Detecta; só `normalizar()` grava. |
 | `empresas.py` | Cadastro por CNPJ: regime federal e de PIS/COFINS, alíquotas, atividade. Persistido em `empresas.json` (fora do git). |
 | `rotinas.py` | Rotinas de conferência/correção por regime (lista `ROTINAS`). Verificação nunca altera o arquivo; a correção recebe as ocorrências já exibidas. |
 | `arquivos.py` | Memória persistente: cópia do SPED em `arquivos/<CNPJ>/<LEIAUTE>_<AAAAMM>.txt` + `indice.json`. Uma cópia por período. Fora do git. |
@@ -112,6 +113,25 @@ precisam aparecer sempre (foi o que aconteceu com a ação *Empresas*).
 O menu Ferramentas é agrupado por leiaute (`menu_icms`, `menu_contrib`,
 `menu_gerais`); `abrir()` habilita/desabilita o submenu inteiro conforme
 `doc.layout`.
+
+### Validação por domínio de campo
+
+`validacao.py` não tem uma regra por situação: tem uma tabela de **domínios por
+nome de campo**, aplicada a todo registro que possua o campo. Funciona porque no
+SPED o nome carrega o domínio — `CFOP` é CFOP no C170, no C190 e no D190.
+
+Três decisões que evitam estrago:
+
+- **Só o que está preenchido é validado.** Obrigatoriedade depende do registro e
+  da operação, não do nome do campo; cobrá-la ali geraria enxurrada de falso
+  positivo.
+- **Sugestão só quando falta exatamente um dígito.** Repor dois zeros é
+  inventar. `sugestao=""` quer dizer "esvaziar" e `None`, "não sei consertar" —
+  por isso a comparação é sempre `is None`.
+- **Origem da mercadoria não se adivinha.** `CST_ICMS` e `CFOP` são apontados,
+  nunca sugeridos. O erro mais comum ali nem é lixo: é o **CSOSN do fornecedor
+  do Simples copiado sem o dígito de origem** (`101`, `201`), e o diagnóstico
+  diz isso com todas as letras.
 
 ### Navegação mestre-detalhe
 
