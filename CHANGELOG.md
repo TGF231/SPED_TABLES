@@ -1,5 +1,39 @@
 # Changelog
 
+## [0.33.0] - 2026-09-21
+
+*"Não informar item, se não referenciado em pelo menos um dos demais blocos."*
+O cadastro do arquivo real tinha **1.630 itens** que nenhum registro citava.
+
+### Adicionado
+- **Ferramentas → Gerais → Itens do 0200 sem referência…** Varre o arquivo
+  inteiro atrás de cada código do cadastro, lista os órfãos com descrição e
+  contagem de filhos, e remove sob confirmação — com duplo-clique que navega
+  até o registro e exportação em CSV.
+- No modelo: `referencias_de_itens()`, `itens_0200_nao_utilizados()` e
+  `remover_itens_0200()` (que apaga a subárvore junto: 0205, 0206, 0220…).
+- **Varredura em duas estratégias.** Registro com leiaute mapeado é lido pelo
+  **nome** do campo `COD_ITEM`; registro que o projeto ainda não mapeia — o
+  **bloco K** inteiro, que usa `COD_ITEM` em quase todos os registros — é
+  varrido **por valor**. O modo conservador erra para mais: preserva item que
+  talvez pudesse sair, mas nunca apaga item em uso. O painel mostra de onde
+  vieram as referências e quais registros caíram nesse modo.
+
+### Alterado
+- A regra de revisão *0200 não utilizados* passou a usar a mesma varredura do
+  modelo. Antes ela olhava só o nome do campo e, num arquivo com bloco K
+  escriturado, apontaria como não utilizado item que está sendo usado lá.
+
+### Notas
+- Validado em arquivo real: 12.479 itens, 10.849 referenciados, 1.630 órfãos —
+  os mesmos apontados pela regra de revisão, conferidos por `uid`. Depois de
+  remover, nenhum referenciado se perdeu (verificação explícita por conjunto),
+  larguras íntegras e inventário fechando em R$ 958.285,74.
+- Num **controle**, um `K200` sem leiaute citando um órfão fez o item sair da
+  lista — a proteção da varredura por valor funciona.
+- Os 1.630 órfãos eram exatamente os 1.630 itens com `TIPO_ITEM` inválido
+  herdado do ERP; removê-los zerou aquele achado também.
+
 ## [0.32.0] - 2026-09-21
 
 O PVA recusou o H010 com *"O campo é obrigatório para EFD ICMS/IPI com Perfil

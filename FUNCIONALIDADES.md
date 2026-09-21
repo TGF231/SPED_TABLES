@@ -1,6 +1,6 @@
 # Funcionalidades — SPED Tables
 
-Inventário do que existe hoje (v0.32.0), com **grau de maturidade** e as
+Inventário do que existe hoje (v0.33.0), com **grau de maturidade** e as
 **regras de uso** de cada função. O objetivo deste documento é registrar o que
 já é confiável, o que ainda precisa de polimento e quais restrições evitam
 resultado errado.
@@ -430,16 +430,38 @@ em vermelho.
 - Número de campos divergente do layout (usa a **moda** do arquivo);
 - C190 com CST \*20/\*70 e VL_RED_BC zerado;
 - **C170 sem C190 compatível** (item não consolidado no analítico);
-- 0200 não utilizados / duplicados;
+- 0200 não utilizados / duplicados (usa a mesma varredura da 8.2);
 - **TIPO_ITEM fora da tabela do 0200** (só 00 a 10 e 99) — no arquivo real,
   10.312 itens com `N`, herdados da exportação do ERP;
 - **COD_GEN incoerente com o NCM** — o gênero são os dois primeiros dígitos do
-  NCM, então dá para conferir e preencher sozinho (8.4).
+  NCM, então dá para conferir e preencher sozinho (8.5).
 
 *Regra de uso:* a revisão **não substitui o PVA** — é uma triagem rápida antes
 dele. Novas regras entram na lista `REGRAS` de `revisao.py`.
 
-### 8.2 Preencher conta contábil (COD_CTA) — 🟡 Em amadurecimento
+### 8.2 Itens do 0200 sem referência — 🟡 Em amadurecimento
+Aplica a regra do Guia Prático: *"Não informar item, se não referenciado em
+pelo menos um dos demais blocos"*. `referencias_de_itens()` varre o arquivo
+inteiro, `itens_0200_nao_utilizados()` lista sem alterar e
+`remover_itens_0200()` apaga o que foi exibido, com a subárvore.
+
+*Duas estratégias de varredura:* registro com leiaute mapeado é lido pelo nome
+do campo `COD_ITEM`; registro **sem leiaute** (o bloco K inteiro, que usa
+COD_ITEM em quase todos os registros e não está em `sped_layouts.py`) é
+varrido **por valor**. O modo conservador erra para mais — preserva item a
+mais, nunca apaga item em uso —, e o painel diz quais registros caíram nele.
+
+*Validado em arquivo real (08/2026):* 12.479 itens, 10.849 referenciados,
+**1.630 órfãos** — os mesmos apontados pela regra 8.1, conferidos por uid.
+Depois de remover: 0200 com 10.849, nenhum referenciado perdido (verificação
+explícita por conjunto), larguras íntegras e o inventário fechando em
+R$ 958.285,74. Num **controle**, um `K200` sem leiaute citando um órfão fez o
+item sair da lista — a proteção funciona.
+
+*Efeito colateral bem-vindo:* os 1.630 órfãos eram exatamente os 1.630 com
+`TIPO_ITEM` inválido herdado do ERP. Removê-los zerou aquele achado também.
+
+### 8.3 Preencher conta contábil (COD_CTA) — 🟡 Em amadurecimento
 O `COD_CTA` é obrigatório nos perfis **A** e **B**, e o erro clássico é o
 **H010**: o cadastro do produto não tem conta de estoque vinculada no ERP.
 Preenche um tipo de registro por vez — cada um leva a sua conta —, sem tocar
@@ -455,7 +477,7 @@ bloco 0 batendo (13.543) e idempotente na segunda passada.
 na EFD Contribuições (ganha `COD_CTA_REF` e `CNPJ_EST`) — o do ICMS faltava
 em `sped_layouts.py` e foi acrescentado.
 
-### 8.3 Validar campos pelo leiaute — 🟡 Em amadurecimento
+### 8.4 Validar campos pelo leiaute — 🟡 Em amadurecimento
 Tabela de **domínios por nome de campo** (`validacao.py`), aplicada a qualquer
 registro que possua o campo: NCM, CEST, COD_GEN, TIPO_ITEM, CST de ICMS/PIS/
 COFINS, CFOP, COD_SIT, indicadores, datas e campos numéricos (por prefixo
@@ -479,7 +501,7 @@ nenhuma outra função via, entre elas um `CST_ICMS` truncado em `0`.
 *Limite conhecido:* obrigatoriedade de campo não é verificada — depende do
 registro e da operação, e cobrá-la pelo nome geraria falso positivo em massa.
 
-### 8.4 Preencher COD_GEN pelo NCM — 🟡 Em amadurecimento
+### 8.5 Preencher COD_GEN pelo NCM — 🟡 Em amadurecimento
 O gênero do item são os **dois primeiros dígitos do NCM** (Tabela 4.2.1), logo
 é derivável do próprio arquivo. `divergencias_cod_gen()` lista sem alterar;
 `preencher_cod_gen()` grava o que foi exibido. Item sem NCM de 8 dígitos fica
@@ -494,7 +516,7 @@ corte, é imune.
 *Validado em arquivo real (08/2026):* 12.478 itens preenchidos, nenhuma
 divergência restante, larguras preservadas.
 
-### 8.5 Limpar campos com NULL — 🟡 Em amadurecimento
+### 8.6 Limpar campos com NULL — 🟡 Em amadurecimento
 Encontra e esvazia os campos em que o sistema de origem gravou o "vazio" por
 extenso — `NULL`, `None`, `#N/A`, `#REF!` e afins. É erro de exportação: o ERP
 despeja o `NULL` do banco no arquivo e o PVA recusa cada ocorrência com

@@ -1098,6 +1098,165 @@ class DialogoComparaInventario(QDialog):
         QMessageBox.information(self, "Exportar", "Exportado:\n%s" % caminho)
 
 
+class DialogoItensNaoUsados(QDialog):
+    """Itens do 0200 que nenhum outro registro referencia.
+
+    O Guia Prático é explícito: *"Não informar item, se não referenciado em
+    pelo menos um dos demais blocos"*. O painel mostra de onde vieram as
+    referências — inclusive quais registros foram varridos **por valor**, por
+    não terem leiaute mapeado — para que a remoção seja uma decisão informada
+    e não um salto no escuro.
+    """
+
+    COLS = ["Código do item", "Descrição", "Registros filhos"]
+
+    def __init__(self, doc, refs, nao_usados, ir_callback, parent=None):
+        super().__init__(parent)
+        self.doc = doc
+        self.refs = refs
+        self.nao_usados = nao_usados
+        self.ir_callback = ir_callback
+        self.setWindowTitle("Itens do 0200 sem referência")
+        self.resize(860, 560)
+        lay = QVBoxLayout(self)
+
+        total = len(refs["codigos"])
+        usados = len(refs["referenciados"])
+        self.lbl = QLabel(
+            "Cadastro com <b>%d</b> item(ns): <b>%d</b> referenciados e "
+            "<b>%d</b> sem nenhuma citação no arquivo.<br>"
+            "<i>\"Não informar item, se não referenciado em pelo menos um dos "
+            "demais blocos.\"</i>" % (total, usados, len(nao_usados)))
+        self.lbl.setWordWrap(True)
+        lay.addWidget(self.lbl)
+
+        onde = ", ".join("%s (%d)" % (t, n) for t, n in
+                         sorted(refs["por_registro"].items(),
+                                key=lambda x: -x[1]))
+        proc = QLabel("Referências encontradas em: %s" % (onde or "nenhum"))
+        proc.setWordWrap(True)
+        proc.setProperty("role", "info")
+        lay.addWidget(proc)
+
+        if refs["por_valor"]:
+            av = QLabel(
+                "⚠ %s não têm leiaute mapeado no programa e foram varridos "
+                "<b>por valor</b> — qualquer campo com o código do item contou "
+                "como referência. Isso preserva itens a mais, nunca a menos."
+                % ", ".join(sorted(refs["por_valor"])))
+            av.setWordWrap(True)
+            av.setProperty("role", "aviso")
+            lay.addWidget(av)
+
+        dica = QLabel("Dê duplo-clique numa linha para ir ao registro.")
+        dica.setProperty("role", "dica")
+        lay.addWidget(dica)
+
+        self.tab = QTableWidget(len(nao_usados), len(self.COLS))
+        self.tab.setHorizontalHeaderLabels(self.COLS)
+        self.tab.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
+        self.tab.setSelectionBehavior(
+            QAbstractItemView.SelectionBehavior.SelectRows)
+        self.tab.verticalHeader().setVisible(False)
+        self.tab.horizontalHeader().setStretchLastSection(True)
+        self.tab.horizontalHeader().setResizeContentsPrecision(200)
+        self.tab.setSortingEnabled(False)
+        for i, (reg, cod, descr) in enumerate(nao_usados):
+            for j, v in enumerate((cod, descr, str(len(reg.filhos)))):
+                it = QTableWidgetItem(v)
+                if j == 0:
+                    it.setData(Qt.ItemDataRole.UserRole, reg.uid)
+                self.tab.setItem(i, j, it)
+        self.tab.horizontalHeader().setSortIndicator(
+            -1, Qt.SortOrder.AscendingOrder)
+        self.tab.setSortingEnabled(True)
+        self.tab.resizeColumnsToContents()
+        self.tab.cellDoubleClicked.connect(self._ir)
+        lay.addWidget(self.tab, 1)
+
+        rod = QHBoxLayout()
+        self.b_rem = QPushButton("Remover os %d itens sem referência"
+                                 % len(nao_usados))
+        self.b_rem.clicked.connect(self._remover)
+        self.b_rem.setEnabled(bool(nao_usados))
+        rod.addWidget(self.b_rem)
+        rod.addStretch(1)
+        b_ir = QPushButton("Ir para o registro")
+        b_ir.clicked.connect(self._ir_selecionado)
+        rod.addWidget(b_ir)
+        b_exp = QPushButton("Exportar CSV…")
+        b_exp.clicked.connect(self._exportar)
+        rod.addWidget(b_exp)
+        b_fechar = QPushButton("Fechar")
+        b_fechar.clicked.connect(self.close)
+        rod.addWidget(b_fechar)
+        lay.addLayout(rod)
+
+    # -------------------------------------------------------------- ações
+    def _remover(self):
+        n = len(self.nao_usados)
+        filhos = sum(len(r.filhos) for r, _c, _d in self.nao_usados)
+        caixa = QMessageBox(self)
+        caixa.setWindowTitle("Remover itens sem referência")
+        caixa.setTextFormat(Qt.TextFormat.RichText)
+        caixa.setIcon(QMessageBox.Icon.Warning)
+        caixa.setText(
+            "Serão removidos <b>%d</b> registro(s) 0200%s.<br><br>"
+            "A remoção apaga o cadastro do item e tudo o que pende dele. "
+            "Confira a lista antes — <b>não há desfazer</b>; se errar, feche "
+            "o arquivo sem salvar."
+            % (n, " e %d registro(s) filho(s)" % filhos if filhos else ""))
+        b_ok = caixa.addButton("Remover", QMessageBox.ButtonRole.DestructiveRole)
+        b_cancel = caixa.addButton("Cancelar",
+                                   QMessageBox.ButtonRole.RejectRole)
+        caixa.setDefaultButton(b_cancel)
+        caixa.exec()
+        if caixa.clickedButton() is not b_ok:
+            return
+
+        res = self.doc.remover_itens_0200([r for r, _c, _d in self.nao_usados])
+        jan = self.parent()
+        if jan is not None:
+            if hasattr(jan, "_marcar_alterado"):
+                jan._marcar_alterado()
+            if hasattr(jan, "_montar_abas"):
+                jan._montar_abas()
+        QMessageBox.information(
+            self, "Remover itens sem referência",
+            "%d item(ns) removido(s) do 0200 — %d registro(s) ao todo, "
+            "contando os filhos." % (res["itens"], res["registros"]))
+        self.nao_usados = []
+        self.tab.setRowCount(0)
+        self.b_rem.setEnabled(False)
+        self.lbl.setText(self.lbl.text() + "<br><b>Removidos.</b>")
+
+    def _exportar(self):
+        caminho, _ = QFileDialog.getSaveFileName(
+            self, "Exportar itens sem referência", "itens_sem_referencia.csv",
+            "CSV (*.csv)")
+        if not caminho:
+            return
+        import csv
+        with open(caminho, "w", encoding="latin-1", newline="",
+                  errors="replace") as fh:
+            w = csv.writer(fh, delimiter=";")
+            w.writerow(self.COLS)
+            for reg, cod, descr in self.nao_usados:
+                w.writerow([cod, descr, len(reg.filhos)])
+        QMessageBox.information(self, "Exportar",
+                                "Arquivo gravado:\n%s" % caminho)
+
+    def _ir(self, row, _col):
+        it = self.tab.item(row, 0)
+        if it is not None and self.ir_callback is not None:
+            self.ir_callback(it.data(Qt.ItemDataRole.UserRole))
+
+    def _ir_selecionado(self):
+        linhas = {i.row() for i in self.tab.selectedIndexes()}
+        if linhas:
+            self._ir(min(linhas), 0)
+
+
 class DialogoCodCta(QDialog):
     """Preenche a conta contábil (COD_CTA) dos registros que estão sem ela.
 
@@ -4771,6 +4930,11 @@ class JanelaPrincipal(QMainWindow):
             self.act_limpar_nulos = QAction("Limpar campos com NULL…", self)
         self.act_limpar_nulos.triggered.connect(self.limpar_campos_nulos)
         self.act_limpar_nulos.setEnabled(False)
+        if not hasattr(self, "act_itens_sem_ref"):
+            self.act_itens_sem_ref = QAction(
+                "Itens do 0200 sem referência…", self)
+        self.act_itens_sem_ref.triggered.connect(self.itens_sem_referencia)
+        self.act_itens_sem_ref.setEnabled(False)
         if not hasattr(self, "act_cod_cta"):
             self.act_cod_cta = QAction(
                 "Preencher conta contábil (COD_CTA)…", self)
@@ -4927,7 +5091,8 @@ class JanelaPrincipal(QMainWindow):
                      "act_empresa", "act_conferir_itens_icms",
                      "act_conferir_itens_pc", "act_recalc_icms",
                      "act_limpar_nulos", "act_cod_gen",
-                     "act_validar_campos", "act_cod_cta"):
+                     "act_validar_campos", "act_cod_cta",
+                     "act_itens_sem_ref"):
             if hasattr(self, acao):
                 getattr(self, acao).setEnabled(False)
         if hasattr(self, "menu_icms"):
@@ -5175,6 +5340,7 @@ class JanelaPrincipal(QMainWindow):
         self.menu_gerais.addAction(self.act_alterar_datas)
         self.menu_gerais.addAction(self.act_validar_campos)
         self.menu_gerais.addAction(self.act_cod_cta)
+        self.menu_gerais.addAction(self.act_itens_sem_ref)
         self.menu_gerais.addAction(self.act_revisar)
         self.menu_gerais.addAction(self.act_limpar_nulos)
         self.menu_icms.addAction(self.act_cod_gen)
@@ -5294,6 +5460,11 @@ class JanelaPrincipal(QMainWindow):
         self.act_limpar_nulos = QAction("Limpar campos com NULL…", self)
         self.act_limpar_nulos.triggered.connect(self.limpar_campos_nulos)
         self.act_limpar_nulos.setEnabled(False)
+
+        self.act_itens_sem_ref = QAction("Itens do 0200 sem referência…",
+                                         self)
+        self.act_itens_sem_ref.triggered.connect(self.itens_sem_referencia)
+        self.act_itens_sem_ref.setEnabled(False)
 
         self.act_cod_cta = QAction("Preencher conta contábil (COD_CTA)…",
                                    self)
@@ -5837,6 +6008,27 @@ class JanelaPrincipal(QMainWindow):
             "Limpeza: %d campo(s) esvaziados em %d registro(s)."
             % (res["campos"], res["registros"]), 6000)
 
+    def itens_sem_referencia(self):
+        """Itens do 0200 que nenhum outro registro cita. O Guia Prático manda
+        não informar item sem referência; a remoção fica com o usuário, depois
+        de ver a lista e de onde vieram as referências."""
+        if not self.doc:
+            return
+        refs = self.doc.referencias_de_itens()
+        nao_usados = self.doc.itens_0200_nao_utilizados(refs)
+        if not nao_usados:
+            QMessageBox.information(
+                self, "Itens do 0200 sem referência",
+                "Todos os %d item(ns) do cadastro são referenciados em algum "
+                "registro do arquivo." % len(refs["codigos"]))
+            return
+        self._dlg_itens = DialogoItensNaoUsados(
+            self.doc, refs, nao_usados, self.ir_para_registro, self)
+        self._dlg_itens.show()
+        self.statusBar().showMessage(
+            "%d de %d item(ns) do 0200 sem referência no arquivo."
+            % (len(nao_usados), len(refs["codigos"])), 8000)
+
     def preencher_cod_cta(self):
         """Conta contábil dos registros que estão sem ela. Obrigatória nos
         perfis A e B — é o erro clássico do H010, cujo item não tem conta de
@@ -6018,6 +6210,7 @@ class JanelaPrincipal(QMainWindow):
         self.act_limpar_nulos.setEnabled(True)
         self.act_validar_campos.setEnabled(True)
         self.act_cod_cta.setEnabled(True)
+        self.act_itens_sem_ref.setEnabled(True)
         self.act_cod_gen.setEnabled(doc.layout == "ICMS")
         # o cadastro vale para os dois leiautes (é por CNPJ); as rotinas é que
         # se filtram por layout dentro do diálogo

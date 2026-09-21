@@ -13,7 +13,8 @@ Modelo de dados do SPED em árvore.
 
 import itertools
 import re
-from sped_layouts import nivel, campos, detectar_layout
+from sped_layouts import (nivel, campos, detectar_layout,
+                          num_campos_esperado)
 
 _id_seq = itertools.count(1)
 
@@ -1513,6 +1514,107 @@ class SpedDocument:
             self._cad_itens = None
         return {"campos": len(achados), "registros": len(regs),
                 "por_campo": por_campo}
+
+    # -------------------------------------------------------------------
+    # Itens do 0200 — referências e limpeza do cadastro
+    # -------------------------------------------------------------------
+    def referencias_de_itens(self):
+        """Onde os códigos do 0200 são citados no arquivo inteiro.
+
+        Duas estratégias, de propósito:
+
+        * registro com leiaute mapeado é lido pelo **nome** do campo
+          (`COD_ITEM`) — preciso;
+        * registro que o projeto ainda **não mapeia** é varrido por **valor**:
+          qualquer campo cujo conteúdo seja um código do 0200 conta como
+          referência. É o caso do bloco K, que usa `COD_ITEM` em quase todos
+          os registros sem estar em `sped_layouts.py`.
+
+        A varredura por valor erra **para mais** (pode contar coincidência
+        como referência). Quando o passo seguinte é apagar cadastro, esse é o
+        lado certo de errar.
+
+        Devolve dict com `codigos`, `referenciados`, `por_registro` e
+        `por_valor` (os tipos varridos pelo modo conservador).
+        """
+        i_cod = self._ix("0200", "COD_ITEM")
+        codigos = set()
+        if i_cod is not None:
+            for r in self.registros:
+                if r.reg == "0200":
+                    v = (r.valor(i_cod) or "").strip()
+                    if v:
+                        codigos.add(v)
+
+        referenciados = set()
+        por_registro = {}
+        por_valor = set()
+        idx_cache = {}
+        for r in self.registros:
+            if r.reg == "0200" or not codigos:
+                continue
+            if r.reg not in idx_cache:
+                mapeado = num_campos_esperado(r.reg, self.layout) is not None
+                idx_cache[r.reg] = (self._ix(r.reg, "COD_ITEM"), mapeado)
+            i, mapeado = idx_cache[r.reg]
+            achou = False
+            if i is not None:
+                v = (r.valor(i) or "").strip()
+                if v in codigos:
+                    referenciados.add(v)
+                    achou = True
+            elif not mapeado:
+                # sem leiaute: procura o código em qualquer campo
+                for j, v in enumerate(r.campos):
+                    if j == 0:
+                        continue
+                    v = (v or "").strip()
+                    if v and v in codigos:
+                        referenciados.add(v)
+                        achou = True
+                        por_valor.add(r.reg)
+            if achou:
+                por_registro[r.reg] = por_registro.get(r.reg, 0) + 1
+        return {"codigos": codigos, "referenciados": referenciados,
+                "por_registro": por_registro, "por_valor": por_valor}
+
+    def itens_0200_nao_utilizados(self, refs=None):
+        """Registros 0200 cujo código não aparece em nenhum outro registro.
+        **Não altera nada.** Devolve `[(registro, cod_item, descricao)]`."""
+        if refs is None:
+            refs = self.referencias_de_itens()
+        i_cod = self._ix("0200", "COD_ITEM")
+        i_desc = self._ix("0200", "DESCR_ITEM")
+        if i_cod is None:
+            return []
+        usados = refs["referenciados"]
+        out = []
+        for r in self.registros:
+            if r.reg != "0200":
+                continue
+            cod = (r.valor(i_cod) or "").strip()
+            if not cod or cod in usados:
+                continue
+            out.append((r, cod,
+                        (r.valor(i_desc) or "").strip() if i_desc is not None
+                        else ""))
+        return out
+
+    def remover_itens_0200(self, registros):
+        """Remove os 0200 informados, com toda a subárvore (0205, 0206, 0220…).
+
+        Recebe a lista já exibida ao usuário, para apagar exatamente o que ele
+        viu. Devolve quantos registros saíram ao todo.
+        """
+        alvos = [r for r in registros if getattr(r, "reg", "") == "0200"]
+        filhos = sum(len(r.filhos) for r in alvos)
+        antes = len(self.registros)
+        for r in alvos:
+            self.remover_registro(r)
+        self._cad_itens = None
+        self.atualizar_bloco9_inplace()
+        return {"itens": len(alvos), "filhos": filhos,
+                "registros": antes - len(self.registros)}
 
     # -------------------------------------------------------------------
     # COD_CTA — conta contábil (obrigatória nos perfis A e B)

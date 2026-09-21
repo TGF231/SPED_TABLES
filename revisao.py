@@ -96,15 +96,10 @@ def verificar_0200_nao_utilizados(doc):
     i0 = doc._ix("0200", "COD_ITEM")
     if i0 is None:
         return []
-    referenciados = set()
-    for r in doc.registros:
-        if r.reg == "0200":
-            continue
-        i = doc._ix(r.reg, "COD_ITEM")
-        if i is not None:
-            v = (r.valor(i) or "").strip()
-            if v:
-                referenciados.add(v)
+    # a varredura vive no modelo: registro sem leiaute mapeado (o bloco K
+    # inteiro, por exemplo) é procurado por valor, senão item referenciado lá
+    # apareceria aqui como não utilizado
+    referenciados = doc.referencias_de_itens()["referenciados"]
 
     problemas = []
     vistos = set()

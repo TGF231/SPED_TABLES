@@ -379,6 +379,29 @@ regras implementadas hoje são cinco:
 
 A revisão **não substitui o PVA** — é uma triagem rápida antes dele.
 
+### Itens do 0200 sem referência
+
+**Ferramentas → Gerais → Itens do 0200 sem referência…** aplica a regra do Guia
+Prático: *"Não informar item, se não referenciado em pelo menos um dos demais
+blocos."* Varre o arquivo inteiro atrás de cada código do cadastro, lista os que
+ninguém cita e remove sob confirmação.
+
+A varredura usa **duas estratégias**, conforme o registro:
+
+- registro com leiaute mapeado é lido pelo **nome** do campo (`COD_ITEM`);
+- registro que o programa ainda não mapeia — o **bloco K** inteiro, por
+  exemplo — é varrido **por valor**: qualquer campo cujo conteúdo seja um
+  código do 0200 conta como referência.
+
+A segunda erra para mais, nunca para menos: preserva item que talvez não
+precisasse ficar, mas jamais apaga item que está sendo usado. O painel mostra
+de onde vieram as referências e quais registros caíram no modo conservador.
+
+A lista traz código, descrição e quantos registros-filho o item tem;
+**duplo-clique leva até o registro** e há exportação em CSV. A remoção apaga o
+0200 e toda a sua subárvore (0205, 0206, 0220…), e **não há desfazer** — se
+errar, feche o arquivo sem salvar.
+
 ### Preencher conta contábil (COD_CTA)
 
 **Ferramentas → Gerais → Preencher conta contábil (COD_CTA)…** resolve o erro
