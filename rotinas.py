@@ -284,6 +284,54 @@ def verificar_cst_ncm(doc, empresa, classificador=None, data_ref=None):
     return achados
 
 
+def corrigir_cst_ncm(doc, empresa, ocorrencias):
+    """Retira o crédito das **entradas** cujo NCM não o admite.
+
+    Só age onde o crédito está de fato sendo tomado: para cada tributo, se o
+    CST atual é de creditamento (50-56, 60-66), troca pelo CST sugerido pela
+    classificação do NCM e zera base, alíquota e valor. Monofásico e alíquota
+    zero não geram crédito na revenda — manter o CST de crédito com valor é a
+    apropriação indevida clássica.
+
+    O que já está num CST sem crédito não é tocado: ali o CST pode ser 70, 73
+    ou 98 conforme o motivo da vedação, e trocar um pelo outro sem saber o
+    motivo seria palpite. Quem zera valores sobrando nesses casos é a rotina
+    `cst_sem_direito`.
+
+    **Saídas ficam de fora.** A sugestão existe (04, 06, 01), mas lá o CST
+    depende de o produto ser revenda ou produção própria, e alíquota
+    diferenciada (02/03) é legítima — corrigir em massa erraria.
+    """
+    n = 0
+    por_uid = {r.uid: r for r in doc.registros}
+    for oc in ocorrencias:
+        if oc.escopo != "entrada":
+            continue
+        reg = por_uid.get(oc.uid)
+        if reg is None:
+            continue
+        destino = (oc.esperado or "").strip()
+        if not destino and empresa is not None:
+            destino = empresa.cst_entrada_sem_credito
+        if not destino:
+            continue
+        for tributo in ("PIS", "COFINS"):
+            i_cst, i_bc, i_aliq, i_vl = _par_tributo(doc, reg.reg, tributo)
+            if i_cst is None:
+                continue
+            cst = (reg.valor(i_cst) or "").strip()
+            if cst not in CST_ENTRADA_COM_CREDITO:
+                continue
+            reg.set_valor(i_cst, destino)
+            for i in (i_bc, i_vl):
+                if i is not None:
+                    reg.set_valor(i, _fmt_val(0))
+            if i_aliq is not None:
+                reg.set_valor(i_aliq, "")
+            n += 1
+    return n
+
+
 # ================================================================ rotina 5
 def verificar_credito_em_cst_sem_direito(doc, empresa):
     """Entrada com CST sem direito a crédito, mas com base/valor lançados.
@@ -397,11 +445,14 @@ ROTINAS = [
         id="cst_ncm",
         nome="CST incoerente com o NCM (monofásico / alíquota zero)",
         descricao="Confere o CST de PIS/COFINS contra a classificação do NCM "
-                  "nas tabelas da RFB. Sem correção automática: o CST correto "
-                  "depende do produto.",
+                  "nas tabelas da RFB. A correção age só nas **entradas** que "
+                  "estão tomando crédito num NCM que não o admite; saídas e "
+                  "CST sem crédito ficam para conferência manual.",
         layouts=("CONTRIB",),
         verificar=verificar_cst_ncm,
-        corrigir=None,
+        corrigir=corrigir_cst_ncm,
+        rotulo_correcao="Retirar o crédito das entradas (troca o CST e zera "
+                        "base/alíquota/valor)",
         requer="tabelas_rfb",
     ),
 ]

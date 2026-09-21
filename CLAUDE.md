@@ -274,7 +274,13 @@ Obter sempre por nome (`doc._ix(tipo, nome)`), nunca por número fixo. Referênc
   do CFOP de entrada do SPED — casar por `nItem` e usar a classificação do
   **C170** para agrupar, não o CFOP do XML.
 - **Monofásicos na revenda não geram crédito:** entrada de bebida (NCM 2202/2203/
-  2208) com CST 50 é creditamento indevido (correto 73/98).
+  2208) com CST 50 é creditamento indevido (correto 73/98). A correção
+  (`rotinas.corrigir_cst_ncm`) só age onde o crédito **está sendo tomado**
+  (CST 50-56 / 60-66): troca o CST e zera base, alíquota e valor. Item já num
+  CST sem crédito não é tocado — 70, 73 e 98 se distinguem pelo motivo da
+  vedação, e trocar um pelo outro sem saber o motivo é palpite. **Saídas ficam
+  de fora**: lá o CST depende de revenda ou produção própria, e alíquota
+  diferenciada (02/03) é legítima.
 - **Regime (empresas.py / rotinas.py):** cumulativo = PIS 0,65 / COFINS 3,00 e
   **sem crédito** na entrada; não-cumulativo = 1,65 / 7,6 com crédito. No regime
   **"ambos"** as rotinas de alíquota **se abstêm** — as duas alíquotas convivem

@@ -1,5 +1,37 @@
 # Changelog
 
+## [0.35.0] - 2026-09-21
+
+A verificação de CST por NCM era a única rotina que **só apontava**. Nas
+entradas, porém, a correção é objetiva: monofásico e alíquota zero não geram
+crédito na revenda.
+
+### Adicionado
+- **`rotinas.corrigir_cst_ncm`** — retira o crédito das **entradas** cujo NCM
+  não o admite: troca o CST pelo sugerido pela classificação e zera base,
+  alíquota e valor.
+- Botão **Corrigir entradas sem crédito** no diálogo *Verificar CST por NCM
+  (tabelas RFB)*, chamando a mesma função da rotina — uma regra fiscal, uma
+  implementação.
+- A rotina `cst_ncm` do painel por regime passou a ter `corrigir`, com o
+  rótulo *"Retirar o crédito das entradas (troca o CST e zera
+  base/alíquota/valor)"*.
+
+### Notas — os limites são de propósito
+- **Só onde o crédito está sendo tomado** (CST 50-56 / 60-66). Item já num CST
+  sem crédito não é tocado: 70, 73 e 98 se distinguem pelo **motivo** da
+  vedação, e trocar um pelo outro sem saber o motivo seria palpite. Quem zera
+  valores sobrando nesses casos continua sendo a rotina `cst_sem_direito`.
+- **Saídas ficam de fora.** A sugestão existe (04, 06, 01), mas lá o CST
+  depende de o produto ser revenda ou produção própria, e alíquota
+  diferenciada (02/03) é legítima.
+- Validado por **controle**: o arquivo real da CASA DO ESPETO já estava certo
+  (entradas de bebida com CST 73), então o erro foi plantado — 12 entradas de
+  NCM 2202/21069090 com CST 50 e alíquotas de não-cumulativo. Resultado: 24
+  lançamentos corrigidos (PIS e COFINS), CST 73, base e valor zerados,
+  alíquota em branco, R$ 111,00 de crédito indevido retirado, reverificação em
+  zero, segunda passada sem efeito e saídas intactas.
+
 ## [0.34.0] - 2026-09-21
 
 O recálculo do C190 já corrigia o `VL_RED_BC`, mas só documento a documento —

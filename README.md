@@ -379,6 +379,26 @@ regras implementadas hoje são cinco:
 
 A revisão **não substitui o PVA** — é uma triagem rápida antes dele.
 
+### Corrigir CST de entrada pelo NCM (EFD Contribuições)
+
+No diálogo **Ferramentas → EFD Contribuições → Verificar CST por NCM (tabelas
+RFB)…**, o botão **Corrigir entradas sem crédito** retira o crédito dos itens
+de **entrada** cujo NCM não o admite — monofásicos e alíquota zero não geram
+crédito na revenda.
+
+A correção troca o CST pelo sugerido pela classificação do NCM e **zera base,
+alíquota e valor**. Ela só age onde o crédito está de fato sendo tomado (CST
+50-56 / 60-66): item que já está num CST sem crédito não é tocado, porque 70,
+73 e 98 se distinguem pelo motivo da vedação e trocar um pelo outro sem saber
+o motivo seria palpite.
+
+**Saídas não são alteradas.** Lá o CST depende de o produto ser revenda ou
+produção própria, e alíquota diferenciada (02/03) é legítima — corrigir em
+massa erraria.
+
+A mesma correção está disponível na rotina *CST incoerente com o NCM* do painel
+de rotinas por regime, com a mesma implementação.
+
 ### Recalcular C190 com redução de base zerada (em massa)
 
 **Ferramentas → EFD ICMS/IPI → Recalcular C190 com redução de base zerada…**

@@ -1,6 +1,6 @@
 # Funcionalidades — SPED Tables
 
-Inventário do que existe hoje (v0.34.0), com **grau de maturidade** e as
+Inventário do que existe hoje (v0.35.0), com **grau de maturidade** e as
 **regras de uso** de cada função. O objetivo deste documento é registrar o que
 já é confiável, o que ainda precisa de polimento e quais restrições evitam
 resultado errado.
@@ -385,8 +385,26 @@ errado no arquivo, e é justamente uma das coisas a conferir. Quando cadastro e
 ### 7A.2 Rotinas de conferência e correção — 🟡 Em amadurecimento
 Cinco rotinas: alíquota de saída fora do regime, crédito indevido na entrada
 (cumulativo), alíquota de crédito fora do regime (não-cumulativo), **valor
-lançado em CST sem direito a crédito** e CST incoerente com o NCM. As quatro
-primeiras corrigem sob confirmação; a última só aponta.
+lançado em CST sem direito a crédito** e CST incoerente com o NCM. **Todas as
+cinco corrigem sob confirmação** desde a 0.35.0 — a de CST por NCM era a única
+que só apontava.
+
+*Correção do CST por NCM (0.35.0):* age apenas nas **entradas** que estão
+tomando crédito (CST 50-56 / 60-66) num NCM monofásico ou de alíquota zero —
+troca o CST pelo sugerido e zera base, alíquota e valor. Item já num CST sem
+crédito não é tocado: 70, 73 e 98 se distinguem pelo **motivo** da vedação, e
+trocar um pelo outro sem saber o motivo é palpite. **Saídas ficam de fora**,
+porque lá o CST depende de revenda ou produção própria e alíquota diferenciada
+(02/03) é legítima. O mesmo botão existe no diálogo *Verificar CST por NCM*,
+chamando a mesma função — uma regra fiscal, uma implementação.
+
+*Validado por controle (CASA DO ESPETO, 08/2026):* o arquivo real já estava
+correto (entradas de bebida com CST 73), então o erro foi **plantado** — 12
+entradas de NCM 2202/21069090 com CST 50, base 100,00 e alíquotas de
+não-cumulativo. A correção devolveu 24 lançamentos ajustados (PIS e COFINS),
+CST 73, base e valor zerados, alíquota em branco, R$ 111,00 de crédito
+indevido retirado; a reverificação voltou zero, a segunda passada não mexeu em
+nada e as saídas ficaram intactas.
 
 *Regras de uso — importantes:*
 - No regime **"ambos"** as rotinas de alíquota se abstêm: as duas alíquotas

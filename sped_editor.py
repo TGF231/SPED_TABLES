@@ -2958,8 +2958,16 @@ class DialogoVerificarCST(QDialog):
         b_ver.clicked.connect(self._verificar)
         b_csv = QPushButton("Exportar CSV")
         b_csv.clicked.connect(self._exportar)
+        self.b_corrigir = QPushButton("Corrigir entradas sem crédito…")
+        self.b_corrigir.setToolTip(
+            "Nas entradas que estão tomando crédito num NCM monofásico ou de "
+            "alíquota zero: troca o CST pelo sugerido e zera base, alíquota "
+            "e valor. Saídas não são alteradas.")
+        self.b_corrigir.clicked.connect(self._corrigir)
+        self.b_corrigir.setEnabled(False)
         self.lbl = QLabel("—")
         acoes.addWidget(b_ver)
+        acoes.addWidget(self.b_corrigir)
         acoes.addWidget(b_csv)
         acoes.addStretch(1)
         acoes.addWidget(self.lbl)
@@ -3019,9 +3027,76 @@ class DialogoVerificarCST(QDialog):
         probs = trfb.verificar_cst_pis_cofins(
             self.doc, clf, data_ref=self.ed_data.text().strip() or None)
         self._preencher(probs)
+        self._probs = probs
+        n_ent = sum(1 for p in probs if p["op"] == "E" and p["cst_sugerido"])
+        self.b_corrigir.setEnabled(n_ent > 0)
+        self.b_corrigir.setText("Corrigir %d entrada(s) sem crédito…" % n_ent)
         self.lbl.setText(
             "%d divergência(s) · tabelas: zero v%s, mono v%s"
             % (len(probs), clf.versao_zero, clf.versao_mono))
+
+    def _corrigir(self):
+        """Retira o crédito das entradas cujo NCM não o admite.
+
+        A correção mora em `rotinas.corrigir_cst_ncm` — a mesma que o painel
+        de rotinas usa —, para não existirem duas implementações da mesma
+        regra fiscal divergindo com o tempo.
+        """
+        alvos = [p for p in getattr(self, "_probs", [])
+                 if p["op"] == "E" and p["cst_sugerido"]]
+        if not alvos:
+            return
+        ocs = [rotinas.Ocorrencia(
+            uid=p["uid"], reg="C170", escopo="entrada", doc="",
+            item=p["cod_item"], tributo="PIS/COFINS",
+            campo="CST_PIS / CST_COFINS", atual=p["detalhe"],
+            esperado=p["cst_sugerido"],
+            detalhe="NCM %s — %s" % (p["ncm"], p["classe_desc"]))
+            for p in alvos]
+        classes = {}
+        for p in alvos:
+            classes[p["classe_desc"]] = classes.get(p["classe_desc"], 0) + 1
+        caixa = QMessageBox(self)
+        caixa.setWindowTitle("Corrigir entradas sem direito a crédito")
+        caixa.setTextFormat(Qt.TextFormat.RichText)
+        caixa.setIcon(QMessageBox.Icon.Question)
+        caixa.setText(
+            "<b>%d</b> item(ns) de <b>entrada</b> estão com CST incoerente "
+            "com o NCM:<br>&nbsp;&nbsp;%s<br><br>"
+            "Nos que estiverem <b>tomando crédito</b> (CST 50-56 / 60-66), o "
+            "CST será trocado pelo sugerido e <b>base, alíquota e valor serão "
+            "zerados</b> — monofásico e alíquota zero não geram crédito na "
+            "revenda.<br><br>Saídas não são alteradas: lá o CST depende de "
+            "revenda ou produção própria.<br><br>Continuar?"
+            % (len(alvos), "<br>&nbsp;&nbsp;".join(
+                "• %s: %d" % (c, n) for c, n in sorted(classes.items()))))
+        b_ok = caixa.addButton("Corrigir", QMessageBox.ButtonRole.AcceptRole)
+        caixa.addButton("Cancelar", QMessageBox.ButtonRole.RejectRole)
+        caixa.setDefaultButton(b_ok)
+        caixa.exec()
+        if caixa.clickedButton() is not b_ok:
+            return
+
+        # a empresa só serve de fallback para o CST de destino; se o cadastro
+        # não estiver disponível, a sugestão do NCM basta
+        emp = None
+        try:
+            emp, _ja = emp_mod.obter_ou_criar(emp_mod.carregar(), self.doc)
+        except Exception:  # noqa: BLE001
+            pass
+        n = rotinas.corrigir_cst_ncm(self.doc, emp, ocs)
+        jan = self.parent()
+        if jan is not None:
+            if hasattr(jan, "_marcar_alterado"):
+                jan._marcar_alterado()
+            if hasattr(jan, "_montar_abas"):
+                jan._montar_abas()
+        QMessageBox.information(
+            self, "Corrigir entradas sem direito a crédito",
+            "%d lançamento(s) de PIS/COFINS corrigidos.\n\n"
+            "Itens que já estavam num CST sem crédito não foram tocados: ali "
+            "o código depende do motivo da vedação." % n)
+        self._verificar()
 
     def _preencher(self, probs):
         self.tab.setSortingEnabled(False)
