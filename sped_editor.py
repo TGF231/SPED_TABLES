@@ -4408,7 +4408,8 @@ class JanelaPrincipal(QMainWindow):
                      "act_validar_c175_65", "act_regenerar_c175_65",
                      "act_conferir_55", "act_conferir_c190", "act_revisar",
                      "act_empresa", "act_conferir_itens_icms",
-                     "act_conferir_itens_pc", "act_recalc_icms"):
+                     "act_conferir_itens_pc", "act_recalc_icms",
+                     "act_limpar_nulos"):
             if hasattr(self, acao):
                 getattr(self, acao).setEnabled(False)
         if hasattr(self, "menu_icms"):
@@ -4655,6 +4656,7 @@ class JanelaPrincipal(QMainWindow):
         self.menu_gerais = menu.addMenu("Gerais")
         self.menu_gerais.addAction(self.act_alterar_datas)
         self.menu_gerais.addAction(self.act_revisar)
+        self.menu_gerais.addAction(self.act_limpar_nulos)
         self.menu_gerais.addSeparator()
         self.menu_gerais.addAction(self.act_correlacoes_cfop)
 
@@ -4767,6 +4769,10 @@ class JanelaPrincipal(QMainWindow):
         self.act_revisar = QAction("Revisar erros…", self)
         self.act_revisar.triggered.connect(self.revisar_erros)
         self.act_revisar.setEnabled(False)
+
+        self.act_limpar_nulos = QAction("Limpar campos com NULL…", self)
+        self.act_limpar_nulos.triggered.connect(self.limpar_campos_nulos)
+        self.act_limpar_nulos.setEnabled(False)
 
         self.act_correlacoes_cfop = QAction(
             "Correlações de CFOP (entradas)…", self)
@@ -5248,6 +5254,54 @@ class JanelaPrincipal(QMainWindow):
         self.statusBar().showMessage(
             "Revisão: %d ocorrência(s)." % len(problemas))
 
+    def limpar_campos_nulos(self):
+        """Esvazia os campos em que o ERP gravou o "vazio" por extenso
+        (`NULL`, `#N/A`…). O PVA recusa esses campos com "Conteúdo de Campo
+        inválido", e num arquivo real isso atingiu 82% dos itens do 0200."""
+        if not self.doc:
+            return
+        achados = self.doc.campos_nulos()
+        if not achados:
+            QMessageBox.information(
+                self, "Limpar campos com NULL",
+                "Nenhum campo preenchido com texto de vazio "
+                "(NULL, #N/A, None…) foi encontrado neste arquivo.")
+            return
+
+        por_campo = {}
+        for r, _i, nome, _v in achados:
+            por_campo[(r.reg, nome)] = por_campo.get((r.reg, nome), 0) + 1
+        detalhe = "<br>".join(
+            "&nbsp;&nbsp;• <b>%s</b> · %s — %d campo(s)" % (reg, nome, n)
+            for (reg, nome), n in sorted(por_campo.items(),
+                                         key=lambda x: -x[1])[:12])
+        registros = len({r.uid for r, _i, _n, _v in achados})
+
+        caixa = QMessageBox(self)
+        caixa.setWindowTitle("Limpar campos com NULL")
+        caixa.setTextFormat(Qt.TextFormat.RichText)
+        caixa.setIcon(QMessageBox.Icon.Question)
+        caixa.setText(
+            "Foram encontrados <b>%d</b> campo(s) preenchidos com texto de "
+            "vazio em <b>%d</b> registro(s):<br><br>%s<br><br>"
+            "Esses campos serão esvaziados. Deseja continuar?"
+            % (len(achados), registros, detalhe))
+        # rótulos à mão: a tradução do Qt pode não vir no executável
+        b_limpar = caixa.addButton("Limpar",
+                                   QMessageBox.ButtonRole.AcceptRole)
+        caixa.addButton("Cancelar", QMessageBox.ButtonRole.RejectRole)
+        caixa.setDefaultButton(b_limpar)
+        caixa.exec()
+        if caixa.clickedButton() is not b_limpar:
+            return
+
+        res = self.doc.limpar_campos_nulos(achados)
+        self._marcar_alterado()
+        self._montar_abas()
+        self.statusBar().showMessage(
+            "Limpeza: %d campo(s) esvaziados em %d registro(s)."
+            % (res["campos"], res["registros"]), 6000)
+
     def ir_para_registro(self, uid):
         """Navega até o registro de `uid`: abre a aba do bloco, a sub-aba do
         tipo raiz de exibição e desce pela cadeia até o registro alvo.
@@ -5341,6 +5395,7 @@ class JanelaPrincipal(QMainWindow):
         self.act_conferir_55.setEnabled(True)
         self.act_conferir_c190.setEnabled(doc.layout == "ICMS")
         self.act_revisar.setEnabled(True)
+        self.act_limpar_nulos.setEnabled(True)
         # o cadastro vale para os dois leiautes (é por CNPJ); as rotinas é que
         # se filtram por layout dentro do diálogo
         self.act_empresa.setEnabled(doc.layout == "CONTRIB")

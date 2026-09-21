@@ -373,6 +373,18 @@ regras implementadas hoje são quatro:
 
 A revisão **não substitui o PVA** — é uma triagem rápida antes dele.
 
+### Limpar campos com NULL
+**Ferramentas → Gerais → Limpar campos com NULL…** procura campos em que o
+sistema de origem gravou o "vazio" por extenso — `NULL`, `None`, `#N/A`,
+`#REF!` — e os esvazia. É um defeito comum de exportação: o ERP despeja o
+`NULL` do banco dentro do arquivo, e o PVA recusa cada ocorrência com
+*"Conteúdo de Campo inválido"*. Num arquivo real de supermercado eram **13.341
+campos**, em 82,6% dos itens cadastrados no 0200.
+
+O diálogo mostra antes quantos campos foram encontrados, agrupados por registro
+e campo, e só esvazia depois da confirmação. `-` e `N/A` **não** são tocados:
+podem ser descrição legítima de produto.
+
 Dê **duplo-clique** numa linha do relatório (ou use **Ir para o registro**) e o
 editor abre o bloco, a sub-aba e a linha exata do registro com problema —
 inclusive descendo até registros-filho como o C190 (dentro do C100). O

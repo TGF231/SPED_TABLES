@@ -1,6 +1,6 @@
 # Funcionalidades — SPED Tables
 
-Inventário do que existe hoje (v0.26.0), com **grau de maturidade** e as
+Inventário do que existe hoje (v0.27.0), com **grau de maturidade** e as
 **regras de uso** de cada função. O objetivo deste documento é registrar o que
 já é confiável, o que ainda precisa de polimento e quais restrições evitam
 resultado errado.
@@ -417,6 +417,30 @@ em vermelho.
 *Regra de uso:* a revisão **não substitui o PVA** — é uma triagem rápida antes
 dele. Novas regras entram na lista `REGRAS` de `revisao.py`.
 
+### 8.2 Limpar campos com NULL — 🟡 Em amadurecimento
+Encontra e esvazia os campos em que o sistema de origem gravou o "vazio" por
+extenso — `NULL`, `None`, `#N/A`, `#REF!` e afins. É erro de exportação: o ERP
+despeja o `NULL` do banco no arquivo e o PVA recusa cada ocorrência com
+*"Conteúdo de Campo inválido"*.
+
+Detecção e correção são separadas, como nas demais rotinas: `campos_nulos()`
+devolve a lista sem tocar no arquivo, o diálogo mostra a contagem por
+registro/campo, e só depois da confirmação `limpar_campos_nulos()` esvazia
+exatamente o que foi exibido.
+
+*Validado em arquivo real (08/2026):* **13.341 campos** em 10.312 registros —
+`COD_GEN` (10.312) e `CEST` (3.029) do 0200, ou **82,6% dos itens**
+cadastrados. Depois da limpeza, nenhuma ocorrência restante, largura dos
+registros preservada e o CEST legítimo intacto.
+
+*Por que `-` e `N/A` ficam de fora:* ambos podem ser descrição legítima de
+produto. A lista `VALORES_NULOS` só tem textos que nenhum campo de SPED
+aceitaria como conteúdo.
+
+A mesma proteção vale na leitura de planilha: `_texto_planilha()` trata esses
+textos como célula vazia, para que o `NULL` da origem não entre no arquivo pela
+importação de inventário.
+
 ---
 
 ## 9. Pendências e ideias
@@ -433,6 +457,8 @@ dele. Novas regras entram na lista `REGRAS` de `revisao.py`.
   executável (etapa 8).
 
 ### 9.2 Melhorias desejáveis
+- Oferecer a limpeza de campos com `NULL` (8.2) automaticamente ao abrir um
+  arquivo que os contenha, em vez de depender do usuário lembrar do menu.
 - Persistir entre sessões a ordem/fixação de abas e as preferências.
 - Tratar **CSOSN** (fornecedor do Simples) na conferência de CST — hoje gera
   divergência legítima.

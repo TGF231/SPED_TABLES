@@ -1,5 +1,31 @@
 # Changelog
 
+## [0.27.0] - 2026-09-21
+
+O PVA recusou o arquivo da segunda empresa com *"Conteúdo de Campo inválido"*
+no `COD_GEN`. A origem não era a importação de inventário: o **ERP do cliente
+exporta o `NULL` do banco por extenso** para dentro do SPED — 13.341 campos,
+em 82,6% dos itens do 0200.
+
+### Adicionado
+- **Limpar campos com NULL** (Ferramentas → Gerais). Encontra campos
+  preenchidos com `NULL`, `None`, `#N/A`, `#REF!` e afins e os esvazia sob
+  confirmação, mostrando antes a contagem por registro e campo. Detecção e
+  correção separadas, como nas demais rotinas: `campos_nulos()` não altera
+  nada; `limpar_campos_nulos()` corrige exatamente a lista exibida.
+  No arquivo real: 13.341 campos em 10.312 registros — `COD_GEN` (10.312) e
+  `CEST` (3.029) —, zero sobrando depois, larguras preservadas e os CEST
+  legítimos intactos.
+- `-` e `N/A` ficaram **fora** da lista `VALORES_NULOS` de propósito: podem ser
+  descrição legítima de produto.
+
+### Corrigido
+- **A leitura de planilha passou a tratar esses textos como célula vazia**
+  (`_texto_planilha`). Antes, uma planilha exportada do mesmo ERP levaria o
+  `NULL` para dentro do 0200 pela importação de inventário — o caminho que o
+  usuário suspeitou e que, embora não fosse a causa deste arquivo, tinha
+  mesmo o defeito.
+
 ## [0.26.0] - 2026-09-17
 
 Validação da **importação de inventário** contra a planilha real de uma segunda

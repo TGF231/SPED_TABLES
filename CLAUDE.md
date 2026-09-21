@@ -75,6 +75,13 @@ só completa quando o **dígito verificador** confirma.
 Número de planilha nunca vai para o arquivo via `str()`: `11.24` e `155.7` são
 inválidos no SPED. Passe por `_fmt_val` / `_fmt_qtd` / `_fmt_aliq`.
 
+Texto de célula sai por **`_texto_planilha()`**, nunca por `str(v or "")`: ERPs
+exportam o `NULL` do banco por extenso, e o PVA recusa cada campo desses com
+"Conteúdo de Campo inválido". A lista está em `VALORES_NULOS` — e `-` e `N/A`
+estão fora dela de propósito, porque podem ser descrição legítima de produto.
+O mesmo lixo aparece **dentro do SPED** que o cliente entrega (13.341 campos num
+arquivo real): quem limpa é a ação *Limpar campos com NULL*.
+
 ### Ao mexer em cores ou estilo
 
 Cor **nunca** entra literal no `sped_editor.py`: use os tokens de

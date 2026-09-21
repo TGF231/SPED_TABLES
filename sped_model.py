@@ -102,6 +102,26 @@ def _to_num_planilha(v):
     return _to_num(v)
 
 
+# Texto que ERP e planilha escrevem no lugar de "campo vazio" ao exportar de
+# um banco. Nenhum deles é conteúdo válido de campo do SPED — o PVA acusa
+# "Conteúdo de Campo inválido". Fora da lista ficam de propósito `-` e `N/A`,
+# que podem ser descrição legítima de produto.
+VALORES_NULOS = frozenset((
+    "NULL", "(NULL)", "NONE", "NAN", "NIL", "UNDEFINED",
+    "#N/A", "#N/D", "#VALOR!", "#VALUE!", "#REF!", "#DIV/0!"))
+
+
+def _e_nulo(v):
+    """O campo está preenchido com um desses textos de 'vazio'?"""
+    return (v or "").strip().upper() in VALORES_NULOS
+
+
+def _texto_planilha(v):
+    """Texto de uma célula, já sem o 'vazio' que o ERP escreveu por extenso."""
+    s = "" if v is None else str(v).strip()
+    return "" if s.upper() in VALORES_NULOS else s
+
+
 def _zero_a_esquerda(valor, tamanho):
     """Repõe o zero que a planilha comeu ao tratar o código como número:
     o NCM `04012010` volta da célula como `4012010`.
@@ -1413,6 +1433,46 @@ class SpedDocument:
         return {"docs": docs, "c175": c175}
 
     # -------------------------------------------------------------------
+    # Limpeza de campos preenchidos com "vazio" por extenso
+    # -------------------------------------------------------------------
+    def campos_nulos(self):
+        """Campos cujo conteúdo é um texto de "vazio" (`NULL`, `#N/A`…) em vez
+        de estarem realmente vazios. **Não altera nada.**
+
+        Devolve `[(registro, indice, nome_campo, valor)]`. É erro de origem:
+        o ERP exporta o `NULL` do banco por extenso e o PVA recusa o arquivo
+        com "Conteúdo de Campo inválido".
+        """
+        achados = []
+        for r in self.registros:
+            nomes = None
+            for i, v in enumerate(r.campos):
+                if i == 0 or not _e_nulo(v):
+                    continue
+                if nomes is None:
+                    nomes = campos(r.reg, self.layout, len(r.campos))
+                nome = nomes[i] if i < len(nomes) else "Campo %d" % i
+                achados.append((r, i, nome, (v or "").strip()))
+        return achados
+
+    def limpar_campos_nulos(self, achados=None):
+        """Esvazia os campos apontados por `campos_nulos()`. Recebe a lista já
+        exibida ao usuário, para corrigir exatamente o que ele viu."""
+        if achados is None:
+            achados = self.campos_nulos()
+        por_campo = {}
+        regs = set()
+        for r, i, nome, _v in achados:
+            r.set_valor(i, "")
+            chave = (r.reg, nome)
+            por_campo[chave] = por_campo.get(chave, 0) + 1
+            regs.add(r.uid)
+        if any(r.reg == "0200" for r, _i, _n, _v in achados):
+            self._cad_itens = None
+        return {"campos": len(achados), "registros": len(regs),
+                "por_campo": por_campo}
+
+    # -------------------------------------------------------------------
     # Bloco H — inventário a partir de planilha
     # -------------------------------------------------------------------
     # chaves canônicas aceitas em cada linha da planilha importada
@@ -1452,7 +1512,7 @@ class SpedDocument:
 
         plan = {}
         for ln in linhas:
-            cod = str(ln.get("cod_item") or "").strip()
+            cod = _texto_planilha(ln.get("cod_item"))
             if cod:
                 plan[cod] = plan.get(cod, 0.0) + num(ln.get("qtd"))
 
@@ -1501,7 +1561,7 @@ class SpedDocument:
         vistos = set()
         sem_qtd = sem_valor = 0
         for ln in linhas:
-            cod = str(ln.get("cod_item") or "").strip()
+            cod = _texto_planilha(ln.get("cod_item"))
             if not cod:
                 continue
             if cod in vistos:
@@ -1520,7 +1580,7 @@ class SpedDocument:
             for chave, idx, rot in (("descr_item", i_desc, "DESCR_ITEM"),
                                     ("unid", i_unid, "UNID_INV"),
                                     ("cod_ncm", i_ncm, "COD_NCM")):
-                novo = str(ln.get(chave) or "").strip()
+                novo = _texto_planilha(ln.get(chave))
                 if chave == "cod_ncm":          # a célula numérica perde o zero
                     novo = _zero_a_esquerda(novo, 8)
                 if not novo or idx is None:
@@ -1619,13 +1679,13 @@ class SpedDocument:
         num = _to_num_planilha
 
         for ln in linhas:
-            cod = str(ln.get("cod_item") or "").strip()
+            cod = _texto_planilha(ln.get("cod_item"))
             if not cod or cod in vistos:
                 if cod:
                     ignorados.append(cod)
                 continue
             vistos.add(cod)
-            unid = str(ln.get("unid") or "").strip()
+            unid = _texto_planilha(ln.get("unid"))
             qtd = num(ln.get("qtd"))
             vl_unit = num(ln.get("vl_unit"))
             vl_item = num(ln.get("vl_item"))
@@ -1646,16 +1706,16 @@ class SpedDocument:
             setv(reg, h["VL_UNIT"], _fmt_qtd(vl_unit))
             setv(reg, h["VL_ITEM"], _fmt_val(vl_item))
             setv(reg, h["IND_PROP"],
-                 str(ln.get("ind_prop") or ind_prop_padrao).strip())
+                 _texto_planilha(ln.get("ind_prop")) or ind_prop_padrao)
             for chave, campo in (("cod_part", "COD_PART"),
                                  ("txt_compl", "TXT_COMPL"),
                                  ("cod_cta", "COD_CTA")):
-                v = str(ln.get(chave) or "").strip()
+                v = _texto_planilha(ln.get(chave))
                 if v:
                     setv(reg, h[campo], v)
             # VL_ITEM_IR é valor: sem isto ia para o arquivo o `str()` do float
             # da planilha ("11.24", "155.7"), com ponto e sem as duas casas.
-            if str(ln.get("vl_item_ir") or "").strip():
+            if _texto_planilha(ln.get("vl_item_ir")):
                 setv(reg, h["VL_ITEM_IR"], _fmt_val(num(ln.get("vl_item_ir"))))
             ancora_h = reg
             total += vl_item
@@ -1668,17 +1728,17 @@ class SpedDocument:
                 novo.campos = ["0200"] + [""] * (n_0200 - 1)
                 setv(novo, z["COD_ITEM"], cod)
                 setv(novo, z["DESCR_ITEM"],
-                     str(ln.get("descr_item") or "").strip())
+                     _texto_planilha(ln.get("descr_item")))
                 setv(novo, z["UNID_INV"], unid)
                 setv(novo, z["TIPO_ITEM"],
-                     str(ln.get("tipo_item") or "").strip())
+                     _texto_planilha(ln.get("tipo_item")))
                 for chave, campo in (("cod_barra", "COD_BARRA"),
                                      ("cod_ncm", "COD_NCM"),
                                      ("ex_ipi", "EX_IPI"),
                                      ("cod_gen", "COD_GEN"),
                                      ("aliq_icms", "ALIQ_ICMS"),
                                      ("cest", "CEST")):
-                    v = str(ln.get(chave) or "").strip()
+                    v = _texto_planilha(ln.get(chave))
                     # códigos de tamanho fixo que a planilha devolve como
                     # número perdem o zero da frente; a alíquota é numérica
                     if chave == "cod_ncm":
