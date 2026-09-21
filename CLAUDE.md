@@ -121,6 +121,22 @@ defensivamente em `_conectar_ui` (com `hasattr`, para `.ui` antigos), incluir em
 `doc.layout` (`"ICMS"` ou `"CONTRIB"`). Diálogos não-modais (`show()`) precisam de
 referência guardada (`self._dlg_x`) para não serem coletados.
 
+**Pular o segundo ponto derruba a janela inteira.** `_criar_acoes` só roda no
+fallback; com o `.ui` presente — o caso normal — quem roda é `_conectar_ui`, e
+`_montar_botao_ferramentas` (que roda nos dois) estoura com `AttributeError` no
+construtor. Já aconteceu com *Empresas* e de novo com *Limpar campos com NULL*.
+Depois de mexer em ação ou menu, confira que a janela nasce:
+
+```bash
+QT_QPA_PLATFORM=offscreen py -c "import sped_editor as e;from PyQt6.QtWidgets import QApplication;a=QApplication([]);e.JanelaPrincipal();print('ok')"
+```
+
+O PyQt6 está no interpretador do `py` (`pythoncore-3.14-64`), não no `python`
+do PATH — daí `py` no comando acima. E o `a=` não é enfeite: sem guardar a
+referência, o `QApplication` é coletado antes do widget nascer e o processo
+morre com **exit 127 e nenhum traceback** — o mesmo sintoma da barra de título
+e dos tradutores.
+
 ## Armadilha: scripts de teste que sombreiam o stdlib
 
 Os testes põem a própria pasta no `sys.path`. Um arquivo chamado `bisect.py`,

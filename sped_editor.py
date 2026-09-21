@@ -4269,6 +4269,10 @@ class JanelaPrincipal(QMainWindow):
                 "Correlações de CFOP (entradas)…", self)
         self.act_correlacoes_cfop.triggered.connect(
             self.editar_correlacoes_cfop)
+        if not hasattr(self, "act_limpar_nulos"):
+            self.act_limpar_nulos = QAction("Limpar campos com NULL…", self)
+        self.act_limpar_nulos.triggered.connect(self.limpar_campos_nulos)
+        self.act_limpar_nulos.setEnabled(False)
         if not hasattr(self, "act_trocar_aliquotas"):
             self.act_trocar_aliquotas = QAction(
                 "Trocar alíquotas PIS/COFINS…", self)

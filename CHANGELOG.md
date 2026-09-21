@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.27.1] - 2026-09-21
+
+### Corrigido
+- **A janela não abria.** A ação *Limpar campos com NULL* da 0.27.0 foi criada
+  só em `_criar_acoes`, que **não roda** quando o `sped_editor.ui` existe — e é
+  esse o caminho normal. `_montar_botao_ferramentas` roda nos dois e tentava
+  montar o menu com uma ação inexistente, derrubando a janela no construtor com
+  `AttributeError: 'JanelaPrincipal' object has no attribute
+  'act_limpar_nulos'`. A ação passou a ser criada defensivamente também em
+  `_conectar_ui`, como as demais. É o quarto ponto do padrão descrito no
+  `CLAUDE.md` — o mesmo que já tinha derrubado a ação *Empresas*.
+
 ## [0.27.0] - 2026-09-21
 
 O PVA recusou o arquivo da segunda empresa com *"Conteúdo de Campo inválido"*
