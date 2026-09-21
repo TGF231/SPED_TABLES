@@ -1,5 +1,24 @@
 # Changelog
 
+## [0.28.0] - 2026-09-21
+
+### Corrigido
+- **O H010 não aparecia depois de importar o inventário.** Os 11.585 registros
+  estavam no arquivo e na árvore, mas a grade do `H005` — que tem **uma única
+  linha** — nasce sem seleção, e o detalhe só é montado quando uma linha é
+  selecionada. O bloco H exibia três grades de uma linha cada e nada mais.
+  Grade com uma linha só passa a se selecionar sozinha quando o registro tem
+  filhos; com várias linhas a escolha continua sendo do usuário, para não
+  deixar uma linha marcada sem querer nas ações em lote.
+
+### Alterado
+- **Cada bloco abre na primeira sub-aba com conteúdo**, em vez do registro de
+  abertura. Nível 1 é só abertura/encerramento (`C001`, `H001`, `H990`…), com
+  um campo cada — cair ali fazia o inventário parecer inexistente. Agora o
+  bloco C abre em `C100`, o H em `H005` (já com `H010` no detalhe), o E em
+  `E100` (com `E110` à vista) e o 9 em `9900`. O bloco 0 continua abrindo em
+  `0000`, que é nível 0 e de fato interessa.
+
 ## [0.27.1] - 2026-09-21
 
 ### Corrigido

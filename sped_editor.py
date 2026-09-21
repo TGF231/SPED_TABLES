@@ -477,6 +477,13 @@ class MasterDetailWidget(QWidget):
         self._carregando = False
         self._atualizar_item_label(None)
         self._mostrar_detalhe(None)
+        # Grade de uma linha só: seleciona sozinha para já abrir o detalhe.
+        # Sem isso o bloco H parecia vazio — o H005 é um único registro, e os
+        # 11 mil H010 só apareciam depois de um clique que nada sugeria. Em
+        # grade com várias linhas a seleção continua sendo do usuário, para
+        # não deixar uma linha marcada sem querer nas ações em lote.
+        if len(self._visiveis) == 1 and self.doc.tem_detalhe(self._visiveis[0]):
+            self.tabela.setCurrentCell(0, 0)
 
     def _filtro_mudou(self, _idx):
         self._filtro = self.combo_filtro.currentData() or "TODOS"
@@ -958,6 +965,7 @@ class BlocoWidget(QWidget):
             return
         self._construido = True
         tipos = list(self.doc.tipos_raiz_do_bloco(self.bloco))
+        w_inicial = None
         for tipo in tipos:
             def make_provider(b=self.bloco, t=tipo):
                 return lambda: self.doc.registros_raiz_por_tipo(b, t)
@@ -965,11 +973,19 @@ class BlocoWidget(QWidget):
             w = MasterDetailWidget(self.doc, tipo, make_provider(),
                                    pai=None, on_change=self.on_change,
                                    gerenciador=self._ger_abas)
-            n = len(self.doc.registros_raiz_por_tipo(self.bloco, tipo))
-            self.tabs.addTab(w, "%s (%d)" % (tipo, n))
+            regs = self.doc.registros_raiz_por_tipo(self.bloco, tipo)
+            self.tabs.addTab(w, "%s (%d)" % (tipo, len(regs)))
+            # abre na primeira sub-aba com conteúdo: nível 1 é só abertura e
+            # encerramento do bloco (C001, H001, H990…), um campo cada. Cair
+            # no H001 fazia o inventário parecer inexistente.
+            if w_inicial is None and regs and regs[0].nivel != 1:
+                w_inicial = w
         # permite reordenar as sub-abas de tipo dentro do bloco
         if self._ger_abas is not None:
             self._ger_abas.registrar(self.tabs, "bloco:%s" % self.bloco, tipos)
+        # depois do registrar, que pode ter reordenado as abas
+        if w_inicial is not None:
+            self.tabs.setCurrentIndex(self.tabs.indexOf(w_inicial))
 
     def widget_do_tipo(self, tipo):
         """Garante o bloco construído, seleciona a sub-aba do `tipo` e devolve

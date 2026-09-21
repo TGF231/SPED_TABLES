@@ -113,6 +113,19 @@ O menu Ferramentas é agrupado por leiaute (`menu_icms`, `menu_contrib`,
 `menu_gerais`); `abrir()` habilita/desabilita o submenu inteiro conforme
 `doc.layout`.
 
+### Navegação mestre-detalhe
+
+Filho não vira aba de bloco: `tipos_raiz_do_bloco` só devolve os **principais**
+(sem pai, ou com pai de nível ≤ 1). O `H010` aparece no detalhe do `H005`, como
+o `C170` no do `C100` — e o detalhe só é montado quando uma linha do mestre é
+selecionada. Por isso grade de **uma linha só** se seleciona sozinha quando o
+registro tem filhos: sem isso o bloco H, cujo `H005` é único, parecia vazio
+mesmo com 11.585 itens dentro. Com várias linhas a seleção fica com o usuário,
+senão as ações em lote agem sobre uma linha que ninguém escolheu.
+
+Cada bloco abre na primeira sub-aba de **nível ≠ 1** — nível 1 é abertura e
+encerramento (`C001`, `H001`, `H990`), de um campo só.
+
 ### Ao adicionar ações na GUI
 
 Padrão em quatro pontos: criar a `QAction` em `_criar_acoes`, conectar
