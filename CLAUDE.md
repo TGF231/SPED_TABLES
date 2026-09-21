@@ -248,6 +248,12 @@ Obter sempre por nome (`doc._ix(tipo, nome)`), nunca por número fixo. Referênc
   **sem crédito** na entrada; não-cumulativo = 1,65 / 7,6 com crédito. No regime
   **"ambos"** as rotinas de alíquota **se abstêm** — as duas alíquotas convivem
   legitimamente no mesmo arquivo.
+- **TIPO_ITEM do 0200 só aceita 00 a 10 e 99** (`TIPOS_ITEM_0200`). ERP que
+  exporta a coluna errada grava ali a origem da mercadoria ou um `N` de
+  nacional. Vale a regra geral: **planilha do cliente não é verdade absoluta**
+  — a mesma que corrigia 447 NCM truncados plantaria `TIPO_ITEM` inválido em
+  1.273 itens certos. Correção em massa mostra a prévia e deixa escolher campo
+  a campo (`previa_atualizacao_0200`).
 - **Só o CST 01 tem alíquota conferível:** 02 é "alíquota diferenciada" e 03 é
   por quantidade. Cobrar deles a alíquota nominal gera falso positivo.
 

@@ -41,7 +41,7 @@ from PyQt6.QtWidgets import (
     QStackedWidget,
 )
 
-from sped_model import SpedDocument
+from sped_model import SpedDocument, TIPOS_ITEM_0200, _to_num
 import xml_fiscal as xf
 import conferencia as cf
 import revisao as rev
@@ -1097,6 +1097,109 @@ class DialogoComparaInventario(QDialog):
         QMessageBox.information(self, "Exportar", "Exportado:\n%s" % caminho)
 
 
+class DialogoAtualizar0200(QDialog):
+    """Escolha, campo a campo, do que a planilha vai corrigir no cadastro
+    0200 já existente.
+
+    Existe porque "sobrescrever tudo" não é seguro: no arquivo real que
+    motivou a função, a planilha corrigia 447 NCM truncados — e ao mesmo
+    tempo plantaria `TIPO_ITEM` inválido em 1.273 itens que estavam certos.
+    Quem decide é quem conhece a empresa, mas só depois de ver os números.
+    """
+
+    COLS = ["", "Campo", "Itens", "Exemplo"]
+
+    def __init__(self, previa, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle("Atualizar o cadastro 0200 pela planilha")
+        self.resize(720, 420)
+        self.previa = previa
+        lay = QVBoxLayout(self)
+
+        total = sum(len(v) for v in previa.values())
+        lay.addWidget(QLabel(
+            "A planilha mudaria <b>%d</b> valor(es) no cadastro de itens. "
+            "Marque o que deve ser corrigido:" % total))
+
+        pal = tema.atual()
+        self.tab = QTableWidget(len(previa), len(self.COLS))
+        self.tab.setHorizontalHeaderLabels(self.COLS)
+        self.tab.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
+        self.tab.setAlternatingRowColors(True)
+        self.tab.horizontalHeader().setStretchLastSection(True)
+        self._campos = []
+        suspeitos = []
+        ordem = sorted(previa.items(), key=lambda x: -len(x[1]))
+        for i, (campo, lst) in enumerate(ordem):
+            self._campos.append(campo)
+            invalidos = sorted({novo for _c, _a, novo in lst
+                                if campo == "TIPO_ITEM"
+                                and novo not in TIPOS_ITEM_0200})
+            it = QTableWidgetItem("")
+            it.setFlags(it.flags() | Qt.ItemFlag.ItemIsUserCheckable)
+            # campo com valor fora da tabela oficial nasce desmarcado
+            it.setCheckState(Qt.CheckState.Unchecked if invalidos
+                             else Qt.CheckState.Checked)
+            self.tab.setItem(i, 0, it)
+            rot = QTableWidgetItem(campo)
+            if invalidos:
+                rot.setForeground(QColor(pal.bad))
+                suspeitos.append((campo, invalidos))
+            self.tab.setItem(i, 1, rot)
+            self.tab.setItem(i, 2, QTableWidgetItem(str(len(lst))))
+            exemplo = "; ".join("%s: %s → %s" % (c, a or "(vazio)", b)
+                                for c, a, b in lst[:2])
+            self.tab.setItem(i, 3, QTableWidgetItem(exemplo))
+        self.tab.resizeColumnsToContents()
+        lay.addWidget(self.tab, 1)
+
+        if suspeitos:
+            av = QLabel(
+                "⚠ %s — a planilha traz valor fora da tabela oficial (%s). "
+                "Aplicar isso trocaria um código válido por um inválido, e o "
+                "PVA recusa. Deixei desmarcado."
+                % (", ".join(c for c, _v in suspeitos),
+                   ", ".join(", ".join(v) for _c, v in suspeitos)))
+            av.setWordWrap(True)
+            av.setProperty("role", "erro")
+            lay.addWidget(av)
+
+        # alíquota que vai a zero é mudança de tributação, não de cadastro:
+        # continua marcada (a planilha pode estar certa), mas dita em voz alta
+        zerados = sum(1 for _c, a, b in previa.get("ALIQ_ICMS", [])
+                      if _to_num(b) == 0 and _to_num(a) != 0)
+        if zerados:
+            zav = QLabel(
+                "⚠ %d item(ns) teriam a <b>alíquota de ICMS zerada</b> "
+                "(a planilha traz 0 onde o cadastro tem alíquota). Confirme "
+                "que é isso mesmo antes de aplicar ALIQ_ICMS." % zerados)
+            zav.setWordWrap(True)
+            zav.setProperty("role", "aviso")
+            lay.addWidget(zav)
+
+        nota = QLabel(
+            "Coluna não mapeada e célula vazia nunca apagam o que já está no "
+            "cadastro.")
+        nota.setWordWrap(True)
+        nota.setProperty("role", "dica")
+        lay.addWidget(nota)
+
+        rod = QHBoxLayout()
+        rod.addStretch(1)
+        b_ok = QPushButton("Aplicar e importar")
+        b_ok.clicked.connect(self.accept)
+        b_ca = QPushButton("Cancelar")
+        b_ca.clicked.connect(self.reject)
+        rod.addWidget(b_ok)
+        rod.addWidget(b_ca)
+        lay.addLayout(rod)
+
+    def escolhidos(self):
+        """Campos marcados, no formato aceito por `importar_inventario_h010`."""
+        return {self._campos[i] for i in range(self.tab.rowCount())
+                if self.tab.item(i, 0).checkState() == Qt.CheckState.Checked}
+
+
 class DialogoImportarInventario(QDialog):
     """Importa uma planilha (XLSX/CSV) e gera o inventário do bloco H (H005 e
     H010), criando no 0200 apenas os itens que ainda não estão cadastrados."""
@@ -1189,6 +1292,16 @@ class DialogoImportarInventario(QDialog):
         self.ed_prop.setMaximumWidth(40)
         cab.addWidget(self.ed_prop)
         lay.addLayout(cab)
+
+        self.chk_atualizar = QCheckBox(
+            "Atualizar o cadastro (0200) dos itens que já existem com os "
+            "dados da planilha")
+        self.chk_atualizar.setToolTip(
+            "Use quando o 0200 do arquivo é que está errado — NCM truncado, "
+            "descrição velha, CEST ausente.\n"
+            "Só mexe nas colunas mapeadas acima, e célula vazia não apaga o "
+            "que já está no cadastro.")
+        lay.addWidget(self.chk_atualizar)
 
         grupo = QGroupBox("Mapeamento das colunas")
         scr = QScrollArea()
@@ -1410,10 +1523,27 @@ class DialogoImportarInventario(QDialog):
                 QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
             if resp != QMessageBox.StandardButton.Yes:
                 return
+        # correção do cadastro existente: mostra a prévia e deixa escolher
+        # campo a campo antes de gravar qualquer coisa
+        atualizar = set()
+        if self.chk_atualizar.isChecked():
+            previa = self.doc.previa_atualizacao_0200(linhas)
+            if not previa:
+                QMessageBox.information(
+                    self, "Atualizar o cadastro 0200",
+                    "O cadastro dos itens já existentes está igual à "
+                    "planilha — nada a corrigir.")
+            else:
+                dlg = DialogoAtualizar0200(previa, self)
+                if dlg.exec() != QDialog.DialogCode.Accepted:
+                    return
+                atualizar = dlg.escolhidos()
+
         res = self.doc.importar_inventario_h010(
             linhas, dt_inv=dt,
             mot_inv=self.MOTIVOS[self.cb_motivo.currentIndex()][0],
-            ind_prop_padrao=self.ed_prop.text().strip() or "0")
+            ind_prop_padrao=self.ed_prop.text().strip() or "0",
+            atualizar_0200=atualizar)
         if res.get("erro"):
             QMessageBox.critical(self, "Importar inventário", res["erro"])
             return
@@ -1423,6 +1553,17 @@ class DialogoImportarInventario(QDialog):
                 jan._marcar_alterado()
             if hasattr(jan, "_montar_abas"):
                 jan._montar_abas()
+        extra = ""
+        if res.get("atualizados_0200"):
+            por_campo = ", ".join(
+                "%s (%d)" % (c, n)
+                for c, n in sorted(res["campos_0200"].items(),
+                                   key=lambda x: -x[1]))
+            extra += ("\n• %d cadastro(s) do 0200 corrigido(s) pela planilha"
+                      "\n   %s" % (res["atualizados_0200"], por_campo))
+        if res["ignorados"]:
+            extra += ("\n• %d código(s) repetido(s) ignorado(s)"
+                      % len(res["ignorados"]))
         QMessageBox.information(
             self, "Importar inventário",
             "Inventário gerado:\n\n"
@@ -1431,9 +1572,7 @@ class DialogoImportarInventario(QDialog):
             "• %d item(ns) novo(s) cadastrado(s) no 0200\n"
             "• %d unidade(s) nova(s) no 0190%s"
             % (res["itens"], _br(res["vl_inv"]), res["novos_0200"],
-               res["novos_0190"],
-               ("\n• %d código(s) repetido(s) ignorado(s)"
-                % len(res["ignorados"])) if res["ignorados"] else ""))
+               res["novos_0190"], extra))
         self.accept()
 
 

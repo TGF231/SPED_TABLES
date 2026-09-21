@@ -122,6 +122,37 @@ def _texto_planilha(v):
     return "" if s.upper() in VALORES_NULOS else s
 
 
+# Tabela oficial do campo TIPO_ITEM do 0200 (EFD ICMS/IPI). Serve para não
+# deixar a planilha plantar lixo no cadastro: num arquivo real, 10.312 itens
+# tinham "N", que não existe na tabela.
+TIPOS_ITEM_0200 = frozenset(("00", "01", "02", "03", "04", "05", "06", "07",
+                             "08", "09", "10", "99"))
+
+# Campos do 0200 que a planilha de inventário alimenta: (chave, campo).
+CAMPOS_0200 = (("descr_item", "DESCR_ITEM"), ("unid", "UNID_INV"),
+               ("tipo_item", "TIPO_ITEM"), ("cod_barra", "COD_BARRA"),
+               ("cod_ncm", "COD_NCM"), ("ex_ipi", "EX_IPI"),
+               ("cod_gen", "COD_GEN"), ("aliq_icms", "ALIQ_ICMS"),
+               ("cest", "CEST"))
+
+
+def _valor_0200(chave, ln):
+    """Valor da planilha para um campo do 0200, já normalizado: códigos de
+    tamanho fixo recuperam o zero à esquerda e a alíquota sai no formato do
+    SPED. Criar e atualizar passam por aqui — senão o item novo e o item
+    corrigido sairiam com NCM de tamanhos diferentes."""
+    v = _texto_planilha(ln.get(chave))
+    if chave == "cod_ncm":
+        return _zero_a_esquerda(v, 8)
+    if chave == "cest":
+        return _zero_a_esquerda(v, 7)
+    if chave == "cod_barra":
+        return _gtin_corrigido(v)
+    if chave == "aliq_icms" and v:
+        return _fmt_aliq(_to_num_planilha(ln.get(chave)))
+    return v
+
+
 def _zero_a_esquerda(valor, tamanho):
     """Repõe o zero que a planilha comeu ao tratar o código como número:
     o NCM `04012010` volta da célula como `4012010`.
@@ -1598,9 +1629,63 @@ class SpedDocument:
                 "ncm_truncado": ncm_truncado,
                 "sem_qtd": sem_qtd, "sem_valor": sem_valor}
 
+    @staticmethod
+    def _mudancas_item_0200(reg, ln, z):
+        """Diferenças entre um registro 0200 e a linha da planilha.
+
+        Devolve `[(campo, indice, atual, novo)]`. Duas regras que evitam
+        estrago: coluna **não mapeada** ou célula **vazia** não mexem no que
+        já está lá (senão uma coluna em branco varreria o cadastro), e a
+        alíquota é comparada como **número** — `18,00` e `18` são o mesmo
+        valor e não deveriam contar como mudança.
+        """
+        out = []
+        for chave, campo in CAMPOS_0200:
+            if chave not in ln:
+                continue
+            novo = _valor_0200(chave, ln)
+            i = z.get(campo)
+            if not novo or i is None or i >= len(reg.campos):
+                continue
+            atual = (reg.valor(i) or "").strip()
+            if atual == novo:
+                continue
+            if campo == "ALIQ_ICMS" and _to_num(atual) == _to_num(novo):
+                continue
+            out.append((campo, i, atual, novo))
+        return out
+
+    def previa_atualizacao_0200(self, linhas):
+        """O que a planilha mudaria no cadastro 0200 já existente, **sem
+        alterar nada**. Devolve `{campo: [(cod_item, atual, novo)]}`.
+
+        Serve para escolher campo a campo antes de aplicar: num arquivo real,
+        corrigir o NCM era acerto, mas a mesma planilha traria `TIPO_ITEM`
+        inválido para 1.273 itens que estavam certos.
+        """
+        i_cod = self._ix("0200", "COD_ITEM")
+        z = {c: self._ix("0200", c) for _k, c in CAMPOS_0200}
+        cad = {}
+        for r in self.registros:
+            if r.reg == "0200":
+                cad[(r.valor(i_cod) or "").strip()] = r
+        prev = {}
+        vistos = set()
+        for ln in linhas:
+            cod = _texto_planilha(ln.get("cod_item"))
+            if not cod or cod in vistos:
+                continue
+            vistos.add(cod)
+            reg = cad.get(cod)
+            if reg is None:
+                continue
+            for campo, _i, atual, novo in self._mudancas_item_0200(reg, ln, z):
+                prev.setdefault(campo, []).append((cod, atual, novo))
+        return prev
+
     def importar_inventario_h010(self, linhas, dt_inv, mot_inv="01",
                                  ind_prop_padrao="0", criar_0200=True,
-                                 substituir=True):
+                                 substituir=True, atualizar_0200=False):
         """(EFD ICMS/IPI) Gera o inventário do **bloco H** a partir das `linhas`
         de uma planilha — uma por item, com as chaves de `CAMPOS_INVENTARIO`.
 
@@ -1611,7 +1696,14 @@ class SpedDocument:
         cadastrados; as unidades novas também geram registros **0190**.
 
         `dt_inv` no formato DDMMAAAA. Com `substituir=True`, H005/H010 anteriores
-        são removidos. Devolve um resumo do que foi criado.
+        são removidos.
+
+        Com `atualizar_0200=True`, o cadastro dos itens que **já existem** é
+        corrigido com os dados da planilha — é para quando o 0200 do arquivo
+        é que está errado (NCM truncado, descrição velha). Só mexe nas colunas
+        que foram mapeadas, e célula vazia não apaga o que está lá.
+
+        Devolve um resumo do que foi criado e corrigido.
         """
         if self.layout != "ICMS":
             return {"erro": "O bloco H (inventário) é do EFD ICMS/IPI."}
@@ -1675,8 +1767,16 @@ class SpedDocument:
         n_itens = n_novos_0200 = n_novos_0190 = 0
         vistos = set()
         ignorados = []
+        campos_0200 = {}        # campo do 0200 -> quantos itens corrigidos
+        itens_0200 = set()      # itens cujo cadastro mudou
 
         num = _to_num_planilha
+
+        # quais campos do 0200 a planilha pode corrigir nesta execução
+        if atualizar_0200 is True:
+            corrigir = {c for _k, c in CAMPOS_0200}
+        else:
+            corrigir = set(atualizar_0200 or ())
 
         for ln in linhas:
             cod = _texto_planilha(ln.get("cod_item"))
@@ -1727,33 +1827,22 @@ class SpedDocument:
                     "0200", pai=r0001, depois=(ult_0200 or ult_0190 or r0001))
                 novo.campos = ["0200"] + [""] * (n_0200 - 1)
                 setv(novo, z["COD_ITEM"], cod)
-                setv(novo, z["DESCR_ITEM"],
-                     _texto_planilha(ln.get("descr_item")))
-                setv(novo, z["UNID_INV"], unid)
-                setv(novo, z["TIPO_ITEM"],
-                     _texto_planilha(ln.get("tipo_item")))
-                for chave, campo in (("cod_barra", "COD_BARRA"),
-                                     ("cod_ncm", "COD_NCM"),
-                                     ("ex_ipi", "EX_IPI"),
-                                     ("cod_gen", "COD_GEN"),
-                                     ("aliq_icms", "ALIQ_ICMS"),
-                                     ("cest", "CEST")):
-                    v = _texto_planilha(ln.get(chave))
-                    # códigos de tamanho fixo que a planilha devolve como
-                    # número perdem o zero da frente; a alíquota é numérica
-                    if chave == "cod_ncm":
-                        v = _zero_a_esquerda(v, 8)
-                    elif chave == "cest":
-                        v = _zero_a_esquerda(v, 7)
-                    elif chave == "cod_barra":
-                        v = _gtin_corrigido(v)
-                    elif chave == "aliq_icms" and v:
-                        v = _fmt_aliq(num(ln.get(chave)))
+                for chave, campo in CAMPOS_0200:
+                    v = _valor_0200(chave, ln)
                     if v:
                         setv(novo, z[campo], v)
                 cad[cod] = novo
                 ult_0200 = novo
                 n_novos_0200 += 1
+            elif corrigir and cod in cad:
+                # a planilha é a fonte: corrige o cadastro que já existe
+                for campo, i, _atual, novo_v in self._mudancas_item_0200(
+                        cad[cod], ln, z):
+                    if campo not in corrigir:
+                        continue
+                    cad[cod].set_valor(i, novo_v)
+                    campos_0200[campo] = campos_0200.get(campo, 0) + 1
+                    itens_0200.add(cod)
 
             # unidade nova -> 0190
             if unid and unid.upper() not in unids and r0001 is not None:
@@ -1780,7 +1869,9 @@ class SpedDocument:
         self.atualizar_bloco9_inplace()
         return {"itens": n_itens, "vl_inv": round(total, 2),
                 "novos_0200": n_novos_0200, "novos_0190": n_novos_0190,
-                "ignorados": ignorados}
+                "ignorados": ignorados,
+                "atualizados_0200": len(itens_0200),
+                "campos_0200": campos_0200}
 
     def _registros_aliq_escopo(self, escopo):
         """Registros-alvo da troca de alíquotas conforme o escopo:

@@ -1,6 +1,6 @@
 # Funcionalidades — SPED Tables
 
-Inventário do que existe hoje (v0.27.0), com **grau de maturidade** e as
+Inventário do que existe hoje (v0.29.0), com **grau de maturidade** e as
 **regras de uso** de cada função. O objetivo deste documento é registrar o que
 já é confiável, o que ainda precisa de polimento e quais restrições evitam
 resultado errado.
@@ -306,10 +306,28 @@ discrepâncias apontou exatamente as 56 notas com problema.
 ## 7. Inventário — bloco H
 
 ### 7.1 Importar inventário de planilha — 🟡 Em amadurecimento
-Lê XLSX/CSV e gera H001 (com movimento), H005 (data, motivo, valor total) e um
-H010 por item. Colunas reconhecidas automaticamente pelo cabeçalho, com
-mapeamento manual ajustável. Itens ausentes do **0200** são cadastrados (sem
-duplicar os existentes) e unidades novas geram **0190**.
+Lê XLSX/CSV e gera H001 (com movimento), H005 (data, motivo, valor total),
+um H010 por item e o H990 de encerramento. Colunas reconhecidas
+automaticamente pelo cabeçalho, com mapeamento manual ajustável. Itens
+ausentes do **0200** são cadastrados (sem duplicar os existentes) e unidades
+novas geram **0190**.
+
+**Atualizar o cadastro existente.** Marcando a opção, a planilha também
+corrige o 0200 dos itens que já existem — para quando é o arquivo que está
+errado. A correção **não é cega**: `previa_atualizacao_0200()` mostra antes,
+campo a campo, quantos valores mudariam e exemplos, e a escolha é por campo.
+
+Isso não é excesso de zelo. No arquivo real, a mesma planilha que corrigia
+**447 NCM truncados, 471 CEST e 36 códigos de barras** plantaria `TIPO_ITEM`
+**inválido** (`N`, fora da tabela 00–10/99) em 1.273 itens que estavam
+certos — e o PVA recusaria. Campo cujo valor novo está fora da tabela oficial
+nasce **desmarcado**, com o aviso à vista; alíquota que iria a zero segue
+marcada, mas o diálogo diz quantos itens seriam zerados.
+
+Duas regras impedem estrago silencioso: coluna **não mapeada** e célula
+**vazia** nunca apagam o que já está no cadastro, e a alíquota é comparada
+como número — `18,00` e `18` não contam como mudança (sem isso, 7.615
+"alterações" apareciam onde havia 832 reais).
 
 ### 7.2 Comparar inventário atual com a planilha — 🟡 Em amadurecimento
 Confronta o H010 escriturado com a planilha por **código e quantidade**, sem
@@ -412,7 +430,9 @@ em vermelho.
 - Número de campos divergente do layout (usa a **moda** do arquivo);
 - C190 com CST \*20/\*70 e VL_RED_BC zerado;
 - **C170 sem C190 compatível** (item não consolidado no analítico);
-- 0200 não utilizados / duplicados.
+- 0200 não utilizados / duplicados;
+- **TIPO_ITEM fora da tabela do 0200** (só 00 a 10 e 99) — no arquivo real,
+  10.312 itens com `N`, herdados da exportação do ERP.
 
 *Regra de uso:* a revisão **não substitui o PVA** — é uma triagem rápida antes
 dele. Novas regras entram na lista `REGRAS` de `revisao.py`.

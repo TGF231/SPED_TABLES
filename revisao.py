@@ -13,7 +13,7 @@ até ele ao clicar no relatório.
 
 from collections import Counter
 
-from sped_model import _to_num
+from sped_model import _to_num, TIPOS_ITEM_0200
 
 
 class Problema:
@@ -173,11 +173,41 @@ def verificar_c170_sem_c190(doc):
     return problemas
 
 
+def verificar_tipo_item_0200(doc):
+    """TIPO_ITEM fora da tabela oficial do 0200.
+
+    O campo só aceita 00 a 10 e 99. ERPs que exportam a coluna errada
+    despejam ali a origem da mercadoria ou um "N" de nacional — num arquivo
+    real eram 10.312 itens, todos recusados pelo PVA. Item por item a
+    correção é inviável; a grade do 0200 aplica valor na seleção inteira.
+    """
+    if doc.layout != "ICMS":
+        return []
+    i_tipo = doc._ix("0200", "TIPO_ITEM")
+    i_cod = doc._ix("0200", "COD_ITEM")
+    if i_tipo is None:
+        return []
+    problemas = []
+    for r in doc.registros:
+        if r.reg != "0200":
+            continue
+        v = (r.valor(i_tipo) or "").strip()
+        if v and v not in TIPOS_ITEM_0200:
+            problemas.append(Problema(
+                uid=r.uid, reg=r.reg, bloco=r.bloco,
+                regra="TIPO_ITEM fora da tabela",
+                descricao="Item %s tem TIPO_ITEM %r, que não existe na "
+                          "tabela do 0200 (00 a 10 e 99)."
+                          % ((r.valor(i_cod) or "").strip(), v)))
+    return problemas
+
+
 REGRAS = [
     ("Número de campos divergente do layout", verificar_num_campos),
     ("C190 CST x20/x70 com VL_RED_BC zerado", verificar_c190_reducao),
     ("C170 sem C190 compatível", verificar_c170_sem_c190),
     ("0200 não utilizados / duplicados", verificar_0200_nao_utilizados),
+    ("TIPO_ITEM fora da tabela (0200)", verificar_tipo_item_0200),
 ]
 
 

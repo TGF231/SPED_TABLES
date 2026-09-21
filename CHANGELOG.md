@@ -1,5 +1,38 @@
 # Changelog
 
+## [0.29.0] - 2026-09-21
+
+O PVA recusou itens que **já existiam no 0200**: o cadastro do arquivo estava
+errado e a importação de inventário só criava os itens ausentes, nunca
+corrigia os presentes.
+
+### Adicionado
+- **Atualizar o cadastro 0200 pela planilha**, opcional, no diálogo de
+  importação de inventário. Corrige `DESCR_ITEM`, `UNID_INV`, `TIPO_ITEM`,
+  `COD_BARRA`, `COD_NCM`, `EX_IPI`, `COD_GEN`, `ALIQ_ICMS` e `CEST` dos itens
+  que já existem, com a mesma normalização usada ao criar.
+- **A correção não é cega.** `previa_atualizacao_0200()` calcula antes, sem
+  alterar nada, e o diálogo mostra campo a campo quantos valores mudariam, com
+  exemplos, para marcar só o que deve ser aplicado. No arquivo real: `COD_NCM`
+  447, `CEST` 471, `COD_BARRA` 36, `ALIQ_ICMS` 832 — e `TIPO_ITEM` 1.273.
+- **Campo com valor fora da tabela oficial nasce desmarcado.** A mesma planilha
+  que corrigia os NCM truncados traria `TIPO_ITEM` = `N` — que não existe na
+  tabela (00 a 10 e 99) — para 1.273 itens que estavam **certos**, trocando um
+  código válido por um inválido. Constante `TIPOS_ITEM_0200` no modelo.
+- Aviso separado quando a planilha **zeraria a alíquota de ICMS**: é mudança de
+  tributação, não de cadastro, e o diálogo diz quantos itens seriam afetados.
+- **Regra de revisão "TIPO_ITEM fora da tabela (0200)"**. No arquivo real são
+  **10.312 itens** com `N`, herdados da exportação do ERP — exatamente os
+  mesmos que traziam `COD_GEN` = `NULL`. A correção em massa já existe: a
+  grade do 0200 aplica um valor em toda a seleção.
+
+### Corrigido
+- **Alíquota comparada como número.** `18,00` e `18` são o mesmo valor; sem
+  isso a prévia acusava 7.615 alterações onde havia **832** reais, e a
+  importação reescrevia milhares de registros à toa.
+- Coluna **não mapeada** e célula **vazia** nunca apagam o que já está no
+  cadastro — uma coluna em branco varreria dados legítimos do 0200.
+
 ## [0.28.0] - 2026-09-21
 
 ### Corrigido

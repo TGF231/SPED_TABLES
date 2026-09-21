@@ -356,7 +356,7 @@ documento; nas demais (ex.: **0200**, **H010**) pesquisa em **todas as colunas**
 
 ### Revisão de erros
 **Ferramentas → Revisar erros…** gera um relatório de inconsistências. As
-regras implementadas hoje são quatro:
+regras implementadas hoje são cinco:
 
 1. **Número de campos divergente** — registros cujo número de campos destoa dos
    demais do **mesmo tipo** no próprio arquivo (detecta uma linha editada com um
@@ -370,6 +370,9 @@ regras implementadas hoje são quatro:
 4. **0200 não utilizados / duplicados** — produtos cadastrados que nenhum outro
    registro referencia (as referências são coletadas de qualquer registro com
    COD_ITEM, não só C170/H010) e códigos de item repetidos no cadastro.
+5. **TIPO_ITEM fora da tabela (0200)** — o campo só aceita 00 a 10 e 99. ERPs
+   que exportam a coluna errada gravam ali a origem da mercadoria ou um "N" de
+   nacional; num arquivo real eram 10.312 itens, todos recusados pelo PVA.
 
 A revisão **não substitui o PVA** — é uma triagem rápida antes dele.
 
@@ -449,10 +452,25 @@ itens), validar valor a valor exige um artifício. O fluxo, em **Ferramentas**
 
 **Ferramentas → Importar inventário (bloco H) de planilha…** (EFD ICMS/IPI) lê
 uma planilha **XLSX** ou **CSV** com o inventário e gera os registros do bloco H:
-**H001** (com movimento), **H005** (data, motivo e valor total) e um **H010** por
+**H001** (com movimento), **H005** (data, motivo e valor total), um **H010** por
 item — com unidade, quantidade, valor unitário, valor total, indicador de
 propriedade e, quando informados, participante, complemento, conta contábil e
-valor para IR.
+valor para IR — e o **H990** de encerramento.
+
+**Atualizar o cadastro dos itens que já existem.** Marcando a opção, a planilha
+também corrige o **0200** dos itens já cadastrados, e não só cria os ausentes —
+é o caminho para quando o cadastro do arquivo é que está errado (NCM sem o zero
+à esquerda, CEST faltando, descrição velha).
+
+A correção **não é cega**: antes de gravar qualquer coisa, o programa mostra
+campo a campo quantos valores mudariam, com exemplos, e você marca só o que deve
+ser aplicado. Campo cujo valor novo está **fora da tabela oficial** nasce
+desmarcado — vale a pena: num arquivo real, a mesma planilha que corrigia 447
+NCM truncados traria `TIPO_ITEM` = `N`, que não existe na tabela, para 1.273
+itens que estavam certos. Quando a planilha **zeraria a alíquota de ICMS**, o
+aviso é separado, porque isso é mudança de tributação e não de cadastro.
+
+Coluna não mapeada e célula vazia **nunca apagam** o que já está no cadastro.
 
 A primeira linha da planilha deve ser o **cabeçalho**. As colunas são
 reconhecidas automaticamente pelo nome (por exemplo *Código do Produto*,
