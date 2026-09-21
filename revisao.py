@@ -202,12 +202,34 @@ def verificar_tipo_item_0200(doc):
     return problemas
 
 
+def verificar_cod_gen_0200(doc):
+    """COD_GEN que não é o capítulo do NCM (Tabela 4.2.1).
+
+    O gênero são os dois primeiros dígitos do NCM. Vazio é o caso comum
+    depois de limpar um `NULL` herdado do ERP; errado costuma ser planilha
+    que cortou os dois primeiros dígitos de um NCM já sem o zero à esquerda
+    (`04012010` vira `4012010`, e o gênero sai `40` em vez de `04`).
+    """
+    if doc.layout != "ICMS":
+        return []
+    problemas = []
+    for r, cod, ncm, atual, novo in doc.divergencias_cod_gen():
+        problemas.append(Problema(
+            uid=r.uid, reg=r.reg, bloco=r.bloco,
+            regra="COD_GEN x NCM",
+            descricao="Item %s: NCM %s pede COD_GEN %s, mas está %s."
+                      % (cod, ncm, novo, ("%r" % atual) if atual else "vazio"),
+            gravidade="erro" if atual else "aviso"))
+    return problemas
+
+
 REGRAS = [
     ("Número de campos divergente do layout", verificar_num_campos),
     ("C190 CST x20/x70 com VL_RED_BC zerado", verificar_c190_reducao),
     ("C170 sem C190 compatível", verificar_c170_sem_c190),
     ("0200 não utilizados / duplicados", verificar_0200_nao_utilizados),
     ("TIPO_ITEM fora da tabela (0200)", verificar_tipo_item_0200),
+    ("COD_GEN incoerente com o NCM (0200)", verificar_cod_gen_0200),
 ]
 
 

@@ -142,10 +142,21 @@ def _valor_0200(chave, ln):
     SPED. Criar e atualizar passam por aqui — senão o item novo e o item
     corrigido sairiam com NCM de tamanhos diferentes."""
     v = _texto_planilha(ln.get(chave))
+    # célula numérica vazia chega como 0, e `0` não é NCM, CEST, gênero nem
+    # código de barras — é o "sem valor" do ERP outra vez. Alíquota fica de
+    # fora: ali o zero é alíquota zero, valor legítimo.
+    if (chave in ("cod_ncm", "cest", "cod_gen", "cod_barra", "ex_ipi")
+            and v.isdigit() and not v.strip("0")):
+        return ""
     if chave == "cod_ncm":
         return _zero_a_esquerda(v, 8)
     if chave == "cest":
         return _zero_a_esquerda(v, 7)
+    # códigos de dois dígitos digitados como número: a célula com "00" vira o
+    # número 0 e chega como "0", que o PVA não aceita. Tabela só tem códigos
+    # de dois dígitos, então um dígito só pode ser o zero à esquerda perdido.
+    if chave in ("tipo_item", "cod_gen") and v.isdigit() and len(v) == 1:
+        return v.zfill(2)
     if chave == "cod_barra":
         return _gtin_corrigido(v)
     if chave == "aliq_icms" and v:
@@ -1504,6 +1515,53 @@ class SpedDocument:
                 "por_campo": por_campo}
 
     # -------------------------------------------------------------------
+    # COD_GEN do 0200 — capítulo do NCM (Tabela 4.2.1)
+    # -------------------------------------------------------------------
+    def divergencias_cod_gen(self):
+        """Itens do 0200 cujo `COD_GEN` não é o capítulo do `COD_NCM`.
+        **Não altera nada.** Devolve `[(registro, cod_item, ncm, atual, novo)]`.
+
+        O gênero são os **dois primeiros dígitos do NCM**, então é derivável e
+        não precisa vir de planilha — ainda bem: calcular `LEFT(ncm; 2)` numa
+        célula numérica dá `40` para o NCM `04012010`, porque a planilha já
+        comeu o zero. Aqui o NCM é normalizado antes de cortar.
+
+        Item sem NCM de 8 dígitos (serviço, por exemplo) fica de fora: não há
+        capítulo de onde tirar o gênero.
+        """
+        i_cod = self._ix("0200", "COD_ITEM")
+        i_ncm = self._ix("0200", "COD_NCM")
+        i_gen = self._ix("0200", "COD_GEN")
+        if i_ncm is None or i_gen is None:
+            return []
+        out = []
+        for r in self.registros:
+            if r.reg != "0200":
+                continue
+            ncm = _zero_a_esquerda((r.valor(i_ncm) or "").strip(), 8)
+            if len(ncm) != 8 or not ncm.isdigit():
+                continue
+            atual = (r.valor(i_gen) or "").strip()
+            if atual != ncm[:2]:
+                out.append((r, (r.valor(i_cod) or "").strip(), ncm, atual,
+                            ncm[:2]))
+        return out
+
+    def preencher_cod_gen(self, ocorrencias=None):
+        """Grava o `COD_GEN` derivado do NCM. Recebe a lista já exibida ao
+        usuário, para corrigir exatamente o que ele viu."""
+        if ocorrencias is None:
+            ocorrencias = self.divergencias_cod_gen()
+        i_gen = self._ix("0200", "COD_GEN")
+        vazios = 0
+        for r, _cod, _ncm, atual, novo in ocorrencias:
+            r.set_valor(i_gen, novo)
+            if not atual:
+                vazios += 1
+        return {"itens": len(ocorrencias), "vazios": vazios,
+                "trocados": len(ocorrencias) - vazios}
+
+    # -------------------------------------------------------------------
     # Bloco H — inventário a partir de planilha
     # -------------------------------------------------------------------
     # chaves canônicas aceitas em cada linha da planilha importada
@@ -1682,6 +1740,60 @@ class SpedDocument:
             for campo, _i, atual, novo in self._mudancas_item_0200(reg, ln, z):
                 prev.setdefault(campo, []).append((cod, atual, novo))
         return prev
+
+    def avisos_previa_0200(self, linhas, previa=None):
+        """Riscos de cada campo de uma atualização de 0200, para o diálogo
+        avisar **antes** de gravar. Devolve
+        `{campo: (quantidade, texto, desmarcar)}`.
+
+        `desmarcar=True` quer dizer "o valor novo é objetivamente inválido" —
+        aí o campo nasce desmarcado. Alíquota indo a zero é decisão fiscal
+        legítima, então avisa mas continua marcada.
+        """
+        if previa is None:
+            previa = self.previa_atualizacao_0200(linhas)
+        avisos = {}
+
+        maus = [(c, novo) for c, _a, novo in previa.get("TIPO_ITEM", [])
+                if novo not in TIPOS_ITEM_0200]
+        if maus:
+            avisos["TIPO_ITEM"] = (
+                len(maus),
+                "valor fora da tabela oficial do 0200 (%s; só 00 a 10 e 99): "
+                "trocaria um código válido por um inválido e o PVA recusa"
+                % ", ".join(sorted({v for _c, v in maus})), True)
+
+        # o gênero é o capítulo do NCM; divergir denuncia LEFT(ncm;2) feito
+        # sobre uma célula que já tinha perdido o zero à esquerda
+        ncm_item = {}
+        for ln in linhas:
+            cod = _texto_planilha(ln.get("cod_item"))
+            if cod and cod not in ncm_item:
+                ncm_item[cod] = _zero_a_esquerda(
+                    _texto_planilha(ln.get("cod_ncm")), 8)
+        fora = [(c, novo, ncm_item[c][:2])
+                for c, _a, novo in previa.get("COD_GEN", [])
+                if len(ncm_item.get(c, "")) == 8
+                and novo != ncm_item[c][:2]]
+        if fora:
+            c, novo, certo = fora[0]
+            avisos["COD_GEN"] = (
+                len(fora),
+                "não é o capítulo do NCM (ex.: item %s receberia %s onde o "
+                "NCM pede %s). É o sintoma de LEFT(NCM;2) sobre célula que "
+                "perdeu o zero à esquerda — use \"Preencher COD_GEN pelo "
+                "NCM\", que deriva do próprio arquivo" % (c, novo, certo),
+                True)
+
+        zerados = [c for c, a, b in previa.get("ALIQ_ICMS", [])
+                   if _to_num(b) == 0 and _to_num(a) != 0]
+        if zerados:
+            avisos["ALIQ_ICMS"] = (
+                len(zerados),
+                "ficariam com a alíquota de ICMS zerada — é mudança de "
+                "tributação, não de cadastro; confirme que é isso mesmo",
+                False)
+        return avisos
 
     def importar_inventario_h010(self, linhas, dt_inv, mot_inv="01",
                                  ind_prop_padrao="0", criar_0200=True,

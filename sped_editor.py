@@ -41,7 +41,7 @@ from PyQt6.QtWidgets import (
     QStackedWidget,
 )
 
-from sped_model import SpedDocument, TIPOS_ITEM_0200, _to_num
+from sped_model import SpedDocument
 import xml_fiscal as xf
 import conferencia as cf
 import revisao as rev
@@ -1109,11 +1109,12 @@ class DialogoAtualizar0200(QDialog):
 
     COLS = ["", "Campo", "Itens", "Exemplo"]
 
-    def __init__(self, previa, parent=None):
+    def __init__(self, previa, avisos=None, parent=None):
         super().__init__(parent)
         self.setWindowTitle("Atualizar o cadastro 0200 pela planilha")
-        self.resize(720, 420)
+        self.resize(760, 460)
         self.previa = previa
+        avisos = avisos or {}
         lay = QVBoxLayout(self)
 
         total = sum(len(v) for v in previa.values())
@@ -1128,23 +1129,19 @@ class DialogoAtualizar0200(QDialog):
         self.tab.setAlternatingRowColors(True)
         self.tab.horizontalHeader().setStretchLastSection(True)
         self._campos = []
-        suspeitos = []
         ordem = sorted(previa.items(), key=lambda x: -len(x[1]))
         for i, (campo, lst) in enumerate(ordem):
             self._campos.append(campo)
-            invalidos = sorted({novo for _c, _a, novo in lst
-                                if campo == "TIPO_ITEM"
-                                and novo not in TIPOS_ITEM_0200})
+            _qtd, _txt, desmarcar = avisos.get(campo, (0, "", False))
             it = QTableWidgetItem("")
             it.setFlags(it.flags() | Qt.ItemFlag.ItemIsUserCheckable)
-            # campo com valor fora da tabela oficial nasce desmarcado
-            it.setCheckState(Qt.CheckState.Unchecked if invalidos
+            # campo cujo valor novo é inválido nasce desmarcado
+            it.setCheckState(Qt.CheckState.Unchecked if desmarcar
                              else Qt.CheckState.Checked)
             self.tab.setItem(i, 0, it)
             rot = QTableWidgetItem(campo)
-            if invalidos:
-                rot.setForeground(QColor(pal.bad))
-                suspeitos.append((campo, invalidos))
+            if campo in avisos:
+                rot.setForeground(QColor(pal.bad if desmarcar else pal.warn))
             self.tab.setItem(i, 1, rot)
             self.tab.setItem(i, 2, QTableWidgetItem(str(len(lst))))
             exemplo = "; ".join("%s: %s → %s" % (c, a or "(vazio)", b)
@@ -1153,29 +1150,13 @@ class DialogoAtualizar0200(QDialog):
         self.tab.resizeColumnsToContents()
         lay.addWidget(self.tab, 1)
 
-        if suspeitos:
-            av = QLabel(
-                "⚠ %s — a planilha traz valor fora da tabela oficial (%s). "
-                "Aplicar isso trocaria um código válido por um inválido, e o "
-                "PVA recusa. Deixei desmarcado."
-                % (", ".join(c for c, _v in suspeitos),
-                   ", ".join(", ".join(v) for _c, v in suspeitos)))
+        for campo, (qtd, texto, desmarcar) in sorted(avisos.items()):
+            av = QLabel("⚠ <b>%s</b> — %d item(ns): %s.%s"
+                        % (campo, qtd, texto,
+                           " Deixei desmarcado." if desmarcar else ""))
             av.setWordWrap(True)
-            av.setProperty("role", "erro")
+            av.setProperty("role", "erro" if desmarcar else "aviso")
             lay.addWidget(av)
-
-        # alíquota que vai a zero é mudança de tributação, não de cadastro:
-        # continua marcada (a planilha pode estar certa), mas dita em voz alta
-        zerados = sum(1 for _c, a, b in previa.get("ALIQ_ICMS", [])
-                      if _to_num(b) == 0 and _to_num(a) != 0)
-        if zerados:
-            zav = QLabel(
-                "⚠ %d item(ns) teriam a <b>alíquota de ICMS zerada</b> "
-                "(a planilha traz 0 onde o cadastro tem alíquota). Confirme "
-                "que é isso mesmo antes de aplicar ALIQ_ICMS." % zerados)
-            zav.setWordWrap(True)
-            zav.setProperty("role", "aviso")
-            lay.addWidget(zav)
 
         nota = QLabel(
             "Coluna não mapeada e célula vazia nunca apagam o que já está no "
@@ -1534,7 +1515,8 @@ class DialogoImportarInventario(QDialog):
                     "O cadastro dos itens já existentes está igual à "
                     "planilha — nada a corrigir.")
             else:
-                dlg = DialogoAtualizar0200(previa, self)
+                avisos = self.doc.avisos_previa_0200(linhas, previa)
+                dlg = DialogoAtualizar0200(previa, avisos, self)
                 if dlg.exec() != QDialog.DialogCode.Accepted:
                     return
                 atualizar = dlg.escolhidos()
@@ -4428,6 +4410,11 @@ class JanelaPrincipal(QMainWindow):
             self.act_limpar_nulos = QAction("Limpar campos com NULL…", self)
         self.act_limpar_nulos.triggered.connect(self.limpar_campos_nulos)
         self.act_limpar_nulos.setEnabled(False)
+        if not hasattr(self, "act_cod_gen"):
+            self.act_cod_gen = QAction("Preencher COD_GEN pelo NCM (0200)…",
+                                       self)
+        self.act_cod_gen.triggered.connect(self.preencher_cod_gen)
+        self.act_cod_gen.setEnabled(False)
         if not hasattr(self, "act_trocar_aliquotas"):
             self.act_trocar_aliquotas = QAction(
                 "Trocar alíquotas PIS/COFINS…", self)
@@ -4568,7 +4555,7 @@ class JanelaPrincipal(QMainWindow):
                      "act_conferir_55", "act_conferir_c190", "act_revisar",
                      "act_empresa", "act_conferir_itens_icms",
                      "act_conferir_itens_pc", "act_recalc_icms",
-                     "act_limpar_nulos"):
+                     "act_limpar_nulos", "act_cod_gen"):
             if hasattr(self, acao):
                 getattr(self, acao).setEnabled(False)
         if hasattr(self, "menu_icms"):
@@ -4816,6 +4803,7 @@ class JanelaPrincipal(QMainWindow):
         self.menu_gerais.addAction(self.act_alterar_datas)
         self.menu_gerais.addAction(self.act_revisar)
         self.menu_gerais.addAction(self.act_limpar_nulos)
+        self.menu_icms.addAction(self.act_cod_gen)
         self.menu_gerais.addSeparator()
         self.menu_gerais.addAction(self.act_correlacoes_cfop)
 
@@ -4932,6 +4920,10 @@ class JanelaPrincipal(QMainWindow):
         self.act_limpar_nulos = QAction("Limpar campos com NULL…", self)
         self.act_limpar_nulos.triggered.connect(self.limpar_campos_nulos)
         self.act_limpar_nulos.setEnabled(False)
+
+        self.act_cod_gen = QAction("Preencher COD_GEN pelo NCM (0200)…", self)
+        self.act_cod_gen.triggered.connect(self.preencher_cod_gen)
+        self.act_cod_gen.setEnabled(False)
 
         self.act_correlacoes_cfop = QAction(
             "Correlações de CFOP (entradas)…", self)
@@ -5461,6 +5453,51 @@ class JanelaPrincipal(QMainWindow):
             "Limpeza: %d campo(s) esvaziados em %d registro(s)."
             % (res["campos"], res["registros"]), 6000)
 
+    def preencher_cod_gen(self):
+        """Deriva o COD_GEN do 0200 a partir do NCM (Tabela 4.2.1: o gênero
+        são os dois primeiros dígitos). Como é derivável, não depende de a
+        planilha trazer a coluna certa — e não erra o zero à esquerda."""
+        if not self.doc:
+            return
+        div = self.doc.divergencias_cod_gen()
+        if not div:
+            QMessageBox.information(
+                self, "COD_GEN pelo NCM",
+                "Todos os itens com NCM já têm o COD_GEN do capítulo "
+                "correspondente.")
+            return
+        vazios = sum(1 for _r, _c, _n, atual, _novo in div if not atual)
+        trocas = len(div) - vazios
+        amostra = "<br>".join(
+            "&nbsp;&nbsp;• item <b>%s</b> · NCM %s → COD_GEN %s %s"
+            % (cod, ncm, novo, ("(era %s)" % atual) if atual else "(vazio)")
+            for _r, cod, ncm, atual, novo in div[:6])
+
+        caixa = QMessageBox(self)
+        caixa.setWindowTitle("COD_GEN pelo NCM")
+        caixa.setTextFormat(Qt.TextFormat.RichText)
+        caixa.setIcon(QMessageBox.Icon.Question)
+        caixa.setText(
+            "<b>%d</b> item(ns) do 0200 ficariam com o COD_GEN do capítulo do "
+            "NCM — <b>%d</b> estão vazios e <b>%d</b> têm outro valor:"
+            "<br><br>%s%s<br><br>Preencher?"
+            % (len(div), vazios, trocas, amostra,
+               "<br>&nbsp;&nbsp;…" if len(div) > 6 else ""))
+        b_ok = caixa.addButton("Preencher",
+                               QMessageBox.ButtonRole.AcceptRole)
+        caixa.addButton("Cancelar", QMessageBox.ButtonRole.RejectRole)
+        caixa.setDefaultButton(b_ok)
+        caixa.exec()
+        if caixa.clickedButton() is not b_ok:
+            return
+
+        res = self.doc.preencher_cod_gen(div)
+        self._marcar_alterado()
+        self._montar_abas()
+        self.statusBar().showMessage(
+            "COD_GEN: %d item(ns) preenchidos (%d vazios, %d corrigidos)."
+            % (res["itens"], res["vazios"], res["trocados"]), 6000)
+
     def ir_para_registro(self, uid):
         """Navega até o registro de `uid`: abre a aba do bloco, a sub-aba do
         tipo raiz de exibição e desce pela cadeia até o registro alvo.
@@ -5555,6 +5592,7 @@ class JanelaPrincipal(QMainWindow):
         self.act_conferir_c190.setEnabled(doc.layout == "ICMS")
         self.act_revisar.setEnabled(True)
         self.act_limpar_nulos.setEnabled(True)
+        self.act_cod_gen.setEnabled(doc.layout == "ICMS")
         # o cadastro vale para os dois leiautes (é por CNPJ); as rotinas é que
         # se filtram por layout dentro do diálogo
         self.act_empresa.setEnabled(doc.layout == "CONTRIB")

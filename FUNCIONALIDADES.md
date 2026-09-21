@@ -1,6 +1,6 @@
 # Funcionalidades — SPED Tables
 
-Inventário do que existe hoje (v0.29.0), com **grau de maturidade** e as
+Inventário do que existe hoje (v0.30.0), com **grau de maturidade** e as
 **regras de uso** de cada função. O objetivo deste documento é registrar o que
 já é confiável, o que ainda precisa de polimento e quais restrições evitam
 resultado errado.
@@ -432,10 +432,27 @@ em vermelho.
 - **C170 sem C190 compatível** (item não consolidado no analítico);
 - 0200 não utilizados / duplicados;
 - **TIPO_ITEM fora da tabela do 0200** (só 00 a 10 e 99) — no arquivo real,
-  10.312 itens com `N`, herdados da exportação do ERP.
+  10.312 itens com `N`, herdados da exportação do ERP;
+- **COD_GEN incoerente com o NCM** — o gênero são os dois primeiros dígitos do
+  NCM, então dá para conferir e preencher sozinho (8.3).
 
 *Regra de uso:* a revisão **não substitui o PVA** — é uma triagem rápida antes
 dele. Novas regras entram na lista `REGRAS` de `revisao.py`.
+
+### 8.3 Preencher COD_GEN pelo NCM — 🟡 Em amadurecimento
+O gênero do item são os **dois primeiros dígitos do NCM** (Tabela 4.2.1), logo
+é derivável do próprio arquivo. `divergencias_cod_gen()` lista sem alterar;
+`preencher_cod_gen()` grava o que foi exibido. Item sem NCM de 8 dígitos fica
+de fora — não há capítulo de onde tirar o gênero.
+
+*Por que não confiar na planilha:* `LEFT(NCM;2)` sobre célula numérica devolve
+`40` para o NCM `04012010`. Na planilha real seriam **593 itens** com gênero
+errado — e todos com código existente, então o erro não apareceria como
+inválido, só como errado. Derivar do arquivo, com o NCM normalizado antes do
+corte, é imune.
+
+*Validado em arquivo real (08/2026):* 12.478 itens preenchidos, nenhuma
+divergência restante, larguras preservadas.
 
 ### 8.2 Limpar campos com NULL — 🟡 Em amadurecimento
 Encontra e esvazia os campos em que o sistema de origem gravou o "vazio" por

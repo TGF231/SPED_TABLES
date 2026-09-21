@@ -1,5 +1,37 @@
 # Changelog
 
+## [0.30.0] - 2026-09-21
+
+O `COD_GEN` é derivável — são os **dois primeiros dígitos do NCM** (Tabela
+4.2.1) — então não precisa vir de planilha. E é bom que não precise: calcular
+`LEFT(NCM;2)` sobre uma célula numérica dá `40` para o NCM `04012010`, porque
+a planilha já comeu o zero. Na planilha real seriam **593 itens** com o gênero
+errado, todos com código válido — erro que passa silencioso.
+
+### Adicionado
+- **Ferramentas → EFD ICMS/IPI → Preencher COD_GEN pelo NCM (0200)…**
+  Deriva o gênero do próprio arquivo, com o NCM normalizado antes do corte.
+  Mostra quantos estão vazios e quantos têm outro valor, com exemplos, antes
+  de gravar. No arquivo real: 12.478 itens preenchidos, 0 divergências depois.
+  No modelo: `divergencias_cod_gen()` (não altera nada) e `preencher_cod_gen()`.
+- **Regra de revisão "COD_GEN incoerente com o NCM (0200)"**, que aponta tanto
+  o vazio quanto o gênero que não bate com o capítulo.
+- Os avisos da atualização do 0200 saíram da GUI para o modelo
+  (`avisos_previa_0200`), onde é o lugar da regra fiscal. Passou a cobrir
+  também o **COD_GEN que não bate com o NCM** — campo assim nasce desmarcado,
+  como o `TIPO_ITEM` fora da tabela.
+
+### Corrigido
+- **`TIPO_ITEM` e `COD_GEN` de um dígito ganham o zero à esquerda.** A célula
+  com `00` vira o número 0 e chega como `"0"`, que o PVA não aceita; as duas
+  tabelas só têm códigos de dois dígitos, então um dígito só pode ser o zero
+  perdido. Na planilha real do cliente eram **9.929 itens** com `TIPO_ITEM`
+  nessa situação.
+- **Zero numérico não vira código.** Célula vazia de planilha chega como `0`, e
+  `0` não é NCM, CEST, gênero nem código de barras — é o "sem valor" do ERP
+  outra vez. A importação chegou a gravar `COD_NCM = 0` num item que não tinha
+  NCM. A alíquota fica de fora da regra: ali o zero é alíquota zero.
+
 ## [0.29.0] - 2026-09-21
 
 O PVA recusou itens que **já existiam no 0200**: o cadastro do arquivo estava

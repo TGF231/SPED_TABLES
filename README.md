@@ -373,8 +373,28 @@ regras implementadas hoje são cinco:
 5. **TIPO_ITEM fora da tabela (0200)** — o campo só aceita 00 a 10 e 99. ERPs
    que exportam a coluna errada gravam ali a origem da mercadoria ou um "N" de
    nacional; num arquivo real eram 10.312 itens, todos recusados pelo PVA.
+6. **COD_GEN incoerente com o NCM (0200)** — o gênero são os dois primeiros
+   dígitos do NCM; a regra aponta tanto o campo vazio quanto o que não bate
+   com o capítulo.
 
 A revisão **não substitui o PVA** — é uma triagem rápida antes dele.
+
+### Preencher COD_GEN pelo NCM (0200)
+
+**Ferramentas → EFD ICMS/IPI → Preencher COD_GEN pelo NCM (0200)…** preenche o
+gênero do item a partir do próprio NCM — são os **dois primeiros dígitos**
+(Tabela 4.2.1). Como é derivável, não depende de a planilha trazer a coluna, e
+não erra o zero à esquerda: o NCM é normalizado antes do corte.
+
+Isso importa mais do que parece. Calcular `LEFT(NCM;2)` numa planilha cuja
+célula de NCM é **numérica** devolve `40` para o NCM `04012010` — borracha no
+lugar de laticínios. Num arquivo real seriam 593 itens com gênero errado, todos
+com código existente, portanto sem erro visível. (Se preferir manter a coluna na
+planilha, use `=LEFT(TEXT(NCM;"00000000");2)`.)
+
+O diálogo mostra quantos itens estão sem COD_GEN e quantos têm outro valor,
+com exemplos, antes de gravar. Itens sem NCM de 8 dígitos ficam de fora: não há
+capítulo de onde tirar o gênero.
 
 ### Limpar campos com NULL
 **Ferramentas → Gerais → Limpar campos com NULL…** procura campos em que o
