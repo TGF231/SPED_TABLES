@@ -28,7 +28,8 @@ Dependências em `requirements.txt` (PyQt6; `openpyxl` para planilhas XLSX).
 | `conferencia.py` | Conferência XML × SPED (entradas modelo 55, C190) e correlações de CFOP. |
 | `revisao.py` | Regras de revisão extensíveis (lista `REGRAS`). |
 | `validacao.py` | Domínio de cada campo **por nome** (`DOMINIOS`), varredura do arquivo e normalização em lote. Detecta; só `normalizar()` grava. |
-| `tabelas_pva.py` | Domínios lidos das **tabelas dos próprios PVAs** (ICMS/IPI e Contribuições). Preferidos sobre os embutidos — ver abaixo. |
+| `tabelas_pva.py` | Tabelas externas dos PVAs (códigos válidos, com vigência). |
+| `descritor_pva.py` | **Descritor de validação** que cada PVA embarca no `.jar`: tipo/tamanho de cada campo, enumerações, referências entre registros e os validadores nomeados. É a fonte mais próxima de "como o PVA valida". |
 | `empresas.py` | Cadastro por CNPJ: regime federal e de PIS/COFINS, alíquotas, atividade. Persistido em `empresas.json` (fora do git). |
 | `rotinas.py` | Rotinas de conferência/correção por regime (lista `ROTINAS`). Verificação nunca altera o arquivo; a correção recebe as ocorrências já exibidas. |
 | `arquivos.py` | Memória persistente: cópia do SPED em `arquivos/<CNPJ>/<LEIAUTE>_<AAAAMM>.txt` + `indice.json`. Uma cópia por período. Fora do git. |
@@ -145,6 +146,35 @@ validado contra arquivo real, prevalece o antigo — o guia é que está numa
 versão anterior (E116, E310). Layout mais largo ou mais estreito que o arquivo
 é inofensivo, porque `_ncampos` mede o registro pelo próprio arquivo.
 
+### Como o PVA valida — e por que a granularidade é por registro
+
+Cada PVA embarca, num `.jar`, um **descritor XML** por versão de leiaute:
+`fiscalpva-dominio.jar` (ICMS/IPI) e `piscofinspva-infra.jar` (Contribuições).
+Ali está, campo a campo, `tipo` (C/N/D), `tamanho` (`[3]` fixo, `60` máximo),
+`casasdecimais`, `obrigatorio`, a enumeração
+(`<valores-validos valores="0=Entrada;1=Saída"/>`), a tabela externa
+(`datasource`) e a referência a outro registro
+(`referenciaPesquisa="0200;COD_ITEM"`).
+
+Três consequências que o código incorpora:
+
+- **Valida-se por (registro, campo), não por campo.** No EFD Contribuições o
+  `CST_PIS` tem tabela diferente no C175, no C181 e no C191; a regra global
+  achatava isso.
+- **Campo que o descritor não declara não é validado.** Era daí que vinha o
+  falso positivo do `CST_ICMS` no EFD Contribuições — o PVA de lá não cobra
+  aquele domínio, e cobrar produzia erro que o validador oficial não acusa.
+  No Contribuições, nenhum `datasource` é tratado como tabela de validação:
+  lá eles alimentam as listas da edição.
+- **`referenciaPesquisa` substitui regra escrita à mão.** "COD_ITEM do C170
+  tem de existir no 0200" passou a vir do descritor — 28 registros apontam
+  para o 0200 no ICMS/IPI e 14 no Contribuições.
+
+Os `<validador id="REGRA_..."/>` são regras compostas implementadas em Java
+(ex.: `REGRA_CST_ICMS_CAMPOS_ICMS_C170`). O módulo registra **que existem**,
+mas não as reimplementa: adivinhar o conteúdo produziria divergência
+silenciosa com o validador oficial.
+
 ### Domínios que vêm dos PVAs, não do código
 
 `tabelas_pva.py` lê as tabelas instaladas com os dois PVAs e monta os domínios
@@ -196,6 +226,18 @@ senão as ações em lote agem sobre uma linha que ninguém escolheu.
 
 Cada bloco abre na primeira sub-aba de **nível ≠ 1** — nível 1 é abertura e
 encerramento (`C001`, `H001`, `H990`), de um campo só.
+
+### O painel de revisão é um sumário, não uma lista
+
+`DialogoRevisao` mostra **uma linha por verificação** — quantos erros e qual
+função corrige —, não uma linha por ocorrência. A versão anterior listava
+1.887 itens dizendo "COD_ITEM tal não é referenciado" numa tela onde não havia
+como corrigir nenhum. A lista detalhada existe em `DialogoOcorrencias`, atrás
+do botão *Ver ocorrências*, e só faz sentido quando a correção é manual.
+
+Regra ao criar uma verificação nova: se ela tem função que corrige, registre o
+atalho em `acoes` (o mapa é por **rótulo da lista `REGRAS`**, não pelo texto
+de `Problema.regra`, que é mais curto).
 
 ### Ao adicionar ações na GUI
 

@@ -228,13 +228,20 @@ REGRAS = [
 ]
 
 
+def revisar_por_regra(doc, regras=None):
+    """Executa as regras e devolve `[(rotulo, [problemas])]`.
+
+    Manter o vínculo entre a regra e os seus achados é o que permite ao painel
+    oferecer, em cada linha, a função que corrige **aquela** regra: o texto do
+    `Problema.regra` é mais curto que o rótulo da lista e não serve de chave.
+    """
+    regras = regras if regras is not None else REGRAS
+    return [(rotulo, fn(doc)) for rotulo, fn in regras]
+
+
 def revisar(doc, regras=None):
     """Executa as regras e devolve (lista_de_problemas, resumo_por_regra)."""
-    regras = regras if regras is not None else REGRAS
-    problemas = []
-    resumo = []
-    for rotulo, fn in regras:
-        achados = fn(doc)
-        resumo.append((rotulo, len(achados)))
-        problemas.extend(achados)
+    por_regra = revisar_por_regra(doc, regras)
+    problemas = [p for _r, ps in por_regra for p in ps]
+    resumo = [(r, len(ps)) for r, ps in por_regra]
     return problemas, resumo

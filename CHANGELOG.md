@@ -1,5 +1,55 @@
 # Changelog
 
+## [0.40.0] - 2026-09-22
+
+Três mudanças que vieram do uso: a validação cobrava o que o PVA não cobra, o
+painel de revisão listava o que não dava para corrigir, e o leiaute completo
+ainda não tinha chegado aos módulos que dependem dele.
+
+### Adicionado
+- **`descritor_pva.py`** — lê o **descritor de validação** que cada PVA embarca
+  no `.jar` (`fiscalpva-dominio.jar` e `piscofinspva-infra.jar`): tipo,
+  tamanho, casas decimais, obrigatoriedade, enumerações
+  (`<valores-validos valores="0=Entrada;1=Saída"/>`), tabela externa
+  (`datasource`) e referência entre registros
+  (`referenciaPesquisa="0200;COD_ITEM"`), por versão de leiaute. É a fonte
+  mais próxima de "como o PVA valida".
+- **Validação por (registro, campo)**, como o PVA faz. No EFD Contribuições o
+  `CST_PIS` tem tabela diferente no C175, no C181 e no C191 — a regra global
+  achatava isso.
+- **Tipo e tamanho passam a ser validados** em todos os campos declarados
+  (1.612 no ICMS/IPI, 1.191 no Contribuições), substituindo a heurística por
+  prefixo `VL_`/`ALIQ_`, que errava nos dois sentidos.
+- **As referências ao 0200 vêm do descritor**: 28 registros no ICMS/IPI e 14
+  no Contribuições apontam para o cadastro de itens. "COD_ITEM do C170 tem de
+  existir no 0200" deixou de ser regra escrita à mão.
+
+### Corrigido
+- **Falso positivo de `CST_ICMS` no EFD Contribuições.** Aquele PVA não valida
+  o campo, e a verificação global o cobrava. Passou a valer o princípio: campo
+  que o descritor não declara não é validado. No Contribuições, nenhum
+  `datasource` é tratado como tabela de validação — lá eles alimentam as
+  listas da edição. No arquivo real da CASA DO ESPETO, as ocorrências caíram
+  de 1 para **0**.
+
+### Alterado
+- **O painel de revisão virou um sumário.** Uma linha por verificação, com a
+  contagem e o **atalho para a função que corrige** — Recalcular C190,
+  Preencher COD_GEN, Itens sem referência, Validar campos. Antes eram 1.887
+  linhas dizendo "COD_ITEM tal não é referenciado" numa tela sem nenhum botão
+  de correção. A lista item a item ficou em `DialogoOcorrencias`, atrás de
+  *Ver ocorrências*, para quando a correção é manual.
+- `revisao.revisar_por_regra()` preserva o vínculo entre a regra e os seus
+  achados, que é o que permite o atalho por linha.
+
+### Notas
+- Os `<validador id="REGRA_..."/>` do descritor são regras compostas
+  implementadas em Java. O módulo registra que existem, mas **não as
+  reimplementa**: adivinhar produziria divergência silenciosa com o validador
+  oficial.
+- Medições nos arquivos reais: REAL LIDER 24.313 ocorrências (era 24.755, a
+  diferença é o excesso removido), CASA DO ESPETO ICMS 8, Contribuições **0**.
+
 ## [0.39.0] - 2026-09-22
 
 O leiaute dos dois SPEDs passou a ser **completo**. Antes o projeto mapeava

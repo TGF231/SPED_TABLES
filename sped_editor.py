@@ -1197,7 +1197,11 @@ class DialogoItensNaoUsados(QDialog):
         onde = ", ".join("%s (%d)" % (t, n) for t, n in
                          sorted(refs["por_registro"].items(),
                                 key=lambda x: -x[1]))
-        proc = QLabel("Referências encontradas em: %s" % (onde or "nenhum"))
+        proc = QLabel(
+            "Referências encontradas em: %s.<br>Os campos que apontam para o "
+            "0200 vêm do <b>descritor do PVA</b> (28 registros no EFD "
+            "ICMS/IPI, 14 no Contribuições) — não de uma lista escrita à mão."
+            % (onde or "nenhum"))
         proc.setWordWrap(True)
         proc.setProperty("role", "info")
         lay.addWidget(proc)
@@ -2675,80 +2679,150 @@ class ResumoWidget(QWidget):
 # ---------------------------------------------------------------------------
 # Diálogo de revisão de erros
 # ---------------------------------------------------------------------------
-class DialogoRevisao(QDialog):
-    """Lista os problemas encontrados; duplo-clique navega até o registro."""
+class DialogoOcorrencias(QDialog):
+    """Lista item a item de **uma** regra; duplo-clique navega até o registro.
 
-    COLS = ["Bloco", "Registro", "Regra", "Descrição"]
+    Fica atrás de um clique de propósito: a listagem completa só ajuda quando
+    a correção é manual, registro a registro.
+    """
 
-    def __init__(self, problemas, resumo, ir_callback, parent=None,
-                 acoes=None):
-        """`acoes` é uma lista de (rótulo, função) com correções em massa
-        oferecidas para o que a revisão acabou de encontrar — é o caminho
-        natural: quem vê o erro quer corrigi-lo ali mesmo."""
+    COLS = ["Bloco", "Registro", "Descrição"]
+
+    def __init__(self, titulo, problemas, ir_callback, parent=None):
         super().__init__(parent)
-        self.problemas = problemas
         self.ir_callback = ir_callback
-        self.setWindowTitle("Revisão de erros")
-        self.resize(820, 520)
+        self.setWindowTitle(titulo)
+        self.resize(860, 520)
         lay = QVBoxLayout(self)
-
-        total = len(problemas)
-        partes = "  |  ".join("%s: %d" % (rot, n) for rot, n in resumo)
-        lbl = QLabel("%d ocorrência(s).   %s" % (total, partes))
-        lbl.setProperty("role", "ok" if total == 0 else "erro")
-        lay.addWidget(lbl)
-        dica = QLabel("Dê duplo-clique numa linha para ir ao registro.")
+        dica = QLabel("%d ocorrência(s). Duplo-clique leva ao registro."
+                      % len(problemas))
         dica.setProperty("role", "dica")
         lay.addWidget(dica)
-
-        self.tab = QTableWidget(total, len(self.COLS))
+        self.tab = QTableWidget(len(problemas), len(self.COLS))
         self.tab.setHorizontalHeaderLabels(self.COLS)
         self.tab.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
         self.tab.setSelectionBehavior(
             QAbstractItemView.SelectionBehavior.SelectRows)
         self.tab.verticalHeader().setVisible(False)
+        self.tab.horizontalHeader().setStretchLastSection(True)
+        self.tab.horizontalHeader().setResizeContentsPrecision(200)
         for i, p in enumerate(problemas):
-            vals = [p.bloco, p.reg, p.regra, p.descricao]
-            for j, val in enumerate(vals):
-                it = QTableWidgetItem(val)
+            for j, v in enumerate((p.bloco, p.reg, p.descricao)):
+                it = QTableWidgetItem(v)
                 if j == 0:
                     it.setData(Qt.ItemDataRole.UserRole, p.uid)
                 self.tab.setItem(i, j, it)
         self.tab.resizeColumnsToContents()
-        self.tab.horizontalHeader().setStretchLastSection(True)
         self.tab.cellDoubleClicked.connect(self._ir)
         lay.addWidget(self.tab, 1)
-
-        botoes = QHBoxLayout()
-        for rotulo, fn in (acoes or []):
-            b = QPushButton(rotulo)
-            b.clicked.connect(fn)
-            botoes.addWidget(b)
-        botoes.addStretch(1)
-        b_ir = QPushButton("Ir para o registro")
-        b_ir.clicked.connect(self._ir_selecionado)
-        b_ir.setEnabled(total > 0)
-        b_fechar = QPushButton("Fechar")
-        b_fechar.clicked.connect(self.close)
-        botoes.addWidget(b_ir)
-        botoes.addWidget(b_fechar)
-        lay.addLayout(botoes)
+        rod = QHBoxLayout()
+        rod.addStretch(1)
+        b = QPushButton("Fechar")
+        b.clicked.connect(self.close)
+        rod.addWidget(b)
+        lay.addLayout(rod)
 
     def _ir(self, row, _col):
         it = self.tab.item(row, 0)
-        if it is not None:
-            uid = it.data(Qt.ItemDataRole.UserRole)
-            self.ir_callback(uid)
-
-    def _ir_selecionado(self):
-        row = self.tab.currentRow()
-        if row >= 0:
-            self._ir(row, 0)
+        if it is not None and self.ir_callback is not None:
+            self.ir_callback(it.data(Qt.ItemDataRole.UserRole))
 
 
-# ---------------------------------------------------------------------------
-# Editor das correlações de CFOP (saída do fornecedor -> entrada do comprador)
-# ---------------------------------------------------------------------------
+class DialogoRevisao(QDialog):
+    """Painel de revisão: **um resumo por regra**, com o atalho para a função
+    que corrige cada uma.
+
+    A versão anterior listava as ocorrências uma a uma — 1.887 linhas dizendo
+    "COD_ITEM tal não é referenciado", numa tela onde não havia como corrigir
+    nenhuma. O que a pessoa precisa saber ali é *quantos* e *qual função
+    resolve*; a lista detalhada só interessa quando a correção é manual, e por
+    isso ficou atrás do botão "Ver ocorrências".
+    """
+
+    COLS = ["", "Verificação", "Ocorrências", "Como corrigir"]
+
+    def __init__(self, por_regra, ir_callback, parent=None, acoes=None):
+        """`por_regra` é `[(rotulo, [problemas])]`; `acoes` mapeia o rótulo
+        para (texto do botão, função)."""
+        super().__init__(parent)
+        problemas = [p for _r, ps in por_regra for p in ps]
+        resumo = [(r, len(ps)) for r, ps in por_regra]
+        self.por_regra = dict(por_regra)
+        self.problemas = problemas
+        self.ir_callback = ir_callback
+        self.acoes = acoes or {}
+        self.setWindowTitle("Revisão de erros")
+        self.resize(860, 420)
+        lay = QVBoxLayout(self)
+
+        pal = tema.atual()
+        total = len(problemas)
+        lbl = QLabel("<b>%d</b> ocorrência(s) em %d verificação(ões)."
+                     % (total, len(resumo)))
+        lbl.setProperty("role", "ok" if total == 0 else "erro")
+        lay.addWidget(lbl)
+        dica = QLabel("Cada linha mostra quantos erros a verificação achou e "
+                      "qual função resolve. Sem correção automática, "
+                      "\"Ver ocorrências\" abre a lista para corrigir na grade.")
+        dica.setWordWrap(True)
+        dica.setProperty("role", "dica")
+        lay.addWidget(dica)
+
+        ordem = sorted(resumo, key=lambda x: -x[1])
+
+        self.tab = QTableWidget(len(ordem), len(self.COLS))
+        self.tab.setHorizontalHeaderLabels(self.COLS)
+        self.tab.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
+        self.tab.verticalHeader().setVisible(False)
+        self.tab.horizontalHeader().setStretchLastSection(True)
+        for i, (rotulo, n) in enumerate(ordem):
+            marca = QTableWidgetItem("✔" if n == 0 else "●")
+            marca.setForeground(QColor(pal.ok if n == 0 else pal.bad))
+            marca.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
+            self.tab.setItem(i, 0, marca)
+            self.tab.setItem(i, 1, QTableWidgetItem(rotulo))
+            it_n = QTableWidgetItem("%d" % n)
+            it_n.setTextAlignment(Qt.AlignmentFlag.AlignRight
+                                  | Qt.AlignmentFlag.AlignVCenter)
+            if n:
+                it_n.setForeground(QColor(pal.bad))
+            self.tab.setItem(i, 2, it_n)
+            self.tab.setCellWidget(i, 3, self._acao(rotulo, n))
+        self.tab.resizeColumnsToContents()
+        self.tab.setColumnWidth(0, 28)
+        lay.addWidget(self.tab, 1)
+
+        rod = QHBoxLayout()
+        rod.addStretch(1)
+        b_fechar = QPushButton("Fechar")
+        b_fechar.clicked.connect(self.close)
+        rod.addWidget(b_fechar)
+        lay.addLayout(rod)
+
+    def _acao(self, rotulo, n):
+        """Botão da linha: a correção em massa quando existe, senão a lista."""
+        if not n:
+            return QLabel("  —")
+        par = self.acoes.get(rotulo)
+        b = QPushButton(par[0] if par else "Ver ocorrências…")
+        if par:
+            b.clicked.connect(lambda _=False, fn=par[1]: fn())
+        else:
+            b.clicked.connect(
+                lambda _=False, t=rotulo: self._ver(t, self.por_regra.get(t,
+                                                                          [])))
+        return b
+
+    def _ver(self, titulo, problemas):
+        if not problemas:
+            QMessageBox.information(self, titulo,
+                                    "Sem ocorrências para listar.")
+            return
+        self._dlg = DialogoOcorrencias(titulo, problemas, self.ir_callback,
+                                       self)
+        self._dlg.show()
+
+
 class DialogoCorrelacoesCFOP(QDialog):
     """Tabela editável de CFOP de saída -> CFOPs de entrada válidos.
 
@@ -6136,23 +6210,24 @@ class JanelaPrincipal(QMainWindow):
         permitir navegar até os registros enquanto a lista fica aberta)."""
         if not self.doc:
             return
-        problemas, resumo = rev.revisar(self.doc)
-        # correções em massa oferecidas conforme o que a revisão achou —
-        # ver o erro e ter o conserto à mão no mesmo lugar
-        acoes = []
-        if any(p.regra == "C190 redução de BC" for p in problemas):
-            acoes.append(("Recalcular os C190 com redução zerada…",
-                          self._corrigir_c190_da_revisao))
-        if any(p.regra == "COD_GEN x NCM" for p in problemas):
-            acoes.append(("Preencher COD_GEN pelo NCM…",
-                          self.preencher_cod_gen))
-        if any(p.regra == "0200 não utilizado" for p in problemas):
-            acoes.append(("Itens sem referência…", self.itens_sem_referencia))
+        por_regra = rev.revisar_por_regra(self.doc)
+        # cada verificação aponta para a função que a corrige; sem isso o
+        # painel vira uma lista de reclamações sem saída
+        acoes = {
+            "C190 CST x20/x70 com VL_RED_BC zerado":
+                ("Recalcular C190…", self._corrigir_c190_da_revisao),
+            "COD_GEN incoerente com o NCM (0200)":
+                ("Preencher COD_GEN…", self.preencher_cod_gen),
+            "0200 não utilizados / duplicados":
+                ("Itens sem referência…", self.itens_sem_referencia),
+            "TIPO_ITEM fora da tabela (0200)":
+                ("Validar campos…", self.validar_campos),
+        }
         self._dlg_revisao = DialogoRevisao(
-            problemas, resumo, self.ir_para_registro, self, acoes=acoes)
+            por_regra, self.ir_para_registro, self, acoes=acoes)
         self._dlg_revisao.show()
-        self.statusBar().showMessage(
-            "Revisão: %d ocorrência(s)." % len(problemas))
+        total = sum(len(ps) for _r, ps in por_regra)
+        self.statusBar().showMessage("Revisão: %d ocorrência(s)." % total)
 
     def limpar_campos_nulos(self):
         """Esvazia os campos em que o ERP gravou o "vazio" por extenso

@@ -287,6 +287,69 @@ class DominioTabelaCstIcms(DominioTabela):
         return motivo, sugestao
 
 
+class DominioFormato(Dominio):
+    """Tipo e tamanho como o **descritor do PVA** os declara.
+
+    O descritor diz, campo a campo: `tipo` (C texto, N numérico, D data),
+    `tamanho` (`[3]` fixo, `60` máximo) e `casasdecimais`. Isso substitui a
+    heurística por prefixo (`VL_`, `ALIQ_`), que errava nos dois sentidos —
+    campo numérico sem prefixo conhecido passava, e campo de texto começando
+    por `VL` era cobrado como número.
+    """
+
+    def __init__(self, campo, tipo, tamanho, decimais):
+        self.campo = campo
+        self.tipo = (tipo or "").upper()
+        self.decimais = int(decimais) if str(decimais).isdigit() else 0
+        self.fixo = None
+        self.maximo = None
+        t = (tamanho or "").strip()
+        if t.startswith("[") and t.strip("[]").isdigit():
+            self.fixo = int(t.strip("[]"))
+        elif t.isdigit():
+            self.maximo = int(t)
+        Dominio.__init__(self, self._rotulo(), normaliza=True, digitos=False)
+
+    def _rotulo(self):
+        if self.tipo == "D":
+            return "data inválida (esperado DDMMAAAA)"
+        if self.tipo == "N":
+            if self.decimais:
+                return "valor fora do formato numérico do SPED"
+            if self.fixo:
+                return "deve ter exatamente %d dígitos" % self.fixo
+            return "deve ser numérico"
+        if self.fixo:
+            return "deve ter exatamente %d caracteres" % self.fixo
+        return "excede o tamanho de %s caracteres" % self.maximo
+
+    def _serve(self, v):
+        if self.tipo == "D":
+            return _valida_data(v)
+        if self.tipo == "N":
+            if self.decimais:
+                return _valida_numero(v)
+            if not RE_SO_DIGITOS.match(v):
+                return False
+            if self.fixo is not None:
+                return len(v) == self.fixo
+            return self.maximo is None or len(v) <= self.maximo
+        if self.fixo is not None:
+            return len(v) == self.fixo
+        return self.maximo is None or len(v) <= self.maximo
+
+    def avaliar(self, v):
+        if self._serve(v):
+            return None, None
+        if v.upper() in VALORES_NULOS:
+            return "texto de vazio gravado como valor (%s)" % v, ""
+        sugestao = None
+        if (self.fixo and self.tipo == "N" and RE_SO_DIGITOS.match(v)
+                and len(v) == self.fixo - 1):
+            sugestao = v.zfill(self.fixo)
+        return "%s: %s" % (self.campo, self.rotulo), sugestao
+
+
 def dominios_de_tabelas(dominios_pva):
     """Converte o dicionário de `tabelas_pva.carregar_dominios` em domínios
     prontos para a varredura."""
@@ -299,10 +362,23 @@ def dominios_de_tabelas(dominios_pva):
 
 
 def dominios_do_documento(doc, pasta_fiscal=None, pasta_contrib=None):
-    """Domínios das tabelas do PVA para **este** arquivo: usa a UF e a data
-    final do próprio 0000, porque código de ajuste é estadual e vigência é
-    por período. Devolve `(dominios, info)`; `({}, info)` se o PVA não estiver
-    instalado."""
+    """Domínios **por (registro, campo)**, na granularidade em que o PVA
+    valida. Três fontes, nesta ordem de preferência:
+
+    1. **enumeração declarada no descritor** do PVA (`0=Entrada;1=Saída`) —
+       inequívoca e específica do registro;
+    2. **tabela externa**, quando o descritor aponta um datasource que
+       corresponde a uma tabela instalada;
+    3. **tipo e tamanho** do descritor, para todo campo que não caia em 1 ou 2.
+
+    Campo que o descritor não declara não é validado. Era daí que vinha o
+    falso positivo do `CST_ICMS` no EFD Contribuições: a regra global cobrava
+    um domínio que aquele PVA não cobra.
+
+    Devolve `(dominios, info)`; `({}, info)` quando o PVA não está instalado —
+    aí a varredura cai nos domínios embutidos.
+    """
+    import descritor_pva
     import tabelas_pva
     i_uf = doc._ix("0000", "UF")
     i_fin = doc._ix("0000", "DT_FIN")
@@ -312,9 +388,42 @@ def dominios_do_documento(doc, pasta_fiscal=None, pasta_contrib=None):
             uf = (r.valor(i_uf) or "").strip() if i_uf is not None else ""
             dt = (r.valor(i_fin) or "").strip() if i_fin is not None else ""
             break
-    return tabelas_pva.carregar_dominios(
-        doc.layout, pasta_fiscal=pasta_fiscal, pasta_contrib=pasta_contrib,
-        uf=uf, data_ref=dt)
+
+    estrutura, info_desc = descritor_pva.carregar(doc.layout)
+    if not estrutura:
+        return {}, {"descritor": None, "erro": info_desc.get("erro"),
+                    "por_tabela": 0, "por_enum": 0, "por_formato": 0,
+                    "faltando": []}
+
+    por_tabela, faltando = tabelas_pva.dominios_por_datasource(
+        estrutura, doc.layout, pasta_fiscal, pasta_contrib, uf, dt)
+
+    dominios = {}
+    n_enum = n_tab = n_fmt = 0
+    for reg, d in estrutura.items():
+        for campo, c in d["campos"].items():
+            chave = (reg, campo)
+            if c.get("valores"):
+                dominios[chave] = DominioTabela(
+                    tabelas_pva.ROTULOS.get(campo, campo), set(c["valores"]),
+                    "descritor do PVA", info_desc.get("registros", ""))
+                n_enum += 1
+            elif chave in por_tabela:
+                d2 = por_tabela[chave]
+                classe = (DominioTabelaCstIcms if campo == "CST_ICMS"
+                          else DominioTabela)
+                dominios[chave] = classe(d2["rotulo"], d2["codigos"],
+                                         d2["tabela"], d2["versao"])
+                n_tab += 1
+            elif c.get("tipo"):
+                dominios[chave] = DominioFormato(campo, c["tipo"],
+                                                 c["tamanho"], c["decimais"])
+                n_fmt += 1
+    return dominios, {"descritor": info_desc.get("descritor"),
+                      "registros": info_desc.get("registros"),
+                      "por_enum": n_enum, "por_tabela": n_tab,
+                      "por_formato": n_fmt, "faltando": faltando,
+                      "uf": uf, "data": dt}
 
 
 def validar(doc, tipos=None, dominios_pva=None):
@@ -330,7 +439,26 @@ def validar(doc, tipos=None, dominios_pva=None):
     instalado.
     """
     achados = []
-    extras = dominios_de_tabelas(dominios_pva)
+    # chave (registro, campo) vem do descritor; chave só-campo, da versão
+    # anterior por tabela; nenhuma das duas, dos domínios embutidos
+    por_reg = {}
+    extras = {}
+    for chave, d in (dominios_pva or {}).items():
+        if isinstance(chave, tuple):
+            por_reg[chave] = (d if isinstance(d, Dominio)
+                              else DominioTabela(d.get("rotulo", chave[1]),
+                                                 d["codigos"],
+                                                 d.get("tabela", ""),
+                                                 d.get("versao", "")))
+        else:
+            extras[chave] = (d if isinstance(d, Dominio)
+                             else DominioTabela(d.get("rotulo", chave),
+                                                d["codigos"],
+                                                d.get("tabela", ""),
+                                                d.get("versao", "")))
+    # com o descritor disponível, ele é a única fonte: campo que ele não
+    # declara é campo que o PVA não cobra
+    so_descritor = bool(por_reg)
     cache = {}                    # tipo -> [(indice, nome, dominio)]
     for r in doc.registros:
         if tipos and r.reg not in tipos:
@@ -342,7 +470,9 @@ def validar(doc, tipos=None, dominios_pva=None):
             for i, nome in enumerate(nomes):
                 if i == 0:
                     continue
-                d = extras.get(nome) or _dominio_do_campo(nome)
+                d = por_reg.get((r.reg, nome)) or extras.get(nome)
+                if d is None and not so_descritor:
+                    d = _dominio_do_campo(nome)
                 if d is not None:
                     plano.append((i, nome, d))
             cache[(r.reg, len(r.campos))] = plano

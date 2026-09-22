@@ -101,6 +101,58 @@ ROTULOS = {
 }
 
 
+# Datasource declarado no descritor do PVA -> tabela externa correspondente.
+# O nome do datasource nem sempre é o do arquivo (`TP_CTE` x `TP_CT_E`), e
+# datasource terminado em `_SV` aponta para dados do próprio arquivo (o combo
+# do 0200, do 0150...), não para tabela — esses ficam de fora.
+DATASOURCE_ICMS = {
+    "CFOP": "SPEDFISCAL_GLOBAL$CFOP",
+    "COD_MUN": "SPEDFISCAL_GLOBAL$MUNICIPIOS",
+    "COD_PAIS": "SPEDFISCAL_GLOBAL$PAISES",
+    "COD_GEN": "SPEDFISCAL_GLOBAL$GEN_ITEM_MERC_SERV",
+    "CEST": "SPEDFISCAL_GLOBAL$COD_CEST",
+    "COD_SIT": "SPEDFISCAL_CARDOC$COD_SIT",
+    "COD_MOD": "SPEDFISCAL_CARDOC$MOD_DOC",
+    "COD_MOD_ECF": "SPEDFISCAL_CARDOC$MOD_DOC",
+    "CST_IPI": "SPEDFISCAL_ST$SIT_TRIB_IPI",
+    "CST_PIS": "SPEDFISCAL_ST$SIT_TRIB_PIS",
+    "CST_COFINS": "SPEDFISCAL_ST$SIT_TRIB_COFINS",
+    "TP_CTE": "SPEDFISCAL_GLOBAL$TP_CT_E",
+    "UF_SIGLA_NOME": "SPEDFISCAL_GLOBAL$UF_SIG_NOM",
+    "COD_INF_ADIC": "SPEDFISCAL_{UF}$INF_ADIC_APUR",
+    "COD_PROD_USINAS": "SPEDFISCAL_{UF}$COD_PROD_USINAS",
+    "COD_MOT_REST_COMPL": "SPEDFISCAL_{UF}$COD_MOT_REST_COMPL_ST",
+}
+# códigos de ajuste e de receita: o nome do datasource varia com a versão da
+# regra (COD_AJ_APURACAO_A7E1V1, COD_REC_E316_V3...), então casa por prefixo
+PREFIXOS_DATASOURCE_ICMS = (
+    ("COD_AJ_APURACAO", "SPEDFISCAL_{UF}$AJ_APUR_DED"),
+    ("COD_REC", "SPEDFISCAL_{UF}$REC_REF_OBRIGACAO"),
+    ("COD_OR", "SPEDFISCAL_{UF}$REC_REF_OBRIGACAO"),
+)
+# CST do ICMS é o par origem+situação, tratado à parte
+DATASOURCE_COMPOSTO = {"CST_ICMS": ("SPEDFISCAL_ST$SIT_TRIB_ICMS_A",
+                                    "SPEDFISCAL_ST$SIT_TRIB_ICMS_B")}
+
+
+def tabela_do_datasource(ds, layout):
+    """Chave da tabela externa para um datasource do descritor, ou None.
+
+    No **EFD Contribuições** nenhum datasource é tratado como tabela de
+    validação: lá eles alimentam as listas de seleção da edição, e cobrar o
+    conteúdo produziria erro que o PVA não acusa — o `CST_ICMS` do C170 é o
+    caso que motivou a regra.
+    """
+    if not ds or layout != "ICMS" or ds.endswith("_SV"):
+        return None
+    if ds in DATASOURCE_ICMS:
+        return DATASOURCE_ICMS[ds]
+    for pref, chave in PREFIXOS_DATASOURCE_ICMS:
+        if ds.startswith(pref):
+            return chave
+    return None
+
+
 def _chave_sem_versao(nome):
     """`GRUPO$TABELA$12$34` -> (`GRUPO$TABELA`, 12)."""
     m = re.match(r"^(.*?)\$(\d+)\$\d+$", nome)
@@ -233,6 +285,64 @@ def carregar_dominios(layout, pasta_fiscal=None, pasta_contrib=None, uf=None,
                       "pasta_fiscal": pasta_fiscal,
                       "pasta_contrib": pasta_contrib,
                       "tabelas_vistas": len(tabs)}
+
+
+def codigos_de(chave, tabs, uf=None, data_ref=None):
+    """Conjunto de códigos vigentes de uma tabela, resolvendo `{UF}`."""
+    if "{UF}" in chave:
+        if not uf:
+            return None, None
+        chave = chave.replace("{UF}", uf.upper())
+    alvo = tabs.get(chave)
+    if alvo is None:
+        return None, None
+    t = carregar_codigos(alvo[0], data_ref)
+    return (set(t["codigos"]) or None), t["versao"]
+
+
+def dominios_por_datasource(estrutura, layout, pasta_fiscal=None,
+                            pasta_contrib=None, uf=None, data_ref=None):
+    """Domínios de tabela externa, **na granularidade do descritor**:
+    `{(registro, campo): {...}}`.
+
+    É por registro porque o PVA é por registro — no EFD Contribuições o
+    `CST_PIS` tem tabela diferente no C175, no C181 e no C191. Validar por
+    nome de campo, como antes, achatava essas diferenças.
+    """
+    tabs = dict(listar_tabelas(pasta_fiscal or PASTA_FISCAL))
+    tabs.update(listar_tabelas(pasta_contrib or PASTA_CONTRIB))
+    cache = {}
+    out = {}
+    faltando = set()
+    for reg, d in estrutura.items():
+        for campo, c in d["campos"].items():
+            ds = c.get("datasource")
+            if campo in DATASOURCE_COMPOSTO and layout == "ICMS" and ds:
+                par = DATASOURCE_COMPOSTO[campo]
+                if par not in cache:
+                    a, va = codigos_de(par[0], tabs, uf, data_ref)
+                    b, vb = codigos_de(par[1], tabs, uf, data_ref)
+                    cache[par] = ({x + y for x in a for y in b}
+                                  if a and b else None,
+                                  "%s+%s" % (va, vb))
+                cods, versao = cache[par]
+                nome_tab = "%s + %s" % (par[0].split("$")[-1],
+                                        par[1].split("$")[-1])
+            else:
+                chave = tabela_do_datasource(ds, layout)
+                if not chave:
+                    continue
+                if chave not in cache:
+                    cache[chave] = codigos_de(chave, tabs, uf, data_ref)
+                cods, versao = cache[chave]
+                nome_tab = chave.replace("{UF}", uf or "")
+            if not cods:
+                faltando.add(nome_tab)
+                continue
+            out[(reg, campo)] = {"codigos": cods,
+                                 "rotulo": ROTULOS.get(campo, campo),
+                                 "tabela": nome_tab, "versao": versao}
+    return out, sorted(faltando)
 
 
 def disponivel(pasta_fiscal=None, pasta_contrib=None):

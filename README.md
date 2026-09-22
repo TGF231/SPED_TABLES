@@ -366,8 +366,12 @@ documento; nas demais (ex.: **0200**, **H010**) pesquisa em **todas as colunas**
 útil para localizar um item, um produto ou um saldo entre milhares de linhas.
 
 ### Revisão de erros
-**Ferramentas → Revisar erros…** gera um relatório de inconsistências. As
-regras implementadas hoje são cinco:
+**Ferramentas → Revisar erros…** abre um **painel de resumo**: uma linha por
+verificação, com quantos erros ela achou e o **atalho para a função que
+corrige**. Verificação sem correção automática traz *Ver ocorrências*, que
+abre a lista item a item para corrigir na grade.
+
+As regras implementadas hoje são cinco:
 
 1. **Número de campos divergente** — registros cujo número de campos destoa dos
    demais do **mesmo tipo** no próprio arquivo (detecta uma linha editada com um
@@ -485,6 +489,27 @@ junto, na posição correta do bloco 0, com data de alteração igual ao início
 período. Isso importa: informar uma conta que não existe no plano de contas é
 o próximo erro a aparecer. Se o arquivo já tiver 0500, as contas existentes
 aparecem num seletor.
+
+### Como a validação acompanha o PVA
+
+Cada PVA embarca um **descritor de validação** — um XML, dentro do próprio
+`.jar`, com tipo, tamanho, casas decimais, obrigatoriedade, enumerações e
+referências entre registros, por versão de leiaute. O programa lê esse
+descritor e valida **na mesma granularidade**: por registro e campo, não por
+nome de campo.
+
+Isso corrige um excesso e uma falta:
+
+- **excesso** — o `CST_ICMS` do EFD Contribuições deixou de ser cobrado, porque
+  aquele PVA não o valida (era falso positivo);
+- **falta** — tipo e tamanho passaram a ser conferidos em todos os campos
+  declarados (1.612 no ICMS/IPI, 1.191 no Contribuições), no lugar da
+  heurística por prefixo `VL_`/`ALIQ_`.
+
+As regras compostas do PVA (`REGRA_CST_ICMS_CAMPOS_ICMS_C170` e afins) são
+implementadas em Java; o programa reconhece que existem, mas não as
+reimplementa — adivinhar o conteúdo produziria divergência silenciosa com o
+validador oficial.
 
 ### Validação contra as tabelas dos PVAs
 

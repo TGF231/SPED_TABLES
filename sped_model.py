@@ -1682,6 +1682,19 @@ class SpedDocument:
                     if v:
                         codigos.add(v)
 
+        # o próprio PVA diz quais campos apontam para o 0200
+        # (`referenciaPesquisa="0200;COD_ITEM"` no descritor) — melhor que
+        # supor que o campo se chama sempre COD_ITEM
+        campos_ref = {}
+        try:
+            import descritor_pva
+            est, _i = descritor_pva.carregar(self.layout)
+            for (reg, campo), (alvo, campo_alvo) in                     descritor_pva.referencias(est).items():
+                if alvo == "0200" and campo_alvo == "COD_ITEM":
+                    campos_ref.setdefault(reg, set()).add(campo)
+        except Exception:                                   # noqa: BLE001
+            campos_ref = {}
+
         referenciados = set()
         por_registro = {}
         por_valor = set()
@@ -1691,14 +1704,21 @@ class SpedDocument:
                 continue
             if r.reg not in idx_cache:
                 mapeado = num_campos_esperado(r.reg, self.layout) is not None
-                idx_cache[r.reg] = (self._ix(r.reg, "COD_ITEM"), mapeado)
-            i, mapeado = idx_cache[r.reg]
+                idx = [self._ix(r.reg, c) for c in campos_ref.get(r.reg, ())]
+                idx = [x for x in idx if x is not None]
+                if not idx:
+                    um = self._ix(r.reg, "COD_ITEM")
+                    idx = [um] if um is not None else []
+                idx_cache[r.reg] = (idx, mapeado)
+            indices, mapeado = idx_cache[r.reg]
+            i = indices[0] if indices else None
             achou = False
-            if i is not None:
-                v = (r.valor(i) or "").strip()
-                if v in codigos:
-                    referenciados.add(v)
-                    achou = True
+            if indices:
+                for k in indices:
+                    v = (r.valor(k) or "").strip()
+                    if v in codigos:
+                        referenciados.add(v)
+                        achou = True
             elif not mapeado:
                 # sem leiaute: procura o código em qualquer campo
                 for j, v in enumerate(r.campos):
