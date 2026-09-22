@@ -228,6 +228,24 @@ senão as ações em lote agem sobre uma linha que ninguém escolheu.
 Cada bloco abre na primeira sub-aba de **nível ≠ 1** — nível 1 é abertura e
 encerramento (`C001`, `H001`, `H990`), de um campo só.
 
+### O banco do PVA guarda o resultado das validações
+
+Cada escrituração validada vira um banco em `mysql/data/bd<AAAAMMDDhhmmss>`,
+com uma tabela `inconsistencia`: `ID_MENSAGEM`, `ID_CAMPO`, `VALOR_CAMPO`,
+`VALOR_ESPERADO_CAMPO`, `NOME_REGISTRO`, `CONTEUDO_LINHA`, `NUMERO_LINHA`. O
+`.MYD` (MyISAM) é legível sem subir o servidor.
+
+Ele **não** guarda as regras — essas continuam no código Java. Mas guarda o
+que elas produziram, e isso serve para duas coisas:
+
+- **descobrir a condição** sem decompilar: `MSG_ALIQ_BASICA` com valor
+  `1,6500` e esperado `0,65` diz exatamente o que a regra cobra;
+- **testar uma reimplementação**: os casos que o PVA acusou são o gabarito
+  contra o qual conferir se a regra nova acusa os mesmos registros.
+
+Foi assim que nasceram `verificar_chave_duplicada` e
+`verificar_data_fora_periodo`.
+
 ### Diagnóstico ao abrir: o que é fiel ao PVA e o que não é
 
 `diagnostico.verificar()` roda ao abrir o arquivo e agrupa os problemas pelo

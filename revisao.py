@@ -218,6 +218,105 @@ def verificar_cod_gen_0200(doc):
     return problemas
 
 
+def verificar_chave_duplicada(doc):
+    """Registros irmãos com a mesma **chave** declarada no descritor do PVA.
+
+    A chave é por registro (`C190` = CST_ICMS+CFOP+ALIQ_ICMS, `C170` =
+    NUM_ITEM) e vale **entre irmãos do mesmo pai** — dois C190 iguais em
+    documentos diferentes são normais; no mesmo documento, não. O PVA acusa
+    com `MSG_CHAVE_EXISTE_NO_REGISTRO_ITEM`; num arquivo real do usuário foram
+    130 ocorrências, todas no C190.
+
+    A regra é genérica porque a chave vem do descritor: vale para os 154
+    registros que a declaram no EFD ICMS/IPI e os 145 no Contribuições.
+    """
+    try:
+        import descritor_pva
+        estrutura, _i = descritor_pva.carregar(doc.layout)
+    except Exception:                                       # noqa: BLE001
+        return []
+    if not estrutura:
+        return []
+    chaves = {}
+    for reg, d in estrutura.items():
+        campos = [c.strip() for c in (d.get("chave") or "").split(",")
+                  if c.strip()]
+        if campos:
+            chaves[reg] = campos
+
+    problemas = []
+    vistos_por_pai = {}
+    idx = {}
+    for r in doc.registros:
+        campos = chaves.get(r.reg)
+        if not campos:
+            continue
+        if r.reg not in idx:
+            i = [doc._ix(r.reg, c) for c in campos]
+            idx[r.reg] = [x for x in i if x is not None]
+        indices = idx[r.reg]
+        if not indices:
+            continue
+        pai = r.pai.uid if r.pai is not None else None
+        chave = tuple((r.valor(i) or "").strip() for i in indices)
+        marca = (pai, r.reg, chave)
+        if marca in vistos_por_pai:
+            problemas.append(Problema(
+                uid=r.uid, reg=r.reg, bloco=r.bloco,
+                regra="Chave duplicada",
+                descricao="%s repetido no mesmo %s: %s = %s"
+                          % (r.reg, r.pai.reg if r.pai else "nível",
+                             "+".join(campos), "|".join(chave))))
+        else:
+            vistos_por_pai[marca] = r.uid
+    return problemas
+
+
+def verificar_data_fora_periodo(doc):
+    """Saída cuja **data de saída** está fora do período da escrituração.
+
+    O PVA acusa com `MSG_PERIODO_INCOMPATIVEL_SAIDA` (campo `11 - DT_E_S` do
+    C100); num arquivo real foram 132 ocorrências. Só as **saídas** são
+    cobradas: numa entrada, a data do documento pode ser anterior ao período
+    (documento recebido depois), e a escrituração extemporânea é legítima.
+    """
+    i_ini = doc._ix("0000", "DT_INI")
+    i_fim = doc._ix("0000", "DT_FIN")
+    i_op = doc._ix("C100", "IND_OPER")
+    i_es = doc._ix("C100", "DT_E_S")
+    i_num = doc._ix("C100", "NUM_DOC")
+    if None in (i_ini, i_fim, i_op, i_es):
+        return []
+
+    def chave(v):
+        d = "".join(c for c in (v or "") if c.isdigit())
+        return d[4:8] + d[2:4] + d[0:2] if len(d) == 8 else ""
+
+    ini = fim = ""
+    for r in doc.registros:
+        if r.reg == "0000":
+            ini, fim = chave(r.valor(i_ini)), chave(r.valor(i_fim))
+            break
+    if not ini or not fim:
+        return []
+
+    problemas = []
+    for r in doc.registros:
+        if r.reg != "C100" or (r.valor(i_op) or "").strip() != "1":
+            continue
+        v = (r.valor(i_es) or "").strip()
+        k = chave(v)
+        if not k or ini <= k <= fim:
+            continue
+        problemas.append(Problema(
+            uid=r.uid, reg=r.reg, bloco=r.bloco,
+            regra="Data de saída fora do período",
+            descricao="Documento %s com DT_E_S %s, fora do período do arquivo."
+                      % ((r.valor(i_num) or "").strip()
+                         if i_num is not None else "", v)))
+    return problemas
+
+
 REGRAS = [
     ("Número de campos divergente do layout", verificar_num_campos),
     ("C190 CST x20/x70 com VL_RED_BC zerado", verificar_c190_reducao),
@@ -225,6 +324,8 @@ REGRAS = [
     ("0200 não utilizados / duplicados", verificar_0200_nao_utilizados),
     ("TIPO_ITEM fora da tabela (0200)", verificar_tipo_item_0200),
     ("COD_GEN incoerente com o NCM (0200)", verificar_cod_gen_0200),
+    ("Chave duplicada no mesmo registro-pai", verificar_chave_duplicada),
+    ("Data de saída fora do período", verificar_data_fora_periodo),
 ]
 
 

@@ -1,5 +1,37 @@
 # Changelog
 
+## [0.42.0] - 2026-09-22
+
+Duas regras tiradas do **banco do próprio PVA**: cada escrituração validada
+deixa uma tabela `inconsistencia` com o erro, o campo, o valor encontrado e o
+valor esperado. Nos bancos desta máquina havia 13 mensagens distintas em 11
+validações — 2.876 ocorrências —, e duas delas o programa ainda não detectava.
+
+### Adicionado
+- **Chave duplicada no mesmo registro-pai** (`MSG_CHAVE_EXISTE_NO_REGISTRO_ITEM`
+  — 130 ocorrências nos bancos). A regra é **genérica**: a chave vem do
+  descritor do PVA, então vale para os 154 registros que a declaram no EFD
+  ICMS/IPI e os 145 no Contribuições. No C190 a chave é CST + CFOP + alíquota.
+- **Data de saída fora do período** (`MSG_PERIODO_INCOMPATIVEL_SAIDA` — 132
+  ocorrências). Só as saídas são cobradas: numa entrada, documento anterior ao
+  período é escrituração extemporânea legítima.
+- **O recálculo do C190 passou a cobrir a duplicidade**, não só a redução de
+  base zerada — consolidar agrupa pela mesma chave que o PVA cobra. A ação
+  virou *Recalcular C190 (analítico) em massa*.
+- No diagnóstico, os dois achados já vêm com o módulo que corrige: chave
+  duplicada no C190 → *Recalcular C190*; data fora do período → *Alterar datas
+  emissão/saída*.
+
+### Notas
+- Os arquivos de teste desta máquina não continham as ocorrências (vieram de
+  outros períodos), então a validação foi por **caso reconstruído**: plantando
+  um C190 repetido e três saídas com `DT_E_S 28052026`, as regras acusaram
+  exatamente 1 e 3, e o recálculo do documento levou o C190 de 3 para 2
+  registros, zerando a duplicidade.
+- A tabela `inconsistencia` **não** guarda as regras, só o resultado delas. Mas
+  valor encontrado + valor esperado revelam a condição sem decompilar, e os
+  casos servem de gabarito para conferir qualquer reimplementação.
+
 ## [0.41.0] - 2026-09-22
 
 ### Adicionado

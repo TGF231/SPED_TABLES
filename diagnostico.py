@@ -49,13 +49,17 @@ MODULOS = {
                 "Ferramentas → Gerais → Preencher conta contábil"),
     "cod_gen": ("Preencher COD_GEN pelo NCM",
                 "Ferramentas → EFD ICMS/IPI → Preencher COD_GEN pelo NCM"),
-    "red_bc": ("Recalcular C190 com redução zerada",
+    "red_bc": ("Recalcular C190 (analítico)",
                "Ferramentas → EFD ICMS/IPI → Recalcular C190"),
     "obrigatorio": ("Correção manual na grade",
                     "campo obrigatório em branco"),
     "num_campos": ("Correção manual na grade",
                    "o registro tem mais ou menos campos que o leiaute"),
+    "chave_c190": ("Recalcular C190 (analítico)",
+                   "Ferramentas → EFD ICMS/IPI → Recalcular C190"),
     "chave": ("Correção manual na grade", "chave repetida no mesmo nível"),
+    "data_periodo": ("Alterar datas emissão/saída (C100)",
+                     "Ferramentas → Gerais → Alterar datas"),
     "bloco": ("Correção manual na grade", "bloco aberto sem encerramento"),
 }
 
@@ -260,6 +264,19 @@ def verificar(doc, pasta_fiscal=None, pasta_contrib=None):
             achados.append(Achado("red_bc", "C190", "VL_RED_BC",
                                   "CST x20/x70 com redução de base zerada",
                                   len(red), red[0].uid))
+        dup = revisao.verificar_chave_duplicada(doc)
+        if dup:
+            por_reg = Counter(x.reg for x in dup)
+            for reg, n in por_reg.items():
+                achados.append(Achado(
+                    "chave_c190" if reg == "C190" else "chave", reg, "",
+                    "chave repetida no mesmo registro-pai", n,
+                    next(x.uid for x in dup if x.reg == reg)))
+        fora = revisao.verificar_data_fora_periodo(doc)
+        if fora:
+            achados.append(Achado("data_periodo", "C100", "DT_E_S",
+                                  "saída com data fora do período do arquivo",
+                                  len(fora), fora[0].uid))
         gen = revisao.verificar_cod_gen_0200(doc)
         if gen:
             achados.append(Achado("cod_gen", "0200", "COD_GEN",

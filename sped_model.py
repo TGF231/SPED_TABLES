@@ -1057,6 +1057,34 @@ class SpedDocument:
                 out.append((c100, ruins))
         return out
 
+    def documentos_c190_duplicados(self):
+        """C100 com dois C190 de mesma chave (CST+CFOP+alíquota).
+
+        O PVA recusa com `MSG_CHAVE_EXISTE_NO_REGISTRO_ITEM`. Refazer o
+        analítico do documento resolve, porque a consolidação agrupa por essa
+        mesma chave.
+        """
+        if self.layout != "ICMS":
+            return []
+        idx = [self._ix("C190", c)
+               for c in ("CST_ICMS", "CFOP", "ALIQ_ICMS")]
+        if any(i is None for i in idx):
+            return []
+        out = []
+        for c100 in self.registros:
+            if c100.reg != "C100":
+                continue
+            vistos = set()
+            for f in c100.filhos:
+                if f.reg != "C190":
+                    continue
+                k = tuple((f.valor(i) or "").strip() for i in idx)
+                if k in vistos:
+                    out.append(c100)
+                    break
+                vistos.add(k)
+        return out
+
     def consolidar_c190_em_massa(self, documentos=None):
         """Roda `consolidar_c190` em vários documentos de uma vez.
 
@@ -1070,8 +1098,13 @@ class SpedDocument:
         if self.layout != "ICMS":
             return {"erro": "O C190 é do EFD ICMS/IPI."}
         if documentos is None:
-            documentos = [c for c, _r in
-                          self.documentos_c190_com_reducao_zerada()]
+            # os dois defeitos que refazer o analítico conserta: redução de
+            # base zerada e chave repetida no mesmo documento
+            alvos = {id(c): c for c, _r
+                     in self.documentos_c190_com_reducao_zerada()}
+            for c in self.documentos_c190_duplicados():
+                alvos.setdefault(id(c), c)
+            documentos = list(alvos.values())
         tot = {"documentos": 0, "corrigidos": 0, "grupos": 0, "removidos": 0,
                "criados": 0, "base_pis_cofins": 0, "sem_base": 0,
                "sem_c170": 0}

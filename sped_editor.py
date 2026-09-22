@@ -5304,7 +5304,7 @@ class JanelaPrincipal(QMainWindow):
         self.act_limpar_nulos.setEnabled(False)
         if not hasattr(self, "act_recalc_c190_massa"):
             self.act_recalc_c190_massa = QAction(
-                "Recalcular C190 com redução de base zerada…", self)
+                "Recalcular C190 (analítico) em massa…", self)
         self.act_recalc_c190_massa.triggered.connect(
             self.recalcular_c190_massa)
         self.act_recalc_c190_massa.setEnabled(False)
@@ -5846,7 +5846,7 @@ class JanelaPrincipal(QMainWindow):
         self.act_limpar_nulos.setEnabled(False)
 
         self.act_recalc_c190_massa = QAction(
-            "Recalcular C190 com redução de base zerada…", self)
+            "Recalcular C190 (analítico) em massa…", self)
         self.act_recalc_c190_massa.triggered.connect(
             self.recalcular_c190_massa)
         self.act_recalc_c190_massa.setEnabled(False)
@@ -6353,6 +6353,10 @@ class JanelaPrincipal(QMainWindow):
         acoes = {
             "C190 CST x20/x70 com VL_RED_BC zerado":
                 ("Recalcular C190…", self._corrigir_c190_da_revisao),
+            "Chave duplicada no mesmo registro-pai":
+                ("Recalcular C190…", self._corrigir_c190_da_revisao),
+            "Data de saída fora do período":
+                ("Alterar datas…", self.alterar_datas),
             "COD_GEN incoerente com o NCM (0200)":
                 ("Preencher COD_GEN…", self.preencher_cod_gen),
             "0200 não utilizados / duplicados":
@@ -6538,7 +6542,8 @@ class JanelaPrincipal(QMainWindow):
             "Itens do 0200 sem referência": self.itens_sem_referencia,
             "Preencher conta contábil (COD_CTA)": self.preencher_cod_cta,
             "Preencher COD_GEN pelo NCM": self.preencher_cod_gen,
-            "Recalcular C190 com redução zerada": self.recalcular_c190_massa,
+            "Recalcular C190 (analítico)": self.recalcular_c190_massa,
+            "Alterar datas emissão/saída (C100)": self.alterar_datas,
         }
         self._dlg_diag = DialogoDiagnostico(achados, info, acoes,
                                             self.ir_para_registro, self)
