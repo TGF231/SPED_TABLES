@@ -1500,7 +1500,8 @@ class DialogoValidacao(QDialog):
     COLS = ["Bloco", "Registro", "Campo", "Valor", "Problema", "Sugestão"]
     LIMITE = 20000          # além disto a tabela vira peso morto
 
-    def __init__(self, doc, achados, ir_callback, parent=None):
+    def __init__(self, doc, achados, ir_callback, parent=None,
+                 info_tabelas=""):
         super().__init__(parent)
         self.doc = doc
         self.achados = achados
@@ -1512,6 +1513,11 @@ class DialogoValidacao(QDialog):
         self.lbl = QLabel()
         self.lbl.setWordWrap(True)
         lay.addWidget(self.lbl)
+        if info_tabelas:
+            proc = QLabel(info_tabelas)
+            proc.setWordWrap(True)
+            proc.setProperty("role", "info")
+            lay.addWidget(proc)
 
         filtros = QHBoxLayout()
         filtros.addWidget(QLabel("Mostrar:"))
@@ -1659,7 +1665,8 @@ class DialogoValidacao(QDialog):
             if hasattr(jan, "_montar_abas"):
                 jan._montar_abas()
         # revalida: o que sobrou é o que precisa de decisão humana
-        self.achados = validacao.validar(self.doc)
+        dom, _i = validacao.dominios_do_documento(self.doc)
+        self.achados = validacao.validar(self.doc, dominios_pva=dom)
         self._montar_combo_campos()
         self._repovoar()
         QMessageBox.information(
@@ -6300,19 +6307,39 @@ class JanelaPrincipal(QMainWindow):
         diálogo, e só sobre o que tem conserto mecânico."""
         if not self.doc:
             return
-        achados = validacao.validar(self.doc)
+        # as tabelas dos PVAs mandam: a lista de códigos válidos acompanha
+        # a atualização do validador oficial sem mexer no código daqui
+        dominios, info = validacao.dominios_do_documento(self.doc)
+        achados = validacao.validar(self.doc, dominios_pva=dominios)
         if not achados:
             QMessageBox.information(
                 self, "Validar campos pelo leiaute",
-                "Nenhum campo preenchido está fora do domínio do leiaute.")
+                "Nenhum campo preenchido está fora do domínio do leiaute.\n\n"
+                "%s" % self._resumo_tabelas_pva(dominios, info))
             return
         self._dlg_validacao = DialogoValidacao(
-            self.doc, achados, self.ir_para_registro, self)
+            self.doc, achados, self.ir_para_registro, self,
+            info_tabelas=self._resumo_tabelas_pva(dominios, info))
         self._dlg_validacao.show()
         auto = sum(1 for o in achados if o.sugestao is not None)
         self.statusBar().showMessage(
             "Validação: %d campo(s) fora do domínio, %d com conserto "
             "automático." % (len(achados), auto), 8000)
+
+    @staticmethod
+    def _resumo_tabelas_pva(dominios, info):
+        """Diz de onde veio a validação. Sem isso o usuário não sabe se o
+        resultado saiu das tabelas oficiais ou das regras embutidas."""
+        if not dominios:
+            return ("Tabelas dos PVAs não encontradas — a verificação usou "
+                    "apenas as regras embutidas. Instale os PVAs para validar "
+                    "contra as mesmas tabelas do fisco.")
+        txt = ("%d campo(s) validados pelas tabelas oficiais dos PVAs: %s."
+               % (len(dominios), ", ".join(sorted(dominios))))
+        if info.get("faltando"):
+            txt += ("\nTabelas não encontradas: %s."
+                    % ", ".join(info["faltando"]))
+        return txt
 
     def preencher_cod_gen(self):
         """Deriva o COD_GEN do 0200 a partir do NCM (Tabela 4.2.1: o gênero

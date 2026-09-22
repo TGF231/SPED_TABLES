@@ -118,6 +118,61 @@ class Dominio:
         return self.rotulo
 
 
+class DominioTabela(Dominio):
+    """Domínio vindo de uma **tabela do PVA**, e não do código.
+
+    É a forma preferida: a lista de códigos válidos acompanha a atualização do
+    validador oficial sem ninguém mexer aqui. A sugestão só nasce quando o
+    valor com o zero à esquerda reposto **existe na tabela** — nunca por
+    palpite de formato.
+    """
+
+    def __init__(self, rotulo, codigos, tabela="", versao=""):
+        Dominio.__init__(self, rotulo, normaliza=True, digitos=False)
+        self.codigos = codigos
+        self.tabela = tabela
+        self.versao = versao
+        self._tamanhos = sorted({len(c) for c in codigos})
+
+    def _equivalente(self, v):
+        """O mesmo código, com **zeros à esquerda sobrando**.
+
+        `COD_PAIS 01058` é o `1058` da tabela com um zero a mais — o PVA
+        aceita, e apontar isso como erro produziria 141 falsos positivos num
+        arquivo real. Falta de dígito é outra coisa: essa vira sugestão.
+        """
+        if not v.isdigit():
+            return None
+        nu = v.lstrip("0")
+        for tam in self._tamanhos:
+            if len(v) > tam:
+                cand = nu.zfill(tam)
+                if cand in self.codigos:
+                    return cand
+        return None
+
+    def _serve(self, v):
+        return v in self.codigos or self._equivalente(v) is not None
+
+    def avaliar(self, v):
+        if self._serve(v):
+            return None, None
+        if v.upper() in VALORES_NULOS:
+            return "texto de vazio gravado como valor (%s)" % v, ""
+        # código só de zeros é o "sem valor" do ERP noutra forma
+        if v.isdigit() and not v.strip("0"):
+            return ("%s preenchido só com zeros — é campo vazio disfarçado"
+                    % self.rotulo), ""
+        sugestao = None
+        if v.isdigit():
+            for tam in self._tamanhos:
+                if tam > len(v) and v.zfill(tam) in self.codigos:
+                    sugestao = v.zfill(tam)
+                    break
+        return ("%s fora da tabela oficial %s (v%s)"
+                % (self.rotulo, self.tabela, self.versao or "?")), sugestao
+
+
 class DominioCstIcms(Dominio):
     """O CST do ICMS merece diagnóstico próprio: o erro mais comum não é lixo,
     é o **CSOSN do fornecedor do Simples copiado sem o dígito de origem**.
@@ -218,13 +273,64 @@ def _dominio_do_campo(nome):
 
 
 # ------------------------------------------------------------------ varredura
-def validar(doc, tipos=None):
+class DominioTabelaCstIcms(DominioTabela):
+    """Tabela do PVA para o CST do ICMS, com o diagnóstico que a tabela não
+    dá: o erro mais comum não é código inexistente, é **CSOSN do fornecedor
+    do Simples copiado sem o dígito de origem**."""
+
+    def avaliar(self, v):
+        motivo, sugestao = DominioTabela.avaliar(self, v)
+        if motivo and len(v) == 3 and v in CSOSN:
+            motivo = ("CSOSN do Simples (%s) sem o dígito de origem — informe "
+                      "o CST da sua própria operação" % v)
+            sugestao = None
+        return motivo, sugestao
+
+
+def dominios_de_tabelas(dominios_pva):
+    """Converte o dicionário de `tabelas_pva.carregar_dominios` em domínios
+    prontos para a varredura."""
+    out = {}
+    for campo, d in (dominios_pva or {}).items():
+        classe = DominioTabelaCstIcms if campo == "CST_ICMS" else DominioTabela
+        out[campo] = classe(d.get("rotulo", campo), d["codigos"],
+                            d.get("tabela", ""), d.get("versao", ""))
+    return out
+
+
+def dominios_do_documento(doc, pasta_fiscal=None, pasta_contrib=None):
+    """Domínios das tabelas do PVA para **este** arquivo: usa a UF e a data
+    final do próprio 0000, porque código de ajuste é estadual e vigência é
+    por período. Devolve `(dominios, info)`; `({}, info)` se o PVA não estiver
+    instalado."""
+    import tabelas_pva
+    i_uf = doc._ix("0000", "UF")
+    i_fin = doc._ix("0000", "DT_FIN")
+    uf = dt = ""
+    for r in doc.registros:
+        if r.reg == "0000":
+            uf = (r.valor(i_uf) or "").strip() if i_uf is not None else ""
+            dt = (r.valor(i_fin) or "").strip() if i_fin is not None else ""
+            break
+    return tabelas_pva.carregar_dominios(
+        doc.layout, pasta_fiscal=pasta_fiscal, pasta_contrib=pasta_contrib,
+        uf=uf, data_ref=dt)
+
+
+def validar(doc, tipos=None, dominios_pva=None):
     """Varre o documento e devolve a lista de `Ocorrencia`. **Não altera nada.**
 
     `tipos` restringe a certos registros (ex.: `{"0200"}`); por padrão vale
     para o arquivo inteiro.
+
+    `dominios_pva` são domínios lidos das tabelas do PVA
+    (`tabelas_pva.carregar_dominios`). Eles **substituem** os embutidos nos
+    campos que cobrem: a tabela oficial é a fonte melhor, e os embutidos
+    passam a valer só onde o PVA não tem tabela — ou quando ele não está
+    instalado.
     """
     achados = []
+    extras = dominios_de_tabelas(dominios_pva)
     cache = {}                    # tipo -> [(indice, nome, dominio)]
     for r in doc.registros:
         if tipos and r.reg not in tipos:
@@ -236,7 +342,7 @@ def validar(doc, tipos=None):
             for i, nome in enumerate(nomes):
                 if i == 0:
                     continue
-                d = _dominio_do_campo(nome)
+                d = extras.get(nome) or _dominio_do_campo(nome)
                 if d is not None:
                     plano.append((i, nome, d))
             cache[(r.reg, len(r.campos))] = plano

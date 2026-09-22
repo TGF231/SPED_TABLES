@@ -482,6 +482,30 @@ período. Isso importa: informar uma conta que não existe no plano de contas é
 o próximo erro a aparecer. Se o arquivo já tiver 0500, as contas existentes
 aparecem num seletor.
 
+### Validação contra as tabelas dos PVAs
+
+**Ferramentas → Gerais → Validar campos pelo leiaute…** usa, quando os PVAs
+estão instalados, **as mesmas tabelas que o fisco aplica** — as dos programas
+validadores do EFD ICMS/IPI e do EFD Contribuições. Assim a lista de códigos
+válidos acompanha a atualização do PVA sem depender de o programa ser
+atualizado.
+
+Campos cobertos hoje: `CFOP`, `CST_ICMS`, `CST_IPI`, `CST_PIS`, `CST_COFINS`,
+`COD_MOD`, `COD_SIT`, `IND_EMIT`, `COD_MUN`, `COD_PAIS`, `CEST`, `COD_GEN`,
+`TP_CT-e`, `COD_AJ_APUR`, `COD_REC`, `COD_INF_ADIC` (ICMS/IPI) e `NAT_BC_CRED`,
+`COD_CRED`, `COD_AJ`, `IND_NAT_PROC` (Contribuições) — 16 e 12 domínios,
+respectivamente, lidos de 268 tabelas.
+
+O diálogo diz **de onde veio** cada verificação: quais campos foram validados
+por tabela oficial e quais tabelas não foram encontradas. Sem os PVAs
+instalados, valem as regras embutidas e o programa avisa.
+
+Três cuidados embutidos: a **vigência** de cada código é respeitada (a tabela
+única de CST do ICMS foi revogada em 2012 — hoje é origem + situação); os
+códigos de **ajuste são estaduais**, e a UF sai do próprio 0000; e **zero à
+esquerda sobrando não é erro** (`COD_PAIS 01058` é o `1058` da tabela), embora
+código só de zeros seja tratado como campo vazio.
+
 ### Validar campos pelo leiaute
 
 **Ferramentas → Gerais → Validar campos pelo leiaute…** confere **todo o

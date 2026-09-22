@@ -1,5 +1,45 @@
 # Changelog
 
+## [0.38.0] - 2026-09-22
+
+A verificação de códigos deixou de morar no código e passou a vir das
+**tabelas dos próprios PVAs**. Enquanto a lista era embutida, ela envelhecia e
+divergia do validador oficial — foi assim que o `34011190` passou limpo aqui e
+foi acusado lá.
+
+### Adicionado
+- **`tabelas_pva.py`** — módulo novo. Lê as tabelas instaladas com os dois
+  PVAs (`Fiscal/recursos/TabelasExternas` e
+  `EFD-Contribuicoes/recursos/tabelas`), resolve a maior versão de cada uma e
+  monta os domínios de campo. `carregar_dominios(layout, uf, data_ref)` e
+  `disponivel()`.
+- **A validação usa esses domínios por padrão.** Eles substituem os embutidos
+  nos campos que cobrem; os embutidos passam a valer só onde o PVA não tem
+  tabela — ou quando ele não está instalado.
+- **O diálogo diz de onde veio cada verificação**: quais campos foram
+  validados por tabela oficial e quais tabelas faltaram. Silêncio ali seria
+  pior que erro, porque "0 divergências" pareceria aprovação.
+- Cobertura nas tabelas instaladas (268 arquivos): **16 domínios** no EFD
+  ICMS/IPI e **12** no EFD Contribuições.
+
+### Notas — quatro cuidados que o arquivo real exigiu
+- **Vigência por código.** A tabela única de CST do ICMS foi revogada em
+  31/12/2012; validar contra ela reprovaria o arquivo inteiro.
+- **CST do ICMS é composto**: origem (`SIT_TRIB_ICMS_A`) × situação
+  (`SIT_TRIB_ICMS_B`), produto cartesiano das duas tabelas vigentes.
+- **Códigos de ajuste são estaduais** (E111, E116): a tabela é escolhida pela
+  UF do 0000, e a data de referência é a DT_FIN do próprio arquivo.
+- **Zero à esquerda sobrando não é erro.** `COD_PAIS 01058` é o `1058` da
+  tabela com um zero a mais e o PVA aceita — tratar como erro gerava **141
+  falsos positivos** num arquivo real. Falta de dígito continua virando
+  sugestão, e código **só de zeros** (`COD_MUN 0000000`) é campo vazio
+  disfarçado.
+- O diagnóstico do CSOSN sem dígito de origem foi preservado sobre a nova
+  base: é o erro mais comum do `CST_ICMS` e dizer "fora da tabela" não
+  ajudaria ninguém.
+- Desempenho: carga das tabelas em 0,03 s, varredura de 28.475 registros em
+  0,15 s.
+
 ## [0.37.0] - 2026-09-22
 
 O PVA acusava incidência monofásica no NCM `34011190` (sabonete) e o programa

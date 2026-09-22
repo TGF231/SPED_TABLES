@@ -1,6 +1,6 @@
 # Funcionalidades — SPED Tables
 
-Inventário do que existe hoje (v0.37.0), com **grau de maturidade** e as
+Inventário do que existe hoje (v0.38.0), com **grau de maturidade** e as
 **regras de uso** de cada função. O objetivo deste documento é registrar o que
 já é confiável, o que ainda precisa de polimento e quais restrições evitam
 resultado errado.
@@ -536,6 +536,31 @@ na EFD Contribuições (ganha `COD_CTA_REF` e `CNPJ_EST`) — o do ICMS faltava
 em `sped_layouts.py` e foi acrescentado.
 
 ### 8.5 Validar campos pelo leiaute — 🟡 Em amadurecimento
+**Desde a 0.38.0 a fonte preferida são as tabelas dos próprios PVAs**
+(`tabelas_pva.py`), e não a lista embutida: os códigos válidos acompanham a
+atualização do validador oficial sem mexer no código. Sem PVA instalado, os
+domínios embutidos continuam valendo e o diálogo avisa de onde veio cada
+verificação.
+
+*Cobertura medida nas tabelas instaladas (268 arquivos):* **16 domínios** no
+EFD ICMS/IPI (CFOP, CST de ICMS/IPI/PIS/COFINS, COD_MOD, COD_SIT, IND_EMIT,
+COD_MUN, COD_PAIS, CEST, COD_GEN, TP_CT-e, COD_AJ_APUR, COD_REC,
+COD_INF_ADIC) e **12** no EFD Contribuições (inclui NAT_BC_CRED, COD_CRED,
+COD_AJ, IND_NAT_PROC). Carga em 0,03 s; varredura de 28.475 registros em
+0,15 s.
+
+*Quatro cuidados, todos aprendidos em arquivo real:*
+- **vigência** por código — a tabela única de CST do ICMS foi revogada em
+  2012, e validar contra ela reprovaria o arquivo inteiro;
+- **CST do ICMS é composto**: origem (`SIT_TRIB_ICMS_A`) × situação
+  (`SIT_TRIB_ICMS_B`);
+- **tabelas por UF** para os códigos de ajuste (E111, E116), com a UF vinda
+  do 0000;
+- **zero à esquerda sobrando não é erro**: `COD_PAIS 01058` é o `1058` da
+  tabela, e tratá-lo como erro gerava **141 falsos positivos**. Código só de
+  zeros, ao contrário, é campo vazio disfarçado (`COD_MUN 0000000`) e vira
+  sugestão de esvaziar.
+
 Tabela de **domínios por nome de campo** (`validacao.py`), aplicada a qualquer
 registro que possua o campo: NCM, CEST, COD_GEN, TIPO_ITEM, CST de ICMS/PIS/
 COFINS, CFOP, COD_SIT, indicadores, datas e campos numéricos (por prefixo

@@ -28,6 +28,7 @@ Dependências em `requirements.txt` (PyQt6; `openpyxl` para planilhas XLSX).
 | `conferencia.py` | Conferência XML × SPED (entradas modelo 55, C190) e correlações de CFOP. |
 | `revisao.py` | Regras de revisão extensíveis (lista `REGRAS`). |
 | `validacao.py` | Domínio de cada campo **por nome** (`DOMINIOS`), varredura do arquivo e normalização em lote. Detecta; só `normalizar()` grava. |
+| `tabelas_pva.py` | Domínios lidos das **tabelas dos próprios PVAs** (ICMS/IPI e Contribuições). Preferidos sobre os embutidos — ver abaixo. |
 | `empresas.py` | Cadastro por CNPJ: regime federal e de PIS/COFINS, alíquotas, atividade. Persistido em `empresas.json` (fora do git). |
 | `rotinas.py` | Rotinas de conferência/correção por regime (lista `ROTINAS`). Verificação nunca altera o arquivo; a correção recebe as ocorrências já exibidas. |
 | `arquivos.py` | Memória persistente: cópia do SPED em `arquivos/<CNPJ>/<LEIAUTE>_<AAAAMM>.txt` + `indice.json`. Uma cópia por período. Fora do git. |
@@ -120,6 +121,26 @@ precisam aparecer sempre (foi o que aconteceu com a ação *Empresas*).
 O menu Ferramentas é agrupado por leiaute (`menu_icms`, `menu_contrib`,
 `menu_gerais`); `abrir()` habilita/desabilita o submenu inteiro conforme
 `doc.layout`.
+
+### Domínios que vêm dos PVAs, não do código
+
+`tabelas_pva.py` lê as tabelas instaladas com os dois PVAs e monta os domínios
+de campo. É a fonte preferida: a lista de códigos válidos acompanha a
+atualização do validador oficial sem ninguém mexer no código. Quando o PVA não
+está instalado, valem os domínios embutidos de `validacao.py`.
+
+Quatro coisas que a implementação **precisa** respeitar:
+
+- **Vigência.** Cada código traz DT_INI/DT_FIM. A tabela única de CST do ICMS
+  foi revogada em 2012 — validar contra ela reprovaria o arquivo inteiro.
+- **Códigos compostos.** Hoje o CST do ICMS é origem (`SIT_TRIB_ICMS_A`) +
+  situação (`SIT_TRIB_ICMS_B`), montados em produto cartesiano.
+- **Tabelas por UF.** Códigos de ajuste (E111, E116) são estaduais; a UF sai
+  do 0000, como a data.
+- **Zero à esquerda sobrando não é erro.** `COD_PAIS 01058` é o `1058` da
+  tabela com um zero a mais, e o PVA aceita: tratar como erro produzia 141
+  falsos positivos num arquivo real. Falta de dígito é outra coisa — essa
+  vira sugestão. Código **só de zeros** é campo vazio disfarçado.
 
 ### Validação por domínio de campo
 
