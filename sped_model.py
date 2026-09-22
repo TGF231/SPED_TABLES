@@ -2590,6 +2590,142 @@ class SpedDocument:
         return {"c100": n_alterados, "no_filtro": n_no_filtro,
                 "sem_data": sem_data}
 
+    # ------------------------------------------- receita do bloco M (CONTRIB)
+    # Campos de PIS/COFINS nos registros de item: (cst, bc, valor da operação,
+    # alíquota). O C175 consolida a NFC-e, que não tem C170.
+    CAMPOS_RECEITA = {
+        ("PIS", "C175"): (4, 5, 2, 6),
+        ("PIS", "C170"): (24, 25, 6, 26),
+        ("COFINS", "C175"): (10, 11, 2, 12),
+        ("COFINS", "C170"): (30, 31, 6, 32),
+    }
+    # Registros que também carregam receita, fora dos documentos do bloco C.
+    # A conferência do bloco M não os soma; quando existem, ela se declara
+    # PARCIAL em vez de acusar diferença que o arquivo não tem.
+    RECEITA_FORA_DO_BLOCO_C = ("A170", "D201", "D205", "D300", "D350", "D601",
+                               "F100", "F200", "F500", "F510", "F525", "F550",
+                               "F560")
+
+    def saidas_c100(self):
+        """Documentos do C100 de saída (IND_OPER = 1)."""
+        i_op = self._ix("C100", "IND_OPER")
+        if i_op is None:
+            return []
+        return [r for r in self.registros
+                if r.reg == "C100" and (r.valor(i_op) or "").strip() == "1"]
+
+    def receita_tributada_por_aliquota(self, tributo):
+        """Agrupa a receita TRIBUTADA de saída por alíquota.
+
+        `{"1.6500": {"aliq": "1,65", "rec": ..., "bc": ...}}`. Só entra item
+        com base e alíquota positivas — é o que vira M210/M610.
+        """
+        grupos = {}
+        for c100 in self.saidas_c100():
+            for f in c100.filhos:
+                idx = self.CAMPOS_RECEITA.get((tributo, f.reg))
+                if idx is None:
+                    continue
+                _i_cst, i_bc, i_opr, i_al = idx
+                bc = _to_num(f.valor(i_bc))
+                al = _to_num(f.valor(i_al))
+                if bc <= 0 or al <= 0:
+                    continue
+                k = "%.4f" % al
+                g = grupos.setdefault(k, {"aliq": f.valor(i_al),
+                                          "rec": 0.0, "bc": 0.0})
+                g["rec"] += _to_num(f.valor(i_opr))
+                g["bc"] += bc
+        return grupos
+
+    def receita_por_cst(self, tributo):
+        """Soma a receita de saída por CST, tributada ou não: `{cst: valor}`.
+
+        É o lastro do M400/M800 (receitas isentas, não alcançadas, a alíquota
+        zero ou com suspensão), que o PVA confere contra os documentos.
+        """
+        soma = {}
+        for c100 in self.saidas_c100():
+            for f in c100.filhos:
+                idx = self.CAMPOS_RECEITA.get((tributo, f.reg))
+                if idx is None:
+                    continue
+                i_cst, _i_bc, i_opr, _i_al = idx
+                cst = (f.valor(i_cst) or "").strip()
+                soma[cst] = soma.get(cst, 0.0) + _to_num(f.valor(i_opr))
+        return soma
+
+    def receita_parcial(self):
+        """Registros de receita fora dos documentos do bloco C, se houver.
+
+        Havendo, a conferência do bloco M não fecha por construção — e dizer
+        "confere parcialmente" é melhor que acusar diferença inexistente.
+        """
+        tipos = {r.reg for r in self.registros}
+        return sorted(t for t in self.RECEITA_FORA_DO_BLOCO_C if t in tipos)
+
+    def conferir_apuracao_m(self, tolerancia=0.02):
+        """Compara o M210/M610 declarado com a receita dos documentos.
+
+        É a conferência que o PVA faz em `MSG_VL_REC_BRT` (campo VL_REC_BRT) e
+        `MSG_VL_BC_CONT_IND_NAT_PJ` (campo VL_BC_CONT): o valor declarado na
+        apuração tem de sair do somatório dos registros de receita.
+
+        Devolve `{"PIS": {...}, "COFINS": {...}, "parcial": [registros]}`,
+        cada tributo com `registros`, `declarado_rec`, `declarado_bc`,
+        `calculado_rec`, `calculado_bc`, `difere_rec` e `difere_bc`.
+        """
+        if self.layout != "CONTRIB":
+            return None
+        out = {"parcial": self.receita_parcial()}
+        for tributo, det in (("PIS", "M210"), ("COFINS", "M610")):
+            grupos = self.receita_tributada_por_aliquota(tributo)
+            calc_rec = round(sum(g["rec"] for g in grupos.values()), 2)
+            calc_bc = round(sum(g["bc"] for g in grupos.values()), 2)
+            regs = [r for r in self.registros if r.reg == det]
+            i_rec = self._ix(det, "VL_REC_BRT")
+            i_bc = self._ix(det, "VL_BC_CONT")
+            dec_rec = (round(sum(_to_num(r.valor(i_rec)) for r in regs), 2)
+                       if i_rec is not None else 0.0)
+            dec_bc = (round(sum(_to_num(r.valor(i_bc)) for r in regs), 2)
+                      if i_bc is not None else 0.0)
+            out[tributo] = {
+                "registro": det, "registros": regs,
+                "declarado_rec": dec_rec, "declarado_bc": dec_bc,
+                "calculado_rec": calc_rec, "calculado_bc": calc_bc,
+                "difere_rec": bool(regs) and abs(dec_rec - calc_rec) > tolerancia,
+                "difere_bc": bool(regs) and abs(dec_bc - calc_bc) > tolerancia}
+        return out
+
+    def conferir_receitas_isentas(self, tolerancia=0.02):
+        """Confere o M400/M800 contra a receita por CST dos documentos.
+
+        Devolve `[(registro, tributo, cst, declarado, calculado)]` apenas dos
+        que **não fecham**. Calculado zero quer dizer que nenhum documento tem
+        aquele CST — é o caso que o PVA acusa como registro que não deveria
+        existir (`MSG_M400_NAO_DEVE_EXISTIR`).
+        """
+        if self.layout != "CONTRIB":
+            return []
+        fora = []
+        for tributo, det, campo in (("PIS", "M400", "CST_PIS"),
+                                    ("COFINS", "M800", "CST_COFINS")):
+            regs = [r for r in self.registros if r.reg == det]
+            if not regs:
+                continue
+            soma = self.receita_por_cst(tributo)
+            i_cst = self._ix(det, campo)
+            i_vl = self._ix(det, "VL_TOT_REC")
+            if i_cst is None or i_vl is None:
+                continue
+            for r in regs:
+                cst = (r.valor(i_cst) or "").strip()
+                dec = _to_num(r.valor(i_vl))
+                calc = round(soma.get(cst, 0.0), 2)
+                if abs(dec - calc) > tolerancia:
+                    fora.append((r, tributo, cst, dec, calc))
+        return fora
+
     # --------------------------------------------- totais (in-place, p/ tela)
     def recalcular_bloco_m(self):
         """
@@ -2621,42 +2757,10 @@ class SpedDocument:
         cumulativo = (cod_inc == "2")
         cod_cont = "51" if cumulativo else "01"
 
-        i_op = self._ix("C100", "IND_OPER")
-        saidas = [r for r in self.registros
-                  if r.reg == "C100" and (r.valor(i_op) or "").strip() == "1"]
-
-        def coletar(tributo):
-            """Agrupa (alíquota -> {rec, bc, aliq_str}) da receita tributada."""
-            if tributo == "PIS":
-                c175 = (4, 5, 2, 6)      # cst, bc, opr, aliq
-                c170 = (24, 25, 6, 26)
-            else:
-                c175 = (10, 11, 2, 12)
-                c170 = (30, 31, 6, 32)
-            grupos = {}
-            for c100 in saidas:
-                for f in c100.filhos:
-                    if f.reg == "C175":
-                        i_cst, i_bc, i_opr, i_al = c175
-                    elif f.reg == "C170":
-                        i_cst, i_bc, i_opr, i_al = c170
-                    else:
-                        continue
-                    bc = _to_num(f.valor(i_bc))
-                    al = _to_num(f.valor(i_al))
-                    if bc <= 0 or al <= 0:
-                        continue
-                    k = "%.4f" % al
-                    g = grupos.setdefault(k, {"aliq": f.valor(i_al),
-                                             "rec": 0.0, "bc": 0.0})
-                    g["rec"] += _to_num(f.valor(i_opr))
-                    g["bc"] += bc
-            return grupos
-
         resumo = {}
         for tributo, reg_cons, reg_det in (("PIS", "M200", "M210"),
                                            ("COFINS", "M600", "M610")):
-            grupos = coletar(tributo)
+            grupos = self.receita_tributada_por_aliquota(tributo)
             cons = next((r for r in self.registros if r.reg == reg_cons), None)
             if cons is None:
                 resumo[tributo] = "sem %s" % reg_cons

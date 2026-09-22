@@ -77,7 +77,19 @@ MAPA_CONTRIB = {
     "IND_NAT_PROC": "SPEDPISCOFINS_GLOBAL$SPEDPISCOFINS_NATUREZA_ACAO_JUDICIAL",
 }
 
-# Campos cujo código é a junção de duas tabelas (prefixo + sufixo).
+# Tabela **única** do CST do ICMS publicada pelo PVA Fiscal (140 códigos com
+# vigência). É ela que vale quando existe: além do par origem+situação, traz os
+# códigos do Simples Nacional (101, 102, 201, 202, 900) e os de tributação
+# monofásica de combustíveis criados em 01/04/2023 (final 02, 15, 53 e 61) —
+# nenhum deles sai do produto cartesiano A × B, cuja tabela B é de 2009.
+#
+# Sem ela, um arquivo real de supermercado acusava 186 CST inválidos que o PVA
+# aceita sem uma palavra: 107 CSOSN 101, 43 CSOSN 201, 25 CSOSN 102, 6 CSOSN
+# 202 e 5 CST 061.
+TABELA_CST_ICMS = "SPEDFISCAL_ST$SIT_TRIB_ICMS"
+
+# Campos cujo código é a junção de duas tabelas (prefixo + sufixo). Só entram
+# em cena quando a tabela única acima não está instalada.
 COMPOSTOS = {
     ("ICMS", "CST_ICMS"): ("SPEDFISCAL_ST$SIT_TRIB_ICMS_A",
                            "SPEDFISCAL_ST$SIT_TRIB_ICMS_B"),
@@ -217,6 +229,59 @@ def carregar_codigos(caminho, data_ref=None, encoding="latin-1"):
     return {"versao": versao, "codigos": codigos}
 
 
+def dominio_cst_icms(tabs, data_ref=None):
+    """Domínio do CST do ICMS: tabela única do PVA, ou o par A × B.
+
+    Devolve `(codigos, versao, nome)` ou `(None, None, None)`.
+    """
+    alvo = tabs.get(TABELA_CST_ICMS)
+    if alvo:
+        t = carregar_codigos(alvo[0], data_ref)
+        if t["codigos"]:
+            return (set(t["codigos"]), t["versao"],
+                    TABELA_CST_ICMS.split("$")[-1])
+    par = COMPOSTOS.get(("ICMS", "CST_ICMS"))
+    a, b = (tabs.get(par[0]), tabs.get(par[1])) if par else (None, None)
+    if a and b:
+        ta = carregar_codigos(a[0], data_ref)
+        tb = carregar_codigos(b[0], data_ref)
+        if ta["codigos"] and tb["codigos"]:
+            return ({x + y for x in ta["codigos"] for y in tb["codigos"]},
+                    "%s+%s" % (ta["versao"], tb["versao"]),
+                    "%s + %s" % (par[0].split("$")[-1], par[1].split("$")[-1]))
+    return None, None, None
+
+
+def cfops_com_credito(pasta_contrib=None, data_ref=None):
+    """CFOP que admitem crédito de PIS/COFINS, pela tabela do PVA.
+
+    `SPEDPISCOFINS_CFOP_CREDITO` (4.3.7) lista os 89 CFOP de entrada que geram
+    crédito, cada um com a natureza da base (`NAT_BC_CRE`). O PVA usa essa
+    tabela na regra `REGRA_COMPATIBILIDADE_CFOP_CRED`: CST de creditamento num
+    CFOP fora dela é advertência (`MSG_COMPATIBILIDADE_CFOP_CRED`).
+
+    Devolve `(codigos, versao)`; `(None, None)` se a tabela não estiver
+    instalada — sem ela a verificação não roda, em vez de aprovar no escuro.
+    """
+    tabs = listar_tabelas(pasta_contrib or PASTA_CONTRIB)
+    return codigos_de("SPEDPISCOFINS_OPER_CREDITO$SPEDPISCOFINS_CFOP_CREDITO",
+                      tabs, None, data_ref)
+
+
+def prazo_entrega(mes_ano, pasta_contrib=None):
+    """Data limite de entrega da EFD Contribuições do período `MMAAAA`.
+
+    Vem de `SPEDPISCOFINS_DATA_LIMITE_ENTREGA`, a mesma tabela que o PVA cita
+    ao pedir o registro 0900. Devolve `DDMMAAAA` ou `""`.
+    """
+    tabs = listar_tabelas(pasta_contrib or PASTA_CONTRIB)
+    alvo = tabs.get("SPEDPISCOFINS_GLOBAL$SPEDPISCOFINS_DATA_LIMITE_ENTREGA")
+    if not alvo:
+        return ""
+    t = carregar_codigos(alvo[0])
+    return t["codigos"].get(mes_ano, "")
+
+
 def carregar_dominios(layout, pasta_fiscal=None, pasta_contrib=None, uf=None,
                       data_ref=None):
     """Monta `{campo: dominio}` a partir das tabelas do PVA do `layout`.
@@ -261,25 +326,16 @@ def carregar_dominios(layout, pasta_fiscal=None, pasta_contrib=None, uf=None,
                            "versao": t["versao"]}
         usadas[campo] = os.path.basename(caminho)
 
-    # compostos: origem + situação
-    par = COMPOSTOS.get((layout, "CST_ICMS"))
-    if par:
-        a, b = tabs.get(par[0]), tabs.get(par[1])
-        if a and b:
-            ta = carregar_codigos(a[0], data_ref)
-            tb = carregar_codigos(b[0], data_ref)
-            if ta["codigos"] and tb["codigos"]:
-                dominios["CST_ICMS"] = {
-                    "codigos": {x + y for x in ta["codigos"]
-                                for y in tb["codigos"]},
-                    "rotulo": ROTULOS["CST_ICMS"],
-                    "tabela": "%s + %s" % (par[0].split("$")[-1],
-                                           par[1].split("$")[-1]),
-                    "versao": "%s+%s" % (ta["versao"], tb["versao"])}
-                usadas["CST_ICMS"] = "%s + %s" % (os.path.basename(a[0]),
-                                                  os.path.basename(b[0]))
+    # CST do ICMS: tabela única do PVA, com o par A × B como reserva
+    if (layout, "CST_ICMS") in COMPOSTOS:
+        cods, versao, nome = dominio_cst_icms(tabs, data_ref)
+        if cods:
+            dominios["CST_ICMS"] = {"codigos": cods,
+                                    "rotulo": ROTULOS["CST_ICMS"],
+                                    "tabela": nome, "versao": versao}
+            usadas["CST_ICMS"] = nome
         else:
-            faltando.extend(p for p in par if p not in tabs)
+            faltando.append(TABELA_CST_ICMS)
 
     return dominios, {"usadas": usadas, "faltando": sorted(set(faltando)),
                       "pasta_fiscal": pasta_fiscal,
@@ -318,16 +374,10 @@ def dominios_por_datasource(estrutura, layout, pasta_fiscal=None,
         for campo, c in d["campos"].items():
             ds = c.get("datasource")
             if campo in DATASOURCE_COMPOSTO and layout == "ICMS" and ds:
-                par = DATASOURCE_COMPOSTO[campo]
-                if par not in cache:
-                    a, va = codigos_de(par[0], tabs, uf, data_ref)
-                    b, vb = codigos_de(par[1], tabs, uf, data_ref)
-                    cache[par] = ({x + y for x in a for y in b}
-                                  if a and b else None,
-                                  "%s+%s" % (va, vb))
-                cods, versao = cache[par]
-                nome_tab = "%s + %s" % (par[0].split("$")[-1],
-                                        par[1].split("$")[-1])
+                if campo not in cache:
+                    c, v, nome = dominio_cst_icms(tabs, data_ref)
+                    cache[campo] = (c, v, nome)
+                cods, versao, nome_tab = cache[campo]
             else:
                 chave = tabela_do_datasource(ds, layout)
                 if not chave:

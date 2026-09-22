@@ -29,8 +29,13 @@ from sped_model import TIPOS_ITEM_0200, VALORES_NULOS
 
 # --------------------------------------------------------------------- tabelas
 # CST do ICMS = origem (0 a 8) + situação tributária
+# Situação tributária do ICMS. Os quatro últimos entraram em 01/04/2023 com a
+# tributação monofásica de combustíveis (02 própria, 15 própria e por
+# responsabilidade, 53 com diferimento, 61 cobrada anteriormente) — a tabela
+# `SIT_TRIB_ICMS_B` do PVA é de 2009 e não os traz, mas a tabela única
+# `SIT_TRIB_ICMS` (versão 4) sim, e o validador oficial os aceita.
 SITUACOES_ICMS = {"00", "10", "20", "30", "40", "41", "50", "51", "60", "70",
-                  "90"}
+                  "90", "02", "15", "53", "61"}
 # CSOSN, do Simples Nacional: origem + 3 dígitos. Não é o leiaute do EFD
 # ICMS/IPI, mas aparece em arquivo de quem migrou de regime — aceitar evita
 # falso positivo (a conferência com XML já trata o caso à parte).
@@ -189,8 +194,12 @@ def _valida_cst_icms(v):
     if not RE_SO_DIGITOS.match(v):
         return False
     if len(v) == 3:
-        return v[0] in ORIGENS and v[1:] in SITUACOES_ICMS
-    if len(v) == 4:                      # CSOSN do Simples
+        # origem + situação, ou o CSOSN de três dígitos — a tabela única do
+        # PVA lista 101, 102, 103, 201, 202, 203, 300, 400, 500 e 900 como
+        # códigos válidos, e o validador oficial não reclama deles. Recusá-los
+        # produzia 186 falsos positivos num arquivo real de supermercado.
+        return v in CSOSN or (v[0] in ORIGENS and v[1:] in SITUACOES_ICMS)
+    if len(v) == 4:                      # origem + CSOSN do Simples
         return v[0] in ORIGENS and v[1:] in CSOSN
     return False
 
@@ -246,8 +255,9 @@ DOMINIOS = {
     "IND_PROP": Dominio("indicador de propriedade deve ser 0, 1 ou 2",
                         tamanho=1, conjunto={"0", "1", "2"}, normaliza=False),
     # origem da mercadoria é decisão fiscal: aponta, mas não sugere
-    "CST_ICMS": DominioCstIcms("CST do ICMS deve ser origem (0-8) + "
-                               "situação (00,10,20,30,40,41,50,51,60,70,90)",
+    "CST_ICMS": DominioCstIcms("CST do ICMS deve ser origem (0-8) + situação "
+                               "(%s), ou um CSOSN do Simples"
+                               % ",".join(sorted(SITUACOES_ICMS)),
                                validador=_valida_cst_icms, normaliza=False),
     "CFOP": Dominio("CFOP deve ter 4 dígitos começando por 1,2,3,5,6 ou 7",
                     validador=_valida_cfop, normaliza=False),

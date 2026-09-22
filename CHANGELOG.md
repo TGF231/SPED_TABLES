@@ -1,5 +1,64 @@
 # Changelog
 
+## [0.43.0] - 2026-09-22
+
+As **sete mensagens restantes** do banco do PVA, implementadas. Com as duas da
+0.42.0, o programa agora reproduz as 13 mensagens distintas que o validador
+oficial gravou nas 11 validações feitas nesta máquina.
+
+O método mudou de patamar: a tabela `master/escrituracao` liga cada banco ao
+**arquivo que o gerou**, então dá para rodar a regra nova contra o mesmo
+arquivo que o PVA validou e comparar o número exato. Duas regras fecharam
+assim, sem reconstrução: **20/20** no CFOP e **25/25** no CST.
+
+### Adicionado
+- **CST 02 sem alíquota (C170, ICMS)** — `MSG_VALIDA_CST_ALIQ_ICMS_C170_CST_FINAL_2`.
+  Desde 01/04/2023 o CST terminado em 02 é tributação monofásica de
+  combustível e exige `ALIQ_ICMS > 0`. Na prática é o **CSOSN 102/202 do
+  fornecedor do Simples** copiado na entrada — e o PVA acusa do mesmo jeito.
+  25 itens num arquivo real, os mesmos 25 do validador.
+- **Crédito em CFOP que não dá direito** — `MSG_COMPATIBILIDADE_CFOP_CRED`,
+  como rotina de PIS/COFINS, usando a tabela 4.3.7 do PVA (89 CFOP de entrada
+  com crédito). 20 ocorrências num arquivo real, todas em CFOP 1910
+  (bonificação, doação, brinde) e 1949: mercadoria que entrou sem custo não
+  gera crédito. Tem correção — troca o CST e zera base, alíquota e valor.
+- **M210/M610 x documentos**, nos dois campos que o PVA confere:
+  `VL_REC_BRT` (`MSG_VL_REC_BRT`) e `VL_BC_CONT`
+  (`MSG_VL_BC_CONT_IND_NAT_PJ`). Num arquivo real a apuração trazia
+  R$ 262.591,48 onde os documentos somavam R$ 431,64. Corrige com
+  *Recalcular bloco M*, que usa exatamente o mesmo somatório.
+- **M400/M800 sem lastro** — `MSG_M400_NAO_DEVE_EXISTIR`: receita isenta
+  declarada num CST que nenhum documento usa.
+- **IND_EMIT de terceiro em documento de saída** — `MSG_IND_EMIT`. Quando há
+  chave de NF-e, o CNPJ dentro dela diz **qual dos dois campos** está errado:
+  chave do próprio contribuinte, corrige-se o `IND_EMIT`; chave de outro, o
+  documento é de entrada e o errado é o `IND_OPER`. Por isso a regra aponta e
+  não corrige — os dois consertos levam o arquivo para lados opostos.
+- **Registro 0900 ausente fora do prazo** — `MSG_PREENCHIMENTO_0900`, com a
+  data limite saindo da tabela de prazos do próprio PVA.
+
+### Corrigido
+- **186 falsos positivos de CST do ICMS num único arquivo.** O domínio do
+  campo vinha do produto cartesiano `SIT_TRIB_ICMS_A` × `SIT_TRIB_ICMS_B`,
+  cuja tabela B é de 2009. O PVA publica também a tabela **composta**
+  `SIT_TRIB_ICMS` (versão 4, 140 códigos com vigência), que traz os CSOSN do
+  Simples (101, 102, 201, 202, 900) e os códigos de tributação monofásica de
+  combustíveis de 2023 (final 02, 15, 53 e 61). Passou a valer ela, com o par
+  A × B como reserva; o domínio embutido (usado quando o PVA não está
+  instalado) foi alinhado. No arquivo real: 186 → 0, exatamente como o
+  validador oficial.
+
+### Notas
+- Conferência do bloco M: o somatório é **o mesmo** de `recalcular_bloco_m` —
+  verificação e correção que discordam produzem um erro que o botão de
+  corrigir não conserta. Quando o arquivo tem receita fora do bloco C (A170,
+  D201, F100...), a conferência se declara **parcial** e vira aviso, em vez de
+  acusar diferença que o arquivo não tem.
+- Validação: 3 regras conferidas contra a contagem exata do PVA, 1 contra um
+  caso real de entrega fora do prazo e 3 por caso reconstruído a partir do
+  valor encontrado/esperado que o banco registrou. Nos arquivos que o PVA
+  aprovou, as sete regras devolvem zero.
+
 ## [0.42.0] - 2026-09-22
 
 Duas regras tiradas do **banco do próprio PVA**: cada escrituração validada

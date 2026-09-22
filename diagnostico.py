@@ -20,6 +20,12 @@ O que é fiel e o que não é — a distinção importa:
   "só o PVA verifica", com o nome, para não passarem a impressão de que o
   arquivo está limpo.
 
+Uma terceira origem entrou depois: as mensagens que o PVA **já gravou** no
+banco de cada validação (tabela `inconsistencia`). Elas não trazem a regra,
+mas trazem o valor encontrado e o esperado — o bastante para reconstruir a
+condição e, melhor, para conferir a reimplementação contra o que o validador
+oficial acusou nos mesmos arquivos.
+
 Também não são cobertas as obrigatoriedades **condicionais** — o `COD_CTA` do
 H010, por exemplo, é opcional no descritor e vira obrigatório no perfil A/B
 por uma regra à parte. Essas continuam nas verificações próprias do programa.
@@ -61,6 +67,20 @@ MODULOS = {
     "data_periodo": ("Alterar datas emissão/saída (C100)",
                      "Ferramentas → Gerais → Alterar datas"),
     "bloco": ("Correção manual na grade", "bloco aberto sem encerramento"),
+    "cst_aliq_02": ("Correção manual na grade",
+                    "CST terminado em 02 exige alíquota; costuma ser CSOSN "
+                    "do fornecedor do Simples"),
+    "ind_emit": ("Correção manual na grade",
+                 "saída escriturada como documento de terceiro"),
+    "cfop_credito": ("Rotinas de conferência (PIS/COFINS)",
+                     "Ferramentas → EFD Contribuições → Rotinas → Crédito em "
+                     "CFOP que não dá direito"),
+    "apuracao_m": ("Recalcular bloco M (apuração PIS/COFINS)",
+                   "Ferramentas → EFD Contribuições → Recalcular bloco M"),
+    "m400": ("Correção manual na grade",
+             "M400/M800 sem receita correspondente nos documentos"),
+    "reg_0900": ("Correção manual na grade",
+                 "registro 0900 ausente numa escrituração fora do prazo"),
 }
 
 
@@ -282,6 +302,53 @@ def verificar(doc, pasta_fiscal=None, pasta_contrib=None):
             achados.append(Achado("cod_gen", "0200", "COD_GEN",
                                   "gênero ausente ou diferente do capítulo "
                                   "do NCM", len(gen), gen[0].uid))
+        # ---- regras tiradas do banco de inconsistências do próprio PVA ----
+        cst02 = revisao.verificar_cst_combustivel_sem_aliquota(doc)
+        if cst02:
+            achados.append(Achado(
+                "cst_aliq_02", "C170", "ALIQ_ICMS",
+                "CST terminado em 02 (monofásico de combustível) com "
+                "alíquota zerada", len(cst02), cst02[0].uid))
+        emit = revisao.verificar_ind_emit(doc)
+        if emit:
+            achados.append(Achado(
+                "ind_emit", "C100", "IND_EMIT",
+                "saída com documento de emissão de terceiro", len(emit),
+                emit[0].uid))
+        for fn, campo in ((revisao.verificar_m210_receita_bruta,
+                           "VL_REC_BRT"),
+                          (revisao.verificar_m210_base_calculo,
+                           "VL_BC_CONT")):
+            ps = fn(doc)
+            if ps:
+                achados.append(Achado(
+                    "apuracao_m", ps[0].reg, campo,
+                    "apuração diverge da receita dos documentos", len(ps),
+                    ps[0].uid, ps[0].gravidade))
+        isentas = revisao.verificar_m400_sem_lastro(doc)
+        if isentas:
+            achados.append(Achado(
+                "m400", isentas[0].reg, "VL_TOT_REC",
+                "receita isenta declarada sem lastro nos documentos",
+                len(isentas), isentas[0].uid, isentas[0].gravidade))
+        r0900 = revisao.verificar_0900_ausente(doc)
+        if r0900:
+            achados.append(Achado(
+                "reg_0900", "0900", "",
+                "registro 0900 ausente e prazo de entrega vencido", 1,
+                r0900[0].uid, "aviso"))
+    except Exception:                                       # noqa: BLE001
+        pass
+
+    # ---- crédito em CFOP que não dá direito (tabela 4.3.7 do PVA) --------
+    try:
+        import rotinas
+        cfop = rotinas.verificar_cfop_sem_credito(doc)
+        if cfop:
+            achados.append(Achado("cfop_credito", "C170", "CST_PIS/CST_COFINS",
+                                  "crédito tomado em CFOP que não consta da "
+                                  "tabela de CFOP com direito a crédito",
+                                  len(cfop), cfop[0].uid, "aviso"))
     except Exception:                                       # noqa: BLE001
         pass
 

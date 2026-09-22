@@ -395,6 +395,64 @@ def corrigir_zerar_credito(doc, empresa, ocorrencias):
     return n
 
 
+# ================================================================ rotina 6
+def verificar_cfop_sem_credito(doc, empresa=None, data_ref=None):
+    """Crédito tomado num **CFOP que não admite crédito**.
+
+    O PVA publica a tabela `CFOP_CREDITO` (4.3.7) com os 89 CFOP de entrada
+    que geram crédito de PIS/COFINS, cada um com a natureza da base. Crédito
+    lançado fora dessa lista é advertência do validador
+    (`MSG_COMPATIBILIDADE_CFOP_CRED`). Num arquivo real de supermercado foram
+    **20 ocorrências** — 10 itens, PIS e COFINS —, todas em CFOP 1910
+    (bonificação, doação ou brinde) e 1949 (outra entrada não especificada):
+    mercadoria que entrou sem custo não gera crédito.
+
+    Sem a tabela instalada a rotina não roda: aprovar no escuro seria pior.
+    """
+    if doc.layout != "CONTRIB":
+        return []
+    if data_ref is None:
+        i_fim = doc._ix("0000", "DT_FIN")
+        for r in doc.registros:
+            if r.reg == "0000" and i_fim is not None:
+                data_ref = (r.valor(i_fim) or "").strip()
+                break
+    import tabelas_pva
+    cfops, _versao = tabelas_pva.cfops_com_credito(data_ref=data_ref)
+    if not cfops:
+        return []
+    sem_credito = (getattr(empresa, "cst_entrada_sem_credito", "") or "70") \
+        if empresa is not None else "70"
+
+    achados = []
+    for reg, num, entrada in _itens_por_operacao(doc):
+        if not entrada:
+            continue
+        i_cfop = doc._ix(reg.reg, "CFOP")
+        if i_cfop is None:
+            continue
+        cfop = (reg.valor(i_cfop) or "").strip()
+        if not cfop or cfop in cfops:
+            continue
+        for tributo in ("PIS", "COFINS"):
+            i_cst, _i_bc, i_aliq, i_vl = _par_tributo(doc, reg.reg, tributo)
+            if i_cst is None:
+                continue
+            cst = (reg.valor(i_cst) or "").strip()
+            if cst not in CST_ENTRADA_COM_CREDITO:
+                continue
+            valor = _to_num(reg.valor(i_vl)) if i_vl is not None else 0.0
+            aliq = _to_num(reg.valor(i_aliq)) if i_aliq is not None else 0.0
+            achados.append(Ocorrencia(
+                uid=reg.uid, reg=reg.reg, escopo="entrada", doc=num,
+                item=_rotulo_item(reg.reg, num, reg, doc), tributo=tributo,
+                campo="CST_%s" % tributo, atual=cst, esperado=sem_credito,
+                detalhe="CFOP %s não consta da tabela de CFOP com direito a "
+                        "crédito (crédito de %s, alíq. %s)"
+                        % (cfop, _fmt_val(valor), _fmt_aliq(aliq))))
+    return achados
+
+
 # ------------------------------------------------------------------- lista
 ROTINAS = [
     Rotina(
@@ -454,6 +512,20 @@ ROTINAS = [
         rotulo_correcao="Retirar o crédito das entradas (troca o CST e zera "
                         "base/alíquota/valor)",
         requer="tabelas_rfb",
+    ),
+    Rotina(
+        id="cfop_credito",
+        nome="Crédito em CFOP que não dá direito (entradas)",
+        descricao="Entradas com CST de creditamento num CFOP fora da tabela "
+                  "de CFOP com direito a crédito do PVA (4.3.7) — "
+                  "bonificação, doação, brinde e outras entradas que não "
+                  "geram crédito.",
+        layouts=("CONTRIB",),
+        verificar=verificar_cfop_sem_credito,
+        corrigir=corrigir_credito_indevido,
+        rotulo_correcao="Retirar o crédito (zera base/alíquota/valor e troca "
+                        "o CST)",
+        requer="tabelas_pva",
     ),
 ]
 

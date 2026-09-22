@@ -13,7 +13,7 @@ até ele ao clicar no relatório.
 
 from collections import Counter
 
-from sped_model import _to_num, TIPOS_ITEM_0200
+from sped_model import _to_num, _fmt_val, TIPOS_ITEM_0200
 
 
 class Problema:
@@ -317,6 +317,234 @@ def verificar_data_fora_periodo(doc):
     return problemas
 
 
+def _data_chave(v):
+    """DDMMAAAA -> AAAAMMDD, para comparar data como texto."""
+    d = "".join(c for c in (v or "") if c.isdigit())
+    return d[4:8] + d[2:4] + d[0:2] if len(d) == 8 else ""
+
+
+def _registro_0000(doc):
+    for r in doc.registros:
+        if r.reg == "0000":
+            return r
+    return None
+
+
+def verificar_cst_combustivel_sem_aliquota(doc):
+    """CST do ICMS terminado em **02** com alíquota zerada.
+
+    Desde 01/04/2023 o CST com final 02 é *tributação monofásica própria sobre
+    combustíveis*, que tem alíquota por unidade de medida — e por isso o PVA
+    exige `ALIQ_ICMS > 0` (`MSG_VALIDA_CST_ALIQ_ICMS_C170_CST_FINAL_2`).
+
+    Na prática quase nunca é combustível: é o **CSOSN 102/202 do fornecedor
+    do Simples** copiado do documento de entrada, que o PVA lê como origem +
+    CST 02. Num arquivo real de supermercado eram 25 itens, exatamente os 25
+    que o validador oficial acusou. Não há correção automática: trocar o CSOSN
+    pelo CST da própria operação exige saber a origem da mercadoria.
+    """
+    if doc.layout != "ICMS":
+        return []
+    r0 = _registro_0000(doc)
+    i_ini = doc._ix("0000", "DT_INI")
+    if r0 is None or i_ini is None:
+        return []
+    if _data_chave(r0.valor(i_ini)) < "20230401":
+        return []
+    i_cst = doc._ix("C170", "CST_ICMS")
+    i_al = doc._ix("C170", "ALIQ_ICMS")
+    i_item = doc._ix("C170", "COD_ITEM")
+    if i_cst is None or i_al is None:
+        return []
+    problemas = []
+    for r in doc.registros:
+        if r.reg != "C170":
+            continue
+        cst = (r.valor(i_cst) or "").strip()
+        if len(cst) != 3 or cst[-2:] != "02":
+            continue
+        if _to_num(r.valor(i_al)) > 0:
+            continue
+        problemas.append(Problema(
+            uid=r.uid, reg=r.reg, bloco=r.bloco,
+            regra="CST 02 sem alíquota",
+            descricao="Item %s com CST %s (o PVA lê como tributação "
+                      "monofásica de combustível e exige alíquota > 0). "
+                      "Costuma ser o CSOSN do fornecedor do Simples."
+                      % ((r.valor(i_item) or "").strip()
+                         if i_item is not None else "", cst)))
+    return problemas
+
+
+def verificar_ind_emit(doc):
+    """Saída escriturada como documento de **emissão de terceiros**.
+
+    O PVA cobra a coerência entre `IND_OPER` e `IND_EMIT`
+    (`MSG_IND_EMIT`): saída é documento próprio. Quando há chave de NF-e, o
+    CNPJ dentro dela diz qual dos dois campos está errado — se a chave é do
+    próprio contribuinte, o errado é o `IND_EMIT`; se é de outro, o documento
+    é de entrada e o errado é o `IND_OPER`. Por isso a regra aponta e não
+    corrige: os dois consertos levam o arquivo para lados opostos.
+    """
+    if doc.layout != "ICMS":
+        return []
+    i_op = doc._ix("C100", "IND_OPER")
+    i_emit = doc._ix("C100", "IND_EMIT")
+    i_chv = doc._ix("C100", "CHV_NFE")
+    i_num = doc._ix("C100", "NUM_DOC")
+    if i_op is None or i_emit is None:
+        return []
+    r0 = _registro_0000(doc)
+    i_cnpj = doc._ix("0000", "CNPJ")
+    cnpj = ""
+    if r0 is not None and i_cnpj is not None:
+        cnpj = "".join(c for c in (r0.valor(i_cnpj) or "") if c.isdigit())
+
+    problemas = []
+    for r in doc.registros:
+        if r.reg != "C100" or (r.valor(i_op) or "").strip() != "1":
+            continue
+        emit = (r.valor(i_emit) or "").strip()
+        if emit in ("", "0"):
+            continue
+        chave = ""
+        if i_chv is not None:
+            chave = "".join(c for c in (r.valor(i_chv) or "") if c.isdigit())
+        if len(chave) == 44 and cnpj:
+            saida = ("a chave é do próprio CNPJ: corrija o IND_EMIT"
+                     if chave[6:20] == cnpj
+                     else "a chave é de outro CNPJ: o documento é de entrada")
+        else:
+            saida = "sem chave para decidir qual dos dois campos está errado"
+        problemas.append(Problema(
+            uid=r.uid, reg=r.reg, bloco=r.bloco,
+            regra="IND_EMIT em documento de saída",
+            descricao="Documento %s é saída (IND_OPER 1) com IND_EMIT %s — %s."
+                      % ((r.valor(i_num) or "").strip()
+                         if i_num is not None else "", emit, saida)))
+    return problemas
+
+
+def _problemas_apuracao(doc, chave, campo, rotulo):
+    """Divergência de um campo do M210/M610 contra os documentos."""
+    conf = doc.conferir_apuracao_m() if doc.layout == "CONTRIB" else None
+    if not conf:
+        return []
+    parcial = conf["parcial"]
+    problemas = []
+    for tributo in ("PIS", "COFINS"):
+        d = conf[tributo]
+        if not d["difere_%s" % chave]:
+            continue
+        dec = d["declarado_%s" % chave]
+        calc = d["calculado_%s" % chave]
+        obs = (" (conferência parcial: há receita em %s)" % ", ".join(parcial)
+               if parcial else "")
+        for r in d["registros"]:
+            problemas.append(Problema(
+                uid=r.uid, reg=r.reg, bloco=r.bloco, regra=rotulo,
+                descricao="%s: %s declarado %s, documentos somam %s "
+                          "(diferença %s)%s"
+                          % (d["registro"], campo, _fmt_val(dec),
+                             _fmt_val(calc), _fmt_val(round(dec - calc, 2)),
+                             obs),
+                gravidade="aviso" if parcial else "erro"))
+    return problemas
+
+
+def verificar_m210_receita_bruta(doc):
+    """`VL_REC_BRT` do M210/M610 diferente da receita dos documentos.
+
+    O PVA recalcula a apuração a partir dos registros de receita e compara
+    (`MSG_VL_REC_BRT`); num arquivo real a apuração trazia R$ 262.591,48 onde
+    os documentos somavam R$ 431,64. Quem corrige é *Recalcular bloco M*, que
+    usa exatamente este somatório.
+    """
+    return _problemas_apuracao(doc, "rec", "VL_REC_BRT",
+                               "M210/M610 receita bruta")
+
+
+def verificar_m210_base_calculo(doc):
+    """`VL_BC_CONT` do M210/M610 diferente da base dos documentos.
+
+    Mesma conferência da receita bruta, no campo da base de cálculo
+    (`MSG_VL_BC_CONT_IND_NAT_PJ`).
+    """
+    return _problemas_apuracao(doc, "bc", "VL_BC_CONT",
+                               "M210/M610 base de cálculo")
+
+
+def verificar_m400_sem_lastro(doc):
+    """M400/M800 sem receita correspondente nos documentos.
+
+    O M400 (PIS) e o M800 (COFINS) declaram a receita isenta, não alcançada,
+    a alíquota zero ou com suspensão, por CST. O PVA soma os documentos pelo
+    mesmo CST e, não achando nada, acusa o registro como sobrando
+    (`MSG_M400_NAO_DEVE_EXISTIR`). Valor diferente de zero mas divergente é
+    apontado como aviso: o registro existe, o número é que não fecha.
+    """
+    if doc.layout != "CONTRIB":
+        return []
+    parcial = doc.receita_parcial()
+    problemas = []
+    for r, tributo, cst, dec, calc in doc.conferir_receitas_isentas():
+        if calc <= 0:
+            texto = ("%s com CST %s (%s) declara %s, mas nenhum documento tem "
+                     "esse CST — para o PVA o registro não deveria existir"
+                     % (r.reg, cst, tributo, _fmt_val(dec)))
+            grav = "aviso" if parcial else "erro"
+        else:
+            texto = ("%s com CST %s (%s): declarado %s, documentos somam %s"
+                     % (r.reg, cst, tributo, _fmt_val(dec), _fmt_val(calc)))
+            grav = "aviso"
+        problemas.append(Problema(uid=r.uid, reg=r.reg, bloco=r.bloco,
+                                  regra="M400/M800 sem lastro",
+                                  descricao=texto, gravidade=grav))
+    return problemas
+
+
+def verificar_0900_ausente(doc, hoje=None):
+    """Registro 0900 ausente numa escrituração já fora do prazo.
+
+    O 0900 (composição da receita bruta do período) foi o que o PVA cobrou em
+    `MSG_PREENCHIMENTO_0900`, trazendo na mensagem a **data limite de entrega**
+    do período — 15/05/2026 para uma escrituração de 03/2026. A cobrança
+    apareceu só na escrituração validada depois dessa data; as validadas
+    dentro do prazo, sem 0900, passaram limpas. A regra reproduz essa condição
+    e usa a tabela de prazos do próprio PVA.
+    """
+    if doc.layout != "CONTRIB":
+        return []
+    if any(r.reg == "0900" for r in doc.registros):
+        return []
+    r0 = _registro_0000(doc)
+    i_ini = doc._ix("0000", "DT_INI")
+    if r0 is None or i_ini is None:
+        return []
+    ini = "".join(c for c in (r0.valor(i_ini) or "") if c.isdigit())
+    if len(ini) != 8:
+        return []
+    try:
+        import tabelas_pva
+        prazo = tabelas_pva.prazo_entrega(ini[2:8])
+    except Exception:                                       # noqa: BLE001
+        prazo = ""
+    if not prazo:
+        return []
+    if hoje is None:
+        from datetime import date
+        hoje = date.today().strftime("%Y%m%d")
+    if hoje <= _data_chave(prazo):
+        return []
+    return [Problema(
+        uid=r0.uid, reg="0000", bloco="0",
+        regra="Registro 0900 ausente",
+        descricao="Escrituração de %s/%s sem registro 0900; o prazo de "
+                  "entrega (%s/%s/%s) já passou."
+                  % (ini[2:4], ini[4:8], prazo[:2], prazo[2:4], prazo[4:8]),
+        gravidade="aviso")]
+
+
 REGRAS = [
     ("Número de campos divergente do layout", verificar_num_campos),
     ("C190 CST x20/x70 com VL_RED_BC zerado", verificar_c190_reducao),
@@ -326,6 +554,13 @@ REGRAS = [
     ("COD_GEN incoerente com o NCM (0200)", verificar_cod_gen_0200),
     ("Chave duplicada no mesmo registro-pai", verificar_chave_duplicada),
     ("Data de saída fora do período", verificar_data_fora_periodo),
+    ("CST 02 (monofásico) sem alíquota (C170)",
+     verificar_cst_combustivel_sem_aliquota),
+    ("IND_EMIT de terceiro em documento de saída", verificar_ind_emit),
+    ("M210/M610 com receita bruta divergente", verificar_m210_receita_bruta),
+    ("M210/M610 com base de cálculo divergente", verificar_m210_base_calculo),
+    ("M400/M800 sem lastro nos documentos", verificar_m400_sem_lastro),
+    ("Registro 0900 ausente fora do prazo", verificar_0900_ausente),
 ]
 
 

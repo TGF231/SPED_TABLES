@@ -6363,6 +6363,10 @@ class JanelaPrincipal(QMainWindow):
                 ("Itens sem referência…", self.itens_sem_referencia),
             "TIPO_ITEM fora da tabela (0200)":
                 ("Validar campos…", self.validar_campos),
+            "M210/M610 com receita bruta divergente":
+                ("Recalcular bloco M…", self.recalcular_bloco_m),
+            "M210/M610 com base de cálculo divergente":
+                ("Recalcular bloco M…", self.recalcular_bloco_m),
         }
         self._dlg_revisao = DialogoRevisao(
             por_regra, self.ir_para_registro, self, acoes=acoes)
@@ -6544,6 +6548,9 @@ class JanelaPrincipal(QMainWindow):
             "Preencher COD_GEN pelo NCM": self.preencher_cod_gen,
             "Recalcular C190 (analítico)": self.recalcular_c190_massa,
             "Alterar datas emissão/saída (C100)": self.alterar_datas,
+            "Recalcular bloco M (apuração PIS/COFINS)":
+                self.recalcular_bloco_m,
+            "Rotinas de conferência (PIS/COFINS)": self.configurar_empresa,
         }
         self._dlg_diag = DialogoDiagnostico(achados, info, acoes,
                                             self.ir_para_registro, self)

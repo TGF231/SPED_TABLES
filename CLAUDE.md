@@ -244,7 +244,52 @@ que elas produziram, e isso serve para duas coisas:
   contra o qual conferir se a regra nova acusa os mesmos registros.
 
 Foi assim que nasceram `verificar_chave_duplicada` e
-`verificar_data_fora_periodo`.
+`verificar_data_fora_periodo` — e, depois, as outras sete.
+
+Duas coisas mais valem a pena saber sobre esses bancos:
+
+* **`master/escrituracao` liga cada banco ao arquivo que o gerou** (CNPJ,
+  nome, caminho). É o que permite rodar a regra nova contra o mesmo arquivo
+  que o PVA validou e comparar o número exato — foi assim que a regra do CFOP
+  fechou em 20/20 e a do CST em 25/25.
+* **Cada banco guarda a escrituração inteira** em tabelas `reg_<registro>`.
+  Os campos-texto saem com um `strings`; os numéricos são decimais binários do
+  MyISAM e exigiriam o `.frm` para decodificar.
+
+O nome da classe Java que emite a mensagem diz quase tudo: `RegraIndEmit` lê
+`IND_EMIT` e `IND_OPER`; `RegraValidaCSTALIQICMSC170` compara a data do 0000
+com 01/04/2023; `RegraVlBcContIndNatPj` soma `VL_BC_PIS`/`VL_BC_COFINS` dos
+filhos. Vale mais que decompilar: o bytecode não traz as condições, mas o
+`getErro`/`getAdvertencia` diz até a severidade.
+
+### CST do ICMS: a tabela boa é a composta
+
+O PVA Fiscal publica `SIT_TRIB_ICMS_A` (origem), `SIT_TRIB_ICMS_B` (situação,
+versão de 2009) **e** `SIT_TRIB_ICMS` — uma tabela única, versão 4, com 140
+códigos e vigência. Vale a última: só ela traz os CSOSN do Simples (101, 102,
+201, 202, 900) e os códigos de tributação monofásica de combustíveis criados
+em 01/04/2023 (final 02, 15, 53 e 61). O produto cartesiano A × B não gera
+nenhum dos dois, e usá-lo acusava **186 CST inválidos** num arquivo real que
+o validador oficial aceita sem uma palavra.
+
+O que o PVA cobra nesses códigos não é o CST, é a **alíquota**: CST com final
+02 é monofásico de combustível e exige `ALIQ_ICMS > 0`. Quem escreve 102 num
+C170 de entrada quase sempre copiou o CSOSN do fornecedor do Simples — e o
+PVA acusa assim mesmo (`verificar_cst_combustivel_sem_aliquota`).
+
+### Conferir o bloco M contra os documentos
+
+`conferir_apuracao_m` compara o `VL_REC_BRT` e o `VL_BC_CONT` do M210/M610
+com o somatório dos registros de receita, que é o que o PVA faz em
+`MSG_VL_REC_BRT` e `MSG_VL_BC_CONT_IND_NAT_PJ`. O somatório é **o mesmo** que
+`recalcular_bloco_m` usa para gerar os registros — de propósito: verificação e
+correção que discordam produzem o pior dos mundos, um erro que o botão de
+corrigir não conserta.
+
+O bloco C não é a única fonte de receita (há A170, D201, F100...). Quando o
+arquivo traz algum desses, a conferência se declara **parcial** e rebaixa a
+gravidade para aviso, em vez de acusar diferença que o arquivo não tem.
+`conferir_receitas_isentas` faz o mesmo para o M400/M800, por CST.
 
 ### Diagnóstico ao abrir: o que é fiel ao PVA e o que não é
 

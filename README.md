@@ -388,6 +388,9 @@ As regras implementadas hoje são cinco:
 5. **TIPO_ITEM fora da tabela (0200)** — o campo só aceita 00 a 10 e 99. ERPs
    que exportam a coluna errada gravam ali a origem da mercadoria ou um "N" de
    nacional; num arquivo real eram 10.312 itens, todos recusados pelo PVA.
+6. **COD_GEN incoerente com o NCM (0200)** — o gênero são os dois primeiros
+   dígitos do NCM; a regra aponta tanto o campo vazio quanto o que não bate
+   com o capítulo.
 7. **Chave duplicada no mesmo registro-pai** — dois registros irmãos com a
    mesma chave declarada no leiaute (no C190, CST + CFOP + alíquota). O PVA
    recusa; refazer o analítico do documento resolve.
@@ -395,9 +398,22 @@ As regras implementadas hoje são cinco:
    entre `DT_INI` e `DT_FIN` do arquivo. Só as saídas são cobradas: na
    entrada, documento anterior ao período é escrituração extemporânea
    legítima.
-6. **COD_GEN incoerente com o NCM (0200)** — o gênero são os dois primeiros
-   dígitos do NCM; a regra aponta tanto o campo vazio quanto o que não bate
-   com o capítulo.
+9. **CST 02 sem alíquota (C170, ICMS)** — desde 01/04/2023 o CST terminado
+   em 02 é tributação monofásica de combustível e exige alíquota. Na prática
+   quase sempre é o **CSOSN 102/202 do fornecedor do Simples** copiado na
+   entrada; o PVA acusa do mesmo jeito.
+10. **IND_EMIT de terceiro em documento de saída** — saída é documento
+    próprio. Quando há chave de NF-e, o CNPJ dentro dela diz qual campo está
+    errado: se a chave é do próprio contribuinte, o `IND_EMIT`; se é de
+    outro, o documento é de entrada e o errado é o `IND_OPER`.
+11. **M210/M610 com receita bruta divergente** — o `VL_REC_BRT` declarado na
+    apuração tem de sair do somatório dos documentos. Corrige com *Recalcular
+    bloco M*.
+12. **M210/M610 com base de cálculo divergente** — idem para o `VL_BC_CONT`.
+13. **M400/M800 sem lastro nos documentos** — receita isenta declarada num
+    CST que nenhum documento usa. Para o PVA, o registro não deveria existir.
+14. **Registro 0900 ausente fora do prazo** — escrituração sem o 0900 cujo
+    prazo de entrega, na tabela do PVA, já venceu.
 
 A revisão **não substitui o PVA** — é uma triagem rápida antes dele.
 
@@ -527,6 +543,15 @@ bloco aberto sem encerramento.
 implementadas em Java. O painel diz **quantas** se aplicam ao arquivo e cita
 alguns nomes, para deixar claro que validar no PVA continua necessário — o
 diagnóstico adianta trabalho, não substitui o validador oficial.
+
+### Crédito em CFOP que não dá direito (EFD Contribuições)
+
+Entre as rotinas de conferência de PIS/COFINS há uma que usa a tabela 4.3.7
+do PVA (`CFOP_CREDITO`, 89 CFOP de entrada que geram crédito): CST de
+creditamento num CFOP fora dela é crédito indevido. Num arquivo real de
+supermercado eram 20 ocorrências, todas em CFOP 1910 (bonificação, doação ou
+brinde) e 1949 (outra entrada não especificada) — mercadoria que entrou sem
+custo não gera crédito. A correção troca o CST e zera base, alíquota e valor.
 
 ### Como a validação acompanha o PVA
 
