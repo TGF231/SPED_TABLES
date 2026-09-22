@@ -30,6 +30,7 @@ Dependências em `requirements.txt` (PyQt6; `openpyxl` para planilhas XLSX).
 | `validacao.py` | Domínio de cada campo **por nome** (`DOMINIOS`), varredura do arquivo e normalização em lote. Detecta; só `normalizar()` grava. |
 | `tabelas_pva.py` | Tabelas externas dos PVAs (códigos válidos, com vigência). |
 | `descritor_pva.py` | **Descritor de validação** que cada PVA embarca no `.jar`: tipo/tamanho de cada campo, enumerações, referências entre registros e os validadores nomeados. É a fonte mais próxima de "como o PVA valida". |
+| `diagnostico.py` | Roda as camadas de verificação do PVA e diz **qual módulo corrige** cada grupo. Executado ao abrir o arquivo. |
 | `empresas.py` | Cadastro por CNPJ: regime federal e de PIS/COFINS, alíquotas, atividade. Persistido em `empresas.json` (fora do git). |
 | `rotinas.py` | Rotinas de conferência/correção por regime (lista `ROTINAS`). Verificação nunca altera o arquivo; a correção recebe as ocorrências já exibidas. |
 | `arquivos.py` | Memória persistente: cópia do SPED em `arquivos/<CNPJ>/<LEIAUTE>_<AAAAMM>.txt` + `indice.json`. Uma cópia por período. Fora do git. |
@@ -226,6 +227,27 @@ senão as ações em lote agem sobre uma linha que ninguém escolheu.
 
 Cada bloco abre na primeira sub-aba de **nível ≠ 1** — nível 1 é abertura e
 encerramento (`C001`, `H001`, `H990`), de um campo só.
+
+### Diagnóstico ao abrir: o que é fiel ao PVA e o que não é
+
+`diagnostico.verificar()` roda ao abrir o arquivo e agrupa os problemas pelo
+**módulo que os corrige**. A distinção abaixo precisa ser mantida — apagá-la
+transformaria "nenhum erro" numa falsa aprovação:
+
+- **fiel**, porque a declaração vem do descritor do próprio PVA: quantidade de
+  campos, obrigatoriedade de campo, tipo/tamanho/decimais, enumeração, tabela
+  externa, referência entre registros e bloco sem encerramento;
+- **não reproduzido**: as ~1.400 regras compostas (`REGRA_CST_ICMS_CAMPOS_...`),
+  implementadas em Java sobre o banco embutido. O bytecode não carrega as
+  condições, e adivinhá-las criaria divergência silenciosa. O painel **lista**
+  quantas se aplicam ao arquivo.
+
+**Obrigatoriedade condicional não está no descritor.** O campo é declarado
+obrigatório e uma regra Java o dispensa em certos casos. As exceções que dá
+para afirmar ficam em `DISPENSAS`, nominalmente — a primeira foi
+`C100.COD_PART`, dispensado na NFC-e: sem ela, um arquivo de supermercado
+acusava 4.377 campos obrigatórios em branco que o PVA aceita, e os 5 casos
+reais (modelo 55) sumiam no meio.
 
 ### O painel de revisão é um sumário, não uma lista
 

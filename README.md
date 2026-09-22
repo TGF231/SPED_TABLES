@@ -490,6 +490,37 @@ período. Isso importa: informar uma conta que não existe no plano de contas é
 o próximo erro a aparecer. Se o arquivo já tiver 0500, as contas existentes
 aparecem num seletor.
 
+### Diagnóstico do arquivo (automático ao abrir)
+
+Ao abrir um SPED, o programa passa o arquivo pelas camadas de verificação do
+PVA e mostra um painel com os problemas **agrupados pelo módulo que os
+corrige** — cada linha tem o botão que abre a função certa:
+
+```
+Limpar campos com NULL                13343   [Abrir]
+Preencher COD_GEN pelo NCM            12478   [Abrir]
+Validar campos pelo leiaute           10970   [Abrir]
+Itens do 0200 sem referência          10312   [Abrir]
+Recalcular C190 com redução zerada       66   [Abrir]
+Correção manual na grade                 26   campo obrigatório em branco
+```
+
+Abaixo, o detalhe por registro e campo; duplo-clique leva ao registro. Se o
+arquivo estiver limpo, o painel não aparece — só uma mensagem na barra de
+status. Também dá para chamá-lo a qualquer momento em **Ferramentas → Gerais
+→ Diagnóstico do arquivo**.
+
+**O que ele verifica com fidelidade:** tudo o que o PVA declara no descritor —
+quantidade de campos do registro, obrigatoriedade de campo, tipo, tamanho,
+casas decimais, enumerações, tabelas externas, referências entre registros
+(`COD_ITEM` → 0200, `COD_PART` → 0150, `UNID` → 0190, `COD_CTA` → 0500) e
+bloco aberto sem encerramento.
+
+**O que ele não reproduz:** as cerca de 1.400 regras compostas do PVA,
+implementadas em Java. O painel diz **quantas** se aplicam ao arquivo e cita
+alguns nomes, para deixar claro que validar no PVA continua necessário — o
+diagnóstico adianta trabalho, não substitui o validador oficial.
+
 ### Como a validação acompanha o PVA
 
 Cada PVA embarca um **descritor de validação** — um XML, dentro do próprio

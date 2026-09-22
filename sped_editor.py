@@ -46,6 +46,7 @@ import xml_fiscal as xf
 import conferencia as cf
 import revisao as rev
 import validacao
+import diagnostico
 import tabelas_rfb as trfb
 import empresas as emp_mod
 import rotinas
@@ -2679,6 +2680,133 @@ class ResumoWidget(QWidget):
 # ---------------------------------------------------------------------------
 # Diálogo de revisão de erros
 # ---------------------------------------------------------------------------
+class DialogoDiagnostico(QDialog):
+    """Diagnóstico do arquivo, no mesmo desenho que o PVA usa para reprovar —
+    e com o **atalho para o módulo que corrige** cada grupo.
+
+    Roda sozinho ao abrir o arquivo: o valor de saber que faltam 13 mil campos
+    está em saber antes de começar a trabalhar, não depois de transmitir.
+    """
+
+    COLS = ["", "O que corrige", "Problemas", "Onde fica"]
+    DET = ["Registro", "Campo", "Problema", "Quantidade"]
+
+    def __init__(self, achados, info, acoes, ir_callback, parent=None):
+        super().__init__(parent)
+        self.achados = achados
+        self.acoes = acoes or {}
+        self.ir_callback = ir_callback
+        self.setWindowTitle("Diagnóstico do arquivo")
+        self.resize(940, 600)
+        lay = QVBoxLayout(self)
+
+        pal = tema.atual()
+        total = sum(a.quantidade for a in achados)
+        cab = QLabel("<b>%d</b> problema(s) em %d tipo(s) de verificação."
+                     % (total, len(achados)) if total else
+                     "Nenhum problema nas verificações automáticas.")
+        cab.setProperty("role", "erro" if total else "ok")
+        lay.addWidget(cab)
+
+        origem = QLabel(
+            "Verificado com o descritor do PVA (%s registros) — o mesmo que o "
+            "validador usa: tipo, tamanho, obrigatoriedade, enumerações, "
+            "tabelas e referências entre registros."
+            % info.get("registros_descritor", "?")
+            if not info.get("sem_pva") else
+            "PVA não encontrado nesta máquina: valeram apenas as regras "
+            "embutidas no programa, que cobrem menos que o validador oficial.")
+        origem.setWordWrap(True)
+        origem.setProperty("role", "info")
+        lay.addWidget(origem)
+
+        self.resumo = QTableWidget(0, len(self.COLS))
+        self.resumo.setHorizontalHeaderLabels(self.COLS)
+        self.resumo.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
+        self.resumo.verticalHeader().setVisible(False)
+        self.resumo.horizontalHeader().setStretchLastSection(True)
+        self.resumo.setSelectionBehavior(
+            QAbstractItemView.SelectionBehavior.SelectRows)
+        grupos = diagnostico.resumo_por_modulo(achados)
+        self.resumo.setRowCount(len(grupos))
+        self._grupos = grupos
+        for i, (mod, onde, n, _lst) in enumerate(grupos):
+            it = QTableWidgetItem("●")
+            it.setForeground(QColor(pal.bad))
+            it.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
+            self.resumo.setItem(i, 0, it)
+            self.resumo.setItem(i, 1, QTableWidgetItem(mod))
+            itn = QTableWidgetItem("%d" % n)
+            itn.setTextAlignment(Qt.AlignmentFlag.AlignRight
+                                 | Qt.AlignmentFlag.AlignVCenter)
+            self.resumo.setItem(i, 2, itn)
+            fn = self.acoes.get(mod)
+            if fn:
+                b = QPushButton("Abrir: %s" % mod)
+                b.clicked.connect(lambda _=False, f=fn: f())
+                self.resumo.setCellWidget(i, 3, b)
+            else:
+                self.resumo.setItem(i, 3, QTableWidgetItem(onde))
+        self.resumo.resizeColumnsToContents()
+        self.resumo.setColumnWidth(0, 28)
+        self.resumo.currentCellChanged.connect(self._grupo_mudou)
+        lay.addWidget(QLabel("<b>Correções sugeridas</b>"))
+        lay.addWidget(self.resumo, 1)
+
+        lay.addWidget(QLabel("<b>Detalhe</b> — duplo-clique leva ao registro"))
+        self.det = QTableWidget(0, len(self.DET))
+        self.det.setHorizontalHeaderLabels(self.DET)
+        self.det.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
+        self.det.verticalHeader().setVisible(False)
+        self.det.horizontalHeader().setStretchLastSection(True)
+        self.det.cellDoubleClicked.connect(self._ir)
+        lay.addWidget(self.det, 1)
+
+        regras = info.get("regras_do_pva") or []
+        if regras:
+            nota = QLabel(
+                "⚠ O PVA aplica ainda <b>%d regra(s) compostas</b> aos "
+                "registros deste arquivo que este programa não reproduz "
+                "(condições implementadas em Java, como "
+                "<i>%s</i>). Validar no PVA continua sendo necessário."
+                % (len(regras), ", ".join(regras[:3])))
+            nota.setWordWrap(True)
+            nota.setProperty("role", "aviso")
+            lay.addWidget(nota)
+
+        rod = QHBoxLayout()
+        rod.addStretch(1)
+        b = QPushButton("Fechar")
+        b.clicked.connect(self.close)
+        rod.addWidget(b)
+        lay.addLayout(rod)
+        if grupos:
+            self.resumo.setCurrentCell(0, 1)
+
+    def _grupo_mudou(self, linha, *_a):
+        if not (0 <= linha < len(self._grupos)):
+            return
+        lst = sorted(self._grupos[linha][3], key=lambda a: -a.quantidade)
+        self.det.setRowCount(len(lst))
+        for i, a in enumerate(lst):
+            vals = (a.reg, a.campo, a.detalhe, "%d" % a.quantidade)
+            for j, v in enumerate(vals):
+                it = QTableWidgetItem(str(v))
+                if j == 0:
+                    it.setData(Qt.ItemDataRole.UserRole, a.uid)
+                if j == 3:
+                    it.setTextAlignment(Qt.AlignmentFlag.AlignRight
+                                        | Qt.AlignmentFlag.AlignVCenter)
+                self.det.setItem(i, j, it)
+        self.det.resizeColumnsToContents()
+
+    def _ir(self, row, _col):
+        it = self.det.item(row, 0)
+        uid = it.data(Qt.ItemDataRole.UserRole) if it else None
+        if uid is not None and self.ir_callback is not None:
+            self.ir_callback(uid)
+
+
 class DialogoOcorrencias(QDialog):
     """Lista item a item de **uma** regra; duplo-clique navega até o registro.
 
@@ -5190,6 +5318,10 @@ class JanelaPrincipal(QMainWindow):
                 "Preencher conta contábil (COD_CTA)…", self)
         self.act_cod_cta.triggered.connect(self.preencher_cod_cta)
         self.act_cod_cta.setEnabled(False)
+        if not hasattr(self, "act_diagnostico"):
+            self.act_diagnostico = QAction("Diagnóstico do arquivo…", self)
+        self.act_diagnostico.triggered.connect(self.diagnosticar)
+        self.act_diagnostico.setEnabled(False)
         if not hasattr(self, "act_validar_campos"):
             self.act_validar_campos = QAction(
                 "Validar campos pelo leiaute…", self)
@@ -5341,7 +5473,7 @@ class JanelaPrincipal(QMainWindow):
                      "act_empresa", "act_conferir_itens_icms",
                      "act_conferir_itens_pc", "act_recalc_icms",
                      "act_limpar_nulos", "act_cod_gen",
-                     "act_validar_campos", "act_cod_cta",
+                     "act_validar_campos", "act_cod_cta", "act_diagnostico",
                      "act_itens_sem_ref", "act_recalc_c190_massa"):
             if hasattr(self, acao):
                 getattr(self, acao).setEnabled(False)
@@ -5588,6 +5720,7 @@ class JanelaPrincipal(QMainWindow):
         menu.addSeparator()
         self.menu_gerais = menu.addMenu("Gerais")
         self.menu_gerais.addAction(self.act_alterar_datas)
+        self.menu_gerais.addAction(self.act_diagnostico)
         self.menu_gerais.addAction(self.act_validar_campos)
         self.menu_gerais.addAction(self.act_cod_cta)
         self.menu_gerais.addAction(self.act_itens_sem_ref)
@@ -5727,6 +5860,10 @@ class JanelaPrincipal(QMainWindow):
                                    self)
         self.act_cod_cta.triggered.connect(self.preencher_cod_cta)
         self.act_cod_cta.setEnabled(False)
+
+        self.act_diagnostico = QAction("Diagnóstico do arquivo…", self)
+        self.act_diagnostico.triggered.connect(self.diagnosticar)
+        self.act_diagnostico.setEnabled(False)
 
         self.act_validar_campos = QAction("Validar campos pelo leiaute…",
                                           self)
@@ -6376,6 +6513,40 @@ class JanelaPrincipal(QMainWindow):
                                               key=lambda x: -len(x[1])))
         self.statusBar().showMessage("Sem conta contábil: %s." % resumo, 8000)
 
+    def diagnosticar(self, automatico=False):
+        """Passa o arquivo pelas camadas de verificação do PVA e mostra, por
+        grupo, qual módulo corrige. Roda sozinho ao abrir — daí o
+        `automatico`, que evita interromper quem abriu um arquivo limpo."""
+        if not self.doc:
+            return
+        try:
+            achados, info = diagnostico.verificar(self.doc)
+        except Exception as exc:                            # noqa: BLE001
+            if not automatico:
+                QMessageBox.critical(self, "Diagnóstico",
+                                     "Falha ao diagnosticar:\n%s" % exc)
+            return
+        total = sum(a.quantidade for a in achados)
+        if automatico and not total:
+            self.statusBar().showMessage(
+                "Diagnóstico: nenhum problema nas verificações automáticas.",
+                8000)
+            return
+        acoes = {
+            "Limpar campos com NULL": self.limpar_campos_nulos,
+            "Validar campos pelo leiaute": self.validar_campos,
+            "Itens do 0200 sem referência": self.itens_sem_referencia,
+            "Preencher conta contábil (COD_CTA)": self.preencher_cod_cta,
+            "Preencher COD_GEN pelo NCM": self.preencher_cod_gen,
+            "Recalcular C190 com redução zerada": self.recalcular_c190_massa,
+        }
+        self._dlg_diag = DialogoDiagnostico(achados, info, acoes,
+                                            self.ir_para_registro, self)
+        self._dlg_diag.show()
+        self.statusBar().showMessage(
+            "Diagnóstico: %d problema(s) em %d verificação(ões)."
+            % (total, len(achados)), 10000)
+
     def validar_campos(self):
         """Confere todo o arquivo contra o domínio de cada campo do leiaute.
         Não altera nada: quem grava é o botão de normalizar, dentro do
@@ -6556,6 +6727,7 @@ class JanelaPrincipal(QMainWindow):
         self.act_revisar.setEnabled(True)
         self.act_limpar_nulos.setEnabled(True)
         self.act_validar_campos.setEnabled(True)
+        self.act_diagnostico.setEnabled(True)
         self.act_cod_cta.setEnabled(True)
         self.act_itens_sem_ref.setEnabled(True)
         self.act_cod_gen.setEnabled(doc.layout == "ICMS")
@@ -6579,6 +6751,10 @@ class JanelaPrincipal(QMainWindow):
             "%s carregado: %d registros, layout %s."
             % (nome, len(doc.registros), tipo))
         self.sincronizar_barra()
+        # diagnóstico automático: saber o que falta antes de começar a
+        # trabalhar vale mais do que descobrir depois de transmitir. Roda
+        # depois da janela assentar, para o arquivo aparecer primeiro.
+        QTimer.singleShot(150, lambda: self.diagnosticar(automatico=True))
 
     def _montar_abas(self):
         # reutiliza o QTabWidget central (criado no __init__ ou vindo do .ui)

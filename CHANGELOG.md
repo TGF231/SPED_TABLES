@@ -1,5 +1,36 @@
 # Changelog
 
+## [0.41.0] - 2026-09-22
+
+### Adicionado
+- **`diagnostico.py` e o painel *Diagnóstico do arquivo*, executado ao abrir
+  o SPED.** Passa o arquivo pelas camadas de verificação do PVA e agrupa os
+  problemas **pelo módulo que os corrige**, com o botão que abre a função
+  certa em cada linha. Arquivo limpo não interrompe: só avisa na barra de
+  status. Também disponível em Ferramentas → Gerais.
+- Camadas novas, todas declaradas pelo descritor do PVA: **quantidade de
+  campos** do registro, **obrigatoriedade de campo**, **referências entre
+  registros** nos dois sentidos (código citado que não existe no cadastro, e
+  cadastro que ninguém cita) e **bloco aberto sem encerramento**.
+- O painel lista **quantas regras compostas** o PVA aplica aos registros do
+  arquivo e que este programa não reproduz (208 no ICMS/IPI, 203 no
+  Contribuições), com alguns nomes. Sem isso, "nenhum erro" pareceria
+  aprovação.
+
+### Notas — os limites, ditos de frente
+- As ~1.400 regras compostas do PVA são implementadas **em Java sobre o banco
+  embutido**; o bytecode não carrega as condições. Reimplementá-las por
+  adivinhação produziria divergência silenciosa com o validador oficial, então
+  elas são listadas, não simuladas.
+- **Obrigatoriedade condicional não está no descritor**: o campo é declarado
+  obrigatório e uma regra dispensa em certos casos. As exceções que dá para
+  afirmar ficam em `DISPENSAS`, nominalmente. A primeira é `C100.COD_PART`,
+  dispensado na NFC-e — sem ela, o arquivo de supermercado acusava **4.377**
+  campos obrigatórios em branco que o PVA aceita, e os **5** casos reais
+  (modelo 55) sumiam no meio.
+- Medições: diagnóstico completo em 0,48 s num arquivo de 28.475 registros.
+  No arquivo já tratado, 216 problemas; no original, 34.651.
+
 ## [0.40.0] - 2026-09-22
 
 Três mudanças que vieram do uso: a validação cobrava o que o PVA não cobra, o
