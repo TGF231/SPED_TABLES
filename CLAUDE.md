@@ -19,7 +19,7 @@ Dependências em `requirements.txt` (PyQt6; `openpyxl` para planilhas XLSX).
 | Arquivo | Papel |
 |---|---|
 | `sped_model.py` | Núcleo: `SpedDocument` (carregar/salvar), `Registro`, hierarquia pai/filho, todos os cálculos fiscais. **Sem dependência de GUI.** |
-| `sped_layouts.py` | Layout dos registros por tipo e por leiaute (ICMS/CONTRIB): nomes de campos, nível hierárquico. |
+| `sped_layouts.py` | Layout **completo** dos dois SPEDs (270 registros no ICMS/IPI, 203 no Contribuições): nomes de campos e nível hierárquico, extraídos dos guias práticos. |
 | `sped_editor.py` | Toda a GUI (PyQt6): janela principal, grades, diálogos. |
 | `sped_editor.ui` | Layout Qt Designer (carregado por `uic.loadUi`, com fallback programático). |
 | `tema.py` | Paleta (claro/escuro) e folha de estilo QSS. **Toda cor da GUI sai daqui** — nunca literais no `sped_editor.py`. |
@@ -121,6 +121,29 @@ precisam aparecer sempre (foi o que aconteceu com a ação *Empresas*).
 O menu Ferramentas é agrupado por leiaute (`menu_icms`, `menu_contrib`,
 `menu_gerais`); `abrir()` habilita/desabilita o submenu inteiro conforme
 `doc.layout`.
+
+### O leiaute é completo — e como mantê-lo assim
+
+`sped_layouts.py` cobre os dois SPEDs inteiros, extraído registro a registro
+dos guias práticos. Nos três arquivos reais de teste não sobra **nenhuma**
+coluna "Campo NN" nem registro sem leiaute.
+
+Ao reextrair, três coisas quebram silenciosamente se esquecidas:
+
+- **Nome repetido no mesmo registro.** O guia chama de `ALIQ_PIS` tanto o
+  percentual quanto o valor por unidade; `_ix` devolve sempre o primeiro, e o
+  segundo ficaria inalcançável. A desambiguação mantém `ALIQ_PIS_QUANT`, que
+  o código já usava.
+- **O guia escreve nomes "sujos":** `COD_ NAT_CC` com espaço, `NÍVEL` com
+  acento, `MES_REF *` com nota de rodapé. Sem normalizar, o campo é descartado
+  e o registro sai curto.
+- **Páginas com histórico têm mais de uma tabela de leiaute.** Vale a última
+  (o M210 saía com 13 campos em vez de 16).
+
+Largura nunca deve encolher: onde o guia trouxer menos campos que o layout já
+validado contra arquivo real, prevalece o antigo — o guia é que está numa
+versão anterior (E116, E310). Layout mais largo ou mais estreito que o arquivo
+é inofensivo, porque `_ncampos` mede o registro pelo próprio arquivo.
 
 ### Domínios que vêm dos PVAs, não do código
 

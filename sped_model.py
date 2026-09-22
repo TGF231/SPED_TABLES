@@ -1662,8 +1662,9 @@ class SpedDocument:
           (`COD_ITEM`) — preciso;
         * registro que o projeto ainda **não mapeia** é varrido por **valor**:
           qualquer campo cujo conteúdo seja um código do 0200 conta como
-          referência. É o caso do bloco K, que usa `COD_ITEM` em quase todos
-          os registros sem estar em `sped_layouts.py`.
+          referência. Desde a 0.39.0 o leiaute cobre os dois SPEDs inteiros
+          (48 registros com `COD_ITEM` no ICMS/IPI, 21 no Contribuições), então
+          essa via ficou para registros de versão mais nova que o leiaute.
 
         A varredura por valor erra **para mais** (pode contar coincidência
         como referência). Quando o passo seguinte é apagar cadastro, esse é o

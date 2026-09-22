@@ -1,5 +1,42 @@
 # Changelog
 
+## [0.39.0] - 2026-09-22
+
+O leiaute dos dois SPEDs passou a ser **completo**. Antes o projeto mapeava
+cerca de 110 registros; o resto aparecia na interface como "Campo 02",
+"Campo 03", e nenhuma verificação alcançava esses campos.
+
+### Adicionado
+- **270 registros do EFD ICMS/IPI e 203 do EFD Contribuições**, com todos os
+  campos e o nível hierárquico de cada um, extraídos registro a registro dos
+  guias práticos (vriconsulting.com.br).
+- Nos três arquivos reais de teste não sobra **nenhuma** coluna "Campo NN"
+  nem registro sem leiaute — antes eram 7 tipos sem mapa em cada arquivo
+  ICMS (1601, B001, B990, G001, G990, K001, K990).
+- Cobertura de `COD_ITEM`: de 4 para **48** registros no ICMS/IPI (o bloco K
+  inteiro entrou: K200, K230, K235, K250…) e de 6 para **21** no
+  Contribuições. A varredura de referências de itens passa a enxergar o bloco
+  K pelo nome do campo, e não pelo modo conservador.
+
+### Notas — o que a extração precisou tratar
+- **Nome repetido no mesmo registro.** O guia chama de `ALIQ_PIS` tanto o
+  percentual quanto o valor por unidade; como `_ix` devolve o primeiro, o
+  segundo ficaria inalcançável. Preservada a desambiguação que o código já
+  usava (`ALIQ_PIS_QUANT`, `ALIQ_COFINS_QUANT`).
+- **Nomes "sujos" no guia:** `COD_ NAT_CC` com espaço, `NÍVEL` com acento,
+  `MES_REF *` com nota de rodapé. Sem normalizar, o campo sumia e o registro
+  saía curto — foi o que fez o 0500 do Contribuições aparecer com 7 campos em
+  vez de 9.
+- **Páginas com histórico têm mais de uma tabela de leiaute**; vale a última.
+  Pegando a primeira, o M210 e o M610 saíam com 13 campos em vez de 16.
+- **Largura nunca encolhe.** Onde o guia trouxe menos campos que o layout já
+  validado contra arquivo real, prevaleceu o antigo: o guia é que está numa
+  versão anterior (E116, E310).
+- Conferência final contra os três arquivos SPED reais: todos os **índices de
+  campo documentados no `CLAUDE.md`** continuam nas mesmas posições, e
+  `_ncampos` devolve os mesmos valores de antes (C170 38/37, C175 18, C190 12,
+  H010 11, 0200 13).
+
 ## [0.38.0] - 2026-09-22
 
 A verificação de códigos deixou de morar no código e passou a vir das

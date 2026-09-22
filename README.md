@@ -10,8 +10,12 @@ analítico C190, complemento C110) aparecem em sub-abas **dentro** do registro
 pai (C100).
 
 Suporta os dois leiautes e detecta automaticamente qual é o arquivo:
-- **EFD ICMS/IPI**
-- **EFD Contribuições (PIS/COFINS)**
+- **EFD ICMS/IPI** — 270 registros mapeados
+- **EFD Contribuições (PIS/COFINS)** — 203 registros mapeados
+
+O leiaute é **completo**: todos os registros dos dois SPEDs, com os nomes de
+todos os campos e o nível hierárquico de cada um, extraídos dos guias
+práticos. Nenhuma coluna aparece como "Campo NN".
 
 ---
 
