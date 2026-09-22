@@ -33,7 +33,7 @@ Dependências em `requirements.txt` (PyQt6; `openpyxl` para planilhas XLSX).
 | `arquivos.py` | Memória persistente: cópia do SPED em `arquivos/<CNPJ>/<LEIAUTE>_<AAAAMM>.txt` + `indice.json`. Uma cópia por período. Fora do git. |
 | `dados.py` | **Todo caminho de dado do usuário sai daqui** (`pasta_dados`, `caminho`). Empacotado grava em `%APPDATA%`; do código-fonte, na pasta do projeto. Nunca use `__file__` para gravar. |
 | `janela_custom.py` | Barra de título própria via mensagens nativas do Windows (WM_NCCALCSIZE/NCHITTEST/GETMINMAXINFO). Padrão; `SPED_TABLES_BARRA_NATIVA=1` volta à do Windows. |
-| `tabelas_rfb.py` | Tabelas oficiais da RFB (alíquota zero, monofásicos, gênero, NCM) e verificação de CST. |
+| `tabelas_rfb.py` | Tabelas oficiais da RFB (alíquota zero, monofásicos, gênero, NCM) e verificação de CST. **São duas tabelas de monofásico** — ver abaixo. |
 | `version.py` | `__version__` e `APP_NAME`. SemVer. |
 
 Regra geral: **lógica fiscal no modelo, nunca na GUI.** A GUI só chama métodos de
@@ -291,6 +291,12 @@ Obter sempre por nome (`doc._ix(tipo, nome)`), nunca por número fixo. Referênc
   — a mesma que corrigia 447 NCM truncados plantaria `TIPO_ITEM` inválido em
   1.273 itens certos. Correção em massa mostra a prévia e deixa escolher campo
   a campo (`previa_atualizacao_0200`).
+- **Monofásico são DUAS tabelas do PVA, não uma.** `PROD_MONO_ALIQ_UNID`
+  (4.3.11) traz combustíveis e bebidas frias, com alíquota por unidade de
+  medida; `PROD_MONO_ALIQ_DIFER` (4.3.10) traz perfumaria, higiene pessoal,
+  medicamentos, veículos e autopeças — a Lei 10.147/2000. Ler só a primeira
+  fazia o sabonete (NCM 34011190) passar limpo enquanto o PVA o acusava.
+  `carregar_tudo` funde as duas e a versão exibida vira `40+37`.
 - **Só o CST 01 tem alíquota conferível:** 02 é "alíquota diferenciada" e 03 é
   por quantidade. Cobrar deles a alíquota nominal gera falso positivo.
 

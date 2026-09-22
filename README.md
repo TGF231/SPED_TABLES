@@ -386,6 +386,21 @@ regras implementadas hoje são cinco:
 
 A revisão **não substitui o PVA** — é uma triagem rápida antes dele.
 
+### Verificar CST por NCM — as duas tabelas de monofásico
+
+O PVA distribui **duas** listas de produtos monofásicos, e o programa carrega
+as duas:
+
+| Arquivo na pasta do PVA | Tabela | O que traz |
+|---|---|---|
+| `PROD_MONO_ALIQ_UNID` | 4.3.11 | combustíveis, bebidas frias (alíquota por unidade) |
+| `PROD_MONO_ALIQ_DIFER` | 4.3.10 | perfumaria, higiene pessoal, medicamentos, veículos, autopeças (Lei 10.147/2000) |
+
+Apontar a **pasta** das tabelas resolve as duas automaticamente; os campos de
+caminho direto existem para quando os arquivos estão fora dela. Se a 4.3.10
+não for encontrada, o programa avisa — sem ela, produtos como o sabonete
+(NCM `34011190`) passam despercebidos enquanto o PVA os acusa.
+
 ### Corrigir CST de entrada pelo NCM (EFD Contribuições)
 
 No diálogo **Ferramentas → EFD Contribuições → Verificar CST por NCM (tabelas

@@ -3006,15 +3006,20 @@ class DialogoVerificarCST(QDialog):
         if not self.ed_pasta.text():
             self.ed_pasta.setText(trfb.PASTA_PADRAO)
         self.ed_zero = linha_arquivo("Alíquota zero (opcional):", "zero", 1)
-        self.ed_mono = linha_arquivo("Monofásicos (opcional):", "mono", 2)
-        self.ed_genero = linha_arquivo("Gênero (opcional):", "genero", 3)
-        self.ed_ncm = linha_arquivo("NCM vigente XLSX (opc.):", "ncm", 4)
+        self.ed_mono = linha_arquivo(
+            "Monofásicos por unidade (opc.):", "mono", 2)
+        # a tabela 4.3.10 é a que traz perfumaria, higiene pessoal e
+        # medicamentos (Lei 10.147/2000): sem ela o sabonete 34011190 passava
+        self.ed_mono_dif = linha_arquivo(
+            "Monofásicos alíq. difer. (opc.):", "mono_difer", 3)
+        self.ed_genero = linha_arquivo("Gênero (opcional):", "genero", 4)
+        self.ed_ncm = linha_arquivo("NCM vigente XLSX (opc.):", "ncm", 5)
 
-        gl.addWidget(QLabel("Data de referência:"), 5, 0)
+        gl.addWidget(QLabel("Data de referência:"), 6, 0)
         self.ed_data = QLineEdit(data_ref or "")
         self.ed_data.setPlaceholderText("DDMMAAAA")
         self.ed_data.setMaximumWidth(120)
-        gl.addWidget(self.ed_data, 5, 1)
+        gl.addWidget(self.ed_data, 6, 1)
         lay.addWidget(cfgbox)
 
         acoes = QHBoxLayout()
@@ -3064,6 +3069,7 @@ class DialogoVerificarCST(QDialog):
         return {"pasta": self.ed_pasta.text().strip(),
                 "zero": self.ed_zero.text().strip(),
                 "mono": self.ed_mono.text().strip(),
+                "mono_difer": self.ed_mono_dif.text().strip(),
                 "genero": self.ed_genero.text().strip(),
                 "ncm": self.ed_ncm.text().strip()}
 
@@ -3074,19 +3080,29 @@ class DialogoVerificarCST(QDialog):
                 pasta=cfg["pasta"] or None,
                 caminho_zero=cfg["zero"] or None,
                 caminho_mono=cfg["mono"] or None,
+                caminho_mono_difer=cfg.get("mono_difer") or None,
                 caminho_genero=cfg["genero"] or None,
                 caminho_ncm=cfg["ncm"] or None)
         except Exception as exc:  # noqa: BLE001
             QMessageBox.critical(self, "Tabelas",
                                  "Falha ao carregar as tabelas:\n%s" % exc)
             return
-        if not achados.get("zero") and not achados.get("mono"):
+        if not achados.get("zero") and not achados.get("mono")                 and not achados.get("mono_difer"):
             QMessageBox.warning(
                 self, "Tabelas",
                 "Não encontrei as tabelas de alíquota zero/monofásicos na pasta "
                 "informada. Verifique o caminho ou informe os arquivos "
                 "diretamente.")
             return
+        if not achados.get("mono_difer"):
+            QMessageBox.warning(
+                self, "Tabelas",
+                "A tabela de monofásicos por <b>alíquotas diferenciadas</b> "
+                "(PROD_MONO_ALIQ_DIFER) não foi encontrada.<br><br>"
+                "É ela que traz perfumaria, higiene pessoal, medicamentos, "
+                "veículos e autopeças. Sem ela, produtos como o sabonete "
+                "(NCM 34011190) passam despercebidos — o PVA os acusa e o "
+                "programa não.")
         self.on_cfg(cfg)
         probs = trfb.verificar_cst_pis_cofins(
             self.doc, clf, data_ref=self.ed_data.text().strip() or None)
@@ -3097,7 +3113,7 @@ class DialogoVerificarCST(QDialog):
         self.b_corrigir.setText("Corrigir %d entrada(s) sem crédito…" % n_ent)
         self.lbl.setText(
             "%d divergência(s) · tabelas: zero v%s, mono v%s"
-            % (len(probs), clf.versao_zero, clf.versao_mono))
+            % (len(probs), clf.versao_zero, clf.versao_mono or "—"))
 
     def _corrigir(self):
         """Retira o crédito das entradas cujo NCM não o admite.

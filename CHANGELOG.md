@@ -1,5 +1,39 @@
 # Changelog
 
+## [0.37.0] - 2026-09-22
+
+O PVA acusava incidência monofásica no NCM `34011190` (sabonete) e o programa
+não via nada. A causa: **o PVA tem duas tabelas de monofásico e o projeto lia
+só uma.**
+
+### Corrigido
+- **`PROD_MONO_ALIQ_DIFER` (tabela 4.3.10) passou a ser carregada** junto com
+  a `PROD_MONO_ALIQ_UNID` (4.3.11). A primeira traz perfumaria, higiene
+  pessoal, medicamentos, veículos e autopeças — a Lei 10.147/2000, onde o
+  `34011190` está citado nominalmente:
+
+      202|Produtos de Perfumaria, de Toucador ou de Higiene Pessoal|01012009||
+      3303;3304;3305;3306;3307;34011190;34012010;96032100|||2,20|10,30
+
+  A segunda traz combustíveis e bebidas frias, com alíquota por unidade de
+  medida. `carregar_tudo` funde as duas e a versão exibida vira `40+37`.
+- **O leitor entendia só o formato de 10 colunas.** A 4.3.10 tem 9 (não tem
+  `UNID`), e suas alíquotas eram descartadas.
+
+### Adicionado
+- Campo próprio para o caminho da tabela 4.3.10 no diálogo *Verificar CST por
+  NCM*; apontar a **pasta** do PVA continua resolvendo as duas sozinho.
+- **Aviso quando a 4.3.10 não é encontrada**, dizendo o que se perde. Silêncio
+  ali é pior que erro: o programa devolvia "0 divergências" com ar de aprovação.
+
+### Notas
+- Verificado com as tabelas reais do PVA: `34011190` e `34012010` são
+  monofásicos; `34011900` (sabão em barra), `34012090` e `34013000` não — a
+  distinção é a da lista oficial, não o capítulo do NCM.
+- **Controle:** plantando CST 50 num item de NCM `34011190`, a versão antiga
+  devolvia **0 divergências** e a nova aponta **3**, corrigidas em 6
+  lançamentos (PIS e COFINS), com reverificação em zero.
+
 ## [0.36.0] - 2026-09-22
 
 ### Adicionado

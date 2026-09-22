@@ -3,7 +3,11 @@
 CST por NCM:
 
   * Tabela 4.3.13 — Produtos sujeitos à **alíquota zero** (CST 06);
-  * Tabela 4.3.11 — Produtos **monofásicos** (alíquota concentrada / por unidade);
+  * Tabela 4.3.10 — Produtos monofásicos de **alíquotas diferenciadas**
+    (`PROD_MONO_ALIQ_DIFER`): perfumaria, higiene pessoal, medicamentos,
+    veículos, autopeças — a Lei 10.147/2000 e afins;
+  * Tabela 4.3.11 — Produtos monofásicos de **alíquota por unidade de medida**
+    (`PROD_MONO_ALIQ_UNID`): combustíveis, bebidas frias;
   * Tabela de **gênero do item** (2 primeiros dígitos do NCM = capítulo);
   * Tabela **NCM vigente** (XLSX do Portal Siscomex), para validar/expandir NCMs.
 
@@ -24,7 +28,11 @@ PASTA_PADRAO = (r"C:\Arquivos de Programas RFB\Programas SPED"
 
 # fragmento que identifica cada tabela no nome do arquivo
 CHAVE_ALIQ_ZERO = "PROD_ALIQ_ZERO"
+# São DUAS tabelas de monofásico, e ler só uma esconde metade dos produtos:
+# o NCM 34011190 (sabonete) só existe na de alíquotas diferenciadas, e sem ela
+# o programa não via nada que o PVA via.
 CHAVE_MONO = "PROD_MONO_ALIQ_UNID"
+CHAVE_MONO_DIFER = "PROD_MONO_ALIQ_DIFER"
 CHAVE_GENERO = "GENERO_ITEM"
 
 
@@ -88,10 +96,13 @@ def carregar_tabela_produtos(caminho, encoding="latin-1"):
             "ncm_ex": [_so_digitos(x) for x in
                        (p[5].split(";") if len(p) > 5 else []) if x.strip()],
         }
-        if len(p) >= 10:                       # tabela monofásica (4.3.11)
+        if len(p) >= 10:            # 4.3.11: ...|EX_IPI|UNID|ALIQ_PIS|ALIQ_COFINS
             reg["unid"] = p[7].strip()
             reg["aliq_pis"] = p[8].strip()
             reg["aliq_cofins"] = p[9].strip()
+        elif len(p) >= 9:           # 4.3.10: ...|EX_IPI|ALIQ_PIS|ALIQ_COFINS
+            reg["aliq_pis"] = p[7].strip()
+            reg["aliq_cofins"] = p[8].strip()
         registros.append(reg)
     return {"versao": versao, "registros": registros}
 
@@ -200,20 +211,43 @@ class ClassificadorNCM:
         }
 
 
+def _unir_tabelas(*tabelas):
+    """Funde tabelas de produtos numa só, para o classificador tratar as duas
+    listas de monofásico como uma. A versão vira `a+b`, para aparecer na
+    interface qual par foi carregado."""
+    regs = []
+    versoes = []
+    for t in tabelas:
+        if not t:
+            continue
+        regs.extend(t.get("registros", []))
+        if t.get("versao"):
+            versoes.append(str(t["versao"]))
+    if not regs and not versoes:
+        return None
+    return {"versao": "+".join(versoes) or None, "registros": regs}
+
+
 def carregar_tudo(pasta=None, caminho_zero=None, caminho_mono=None,
-                  caminho_genero=None, caminho_ncm=None):
+                  caminho_genero=None, caminho_ncm=None,
+                  caminho_mono_difer=None):
     """Conveniência: localiza (na `pasta`) e/ou carrega as tabelas pelos caminhos
     informados e devolve um ClassificadorNCM pronto. Caminhos explícitos têm
     prioridade sobre a detecção por nome na pasta."""
     czero = caminho_zero or localizar_tabela(pasta, CHAVE_ALIQ_ZERO)
     cmono = caminho_mono or localizar_tabela(pasta, CHAVE_MONO)
+    cdifer = caminho_mono_difer or localizar_tabela(pasta, CHAVE_MONO_DIFER)
     cgen = caminho_genero or localizar_tabela(pasta, CHAVE_GENERO)
     tab_zero = carregar_tabela_produtos(czero) if czero else None
-    tab_mono = carregar_tabela_produtos(cmono) if cmono else None
+    # as duas tabelas de monofásico viram uma só para o classificador
+    tab_mono = _unir_tabelas(
+        carregar_tabela_produtos(cmono) if cmono else None,
+        carregar_tabela_produtos(cdifer) if cdifer else None)
     genero = carregar_genero(cgen) if cgen else None
     ncm_vig = carregar_ncm_vigente(caminho_ncm) if caminho_ncm else None
     return ClassificadorNCM(tab_zero, tab_mono, genero, ncm_vig), {
-        "zero": czero, "mono": cmono, "genero": cgen, "ncm": caminho_ncm}
+        "zero": czero, "mono": cmono, "mono_difer": cdifer, "genero": cgen,
+        "ncm": caminho_ncm}
 
 
 # ---------------------------------------------------------------------------
