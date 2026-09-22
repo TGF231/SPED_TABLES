@@ -1,5 +1,27 @@
 # Changelog
 
+## [0.36.0] - 2026-09-22
+
+### Adicionado
+- **O cadastro por trás do código, na própria grade.** Ao selecionar uma
+  linha, o topo passa a resolver também o **participante** (0150) nas grades
+  com `COD_PART` — C100, D100 —, do mesmo jeito que já resolvia o **produto**
+  (0200) nas grades com `COD_ITEM`. Mostra nome, CNPJ/CPF pontuado e IE.
+- **Ficha completa na dica da célula `COD_PART`**: nome, documento, IE,
+  endereço, bairro e município (IBGE).
+- **Participante ausente do 0150 fica em cor de aviso** na célula. O PVA
+  recusa `COD_PART` que não exista no cadastro, e ver isso na grade poupa uma
+  ida ao validador.
+- No modelo: `participante()`, `formatar_doc_participante()` e
+  `invalidar_participantes()`, com o cache invalidado ao editar um 0150 — o
+  mesmo tratamento que o 0200 já tinha.
+
+### Notas
+- Em grade com os dois campos o **produto tem preferência**: é o que muda de
+  linha para linha.
+- Os índices do 0150 são obtidos por nome, não por posição: o registro é igual
+  nos dois leiautes hoje, mas o código não depende disso.
+
 ## [0.35.0] - 2026-09-21
 
 A verificação de CST por NCM era a única rotina que **só apontava**. Nas

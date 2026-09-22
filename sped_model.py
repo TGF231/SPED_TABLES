@@ -273,6 +273,7 @@ class SpedDocument:
         self.encoding = "latin-1"
         self.caminho = None
         self._cad_itens = None   # cache COD_ITEM -> DESCR_ITEM (registros 0200)
+        self._cad_part = None    # cache COD_PART -> dados do 0150
 
     # ------------------------------------------------------------------ load
     @classmethod
@@ -413,6 +414,50 @@ class SpedDocument:
     def invalidar_itens(self):
         """Marca o índice de itens para ser reconstruído (após editar 0200)."""
         self._cad_itens = None
+
+    # ------------------------------------------------ cadastro de participantes
+    def _reindexar_participantes(self):
+        """(Re)constrói o índice COD_PART -> dados do 0150.
+
+        Os índices vêm por nome porque o 0150 é igual nos dois leiautes mas o
+        código não deve depender disso.
+        """
+        ix = {c: self._ix("0150", c) for c in
+              ("COD_PART", "NOME", "CNPJ", "CPF", "IE", "COD_MUN", "UF",
+               "END", "NUM", "BAIRRO")}
+        d = {}
+        for r in self.registros:
+            if r.reg != "0150":
+                continue
+            cod = (r.valor(ix["COD_PART"]) or "").strip()
+            if not cod:
+                continue
+            d[cod] = {c: (r.valor(i) or "").strip()
+                      for c, i in ix.items() if i is not None}
+            d[cod]["uid"] = r.uid
+        self._cad_part = d
+
+    def participante(self, cod):
+        """Dados do participante (0150) para um COD_PART, ou `{}`."""
+        if getattr(self, "_cad_part", None) is None:
+            self._reindexar_participantes()
+        return self._cad_part.get((cod or "").strip(), {})
+
+    def invalidar_participantes(self):
+        """Marca o índice de participantes para ser reconstruído."""
+        self._cad_part = None
+
+    @staticmethod
+    def formatar_doc_participante(p):
+        """CNPJ ou CPF do participante já pontuado, ou ''."""
+        cnpj = "".join(c for c in p.get("CNPJ", "") if c.isdigit())
+        if len(cnpj) == 14:
+            return "%s.%s.%s/%s-%s" % (cnpj[:2], cnpj[2:5], cnpj[5:8],
+                                       cnpj[8:12], cnpj[12:])
+        cpf = "".join(c for c in p.get("CPF", "") if c.isdigit())
+        if len(cpf) == 11:
+            return "%s.%s.%s-%s" % (cpf[:3], cpf[3:6], cpf[6:9], cpf[9:])
+        return cnpj or cpf
 
     # ------------------------------------------------- relatório (visão flat)
     COLUNAS_RELATORIO = [

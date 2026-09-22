@@ -222,6 +222,7 @@ class MasterDetailWidget(QWidget):
         self._colunas = []
         self._idx_ind_oper = None     # coluna IND_OPER, se houver
         self._idx_cod_item = None     # coluna COD_ITEM, se houver
+        self._idx_cod_part = None     # coluna COD_PART, se houver
         self._idx_cod_mod = None      # coluna COD_MOD, se houver
         self._idx_num_doc = None      # coluna NUM_DOC, se houver
         self._filtro = "TODOS"        # TODOS | ENTRADAS | SAIDAS
@@ -373,6 +374,7 @@ class MasterDetailWidget(QWidget):
             return self._colunas.index(nome) if nome in self._colunas else None
         self._idx_ind_oper = _idx("IND_OPER")
         self._idx_cod_item = _idx("COD_ITEM")
+        self._idx_cod_part = _idx("COD_PART")
         self._idx_cod_mod = _idx("COD_MOD")
         self._idx_num_doc = _idx("NUM_DOC")
 
@@ -456,6 +458,10 @@ class MasterDetailWidget(QWidget):
                     item.setFont(f)
                     item.setForeground(QColor(tema.atual().info))
                     item.setData(Qt.ItemDataRole.UserRole, r.uid)
+                elif j == self._idx_cod_part:
+                    # o cadastro inteiro do participante na dica da célula:
+                    # a grade mostra "10" e ninguém sabe de quem se trata
+                    self._marcar_celula_participante(item)
                 self.tabela.setItem(i, j, item)
 
         hdr = self.tabela.horizontalHeader()
@@ -514,11 +520,14 @@ class MasterDetailWidget(QWidget):
         # editar um 0200 muda as descrições -> invalida o cache de itens
         if r.reg == "0200":
             self.doc.invalidar_itens()
+        elif r.reg == "0150":
+            self.doc.invalidar_participantes()
         if self.on_change:
             self.on_change()
         # editar o COD_ITEM atualiza o nome mostrado no topo
-        if item.column() == self._idx_cod_item:
+        if item.column() in (self._idx_cod_item, self._idx_cod_part):
             self._atualizar_item_label(r)
+            self._marcar_celula_participante(item)
         # se mexeu no IND_OPER com filtro ativo, a linha pode sair da vista
         if item.column() == self._idx_ind_oper and self._filtro != "TODOS":
             self._preencher()
@@ -549,23 +558,78 @@ class MasterDetailWidget(QWidget):
             % (_br(soma), _br(media), len(nums)))
 
     def _atualizar_item_label(self, registro):
-        """Mostra, no topo centralizado, o nome do produto da linha selecionada
-        (apenas em grades que têm COD_ITEM, ex.: C170)."""
-        if self._idx_cod_item is None or registro is None:
-            self.lbl_item.setText("")
-            self.lbl_item.setVisible(False)
-            return
-        cod = registro.valor(self._idx_cod_item)
-        desc = self.doc.descricao_item(cod)
-        if desc:
-            texto = "📦  %s — %s" % (cod, desc)
-        elif cod:
-            texto = "📦  %s — (não cadastrado no 0200)" % cod
-        else:
-            texto = ""
+        """Mostra, no topo centralizado, o produto (COD_ITEM, ex.: C170) ou o
+        participante (COD_PART, ex.: C100) da linha selecionada.
+
+        Os dois códigos apontam para um cadastro do bloco 0 e o problema é o
+        mesmo — a grade mostra `10` e ninguém sabe quem é. Quando a grade tem
+        os dois campos, o produto tem preferência: é o que mais muda de linha
+        para linha.
+        """
+        texto = ""
+        if registro is not None and self._idx_cod_item is not None:
+            cod = registro.valor(self._idx_cod_item)
+            desc = self.doc.descricao_item(cod)
+            if desc:
+                texto = "📦  %s — %s" % (cod, desc)
+            elif cod:
+                texto = "📦  %s — (não cadastrado no 0200)" % cod
+        elif registro is not None and self._idx_cod_part is not None:
+            texto = self._texto_participante(registro.valor(
+                self._idx_cod_part))
         self.lbl_item.setText(texto)
         self.lbl_item.setToolTip(texto)   # caso o nome seja maior que o espaço
         self.lbl_item.setVisible(bool(texto))
+
+    def _marcar_celula_participante(self, item):
+        """Põe o cadastro do 0150 na dica da célula de COD_PART.
+
+        Participante não cadastrado fica em cor de aviso: o PVA recusa
+        COD_PART que não exista no 0150, e ver isso na própria grade poupa
+        uma ida ao validador.
+        """
+        if item is None:
+            return
+        cod = (item.text() or "").strip()
+        if not cod:
+            item.setToolTip("")
+            return
+        p = self.doc.participante(cod)
+        if not p:
+            item.setToolTip("Participante %s não está cadastrado no 0150."
+                            % cod)
+            item.setForeground(QColor(tema.atual().warn))
+            return
+        linhas = ["<b>%s</b>" % (p.get("NOME") or cod)]
+        doc_fmt = self.doc.formatar_doc_participante(p)
+        if doc_fmt:
+            linhas.append("CNPJ/CPF: %s" % doc_fmt)
+        if p.get("IE"):
+            linhas.append("IE: %s" % p["IE"])
+        end = " ".join(x for x in (p.get("END", ""), p.get("NUM", "")) if x)
+        if end:
+            linhas.append("Endereço: %s" % end)
+        if p.get("BAIRRO"):
+            linhas.append("Bairro: %s" % p["BAIRRO"])
+        if p.get("COD_MUN"):
+            linhas.append("Município (IBGE): %s" % p["COD_MUN"])
+        item.setToolTip("<br>".join(linhas))
+
+    def _texto_participante(self, cod):
+        """Linha de identificação do participante a partir do 0150."""
+        cod = (cod or "").strip()
+        if not cod:
+            return ""
+        p = self.doc.participante(cod)
+        if not p:
+            return "👤  %s — (não cadastrado no 0150)" % cod
+        partes = [p.get("NOME", "")]
+        doc_fmt = self.doc.formatar_doc_participante(p)
+        if doc_fmt:
+            partes.append(doc_fmt)
+        if p.get("IE"):
+            partes.append("IE %s" % p["IE"])
+        return "👤  %s — %s" % (cod, "  ·  ".join(x for x in partes if x))
 
     # ----------------------------------------- seleção múltipla / clipboard
     def _menu_contexto(self, pos):

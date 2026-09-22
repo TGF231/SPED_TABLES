@@ -68,6 +68,13 @@ banco). O Modo Tabela funciona assim:
   abas*. Sem aba fixada, o detalhe sempre abre na primeira aba da ordem atual.
 - **Soma da seleção**: ao selecionar várias células numéricas numa grade, a
   barra de status mostra **Soma, Média e Contagem** (como no Excel).
+- **Quem é o código da linha**: ao selecionar uma linha, o topo da grade mostra
+  o cadastro por trás do código — o **produto** (0200) nas grades com
+  `COD_ITEM`, como o C170, e o **participante** (0150) nas grades com
+  `COD_PART`, como o C100 e o D100. Parar o mouse sobre a célula `COD_PART`
+  abre a ficha completa: nome, CNPJ/CPF pontuado, IE, endereço, bairro e
+  município. Participante que não existe no 0150 aparece em cor de aviso — o
+  PVA recusa esse caso, e ver na grade poupa uma ida ao validador.
 - Clique numa linha da grade. Se o registro tiver filhos, aparecem **sub-abas
   de detalhe** logo abaixo (ex.: `C110 (1)`, `C170 (4)`, `C190 (1)`,
   `C195 (4)`), cada uma com sua própria grade editável — e isso é **recursivo**.

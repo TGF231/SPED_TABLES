@@ -1,6 +1,6 @@
 # Funcionalidades — SPED Tables
 
-Inventário do que existe hoje (v0.35.0), com **grau de maturidade** e as
+Inventário do que existe hoje (v0.36.0), com **grau de maturidade** e as
 **regras de uso** de cada função. O objetivo deste documento é registrar o que
 já é confiável, o que ainda precisa de polimento e quais restrições evitam
 resultado errado.
@@ -35,6 +35,22 @@ por bloco. Adicionar/remover linha.
 
 *Regra de uso:* alterar um campo não recalcula nada automaticamente — os
 recálculos são explícitos (ver seção 3).
+
+### 1.2A Cadastro por trás do código — 🟡 Em amadurecimento
+A grade mostra `COD_ITEM 25121` ou `COD_PART 10` e ninguém sabe do que se
+trata. Ao selecionar a linha, o topo resolve o código no cadastro do bloco 0:
+**produto** pelo 0200 (grades com `COD_ITEM`, ex.: C170) e **participante**
+pelo 0150 (grades com `COD_PART`, ex.: C100 e D100). A dica da célula
+`COD_PART` traz a ficha inteira — nome, CNPJ/CPF pontuado, IE, endereço,
+bairro e município.
+
+Participante ausente do 0150 fica em cor de aviso na própria célula: é recusa
+no PVA e aparecer ali evita a viagem ao validador.
+
+*Regra de uso:* em grade que tenha os dois campos, o **produto tem
+preferência** — é o que muda de linha para linha. No modelo:
+`participante()`, `formatar_doc_participante()` e o cache invalidado ao editar
+um 0150, como já acontecia com o 0200.
 
 ### 1.3 Soma da seleção — ✅ Estável
 Selecionando várias células numéricas, a barra de status mostra **Soma, Média e
