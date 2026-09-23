@@ -1,5 +1,30 @@
 # Changelog
 
+## [0.44.0] - 2026-09-23
+
+### Adicionado
+- **Abrir no PVA** — em Ferramentas → Gerais e como botão na confirmação de
+  salvamento. Abre o PVA do leiaute (ou traz para a frente o que já estiver
+  aberto), dispara a importação e cola o caminho do arquivo salvo.
+- `pva.py`: localização da instalação, janela principal por título, foco,
+  área de transferência e envio de teclas — Win32 puro, sem dependência de
+  GUI e inerte fora do Windows.
+
+### Notas — por que assim
+- **Não existe linha de comando para importar.** Os dois PVAs aceitam apenas
+  `-buildVersion` e `-atualizarTabelas`. O caminho usado é o acelerador
+  **Ctrl+I** que cada um declara no `ppgdmenubar.xml` do próprio `.jar`, com o
+  caminho indo pela área de transferência até o campo "Nome do arquivo:" do
+  seletor.
+- **Nenhuma tecla é enviada sem conferir antes qual janela está em primeiro
+  plano.** Falhando qualquer etapa, o caminho fica na área de transferência e
+  a mensagem diz o que falta: Ctrl+I, Ctrl+V, Enter.
+- A espera roda **fora da thread da interface** — PVA frio sobe um MySQL junto
+  e pode passar de um minuto.
+- Conferido ponta a ponta no PVA do EFD ICMS/IPI instalado: com o PVA aberto,
+  do clique ao caminho dentro do campo levou **1 segundo**; partindo do zero,
+  a janela apareceu em 6 s e o resto seguiu igual.
+
 ## [0.43.0] - 2026-09-22
 
 As **sete mensagens restantes** do banco do PVA, implementadas. Com as duas da

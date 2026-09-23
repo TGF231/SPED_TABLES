@@ -37,6 +37,7 @@ Dependências em `requirements.txt` (PyQt6; `openpyxl` para planilhas XLSX).
 | `dados.py` | **Todo caminho de dado do usuário sai daqui** (`pasta_dados`, `caminho`). Empacotado grava em `%APPDATA%`; do código-fonte, na pasta do projeto. Nunca use `__file__` para gravar. |
 | `janela_custom.py` | Barra de título própria via mensagens nativas do Windows (WM_NCCALCSIZE/NCHITTEST/GETMINMAXINFO). Padrão; `SPED_TABLES_BARRA_NATIVA=1` volta à do Windows. |
 | `tabelas_rfb.py` | Tabelas oficiais da RFB (alíquota zero, monofásicos, gênero, NCM) e verificação de CST. **São duas tabelas de monofásico** — ver abaixo. |
+| `pva.py` | Abre o PVA oficial e leva o arquivo salvo até a tela de importação (Ctrl+I + área de transferência). Win32 puro, sem dependência de GUI. |
 | `version.py` | `__version__` e `APP_NAME`. SemVer. |
 
 Regra geral: **lógica fiscal no modelo, nunca na GUI.** A GUI só chama métodos de
@@ -347,6 +348,41 @@ do PATH — daí `py` no comando acima. E o `a=` não é enfeite: sem guardar a
 referência, o `QApplication` é coletado antes do widget nascer e o processo
 morre com **exit 127 e nenhum traceback** — o mesmo sintoma da barra de título
 e dos tradutores.
+
+## Abrir o PVA já com o arquivo
+
+Não há linha de comando para isso: os dois PVAs aceitam só `-buildVersion` e
+`-atualizarTabelas`. O que existe é o `ppgdmenubar.xml` que cada um carrega do
+próprio `.jar`, e nele o acelerador **Ctrl+I** para *Escrituração → Nova →
+Importar*. A janela que abre é um `JFileChooser`
+(`FileChooserSelecionarArquivo`) cujo foco nasce no campo "Nome do arquivo:" —
+então basta colar o caminho e dar Enter.
+
+Cinco coisas que custaram tentativa:
+
+- **A tela de abertura (splash) tem o mesmo nome da aplicação.** Casar a
+  janela por "Sped Fiscal" pegava a splash, que não aceita foco, e a
+  automação morria aos 6 segundos com o PVA ainda carregando. O casamento é
+  pelo **título inteiro**, o do `aplicacao.properties`.
+- **Só o processo dono do primeiro plano pode dar o primeiro plano a outro.**
+  Clicando no nosso botão, o dono somos nós e o `SetForegroundWindow` passa;
+  fora disso ele é ignorado **em silêncio**. O contorno é anexar a fila de
+  entrada da nossa thread à da thread que está na frente
+  (`AttachThreadInput`) durante a troca.
+- **Detectar o seletor por "apareceu janela nova do processo", não por
+  "está em primeiro plano".** Qualquer janela que roube o foco no meio
+  derrubava a detecção de uma tela que tinha aberto direitinho.
+- **Nenhuma tecla é enviada sem antes conferir o primeiro plano.** Num teste
+  meu que pulou essa conferência, o Ctrl+A/Ctrl+C foi parar noutra janela e
+  copiou texto de lá. Não dando certo, o caminho fica na área de
+  transferência e a mensagem diz o que falta fazer à mão.
+- **O PVA tem trava de instância única** (`TryLock.txt`): havendo janela, ela
+  é trazida para a frente; a segunda execução só mostraria um erro.
+
+E a de sempre com ctypes: `GetClipboardData` **precisa** de `restype`
+declarado. Sem ele o handle de 64 bits é truncado, o `GlobalLock` falha e a
+leitura volta vazia — foi assim que um teste deu "campo vazio" com o campo
+preenchido.
 
 ## Armadilha: scripts de teste que sombreiam o stdlib
 

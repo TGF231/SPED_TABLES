@@ -26,6 +26,7 @@ import sys
 import os
 import re
 import datetime
+import threading
 
 from PyQt6.QtCore import (Qt, QEvent, QTimer, QSettings, QTranslator,
                           QLibraryInfo, QLocale)
@@ -38,7 +39,7 @@ from PyQt6.QtWidgets import (
     QToolBar, QStatusBar, QComboBox, QLineEdit, QMenu, QInputDialog,
     QStyledItemDelegate, QDialog, QCheckBox, QFormLayout, QToolButton,
     QDoubleSpinBox, QGridLayout, QGroupBox, QScrollArea, QTextEdit,
-    QStackedWidget,
+    QStackedWidget, QProgressDialog,
 )
 
 from sped_model import SpedDocument
@@ -50,6 +51,7 @@ import diagnostico
 import tabelas_rfb as trfb
 import empresas as emp_mod
 import rotinas
+import pva
 import arquivos as arq_mod
 import janela_custom
 import dados
@@ -5302,6 +5304,11 @@ class JanelaPrincipal(QMainWindow):
             self.act_limpar_nulos = QAction("Limpar campos com NULL…", self)
         self.act_limpar_nulos.triggered.connect(self.limpar_campos_nulos)
         self.act_limpar_nulos.setEnabled(False)
+
+        if not hasattr(self, "act_abrir_pva"):
+            self.act_abrir_pva = QAction("Abrir no PVA…", self)
+        self.act_abrir_pva.triggered.connect(self.abrir_no_pva)
+        self.act_abrir_pva.setEnabled(False)
         if not hasattr(self, "act_recalc_c190_massa"):
             self.act_recalc_c190_massa = QAction(
                 "Recalcular C190 (analítico) em massa…", self)
@@ -5474,7 +5481,8 @@ class JanelaPrincipal(QMainWindow):
                      "act_conferir_itens_pc", "act_recalc_icms",
                      "act_limpar_nulos", "act_cod_gen",
                      "act_validar_campos", "act_cod_cta", "act_diagnostico",
-                     "act_itens_sem_ref", "act_recalc_c190_massa"):
+                     "act_itens_sem_ref", "act_recalc_c190_massa",
+                     "act_abrir_pva"):
             if hasattr(self, acao):
                 getattr(self, acao).setEnabled(False)
         if hasattr(self, "menu_icms"):
@@ -5726,6 +5734,7 @@ class JanelaPrincipal(QMainWindow):
         self.menu_gerais.addAction(self.act_itens_sem_ref)
         self.menu_gerais.addAction(self.act_revisar)
         self.menu_gerais.addAction(self.act_limpar_nulos)
+        self.menu_gerais.addAction(self.act_abrir_pva)
         self.menu_icms.addAction(self.act_cod_gen)
         self.menu_icms.addAction(self.act_recalc_c190_massa)
         self.menu_gerais.addSeparator()
@@ -5844,6 +5853,10 @@ class JanelaPrincipal(QMainWindow):
         self.act_limpar_nulos = QAction("Limpar campos com NULL…", self)
         self.act_limpar_nulos.triggered.connect(self.limpar_campos_nulos)
         self.act_limpar_nulos.setEnabled(False)
+
+        self.act_abrir_pva = QAction("Abrir no PVA…", self)
+        self.act_abrir_pva.triggered.connect(self.abrir_no_pva)
+        self.act_abrir_pva.setEnabled(False)
 
         self.act_recalc_c190_massa = QAction(
             "Recalcular C190 (analítico) em massa…", self)
@@ -6738,6 +6751,7 @@ class JanelaPrincipal(QMainWindow):
         self.act_conferir_c190.setEnabled(doc.layout == "ICMS")
         self.act_revisar.setEnabled(True)
         self.act_limpar_nulos.setEnabled(True)
+        self.act_abrir_pva.setEnabled(pva.instalacao(doc.layout) is not None)
         self.act_validar_campos.setEnabled(True)
         self.act_diagnostico.setEnabled(True)
         self.act_cod_cta.setEnabled(True)
@@ -6856,7 +6870,89 @@ class JanelaPrincipal(QMainWindow):
                 "regravar alguma coisa, **reabra aqui a versão validada** "
                 "para que a cópia interna passe a refletir o arquivo "
                 "definitivo do período.")
-        QMessageBox.information(self, "Salvo", msg)
+        cx = QMessageBox(QMessageBox.Icon.Information, "Salvo", msg,
+                         parent=self)
+        b_ok = cx.addButton("Fechar", QMessageBox.ButtonRole.RejectRole)
+        b_pva = None
+        if pva.instalacao(self.doc.layout) is not None:
+            b_pva = cx.addButton("Abrir no PVA e importar",
+                                 QMessageBox.ButtonRole.AcceptRole)
+            cx.setDefaultButton(b_pva)
+        else:
+            cx.setDefaultButton(b_ok)
+        cx.exec()
+        if b_pva is not None and cx.clickedButton() is b_pva:
+            self.abrir_no_pva(caminho)
+
+    # --------------------------------------------------------- PVA
+    def abrir_no_pva(self, caminho=None):
+        """Abre o PVA do leiaute e leva o arquivo salvo até a importação.
+
+        O PVA não recebe arquivo por linha de comando; o que `pva.abrir` faz é
+        usar o acelerador **Ctrl+I** que ele declara no próprio menu e colar o
+        caminho no seletor. Cada tecla só é enviada depois de conferir que a
+        janela em primeiro plano é do processo do PVA — não dando certo, o
+        caminho fica na área de transferência e a mensagem diz o que falta.
+
+        A espera roda **fora da thread da interface**: PVA frio sobe um MySQL
+        junto e pode levar mais de um minuto, tempo em que a janela apareceria
+        travada.
+        """
+        if not self.doc:
+            return
+        alvo = caminho or self.caminho or self.doc.caminho
+        if not alvo or not os.path.isfile(alvo):
+            QMessageBox.warning(self, "Abrir no PVA",
+                                "Salve o arquivo antes de mandá-lo para o "
+                                "PVA.")
+            return
+        if self.alterado:
+            r = QMessageBox.question(
+                self, "Abrir no PVA",
+                "Há alterações não salvas — o PVA vai importar a versão "
+                "gravada em disco.\n\nContinuar mesmo assim?",
+                QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
+            if r != QMessageBox.StandardButton.Yes:
+                return
+
+        inst = pva.instalacao(self.doc.layout)
+        if inst is None:
+            QMessageBox.warning(self, "Abrir no PVA",
+                                "Não encontrei o PVA do leiaute %s em:\n%s"
+                                % (self.doc.layout, pva.RAIZ_PVA))
+            return
+
+        espera = QProgressDialog("Abrindo o %s…" % inst["nome"], "", 0, 0, self)
+        espera.setWindowTitle("Abrir no PVA")
+        espera.setCancelButton(None)
+        espera.setWindowModality(Qt.WindowModality.ApplicationModal)
+        espera.show()
+        QApplication.processEvents()
+
+        resultado = {}
+
+        def trabalho():
+            try:
+                resultado.update(pva.abrir(alvo, self.doc.layout))
+            except Exception as exc:                        # noqa: BLE001
+                resultado.update({"estado": "erro", "mensagem": str(exc)})
+
+        th = threading.Thread(target=trabalho, daemon=True)
+        th.start()
+        while th.is_alive():
+            QApplication.processEvents()
+            th.join(0.05)
+        espera.close()
+
+        msg = resultado.get("mensagem", "")
+        if resultado.get("estado") in ("importando", "caminho_colado",
+                                       "pva_aberto"):
+            self.statusBar().showMessage(msg, 12000)
+            if resultado["estado"] != "importando":
+                QMessageBox.information(self, "Abrir no PVA", msg)
+        else:
+            QMessageBox.warning(self, "Abrir no PVA",
+                                msg or "Não foi possível abrir o PVA.")
 
     # ------------------------------------------------------------ fechar
     def closeEvent(self, event):

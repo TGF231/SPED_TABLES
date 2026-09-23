@@ -513,6 +513,22 @@ período. Isso importa: informar uma conta que não existe no plano de contas é
 o próximo erro a aparecer. Se o arquivo já tiver 0500, as contas existentes
 aparecem num seletor.
 
+### Abrir no PVA depois de salvar
+
+Ao salvar, a janela de confirmação oferece **Abrir no PVA e importar**: o
+programa abre o PVA do leiaute (ou traz para a frente o que já estiver
+aberto), manda o Ctrl+I que abre a importação e cola ali o caminho do arquivo
+recém-salvo. Também está em **Ferramentas → Gerais → Abrir no PVA**.
+
+O PVA não recebe arquivo por linha de comando — o caminho usado é o acelerador
+que ele mesmo declara no menu. Se alguma coisa sair do lugar (o PVA demorando
+a abrir, outra janela roubando o foco, um diálogo aberto esperando resposta),
+**nada é teclado às cegas**: o caminho fica na área de transferência e a
+mensagem diz o que falta, que é Ctrl+I, Ctrl+V, Enter.
+
+PVA frio sobe um MySQL junto e pode levar mais de um minuto; a espera roda
+fora da thread da interface, com aviso na tela.
+
 ### Diagnóstico do arquivo (automático ao abrir)
 
 Ao abrir um SPED, o programa passa o arquivo pelas camadas de verificação do
