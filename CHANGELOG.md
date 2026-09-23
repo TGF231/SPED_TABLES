@@ -1,5 +1,29 @@
 # Changelog
 
+## [0.47.0] - 2026-09-23
+
+### Adicionado
+- **A importação no PVA agora vai até a validação.** O programa responde aos
+  dois avisos que o PVA abre — "deseja importar?" e, terminada a importação,
+  "deseja validar?" —, porque importar sem validar não fecha o ciclo: o que
+  interessa é o relatório de erros do validador.
+- Cada confirmação é **conferida pelo efeito**: a tela de progresso
+  correspondente (`Importando a escrituração…`, `Validando a escrituração…`)
+  tem de aparecer. Não aparecendo, a automação para e diz o que falta — é o
+  que impede responder no escuro a um aviso que fosse outra coisa.
+- A janela de espera mostra o andamento ("Aguardando o PVA terminar de
+  carregar…", "Importando no PVA…", "Confirmando a validação…"), e o botão da
+  confirmação de salvamento virou *Importar e validar no PVA*.
+
+### Notas
+- `pva.abrir` ganhou `validar=True` e passou a devolver os estados
+  `validando`, `importado` e `confirmar`.
+- Medido no PVA do EFD Contribuições, do clique ao validador rodando:
+  **19,2 s**, com uma única tentativa de atalho.
+- Os textos vêm do próprio PVA: as chaves `desejaImportar` e `desejaValidar`
+  em `ControleImportarEscrituracao`, e os títulos das telas de progresso nas
+  classes de ação.
+
 ## [0.46.0] - 2026-09-23
 
 ### Corrigido

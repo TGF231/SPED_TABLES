@@ -549,8 +549,12 @@ atalho é simplesmente ignorado. Numa partida a frio medida aqui, a janela
 apareceu em 4 s e o atalho só passou a valer aos 12 s — com a espera, a
 importação abre na primeira tentativa, 14 s depois do clique.
 
-A automação para nas **confirmações**: o PVA pede para confirmar a importação
-e, ao terminar, pergunta se quer validar. As duas respostas ficam com você.
+O ciclo vai até o fim: o programa confirma a importação e, terminada ela, a
+**validação** — é o relatório de erros do PVA que interessa. Cada confirmação
+é conferida pelo efeito (a tela de progresso correspondente tem de aparecer);
+não aparecendo, a automação para e avisa o que falta fazer.
+
+Medido aqui, do clique ao validador rodando: **19 segundos**.
 
 ### Diagnóstico do arquivo (automático ao abrir)
 

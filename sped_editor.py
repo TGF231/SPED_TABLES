@@ -6891,7 +6891,7 @@ class JanelaPrincipal(QMainWindow):
         b_ok = cx.addButton("Fechar", QMessageBox.ButtonRole.RejectRole)
         b_pva = None
         if pva.instalacao(self.doc.layout) is not None:
-            b_pva = cx.addButton("Abrir no PVA e importar",
+            b_pva = cx.addButton("Importar e validar no PVA",
                                  QMessageBox.ButtonRole.AcceptRole)
             cx.setDefaultButton(b_pva)
         else:
@@ -6909,6 +6909,10 @@ class JanelaPrincipal(QMainWindow):
         caminho no seletor. Cada tecla só é enviada depois de conferir que a
         janela em primeiro plano é do processo do PVA — não dando certo, o
         caminho fica na área de transferência e a mensagem diz o que falta.
+
+        Vai até o fim: confirma a importação e, terminada ela, a **validação**
+        — importar sem validar não fecha o ciclo, porque o que interessa é o
+        relatório de erros do PVA.
 
         A espera roda **fora da thread da interface**: PVA frio sobe um MySQL
         junto e pode levar mais de um minuto, tempo em que a janela apareceria
@@ -6946,26 +6950,37 @@ class JanelaPrincipal(QMainWindow):
         QApplication.processEvents()
 
         resultado = {}
+        andamento = {"texto": ""}
 
         def trabalho():
             try:
-                resultado.update(pva.abrir(alvo, self.doc.layout))
+                resultado.update(pva.abrir(
+                    alvo, self.doc.layout,
+                    progresso=lambda t: andamento.__setitem__("texto", t)))
             except Exception as exc:                        # noqa: BLE001
                 resultado.update({"estado": "erro", "mensagem": str(exc)})
 
         th = threading.Thread(target=trabalho, daemon=True)
         th.start()
+        ultimo = ""
         while th.is_alive():
+            if andamento["texto"] != ultimo:
+                ultimo = andamento["texto"]
+                espera.setLabelText(ultimo)
             QApplication.processEvents()
             th.join(0.05)
         espera.close()
 
+        # `validando` e `importado` são desfecho: a barra de status basta, e
+        # uma caixa modal aqui só atrapalharia quem já está olhando o PVA
+        estado = resultado.get("estado")
         msg = resultado.get("mensagem", "")
-        if resultado.get("estado") in ("importando", "caminho_colado",
-                                       "pva_aberto"):
-            self.statusBar().showMessage(msg, 12000)
-            if resultado["estado"] != "importando":
-                QMessageBox.information(self, "Abrir no PVA", msg)
+        if estado in ("validando", "importado", "importando"):
+            self.statusBar().showMessage(msg, 15000)
+        elif estado in ("caminho_colado", "pva_aberto", "pva_ocupado",
+                        "confirmar"):
+            self.statusBar().showMessage(msg, 15000)
+            QMessageBox.information(self, "Abrir no PVA", msg)
         else:
             QMessageBox.warning(self, "Abrir no PVA",
                                 msg or "Não foi possível abrir o PVA.")

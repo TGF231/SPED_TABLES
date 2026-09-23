@@ -429,11 +429,18 @@ Cinco coisas que custaram tentativa:
 - **O PVA tem trava de instância única** (`TryLock.txt`): havendo janela, ela
   é trazida para a frente; a segunda execução só mostraria um erro.
 
-A automação **para antes das confirmações**: depois do Enter no seletor, o
-PVA abre um "Aviso" pedindo para confirmar a importação e, terminada ela,
-outro perguntando se quer validar. Os dois são decisão do usuário, e é assim
-que deve ficar — responder "sim" por conta própria importaria e validaria sem
-ninguém ter pedido.
+**As duas confirmações são respondidas — e conferidas pelo efeito.** Depois
+do Enter no seletor o PVA abre um "Aviso" ("deseja importar?") e, terminada a
+importação, outro ("deseja validar?"). Os dois vêm do mesmo
+`ExibirMensagem.solicitarConfirmacao`, um `JOptionPane` cujo botão padrão
+responde ao Enter. Como "apertei Enter" não prova nada, o sucesso é medido
+pela tela de progresso que **tem de** aparecer em seguida — `Importando a
+escrituração…` e `Validando a escrituração…`. Não aparecendo, a automação
+para e diz o que falta: é isso que impede responder no escuro a um aviso que
+fosse outra coisa.
+
+Importar sem validar não fecha o ciclo: o que interessa é o relatório de erros
+do PVA. Por isso `validar=True` é o padrão.
 
 E a de sempre com ctypes: `GetClipboardData` **precisa** de `restype`
 declarado. Sem ele o handle de 64 bits é truncado, o `GlobalLock` falha e a

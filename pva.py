@@ -24,8 +24,12 @@ Daí o caminho usado aqui:
    de 2 para 1. Os atalhos enviados no meio são **engolidos**, não
    enfileirados — por isso o Ctrl+I também é repetido até o seletor abrir;
 4. copiar o caminho do arquivo para a área de transferência;
-5. mandar Ctrl+I, esperar o seletor de arquivo e mandar Ctrl+V e Enter. O PVA
-   ainda pede uma confirmação, que fica com o usuário.
+5. mandar Ctrl+I, esperar o seletor de arquivo e mandar Ctrl+V e Enter;
+6. responder aos dois "Aviso" que o PVA abre — "deseja importar?" e, ao fim da
+   importação, "deseja validar?" —, cada um **conferido pelo efeito**: a tela
+   `Importando a escrituração…` / `Validando a escrituração…` tem de aparecer.
+   Não aparecendo, a automação para e diz o que falta. Importar sem validar
+   não fecha o ciclo: o que interessa é o relatório de erros do PVA.
 
 **A tecla só é enviada depois de conferir que a janela em primeiro plano é do
 processo do PVA.** Não sendo, a função para e devolve o que falta fazer — com
@@ -66,6 +70,16 @@ ESPERA_JANELA = 120      # PVA subindo do zero (sobe um MySQL junto)
 ESPERA_PRONTA = 120      # carregamento interno, DEPOIS de a janela aparecer
 ESPERA_SELETOR = 45      # o seletor de arquivo, com o Ctrl+I sendo repetido
 INTERVALO_ATALHO = 3.0   # de quanto em quanto tempo repetir o Ctrl+I
+ESPERA_AVISO = 20        # o "Aviso" de confirmação aparecer
+ESPERA_PROGRESSO = 30    # a tela de progresso aparecer depois do "sim"
+ESPERA_IMPORTACAO = 1800 # a importação terminar (arquivo grande demora)
+
+# Títulos que o PVA usa. O "Aviso" é o diálogo de confirmação
+# (`solicitarConfirmacao`, sempre com esse título); os outros são as telas de
+# progresso, e é a **aparição delas** que confirma que o "sim" foi aceito.
+TITULO_AVISO = "aviso"
+TITULO_IMPORTANDO = "importando a escrituração"
+TITULO_VALIDANDO = "validando a escrituração"
 
 
 def disponivel():
@@ -261,6 +275,49 @@ def _tecla(vk, ctrl=False):
     time.sleep(0.15)
 
 
+def _janela_com_titulo(pid, contem, limite, ausente=False):
+    """Espera uma janela do processo cujo título contenha `contem`.
+
+    Com `ausente=True`, espera o contrário: que ela **suma**. Devolve o hwnd
+    (ou True/False no modo ausente) — None/False quando estoura o tempo.
+    """
+    fim = time.time() + limite
+    while time.time() < fim:
+        achou = None
+        for hwnd, titulo, p in _janelas(exigir_titulo=False):
+            if p == pid and contem in (titulo or "").lower():
+                achou = hwnd
+                break
+        if ausente and achou is None:
+            return True
+        if not ausente and achou is not None:
+            return achou
+        time.sleep(0.4)
+    return False if ausente else None
+
+
+def _confirmar_aviso(pid, titulo_efeito, limite_aviso=ESPERA_AVISO,
+                     limite_efeito=ESPERA_PROGRESSO):
+    """Responde "sim" a um "Aviso" do PVA — e confere pelo efeito.
+
+    O diálogo é um `JOptionPane` (`ExibirMensagem.solicitarConfirmacao`), cujo
+    botão padrão responde ao Enter. Como "apertei Enter" não prova nada, o
+    sucesso é medido pela tela de progresso que **tem de** aparecer em
+    seguida: `Importando a escrituração…` ou `Validando a escrituração…`. Não
+    aparecendo, a automação para e diz o que falta — é o que impede responder
+    no escuro a um aviso que fosse outra coisa.
+
+    Devolve o hwnd da tela de progresso, ou None.
+    """
+    aviso = _janela_com_titulo(pid, TITULO_AVISO, limite_aviso)
+    if aviso is None:
+        return None
+    if _focar(aviso, pid, limite=5.0) != aviso:
+        return None
+    _tecla(VK_RETURN)
+    return _janela_com_titulo(pid, titulo_efeito, limite_efeito)
+
+
 def _esperar_pronta(hwnd, pid, limite=ESPERA_PRONTA, sossego=1.0,
                     progresso=None):
     """Espera o PVA terminar o **carregamento interno**.
@@ -286,7 +343,7 @@ def _esperar_pronta(hwnd, pid, limite=ESPERA_PRONTA, sossego=1.0,
         else:
             desde = None
             if progresso:
-                progresso(int(fim - time.time()))
+                progresso("Aguardando o PVA terminar de carregar…")
         time.sleep(0.3)
     return False
 
@@ -298,22 +355,29 @@ def _esperar_janela(layout, raiz, limite, progresso=None):
         if hwnd:
             return hwnd, pid
         if progresso:
-            progresso(int(fim - time.time()))
+            progresso("Abrindo o PVA…")
         time.sleep(1.0)
     return None, None
 
 
-def abrir(caminho, layout, importar=True, confirmar=True, raiz=None,
-          progresso=None, espera_janela=ESPERA_JANELA):
-    """Abre o PVA do leiaute e leva `caminho` até a importação.
+def abrir(caminho, layout, importar=True, confirmar=True, validar=True,
+          raiz=None, progresso=None, espera_janela=ESPERA_JANELA):
+    """Abre o PVA do leiaute, importa `caminho` e manda validar.
 
     `importar=False` só abre (ou traz para a frente) o PVA. `confirmar=False`
-    cola o caminho no seletor mas **não** dá Enter, deixando a confirmação com
-    o usuário.
+    cola o caminho no seletor e para ali. `validar=False` importa e não pede a
+    validação — importar sem validar, porém, não fecha o ciclo: o que
+    interessa é o relatório de erros do PVA.
 
-    Devolve `{"estado", "mensagem", "aberto_agora"}`, com `estado` em:
-    `importando`, `caminho_colado`, `pva_aberto` (não deu para automatizar o
-    resto), `sem_pva`, `sem_arquivo` ou `indisponivel`.
+    As duas confirmações que o PVA pede ("deseja importar?" e "deseja
+    validar?") são respondidas e **conferidas pelo efeito**: a tela de
+    progresso correspondente tem de aparecer. Não aparecendo, a função para e
+    diz o que falta fazer.
+
+    Devolve `{"estado", "mensagem", "aberto_agora", "tentativas"}`, com
+    `estado` em: `validando`, `importado`, `importando` (ainda rodando),
+    `confirmar` (o caminho chegou, a confirmação não), `caminho_colado`,
+    `pva_aberto`, `pva_ocupado`, `sem_pva`, `sem_arquivo` ou `indisponivel`.
     """
     if not disponivel():
         return {"estado": "indisponivel", "aberto_agora": False,
@@ -412,19 +476,42 @@ def abrir(caminho, layout, importar=True, confirmar=True, raiz=None,
                 "tentativas": tentativas,
                 "mensagem": "Caminho colado na janela de importação do %s — "
                             "confirme por lá." % inst["nome"]}
-    antes = _hwnds_do_processo(pid)
     _tecla(VK_RETURN)
-    # depois do Enter o PVA abre um "Aviso" pedindo a confirmação da
-    # importação — quem confirma é o usuário, e é bom que seja assim
-    fim = time.time() + 5.0
-    while time.time() < fim:
-        if _hwnds_do_processo(pid) - antes:
-            return {"estado": "confirmar", "aberto_agora": aberto_agora,
-                    "tentativas": tentativas,
-                    "mensagem": "O %s está pedindo a confirmação da "
-                                "importação — confirme por lá."
-                                % inst["nome"]}
-        time.sleep(0.25)
-    return {"estado": "importando", "aberto_agora": aberto_agora,
-            "tentativas": tentativas,
-            "mensagem": "Importação iniciada no %s." % inst["nome"]}
+
+    def saida(estado, msg):
+        return {"estado": estado, "aberto_agora": aberto_agora,
+                "tentativas": tentativas, "mensagem": msg}
+
+    # ---- "Deseja importar?" ------------------------------------------
+    if progresso:
+        progresso("Confirmando a importação…")
+    importando = _confirmar_aviso(pid, TITULO_IMPORTANDO)
+    if importando is None:
+        return saida("confirmar",
+                     "O caminho foi entregue ao %s, mas não consegui "
+                     "confirmar a importação. Responda ao aviso na tela do "
+                     "PVA." % inst["nome"])
+    if progresso:
+        progresso("Importando no %s…" % inst["nome"])
+    if not _janela_com_titulo(pid, TITULO_IMPORTANDO, ESPERA_IMPORTACAO,
+                              ausente=True):
+        return saida("importando",
+                     "A importação no %s passou de %d minutos e continua "
+                     "rodando; acompanhe por lá." % (inst["nome"],
+                                                     ESPERA_IMPORTACAO // 60))
+    if not validar:
+        return saida("importado",
+                     "Arquivo importado no %s." % inst["nome"])
+
+    # ---- "Deseja validar?" -------------------------------------------
+    if progresso:
+        progresso("Confirmando a validação…")
+    validando = _confirmar_aviso(pid, TITULO_VALIDANDO)
+    if validando is None:
+        return saida("importado",
+                     "Arquivo importado no %s. O aviso da validação não foi "
+                     "confirmado — mande verificar as pendências por lá "
+                     "(Ctrl+V)." % inst["nome"])
+    return saida("validando",
+                 "Arquivo importado e validação em andamento no %s — o "
+                 "relatório de erros aparece por lá." % inst["nome"])
