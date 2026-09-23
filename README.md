@@ -513,6 +513,23 @@ período. Isso importa: informar uma conta que não existe no plano de contas é
 o próximo erro a aparecer. Se o arquivo já tiver 0500, as contas existentes
 aparecem num seletor.
 
+### Recalcular o bloco M (EFD Contribuições)
+
+Refaz a apuração a partir dos documentos: as contribuições (M200/M210 e
+M600/M610) pelas receitas tributadas de saída, e os **créditos** (M100/M105 e
+M500/M505) pelas entradas — um grupo por alíquota, com a natureza da base
+vinda do CFOP pela tabela 4.3.7 do PVA. O desconto vai até o limite do débito
+do período; o que sobra fica como saldo.
+
+Refazer o crédito importa porque corrigir CST ou alíquota das entradas muda a
+base: o PVA confere os dois lados e recusa o M105 que não corresponda aos
+documentos. Num arquivo real eram 8 erros, todos resolvidos pelo recálculo.
+
+Quando a divisão do crédito não sai dos documentos, ele **não mexe** e diz o
+motivo: incidência não exclusivamente não-cumulativa, ajustes de crédito
+(M110/M115/M510/M515), crédito fora do bloco C (D101, F100…) ou tabela do PVA
+ausente.
+
 ### Abrir no PVA depois de salvar
 
 Ao salvar, a janela de confirmação oferece **Abrir no PVA e importar**: o

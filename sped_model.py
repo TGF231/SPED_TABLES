@@ -126,6 +126,10 @@ def _texto_planilha(v):
 # Tabela oficial do campo TIPO_ITEM do 0200 (EFD ICMS/IPI). Serve para não
 # deixar a planilha plantar lixo no cadastro: num arquivo real, 10.312 itens
 # tinham "N", que não existe na tabela.
+# CST de PIS/COFINS que apropriam crédito na entrada (vinculado a receita,
+# presumido…). O mesmo conjunto de `rotinas.CST_ENTRADA_COM_CREDITO`.
+CST_CREDITO = {"%02d" % n for n in list(range(50, 57)) + list(range(60, 67))}
+
 TIPOS_ITEM_0200 = frozenset(("00", "01", "02", "03", "04", "05", "06", "07",
                              "08", "09", "10", "99"))
 
@@ -2664,6 +2668,280 @@ class SpedDocument:
         tipos = {r.reg for r in self.registros}
         return sorted(t for t in self.RECEITA_FORA_DO_BLOCO_C if t in tipos)
 
+    # Alíquota básica do regime não-cumulativo, por tributo. Só ela é
+    # "alíquota básica" (tipo de crédito 01); qualquer outra é diferenciada.
+    ALIQ_BASICA_NC = {"PIS": 1.65, "COFINS": 7.6}
+    # Registros que também geram crédito fora dos documentos do bloco C. Tendo
+    # algum, o crédito não sai só do C170 e o recálculo se abstém.
+    CREDITO_FORA_DO_BLOCO_C = ("D101", "D105", "D501", "D505", "F100", "F120",
+                               "F130", "F150", "F500", "F510", "F525", "F550",
+                               "F560", "1100", "1500")
+    # Ajustes de crédito: são filhos do M100/M500 e não há como reatribuí-los
+    # a grupos refeitos, então a presença deles também trava o recálculo.
+    AJUSTES_DE_CREDITO = ("M110", "M115", "M510", "M515")
+
+    def creditos_por_aliquota(self, tributo, naturezas):
+        """Base de crédito das ENTRADAS, agrupada como o PVA agrupa.
+
+        Devolve `({chave_aliq: {"aliq", "base", "grupos"}}, ignorados)`, com
+        `grupos` = `{(NAT_BC_CRED, CST): base}` — a mesma chave do M105 — e
+        `ignorados` = itens com CST de crédito num CFOP fora da tabela 4.3.7,
+        que não geram crédito e por isso ficam de fora (é o que a regra
+        `MSG_COMPATIBILIDADE_CFOP_CRED` acusa).
+
+        A natureza vem do CFOP pela tabela do próprio PVA: num arquivo real,
+        esse agrupamento reproduziu o rateio que o contribuinte já tinha no
+        M105, inclusive o único item de natureza 02.
+        """
+        i_op = self._ix("C100", "IND_OPER")
+        i_cfop = self._ix("C170", "CFOP")
+        i_cst = self._ix("C170", "CST_%s" % tributo)
+        i_bc = self._ix("C170", "VL_BC_%s" % tributo)
+        i_al = self._ix("C170", "ALIQ_%s" % tributo)
+        if None in (i_op, i_cfop, i_cst, i_bc, i_al):
+            return {}, 0
+        grupos, ignorados = {}, 0
+        for c100 in self.registros:
+            if c100.reg != "C100" or (c100.valor(i_op) or "").strip() != "0":
+                continue
+            for f in c100.filhos:
+                if f.reg != "C170":
+                    continue
+                cst = (f.valor(i_cst) or "").strip()
+                if cst not in CST_CREDITO:
+                    continue
+                bc = _to_num(f.valor(i_bc))
+                al = _to_num(f.valor(i_al))
+                if bc <= 0 or al <= 0:
+                    continue
+                nat = naturezas.get((f.valor(i_cfop) or "").strip())
+                if not nat:
+                    ignorados += 1
+                    continue
+                k = "%.4f" % al
+                g = grupos.setdefault(k, {"aliq": f.valor(i_al), "base": 0.0,
+                                          "grupos": {}})
+                g["base"] += bc
+                g["grupos"][(nat, cst)] = g["grupos"].get((nat, cst), 0.0) + bc
+        return grupos, ignorados
+
+    def _motivo_para_nao_refazer_creditos(self, cod_inc):
+        """Por que não dá para refazer o crédito, ou "" quando dá."""
+        if cod_inc != "1":
+            return ("o 0110 não declara incidência exclusivamente "
+                    "não-cumulativa (COD_INC_TRIB %s): a divisão da base "
+                    "entre os regimes não sai dos documentos" % cod_inc)
+        tipos = {r.reg for r in self.registros}
+        ajustes = [t for t in self.AJUSTES_DE_CREDITO if t in tipos]
+        if ajustes:
+            return ("o arquivo tem ajustes de crédito (%s), que são filhos "
+                    "do M100/M500 e não há como reatribuir"
+                    % ", ".join(ajustes))
+        fora = [t for t in self.CREDITO_FORA_DO_BLOCO_C if t in tipos]
+        if fora:
+            return ("há crédito fora dos documentos do bloco C (%s)"
+                    % ", ".join(fora))
+        return ""
+
+    def _refazer_creditos(self, tributo, debito, naturezas):
+        """Refaz M100/M105 (PIS) ou M500/M505 (COFINS) a partir das entradas.
+
+        Um M100 por alíquota, com um M105 por (natureza, CST) dentro dele — é
+        exatamente como o PVA confere: ele soma os documentos por natureza,
+        CST e alíquota e recusa registro que não corresponda a nada
+        (`MSG_M105_NAO_DEVE_EXISTIR`) ou cujo total não bata
+        (`MSG_VL_BC_PIS_TOT`).
+
+        O crédito disponível é descontado até o limite do **débito do
+        período**, na ordem das alíquotas; o que sobra vira saldo. Devolve
+        `{"descontado", "disponivel", "grupos", "ignorados"}`.
+        """
+        reg_m, reg_det = (("M100", "M105") if tributo == "PIS"
+                          else ("M500", "M505"))
+        grupos, ignorados = self.creditos_por_aliquota(tributo, naturezas)
+        antigos = [r for r in self.registros if r.reg in (reg_m, reg_det)]
+
+        # COD_CRED tem 3 dígitos: o **primeiro** é o tipo do crédito (1 =
+        # alíquota básica, 2 = diferenciadas, 3 = por unidade de medida) e os
+        # **dois últimos** são a vinculação da receita (01 tributada no
+        # mercado interno, 02 não tributada, 03 exportação). A vinculação é
+        # decisão do contribuinte e não está nos documentos, então vem do que
+        # já existe no arquivo; só o tipo é redecidido pela alíquota.
+        vinc, ind_ori = "01", "0"
+        i_cod = self._ix(reg_m, "COD_CRED")
+        i_ori = self._ix(reg_m, "IND_CRED_ORI")
+        base_por_cod = {}
+        for r in antigos:
+            if r.reg != reg_m:
+                continue
+            cod = (r.valor(i_cod) or "").strip()
+            if len(cod) == 3:
+                base_por_cod[cod] = base_por_cod.get(cod, 0.0) + _to_num(
+                    r.valor(self._ix(reg_m, "VL_BC_%s" % tributo)))
+            if (r.valor(i_ori) or "").strip():
+                ind_ori = (r.valor(i_ori) or "").strip()
+        if base_por_cod:
+            vinc = max(base_por_cod.items(), key=lambda x: x[1])[0][1:]
+
+        # âncora e largura ANTES de criar: `_ncampos` mede pela moda dos
+        # registros existentes, e o recém-criado nasce com um campo só
+        n_m, n_det = self._ncampos(reg_m), self._ncampos(reg_det)
+        m001 = next((r for r in self.registros if r.reg == "M001"), None)
+        cons = next((r for r in self.registros
+                     if r.reg == ("M200" if tributo == "PIS" else "M600")),
+                    None)
+        if m001 is None or not grupos:
+            return {"descontado": 0.0, "disponivel": 0.0, "grupos": 0,
+                    "ignorados": ignorados, "sem_credito": not grupos}
+        # A âncora é o registro que **precede** o primeiro M100/M500 — não o
+        # M001: o M500 vem depois do M200/M400 no leiaute, e ancorar na
+        # abertura do bloco jogaria o crédito da COFINS para antes deles.
+        primeiro = min(antigos, key=lambda r: r.ordem) if antigos else cons
+        if primeiro is None:
+            return {"descontado": 0.0, "disponivel": 0.0, "grupos": 0,
+                    "ignorados": ignorados, "sem_credito": True}
+        anteriores = [r for r in self.registros if r.ordem < primeiro.ordem]
+        ancora = max(anteriores, key=lambda r: r.ordem) if anteriores else m001
+        for r in antigos:
+            self.remover_registro(r)
+
+        basica = self.ALIQ_BASICA_NC.get(tributo, 0.0)
+        falta = round(debito, 2)
+        disponivel = descontado = 0.0
+        for k in sorted(grupos, key=float):
+            g = grupos[k]
+            al = float(k)
+            base = round(g["base"], 2)
+            cred = round(base * al / 100.0, 2)
+            desc = min(cred, falta) if falta > 0 else 0.0
+            desc = round(desc, 2)
+            falta = round(falta - desc, 2)
+            saldo = round(cred - desc, 2)
+            disponivel += cred
+            descontado += desc
+
+            novo = self.novo_registro(reg_m, pai=m001, depois=ancora)
+            ancora = novo
+            cod = ("1" if abs(al - basica) < 0.0001 else "2") + vinc
+            campos = [""] * n_m
+            campos[0] = reg_m
+            for nome, valor in (("COD_CRED", cod), ("IND_CRED_ORI", ind_ori),
+                                ("VL_BC_%s" % tributo, _fmt_val(base)),
+                                ("ALIQ_%s" % tributo, g["aliq"]),
+                                ("QUANT_BC_%s" % tributo, "0"),
+                                ("VL_CRED", _fmt_val(cred)),
+                                ("VL_AJUS_ACRES", "0"),
+                                ("VL_AJUS_REDUC", "0"),
+                                ("VL_CRED_DISP", _fmt_val(cred)),
+                                ("IND_DESC_CRED", "0" if saldo <= 0 else "1"),
+                                ("VL_CRED_DESC", _fmt_val(desc)),
+                                ("SLD_CRED", _fmt_val(saldo))):
+                i = self._ix(reg_m, nome)
+                if i is not None and i < n_m:
+                    campos[i] = valor
+            i_dif = self._ix(reg_m, "VL_CRED_DIF")
+            if i_dif is None:
+                i_dif = self._ix(reg_m, "VL_CRED_DIFER")
+            if i_dif is not None and i_dif < n_m:
+                campos[i_dif] = "0"
+            novo.campos = campos
+
+            for (nat, cst) in sorted(g["grupos"]):
+                v = round(g["grupos"][(nat, cst)], 2)
+                filho = self.novo_registro(reg_det, pai=novo, depois=ancora)
+                ancora = filho
+                c = [""] * n_det
+                c[0] = reg_det
+                for nome, valor in (
+                        ("NAT_BC_CRED", nat), ("CST_%s" % tributo, cst),
+                        ("VL_BC_%s_TOT" % tributo, _fmt_val(v)),
+                        ("VL_BC_%s_NC" % tributo, _fmt_val(v)),
+                        ("VL_BC_%s" % tributo, _fmt_val(v)),
+                        ("QUANT_BC_%s" % tributo, "0")):
+                    i = self._ix(reg_det, nome)
+                    if i is not None and i < n_det:
+                        c[i] = valor
+                filho.campos = c
+
+        # `depois=` empilha meios (x+0,5; x+1,0; x+1,5…) e, com grupos demais,
+        # a ordem inventada alcançaria a do registro seguinte — o M500 cairia
+        # depois do M600. `_reordenar` percorre a árvore e devolve inteiros.
+        self._reordenar()
+        return {"descontado": round(descontado, 2),
+                "disponivel": round(disponivel, 2), "grupos": len(grupos),
+                "ignorados": ignorados, "sem_credito": False}
+
+    def conferir_creditos_m(self, tolerancia=0.02):
+        """Confere o M105/M505 declarado contra a base de crédito dos documentos.
+
+        É a conferência que o PVA faz em duas mensagens: o total do M105 tem
+        de ser o somatório das bases dos documentos com aquela natureza, CST e
+        alíquota, e não deve existir M105 para uma combinação que os
+        documentos não têm.
+
+        O agrupamento segue o do PVA: a alíquota vem do **M100 pai**, e a
+        natureza de cada item sai do CFOP pela tabela 4.3.7. Devolve
+        `[(registro, tributo, nat, cst, declarado, calculado)]` só do que não
+        fecha, ou `[]` quando não dá para conferir (o motivo fica em
+        `motivo_creditos`).
+        """
+        self.motivo_creditos = ""
+        if self.layout != "CONTRIB":
+            return []
+        cod_inc = "1"
+        r0110 = [r for r in self.registros if r.reg == "0110"]
+        if r0110:
+            i = self._ix("0110", "COD_INC_TRIB")
+            cod_inc = (r0110[0].valor(i) or "1").strip()
+        self.motivo_creditos = self._motivo_para_nao_refazer_creditos(cod_inc)
+        if self.motivo_creditos:
+            return []
+        try:
+            import tabelas_pva
+            i_fim = self._ix("0000", "DT_FIN")
+            data = ""
+            for r in self.registros:
+                if r.reg == "0000" and i_fim is not None:
+                    data = (r.valor(i_fim) or "").strip()
+                    break
+            naturezas = tabelas_pva.naturezas_cfop_credito(data_ref=data)
+        except Exception:                                       # noqa: BLE001
+            naturezas = {}
+        if not naturezas:
+            self.motivo_creditos = ("a tabela de CFOP com direito a crédito "
+                                    "do PVA não está disponível")
+            return []
+
+        fora = []
+        for tributo, reg_m, reg_det in (("PIS", "M100", "M105"),
+                                        ("COFINS", "M500", "M505")):
+            grupos, _ig = self.creditos_por_aliquota(tributo, naturezas)
+            i_al = self._ix(reg_m, "ALIQ_%s" % tributo)
+            i_nat = self._ix(reg_det, "NAT_BC_CRED")
+            i_cst = self._ix(reg_det, "CST_%s" % tributo)
+            i_tot = self._ix(reg_det, "VL_BC_%s_TOT" % tributo)
+            if None in (i_al, i_nat, i_cst, i_tot):
+                continue
+            for m in self.registros:
+                if m.reg != reg_m:
+                    continue
+                k = "%.4f" % _to_num(m.valor(i_al))
+                # grupo do M100 que os documentos não têm: TODO filho dele
+                # sobra, mesmo o que declara zero — é o que o PVA recusa com
+                # "não deverá existir um registro M105".
+                sobrando = k not in grupos
+                doc = grupos.get(k, {}).get("grupos", {})
+                for f in m.filhos:
+                    if f.reg != reg_det:
+                        continue
+                    nat = (f.valor(i_nat) or "").strip()
+                    cst = (f.valor(i_cst) or "").strip()
+                    dec = _to_num(f.valor(i_tot))
+                    calc = round(doc.get((nat, cst), 0.0), 2)
+                    if sobrando or abs(dec - calc) > tolerancia:
+                        fora.append((f, tributo, nat, cst, dec, calc))
+        return fora
+
     def conferir_apuracao_m(self, tolerancia=0.02):
         """Compara o M210/M610 declarado com a receita dos documentos.
 
@@ -2727,7 +3005,7 @@ class SpedDocument:
         return fora
 
     # --------------------------------------------- totais (in-place, p/ tela)
-    def recalcular_bloco_m(self):
+    def recalcular_bloco_m(self, refazer_creditos=True):
         """
         (Apenas EFD Contribuições) Recalcula a APURAÇÃO de PIS (M200/M210) e
         COFINS (M600/M610) a partir das receitas tributadas de saída
@@ -2756,6 +3034,26 @@ class SpedDocument:
             cod_inc = (r0110[0].valor(i) or "1").strip()
         cumulativo = (cod_inc == "2")
         cod_cont = "51" if cumulativo else "01"
+
+        naturezas = {}
+        motivo = self._motivo_para_nao_refazer_creditos(cod_inc)
+        if refazer_creditos and not motivo and not cumulativo:
+            try:
+                import tabelas_pva
+                i_fim = self._ix("0000", "DT_FIN")
+                data = ""
+                for r in self.registros:
+                    if r.reg == "0000" and i_fim is not None:
+                        data = (r.valor(i_fim) or "").strip()
+                        break
+                naturezas = tabelas_pva.naturezas_cfop_credito(data_ref=data)
+            except Exception:                                   # noqa: BLE001
+                naturezas = {}
+            if not naturezas:
+                motivo = ("a tabela de CFOP com direito a crédito do PVA não "
+                          "está disponível")
+        elif cumulativo:
+            motivo = motivo or "regime cumulativo não gera crédito"
 
         resumo = {}
         for tributo, reg_cons, reg_det in (("PIS", "M200", "M210"),
@@ -2802,7 +3100,13 @@ class SpedDocument:
                 ancora = novo
 
             # atualiza a consolidação M200/M600
+            # o crédito é refeito antes da consolidação: o desconto do M200
+            # é limitado pelo débito do período, que só agora se conhece
             cred = _to_num(cons.valor(2))           # VL_TOT_CRED_DESC (mantido)
+            if naturezas:
+                info = self._refazer_creditos(tributo, total_apur, naturezas)
+                cred = info["descontado"]
+                resumo.setdefault("creditos", {})[tributo] = info
             ret_nc = _to_num(cons.valor(5))
             ded_nc = _to_num(cons.valor(6))
             ret_cum = _to_num(cons.valor(9))
@@ -2830,6 +3134,8 @@ class SpedDocument:
                                "apurado": round(total_apur, 2),
                                "a_recolher": round(nc_rec + cum_rec, 2)}
 
+        if motivo:
+            resumo["creditos_motivo"] = motivo
         self.atualizar_bloco9_inplace()
         resumo["regime"] = ("cumulativo" if cumulativo
                             else "não-cumulativo" if cod_inc == "1"

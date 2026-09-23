@@ -34,6 +34,7 @@ Três cuidados que o código incorpora:
   estado; a UF vem do 0000 do arquivo.
 """
 
+import io
 import os
 import re
 import glob
@@ -266,6 +267,41 @@ def cfops_com_credito(pasta_contrib=None, data_ref=None):
     tabs = listar_tabelas(pasta_contrib or PASTA_CONTRIB)
     return codigos_de("SPEDPISCOFINS_OPER_CREDITO$SPEDPISCOFINS_CFOP_CREDITO",
                       tabs, None, data_ref)
+
+
+def naturezas_cfop_credito(pasta_contrib=None, data_ref=None):
+    """`{cfop: NAT_BC_CRED}` — a natureza da base do crédito por CFOP.
+
+    A quinta coluna de `SPEDPISCOFINS_CFOP_CREDITO` traz `NAT_BC_CRE`: é ela
+    que diz se a entrada é aquisição para revenda (01), insumo (02) e assim
+    por diante. Num arquivo real, agrupar os C170 por essa coluna reproduziu
+    exatamente o rateio que o contribuinte tinha no M105 — inclusive o único
+    item de natureza 02.
+
+    Devolve `{}` quando a tabela não está instalada: sem ela não dá para
+    refazer o crédito, e chutar a natureza seria pior que não mexer.
+    """
+    tabs = listar_tabelas(pasta_contrib or PASTA_CONTRIB)
+    alvo = tabs.get("SPEDPISCOFINS_OPER_CREDITO$SPEDPISCOFINS_CFOP_CREDITO")
+    if not alvo:
+        return {}
+    fim = _chave_data(data_ref)
+    out = {}
+    try:
+        linhas = io.open(alvo[0], encoding="latin-1").read().splitlines()
+    except OSError:
+        return {}
+    for l in linhas[1:]:
+        p = l.split("|")
+        if len(p) < 5 or not p[0].strip():
+            continue
+        if fim:
+            ini = _chave_data(p[2]) or "00000000"
+            f = _chave_data(p[3]) or "99999999"
+            if not (ini <= fim <= f):
+                continue
+        out.setdefault(p[0].strip(), p[4].strip())
+    return out
 
 
 def prazo_entrega(mes_ano, pasta_contrib=None):

@@ -1,5 +1,40 @@
 # Changelog
 
+## [0.45.0] - 2026-09-23
+
+### Adicionado
+- **O recálculo do bloco M passou a refazer também os créditos** — M100/M105
+  (PIS) e M500/M505 (COFINS) — a partir das entradas: um M100 por alíquota,
+  um M105 por (natureza da base, CST). A **natureza vem do CFOP**, pela
+  coluna `NAT_BC_CRE` da tabela 4.3.7 do PVA; num arquivo real esse
+  agrupamento reproduziu exatamente o rateio que o contribuinte já tinha,
+  inclusive o único item de natureza 02.
+- **Conferência do M105/M505 contra os documentos**, na revisão e no
+  diagnóstico, com atalho para o recálculo. No arquivo real ela aponta os
+  **mesmos 8 erros** que o PVA (4 no M105, 4 no M505) e zera depois do
+  recálculo.
+- `tabelas_pva.naturezas_cfop_credito()`.
+
+### Corrigido
+- Nada a corrigir no recálculo em si: rodá-lo sobre um arquivo correto
+  devolve o arquivo **byte a byte idêntico**, nos dois caminhos (com e sem o
+  refazimento do crédito). O que produzia os erros de M105/M505 era a
+  correção de CST/alíquota das **entradas**, que muda a base de crédito
+  enquanto o M100/M105 continuava como o ERP gravou — e o recálculo, até
+  aqui, não consertava esse lado.
+
+### Notas
+- `COD_CRED` tem 3 dígitos: o **primeiro** é o tipo do crédito e os **dois
+  últimos** a vinculação da receita. A vinculação é decisão do contribuinte e
+  não está nos documentos, então vem do que já existe no arquivo; só o tipo é
+  redecidido pela alíquota.
+- **Quando não dá, não mexe** — e diz por quê: incidência que não seja
+  exclusivamente não-cumulativa, ajustes de crédito (M110/M115/M510/M515),
+  crédito fora do bloco C (D101, F100…) ou tabela do PVA ausente.
+- Números do arquivo real: base de crédito 207.997,27 (207.875,98 na natureza
+  01 e 121,29 na 02), crédito de PIS 3.431,95 com 2.203,98 descontados e
+  1.227,97 de saldo; COFINS 15.807,79 com 10.151,65 descontados.
+
 ## [0.44.0] - 2026-09-23
 
 ### Adicionado

@@ -77,6 +77,8 @@ MODULOS = {
                      "CFOP que não dá direito"),
     "apuracao_m": ("Recalcular bloco M (apuração PIS/COFINS)",
                    "Ferramentas → EFD Contribuições → Recalcular bloco M"),
+    "credito_m": ("Recalcular bloco M (apuração PIS/COFINS)",
+                  "Ferramentas → EFD Contribuições → Recalcular bloco M"),
     "m400": ("Correção manual na grade",
              "M400/M800 sem receita correspondente nos documentos"),
     "reg_0900": ("Correção manual na grade",
@@ -325,6 +327,12 @@ def verificar(doc, pasta_fiscal=None, pasta_contrib=None):
                     "apuracao_m", ps[0].reg, campo,
                     "apuração diverge da receita dos documentos", len(ps),
                     ps[0].uid, ps[0].gravidade))
+        cred = revisao.verificar_credito_m105(doc)
+        if cred:
+            achados.append(Achado(
+                "credito_m", cred[0].reg, "VL_BC_TOT",
+                "base de crédito declarada diferente da dos documentos",
+                len(cred), cred[0].uid))
         isentas = revisao.verificar_m400_sem_lastro(doc)
         if isentas:
             achados.append(Achado(

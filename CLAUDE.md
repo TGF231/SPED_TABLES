@@ -278,6 +278,48 @@ O que o PVA cobra nesses códigos não é o CST, é a **alíquota**: CST com fin
 C170 de entrada quase sempre copiou o CSOSN do fornecedor do Simples — e o
 PVA acusa assim mesmo (`verificar_cst_combustivel_sem_aliquota`).
 
+### O crédito do bloco M sai das entradas — e precisa ser refeito junto
+
+Corrigir CST ou alíquota das **entradas** muda a base de crédito, e o
+M100/M105 (PIS) e M500/M505 (COFINS) continuam como o ERP gravou. O PVA
+confere os dois lados e recusa: o total do M105 tem de ser o somatório das
+bases dos documentos por natureza, CST e alíquota, e M105 de um grupo que os
+documentos não têm "não deverá existir". Num arquivo real foram 8 erros — 4
+no M105, 4 no M505 — todos criados pela correção das alíquotas de crédito,
+que fundiu quatro grupos (1,65 / 0,65 / 1,86 / 0) num só.
+
+**O recálculo do bloco M não causava isso — ele só não consertava.** Rodar o
+recálculo sobre um arquivo correto devolve o arquivo byte a byte idêntico
+(conferido nos dois caminhos). O que faltava era refazer o crédito, e agora
+`recalcular_bloco_m` faz: um M100 por alíquota, um M105 por (natureza, CST).
+
+Quatro decisões que a implementação carrega:
+
+- **A natureza da base vem do CFOP**, pela coluna `NAT_BC_CRE` da tabela
+  4.3.7 do PVA (`CFOP_CREDITO`). Num arquivo real esse agrupamento reproduziu
+  exatamente o rateio que o contribuinte já tinha no M105, inclusive o único
+  item de natureza 02 — é a prova de que a fonte é a certa.
+- **`COD_CRED` tem 3 dígitos: o primeiro é o tipo** (1 = alíquota básica,
+  2 = diferenciadas, 3 = por unidade de medida) e os **dois últimos são a
+  vinculação da receita** (01 tributada no mercado interno, 02 não tributada,
+  03 exportação). A vinculação é decisão do contribuinte e não está nos
+  documentos: vem do que já existe no arquivo. Só o tipo é redecidido pela
+  alíquota. (Montar como "tipo de 2 dígitos + vinculação de 1" gera `011` em
+  vez de `101`.)
+- **O desconto vai até o limite do débito do período**, na ordem das
+  alíquotas; o resto vira `SLD_CRED`, e `IND_DESC_CRED` sai 0 quando o
+  crédito foi todo usado e 1 quando sobrou.
+- **Quando não dá, não mexe** — e diz por quê: incidência que não seja
+  exclusivamente não-cumulativa (a divisão da base entre os regimes não sai
+  dos documentos), ajustes de crédito (M110/M115/M510/M515, que são filhos do
+  M100 e não há como reatribuir), crédito fora do bloco C (D101, F100…) ou
+  tabela do PVA ausente.
+
+Ao criar os registros, `depois=` empilha meios (x+0,5; x+1,0; x+1,5…) e, com
+grupos demais, a ordem inventada alcança a do registro seguinte — o M500
+cairia depois do M600. Por isso `_reordenar()` no fim, que percorre a árvore e
+devolve ordem inteira.
+
 ### Conferir o bloco M contra os documentos
 
 `conferir_apuracao_m` compara o `VL_REC_BRT` e o `VL_BC_CONT` do M210/M610

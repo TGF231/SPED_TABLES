@@ -503,6 +503,35 @@ def verificar_m400_sem_lastro(doc):
     return problemas
 
 
+def verificar_credito_m105(doc):
+    """M105/M505 diferente da base de crédito dos documentos.
+
+    O PVA soma as entradas por natureza da base, CST e alíquota e cobra o
+    M105 igual a isso; sobrando um M105 sem correspondência, ele acusa que o
+    registro não deveria existir. É o que aparece **depois de corrigir CST ou
+    alíquota das entradas**: a base muda e o lado do crédito continua como o
+    ERP gravou. Quem conserta é *Recalcular bloco M*, que agora refaz também
+    o M100/M105 e o M500/M505.
+    """
+    if doc.layout != "CONTRIB":
+        return []
+    problemas = []
+    for r, tributo, nat, cst, dec, calc in doc.conferir_creditos_m():
+        if calc <= 0:
+            texto = ("%s natureza %s / CST %s (%s) declara %s, e nenhum "
+                     "documento tem essa combinação na alíquota do %s"
+                     % (r.reg, nat, cst, tributo, _fmt_val(dec),
+                        r.pai.reg if r.pai else "M100"))
+        else:
+            texto = ("%s natureza %s / CST %s (%s): declarado %s, documentos "
+                     "somam %s" % (r.reg, nat, cst, tributo, _fmt_val(dec),
+                                   _fmt_val(calc)))
+        problemas.append(Problema(uid=r.uid, reg=r.reg, bloco=r.bloco,
+                                  regra="M105/M505 x documentos",
+                                  descricao=texto))
+    return problemas
+
+
 def verificar_0900_ausente(doc, hoje=None):
     """Registro 0900 ausente numa escrituração já fora do prazo.
 
@@ -561,6 +590,8 @@ REGRAS = [
     ("M210/M610 com base de cálculo divergente", verificar_m210_base_calculo),
     ("M400/M800 sem lastro nos documentos", verificar_m400_sem_lastro),
     ("Registro 0900 ausente fora do prazo", verificar_0900_ausente),
+    ("M105/M505 fora da base de crédito dos documentos",
+     verificar_credito_m105),
 ]
 
 

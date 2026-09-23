@@ -5996,15 +5996,29 @@ class JanelaPrincipal(QMainWindow):
                         % (t, _br(d["apurado"]), _br(d["a_recolher"])))
             return "• %s: %s" % (t, d)
 
+        cred = res.get("creditos") or {}
+        if cred:
+            det = "\n".join(
+                "• crédito de %s: base refeita em %d grupo(s), "
+                "R$ %s disponível, R$ %s descontado"
+                % (t, d["grupos"], _br(d["disponivel"]), _br(d["descontado"]))
+                for t, d in sorted(cred.items()))
+            obs = ("Os créditos (M100/M105 e M500/M505) foram **refeitos** "
+                   "a partir das entradas: um grupo por alíquota, com a "
+                   "natureza da base vinda do CFOP pela tabela do PVA. O "
+                   "desconto vai até o limite do débito do período; o resto "
+                   "fica como saldo.\n\n" + det)
+        else:
+            obs = ("Observação: os créditos (M100/M105/M500/M505) foram "
+                   "preservados — %s."
+                   % (res.get("creditos_motivo")
+                      or "não havia o que refazer"))
         msg = ("Apuração recalculada — regime %s.\n\n%s\n%s\n\n"
                "As bases e contribuições foram somadas das receitas "
-               "tributadas de saída (C175/C170) por alíquota.\n\n"
-               "Observação: os créditos (M100/M105/M500/M505) são "
-               "preservados e apenas descontados na consolidação; "
-               "este recálculo não recompõe os créditos."
+               "tributadas de saída (C175/C170) por alíquota.\n\n%s"
                % (res.get("regime", "?"),
                   linha("PIS", res.get("PIS", "—")),
-                  linha("COFINS", res.get("COFINS", "—"))))
+                  linha("COFINS", res.get("COFINS", "—")), obs))
         self.statusBar().showMessage("Bloco M recalculado (regime %s)."
                                      % res.get("regime", "?"))
         QMessageBox.information(self, "Bloco M", msg)
@@ -6379,6 +6393,8 @@ class JanelaPrincipal(QMainWindow):
             "M210/M610 com receita bruta divergente":
                 ("Recalcular bloco M…", self.recalcular_bloco_m),
             "M210/M610 com base de cálculo divergente":
+                ("Recalcular bloco M…", self.recalcular_bloco_m),
+            "M105/M505 fora da base de crédito dos documentos":
                 ("Recalcular bloco M…", self.recalcular_bloco_m),
         }
         self._dlg_revisao = DialogoRevisao(
