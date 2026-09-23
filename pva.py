@@ -17,8 +17,15 @@ Daí o caminho usado aqui:
    trava de instância única, `TryLock.txt`, e a segunda só mostra um erro);
 2. não havendo, executar o `.exe` e esperar a janela aparecer (o PVA sobe um
    MySQL próprio e demora);
-3. copiar o caminho do arquivo para a área de transferência;
-4. mandar Ctrl+I, esperar o seletor de arquivo e mandar Ctrl+V e Enter.
+3. **esperar o carregamento interno terminar** — a janela principal aparece
+   antes de aceitar atalhos, e enquanto carrega o processo mantém uma segunda
+   janela, a barra de progresso. Medido numa partida a frio: janela aos 4 s,
+   Ctrl+I só aceito aos 11,9 s, exatamente quando a contagem de janelas caiu
+   de 2 para 1. Os atalhos enviados no meio são **engolidos**, não
+   enfileirados — por isso o Ctrl+I também é repetido até o seletor abrir;
+4. copiar o caminho do arquivo para a área de transferência;
+5. mandar Ctrl+I, esperar o seletor de arquivo e mandar Ctrl+V e Enter. O PVA
+   ainda pede uma confirmação, que fica com o usuário.
 
 **A tecla só é enviada depois de conferir que a janela em primeiro plano é do
 processo do PVA.** Não sendo, a função para e devolve o que falta fazer — com
@@ -56,7 +63,9 @@ INSTALACOES = {
 
 # tempo de espera, em segundos
 ESPERA_JANELA = 120      # PVA subindo do zero (sobe um MySQL junto)
-ESPERA_SELETOR = 20      # o seletor de arquivo depois do Ctrl+I
+ESPERA_PRONTA = 120      # carregamento interno, DEPOIS de a janela aparecer
+ESPERA_SELETOR = 45      # o seletor de arquivo, com o Ctrl+I sendo repetido
+INTERVALO_ATALHO = 3.0   # de quanto em quanto tempo repetir o Ctrl+I
 
 
 def disponivel():
@@ -252,6 +261,36 @@ def _tecla(vk, ctrl=False):
     time.sleep(0.15)
 
 
+def _esperar_pronta(hwnd, pid, limite=ESPERA_PRONTA, sossego=1.0,
+                    progresso=None):
+    """Espera o PVA terminar o **carregamento interno**.
+
+    A janela principal aparece bem antes de aceitar atalhos: enquanto carrega,
+    o processo mantém uma segunda janela — a barra de progresso. Medido numa
+    partida a frio: janela principal aos 4 s, atalho só aceito aos 11,9 s,
+    exatamente quando a contagem de janelas caiu de 2 para 1. Os dois Ctrl+I
+    enviados no meio foram **engolidos**, não enfileirados, o que é o que
+    torna seguro repetir o atalho depois.
+
+    Devolve True quando sobra só a janela principal e ela se mantém assim.
+    """
+    fim = time.time() + limite
+    desde = None
+    while time.time() < fim:
+        janelas = _hwnds_do_processo(pid)
+        if janelas <= {hwnd}:
+            if desde is None:
+                desde = time.time()
+            elif time.time() - desde >= sossego:
+                return True
+        else:
+            desde = None
+            if progresso:
+                progresso(int(fim - time.time()))
+        time.sleep(0.3)
+    return False
+
+
 def _esperar_janela(layout, raiz, limite, progresso=None):
     fim = time.time() + limite
     while time.time() < fim:
@@ -306,6 +345,10 @@ def abrir(caminho, layout, importar=True, confirmar=True, raiz=None,
                                 % inst["nome"]}
 
     _copiar(caminho)
+    # o carregamento interno vem DEPOIS de a janela aparecer, e enquanto ele
+    # roda o atalho é ignorado — esperar aqui é o que faz a importação pegar
+    if aberto_agora or len(_hwnds_do_processo(pid)) > 1:
+        _esperar_pronta(hwnd, pid, progresso=progresso)
     frente = _focar(hwnd, pid)
     if frente is None:
         return {"estado": "pva_aberto", "aberto_agora": aberto_agora,
@@ -324,21 +367,30 @@ def abrir(caminho, layout, importar=True, confirmar=True, raiz=None,
                             "Ctrl+I, Ctrl+V, Enter, que o caminho já está na "
                             "área de transferência." % inst["nome"]}
 
-    antes = _hwnds_do_processo(pid)
-    _tecla(VK_I, ctrl=True)          # Escrituração → Nova → Importar
-
     # O seletor de arquivo é uma janela NOVA do mesmo processo. Detectar por
     # "apareceu janela nova" e não por "está em primeiro plano": no segundo
     # critério, qualquer janela que roube o foco no meio derruba a detecção de
     # uma tela que abriu direitinho.
+    #
+    # O Ctrl+I é **repetido** até o seletor aparecer: a espera pelo
+    # carregamento cobre o caso conhecido, mas atalho engolido não deixa
+    # rastro, e insistir custa pouco — teclado ignorado não enfileira.
     alvo = None
+    tentativas = 0
     fim = time.time() + ESPERA_SELETOR
-    while time.time() < fim:
-        novas = _hwnds_do_processo(pid) - antes
-        if novas:
-            alvo = max(novas)
+    while time.time() < fim and alvo is None:
+        if _focar(hwnd, pid, limite=3.0) != hwnd:
             break
-        time.sleep(0.3)
+        antes = _hwnds_do_processo(pid)
+        _tecla(VK_I, ctrl=True)      # Escrituração → Nova → Importar
+        tentativas += 1
+        espera = time.time() + INTERVALO_ATALHO
+        while time.time() < espera:
+            novas = _hwnds_do_processo(pid) - antes
+            if novas:
+                alvo = max(novas)
+                break
+            time.sleep(0.25)
     if alvo is None:
         return {"estado": "pva_aberto", "aberto_agora": aberto_agora,
                 "mensagem": "O %s está aberto, mas a janela de importação não "
@@ -357,8 +409,22 @@ def abrir(caminho, layout, importar=True, confirmar=True, raiz=None,
     _tecla(VK_V, ctrl=True)
     if not confirmar:
         return {"estado": "caminho_colado", "aberto_agora": aberto_agora,
+                "tentativas": tentativas,
                 "mensagem": "Caminho colado na janela de importação do %s — "
                             "confirme por lá." % inst["nome"]}
+    antes = _hwnds_do_processo(pid)
     _tecla(VK_RETURN)
+    # depois do Enter o PVA abre um "Aviso" pedindo a confirmação da
+    # importação — quem confirma é o usuário, e é bom que seja assim
+    fim = time.time() + 5.0
+    while time.time() < fim:
+        if _hwnds_do_processo(pid) - antes:
+            return {"estado": "confirmar", "aberto_agora": aberto_agora,
+                    "tentativas": tentativas,
+                    "mensagem": "O %s está pedindo a confirmação da "
+                                "importação — confirme por lá."
+                                % inst["nome"]}
+        time.sleep(0.25)
     return {"estado": "importando", "aberto_agora": aberto_agora,
+            "tentativas": tentativas,
             "mensagem": "Importação iniciada no %s." % inst["nome"]}

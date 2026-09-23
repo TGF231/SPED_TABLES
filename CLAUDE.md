@@ -406,6 +406,14 @@ Cinco coisas que custaram tentativa:
   janela por "Sped Fiscal" pegava a splash, que não aceita foco, e a
   automação morria aos 6 segundos com o PVA ainda carregando. O casamento é
   pelo **título inteiro**, o do `aplicacao.properties`.
+- **A janela principal aparece muito antes de aceitar atalhos.** Depois dela
+  vem um carregamento interno, e enquanto ele roda o processo mantém uma
+  **segunda janela** — a barra de progresso. Medido numa partida a frio do
+  PVA Fiscal: janela aos 4 s, Ctrl+I só aceito aos **11,9 s**, exatamente
+  quando a contagem de janelas do processo caiu de 2 para 1. É esse o sinal
+  que `_esperar_pronta` usa. Os atalhos enviados no meio são **engolidos, não
+  enfileirados** — foi o que permitiu, por garantia, repetir o Ctrl+I até o
+  seletor abrir sem risco de abrir dois.
 - **Só o processo dono do primeiro plano pode dar o primeiro plano a outro.**
   Clicando no nosso botão, o dono somos nós e o `SetForegroundWindow` passa;
   fora disso ele é ignorado **em silêncio**. O contorno é anexar a fila de
@@ -420,6 +428,12 @@ Cinco coisas que custaram tentativa:
   transferência e a mensagem diz o que falta fazer à mão.
 - **O PVA tem trava de instância única** (`TryLock.txt`): havendo janela, ela
   é trazida para a frente; a segunda execução só mostraria um erro.
+
+A automação **para antes das confirmações**: depois do Enter no seletor, o
+PVA abre um "Aviso" pedindo para confirmar a importação e, terminada ela,
+outro perguntando se quer validar. Os dois são decisão do usuário, e é assim
+que deve ficar — responder "sim" por conta própria importaria e validaria sem
+ninguém ter pedido.
 
 E a de sempre com ctypes: `GetClipboardData` **precisa** de `restype`
 declarado. Sem ele o handle de 64 bits é truncado, o `GlobalLock` falha e a

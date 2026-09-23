@@ -543,8 +543,14 @@ a abrir, outra janela roubando o foco, um diálogo aberto esperando resposta),
 **nada é teclado às cegas**: o caminho fica na área de transferência e a
 mensagem diz o que falta, que é Ctrl+I, Ctrl+V, Enter.
 
-PVA frio sobe um MySQL junto e pode levar mais de um minuto; a espera roda
-fora da thread da interface, com aviso na tela.
+O programa espera o PVA **terminar de carregar** antes de mandar o atalho: a
+janela principal aparece bem antes de aceitar teclas, e nesse intervalo o
+atalho é simplesmente ignorado. Numa partida a frio medida aqui, a janela
+apareceu em 4 s e o atalho só passou a valer aos 12 s — com a espera, a
+importação abre na primeira tentativa, 14 s depois do clique.
+
+A automação para nas **confirmações**: o PVA pede para confirmar a importação
+e, ao terminar, pergunta se quer validar. As duas respostas ficam com você.
 
 ### Diagnóstico do arquivo (automático ao abrir)
 

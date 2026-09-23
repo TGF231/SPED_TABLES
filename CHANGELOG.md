@@ -1,5 +1,33 @@
 # Changelog
 
+## [0.46.0] - 2026-09-23
+
+### Corrigido
+- **A importação no PVA não pegava numa partida a frio.** A janela principal
+  aparece bem antes de o programa aceitar atalhos, e o Ctrl+I era enviado no
+  meio do carregamento interno — onde é simplesmente ignorado.
+  `_esperar_pronta` agora aguarda o fim desse carregamento, detectado por um
+  sinal medido no próprio PVA: enquanto carrega, o processo mantém uma
+  **segunda janela** (a barra de progresso); quando sobra só a principal, o
+  atalho passa a valer. Numa partida a frio do PVA Fiscal: janela aos 4 s,
+  atalho aceito aos 11,9 s, exatamente na queda de 2 para 1 janela.
+- Por garantia, o **Ctrl+I é repetido** a cada 3 s até o seletor abrir. É
+  seguro porque atalho ignorado pelo Swing não enfileira: no ensaio, dois
+  Ctrl+I enviados durante o carregamento não abriram nenhuma janela extra.
+
+### Alterado
+- Depois do Enter no seletor, o resultado passa a ser **`confirmar`** quando o
+  PVA abre o aviso pedindo para confirmar a importação — é o que acontece de
+  fato, e a mensagem diz isso em vez de anunciar uma importação que ainda
+  depende do usuário.
+
+### Notas
+- Medições: partida a frio do PVA do EFD Contribuições, do clique à janela de
+  importação com o caminho colado, **14,4 s e uma única tentativa** de atalho.
+  Com o PVA já aberto, 1 s.
+- A automação para nas confirmações do PVA (importar? validar?), que seguem
+  sendo do usuário.
+
 ## [0.45.0] - 2026-09-23
 
 ### Adicionado
