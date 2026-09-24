@@ -1,5 +1,33 @@
 # Changelog
 
+## [0.49.0] - 2026-09-24
+
+Os dois defeitos **graves** encontrados na revisão completa do código.
+
+### Corrigido
+- **Registro criado pela grade saía com um campo só.** O botão "+" chamava
+  `novo_registro` e ninguém redimensionava nada: a linha ia para o arquivo
+  como `|C170|`, recusada pelo PVA por quantidade de campos. Agora é o próprio
+  `novo_registro` que mede `_ncampos(tipo)` **antes de inserir** e entrega o
+  registro na largura do leiaute — os outros 13 pontos que criam registro
+  continuam montando o conteúdo como antes.
+- **Salvar podia destruir o arquivo do usuário.** `open(caminho, "w")` trunca
+  o destino no instante em que é aberto; qualquer falha depois disso deixava
+  o arquivo vazio. No ensaio, colar um travessão (`—`) numa descrição e salvar
+  **zerava um SPED de 236 KB**. Agora o texto é codificado antes de tocar em
+  disco, escrito num `.tmp` ao lado e renomeado por cima (`os.replace`).
+- Caractere fora da codificação do SPED passou a **recusar a gravação com a
+  linha e o caractere na mensagem**, em vez de estourar no meio da escrita.
+  Trocar por `?` em silêncio mudaria a descrição do produto sem ninguém saber.
+
+### Notas
+- Teste novo (`teste_gravacao`) cobre os dois: largura do registro criado pelo
+  modelo e pelo botão "+" da grade; e a gravação com caractere impossível,
+  conferindo que o arquivo continua **byte a byte intacto**, sem `.tmp`
+  sobrando, com a gravação normal idempotente.
+- Os outros 14 achados da revisão (5 médios, 9 menores) seguem catalogados e
+  não foram mexidos nesta versão.
+
 ## [0.48.0] - 2026-09-23
 
 ### Corrigido

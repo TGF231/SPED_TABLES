@@ -57,17 +57,26 @@ Regra geral: **lógica fiscal no modelo, nunca na GUI.** A GUI só chama método
 
 ### Ao criar registros novos
 
-Usar **`self._ncampos(tipo)`** para o tamanho do registro. Nunca
+**`novo_registro` já entrega o registro com a largura do leiaute** — mede
+`_ncampos(tipo)` antes de inserir e preenche o resto com vazios. Quem monta o
+conteúdo pode sobrescrever `campos` inteiro, como sempre; quem não monta
+(o botão "+" da grade) recebe a linha certa de graça.
+
+Até a 0.49.0 não era assim: o registro nascia com **um campo só**, e a linha
+criada pela grade saía `|C170|` no arquivo — recusa certa no PVA por
+quantidade de campos. Era o único dos 14 pontos que criam registro que não
+redimensionava nada.
+
+Usar **`self._ncampos(tipo)`** para o tamanho. Nunca
 `len(campos(tipo, layout, 40))` — esse helper completa a lista com rótulos
 `"Campo NN"` apenas para exibição, e usá-lo gera linhas com pipes sobrando (erro
 de layout no PVA).
 
 **Meça o tamanho ANTES de criar o primeiro registro do tipo.** `_ncampos` usa
-a **moda dos registros já presentes** e só cai no layout quando não há nenhum.
-Como `novo_registro` já insere o registro com um campo só, chamar
-`self._ncampos(tipo)` **depois** dele devolve `1` — e sai `|0500|` no arquivo.
-Guarde o número numa variável antes da criação (foi o que aconteceu ao criar o
-0500 do plano de contas).
+a **moda dos registros já presentes**, então um registro recém-inserido puxa a
+moda para baixo. `novo_registro` faz essa medição no lugar certo; quem precisa
+do número para outra coisa (o 0500 do plano de contas) guarda numa variável
+antes da criação.
 
 **Abriu um bloco, feche o bloco.** Quem cria o primeiro registro de um bloco que
 ainda não existe no arquivo precisa criar também o **X990**. `gerar_texto`
@@ -475,6 +484,22 @@ E a de sempre com ctypes: `GetClipboardData` **precisa** de `restype`
 declarado. Sem ele o handle de 64 bits é truncado, o `GlobalLock` falha e a
 leitura volta vazia — foi assim que um teste deu "campo vazio" com o campo
 preenchido.
+
+## Gravar nunca pode destruir o arquivo de destino
+
+`salvar` **codifica o texto inteiro antes de tocar em disco**, escreve num
+`.tmp` ao lado e só então renomeia por cima (`os.replace`, atômico no mesmo
+volume). O modo `"w"` trunca o arquivo no instante em que é aberto: até a
+0.49.0, qualquer falha depois disso — disco cheio, ou um caractere fora do
+latin-1 numa descrição — deixava o usuário **sem o arquivo e sem o
+conteúdo**. No ensaio, colar um travessão (`—`) numa descrição e salvar
+zerava um SPED de 236 KB.
+
+Caractere impossível de codificar não vira `?` em silêncio: a gravação é
+recusada com a **linha** e o caractere na mensagem ("a linha 43 tem o
+caractere '—'"), porque trocar por `?` mudaria a descrição do produto sem
+ninguém saber. O caso típico é texto colado de outro programa — travessão,
+aspas curvas.
 
 ## Armadilha: scripts de teste que sombreiam o stdlib
 

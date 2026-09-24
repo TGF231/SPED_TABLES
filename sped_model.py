@@ -12,6 +12,7 @@ Modelo de dados do SPED em árvore.
 """
 
 import itertools
+import os
 import re
 from sped_layouts import (nivel, campos, detectar_layout,
                           num_campos_esperado)
@@ -3186,13 +3187,20 @@ class SpedDocument:
     # ------------------------------------------------------------- edição CRUD
     def novo_registro(self, tipo, pai=None, depois=None):
         """
-        Cria um novo registro vazio do `tipo` informado.
+        Cria um novo registro vazio do `tipo` informado, **com a largura do
+        leiaute** — um registro de um campo só sai do arquivo como `|C170|` e
+        o PVA recusa por quantidade de campos. Era o que acontecia com a
+        linha criada pelo botão "+" da grade, que não redimensionava nada.
+
         `pai`    -> Registro pai (None = raiz)
         `depois` -> Registro após o qual inserir (controla a ordem do arquivo)
         """
-        partes = ["", tipo, ""]   # vira campos = [tipo]
+        # a largura é medida ANTES de inserir: `_ncampos` usa a moda dos
+        # registros já presentes, e um recém-criado puxaria a moda para baixo
+        n_campos = max(1, self._ncampos(tipo))
+        partes = ["", tipo, ""]
         r = Registro(partes, self.layout, 0)
-        r.campos = [tipo]
+        r.campos = [tipo] + [""] * (n_campos - 1)
         r.pai = pai
         # ordem de inserção
         if depois is not None:
@@ -3346,9 +3354,43 @@ class SpedDocument:
         return "\r\n".join(linhas) + "\r\n"
 
     def salvar(self, caminho=None):
+        """Grava o arquivo **sem destruir o destino se algo der errado**.
+
+        O modo `"w"` trunca o arquivo no momento em que é aberto: qualquer
+        falha depois disso — disco cheio, ou um caractere fora do latin-1
+        colado numa descrição — deixava o usuário sem o arquivo e sem o
+        conteúdo. Aqui o texto é codificado **antes** de tocar em disco,
+        escrito num temporário ao lado e só então renomeado por cima
+        (`os.replace`, que é atômico no mesmo volume).
+        """
         caminho = caminho or self.caminho
         texto = self.gerar_texto()
-        with open(caminho, "w", encoding=self.encoding, newline="") as f:
-            f.write(texto)
+        try:
+            dados = texto.encode(self.encoding)
+        except UnicodeEncodeError as exc:
+            linha = texto.count("\n", 0, exc.start) + 1
+            try:
+                trecho = texto.splitlines()[linha - 1][:90]
+            except IndexError:
+                trecho = ""
+            raise ValueError(
+                "O arquivo não foi gravado: a linha %d tem o caractere %r, "
+                "que não existe na codificação %s do SPED. Normalmente é "
+                "texto colado de outro programa (travessão, aspas curvas). "
+                "Corrija o campo e salve de novo.\n\n%s"
+                % (linha, texto[exc.start:exc.end], self.encoding,
+                   trecho)) from None
+
+        temporario = "%s.tmp" % caminho
+        try:
+            with open(temporario, "wb") as f:
+                f.write(dados)
+            os.replace(temporario, caminho)
+        except Exception:
+            try:
+                os.remove(temporario)
+            except OSError:
+                pass
+            raise
         self.caminho = caminho
         return caminho

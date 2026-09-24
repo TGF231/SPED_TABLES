@@ -566,6 +566,17 @@ não aparecendo, a automação para e avisa o que falta fazer.
 
 Medido aqui, do clique ao validador rodando: **19 segundos**.
 
+### Segurança ao salvar
+
+O arquivo só é substituído quando a gravação inteira deu certo: o conteúdo é
+codificado na memória, escrito num temporário ao lado e renomeado por cima.
+Falta de espaço em disco ou um caractere que não existe no padrão do SPED não
+deixam mais o arquivo pela metade.
+
+Caractere impossível de gravar (travessão, aspas curvas — normalmente texto
+colado de outro programa) **não é trocado por outro em silêncio**: a gravação
+é recusada dizendo a linha e o caractere, para você corrigir o campo.
+
 ### Diagnóstico do arquivo (automático ao abrir)
 
 Ao abrir um SPED, o programa passa o arquivo pelas camadas de verificação do
