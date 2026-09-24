@@ -6942,6 +6942,38 @@ class JanelaPrincipal(QMainWindow):
                                 % (self.doc.layout, pva.RAIZ_PVA))
             return
 
+        # O PVA recusa a importação inteira quando o arquivo tem erro de
+        # estrutura — e só diz isso depois de abrir, importar e falhar. Como o
+        # diagnóstico daqui já conhece esses campos, a pergunta vem antes:
+        # poupa o usuário de um "não funcionou" que é do arquivo, não da
+        # automação.
+        try:
+            achados, _info = diagnostico.verificar(self.doc)
+            impedem = diagnostico.impedem_importacao(achados)
+        except Exception:                                   # noqa: BLE001
+            impedem = []
+        if impedem:
+            total = sum(q for _t, q in impedem)
+            detalhe = "\n".join("• %s: %d" % (t, q) for t, q in impedem)
+            cx = QMessageBox(QMessageBox.Icon.Warning, "Abrir no PVA",
+                             "Este arquivo tem %d campo(s) que o PVA recusa "
+                             "já na importação:\n\n%s\n\nEle vai responder "
+                             "\"Importação não realizada — erros na estrutura "
+                             "do arquivo\". Corrija antes pelo Diagnóstico."
+                             % (total, detalhe), parent=self)
+            b_diag = cx.addButton("Ver diagnóstico",
+                                  QMessageBox.ButtonRole.AcceptRole)
+            b_ass = cx.addButton("Mandar assim mesmo",
+                                 QMessageBox.ButtonRole.DestructiveRole)
+            cx.addButton("Cancelar", QMessageBox.ButtonRole.RejectRole)
+            cx.setDefaultButton(b_diag)
+            cx.exec()
+            if cx.clickedButton() is b_diag:
+                self.diagnosticar()
+                return
+            if cx.clickedButton() is not b_ass:
+                return
+
         espera = QProgressDialog("Abrindo o %s…" % inst["nome"], "", 0, 0, self)
         espera.setWindowTitle("Abrir no PVA")
         espera.setCancelButton(None)
@@ -6977,6 +7009,9 @@ class JanelaPrincipal(QMainWindow):
         msg = resultado.get("mensagem", "")
         if estado in ("validando", "importado", "importando"):
             self.statusBar().showMessage(msg, 15000)
+        elif estado == "erro_pva":
+            self.statusBar().showMessage(msg, 15000)
+            QMessageBox.warning(self, "Abrir no PVA", msg)
         elif estado in ("caminho_colado", "pva_aberto", "pva_ocupado",
                         "confirmar"):
             self.statusBar().showMessage(msg, 15000)

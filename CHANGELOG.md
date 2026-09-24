@@ -1,5 +1,41 @@
 # Changelog
 
+## [0.48.0] - 2026-09-23
+
+### Corrigido
+- **O "Abrir no PVA" não funcionava no EFD ICMS/IPI.** Com uma escrituração
+  aberta em edição — o estado de quem deixa o PVA aberto no arquivo do mês —,
+  o menu *Nova → Importar* fica desabilitado e o Ctrl+I não faz nada. A
+  segunda tentativa passou a mandar **Ctrl+F** (Fechar) antes do Ctrl+I; a
+  escrituração continua no banco do PVA (reabrir é Ctrl+A). Com isso o
+  caminho fechou em **5,1 s e 2 tentativas** num PVA que estava exatamente
+  nesse estado.
+- **Arquivo recusado era anunciado como importado.** A tela *Importando…*
+  some tanto no sucesso quanto na falha; quem separa os dois é o **Erro** que
+  o PVA abre em seguida. Agora ele é detectado e o resultado vira `erro_pva`.
+- **Janela esquecida travava a espera.** *Resultado da Importação*, *Erro* e
+  afins eram confundidos com o carregamento, e a automação queimava os dois
+  minutos inteiros antes de dizer que o PVA estava ocupado. A janela de
+  carregamento se chama **"Aguarde..."**; só ela (e as sem título) contam
+  como carregamento.
+
+### Adicionado
+- **Pré-checagem antes de mandar ao PVA.** `diagnostico.impedem_importacao`
+  separa os achados que fazem o PVA recusar a importação (`nulo`, `formato`,
+  `num_campos`, `bloco`, `dominio`) e a GUI pergunta antes de abrir nada,
+  oferecendo o diagnóstico. Num arquivo real de supermercado: 13.343 campos
+  com `NULL`, 10.312 `TIPO_ITEM` inválidos e 470 `CEST` — exatamente o que o
+  PVA recusou, com 1.000 erros no relatório (o teto dele).
+- **As telas próprias do PVA passaram a ser esperadas, não respondidas**:
+  *Atualizar Tabelas* (Ok/Cancelar, com o foco na árvore — Enter não aciona
+  botão), *Transferindo Tabelas* e a *Mensagem* de conclusão. O andamento diz
+  o que o PVA está pedindo, e a importação retoma sozinha quando o usuário
+  responde.
+
+### Notas
+- Conferido ponta a ponta no EFD ICMS/IPI: arquivo corrigido importou,
+  validou e o PVA devolveu o relatório de pendências.
+
 ## [0.47.0] - 2026-09-23
 
 ### Adicionado

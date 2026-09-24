@@ -78,6 +78,16 @@ ESPERA_IMPORTACAO = 1800 # a importação terminar (arquivo grande demora)
 # (`solicitarConfirmacao`, sempre com esse título); os outros são as telas de
 # progresso, e é a **aparição delas** que confirma que o "sim" foi aceito.
 TITULO_AVISO = "aviso"
+TITULO_ERRO = "erro"
+
+# Telas que atravessam o caminho sem serem o que se espera. As de **progresso**
+# só pedem paciência; as de **decisão** são do usuário e não são respondidas —
+# a automação espera ele resolver e segue. A de atualizar tabelas é a mais
+# comum: aparece na abertura, lista as tabelas obrigatórias à validação e não
+# tem botão alcançável por Enter (o foco nasce na árvore).
+TITULOS_PROGRESSO = ("aguarde", "transferindo")
+TITULOS_DECISAO = ("atualizar tabelas", "mensagem")
+ESPERA_DECISAO = 900     # quanto se espera o usuário responder
 TITULO_IMPORTANDO = "importando a escrituração"
 TITULO_VALIDANDO = "validando a escrituração"
 
@@ -153,6 +163,7 @@ if disponivel():
     CF_UNICODETEXT = 13
     KEYEVENTF_KEYUP = 0x0002
     VK_CONTROL, VK_I, VK_V, VK_RETURN, VK_ESCAPE = 0x11, 0x49, 0x56, 0x0D, 0x1B
+    VK_F = 0x46                  # Escrituração Fiscal → Fechar
 
 
 def _janelas(exigir_titulo=True):
@@ -297,7 +308,7 @@ def _janela_com_titulo(pid, contem, limite, ausente=False):
 
 
 def _confirmar_aviso(pid, titulo_efeito, limite_aviso=ESPERA_AVISO,
-                     limite_efeito=ESPERA_PROGRESSO):
+                     limite_efeito=ESPERA_PROGRESSO, progresso=None):
     """Responde "sim" a um "Aviso" do PVA — e confere pelo efeito.
 
     O diálogo é um `JOptionPane` (`ExibirMensagem.solicitarConfirmacao`), cujo
@@ -309,6 +320,9 @@ def _confirmar_aviso(pid, titulo_efeito, limite_aviso=ESPERA_AVISO,
 
     Devolve o hwnd da tela de progresso, ou None.
     """
+    # a atualização de tabelas costuma entrar aqui, entre o Enter no seletor
+    # e o pedido de confirmação
+    _esperar_livre(pid, progresso=progresso)
     aviso = _janela_com_titulo(pid, TITULO_AVISO, limite_aviso)
     if aviso is None:
         return None
@@ -334,17 +348,61 @@ def _esperar_pronta(hwnd, pid, limite=ESPERA_PRONTA, sossego=1.0,
     fim = time.time() + limite
     desde = None
     while time.time() < fim:
-        janelas = _hwnds_do_processo(pid)
-        if janelas <= {hwnd}:
-            if desde is None:
-                desde = time.time()
-            elif time.time() - desde >= sossego:
-                return True
-        else:
+        extras = [(h, t) for h, t, p in _janelas(exigir_titulo=False)
+                  if p == pid and h != hwnd]
+        espera = _classificar(extras)
+        if espera:
             desde = None
             if progresso:
-                progresso("Aguardando o PVA terminar de carregar…")
+                progresso(espera)
+        elif extras:
+            # janela esquecida ("Resultado da Importação", "Aviso", "Erro")
+            # não é carregamento: esperar por ela queimava os 2 minutos
+            # inteiros antes de dizer que o PVA estava ocupado
+            return True
+        elif desde is None:
+            desde = time.time()
+        elif time.time() - desde >= sossego:
+            return True
         time.sleep(0.3)
+    return False
+
+
+def _classificar(extras):
+    """Mensagem de espera para as janelas atravessadas, ou "" se não há.
+
+    Devolver texto quer dizer "continue esperando"; devolver "" quer dizer
+    que nada conhecido está no caminho.
+    """
+    for _h, titulo in extras:
+        t = (titulo or "").lower()
+        if not t or any(x in t for x in TITULOS_PROGRESSO):
+            return ("Aguardando o PVA terminar de carregar…" if "transfer"
+                    not in t else "O PVA está transferindo tabelas…")
+        if any(x in t for x in TITULOS_DECISAO):
+            return ("O PVA está pedindo uma resposta (%s) — responda na tela "
+                    "dele que a importação segue." % (titulo or "").strip())
+    return ""
+
+
+def _esperar_livre(pid, limite=ESPERA_DECISAO, progresso=None):
+    """Espera sair do caminho o que for progresso ou decisão do usuário.
+
+    A atualização de tabelas entra bem no meio da importação: o PVA pergunta,
+    baixa e ainda avisa que deu certo. Nada disso é respondido aqui — são
+    decisões do usuário —, mas esperar por elas é o que faz a automação
+    retomar sozinha em vez de dizer que não conseguiu.
+    """
+    fim = time.time() + limite
+    while time.time() < fim:
+        extras = [(h, t) for h, t, p in _janelas(exigir_titulo=False)
+                  if p == pid]
+        espera = _classificar(extras)
+        if not espera:
+            return True
+        if progresso:
+            progresso(espera)
+        time.sleep(0.5)
     return False
 
 
@@ -408,6 +466,10 @@ def abrir(caminho, layout, importar=True, confirmar=True, validar=True,
                                 "caminho (já está na área de transferência)."
                                 % inst["nome"]}
 
+    def saida_simples(estado, msg):
+        return {"estado": estado, "aberto_agora": aberto_agora,
+                "mensagem": msg}
+
     _copiar(caminho)
     # o carregamento interno vem DEPOIS de a janela aparecer, e enquanto ele
     # roda o atalho é ignorado — esperar aqui é o que faz a importação pegar
@@ -446,6 +508,22 @@ def abrir(caminho, layout, importar=True, confirmar=True, validar=True,
         if _focar(hwnd, pid, limite=3.0) != hwnd:
             break
         antes = _hwnds_do_processo(pid)
+        if tentativas:
+            # O atalho não pegou na primeira. A causa conhecida é o PVA estar
+            # com uma **escrituração aberta (em edição)**: nesse estado ele
+            # desabilita *Nova → Importar*, e o Ctrl+I não faz nada — era o
+            # que travava o EFD ICMS/IPI de quem deixa o PVA aberto no
+            # arquivo do mês. Ctrl+F fecha a escrituração (ela continua no
+            # banco do PVA; reabrir é Ctrl+A) e o Importar volta a valer.
+            _tecla(VK_F, ctrl=True)
+            time.sleep(0.8)
+            if _hwnds_do_processo(pid) - antes:
+                return saida_simples(
+                    "pva_ocupado",
+                    "O %s está com uma escrituração aberta e pediu "
+                    "confirmação para fechá-la. Responda por lá e repita — o "
+                    "caminho já está na área de transferência." % inst["nome"])
+            antes = _hwnds_do_processo(pid)
         _tecla(VK_I, ctrl=True)      # Escrituração → Nova → Importar
         tentativas += 1
         espera = time.time() + INTERVALO_ATALHO
@@ -456,11 +534,12 @@ def abrir(caminho, layout, importar=True, confirmar=True, validar=True,
                 break
             time.sleep(0.25)
     if alvo is None:
-        return {"estado": "pva_aberto", "aberto_agora": aberto_agora,
-                "mensagem": "O %s está aberto, mas a janela de importação não "
-                            "apareceu. Faça Ctrl+I e cole o caminho (Ctrl+V), "
-                            "que já está na área de transferência."
-                            % inst["nome"]}
+        return saida_simples(
+            "pva_aberto",
+            "O %s está aberto, mas a janela de importação não apareceu — o "
+            "atalho Ctrl+I não foi aceito. Veja se há escrituração aberta ou "
+            "diálogo esperando resposta por lá; o caminho já está na área de "
+            "transferência (Ctrl+I, Ctrl+V, Enter)." % inst["nome"])
 
     # nada é teclado antes de a janela nova estar mesmo na frente
     if _focar(alvo, pid) != alvo:
@@ -485,7 +564,8 @@ def abrir(caminho, layout, importar=True, confirmar=True, validar=True,
     # ---- "Deseja importar?" ------------------------------------------
     if progresso:
         progresso("Confirmando a importação…")
-    importando = _confirmar_aviso(pid, TITULO_IMPORTANDO)
+    importando = _confirmar_aviso(pid, TITULO_IMPORTANDO,
+                                  progresso=progresso)
     if importando is None:
         return saida("confirmar",
                      "O caminho foi entregue ao %s, mas não consegui "
@@ -499,6 +579,16 @@ def abrir(caminho, layout, importar=True, confirmar=True, validar=True,
                      "A importação no %s passou de %d minutos e continua "
                      "rodando; acompanhe por lá." % (inst["nome"],
                                                      ESPERA_IMPORTACAO // 60))
+    # A tela de progresso some tanto no sucesso quanto na recusa. Quem separa
+    # os dois é o "Erro" que o PVA abre quando o arquivo tem problema de
+    # estrutura: sem esta checagem, arquivo recusado era anunciado como
+    # importado — foi o que aconteceu com um SPED ICMS cheio de `NULL`.
+    if _janela_com_titulo(pid, TITULO_ERRO, 3.0) is not None:
+        return saida("erro_pva",
+                     "O %s **recusou** a importação: a mensagem está na tela "
+                     "dele. Erro de estrutura no arquivo (tipo ou tamanho de "
+                     "campo) é o motivo mais comum — o Diagnóstico daqui "
+                     "aponta esses campos." % inst["nome"])
     if not validar:
         return saida("importado",
                      "Arquivo importado no %s." % inst["nome"])
@@ -506,7 +596,8 @@ def abrir(caminho, layout, importar=True, confirmar=True, validar=True,
     # ---- "Deseja validar?" -------------------------------------------
     if progresso:
         progresso("Confirmando a validação…")
-    validando = _confirmar_aviso(pid, TITULO_VALIDANDO)
+    validando = _confirmar_aviso(pid, TITULO_VALIDANDO,
+                                 progresso=progresso)
     if validando is None:
         return saida("importado",
                      "Arquivo importado no %s. O aviso da validação não foi "

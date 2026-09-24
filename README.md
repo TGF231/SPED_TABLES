@@ -549,6 +549,16 @@ atalho é simplesmente ignorado. Numa partida a frio medida aqui, a janela
 apareceu em 4 s e o atalho só passou a valer aos 12 s — com a espera, a
 importação abre na primeira tentativa, 14 s depois do clique.
 
+Antes de abrir o PVA, o programa confere se o arquivo tem erro de estrutura
+— o PVA recusa a importação inteira nesse caso, e o diagnóstico daqui já
+conhece esses campos. Se tiver, ele avisa e oferece o diagnóstico em vez de
+mandar um arquivo que voltaria com "Importação não realizada".
+
+Se o PVA estiver com uma escrituração aberta, o *Importar* fica desabilitado:
+o programa fecha a escrituração (Ctrl+F) e repete o atalho. Telas do próprio
+PVA no meio do caminho — atualizar tabelas, transferência, mensagens — são
+**esperadas**, não respondidas: o andamento diz o que ele está pedindo.
+
 O ciclo vai até o fim: o programa confirma a importação e, terminada ela, a
 **validação** — é o relatório de erros do PVA que interessa. Cada confirmação
 é conferida pelo efeito (a tela de progresso correspondente tem de aparecer);

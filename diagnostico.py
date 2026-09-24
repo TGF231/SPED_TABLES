@@ -380,6 +380,29 @@ def regras_nao_cobertas(doc, estrutura):
     return sorted(regras)
 
 
+# Achados que o PVA recusa **na importação**, antes de validar: são os que
+# ele acusa com `MSG_ERRO_TIPO_CAMPO`, `MSG_ERRO_TAMANHO_CAMPO`,
+# `MSG_VALORES_VALIDOS_IMPORTACAO` e afins, e que fazem a tela terminar em
+# "Importação não realizada. Ocorreram erros na estrutura do arquivo".
+#
+# `obrigatorio` fica **de fora** de propósito: num arquivo real do EFD
+# Contribuições havia 25 campos obrigatórios em branco pelo descritor e o PVA
+# importou sem reclamar — são as obrigatoriedades condicionais que ele
+# dispensa. Avisar por causa delas seria assustar à toa.
+TIPOS_QUE_IMPEDEM_IMPORTACAO = ("nulo", "formato", "num_campos", "bloco",
+                                "dominio")
+
+
+def impedem_importacao(achados):
+    """`[(tipo, quantidade)]` do que faz o PVA recusar o arquivo na
+    importação, do maior para o menor."""
+    por_tipo = {}
+    for a in achados:
+        if a.tipo in TIPOS_QUE_IMPEDEM_IMPORTACAO:
+            por_tipo[a.tipo] = por_tipo.get(a.tipo, 0) + a.quantidade
+    return sorted(por_tipo.items(), key=lambda x: -x[1])
+
+
 def resumo_por_modulo(achados):
     """Agrupa os achados pelo módulo que os corrige.
     `[(modulo, onde, total, [achados])]`, do maior para o menor."""

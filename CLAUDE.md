@@ -429,6 +429,35 @@ Cinco coisas que custaram tentativa:
 - **O PVA tem trava de instância única** (`TryLock.txt`): havendo janela, ela
   é trazida para a frente; a segunda execução só mostraria um erro.
 
+**Escrituração aberta desabilita o Importar.** Com uma escrituração em
+edição — o estado em que fica quem deixa o PVA aberto no arquivo do mês —, o
+menu *Nova → Importar* fica cinza e o Ctrl+I não faz nada. Era isso que
+travava o EFD ICMS/IPI. A segunda tentativa manda **Ctrl+F** (Fechar) antes
+do Ctrl+I: a escrituração continua no banco do PVA e reabrir é Ctrl+A. Se o
+Ctrl+F abrir diálogo, a automação para e devolve a decisão ao usuário.
+
+**O PVA atravessa o caminho com telas próprias.** Na abertura ele pode pedir
+*Atualizar Tabelas* (lista as tabelas obrigatórias à validação, com Ok e
+Cancelar — e o foco nasce na árvore, então Enter não aciona botão nenhum),
+depois mostra *Transferindo Tabelas* e uma *Mensagem* de conclusão. Nenhuma
+delas é respondida por conta própria: são classificadas em `_classificar` e
+**esperadas**, com o motivo dito no andamento. Só assim a automação retoma
+sozinha em vez de anunciar que não conseguiu.
+
+**A tela de progresso sumir não quer dizer sucesso.** Quando o arquivo tem
+erro de estrutura, o PVA fecha o *Importando…* e abre um **Erro** —
+"Importação não realizada. Ocorreram erros na estrutura do arquivo" — e um
+*Resultado da Importação* com o relatório. Sem checar esse Erro, arquivo
+recusado era anunciado como importado. Num arquivo real foram 1.000 erros
+(o teto do PVA): 634 "Conteúdo de Campo inválido" e 366 "Tamanho do campo
+inválido", em `TIPO_ITEM`, `COD_GEN` e `CEST`.
+
+Daí a **pré-checagem**: `diagnostico.impedem_importacao` separa os achados
+que o PVA recusa já na importação (`nulo`, `formato`, `num_campos`, `bloco`,
+`dominio`) e a GUI pergunta antes de abrir o PVA. `obrigatorio` fica de fora
+de propósito: num arquivo real do Contribuições havia 25 campos obrigatórios
+em branco pelo descritor e o PVA importou sem reclamar.
+
 **As duas confirmações são respondidas — e conferidas pelo efeito.** Depois
 do Enter no seletor o PVA abre um "Aviso" ("deseja importar?") e, terminada a
 importação, outro ("deseja validar?"). Os dois vêm do mesmo
