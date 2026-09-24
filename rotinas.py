@@ -154,7 +154,10 @@ def corrigir_aliquota(doc, empresa, ocorrencias):
         _i_cst, i_bc, i_aliq, i_vl = _par_tributo(doc, reg.reg, oc.tributo)
         if i_aliq is None:
             continue
-        reg.set_valor(i_aliq, oc.esperado)
+        # ultima barreira: o valor vem do cadastro (texto livre) e vai
+        # direto para o campo do arquivo
+        reg.set_valor(i_aliq, _fmt_aliq(_to_num(oc.esperado))
+                      if oc.esperado else "")
         if i_bc is not None and i_vl is not None:
             base = _to_num(reg.valor(i_bc))
             reg.set_valor(i_vl, _fmt_val(round(base * _to_num(oc.esperado)

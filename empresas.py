@@ -22,6 +22,8 @@ import re
 
 from dataclasses import dataclass, asdict, field, fields
 
+from sped_model import _fmt_aliq
+
 import dados
 
 ARQUIVO_PADRAO = "empresas.json"
@@ -73,6 +75,26 @@ def formatar_cnpj(cnpj):
     return "%s.%s.%s/%s-%s" % (d[:2], d[2:5], d[5:8], d[8:12], d[12:])
 
 
+def normalizar_aliquota(txt):
+    """Alíquota digitada -> formato do SPED (`1,65`, `7,6`).
+
+    O campo do cadastro é texto livre, e o que for digitado ali acaba
+    **gravado no arquivo fiscal** pela rotina de correção. Digitar `1.65`
+    punha ponto decimal no SPED, que o PVA recusa. Vazio continua vazio (é
+    "não declarado", não zero), e texto que não é número fica como está para
+    o usuário ver o que escreveu.
+    """
+    t = (txt or "").strip()
+    if not t:
+        return ""
+    try:
+        return _fmt_aliq(float(t.replace(".", ",").replace(",", ".", 1)
+                               if t.count(",") + t.count(".") <= 1
+                               else t.replace(".", "").replace(",", ".")))
+    except ValueError:
+        return t
+
+
 @dataclass
 class Empresa:
     """Parâmetros declarados de uma empresa.
@@ -96,6 +118,13 @@ class Empresa:
     # outros cenários, por isso é configurável.
     cst_entrada_sem_credito: str = "70"
     observacoes: str = ""
+
+    def __post_init__(self):
+        """Normaliza as alíquotas na entrada — de qualquer origem: cadastro
+        digitado à mão, `empresas.json` antigo ou padrão do regime."""
+        for campo in ("aliq_pis_saida", "aliq_cofins_saida",
+                      "aliq_pis_credito", "aliq_cofins_credito"):
+            setattr(self, campo, normalizar_aliquota(getattr(self, campo)))
 
     # ------------------------------------------------------------- derivados
     @property

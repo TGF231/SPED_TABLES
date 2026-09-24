@@ -54,6 +54,16 @@ Regra geral: **lógica fiscal no modelo, nunca na GUI.** A GUI só chama método
   (vírgula, sem zeros à direita). Helpers no modelo: `_to_num`, `_fmt_val`,
   `_fmt_aliq`, `_fmt_qtd`.
 - Encoding dos arquivos SPED e dos CSVs exportados: **latin-1**.
+  Na **leitura**, porém, tente UTF-8 primeiro: `latin-1` aceita qualquer byte
+  e **nunca levanta `UnicodeDecodeError`**, então pô-lo à frente numa lista de
+  tentativas transforma as demais em código morto — era o caso do SPED e do
+  CSV de inventário, e arquivo exportado em UTF-8 entrava com a acentuação
+  corrompida (no CSV, com o BOM grudado no nome da primeira coluna, o que
+  sozinho já quebrava o mapeamento do cabeçalho). Texto latin-1 com acento não
+  é UTF-8 válido, então a ordem `utf-8-sig, utf-8, latin-1` acerta os dois.
+  A **gravação** continua sempre latin-1 (`doc.encoding`); o que o arquivo de
+  origem usava fica em `doc.encoding_lido`, e abrir um SPED em UTF-8 e salvar
+  aqui conserta o arquivo.
 
 ### Ao criar registros novos
 
@@ -487,6 +497,15 @@ fosse outra coisa.
 Importar sem validar não fecha o ciclo: o que interessa é o relatório de erros
 do PVA. Por isso `validar=True` é o padrão.
 
+**Toda espera é cancelável.** O usuário pode levar 15 minutos para responder a
+um diálogo do PVA, e nesse tempo a janela de espera prendia o programa inteiro
+sem saída. `pva.abrir` recebe `cancelar` (uma função consultada nas esperas) e
+levanta `Cancelado` — exceção, e não código de retorno, porque a espera
+acontece em meia dúzia de laços aninhados e esquecer um significaria continuar
+mandando tecla depois do cancelamento. Quem dorme é `_dormir`, que fatia a
+espera e olha o pedido; `_focar` também, senão o cancelamento só valia depois
+dos 15 segundos dele.
+
 E a de sempre com ctypes: `GetClipboardData` **precisa** de `restype`
 declarado. Sem ele o handle de 64 bits é truncado, o `GlobalLock` falha e a
 leitura volta vazia — foi assim que um teste deu "campo vazio" com o campo
@@ -577,9 +596,15 @@ Obter sempre por nome (`doc._ix(tipo, nome)`), nunca por número fixo. Referênc
 
 ## Regras fiscais já implementadas (não regredir)
 
-- **Rateio de despesas acessórias (C190):** usar **diferença de acumulados
-  arredondados**, não `round()` item a item — senão a soma não fecha com o total
-  (caso real: 1,50 de VL_OUT_DA virava 1,52).
+- **Rateio de despesas acessórias:** há **uma** função,
+  `SpedDocument.rateio_acessorios(total, valores)`, e ela usa **diferença de
+  acumulados arredondados** — nunca `round()` item a item, que não fecha com o
+  total (R$ 1,00 entre três itens iguais dá 0,33 × 3 = 0,99; assim dá
+  0,33 + 0,34 + 0,33). O C190 fazia certo e o C175 fazia item a item; hoje os
+  dois chamam a mesma função, e **quem confere o C175 também**: a conferência
+  e a prévia da regeneração somavam VL_OPR **sem** o rateio enquanto a geração
+  gravava **com**, e acusavam diferença em todo documento com frete/seguro.
+  Cálculo que gera e cálculo que confere precisam ser o mesmo código.
 - **Total que soma itens arredonda uma vez só:** o `VL_INV` do H005 acumulava o
   valor bruto e arredondava no fim, enquanto cada H010 gravava o arredondado —
   um centavo de diferença em 11.585 itens. Arredonde no ponto em que o valor é
@@ -612,6 +637,13 @@ Obter sempre por nome (`doc._ix(tipo, nome)`), nunca por número fixo. Referênc
   vedação, e trocar um pelo outro sem saber o motivo é palpite. **Saídas ficam
   de fora**: lá o CST depende de revenda ou produção própria, e alíquota
   diferenciada (02/03) é legítima.
+- **Alíquota do cadastro é texto livre — normalize na entrada.** O que o
+  usuário digita em *Empresas* acaba **gravado no arquivo fiscal** pela rotina
+  de correção: `1.65` com ponto ia assim para o SPED. `empresas.
+  normalizar_aliquota` passa pelo `_fmt_aliq` em três pontos — ao digitar, ao
+  montar a `Empresa` (inclusive de um `empresas.json` antigo) e na hora de
+  gravar o campo. Consequência visível: o cadastro mostra `3`, não `3,00`, que
+  é o formato do SPED.
 - **Regime (empresas.py / rotinas.py):** cumulativo = PIS 0,65 / COFINS 3,00 e
   **sem crédito** na entrada; não-cumulativo = 1,65 / 7,6 com crédito. No regime
   **"ambos"** as rotinas de alíquota **se abstêm** — as duas alíquotas convivem

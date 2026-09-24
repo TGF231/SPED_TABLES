@@ -231,7 +231,7 @@ def _copiar(texto):
         _user32.CloseClipboard()
 
 
-def _focar(hwnd, pid, limite=15.0):
+def _focar(hwnd, pid, limite=15.0, cancelar=None):
     """Traz a janela do PVA para a frente. Devolve o hwnd que ficou lá, ou None.
 
     Duas armadilhas do Windows aqui:
@@ -265,7 +265,7 @@ def _focar(hwnd, pid, limite=15.0):
         fg, fg_pid = _pid_do_primeiro_plano()
         if fg_pid == pid:
             return fg
-        time.sleep(0.3)
+        _dormir(0.3, cancelar)
     return None
 
 
@@ -286,7 +286,33 @@ def _tecla(vk, ctrl=False):
     time.sleep(0.15)
 
 
-def _janela_com_titulo(pid, contem, limite, ausente=False):
+class Cancelado(Exception):
+    """O usuário desistiu de esperar o PVA.
+
+    É exceção e não retorno porque a espera acontece em meia dúzia de laços
+    aninhados — devolver um código em cada um deles é convite a esquecer um,
+    e esquecer um significa continuar mandando tecla para o PVA depois de o
+    usuário ter cancelado.
+    """
+
+
+def _dormir(segundos, cancelar=None):
+    """Espera cortada em fatias, olhando o pedido de cancelamento.
+
+    Sem isto a interface ficava presa até o limite — e o limite da decisão do
+    usuário é de 15 minutos, tempo em que o programa parecia travado.
+    """
+    fim = time.time() + segundos
+    while True:
+        if cancelar is not None and cancelar():
+            raise Cancelado()
+        resta = fim - time.time()
+        if resta <= 0:
+            return
+        time.sleep(min(0.2, resta))
+
+
+def _janela_com_titulo(pid, contem, limite, ausente=False, cancelar=None):
     """Espera uma janela do processo cujo título contenha `contem`.
 
     Com `ausente=True`, espera o contrário: que ela **suma**. Devolve o hwnd
@@ -303,12 +329,13 @@ def _janela_com_titulo(pid, contem, limite, ausente=False):
             return True
         if not ausente and achou is not None:
             return achou
-        time.sleep(0.4)
+        _dormir(0.4, cancelar)
     return False if ausente else None
 
 
 def _confirmar_aviso(pid, titulo_efeito, limite_aviso=ESPERA_AVISO,
-                     limite_efeito=ESPERA_PROGRESSO, progresso=None):
+                     limite_efeito=ESPERA_PROGRESSO, progresso=None,
+                     cancelar=None):
     """Responde "sim" a um "Aviso" do PVA — e confere pelo efeito.
 
     O diálogo é um `JOptionPane` (`ExibirMensagem.solicitarConfirmacao`), cujo
@@ -322,18 +349,20 @@ def _confirmar_aviso(pid, titulo_efeito, limite_aviso=ESPERA_AVISO,
     """
     # a atualização de tabelas costuma entrar aqui, entre o Enter no seletor
     # e o pedido de confirmação
-    _esperar_livre(pid, progresso=progresso)
-    aviso = _janela_com_titulo(pid, TITULO_AVISO, limite_aviso)
+    _esperar_livre(pid, progresso=progresso, cancelar=cancelar)
+    aviso = _janela_com_titulo(pid, TITULO_AVISO, limite_aviso,
+                               cancelar=cancelar)
     if aviso is None:
         return None
-    if _focar(aviso, pid, limite=5.0) != aviso:
+    if _focar(aviso, pid, limite=5.0, cancelar=cancelar) != aviso:
         return None
     _tecla(VK_RETURN)
-    return _janela_com_titulo(pid, titulo_efeito, limite_efeito)
+    return _janela_com_titulo(pid, titulo_efeito, limite_efeito,
+                              cancelar=cancelar)
 
 
 def _esperar_pronta(hwnd, pid, limite=ESPERA_PRONTA, sossego=1.0,
-                    progresso=None):
+                    progresso=None, cancelar=None):
     """Espera o PVA terminar o **carregamento interno**.
 
     A janela principal aparece bem antes de aceitar atalhos: enquanto carrega,
@@ -364,7 +393,7 @@ def _esperar_pronta(hwnd, pid, limite=ESPERA_PRONTA, sossego=1.0,
             desde = time.time()
         elif time.time() - desde >= sossego:
             return True
-        time.sleep(0.3)
+        _dormir(0.3, cancelar)
     return False
 
 
@@ -385,7 +414,8 @@ def _classificar(extras):
     return ""
 
 
-def _esperar_livre(pid, limite=ESPERA_DECISAO, progresso=None):
+def _esperar_livre(pid, limite=ESPERA_DECISAO, progresso=None,
+                   cancelar=None):
     """Espera sair do caminho o que for progresso ou decisão do usuário.
 
     A atualização de tabelas entra bem no meio da importação: o PVA pergunta,
@@ -402,11 +432,11 @@ def _esperar_livre(pid, limite=ESPERA_DECISAO, progresso=None):
             return True
         if progresso:
             progresso(espera)
-        time.sleep(0.5)
+        _dormir(0.5, cancelar)
     return False
 
 
-def _esperar_janela(layout, raiz, limite, progresso=None):
+def _esperar_janela(layout, raiz, limite, progresso=None, cancelar=None):
     fim = time.time() + limite
     while time.time() < fim:
         hwnd, pid = janela(layout, raiz)
@@ -414,12 +444,13 @@ def _esperar_janela(layout, raiz, limite, progresso=None):
             return hwnd, pid
         if progresso:
             progresso("Abrindo o PVA…")
-        time.sleep(1.0)
+        _dormir(1.0, cancelar)
     return None, None
 
 
 def abrir(caminho, layout, importar=True, confirmar=True, validar=True,
-          raiz=None, progresso=None, espera_janela=ESPERA_JANELA):
+          raiz=None, progresso=None, espera_janela=ESPERA_JANELA,
+          cancelar=None):
     """Abre o PVA do leiaute, importa `caminho` e manda validar.
 
     `importar=False` só abre (ou traz para a frente) o PVA. `confirmar=False`
@@ -432,10 +463,16 @@ def abrir(caminho, layout, importar=True, confirmar=True, validar=True,
     progresso correspondente tem de aparecer. Não aparecendo, a função para e
     diz o que falta fazer.
 
+    `cancelar` é uma função sem argumentos consultada durante as esperas;
+    devolvendo verdadeiro, a automação para onde está e nenhuma tecla a mais é
+    enviada. É o que permite à interface oferecer um botão de cancelar em vez
+    de ficar presa até o limite.
+
     Devolve `{"estado", "mensagem", "aberto_agora", "tentativas"}`, com
     `estado` em: `validando`, `importado`, `importando` (ainda rodando),
     `confirmar` (o caminho chegou, a confirmação não), `caminho_colado`,
-    `pva_aberto`, `pva_ocupado`, `sem_pva`, `sem_arquivo` ou `indisponivel`.
+    `pva_aberto`, `pva_ocupado`, `cancelado`, `sem_pva`, `sem_arquivo` ou
+    `indisponivel`.
     """
     if not disponivel():
         return {"estado": "indisponivel", "aberto_agora": False,
@@ -451,6 +488,20 @@ def abrir(caminho, layout, importar=True, confirmar=True, validar=True,
                             % (INSTALACOES.get(layout, {}).get("nome", "PVA"),
                                raiz or RAIZ_PVA)}
 
+    try:
+        return _abrir(caminho, layout, importar, confirmar, validar, raiz,
+                      progresso, espera_janela, cancelar, inst)
+    except Cancelado:
+        return {"estado": "cancelado", "aberto_agora": False,
+                "mensagem": "Espera cancelada. O caminho do arquivo está na "
+                            "área de transferência — no %s, Ctrl+I, Ctrl+V, "
+                            "Enter." % inst["nome"]}
+
+
+def _abrir(caminho, layout, importar, confirmar, validar, raiz, progresso,
+           espera_janela, cancelar, inst):
+    """O corpo de `abrir`, separado só para o cancelamento ter um lugar só
+    onde ser capturado."""
     hwnd, pid = janela(layout, raiz)
     aberto_agora = False
     if not hwnd:
@@ -458,7 +509,8 @@ def abrir(caminho, layout, importar=True, confirmar=True, validar=True,
         subprocess.Popen([inst["exe"]], cwd=inst["pasta"],
                          close_fds=True)
         aberto_agora = True
-        hwnd, pid = _esperar_janela(layout, raiz, espera_janela, progresso)
+        hwnd, pid = _esperar_janela(layout, raiz, espera_janela, progresso,
+                                    cancelar)
         if not hwnd:
             return {"estado": "pva_aberto", "aberto_agora": True,
                     "mensagem": "O %s foi iniciado, mas a janela não apareceu "
@@ -474,8 +526,8 @@ def abrir(caminho, layout, importar=True, confirmar=True, validar=True,
     # o carregamento interno vem DEPOIS de a janela aparecer, e enquanto ele
     # roda o atalho é ignorado — esperar aqui é o que faz a importação pegar
     if aberto_agora or len(_hwnds_do_processo(pid)) > 1:
-        _esperar_pronta(hwnd, pid, progresso=progresso)
-    frente = _focar(hwnd, pid)
+        _esperar_pronta(hwnd, pid, progresso=progresso, cancelar=cancelar)
+    frente = _focar(hwnd, pid, cancelar=cancelar)
     if frente is None:
         return {"estado": "pva_aberto", "aberto_agora": aberto_agora,
                 "mensagem": "Não consegui trazer o %s para a frente. Vá até "
@@ -505,7 +557,7 @@ def abrir(caminho, layout, importar=True, confirmar=True, validar=True,
     tentativas = 0
     fim = time.time() + ESPERA_SELETOR
     while time.time() < fim and alvo is None:
-        if _focar(hwnd, pid, limite=3.0) != hwnd:
+        if _focar(hwnd, pid, limite=3.0, cancelar=cancelar) != hwnd:
             break
         antes = _hwnds_do_processo(pid)
         if tentativas:
@@ -532,7 +584,7 @@ def abrir(caminho, layout, importar=True, confirmar=True, validar=True,
             if novas:
                 alvo = max(novas)
                 break
-            time.sleep(0.25)
+            _dormir(0.25, cancelar)
     if alvo is None:
         return saida_simples(
             "pva_aberto",
@@ -542,7 +594,7 @@ def abrir(caminho, layout, importar=True, confirmar=True, validar=True,
             "transferência (Ctrl+I, Ctrl+V, Enter)." % inst["nome"])
 
     # nada é teclado antes de a janela nova estar mesmo na frente
-    if _focar(alvo, pid) != alvo:
+    if _focar(alvo, pid, cancelar=cancelar) != alvo:
         return {"estado": "pva_aberto", "aberto_agora": aberto_agora,
                 "mensagem": "A janela de importação do %s abriu, mas não ficou "
                             "em primeiro plano. Cole o caminho lá (Ctrl+V) — "
@@ -565,7 +617,7 @@ def abrir(caminho, layout, importar=True, confirmar=True, validar=True,
     if progresso:
         progresso("Confirmando a importação…")
     importando = _confirmar_aviso(pid, TITULO_IMPORTANDO,
-                                  progresso=progresso)
+                                  progresso=progresso, cancelar=cancelar)
     if importando is None:
         return saida("confirmar",
                      "O caminho foi entregue ao %s, mas não consegui "
@@ -574,7 +626,7 @@ def abrir(caminho, layout, importar=True, confirmar=True, validar=True,
     if progresso:
         progresso("Importando no %s…" % inst["nome"])
     if not _janela_com_titulo(pid, TITULO_IMPORTANDO, ESPERA_IMPORTACAO,
-                              ausente=True):
+                              ausente=True, cancelar=cancelar):
         return saida("importando",
                      "A importação no %s passou de %d minutos e continua "
                      "rodando; acompanhe por lá." % (inst["nome"],
@@ -597,7 +649,7 @@ def abrir(caminho, layout, importar=True, confirmar=True, validar=True,
     if progresso:
         progresso("Confirmando a validação…")
     validando = _confirmar_aviso(pid, TITULO_VALIDANDO,
-                                 progresso=progresso)
+                                 progresso=progresso, cancelar=cancelar)
     if validando is None:
         return saida("importado",
                      "Arquivo importado no %s. O aviso da validação não foi "

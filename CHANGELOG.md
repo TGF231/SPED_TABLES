@@ -1,5 +1,44 @@
 # Changelog
 
+## [0.50.0] - 2026-09-24
+
+Os cinco achados **médios** da revisão completa do código.
+
+### Corrigido
+- **Arquivo em UTF-8 era lido como latin-1.** A lista de tentativas começava
+  por `latin-1`, que **aceita qualquer byte e nunca falha** — as demais eram
+  código morto. SPED exportado em UTF-8 entrava com a acentuação corrompida e
+  era regravado assim; no CSV de inventário, o BOM ainda vinha grudado no nome
+  da primeira coluna, quebrando o mapeamento do cabeçalho. Agora a ordem é
+  `utf-8-sig, utf-8, latin-1` nos dois. A gravação continua sempre latin-1, e
+  `doc.encoding_lido` guarda o que a origem usava.
+- **Rateio de despesas acessórias no C175 era feito item a item.** É o defeito
+  que já havia sido corrigido no C190 e voltou noutro lugar: R$ 1,00 entre três
+  itens iguais somava 0,99. As duas consolidações passaram a chamar a mesma
+  função, `rateio_acessorios`.
+- **Três funções discordavam sobre o VL_OPR.** A geração do C175 somava o
+  rateio, mas a conferência (`discrepancias_c175_65`) e a prévia
+  (`previa_regeneracao_c175_65`) somavam sem — o comparador acusava divergência
+  no C175 que o próprio programa acabara de gerar, em todo documento com
+  frete/seguro/outras despesas.
+- **Alíquota do cadastro ia crua para o arquivo.** O campo é texto livre:
+  digitar `1.65` punha ponto decimal no SPED, que o PVA recusa. Normalizada em
+  três pontos — ao digitar, ao montar a `Empresa` (inclusive de cadastro
+  antigo) e na hora de gravar o campo.
+- **A espera do PVA não tinha saída.** Quando ele abre um diálogo próprio e
+  ninguém responde, a espera vai até 15 minutos — e a janela de progresso não
+  tinha botão de cancelar. Agora tem, e `pva.abrir` aceita `cancelar`:
+  cancelando, a automação para onde está e nenhuma tecla a mais é enviada.
+
+### Notas
+- `rateio_acessorios` passou a tratar o caso de itens todos zerados com
+  despesa no documento dividindo igual, em vez de deixar o valor de fora.
+- A alíquota gravada agora sai no formato do SPED (sem zeros à direita): o
+  cadastro com `3,00` grava `3`, como já acontecia com `7,6`.
+- Teste novo (`teste_medios`) cobre os cinco, incluindo o SPED e o CSV em
+  UTF-8, a soma do rateio fechando com o total e o cancelamento em cada laço
+  de espera.
+
 ## [0.49.1] - 2026-09-24
 
 ### Corrigido

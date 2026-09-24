@@ -1950,7 +1950,13 @@ class DialogoImportarInventario(QDialog):
         """Devolve (cabecalho, linhas) da primeira aba/arquivo."""
         if caminho.lower().endswith(".csv"):
             import csv
-            for enc in ("latin-1", "utf-8-sig"):
+            linhas = []
+            # UTF-8 primeiro, e com `-sig` para comer o BOM: latin-1 aceita
+            # qualquer byte e nunca falha, então tentá-lo antes tornava o
+            # resto código morto — CSV salvo do Excel em UTF-8 entrava com a
+            # acentuação corrompida e com o BOM colado no **nome da primeira
+            # coluna**, o que sozinho já quebrava o mapeamento do cabeçalho.
+            for enc in ("utf-8-sig", "utf-8", "latin-1"):
                 try:
                     with open(caminho, encoding=enc, newline="") as fh:
                         amostra = fh.read(4096)
@@ -4590,10 +4596,15 @@ class PainelEmpresas(QWidget):
         e.regime_federal = self.cb_federal.currentData()
         e.regime_pis_cofins = self.cb_pc.currentData()
         e.atividade = self.cb_ativ.currentData()
-        e.aliq_pis_saida = self.ed_pis_s.text().strip()
-        e.aliq_cofins_saida = self.ed_cof_s.text().strip()
-        e.aliq_pis_credito = self.ed_pis_c.text().strip()
-        e.aliq_cofins_credito = self.ed_cof_c.text().strip()
+        # normaliza aqui: o campo e texto livre e o que estiver nele acaba
+        # gravado no arquivo fiscal pela rotina de correcao — `1.65` digitado
+        # com ponto ia para o SPED com ponto
+        e.aliq_pis_saida = emp_mod.normalizar_aliquota(self.ed_pis_s.text())
+        e.aliq_cofins_saida = emp_mod.normalizar_aliquota(
+            self.ed_cof_s.text())
+        e.aliq_pis_credito = emp_mod.normalizar_aliquota(self.ed_pis_c.text())
+        e.aliq_cofins_credito = emp_mod.normalizar_aliquota(
+            self.ed_cof_c.text())
         self.mapa[cnpj] = e
         try:
             emp_mod.salvar(self.mapa)
@@ -4822,10 +4833,15 @@ class DialogoEmpresa(QDialog):
         e.regime_federal = self.cb_federal.currentData()
         e.regime_pis_cofins = self.cb_pc.currentData()
         e.atividade = self.cb_ativ.currentData()
-        e.aliq_pis_saida = self.ed_pis_s.text().strip()
-        e.aliq_cofins_saida = self.ed_cof_s.text().strip()
-        e.aliq_pis_credito = self.ed_pis_c.text().strip()
-        e.aliq_cofins_credito = self.ed_cof_c.text().strip()
+        # normaliza aqui: o campo e texto livre e o que estiver nele acaba
+        # gravado no arquivo fiscal pela rotina de correcao — `1.65` digitado
+        # com ponto ia para o SPED com ponto
+        e.aliq_pis_saida = emp_mod.normalizar_aliquota(self.ed_pis_s.text())
+        e.aliq_cofins_saida = emp_mod.normalizar_aliquota(
+            self.ed_cof_s.text())
+        e.aliq_pis_credito = emp_mod.normalizar_aliquota(self.ed_pis_c.text())
+        e.aliq_cofins_credito = emp_mod.normalizar_aliquota(
+            self.ed_cof_c.text())
         e.cst_entrada_sem_credito = self.ed_cst_sem.text().strip() or "70"
         return e
 
@@ -6992,9 +7008,12 @@ class JanelaPrincipal(QMainWindow):
             if cx.clickedButton() is not b_ass:
                 return
 
-        espera = QProgressDialog("Abrindo o %s…" % inst["nome"], "", 0, 0, self)
+        # com botão de cancelar: a espera pode chegar a 15 minutos quando o
+        # PVA abre um diálogo próprio e ninguém responde, e sem saída a janela
+        # inteira ficava presa
+        espera = QProgressDialog("Abrindo o %s…" % inst["nome"], "Cancelar",
+                                 0, 0, self)
         espera.setWindowTitle("Abrir no PVA")
-        espera.setCancelButton(None)
         espera.setWindowModality(Qt.WindowModality.ApplicationModal)
         espera.show()
         QApplication.processEvents()
@@ -7006,7 +7025,8 @@ class JanelaPrincipal(QMainWindow):
             try:
                 resultado.update(pva.abrir(
                     alvo, self.doc.layout,
-                    progresso=lambda t: andamento.__setitem__("texto", t)))
+                    progresso=lambda t: andamento.__setitem__("texto", t),
+                    cancelar=espera.wasCanceled))
             except Exception as exc:                        # noqa: BLE001
                 resultado.update({"estado": "erro", "mensagem": str(exc)})
 
@@ -7025,7 +7045,9 @@ class JanelaPrincipal(QMainWindow):
         # uma caixa modal aqui só atrapalharia quem já está olhando o PVA
         estado = resultado.get("estado")
         msg = resultado.get("mensagem", "")
-        if estado in ("validando", "importado", "importando"):
+        if estado == "cancelado":
+            self.statusBar().showMessage(msg, 15000)
+        elif estado in ("validando", "importado", "importando"):
             self.statusBar().showMessage(msg, 15000)
         elif estado == "erro_pva":
             self.statusBar().showMessage(msg, 15000)

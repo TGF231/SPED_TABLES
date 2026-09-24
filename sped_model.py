@@ -275,7 +275,8 @@ class SpedDocument:
         self.layout = "ICMS"
         self.registros = []      # todos, na ordem do arquivo
         self.raizes = []         # registros sem pai (topo de cada bloco)
-        self.encoding = "latin-1"
+        self.encoding = "latin-1"      # sempre, na gravação
+        self.encoding_lido = "latin-1"  # o que o arquivo de origem usava
         self.caminho = None
         self._cad_itens = None   # cache COD_ITEM -> DESCR_ITEM (registros 0200)
         self._cad_part = None    # cache COD_PART -> dados do 0150
@@ -285,20 +286,28 @@ class SpedDocument:
     def carregar(cls, caminho):
         doc = cls()
         doc.caminho = caminho
-        # SPED costuma ser latin-1; tentamos utf-8 como alternativa.
+        # O SPED é latin-1, mas há ERP que exporta UTF-8. A ordem importa:
+        # **latin-1 nunca falha** (todo byte é válido), então tentá-lo
+        # primeiro tornava os demais código morto — o arquivo UTF-8 era lido
+        # com a acentuação corrompida e regravado assim. UTF-8 primeiro
+        # resolve sem risco: texto latin-1 com acento não é UTF-8 válido
+        # (`ç` é 0xE7 sozinho) e cai no `except`.
         dados = None
-        for enc in ("latin-1", "utf-8", "cp1252"):
+        for enc in ("utf-8-sig", "utf-8", "latin-1"):
             try:
                 with open(caminho, "r", encoding=enc) as f:
                     dados = f.read()
-                doc.encoding = enc
+                doc.encoding_lido = enc
                 break
             except UnicodeDecodeError:
                 continue
         if dados is None:
             with open(caminho, "r", encoding="latin-1", errors="replace") as f:
                 dados = f.read()
-            doc.encoding = "latin-1"
+            doc.encoding_lido = "latin-1"
+        # a GRAVAÇÃO é sempre latin-1: é o que o leiaute manda e o que o PVA
+        # aceita. Abrir um SPED em UTF-8 e salvar aqui conserta o arquivo.
+        doc.encoding = "latin-1"
 
         linhas = [l for l in dados.replace("\r\n", "\n").split("\n")]
         # remove linha final vazia
@@ -901,6 +910,38 @@ class SpedDocument:
         cols = campos(tipo, self.layout, 40)
         return cols.index(nome) if nome in cols else None
 
+    @staticmethod
+    def rateio_acessorios(total, valores):
+        """Quinhão de cada item nas despesas acessórias do documento.
+
+        Usa **diferença de acumulados arredondados**: o quinhão é a variação
+        do total rateado já arredondado, de modo que a soma feche EXATAMENTE
+        com `total`. Arredondar item a item não fecha — com R$ 1,00 entre três
+        itens iguais dá 0,33 × 3 = 0,99; assim dá 0,33 + 0,34 + 0,33.
+
+        É o mesmo cálculo no C190 e no C175: os dois grupos precisam somar o
+        mesmo VL_OPR, senão a conferência acusa diferença num registro que o
+        próprio programa acabou de gerar.
+        """
+        if not total or not valores:
+            return [0.0] * len(valores)
+        soma = sum(valores)
+        if not soma:
+            # itens todos zerados e documento com despesa: sem base para
+            # proporção, divide igual — deixar o valor de fora faria o VL_OPR
+            # não fechar com o total do documento
+            valores = [1.0] * len(valores)
+            soma = float(len(valores))
+        acum = 0.0
+        ideal_ant = 0.0
+        out = []
+        for v in valores:
+            acum += v
+            ideal = round(total * acum / soma, 2)
+            out.append(round(ideal - ideal_ant, 2))
+            ideal_ant = ideal
+        return out
+
     def consolidar_c190(self, c100):
         """
         (Apenas EFD ICMS/IPI) Recalcula os registros **C190** (analítico) de um
@@ -946,12 +987,11 @@ class SpedDocument:
         acess = (_to_num(c100.valor(self._ix("C100", "VL_FRT")))
                  + _to_num(c100.valor(self._ix("C100", "VL_SEG")))
                  + _to_num(c100.valor(self._ix("C100", "VL_OUT_DA"))))
-        soma_item = sum(_to_num(it.valor(i_item)) for it in c170) or 1.0
+        rateios = self.rateio_acessorios(
+            acess, [_to_num(it.valor(i_item)) for it in c170])
 
         grupos = {}
-        valor_acum = 0.0
-        rateio_acum = 0.0
-        for it in c170:
+        for pos, it in enumerate(c170):
             cst = it.valor(i_cst)
             cfop = it.valor(i_cfop)
             aliq = _to_num(it.valor(i_aliq))
@@ -964,13 +1004,7 @@ class SpedDocument:
                      "VL_BC_PC": 0.0}
                 grupos[chave] = g
             vit = _to_num(it.valor(i_item))
-            if acess:
-                valor_acum += vit
-                ideal = round(acess * valor_acum / soma_item, 2)
-                rateio = round(ideal - rateio_acum, 2)
-                rateio_acum = ideal
-            else:
-                rateio = 0.0
+            rateio = rateios[pos]
             g["VL_OPR"] += (vit - _to_num(it.valor(i_desc)) + rateio
                             + _to_num(it.valor(i_ipi))
                             + _to_num(it.valor(i_icmsst)))
@@ -1331,15 +1365,15 @@ class SpedDocument:
             i = self._ix("C100", nome)
             return _to_num(c100.valor(i)) if i is not None else 0.0
         acess = c100v("VL_FRT") + c100v("VL_SEG") + c100v("VL_OUT_DA")
-        soma_prod = sum((getattr(it, "vprod", 0.0) or 0.0)
-                        for it in itens) or 1.0
+        rateios = self.rateio_acessorios(
+            acess, [(getattr(it, "vprod", 0.0) or 0.0) for it in itens])
 
         def fmt_aliq(a):
             return _fmt_val(_to_num((a or "").replace(".", ","))) if a else ""
 
         grupos, ordem = {}, []
         tot_pis = tot_cof = 0.0
-        for it in itens:
+        for pos, it in enumerate(itens):
             cfop = (it.cfop or "").strip()
             cstp = (it.pis_cst or "").strip()
             cstc = (it.cofins_cst or "").strip()
@@ -1356,8 +1390,7 @@ class SpedDocument:
                 ordem.append(chave)
             vprod = getattr(it, "vprod", 0.0) or 0.0
             vdesc = getattr(it, "vdesc", 0.0) or 0.0
-            rateio = round(acess * vprod / soma_prod, 2) if acess else 0.0
-            g["VL_OPR"] += vprod - vdesc + rateio
+            g["VL_OPR"] += vprod - vdesc + rateios[pos]
             g["VL_DESC"] += vdesc
             g["VL_BC_PIS"] += it.pis_vbc or 0.0
             g["VL_PIS"] += it.pis_vpis or 0.0
@@ -1524,17 +1557,25 @@ class SpedDocument:
             if not c170s or not c175s:
                 continue
             ndoc = (c100.valor(i_num) or "").strip()
+            # o VL_OPR do C175 inclui o rateio das despesas acessórias do
+            # documento — comparar sem ele acusava diferença em todo
+            # documento com frete/seguro/outras
+            rateios = self.rateio_acessorios(
+                sum(_to_num(c100.valor(self._ix("C100", n)))
+                    for n in ("VL_FRT", "VL_SEG", "VL_OUT_DA")),
+                [_to_num(f.valor(a["VL_ITEM"])) for f in c170s])
             # consolida os C170 por (CFOP, CST_PIS, ALIQ_PIS, CST_COFINS, ALIQ_COFINS)
             grupos = {}
-            for f in c170s:
+            for pos, f in enumerate(c170s):
                 k = ((f.valor(a["CFOP"]) or "").strip(),
                      (f.valor(a["CST_PIS"]) or "").strip(),
                      "%.4f" % _to_num(f.valor(a["ALIQ_PIS"])),
                      (f.valor(a["CST_COFINS"]) or "").strip(),
                      "%.4f" % _to_num(f.valor(a["ALIQ_COFINS"])))
                 g = grupos.setdefault(k, [0.0, 0.0, 0.0, 0.0, 0.0])
-                g[0] += _to_num(f.valor(a["VL_ITEM"])) \
-                    - _to_num(f.valor(a["VL_DESC"]))   # VL_OPR
+                g[0] += (_to_num(f.valor(a["VL_ITEM"]))
+                         - _to_num(f.valor(a["VL_DESC"]))
+                         + rateios[pos])                # VL_OPR
                 g[1] += _to_num(f.valor(a["VL_BC_PIS"]))
                 g[2] += _to_num(f.valor(a["VL_PIS"]))
                 g[3] += _to_num(f.valor(a["VL_BC_COFINS"]))
@@ -1607,16 +1648,22 @@ class SpedDocument:
             if not itens:
                 continue          # sem fictícios, nada mudaria neste documento
             docs += 1
+            # o VL_OPR que a regeneração vai gravar inclui o rateio
+            rateios = self.rateio_acessorios(
+                sum(_to_num(c100.valor(self._ix("C100", nome)))
+                    for nome in ("VL_FRT", "VL_SEG", "VL_OUT_DA")),
+                [_to_num(f.valor(c170_idx["VL_ITEM"])) for f in itens])
             for f in c100.filhos or []:
                 if f.reg == "C175":
                     a["pis"] += _to_num(f.valor(c175_idx["VL_PIS"]))
                     a["cofins"] += _to_num(f.valor(c175_idx["VL_COFINS"]))
                     a["opr"] += _to_num(f.valor(c175_idx["VL_OPR"]))
-            for f in itens:
+            for pos, f in enumerate(itens):
                 n["pis"] += _to_num(f.valor(c170_idx["VL_PIS"]))
                 n["cofins"] += _to_num(f.valor(c170_idx["VL_COFINS"]))
                 n["opr"] += (_to_num(f.valor(c170_idx["VL_ITEM"]))
-                             - _to_num(f.valor(c170_idx["VL_DESC"])))
+                             - _to_num(f.valor(c170_idx["VL_DESC"]))
+                             + rateios[pos])
         arred = lambda d: {k: round(v, 2) for k, v in d.items()}
         return {"atual": arred(a), "novo": arred(n), "docs": docs,
                 "delta": {k: round(n[k] - a[k], 2) for k in a}}
