@@ -6616,13 +6616,31 @@ class JanelaPrincipal(QMainWindow):
     @staticmethod
     def _resumo_tabelas_pva(dominios, info):
         """Diz de onde veio a validação. Sem isso o usuário não sabe se o
-        resultado saiu das tabelas oficiais ou das regras embutidas."""
+        resultado saiu das tabelas oficiais ou das regras embutidas.
+
+        A chave de `dominios` é **(registro, campo)** desde que a validação
+        passou a ter a granularidade do descritor do PVA. Tratá-la como nome
+        de campo fazia `", ".join` estourar com `TypeError` — e exceção dentro
+        de um slot do Qt derruba o processo, então a ação inteira ficou
+        inutilizável. Aqui as duas formas são aceitas.
+        """
         if not dominios:
             return ("Tabelas dos PVAs não encontradas — a verificação usou "
                     "apenas as regras embutidas. Instale os PVAs para validar "
                     "contra as mesmas tabelas do fisco.")
-        txt = ("%d campo(s) validados pelas tabelas oficiais dos PVAs: %s."
-               % (len(dominios), ", ".join(sorted(dominios))))
+        # a lista dos nomes não informa nada (são 724 num arquivo real, em
+        # ordem alfabética); o que responde "de onde veio isto" é a origem
+        nomes = {k[1] if isinstance(k, tuple) else k for k in dominios}
+        txt = ("Validação feita pelo descritor do PVA: %d par(es) "
+               "registro/campo, em %d campo(s) distintos."
+               % (len(dominios), len(nomes)))
+        fontes = [(info.get("por_enum"), "enumeração do descritor"),
+                  (info.get("por_tabela"), "tabela externa"),
+                  (info.get("por_formato"), "tipo/tamanho do descritor")]
+        detalhe = ", ".join("%d por %s" % (n, rot)
+                            for n, rot in fontes if n)
+        if detalhe:
+            txt += "\nOrigem: %s." % detalhe
         if info.get("faltando"):
             txt += ("\nTabelas não encontradas: %s."
                     % ", ".join(info["faltando"]))

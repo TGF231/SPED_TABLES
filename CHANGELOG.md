@@ -1,5 +1,29 @@
 # Changelog
 
+## [0.49.1] - 2026-09-24
+
+### Corrigido
+- **"Validar campos pelo leiaute" derrubava o programa.** O resumo que diz de
+  onde veio a validação ficou com a forma antiga do dicionário de domínios
+  (`{campo: dominio}`); desde a 0.40.0 a chave é a tupla `(registro, campo)`,
+  e `", ".join(sorted(dominios))` sobre tuplas levanta `TypeError`. Exceção
+  dentro de um slot do Qt **encerra o processo** — daí o "crash" ao acionar a
+  função. Acontecia em **todo arquivo** com o PVA instalado, inclusive quando
+  não havia nenhum campo fora do domínio.
+- O resumo passou a dizer o que interessa — quantos pares registro/campo, em
+  quantos campos distintos, e a **origem** de cada domínio (enumeração do
+  descritor, tabela externa ou tipo/tamanho). A lista dos nomes saiu: eram
+  724 num arquivo real, em ordem alfabética, sem informar nada.
+
+### Notas
+- Teste novo (`teste_validar_campos`) chama a **ação do menu**, não o diálogo:
+  o teste que existia montava o `DialogoValidacao` direto e por isso não via o
+  defeito. Cobre os três desfechos — com achados, sem achados e sem PVA
+  instalado.
+- No arquivo do relato (REAL LIDER, agosto): 2.205 pares registro/campo
+  validados e 24.125 campos fora do domínio — 13.343 com `NULL`, 10.312 de
+  `TIPO_ITEM` e 470 de tipo/tamanho.
+
 ## [0.49.0] - 2026-09-24
 
 Os dois defeitos **graves** encontrados na revisão completa do código.

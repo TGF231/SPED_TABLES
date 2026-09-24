@@ -171,7 +171,14 @@ Três consequências que o código incorpora:
 
 - **Valida-se por (registro, campo), não por campo.** No EFD Contribuições o
   `CST_PIS` tem tabela diferente no C175, no C181 e no C191; a regra global
-  achatava isso.
+  achatava isso. A chave de `dominios_do_documento` é a **tupla**
+  `(registro, campo)` — quem a tratar como nome de campo quebra em silêncio
+  até o dia em que roda: foi o que aconteceu com o resumo da tela de
+  validação, onde um `", ".join(sorted(dominios))` sobre tuplas levantava
+  `TypeError`. **Exceção dentro de um slot do Qt derruba o processo**, então
+  a ação inteira virou "o programa fecha sozinho" durante três versões, sem
+  que nenhum teste visse: o teste da GUI montava o diálogo direto, pulando o
+  método do menu. Teste de ação de menu chama a ação, não o diálogo.
 - **Campo que o descritor não declara não é validado.** Era daí que vinha o
   falso positivo do `CST_ICMS` no EFD Contribuições — o PVA de lá não cobra
   aquele domínio, e cobrar produzia erro que o validador oficial não acusa.
