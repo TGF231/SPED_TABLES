@@ -48,7 +48,7 @@ ATIVIDADES = [
 # Alíquotas nominais de cada regime. O cumulativo não gera crédito, por isso
 # só tem par de saída.
 ALIQUOTAS = {
-    "cumulativo": {"pis_saida": "0,65", "cofins_saida": "3,00",
+    "cumulativo": {"pis_saida": "0,65", "cofins_saida": "3",
                    "pis_credito": "", "cofins_credito": ""},
     "nao_cumulativo": {"pis_saida": "1,65", "cofins_saida": "7,6",
                        "pis_credito": "1,65", "cofins_credito": "7,6"},
@@ -110,7 +110,7 @@ class Empresa:
     regime_pis_cofins: str = "cumulativo"
     atividade: str = "comercio"
     aliq_pis_saida: str = "0,65"
-    aliq_cofins_saida: str = "3,00"
+    aliq_cofins_saida: str = "3"
     aliq_pis_credito: str = ""
     aliq_cofins_credito: str = ""
     # CST gravado quando uma rotina retira um crédito indevido. O 70 é
@@ -153,10 +153,12 @@ class Empresa:
         padrao = ALIQUOTAS.get(self.regime_pis_cofins)
         if not padrao:
             return self
-        self.aliq_pis_saida = padrao["pis_saida"]
-        self.aliq_cofins_saida = padrao["cofins_saida"]
-        self.aliq_pis_credito = padrao["pis_credito"]
-        self.aliq_cofins_credito = padrao["cofins_credito"]
+        # pelo mesmo funil do cadastro digitado
+        self.aliq_pis_saida = normalizar_aliquota(padrao["pis_saida"])
+        self.aliq_cofins_saida = normalizar_aliquota(padrao["cofins_saida"])
+        self.aliq_pis_credito = normalizar_aliquota(padrao["pis_credito"])
+        self.aliq_cofins_credito = normalizar_aliquota(
+            padrao["cofins_credito"])
         return self
 
 

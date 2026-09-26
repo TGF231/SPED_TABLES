@@ -288,7 +288,8 @@ def naturezas_cfop_credito(pasta_contrib=None, data_ref=None):
     fim = _chave_data(data_ref)
     out = {}
     try:
-        linhas = io.open(alvo[0], encoding="latin-1").read().splitlines()
+        with io.open(alvo[0], encoding="latin-1") as fh:
+            linhas = fh.read().splitlines()
     except OSError:
         return {}
     for l in linhas[1:]:

@@ -1,5 +1,59 @@
 # Changelog
 
+## [0.51.0] - 2026-09-26
+
+Suíte de testes no repositório e rede de proteção para erro inesperado.
+
+### Adicionado
+- **Suíte de testes em `tests/`** (`py -m unittest discover -s tests -t .`),
+  86 testes em ~7 s. Nenhum arquivo de cliente entra no git: os SPED de teste
+  são montados na hora por `tests/fabrica.py`, pelo nome dos campos do
+  leiaute, com blocos fechados e bloco 9 contado. Cobre gravação atômica,
+  encoding, largura de registro novo, rateio de acessórios, C190 (x20/x70),
+  bloco M (débito, crédito, idempotência, cumulativo), validação por
+  domínio, regras de revisão, diagnóstico e pré-checagem do PVA, cadastro,
+  rotinas, acervo de arquivos e o cancelamento da automação do PVA — esta
+  sem abrir o PVA de verdade.
+- **Teste de interface que dispara cada ação do menu** nos dois leiautes,
+  com os diálogos modais neutralizados. É o teste que teria pegado o
+  "Validar campos pelo leiaute" derrubando o programa: ele chama a ação, não
+  o diálogo.
+- **Armadilhas conferidas em todo arquivo** (`test_estrutura`): código
+  depois de `return` (o `def` apagado por edição), módulo com nome da
+  biblioteca padrão e método definido duas vezes na mesma classe.
+- **Testes contra arquivos reais fora do repositório**: com
+  `SPED_TABLES_ARQUIVOS_REAIS` apontando para a pasta, rodam invariantes
+  (gravar não perde registro, recálculo idempotente, nenhuma verificação
+  levanta exceção) e, havendo um `gabarito.json` na pasta, os **números
+  exatos** por arquivo. `py -m tests.test_reais gerar` grava o gabarito.
+- **Fallback para exceção não tratada** (`falhas.py`). O PyQt6 encerra o
+  processo quando uma exceção escapa de um slot; agora ela é registrada em
+  `logs/sped_tables.log` (pasta de dados, com rodízio), o documento com
+  alteração pendente é gravado em `recuperacao/` e uma caixa diz o que houve
+  — o programa continua aberto. Falhas nativas (Win32/ctypes) deixam rastro
+  em `logs/falhas_nativas.log`; exceções de thread e avisos do Qt também vão
+  para o registro. Um teste em subprocesso prova as duas coisas: com o
+  gancho o processo sobrevive, sem ele morre.
+- `SPED_TABLES_DADOS` no ambiente redireciona a pasta de dados (a suíte usa
+  uma pasta temporária para nunca tocar no cadastro de verdade).
+- `recalcular_bloco_m(naturezas=...)` aceita a tabela 4.3.7 pronta, sem
+  depender do PVA instalado.
+
+### Corrigido
+- **`rotinas.executar` podia derrubar o programa.** Num `TypeError` ele
+  repetia a verificação sem os parâmetros extras — mas o erro podia vir de
+  dentro da verificação, e a segunda chamada, fora do `try`, levava a
+  exceção até o slot do Qt. Agora passa só os parâmetros que a verificação
+  declara e devolve qualquer erro como mensagem.
+- **Alíquota padrão do regime saía `3,00`.** A normalização da 0.50.0 cobria
+  o que era digitado, mas não o botão que aplica as alíquotas do regime; a
+  tabela interna já está no formato do SPED.
+- **Arquivo passado na linha de comando abria pela metade**: as abas eram
+  montadas à mão, sem habilitar o menu, sem cópia no acervo e sem
+  diagnóstico. Agora usa o mesmo caminho do histórico.
+- Um arquivo de tabela do PVA ficava aberto após a leitura das naturezas de
+  crédito.
+
 ## [0.50.0] - 2026-09-24
 
 Os cinco achados **médios** da revisão completa do código.

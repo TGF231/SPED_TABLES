@@ -24,6 +24,7 @@ CST 02 é justamente "alíquota diferenciada", e 03 é por quantidade — cobrar
 deles a alíquota nominal produziria falso positivo.
 """
 
+import inspect
 from dataclasses import dataclass, field
 
 from sped_model import _to_num, _fmt_val, _fmt_aliq
@@ -541,11 +542,20 @@ def aplicaveis(doc, empresa):
 
 
 def executar(doc, empresa, rotina, **extra):
-    """Roda a verificação de uma rotina, tolerando recurso externo ausente."""
+    """Roda a verificação de uma rotina, tolerando recurso externo ausente.
+
+    Só os extras que a verificação declara são passados. A versão anterior
+    tentava com todos e, num `TypeError`, repetia sem nenhum — mas o
+    `TypeError` podia vir de **dentro** da verificação, e a segunda chamada,
+    fora do `try`, levava a exceção até o slot do Qt, que derruba o programa.
+    """
+    try:
+        aceitos = inspect.signature(rotina.verificar).parameters
+        if not any(p.kind is p.VAR_KEYWORD for p in aceitos.values()):
+            extra = {k: v for k, v in extra.items() if k in aceitos}
+    except (TypeError, ValueError):
+        extra = {}
     try:
         return rotina.verificar(doc, empresa, **extra), ""
-    except TypeError:
-        # rotina que não aceita os extras (ex.: classificador)
-        return rotina.verificar(doc, empresa), ""
     except Exception as exc:  # noqa: BLE001
-        return [], str(exc)
+        return [], "%s: %s" % (type(exc).__name__, exc)

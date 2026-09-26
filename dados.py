@@ -46,8 +46,16 @@ def pasta_programa():
 
 
 def pasta_dados(criar=True):
-    """Pasta onde ficam cadastro, configurações e cópias dos SPED."""
-    if empacotado():
+    """Pasta onde ficam cadastro, configurações e cópias dos SPED.
+
+    `SPED_TABLES_DADOS` no ambiente tem precedência sobre tudo: é o que a
+    suíte de testes usa para não gravar cadastro nem cópia de SPED na pasta
+    do projeto, e serve a quem quiser os dados num disco de rede.
+    """
+    forcada = os.environ.get("SPED_TABLES_DADOS")
+    if forcada:
+        caminho = os.path.abspath(forcada)
+    elif empacotado():
         if sys.platform == "win32":
             raiz = os.environ.get("APPDATA") or os.path.expanduser("~")
             caminho = os.path.join(raiz, APP_NAME)

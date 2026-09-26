@@ -55,6 +55,7 @@ import pva
 import arquivos as arq_mod
 import janela_custom
 import dados
+import falhas
 from version import __version__, APP_NAME
 import tema
 
@@ -7072,6 +7073,54 @@ class JanelaPrincipal(QMainWindow):
             return
         event.accept()
 
+    def copia_de_emergencia(self):
+        """Grava o documento em `recuperacao/` quando um erro inesperado
+        acontece com alteração pendente. Chamada por `falhas`."""
+        if self.doc is None or not self.alterado:
+            return None
+        return falhas.gravar_emergencia(self.doc, self.caminho)
+
+
+def avisar_erro(tipo, valor, detalhe, copia):
+    """Caixa que substitui o encerramento do processo (ver `falhas`)."""
+    caixa = QMessageBox(QApplication.activeWindow())
+    caixa.setIcon(QMessageBox.Icon.Critical)
+    caixa.setWindowTitle("Erro inesperado")
+    texto = ("Aconteceu um erro que o programa não esperava:<br><b>%s</b>"
+             "<br><br>O programa continua aberto, mas a última operação "
+             "pode não ter terminado." % _escapar(
+                 "%s: %s" % (tipo.__name__, valor)))
+    if copia:
+        texto += ("<br><br>Havia alterações não salvas; uma cópia foi "
+                  "gravada em:<br><b>%s</b>" % _escapar(copia))
+    texto += ("<br><br>O registro completo está em:<br>%s"
+              % _escapar(falhas.caminho_log()))
+    caixa.setText(texto)
+    caixa.setDetailedText(detalhe)
+    b_pasta = caixa.addButton("Abrir pasta do registro",
+                              QMessageBox.ButtonRole.ActionRole)
+    caixa.addButton("Continuar", QMessageBox.ButtonRole.AcceptRole)
+    caixa.exec()
+    if caixa.clickedButton() is b_pasta:
+        try:
+            os.startfile(falhas.pasta_logs())       # noqa: S606 (só Windows)
+        except (AttributeError, OSError):
+            pass
+
+
+def _escapar(texto):
+    return (str(texto).replace("&", "&amp;").replace("<", "&lt;")
+            .replace(">", "&gt;"))
+
+
+def _mensagens_do_qt(tipo, _contexto, mensagem):
+    """Avisos do próprio Qt vão para o registro em vez do console, que no
+    executável nem existe."""
+    from PyQt6.QtCore import QtMsgType
+    nivel = {QtMsgType.QtWarningMsg: 30, QtMsgType.QtCriticalMsg: 40,
+             QtMsgType.QtFatalMsg: 50}.get(tipo, 10)
+    falhas.log.log(nivel, "Qt: %s", mensagem)
+
 
 def instalar_traducao(app):
     """Carrega a tradução pt-BR do próprio Qt.
@@ -7140,6 +7189,10 @@ def primeira_instalacao(janela):
 
 def main():
     app = QApplication(sys.argv)
+    # antes de qualquer janela: exceção num slot, sem isto, encerra o processo
+    falhas.instalar(avisar=avisar_erro)
+    from PyQt6.QtCore import qInstallMessageHandler
+    qInstallMessageHandler(_mensagens_do_qt)
     instalar_traducao(app)
     app.setApplicationName(APP_NAME)
     app.setOrganizationName(APP_NAME)
@@ -7152,22 +7205,20 @@ def main():
     tema.definir_escuro(ajustes.value("tema_escuro", False, type=bool))
     app.setStyleSheet(tema.folha_estilo())
     janela = JanelaPrincipal()
+    falhas.definir_salvar_emergencia(janela.copia_de_emergencia)
     # dimensiona antes de mostrar: numa tela apertada isso já abre maximizada
     # e troca o tema para a densidade compacta
     janela.dimensionar_para_a_tela()
     janela.show()
     primeira_instalacao(janela)
-    # abre direto se um caminho for passado na linha de comando
+    # abre direto se um caminho for passado na linha de comando. Pelo mesmo
+    # caminho do histórico: montar as abas à mão deixava o menu desabilitado,
+    # sem cópia no acervo e sem diagnóstico
     if len(sys.argv) > 1 and os.path.isfile(sys.argv[1]):
-        try:
-            janela.doc = SpedDocument.carregar(sys.argv[1])
-            janela.alterado = False
-            janela._montar_abas()
-            janela.act_salvar.setEnabled(True)
-            janela.act_salvar_como.setEnabled(True)
-        except Exception:  # noqa: BLE001
-            pass
-    sys.exit(app.exec())
+        janela.abrir_caminho(sys.argv[1])
+    codigo = app.exec()
+    falhas.log.info("sessão encerrada (%s)", codigo)
+    sys.exit(codigo)
 
 
 if __name__ == "__main__":

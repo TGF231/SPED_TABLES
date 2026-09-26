@@ -3053,7 +3053,7 @@ class SpedDocument:
         return fora
 
     # --------------------------------------------- totais (in-place, p/ tela)
-    def recalcular_bloco_m(self, refazer_creditos=True):
+    def recalcular_bloco_m(self, refazer_creditos=True, naturezas=None):
         """
         (Apenas EFD Contribuições) Recalcula a APURAÇÃO de PIS (M200/M210) e
         COFINS (M600/M610) a partir das receitas tributadas de saída
@@ -3071,6 +3071,9 @@ class SpedDocument:
             créditos já existentes (M100/M500) são preservados e apenas
             descontados no M200/M600 (este método não recalcula créditos).
 
+        `naturezas` ({CFOP: NAT_BC_CRED}) é a tabela 4.3.7 do PVA. Sem ela,
+        é lida da instalação do PVA; os testes a passam pronta.
+
         Retorna um resumo, ou None se não se aplicar.
         """
         if self.layout != "CONTRIB":
@@ -3083,9 +3086,13 @@ class SpedDocument:
         cumulativo = (cod_inc == "2")
         cod_cont = "51" if cumulativo else "01"
 
-        naturezas = {}
+        naturezas = dict(naturezas or {})
         motivo = self._motivo_para_nao_refazer_creditos(cod_inc)
-        if refazer_creditos and not motivo and not cumulativo:
+        if cumulativo or not refazer_creditos or motivo:
+            naturezas = {}
+        if cumulativo:
+            motivo = motivo or "regime cumulativo não gera crédito"
+        elif refazer_creditos and not motivo and not naturezas:
             try:
                 import tabelas_pva
                 i_fim = self._ix("0000", "DT_FIN")
@@ -3100,8 +3107,6 @@ class SpedDocument:
             if not naturezas:
                 motivo = ("a tabela de CFOP com direito a crédito do PVA não "
                           "está disponível")
-        elif cumulativo:
-            motivo = motivo or "regime cumulativo não gera crédito"
 
         resumo = {}
         for tributo, reg_cons, reg_det in (("PIS", "M200", "M210"),
