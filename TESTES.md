@@ -124,8 +124,7 @@ quando não aparece mensagem nova nem aumenta a contagem de nenhuma.
 
 ```bash
 py ferramentas/validar_no_pva.py preparar  --ensaio D:\pva_ensaio
-py ferramentas/validar_no_pva.py gerar     --reais D:
-eais --saida D:\saida
+py ferramentas/validar_no_pva.py gerar     --reais D:\reais --saida D:\saida
 py ferramentas/validar_no_pva.py validar   --ensaio D:\pva_ensaio --saida D:\saida
 py ferramentas/validar_no_pva.py relatorio --saida D:\saida
 ```
