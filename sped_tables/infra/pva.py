@@ -160,6 +160,16 @@ if disponivel():
     _kernel32.GlobalLock.argtypes = [wintypes.HGLOBAL]
     _kernel32.GlobalLock.restype = ctypes.c_void_p
     _kernel32.GlobalUnlock.argtypes = [wintypes.HGLOBAL]
+    _kernel32.OpenProcess.argtypes = [wintypes.DWORD, wintypes.BOOL,
+                                      wintypes.DWORD]
+    _kernel32.OpenProcess.restype = wintypes.HANDLE
+    _kernel32.QueryFullProcessImageNameW.argtypes = [
+        wintypes.HANDLE, wintypes.DWORD, wintypes.LPWSTR,
+        ctypes.POINTER(wintypes.DWORD)]
+    _kernel32.QueryFullProcessImageNameW.restype = wintypes.BOOL
+    _kernel32.CloseHandle.argtypes = [wintypes.HANDLE]
+    _kernel32.CloseHandle.restype = wintypes.BOOL
+    PROCESS_QUERY_LIMITED_INFORMATION = 0x1000
 
     SW_RESTORE = 9
     GMEM_MOVEABLE = 0x0002
@@ -198,19 +208,53 @@ def _hwnds_do_processo(pid):
     return {h for h, _t, p in _janelas(exigir_titulo=False) if p == pid}
 
 
+def caminho_do_processo(pid):
+    """Executável do processo, ou `""` quando o Windows não informa."""
+    if not disponivel() or not pid:
+        return ""
+    h = _kernel32.OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION, False, pid)
+    if not h:
+        return ""
+    try:
+        buf = ctypes.create_unicode_buffer(1024)
+        n = wintypes.DWORD(len(buf))
+        if _kernel32.QueryFullProcessImageNameW(h, 0, buf, ctypes.byref(n)):
+            return buf.value
+        return ""
+    finally:
+        _kernel32.CloseHandle(h)
+
+
+def _da_instalacao(pid, pasta):
+    """O processo roda de dentro da pasta desta instalação?
+
+    Duas instalações do mesmo PVA (a de verdade e uma cópia de ensaio) abrem
+    janelas com o **mesmo título**; sem esta conferência a automação
+    dirigiria a que estivesse aberta, fosse qual fosse. Caminho que o Windows
+    não informa conta como sim — é o comportamento de antes.
+    """
+    exe = caminho_do_processo(pid)
+    if not exe:
+        return True
+    return os.path.normcase(os.path.abspath(exe)).startswith(
+        os.path.normcase(os.path.abspath(pasta)) + os.sep)
+
+
 def janela(layout, raiz=None):
     """`(hwnd, pid)` da janela principal do PVA do leiaute, ou `(None, None)`.
 
     O casamento é pelo **título**, que o PVA monta com `nomeAplicacao` do seu
     `aplicacao.properties` ("Sped Fiscal - EFD ICMS/IPI" e "EFD
-    Contribuições"). Janela de outro PVA não confunde: os títulos não se
-    contêm.
+    Contribuições") **e pelo executável**, que tem de estar dentro da pasta
+    da instalação (`_da_instalacao`). Janela de outro PVA não confunde: os
+    títulos não se contêm.
     """
     inst = instalacao(layout, raiz)
     if not disponivel() or not inst:
         return None, None
     for hwnd, titulo, pid in _janelas():
-        if inst["titulo"].lower() in titulo.lower():
+        if (inst["titulo"].lower() in titulo.lower()
+                and _da_instalacao(pid, inst["pasta"])):
             return hwnd, pid
     return None, None
 
@@ -266,7 +310,9 @@ def _focar(hwnd, pid, limite=15.0, cancelar=None):
             if anexou:
                 _user32.AttachThreadInput(meu, tid, False)
         fg, fg_pid = _pid_do_primeiro_plano()
-        if fg_pid == pid:
+        # minimizada, a janela pode estar "em primeiro plano" para o Windows
+        # e mesmo assim o Java descarta as teclas — o atalho some sem erro
+        if fg_pid == pid and not _user32.IsIconic(hwnd):
             return fg
         _dormir(0.3, cancelar)
     return None

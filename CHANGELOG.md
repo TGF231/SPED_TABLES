@@ -1,5 +1,41 @@
 # Changelog
 
+## [Não lançado] — 0.54.0-dev.1
+
+Primeira parte da 0.54.0 do roadmap: validar no PVA o que cada correção
+grava.
+
+### Adicionado
+- **`ferramentas/validar_no_pva.py`**, o roteiro 2.1 do TESTES.md automático:
+  grava uma cópia de cada arquivo real por fluxo de correção (14 fluxos),
+  importa e valida cada uma no PVA e compara as mensagens com as do arquivo
+  original. Roda numa **cópia de ensaio** da instalação dos PVAs, com porta
+  de banco própria, para não substituir as escriturações do PVA de uso. Tem
+  modo manual (a pessoa importa e valida; a ferramenta lê o banco) e retoma
+  de onde parou.
+- **`infra/banco_pva.py`**: lê, sem subir o servidor, o que a validação do
+  PVA gravou (`inconsistencia`, por mensagem e registro) e qual arquivo
+  virou qual escrituração (`master`).
+- Arquivos reais passam a exercitar também o recálculo de ICMS dos itens,
+  a troca de alíquotas (ida e volta) e a alteração de datas (ida e volta).
+  Nos arquivos de validação: o recálculo de ICMS altera 4 a 7 itens por
+  arquivo, todos por 1 centavo de arredondamento do ERP.
+
+### Mudado
+- **A cadeia "ICMS dos itens → C190 → totais do C100" saiu da tela para o
+  domínio** (`recalcular_icms_itens(refazer_c190=True)`) e passou a refazer
+  **só os documentos que tiveram item alterado**. O botão refazia o C190 e
+  os totais de todos os documentos com C170 quando não havia seleção do
+  relatório.
+
+### Corrigido
+- **A automação do PVA podia dirigir a instalação errada**: a janela era
+  reconhecida só pelo título, igual em duas instalações. Agora o executável
+  do processo tem de estar dentro da pasta da instalação configurada.
+- **Janela do PVA minimizada contava como focada**: para o Windows ela
+  estava em primeiro plano, mas o Java descartava as teclas e o Ctrl+I
+  sumia sem erro.
+
 ## [0.53.0] - 2026-09-26
 
 Arquitetura em camadas, documentação reescrita e a regra de que uma release

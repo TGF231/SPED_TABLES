@@ -172,5 +172,38 @@ class TestAlterarDatas(Base):
         self.assertEqual(c100.valor(doc._ix("C100", "DT_E_S")), "06082026")
 
 
+class TestCadeiaIcms(Base):
+    """O recálculo de ICMS refaz C190 e totais **só** de quem mudou."""
+
+    def test_so_o_documento_alterado(self):
+        m = icms_basico(itens=[{"COD_ITEM": "P1", "VL_ICMS": "9,99"},
+                               {"COD_ITEM": "P2"}, {"COD_ITEM": "P3"}])
+        # segundo documento, correto, com C190 propositalmente diferente
+        # do que o recálculo produziria (VL_RED_BC "0" em vez de "0,00")
+        nomes = m.tabela
+        c100 = next(c for c in m.linhas if c[0] == "C100")
+        idx = max(i for i, c in enumerate(m.linhas) if c[0] == "C190")
+        novo_c100 = list(c100)
+        novo_c100[nomes["C100"].index("NUM_DOC")] = "124"
+        # o item correto (P2), não o P1 com o ICMS errado
+        c170 = [c for c in m.linhas if c[0] == "C170"][1]
+        c190 = next(c for c in m.linhas if c[0] == "C190")
+        c190_b = list(c190)
+        c190_b[nomes["C190"].index("VL_OPR")] = "10,00"
+        c190_b[nomes["C190"].index("VL_BC_ICMS")] = "10,00"
+        c190_b[nomes["C190"].index("VL_ICMS")] = "1,80"
+        m.linhas[idx + 1:idx + 1] = [novo_c100, list(c170), c190_b]
+        doc = _doc(m)
+        segundo = [r for r in doc.registros if r.reg == "C100"][1]
+        antes = [f.linha_sped() for f in segundo.filhos]
+        r = doc.recalcular_icms_itens(refazer_c190=True)
+        self.assertEqual(r["c190_refeitos"], 1)
+        self.assertEqual([f.linha_sped() for f in segundo.filhos], antes)
+        primeiro = [r for r in doc.registros if r.reg == "C100"][0]
+        (c190_1,) = [f for f in primeiro.filhos if f.reg == "C190"]
+        self.assertEqual(c190_1.valor(doc._ix("C190", "VL_ICMS")), "5,40")
+        self.assertBemFormado(doc)
+
+
 if __name__ == "__main__":
     unittest.main()

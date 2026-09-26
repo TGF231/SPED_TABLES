@@ -1263,7 +1263,7 @@ class SpedDocument:
 
     def recalcular_icms_itens(self, uids=None, recalcular_base=False,
                               reducao_pct=None, zerar_sem_debito=True,
-                              tol=0.005):
+                              tol=0.005, refazer_c190=False):
         """Recalcula o ICMS dos itens C170.
 
         O fluxo pensado é: corrigir alíquota, base ou CST no **Modo Relatório**
@@ -1298,7 +1298,9 @@ class SpedDocument:
         alvo = set(uids) if uids is not None else None
         resumo = {"itens": 0, "alterados": 0, "base_alterada": 0,
                   "valor_alterado": 0, "zerados": 0, "por_situacao": {},
-                  "delta_icms": 0.0}
+                  "delta_icms": 0.0, "c190_refeitos": 0}
+        # documentos com item alterado: só eles têm o C190 refeito
+        tocados = {}
 
         for r in self.registros:
             if r.reg != "C170":
@@ -1324,6 +1326,8 @@ class SpedDocument:
                     mudou = True
                 if mudou:
                     resumo["alterados"] += 1
+                    if r.pai is not None:
+                        tocados[r.pai.uid] = r.pai
                 continue
 
             base = bc_antes
@@ -1349,8 +1353,18 @@ class SpedDocument:
 
             if mudou:
                 resumo["alterados"] += 1
+                if r.pai is not None:
+                    tocados[r.pai.uid] = r.pai
 
         resumo["delta_icms"] = round(resumo["delta_icms"], 2)
+        # a cadeia que o botão fazia sozinho (e em todos os documentos, não
+        # só nos alterados): C190 e totais do C100 de quem mudou
+        if refazer_c190:
+            for c100 in tocados.values():
+                if c100.reg == "C100":
+                    self.consolidar_c190(c100)
+                    self.recalcular_totais_c100(c100)
+                    resumo["c190_refeitos"] += 1
         return resumo
 
     def recalcular_totais_c100(self, c100):

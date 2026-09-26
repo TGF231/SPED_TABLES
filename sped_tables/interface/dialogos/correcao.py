@@ -604,12 +604,10 @@ class DialogoRecalcularICMS(QDialog):
             recalcular_base=self.ck_base.isChecked(),
             reducao_pct=(self.ed_reducao.value()
                          if self.ck_base.isChecked() else None),
-            zerar_sem_debito=self.ck_zerar.isChecked())
+            zerar_sem_debito=self.ck_zerar.isChecked(),
+            refazer_c190=self.ck_c190.isChecked())
         self.resultado = res
-
-        docs = 0
-        if self.ck_c190.isChecked() and res.get("alterados"):
-            docs = self._refazer_c190(uids)
+        docs = res.get("c190_refeitos", 0)
 
         jan = self.parent()
         if res.get("alterados") and jan is not None:
@@ -633,20 +631,3 @@ class DialogoRecalcularICMS(QDialog):
                "<br>C190 e totais refeitos em %d documento(s)." % docs
                if docs else ""))
         self.accept()
-
-    def _refazer_c190(self, uids):
-        """Refaz o analítico dos documentos que tiveram itens alterados."""
-        alvo = set(uids) if uids else None
-        docs = []
-        for r in self.doc.registros:
-            if r.reg != "C100":
-                continue
-            filhos = [f for f in (r.filhos or []) if f.reg == "C170"]
-            if not filhos:
-                continue
-            if alvo is None or any(f.uid in alvo for f in filhos):
-                docs.append(r)
-        for c100 in docs:
-            self.doc.consolidar_c190(c100)
-            self.doc.recalcular_totais_c100(c100)
-        return len(docs)

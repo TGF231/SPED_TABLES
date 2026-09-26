@@ -116,8 +116,31 @@ Marque: ✅ passou · ❌ falhou · ⏭️ não se aplica.
 
 ### 2.1 No PVA (antes de cada release)
 
-O único juiz do arquivo é o validador oficial. Para cada fluxo que grava,
-numa cópia de arquivo real:
+O único juiz do arquivo é o validador oficial. `ferramentas/validar_no_pva.py`
+faz este roteiro inteiro: grava uma cópia de cada arquivo real por fluxo de
+correção, importa e valida cada uma no PVA e compara o que a validação
+acusou com o arquivo original passado pelo mesmo caminho. Uma correção passa
+quando não aparece mensagem nova nem aumenta a contagem de nenhuma.
+
+```bash
+py ferramentas/validar_no_pva.py preparar  --ensaio D:\pva_ensaio
+py ferramentas/validar_no_pva.py gerar     --reais D:
+eais --saida D:\saida
+py ferramentas/validar_no_pva.py validar   --ensaio D:\pva_ensaio --saida D:\saida
+py ferramentas/validar_no_pva.py relatorio --saida D:\saida
+```
+
+- **Roda numa cópia da instalação** (`preparar`), com porta de banco própria:
+  importar no PVA de uso uma cópia do mesmo CNPJ e período **substituiria**
+  a escrituração que está lá. A automação só dirige janela cujo executável
+  está dentro da pasta de ensaio.
+- `validar --manual`: sem automação — a ferramenta põe o caminho na área de
+  transferência, você importa e valida, e ela só lê o resultado do banco do
+  PVA (`infra/banco_pva.py`).
+- A saída fica **fora do repositório** (a ferramenta recusa o contrário).
+- Retoma de onde parou: o que já foi validado não é refeito.
+
+Os fluxos cobertos:
 
 - [ ] Recalcular C190 (um documento e em massa) → importar e validar no PVA
 - [ ] Recalcular ICMS dos itens → PVA

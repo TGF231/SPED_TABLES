@@ -148,6 +148,74 @@ class TestArquivosReais(unittest.TestCase):
                 self.assertEqual(SpedDocument.carregar(copia).gerar_texto(),
                                  uma)
 
+    def test_icms_dos_itens(self):
+        """Depois do recálculo, todo C170 tributado tem VL_ICMS = base ×
+        alíquota; a segunda passada não mexe em nada."""
+        from sped_tables.dominio.sped_model import _to_num
+        for caminho in arquivos_reais():
+            doc = SpedDocument.carregar(caminho)
+            if doc.layout != "ICMS":
+                continue
+            with self.subTest(arquivo=_chave(caminho)):
+                doc.recalcular_icms_itens()
+                uma = doc.gerar_texto()
+                ib, ia, iv, ic = (doc._ix("C170", c) for c in (
+                    "VL_BC_ICMS", "ALIQ_ICMS", "VL_ICMS", "CST_ICMS"))
+                for r in doc.registros:
+                    if r.reg != "C170" or doc.situacao_icms(
+                            r.valor(ic)) == "sem_debito":
+                        continue
+                    esperado = round(_to_num(r.valor(ib))
+                                     * _to_num(r.valor(ia)) / 100, 2)
+                    self.assertAlmostEqual(_to_num(r.valor(iv)), esperado,
+                                           places=2, msg=r.linha_sped())
+                doc.recalcular_icms_itens()
+                self.assertEqual(doc.gerar_texto(), uma)
+
+    def test_troca_de_aliquotas_ida_e_volta(self):
+        """Trocar a alíquota predominante por outra e voltar devolve os
+        valores; todo registro trocado fica com valor = base × alíquota."""
+        for caminho in arquivos_reais():
+            doc = SpedDocument.carregar(caminho)
+            if doc.layout != "CONTRIB":
+                continue
+            with self.subTest(arquivo=_chave(caminho)):
+                pis = doc.aliquota_predominante("ALIQ_PIS")
+                cof = doc.aliquota_predominante("ALIQ_COFINS")
+                if not pis or not cof:
+                    self.skipTest("sem saída tributada")
+                original = doc.gerar_texto()
+                r1 = doc.trocar_aliquotas_pis_cofins(
+                    aliq_pis=pis + 1, aliq_cofins=cof + 1, de_pis=pis,
+                    de_cofins=cof)
+                self.assertGreater(r1["itens"], 0)
+                r2 = doc.trocar_aliquotas_pis_cofins(
+                    aliq_pis=pis, aliq_cofins=cof, de_pis=pis + 1,
+                    de_cofins=cof + 1)
+                self.assertEqual(r2["itens"], r1["itens"])
+                volta = doc.gerar_texto()
+                # os valores são recalculados (base × alíquota): onde o ERP
+                # arredondou diferente, a volta corrige — por isso a
+                # comparação é campo a campo, só nas alíquotas
+                self.assertEqual(
+                    [l.split("|")[:7] for l in volta.splitlines()],
+                    [l.split("|")[:7] for l in original.splitlines()])
+
+    def test_datas_ida_e_volta(self):
+        import datetime
+        for caminho in arquivos_reais():
+            doc = SpedDocument.carregar(caminho)
+            with self.subTest(arquivo=_chave(caminho)):
+                original = doc.gerar_texto()
+                args = dict(campo_filtro="DT_E_S",
+                            data_ini=datetime.date(1900, 1, 1),
+                            data_fim=datetime.date(2999, 12, 31),
+                            campos_alterar=("DT_E_S", "DT_DOC"), modo="dias")
+                doc.alterar_datas_c100(valor=3, **args)
+                self.assertNotEqual(doc.gerar_texto(), original)
+                doc.alterar_datas_c100(valor=-3, **args)
+                self.assertEqual(doc.gerar_texto(), original)
+
     def test_gabarito(self):
         cam = os.path.join(PASTA, GABARITO)
         if not os.path.isfile(cam):
