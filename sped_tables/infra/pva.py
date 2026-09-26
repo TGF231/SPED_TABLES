@@ -25,7 +25,8 @@ Daí o caminho usado aqui:
    enfileirados — por isso o Ctrl+I também é repetido até o seletor abrir;
 4. copiar o caminho do arquivo para a área de transferência;
 5. mandar Ctrl+I, esperar o seletor de arquivo e mandar Ctrl+V e Enter;
-6. responder aos dois "Aviso" que o PVA abre — "deseja importar?" e, ao fim da
+6. responder aos dois "Aviso" que o PVA abre — "deseja importar?" (só se já
+   houver a escrituração; nova, ele segue sem perguntar) e, ao fim da
    importação, "deseja validar?" —, cada um **conferido pelo efeito**: a tela
    `Importando a escrituração…` / `Validando a escrituração…` tem de aparecer.
    Não aparecendo, a automação para e diz o que falta. Importar sem validar
@@ -82,6 +83,9 @@ ESPERA_IMPORTACAO = 1800 # a importação terminar (arquivo grande demora)
 # progresso, e é a **aparição delas** que confirma que o "sim" foi aceito.
 TITULO_AVISO = "aviso"
 TITULO_ERRO = "erro"
+# o relatório que só a importação **recusada** abre (o "Erro" sozinho é
+# também o fim de uma validação que achou erros)
+TITULO_RESULTADO = "resultado da importação"
 
 # Telas que atravessam o caminho sem serem o que se espera. As de **progresso**
 # só pedem paciência; as de **decisão** são do usuário e não são respondidas —
@@ -170,6 +174,9 @@ if disponivel():
     _kernel32.CloseHandle.argtypes = [wintypes.HANDLE]
     _kernel32.CloseHandle.restype = wintypes.BOOL
     PROCESS_QUERY_LIMITED_INFORMATION = 0x1000
+    _user32.PostMessageW.argtypes = [wintypes.HWND, wintypes.UINT,
+                                     wintypes.WPARAM, wintypes.LPARAM]
+    _user32.PostMessageW.restype = wintypes.BOOL
 
     SW_RESTORE = 9
     GMEM_MOVEABLE = 0x0002
@@ -394,13 +401,38 @@ def _confirmar_aviso(pid, titulo_efeito, limite_aviso=ESPERA_AVISO,
     aparecendo, a automação para e diz o que falta — é o que impede responder
     no escuro a um aviso que fosse outra coisa.
 
-    Devolve o hwnd da tela de progresso, ou None.
+    **Nem sempre há pergunta.** Escrituração nova (CNPJ e período que o PVA
+    ainda não tem) vai direto do seletor ao `Importando…`; o "Aviso" só vem
+    quando há uma para substituir. Esperar o aviso nesse caso pegava o
+    **seguinte** — "deseja fazer a validação?" —, respondia a ele como se
+    fosse o da importação e anunciava "não consegui confirmar" de um arquivo
+    importado. Por isso a tela de progresso vista antes de qualquer aviso
+    encerra a espera: o PVA seguiu sem perguntar.
+
+    Devolve o hwnd da tela de progresso (True se ela já passou), ou None.
     """
     # a atualização de tabelas costuma entrar aqui, entre o Enter no seletor
     # e o pedido de confirmação
-    _esperar_livre(pid, progresso=progresso, cancelar=cancelar)
-    aviso = _janela_com_titulo(pid, TITULO_AVISO, limite_aviso,
-                               cancelar=cancelar)
+    vistos = set()
+    _esperar_livre(pid, progresso=progresso, cancelar=cancelar,
+                   vistos=vistos)
+    if any(titulo_efeito in t or TITULO_RESULTADO in t for t in vistos):
+        return True                         # veio e já foi, sem pergunta
+    aviso = None
+    fim = time.time() + limite_aviso
+    while aviso is None and time.time() < fim:
+        for hwnd, titulo, p in _janelas(exigir_titulo=False):
+            t = (titulo or "").lower()
+            if p != pid:
+                continue
+            if titulo_efeito in t:
+                return hwnd                 # seguiu sem perguntar
+            if TITULO_RESULTADO in t:
+                return True                 # importou — e foi recusado
+            if TITULO_AVISO in t:
+                aviso = hwnd
+        if aviso is None:
+            _dormir(0.1, cancelar)
     if aviso is None:
         return None
     if _focar(aviso, pid, limite=5.0, cancelar=cancelar) != aviso:
@@ -464,24 +496,29 @@ def _classificar(extras):
 
 
 def _esperar_livre(pid, limite=ESPERA_DECISAO, progresso=None,
-                   cancelar=None):
+                   cancelar=None, vistos=None):
     """Espera sair do caminho o que for progresso ou decisão do usuário.
 
     A atualização de tabelas entra bem no meio da importação: o PVA pergunta,
     baixa e ainda avisa que deu certo. Nada disso é respondido aqui — são
     decisões do usuário —, mas esperar por elas é o que faz a automação
     retomar sozinha em vez de dizer que não conseguiu.
+
+    `vistos` (um set) recebe o título, em minúsculas, de toda janela que
+    passou: num arquivo pequeno o `Importando…` dura menos de um segundo.
     """
     fim = time.time() + limite
     while time.time() < fim:
         extras = [(h, t) for h, t, p in _janelas(exigir_titulo=False)
                   if p == pid]
+        if vistos is not None:
+            vistos.update((t or "").lower() for _h, t in extras)
         espera = _classificar(extras)
         if not espera:
             return True
         if progresso:
             progresso(espera)
-        _dormir(0.5, cancelar)
+        _dormir(0.2, cancelar)
     return False
 
 
@@ -507,8 +544,8 @@ def abrir(caminho, layout, importar=True, confirmar=True, validar=True,
     validação — importar sem validar, porém, não fecha o ciclo: o que
     interessa é o relatório de erros do PVA.
 
-    As duas confirmações que o PVA pede ("deseja importar?" e "deseja
-    validar?") são respondidas e **conferidas pelo efeito**: a tela de
+    As duas confirmações que o PVA pede ("deseja importar?", quando há
+    escrituração a substituir, e "deseja validar?") são respondidas e **conferidas pelo efeito**: a tela de
     progresso correspondente tem de aparecer. Não aparecendo, a função para e
     diz o que falta fazer.
 

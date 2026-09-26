@@ -137,7 +137,21 @@ py ferramentas/validar_no_pva.py relatorio --saida D:\saida
   transferência, você importa e valida, e ela só lê o resultado do banco do
   PVA (`infra/banco_pva.py`).
 - A saída fica **fora do repositório** (a ferramenta recusa o contrário).
-- Retoma de onde parou: o que já foi validado não é refeito.
+- Retoma de onde parou: o que já foi validado não é refeito. `gerar
+  --fluxos x` refaz só esses e mantém o resto do manifesto.
+- **Arquivo que o PVA recusa na importação** ganha uma segunda série,
+  `arqNN_…_prep`, sobre uma **régua importável**: NULL limpos, campos
+  normalizados, `TIPO_ITEM` inválido do 0200 como `00` e CST_ICMS curto
+  completado com zeros. São decisões que o programa, de propósito, não toma
+  sozinho — valem só para o roteiro poder julgar as correções pela
+  validação, e não pela recusa.
+- **O teto do PVA:** o relatório para de listar erros em 1.000 (as
+  advertências vêm à parte). Acima disso, uma correção isolada só troca
+  erros por outros que estavam escondidos, e o relatório diz
+  "inconclusivo". O fluxo **cadeia** — todas as correções em sequência —
+  é o que desce abaixo do teto e testa a interação entre elas.
+- **Recusa** é o "Resultado da Importação". Um "Erro" sozinho é o fim de
+  uma validação que achou erros.
 
 Os fluxos cobertos:
 

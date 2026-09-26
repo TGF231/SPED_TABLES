@@ -131,6 +131,66 @@ class TestComparacaoDoRoteiro(unittest.TestCase):
         self.assertEqual(piores, [("MSG_B|C170", 25, 26)])
         self.assertEqual(melhores, [("MSG_A|C190", 63, 37)])
 
+    def test_recusa_na_importacao(self):
+        estrutura = {"MSG_ERRO_TIPO_CAMPO|0200": 634,
+                     "MSG_ERRO_TAMANHO_CAMPO|0200": 366}
+        self.assertTrue(self.mod._recusado({"recusado": True}))
+        self.assertTrue(self.mod._recusado({"estado": "erro_pva"}))
+        # resultado antigo, sem a marca: só erro de estrutura é recusa
+        self.assertTrue(self.mod._recusado(
+            {"estado": "confirmar", "inconsistencias": estrutura}))
+        self.assertFalse(self.mod._recusado(
+            {"estado": "validando", "recusado": False,
+             "inconsistencias": estrutura}))
+        self.assertFalse(self.mod._recusado(
+            {"estado": "confirmar", "inconsistencias": {}}))
+
+    def test_relatorio_e_o_teto(self):
+        import json
+        teto = {"MSG_A|H010": 997, "MSG_B|0150": 3}
+        itens = [
+            {"rotulo": "x", "fluxo": "original", "estado": "validando",
+             "recusado": False, "inconsistencias": teto},
+            # os dois no teto: troca de erros não é conclusão
+            {"rotulo": "x", "fluxo": "f1", "estado": "validando",
+             "recusado": False,
+             "inconsistencias": {"MSG_C|0200": 997, "MSG_B|0150": 3}},
+            # abaixo do teto: o que aparece pode estar escondido no original
+            {"rotulo": "x", "fluxo": "f2", "estado": "validando",
+             "recusado": False, "inconsistencias": {"MSG_D|C190": 35}},
+        ]
+        with PastaTemporaria() as p:
+            with open(os.path.join(p, self.mod.RESULTADOS), "w",
+                      encoding="utf-8") as fh:
+                json.dump(itens, fh)
+            with mock.patch("builtins.print"):
+                falhas = self.mod.relatorio(p)
+            with open(os.path.join(p, "relatorio.md"),
+                      encoding="utf-8") as fh:
+                texto = fh.read()
+        self.assertEqual(falhas, 0)
+        self.assertIn("inconclusivo", texto)
+        self.assertIn("a conferir no original", texto)
+
+    def test_regua_importavel(self):
+        from sped_tables.aplicacao import montagem
+        from sped_tables.dominio.sped_model import SpedDocument
+        from tests.fabrica import icms_basico
+        montagem.configurar()
+        m = icms_basico(itens=[{"COD_ITEM": "P1"}])
+        with PastaTemporaria() as p:
+            doc = SpedDocument.carregar(m.gravar(p))
+            i = doc._ix("0200", "TIPO_ITEM")
+            r0200 = next(r for r in doc.registros if r.reg == "0200")
+            r0200.set_valor(i, "N")               # o que o ERP gravou
+            j = doc._ix("C170", "CST_ICMS")
+            c170 = next(r for r in doc.registros if r.reg == "C170")
+            c170.set_valor(j, "0")
+            self.assertEqual(self.mod._preparar_importacao(doc), 2)
+            self.assertEqual(r0200.valor(i), "00")
+            self.assertEqual(c170.valor(j), "000")
+            self.assertEqual(self.mod._preparar_importacao(doc), 0)
+
     def test_saida_dentro_do_repositorio_e_recusada(self):
         with self.assertRaises(SystemExit):
             self.mod._fora_do_repositorio(os.path.join(RAIZ, "saida"))

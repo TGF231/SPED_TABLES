@@ -36,7 +36,7 @@ não prontas simplesmente não são criadas — nem menu, nem atalho
 (`acoes.visiveis()`, com teste em `tests/test_arquitetura.py`). Uma função
 nova nasce com `pronta=False` e só vira `True` quando passa pelo critério.
 
-**Onde estamos:** `0.54.0-dev.1`, canal **dev**. Toda a série 0.y.z é sandbox:
+**Onde estamos:** `0.54.0`, canal **dev**. Toda a série 0.y.z é sandbox:
 nenhuma versão antes da 1.0.0 é entregue como release.
 
 ---
@@ -80,27 +80,29 @@ exemplo). O item 4 (executável) é comum a todas e está na seção 4.2.
 |---|---|---|---|---|
 | Edição | Abrir, grade mestre-detalhe, editar, adicionar/remover, salvar com segurança, soma da seleção, abas, tela inicial, tema, barra própria | ✔ | ✔ ida e volta idêntica | — |
 | Relatório | Modo Relatório: três fontes, filtros, edição, CSV | ✔ ações | ✔ | — |
-| ICMS/IPI | Recalcular C190 (documento e em massa) | ✔ | ✔ | **pendente** |
-| | Recalcular ICMS dos itens (e C190/totais dos alterados) | ✔ | ✔ | **pendente** |
-| | Totais do C100 | ✔ | ✔ | **pendente** |
-| | Inventário do bloco H (importar, comparar, atualizar 0200) | ✔ parcial | ✔ 11.585 itens | **pendente** |
-| | Preencher COD_GEN | ✔ | ✔ | **pendente** |
+| ICMS/IPI | Recalcular C190 (documento e em massa) | ✔ | ✔ | ✔ |
+| | Recalcular ICMS dos itens (e C190/totais dos alterados) | ✔ | ✔ | ✔ |
+| | Totais do C100 | ✔ | ✔ | ✔ |
+| | Inventário do bloco H (importar, comparar, atualizar 0200) | ✔ parcial | ✔ 11.585 itens | ✔ importar — só num arquivo acima do teto de 1.000 erros |
+| | Preencher COD_GEN | ✔ | ✔ | ✔ |
 | Contribuições | Recalcular bloco M (apuração e crédito) | ✔ | ✔ | ✔ |
-| | Trocar alíquotas de PIS/COFINS | ✔ | ✔ | **pendente** |
-| | NFC-e 65: validar e regenerar C175 | ✔ | ✔ 205 documentos | **pendente** |
-| | CST por NCM (verificar e corrigir) | ✔ | ✔ | **pendente** |
-| | Empresas e rotinas por regime | ✔ | ✔ verificação; correção por controle | **pendente** |
+| | Trocar alíquotas de PIS/COFINS | ✔ | ✔ | ✔ |
+| | NFC-e 65: validar e regenerar C175 | ✔ | ✔ 205 documentos | **pendente** — precisa dos XMLs |
+| | CST por NCM (verificar e corrigir) | ✔ | ✔ | **pendente** — sem caso nos arquivos reais |
+| | Empresas e rotinas por regime | ✔ | ✔ verificação; correção por controle | ✔ |
 | Gerais | Diagnóstico, revisão, validação de campos | ✔ | ✔ gabarito | ✔ contra o banco do PVA |
-| | Limpar NULL, normalizar campos, COD_CTA, itens sem referência | ✔ | ✔ | **pendente** |
-| | Alterar datas (C100) | ✔ | ✔ | **pendente** |
+| | Limpar NULL, normalizar campos, COD_CTA, itens sem referência | ✔ | ✔ | ✔ |
+| | Alterar datas (C100) | ✔ | ✔ | ✔ |
 | | Conferência com XMLs (entradas, C190, itens) | ✔ | ✔ | — |
 | | Abrir no PVA (importar e validar) | ✔ sem PVA | ✔ nos dois PVAs | — |
 | | Acervo e histórico por empresa | ✔ | ✔ | — |
 | Sistema | Fallback de exceções, registro, cópia de emergência | ✔ | — | — |
 
-**O que falta, em uma frase:** validar no PVA o arquivo gerado por cada
-função que grava. O roteiro que faz isso está pronto
-(`ferramentas/validar_no_pva.py`, ver TESTES.md 2.1); falta rodá-lo.
+**PVA:** 53 validações sobre 4 arquivos reais, nenhuma correção criando
+erro que o original não tenha — os números estão no CHANGELOG da 0.54.0.
+Faltam duas funções, por falta de caso, não de defeito: **NFC-e 65** precisa
+dos XMLs dos cupons e **CST por NCM** não tem o que corrigir nos arquivos
+reais. Se não ganharem caso até o rc.1, saem da 1.0.0 com `pronta=False`.
 
 ### 4.2 Etapas
 
@@ -109,7 +111,7 @@ função que grava. O roteiro que faz isso está pronto
 | 0.51.0 | Suíte de testes no repositório; fallback de exceções | ✔ |
 | 0.52.0 | Configuração num ponto só; achados menores da revisão | ✔ |
 | 0.53.0 | Arquitetura em camadas; tabela de ações; correções cobertas pela suíte; canais de versão | ✔ |
-| 0.54.0 | Coluna **PVA** da tabela 4.1 inteira (roteiro 2.1) e as três funções sem arquivo real | em andamento: arquivo real ✔, roteiro ✔, execução no PVA pendente |
+| 0.54.0 | Coluna **PVA** da tabela 4.1 inteira (roteiro 2.1) e as três funções sem arquivo real | ✔ — menos NFC-e 65 e CST por NCM, sem caso |
 | 0.55.0 | Executável: gerar, rodar o roteiro 2.2 e 2.3 sobre ele | pendente |
 | 1.0.0-rc.1 | Congelamento: só correção; README revisado de ponta a ponta | pendente |
 | **1.0.0** | Release — ver 4.3 | — |

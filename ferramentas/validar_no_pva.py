@@ -35,8 +35,9 @@ sys.path.insert(0, RAIZ)
 
 from sped_tables.aplicacao import montagem  # noqa: E402
 from sped_tables.dominio import empresas as emp_mod  # noqa: E402
-from sped_tables.dominio import rotinas, validacao  # noqa: E402
-from sped_tables.dominio.sped_model import SpedDocument, _to_num  # noqa: E402
+from sped_tables.dominio import diagnostico, rotinas, validacao  # noqa: E402
+from sped_tables.dominio.sped_model import (  # noqa: E402
+    TIPOS_ITEM_0200, SpedDocument, _to_num)
 from sped_tables.infra import banco_pva, config, pva  # noqa: E402
 from sped_tables.infra import tabelas_rfb  # noqa: E402
 
@@ -172,6 +173,31 @@ def _itens_sem_ref(doc):
     return doc.remover_itens_0200([o[0] for o in orfaos]) if orfaos else 0
 
 
+def _cadeia(doc):
+    """Todas as correções, na ordem em que alguém as aplicaria. Testa a
+    interação entre elas e, num arquivo com mais de 1.000 erros, é a única
+    comparação que o teto do PVA não mascara: o relatório para de listar
+    erros em 1.000, e uma correção isolada só troca uns erros por outros que
+    estavam escondidos atrás deles."""
+    passos = [lambda d: d.limpar_campos_nulos()["campos"],
+              lambda d: validacao.normalizar(d)["campos"],
+              lambda d: d.preencher_cod_gen()["itens"],
+              _itens_sem_ref]
+    if doc.layout == "ICMS":
+        passos += [_cod_cta,
+                   lambda d: d.consolidar_c190_em_massa().get("documentos",
+                                                             0),
+                   lambda d: d.recalcular_icms_itens(
+                       refazer_c190=True)["alterados"]]
+    else:
+        passos += [_rotinas, _cst_ncm]
+    n = 0
+    for passo in passos:
+        r = passo(doc)
+        n += r.get("registros", 0) if isinstance(r, dict) else int(r or 0)
+    return n
+
+
 AMBOS = ("ICMS", "CONTRIB")
 FLUXOS = [
     ("original", lambda d: 0, AMBOS),
@@ -190,7 +216,49 @@ FLUXOS = [
     ("aliquotas", _aliquotas, ("CONTRIB",)),
     ("rotinas", _rotinas, ("CONTRIB",)),
     ("cst_ncm", _cst_ncm, ("CONTRIB",)),
+    ("totais_c100", lambda d: d.recalcular_totais_todos_c100(), AMBOS),
+    ("cadeia", _cadeia, AMBOS),
 ]
+
+
+def _preparar_importacao(doc):
+    """Régua do roteiro, **não** correção do programa: deixa importável um
+    arquivo que o PVA recusa já na importação, para que as correções possam
+    ser julgadas pela validação e não pelo teto de 1.000 erros de estrutura.
+
+    Limpa NULL, normaliza e decide o que o programa, de propósito, não
+    decide sozinho:
+
+    - `00` (mercadoria para revenda) no TIPO_ITEM do 0200 fora da tabela —
+      num arquivo real o ERP gravou `N` em 10.312 itens;
+    - CST_ICMS curto completado com zeros à esquerda (`0` → `000`) no C170
+      e no C190 — noutro, 5 registros assim bastaram para a recusa.
+
+    No programa as duas decisões são do usuário (planilha com prévia; CST
+    nunca é sugerido); aqui são só o que falta para o PVA aceitar o arquivo.
+    """
+    n = doc.limpar_campos_nulos()["campos"]
+    n += validacao.normalizar(doc)["campos"]
+    if doc.layout != "ICMS":
+        return n
+    i = doc._ix("0200", "TIPO_ITEM")
+    cst = {t: doc._ix(t, "CST_ICMS") for t in ("C170", "C190")}
+    for r in doc.registros:
+        if r.reg == "0200" and i is not None and \
+                r.valor(i) not in TIPOS_ITEM_0200:
+            r.set_valor(i, "00")
+            n += 1
+        elif cst.get(r.reg) is not None:
+            v = (r.valor(cst[r.reg]) or "").strip()
+            if v.isdigit() and len(v) < 3:
+                r.set_valor(cst[r.reg], v.zfill(3))
+                n += 1
+    return n
+
+
+def _impede_importacao(doc):
+    achados, _info = diagnostico.verificar(doc)
+    return diagnostico.impedem_importacao(achados)
 
 
 def _reais(pasta):
@@ -209,33 +277,110 @@ def gerar(reais, saida, somente=None):
     for k, cam in enumerate(_reais(reais), 1):
         base = SpedDocument.carregar(cam)
         rotulo = "arq%02d_%s" % (k, base.layout)
-        for nome, fn, layouts in FLUXOS:
-            if base.layout not in layouts or (somente and nome not in somente):
-                continue
-            doc = SpedDocument.carregar(cam)
-            try:
-                n = fn(doc)
-            except Exception as exc:                    # noqa: BLE001
-                print("  %s %s: ERRO %s" % (rotulo, nome, exc))
-                continue
-            if nome != "original" and not n:
-                print("  %-16s %-14s nada a corrigir" % (rotulo, nome))
-                continue
-            destino = os.path.join(saida, "%s_%s.txt" % (rotulo, nome))
-            doc.salvar(destino)
-            feitos.append({"arquivo": destino, "origem": cam,
-                           "layout": base.layout, "fluxo": nome,
-                           "rotulo": rotulo, "alteracoes": n})
-            print("  %-16s %-14s %s" % (rotulo, nome, n))
-    with open(os.path.join(saida, "gerados.json"), "w",
-              encoding="utf-8") as fh:
+        series = [(rotulo, None)]
+        # arquivo que o PVA recusa na importação ganha uma segunda série,
+        # sobre a régua importável: na primeira, toda correção esbarra no
+        # mesmo teto de erros de estrutura e nada se conclui
+        if _impede_importacao(base):
+            series.append((rotulo + "_prep", _preparar_importacao))
+        for rot, prep in series:
+            for nome, fn, layouts in FLUXOS:
+                if base.layout not in layouts or (somente and
+                                                  nome not in somente):
+                    continue
+                doc = SpedDocument.carregar(cam)
+                try:
+                    if prep:
+                        prep(doc)
+                    n = fn(doc)
+                except Exception as exc:                # noqa: BLE001
+                    print("  %s %s: ERRO %s" % (rot, nome, exc))
+                    continue
+                if nome != "original" and not n:
+                    print("  %-16s %-14s nada a corrigir" % (rot, nome))
+                    continue
+                destino = os.path.join(saida, "%s_%s.txt" % (rot, nome))
+                doc.salvar(destino)
+                feitos.append({"arquivo": destino, "origem": cam,
+                               "layout": base.layout, "fluxo": nome,
+                               "rotulo": rot, "alteracoes": n})
+                print("  %-16s %-14s %s" % (rot, nome, n))
+    # `--fluxos` gera só uma parte: o resto do manifesto fica como estava
+    cam = os.path.join(saida, "gerados.json")
+    novos = {i["arquivo"] for i in feitos}
+    if os.path.exists(cam):
+        with open(cam, encoding="utf-8") as fh:
+            feitos = [i for i in json.load(fh)
+                      if i["arquivo"] not in novos] + feitos
+    with open(cam, "w", encoding="utf-8") as fh:
         json.dump(feitos, fh, ensure_ascii=False, indent=2)
     return feitos
 
 
 # ------------------------------------------------------------ validar
+# avisos que o PVA abre depois de validar, todos só com Ok: "O arquivo foi
+# validado com sucesso" (Mensagem) e "A escrituração está pronta para ser
+# gerada para entrega/assinatura" (Aviso)
+TITULOS_CONCLUSAO = ("mensagem", "aviso", "erro")
+# a janela com o relatório da importação recusada não tem botão de Ok ao
+# alcance do Enter: é fechada por mensagem de janela
+TITULOS_FECHAR = ("resultado da importação",)
+
+
+def _dispensar_conclusao(layout, raiz, limite=30, sossego=3.0):
+    """Fecha os avisos de conclusão da validação — ou da recusa.
+
+    No programa eles ficam para a pessoa ver; no roteiro, travam o próximo
+    Ctrl+I. Só roda **depois** de a validação terminar, só age em janela com
+    um desses títulos, do processo da instalação de ensaio, e só dá por
+    encerrado quando nenhum aparece por `sossego` segundos (eles vêm um
+    depois do outro).
+
+    Devolve `(sossegou, vistos)`: `vistos` são os títulos que apareceram —
+    "erro" ou "resultado da importação" quer dizer importação recusada.
+    """
+    vistos = set()
+    hwnd, pid = pva.janela(layout, raiz)
+    if not pid:
+        return False, vistos
+    fim = time.time() + limite
+    livre_desde = time.time()
+    while time.time() < fim:
+        janelas = [(h, t.strip().lower()) for h, t, p in pva._janelas()
+                   if p == pid]
+        vistos.update(t for _h, t in janelas
+                      if t in TITULOS_FECHAR + TITULOS_CONCLUSAO)
+        for h, t in janelas:
+            if t in TITULOS_FECHAR:
+                pva._user32.PostMessageW(h, 0x0010, 0, 0)   # WM_CLOSE
+        msgs = [h for h, t in janelas if t in TITULOS_CONCLUSAO]
+        if not msgs and any(t in TITULOS_FECHAR for _h, t in janelas):
+            livre_desde = time.time()
+            time.sleep(1)
+            continue
+        if not msgs:
+            if time.time() - livre_desde >= sossego:
+                return True, vistos
+            time.sleep(0.5)
+            continue
+        livre_desde = time.time()
+        if pva._focar(msgs[0], pid, limite=5) and \
+                pva._pid_do_primeiro_plano()[0] == msgs[0]:
+            pva._tecla(pva.VK_RETURN)
+        time.sleep(1)
+    return False, vistos
+
+
+# "Erro" sozinho não é recusa: é também o que o PVA mostra depois de uma
+# validação que achou erros ("O arquivo contém erros e avisos"). A recusa
+# da importação é a única que abre o relatório.
+RECUSA = {"resultado da importação"}
+
+
 def _validar_um(item, raiz, limite=1800, manual=False):
     layout = item["layout"]
+    if not manual:
+        _dispensar_conclusao(layout, raiz, sossego=1.0)   # sobra de antes
     antes = set(banco_pva.bancos(layout, raiz))
     t0 = time.time()
     if manual:
@@ -264,6 +409,10 @@ def _validar_um(item, raiz, limite=1800, manual=False):
         None if cont is None
         else {"%s|%s" % k: v for k, v in sorted(cont.items())})
     item["segundos"] = round(time.time() - t0)
+    if not manual:
+        _ok, vistos = _dispensar_conclusao(layout, raiz)
+        item["recusado"] = (bool(vistos & RECUSA)
+                            or item["estado"] == "erro_pva")
     return item
 
 
@@ -314,6 +463,24 @@ def comparar(original, corrigido):
     return novas, piores, melhores
 
 
+ERROS_DE_ESTRUTURA = ("MSG_ERRO_TIPO_CAMPO", "MSG_ERRO_TAMANHO_CAMPO")
+# o PVA para de listar erros em 1.000 (as advertências vêm à parte): acima
+# disso, uma correção só troca erros por outros que estavam escondidos
+TETO_PVA = 1000
+
+
+def _recusado(item):
+    """Importação recusada: o PVA mostrou "Erro"/"Resultado da Importação"
+    (marca gravada pelo `validar`) ou — em resultado de antes da marca — só
+    há erro de estrutura, que é o que a importação acusa."""
+    if item.get("recusado") or item.get("estado") == "erro_pva":
+        return True
+    inc = item.get("inconsistencias") or {}
+    return (item.get("recusado") is None and item.get("estado") == "confirmar"
+            and bool(inc) and all(k.startswith(ERROS_DE_ESTRUTURA)
+                                  for k in inc))
+
+
 def relatorio(saida):
     with open(os.path.join(saida, RESULTADOS), encoding="utf-8") as fh:
         itens = json.load(fh)
@@ -324,14 +491,42 @@ def relatorio(saida):
     for i in sorted(itens, key=lambda x: (x["rotulo"], x["fluxo"])):
         orig = base.get(i["rotulo"], {}).get("inconsistencias")
         dep = i.get("inconsistencias")
+        rec_orig = _recusado(base.get(i["rotulo"], {}))
         if dep is None or orig is None:
             res, antes, depois = "não validado (%s)" % i.get("estado"), \
                 "?", "?"
+        elif _recusado(i):
+            antes, depois = sum(orig.values()), sum(dep.values())
+            if i["fluxo"] == "original":
+                res = "régua recusada na importação"
+            elif rec_orig:
+                res = "recusado na importação, como o original"
+            else:
+                falhas += 1
+                res = "**PIORA**: recusado na importação"
+        elif rec_orig:
+            antes, depois = sum(orig.values()), sum(dep.values())
+            res = "importável (o original é recusado)"
         else:
             antes, depois = sum(orig.values()), sum(dep.values())
             novas, piores, melhores = comparar(orig, dep)
+            no_teto = antes >= TETO_PVA and depois >= TETO_PVA
             if i["fluxo"] == "original":
-                res = "régua"
+                res = "régua" + (" (no teto de erros)" if antes >= TETO_PVA
+                                 else "")
+            elif (novas or piores) and no_teto:
+                res = "inconclusivo: os dois no teto de erros (%s)" % \
+                    "; ".join(["%s novo" % k for k, _n in novas]
+                              + ["%s %d→%d" % (k, a, b)
+                                 for k, a, b in piores])
+            elif (novas or piores) and antes >= TETO_PVA:
+                # a régua no teto não listou tudo: o que "aparece" pode
+                # estar lá desde o original — conferir no arquivo
+                res = ("abaixo do teto (%d→%d); a conferir no original, "
+                       "que o teto escondia: %s" % (antes, depois, "; ".join(
+                           ["%s (%d)" % (k, n) for k, n in novas]
+                           + ["%s %d→%d" % (k, a, b)
+                              for k, a, b in piores])))
             elif novas or piores:
                 falhas += 1
                 res = "**PIORA**: " + "; ".join(

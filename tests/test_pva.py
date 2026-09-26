@@ -68,5 +68,70 @@ class TestSemPva(unittest.TestCase):
         self.assertEqual(pva._classificar([(1, "Resultado")]), "")
 
 
+@unittest.skipUnless(sys.platform == "win32", "automação Win32")
+class TestConfirmacao(unittest.TestCase):
+    """Sequências de janelas observadas no PVA Fiscal (ensaio, 26/09/2026).
+
+    Escrituração existente: ... Validando assinaturas → **Aviso**
+    (substituir?) → Aguarde → Importando → Aviso (validar?) → Validando.
+    Escrituração nova: ... Validando assinaturas → Aguarde → Importando →
+    Aviso (validar?) — **sem** o primeiro aviso.
+    """
+
+    PID = 999999
+
+    def _roteiro(self, quadros):
+        """`_janelas` falso que devolve um quadro por chamada (o último se
+        repete)."""
+        fila = list(quadros)
+
+        def janelas(exigir_titulo=True):
+            q = fila.pop(0) if len(fila) > 1 else fila[0]
+            return [(n + 1, t, self.PID) for n, t in enumerate(q)]
+        return janelas
+
+    def _confirmar(self, quadros):
+        teclas = []
+        with mock.patch.object(pva, "_janelas", self._roteiro(quadros)), \
+                mock.patch.object(pva, "_focar", lambda h, p, **k: h), \
+                mock.patch.object(pva, "_tecla",
+                                  lambda vk, ctrl=False: teclas.append(vk)):
+            r = pva._confirmar_aviso(self.PID, pva.TITULO_IMPORTANDO,
+                                     limite_aviso=2, limite_efeito=2)
+        return r, teclas
+
+    def test_escrituracao_nova_nao_responde_aviso(self):
+        imp = "Importando a escrituração selecionada - Descritor 20001v2"
+        r, teclas = self._confirmar([["Aguarde..."], [imp], [imp],
+                                     ["Aviso"]])
+        self.assertTrue(r)
+        self.assertEqual(teclas, [])     # o "validar?" não foi respondido
+
+    def test_importacao_que_passou_durante_a_espera(self):
+        r, teclas = self._confirmar([["Aguarde..."],
+                                     ["Importando a escrituração"], [],
+                                     ["Aviso"]])
+        self.assertIs(r, True)
+        self.assertEqual(teclas, [])
+
+    def test_escrituracao_existente_responde_e_confere(self):
+        r, teclas = self._confirmar([[], ["Aviso"], ["Aviso"],
+                                     ["Importando a escrituração"]])
+        self.assertTrue(r)
+        self.assertEqual(teclas, [pva.VK_RETURN])
+
+    def test_recusa_encerra_a_espera(self):
+        # o `Importando…` passou sem ser visto; o relatório da recusa, não
+        r, teclas = self._confirmar([["Aguarde..."],
+                                     ["Erro", "Resultado da Importação"]])
+        self.assertIs(r, True)
+        self.assertEqual(teclas, [])
+
+    def test_sem_aviso_nem_progresso(self):
+        r, teclas = self._confirmar([[]])
+        self.assertIsNone(r)
+        self.assertEqual(teclas, [])
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -1,6 +1,62 @@
 # Changelog
 
-## [Não lançado] — 0.54.0-dev.1
+## [0.54.0] - 2026-09-26
+
+A coluna **PVA** do roadmap: cada correção que grava, validada no PVA de
+verdade — 53 validações sobre 4 arquivos reais (dois EFD Contribuições, dois EFD
+ICMS/IPI), 16 fluxos. **Nenhuma correção cria erro que o original não
+tenha.**
+
+### Resultado no PVA (inconsistências antes → depois)
+
+| Arquivo | Régua | Fluxos isolados | Todas em cadeia |
+|---|---|---|---|
+| Contribuições, cliente B | 0 | 0 nos 8 | 0 |
+| Contribuições, cliente A | 0 | 0 nos 8 | 0 |
+| ICMS/IPI, cliente B | **recusado** na importação (1.000 erros de estrutura no 0200) | recusados como o original; sobre a régua importável, 1.025 → 1.025 (no teto) | **1.025 → 63** |
+| ICMS/IPI, cliente A | **recusado** na importação (5 CST_ICMS `0`) | sobre a régua importável, 12 → 12 nos 5 | 12 → 12 |
+
+- **O ICMS do cliente B nunca importou.** O ERP grava `N` no `TIPO_ITEM` de
+  10.312 itens do 0200 — nenhuma correção automática decide isso (é a
+  planilha, com prévia). A régua do roteiro põe `00` só para poder julgar as
+  demais correções pela validação.
+- **Os 63 que sobram na cadeia já estavam no original**: 35 C190 de CST x70
+  sem base nenhuma (`MSG_CST_ICMS_RED_BC`: o ERP gravou 63, a cadeia
+  consertou 28 pela base de PIS/COFINS e o resto fica para conferência
+  manual, como manda a regra), 25 advertências de CST final 2, 1 no E116 e 2
+  no 0150. O PVA não os listava na régua porque **para de listar erros em
+  1.000**.
+- Sem caso nos arquivos reais: **CST por NCM** (nada a corrigir nos dois
+  Contribuições) e **NFC-e 65 / C175**, que depende dos XMLs dos cupons —
+  continuam pendentes no roadmap.
+
+### Adicionado
+- Fluxos **cadeia** (todas as correções em sequência — a única comparação
+  que o teto de 1.000 erros não mascara) e **totais do C100**.
+- **Régua importável** para arquivo que o PVA recusa na importação: uma
+  segunda série (`…_prep`) com NULL limpos, campos normalizados,
+  `TIPO_ITEM` inválido como `00` e CST_ICMS curto completado com zeros.
+  Decisões que o programa não toma sozinho; valem só no roteiro.
+- O relatório distingue **recusa**, **teto** ("inconclusivo" quando régua e
+  correção estão acima de 1.000; "a conferir no original" quando a correção
+  desce abaixo do teto e aparece o que ele escondia) e piora de verdade.
+- O roteiro fecha sozinho os diálogos que o PVA deixa depois de validar ou
+  de recusar a importação — sem isso, o Ctrl+I seguinte era engolido e a
+  rodada inteira parava no primeiro arquivo.
+
+### Corrigido
+- **Abrir no PVA anunciava "não consegui confirmar a importação" de
+  arquivo importado.** Escrituração nova — CNPJ e período que o PVA ainda
+  não tem — vai do seletor direto ao `Importando…`: o aviso "deseja
+  importar?" só aparece quando há uma escrituração a **substituir**. A
+  automação esperava o aviso assim mesmo, pegava o seguinte ("Deseja fazer
+  a validação de conteúdo agora?"), respondia a ele e dava a importação por
+  não confirmada. Recusa de escrituração nova saía com a mesma mensagem, em
+  vez de "o PVA recusou". Sequências observadas no PVA e fixadas em teste.
+- `gerar --fluxos` do roteiro sobrescrevia o manifesto só com os fluxos
+  pedidos.
+
+## [0.54.0-dev.1] — sem tag
 
 Primeira parte da 0.54.0 do roadmap: validar no PVA o que cada correção
 grava.

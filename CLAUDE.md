@@ -525,7 +525,8 @@ de propósito: num arquivo real do Contribuições havia 25 campos obrigatórios
 em branco pelo descritor e o PVA importou sem reclamar.
 
 **As duas confirmações são respondidas — e conferidas pelo efeito.** Depois
-do Enter no seletor o PVA abre um "Aviso" ("deseja importar?") e, terminada a
+do Enter no seletor o PVA abre um "Aviso" ("deseja importar?", só quando
+há escrituração a substituir — ver abaixo) e, terminada a
 importação, outro ("deseja validar?"). Os dois vêm do mesmo
 `ExibirMensagem.solicitarConfirmacao`, um `JOptionPane` cujo botão padrão
 responde ao Enter. Como "apertei Enter" não prova nada, o sucesso é medido
@@ -534,8 +535,42 @@ escrituração…` e `Validando a escrituração…`. Não aparecendo, a automa�
 para e diz o que falta: é isso que impede responder no escuro a um aviso que
 fosse outra coisa.
 
+**O primeiro aviso só existe quando há o que substituir.** Escrituração
+nova (CNPJ e período que o PVA ainda não tem) vai do seletor direto ao
+`Importando…`, sem pergunta. Até a 0.54.0 a automação esperava o aviso
+assim mesmo, pegava o **seguinte** ("Deseja fazer a validação de conteúdo
+agora?"), dava Enter nele achando que era o da importação e anunciava "não
+consegui confirmar" de um arquivo importado e validado. Agora a tela de
+progresso vista antes de qualquer aviso encerra a espera
+(`_confirmar_aviso`, com as duas sequências em `tests/test_pva.py`).
+
+**"Erro" depois da validação não é recusa.** Validação que acha erros
+termina num diálogo "Erro" ("O arquivo contém erros e avisos"). A recusa da
+importação é o "Erro" **mais** o "Resultado da Importação" — é a checagem
+logo depois do `Importando…` que as separa, e o roteiro de validação marca
+recusa só pelo relatório.
+
 Importar sem validar não fecha o ciclo: o que interessa é o relatório de erros
 do PVA. Por isso `validar=True` é o padrão.
+
+**Importar o mesmo CNPJ e período apaga a escrituração anterior** — o PVA
+remove o banco `bd…` antigo e cria outro. Por isso o roteiro de validação
+(`ferramentas/validar_no_pva.py`) roda numa **cópia da instalação**, com
+porta de banco própria, e a automação só dirige janela cujo executável está
+dentro da pasta indicada (`pva.janela` confere o caminho do processo).
+
+**Depois de validar, o PVA deixa dois diálogos modais** — "Mensagem" (o
+arquivo foi validado com sucesso) e "Aviso" (pronta para entrega) — e, com
+eles abertos, o próximo Ctrl+I é engolido. Importação recusada deixa um
+"Erro" e o "Resultado da Importação". O roteiro fecha os dois tipos antes e
+depois de cada arquivo (`_dispensar_conclusao`); o botão da GUI não, porque
+ali quem lê o resultado é o usuário.
+
+**Acesso remoto com modo privacidade bloqueia toda entrada sintética.** No
+AnyDesk em modo privacidade, `SendInput`/`keybd_event` são descartados em
+silêncio: o foco troca, as teclas não chegam. Antes de suspeitar do PVA,
+teste numa janela Tk própria — nunca numa janela do usuário (um teste que
+casou o título "Notepad" fechou o Notepad++ dele).
 
 **Toda espera é cancelável.** O usuário pode levar 15 minutos para responder a
 um diálogo do PVA, e nesse tempo a janela de espera prendia o programa inteiro

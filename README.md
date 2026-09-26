@@ -560,7 +560,9 @@ o programa fecha a escrituração (Ctrl+F) e repete o atalho. Telas do próprio
 PVA no meio do caminho — atualizar tabelas, transferência, mensagens — são
 **esperadas**, não respondidas: o andamento diz o que ele está pedindo.
 
-O ciclo vai até o fim: o programa confirma a importação e, terminada ela, a
+O ciclo vai até o fim: o programa confirma a importação — o PVA só pergunta
+quando já tem a escrituração daquele CNPJ e período, que será
+**substituída**; sendo nova, ele importa direto — e, terminada ela, a
 **validação** — é o relatório de erros do PVA que interessa. Cada confirmação
 é conferida pelo efeito (a tela de progresso correspondente tem de aparecer);
 não aparecendo, a automação para e avisa o que falta fazer.
