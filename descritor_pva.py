@@ -30,11 +30,11 @@ import os
 import re
 import zipfile
 
-JAR_ICMS = (r"C:\Arquivos de Programas RFB\Programas SPED\Fiscal"
-            r"\lib\br.gov.serpro.sped.fiscalpva\fiscalpva-dominio.jar")
-JAR_CONTRIB = (r"C:\Arquivos de Programas RFB\Programas SPED"
-               r"\EFD-Contribuicoes\lib\br.gov.serpro.sped.piscofinspva"
-               r"\piscofinspva-infra.jar")
+import config
+
+# o descritor é pedido a cada abertura de arquivo por três módulos
+# (diagnóstico, validação, revisão); o .jar é lido uma vez por versão dele
+_cache = {}
 
 RE_REGISTRO = re.compile(r"<registro\b([^>]*)>", re.S)
 RE_CAMPO = re.compile(r"<campo\b([^>]*?)(/?)>", re.S)
@@ -52,12 +52,13 @@ def descritor_mais_recente(jar):
     "Maior" é medido pelo par (ato/estrutura, versão) lido do próprio caminho;
     quando empatam, vence o arquivo maior, que é o que traz mais registros.
     """
-    if not os.path.exists(jar):
+    if not jar or not os.path.exists(jar):
         return None, None
     z = zipfile.ZipFile(jar)
     alvos = [n for n in z.namelist()
              if n.endswith("descritor.xml") and "escrituracao" in n]
     if not alvos:
+        z.close()
         return None, None
 
     def chave(n):
@@ -73,11 +74,27 @@ def carregar(layout, jar=None):
     Devolve `{registro: {"nivel", "ocorrencia", "obrigatorio", "chave",
     "validadores": [...], "campos": {nome: {...}}}}` e um dict de informação.
     """
-    jar = jar or (JAR_ICMS if layout == "ICMS" else JAR_CONTRIB)
+    jar = jar or config.jar_descritor(layout)
+    try:
+        st = os.stat(jar)
+        marca = (jar, st.st_mtime, st.st_size)
+    except (OSError, TypeError):
+        marca = None
+    if marca is not None and marca in _cache:
+        return _cache[marca]
+    resultado = _ler(jar)
+    if marca is not None:
+        _cache[marca] = resultado
+    return resultado
+
+
+def _ler(jar):
+    """Lê e interpreta o descritor mais recente do `.jar`."""
     z, caminho = descritor_mais_recente(jar)
     if z is None:
         return {}, {"jar": jar, "descritor": None, "erro": "PVA não instalado"}
-    xml = z.read(caminho).decode("utf-8", "replace")
+    with z:
+        xml = z.read(caminho).decode("utf-8", "replace")
 
     # corta o XML nos limites de cada <registro ...> ... próximo <registro
     pos = [(m.start(), _attrs(m.group(1))) for m in RE_REGISTRO.finditer(xml)]
@@ -182,4 +199,5 @@ def datasources(estrutura):
 
 
 def disponivel():
-    return os.path.exists(JAR_ICMS) or os.path.exists(JAR_CONTRIB)
+    return any(os.path.exists(config.jar_descritor(layout) or "")
+               for layout in config.PVAS)

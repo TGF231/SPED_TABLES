@@ -1,5 +1,74 @@
 # Changelog
 
+## [0.52.0] - 2026-09-26
+
+Configuração num ponto só e os achados menores da revisão de código.
+
+### Adicionado
+- **`config.py`, ponto único de configuração dos caminhos.** O
+  `C:\Arquivos de Programas RFB\Programas SPED` estava escrito em quatro
+  módulos; PVA instalado noutro lugar desligava em silêncio metade das
+  verificações. Agora a raiz vem, nesta ordem, de `SPED_TABLES_PVA`, do
+  `configuracao.json` da pasta de dados, da primeira pasta conhecida que
+  exista (inclusive Arquivos de Programas e outros discos) ou da padrão. A
+  estrutura interna de cada PVA (tabelas, `.jar` do descritor) também mora
+  lá, uma vez só.
+- A configuração das tabelas da RFB passou para o `configuracao.json`. O
+  `config_tabelas_rfb.json` antigo é lido uma vez, para não perder o que já
+  estava escolhido, e saiu do repositório: era um arquivo versionado que o
+  programa regravava rodando do código-fonte.
+- `dados.gravar_atomico` / `dados.gravar_json`: gravação por arquivo
+  temporário + troca, a mesma técnica do `salvar` do SPED.
+- `SpedDocument.alterar_campo`: caminho único das edições da grade.
+
+### Corrigido
+- **Campo inexistente no leiaute levantava `TypeError`.** `Registro.valor`
+  e `set_valor` com índice `None` (o que `_ix` devolve para campo que o
+  leiaute não tem) estouravam na comparação — num slot do Qt, derrubando o
+  programa. Agora leem vazio e não gravam nada.
+- **C190, C175 e M210/M610 gerados podiam sair mais curtos que o arquivo.**
+  A lista montada tinha a largura do leiaute conhecido, e a medida do
+  arquivo era tirada depois de remover os registros antigos — quando a
+  medida mais importava, não sobrava registro para medir. Agora a largura é
+  medida antes e os campos a mais ficam vazios.
+- **0190 e 0200 criados pela importação de inventário entravam fora de
+  ordem** quando o arquivo não tinha nenhum: logo depois do 0001, antes do
+  0005/0100/0150. A âncora agora segue o leiaute (`_ancora_antes`, a mesma
+  conta que C190 e C175 faziam cada um à sua maneira).
+- **Troca de alíquotas dobrava o VL_PIS/VL_COFINS do C100** que tinha C175
+  e C170 ao mesmo tempo (os C170 fictícios da validação por XML). Documento
+  consolidado soma só o C175.
+- **Colar e Ctrl+D numa grade de 0150 não atualizavam o nome do
+  participante**; cada caminho de edição invalidava os caches à sua
+  maneira. Os cinco (digitar, colar, aplicar à seleção, Ctrl+D e o
+  relatório) passam por `alterar_campo`.
+- **Cadastro de empresas, índice do acervo e correlações de CFOP eram
+  gravados truncando o arquivo antes de escrever**: uma falha no meio
+  zerava o cadastro. Gravação atômica nos três.
+- **Rotina de CST por NCM, aberta pelo cadastro de empresas, não acusava
+  nada** sem configuração salva: o classificador era montado sem pasta, e
+  esquecia a tabela 4.3.10 (perfumaria, medicamentos). Os dois diálogos
+  usam agora `tabelas_rfb.classificador()`, com a pasta do PVA como padrão.
+- O descritor do PVA era lido e interpretado três ou quatro vezes a cada
+  abertura de arquivo (diagnóstico, validação, revisão) e o `.jar` ficava
+  aberto; agora é lido uma vez por versão do `.jar`.
+- O diagnóstico percorria o arquivo inteiro uma vez por tipo de registro do
+  descritor (~12 milhões de comparações num arquivo de 45 mil linhas) ao
+  procurar obrigatórios e referências; agora agrupa uma vez só.
+- Exceção dentro de uma verificação do diagnóstico era engolida sem rastro;
+  continua sem interromper as outras, mas vai para o registro.
+- Os testes de interface alternavam o tema **no registro do Windows** do
+  usuário; com a pasta de dados redirecionada, as preferências vão para um
+  `.ini` lá dentro.
+
+### Testes
+- 99 testes. Novos: um por achado (`test_robustez`), a configuração, e a
+  **inicialização completa** — `main()` em subprocesso, com a abertura pela
+  linha de comando, até o laço de eventos e de volta. Foi ele que pegou,
+  antes do commit, um `ajustes = ajustes()` que sombreava a função e
+  impediria o programa de abrir.
+- Gabarito dos arquivos reais idêntico ao da 0.51.0.
+
 ## [0.51.0] - 2026-09-26
 
 Suíte de testes no repositório e rede de proteção para erro inesperado.

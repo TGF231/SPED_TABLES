@@ -31,11 +31,14 @@ H010, por exemplo, é opcional no descritor e vira obrigatório no perfil A/B
 por uma regra à parte. Essas continuam nas verificações próprias do programa.
 """
 
+import logging
 from collections import Counter
 
 import descritor_pva
 import validacao
 from sped_model import _to_num
+
+log = logging.getLogger("sped_tables")
 
 
 # Achado -> módulo que corrige. O texto é o nome do item de menu, para a
@@ -198,10 +201,19 @@ def verificar(doc, pasta_fiscal=None, pasta_contrib=None):
             "registro com mais campos que o leiaute (%d previstos)"
             % esperado[reg], n, exemplo[reg]))
 
+    # os dois laços abaixo percorriam o arquivo inteiro uma vez **por tipo de
+    # registro do descritor** (~270 no ICMS): num arquivo de 45 mil linhas,
+    # 12 milhões de comparações só para achar os registros de cada tipo
+    por_tipo = {}
+    for r in doc.registros:
+        por_tipo.setdefault(r.reg, []).append(r)
+
     # ---- campo obrigatório em branco -------------------------------------
     faltando = Counter()
     ex_obr = {}
     for reg, d in estrutura.items():
+        if reg not in por_tipo:
+            continue
         obrigatorios = [(c["id"] if "id" in c else nome)
                         for nome, c in d["campos"].items()
                         if c.get("obrigatorio") == "1" and nome != "REG"]
@@ -211,9 +223,7 @@ def verificar(doc, pasta_fiscal=None, pasta_contrib=None):
         idx = [(nome, i) for nome, i in idx if i is not None]
         if not idx:
             continue
-        for r in doc.registros:
-            if r.reg != reg:
-                continue
+        for r in por_tipo[reg]:
             for nome, i in idx:
                 if i >= len(r.campos) or (r.valor(i) or "").strip():
                     continue
@@ -238,8 +248,8 @@ def verificar(doc, pasta_fiscal=None, pasta_contrib=None):
         cadastro = indice.get((alvo, campo_alvo))
         if i is None or cadastro is None:
             continue
-        for r in doc.registros:
-            if r.reg != reg or i >= len(r.campos):
+        for r in por_tipo.get(reg, ()):
+            if i >= len(r.campos):
                 continue
             v = (r.valor(i) or "").strip()
             if not v:
@@ -346,7 +356,7 @@ def verificar(doc, pasta_fiscal=None, pasta_contrib=None):
                 "registro 0900 ausente e prazo de entrega vencido", 1,
                 r0900[0].uid, "aviso"))
     except Exception:                                       # noqa: BLE001
-        pass
+        log.exception("diagnóstico: verificação interrompida")
 
     # ---- crédito em CFOP que não dá direito (tabela 4.3.7 do PVA) --------
     try:
@@ -358,7 +368,7 @@ def verificar(doc, pasta_fiscal=None, pasta_contrib=None):
                                   "tabela de CFOP com direito a crédito",
                                   len(cfop), cfop[0].uid, "aviso"))
     except Exception:                                       # noqa: BLE001
-        pass
+        log.exception("diagnóstico: verificação interrompida")
 
     achados.sort(key=lambda a: -a.quantidade)
     info["regras_do_pva"] = regras_nao_cobertas(doc, estrutura)

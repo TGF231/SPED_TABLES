@@ -54,10 +54,25 @@ import rotinas
 import pva
 import arquivos as arq_mod
 import janela_custom
+import config
 import dados
 import falhas
 from version import __version__, APP_NAME
 import tema
+
+
+def ajustes():
+    """Preferências da interface (tema, última empresa escolhida).
+
+    Normalmente no registro do Windows. Com a pasta de dados redirecionada
+    (`SPED_TABLES_DADOS`, como faz a suíte de testes), vão para um `.ini`
+    dentro dela: o teste que alterna o tema não pode trocar a preferência de
+    quem usa o programa.
+    """
+    if os.environ.get("SPED_TABLES_DADOS"):
+        return QSettings(os.path.join(dados.pasta_dados(), "preferencias.ini"),
+                         QSettings.Format.IniFormat)
+    return QSettings(APP_NAME, APP_NAME)
 
 
 def _br(v):
@@ -520,12 +535,7 @@ class MasterDetailWidget(QWidget):
         r = self._registro_da_linha(item.row())
         if r is None:
             return
-        r.set_valor(item.column(), item.text())
-        # editar um 0200 muda as descrições -> invalida o cache de itens
-        if r.reg == "0200":
-            self.doc.invalidar_itens()
-        elif r.reg == "0150":
-            self.doc.invalidar_participantes()
+        self.doc.alterar_campo(r, item.column(), item.text())
         if self.on_change:
             self.on_change()
         # editar o COD_ITEM atualiza o nome mostrado no topo
@@ -672,12 +682,10 @@ class MasterDetailWidget(QWidget):
             r = self._registro_da_linha(ix.row())
             if r is None:
                 continue
-            r.set_valor(ix.column(), valor)
+            self.doc.alterar_campo(r, ix.column(), valor)
             it = self.tabela.item(ix.row(), ix.column())
             if it is not None:
                 it.setText(valor)
-            if r.reg == "0200":
-                self.doc.invalidar_itens()
             mudou = True
         self.tabela.blockSignals(False)
         if mudou and self.on_change:
@@ -734,12 +742,10 @@ class MasterDetailWidget(QWidget):
                 r = self._registro_da_linha(lr)
                 if r is None:
                     continue
-                r.set_valor(c, val)
+                self.doc.alterar_campo(r, c, val)
                 it = self.tabela.item(lr, c)
                 if it is not None:
                     it.setText(val)
-                if r.reg == "0200":
-                    self.doc.invalidar_itens()
                 mudou = True
         self.tabela.blockSignals(False)
         if mudou and self.on_change:
@@ -765,7 +771,7 @@ class MasterDetailWidget(QWidget):
                 r = self._registro_da_linha(lr)
                 if r is None:
                     continue
-                r.set_valor(c, valor)
+                self.doc.alterar_campo(r, c, valor)
                 it = self.tabela.item(lr, c)
                 if it is not None:
                     it.setText(valor)
@@ -3222,7 +3228,7 @@ class DialogoVerificarCST(QDialog):
 
         self.ed_pasta = linha_arquivo("Pasta das tabelas:", "pasta", 0, True)
         if not self.ed_pasta.text():
-            self.ed_pasta.setText(trfb.PASTA_PADRAO)
+            self.ed_pasta.setText(trfb.pasta_padrao())
         self.ed_zero = linha_arquivo("Alíquota zero (opcional):", "zero", 1)
         self.ed_mono = linha_arquivo(
             "Monofásicos por unidade (opc.):", "mono", 2)
@@ -3294,13 +3300,7 @@ class DialogoVerificarCST(QDialog):
     def _verificar(self):
         cfg = self._coletar_cfg()
         try:
-            clf, achados = trfb.carregar_tudo(
-                pasta=cfg["pasta"] or None,
-                caminho_zero=cfg["zero"] or None,
-                caminho_mono=cfg["mono"] or None,
-                caminho_mono_difer=cfg.get("mono_difer") or None,
-                caminho_genero=cfg["genero"] or None,
-                caminho_ncm=cfg["ncm"] or None)
+            clf, achados = trfb.classificador(cfg)
         except Exception as exc:  # noqa: BLE001
             QMessageBox.critical(self, "Tabelas",
                                  "Falha ao carregar as tabelas:\n%s" % exc)
@@ -3924,7 +3924,7 @@ class RelatorioWidget(QWidget):
         i_campo = self.doc._ix(reg.reg, campo)
         if i_campo is None:
             return
-        reg.set_valor(i_campo, item.text().strip())
+        self.doc.alterar_campo(reg, i_campo, item.text().strip())
         jan = self.window()
         if jan is not None and hasattr(jan, "_marcar_alterado"):
             jan._marcar_alterado()
@@ -4378,7 +4378,7 @@ class PainelEmpresas(QWidget):
         # a empresa escolhida é lembrada entre idas ao editor e entre sessões:
         # ler a seleção do widget na hora de recarregar falhava nos fluxos em
         # que a lista é remontada antes (cadastrar, remover, abrir do histórico)
-        self._ultimo_cnpj = QSettings(APP_NAME, APP_NAME).value(
+        self._ultimo_cnpj = ajustes().value(
             "empresa_selecionada", "", type=str)
 
         lay = QVBoxLayout(self)
@@ -4532,7 +4532,7 @@ class PainelEmpresas(QWidget):
         cnpj = self._cnpj_selecionado()
         if cnpj:
             self._ultimo_cnpj = cnpj
-            QSettings(APP_NAME, APP_NAME).setValue("empresa_selecionada", cnpj)
+            ajustes().setValue("empresa_selecionada", cnpj)
         e = self.mapa.get(cnpj)
         self.cx_cad.setEnabled(bool(cnpj))
         self.ed_cnpj.setText(emp_mod.formatar_cnpj(cnpj) if cnpj else "")
@@ -4969,14 +4969,8 @@ class DialogoEmpresa(QDialog):
 
     def _classificador(self):
         """Monta o classificador de NCM com a mesma API do diálogo de CST."""
-        cfg = self.cfg_rfb or {}
         try:
-            clf, _achados = trfb.carregar_tudo(
-                pasta=cfg.get("pasta") or None,
-                caminho_zero=cfg.get("zero") or None,
-                caminho_mono=cfg.get("mono") or None,
-                caminho_genero=cfg.get("genero") or None,
-                caminho_ncm=cfg.get("ncm") or None)
+            clf, _achados = trfb.classificador(self.cfg_rfb or None)
             return clf
         except Exception as exc:  # noqa: BLE001
             QMessageBox.warning(
@@ -5194,8 +5188,7 @@ class JanelaPrincipal(QMainWindow):
         self.correlacoes_cfop = cf.carregar_correlacoes(self._caminho_correl)
 
         # configuração das tabelas da RFB (verificação de CST por NCM)
-        self._caminho_cfg_tabelas = dados.caminho("config_tabelas_rfb.json")
-        self.cfg_tabelas = self._carregar_cfg_tabelas()
+        self.cfg_tabelas = config.tabelas_rfb()
 
         # Carrega o layout do Qt Designer (sped_editor.ui) quando presente;
         # caso contrário, constrói a interface programaticamente (fallback).
@@ -5611,7 +5604,7 @@ class JanelaPrincipal(QMainWindow):
         if app is not None:
             app.setStyleSheet(tema.folha_estilo())
         self._sincronizar_rotulo_tema()
-        QSettings(APP_NAME, APP_NAME).setValue("tema_escuro", tema.e_escuro())
+        ajustes().setValue("tema_escuro", tema.e_escuro())
         if self.doc is not None:
             bloco = self.tabs_bloco.currentIndex()
             self._montar_abas()
@@ -6270,22 +6263,14 @@ class JanelaPrincipal(QMainWindow):
         DialogoCorrelacoesCFOP(
             self.correlacoes_cfop, self._caminho_correl, aplicar, self).exec()
 
-    def _carregar_cfg_tabelas(self):
-        import json
-        try:
-            with open(self._caminho_cfg_tabelas, encoding="utf-8") as fh:
-                return json.load(fh)
-        except Exception:  # noqa: BLE001
-            return {}
-
     def _salvar_cfg_tabelas(self, cfg):
-        import json
         self.cfg_tabelas = cfg
         try:
-            with open(self._caminho_cfg_tabelas, "w", encoding="utf-8") as fh:
-                json.dump(cfg, fh, ensure_ascii=False, indent=2)
-        except Exception:  # noqa: BLE001
-            pass
+            config.gravar_tabelas_rfb(cfg)
+        except OSError as exc:
+            self.statusBar().showMessage(
+                "Não foi possível guardar a configuração das tabelas: %s"
+                % exc, 10000)
 
     def _data_fin_doc(self):
         """DT_FIN do registro 0000 (DDMMAAAA), para referência de vigência."""
@@ -6974,7 +6959,7 @@ class JanelaPrincipal(QMainWindow):
         if inst is None:
             QMessageBox.warning(self, "Abrir no PVA",
                                 "Não encontrei o PVA do leiaute %s em:\n%s"
-                                % (self.doc.layout, pva.RAIZ_PVA))
+                                % (self.doc.layout, config.raiz_pva()))
             return
 
         # O PVA recusa a importação inteira quando o arquivo tem erro de
@@ -7201,8 +7186,8 @@ def main():
     f.setPointSize(max(8, f.pointSize() - 1))
     app.setFont(f)
     # tema: a preferência é da máquina, não da sessão
-    ajustes = QSettings(APP_NAME, APP_NAME)
-    tema.definir_escuro(ajustes.value("tema_escuro", False, type=bool))
+    preferencias = ajustes()
+    tema.definir_escuro(preferencias.value("tema_escuro", False, type=bool))
     app.setStyleSheet(tema.folha_estilo())
     janela = JanelaPrincipal()
     falhas.definir_salvar_emergencia(janela.copia_de_emergencia)

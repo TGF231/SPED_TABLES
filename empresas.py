@@ -201,8 +201,8 @@ def salvar(mapa, caminho=None):
         d = asdict(mapa[cnpj])
         d.pop("cnpj", None)          # a chave já é o CNPJ
         serial[cnpj] = d
-    with open(cam, "w", encoding="utf-8") as fh:
-        json.dump(serial, fh, ensure_ascii=False, indent=2)
+    # atômico: falha no meio da gravação não pode zerar o cadastro
+    dados.gravar_json(cam, serial)
     return cam
 
 

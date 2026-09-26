@@ -19,6 +19,7 @@ Sem dependência de GUI: a interface só chama `pasta_dados()` e
 `criar_atalho_area_trabalho()`.
 """
 
+import json
 import os
 import shutil
 import subprocess
@@ -27,7 +28,7 @@ import sys
 from version import APP_NAME
 
 # arquivos e pastas que são do usuário e vivem na pasta de dados
-ITENS = ("empresas.json", "correlacoes_cfop.json", "config_tabelas_rfb.json",
+ITENS = ("empresas.json", "correlacoes_cfop.json",
          "arquivos")
 
 MARCA_INSTALACAO = ".instalado"
@@ -74,6 +75,36 @@ def pasta_dados(criar=True):
 def caminho(nome):
     """Caminho completo de um arquivo de dados do usuário."""
     return os.path.join(pasta_dados(), nome)
+
+
+def gravar_atomico(caminho_destino, conteudo):
+    """Grava `conteudo` (bytes) sem nunca deixar o destino pela metade.
+
+    Escreve num `.tmp` ao lado e só então troca (`os.replace`, atômico no
+    mesmo volume). Abrir o destino em modo `"w"` o trunca na hora: uma falha
+    no meio — disco cheio, antivírus segurando o arquivo — deixava o
+    cadastro de empresas ou o índice do acervo vazios.
+    """
+    pasta = os.path.dirname(os.path.abspath(caminho_destino))
+    os.makedirs(pasta, exist_ok=True)
+    temporario = "%s.tmp" % caminho_destino
+    try:
+        with open(temporario, "wb") as fh:
+            fh.write(conteudo)
+        os.replace(temporario, caminho_destino)
+    except Exception:
+        try:
+            os.remove(temporario)
+        except OSError:
+            pass
+        raise
+    return caminho_destino
+
+
+def gravar_json(caminho_destino, objeto):
+    """JSON legível (UTF-8, indentado), gravado de forma atômica."""
+    texto = json.dumps(objeto, ensure_ascii=False, indent=2)
+    return gravar_atomico(caminho_destino, texto.encode("utf-8"))
 
 
 def primeira_execucao():

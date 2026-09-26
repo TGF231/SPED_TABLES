@@ -124,13 +124,13 @@ def _texto_planilha(v):
     return "" if s.upper() in VALORES_NULOS else s
 
 
-# Tabela oficial do campo TIPO_ITEM do 0200 (EFD ICMS/IPI). Serve para não
-# deixar a planilha plantar lixo no cadastro: num arquivo real, 10.312 itens
-# tinham "N", que não existe na tabela.
 # CST de PIS/COFINS que apropriam crédito na entrada (vinculado a receita,
 # presumido…). O mesmo conjunto de `rotinas.CST_ENTRADA_COM_CREDITO`.
 CST_CREDITO = {"%02d" % n for n in list(range(50, 57)) + list(range(60, 67))}
 
+# Tabela oficial do campo TIPO_ITEM do 0200 (EFD ICMS/IPI). Serve para não
+# deixar a planilha plantar lixo no cadastro: num arquivo real, 10.312 itens
+# tinham "N", que não existe na tabela.
 TIPOS_ITEM_0200 = frozenset(("00", "01", "02", "03", "04", "05", "06", "07",
                              "08", "09", "10", "99"))
 
@@ -252,12 +252,25 @@ class Registro:
         self.ordem = ordem
 
     def valor(self, idx):
+        """Conteúdo do campo; `""` fora da linha **ou com índice None**.
+
+        `_ix` devolve None quando o leiaute não tem o campo, e o
+        `0 <= None` levantava `TypeError` — num slot do Qt, isso derruba o
+        programa. Campo que não existe se lê como vazio.
+        """
+        if idx is None:
+            return ""
         return self.campos[idx] if 0 <= idx < len(self.campos) else ""
 
     def set_valor(self, idx, v):
+        """Grava o campo, alargando a linha se preciso. Índice None (campo
+        fora do leiaute) não grava nada e devolve False."""
+        if idx is None:
+            return False
         while len(self.campos) <= idx:
             self.campos.append("")
         self.campos[idx] = v
+        return True
 
     def linha_sped(self):
         """Reconstrói a linha no formato |c1|c2|...|"""
@@ -456,6 +469,21 @@ class SpedDocument:
         if getattr(self, "_cad_part", None) is None:
             self._reindexar_participantes()
         return self._cad_part.get((cod or "").strip(), {})
+
+    def alterar_campo(self, registro, idx, valor):
+        """Grava um campo e descarta os caches que dependem dele.
+
+        É o caminho único das edições feitas na grade (digitar, colar,
+        aplicar à seleção, Ctrl+D). Cada um deles invalidava os caches à sua
+        maneira — colar num 0150 não invalidava o de participantes, e o nome
+        mostrado no topo da grade continuava o antigo.
+        """
+        ok = registro.set_valor(idx, valor)
+        if registro.reg == "0200":
+            self._cad_itens = None
+        elif registro.reg == "0150":
+            self._cad_part = None
+        return ok
 
     def invalidar_participantes(self):
         """Marca o índice de participantes para ser reconstruído."""
@@ -911,6 +939,38 @@ class SpedDocument:
         return cols.index(nome) if nome in cols else None
 
     @staticmethod
+    def _ancora_antes(pai, reg):
+        """Último filho de `pai` cujo registro vem **antes** de `reg` no
+        leiaute — é depois dele que um `reg` novo deve entrar.
+
+        Dentro de um bloco o código do registro ordena como texto (`C170` <
+        `C175` < `C190`, `0150` < `0190` < `0200`). Sem nenhum anterior, a
+        âncora é o próprio pai. Era a mesma conta repetida no C190 e no C175
+        — e faltava no 0190 da importação de inventário, que entrava logo
+        depois do 0001, antes do 0005/0100/0150.
+        """
+        anteriores = [f for f in sorted(pai.filhos, key=lambda x: x.ordem)
+                      if len(f.reg) == len(reg) and f.reg < reg]
+        return anteriores[-1] if anteriores else pai
+
+    @staticmethod
+    def _preencher(registro, valores, largura=0):
+        """Grava a linha montada **sem encolher** o registro.
+
+        `novo_registro` já entrega a largura do arquivo; a lista montada à
+        mão tem a do leiaute conhecido. Quando o arquivo é mais largo (versão
+        de leiaute mais nova), os campos a mais ficam vazios em vez de sumir
+        — um registro mais curto que os irmãos é recusa no PVA.
+
+        `largura` é a medida tirada **antes** de remover os registros que
+        estão sendo refeitos: sem eles no arquivo, `_ncampos` cairia no
+        leiaute conhecido e perderia justamente a largura do arquivo.
+        """
+        largura = max(largura or 0, len(registro.campos))
+        registro.campos = list(valores) + [""] * (largura - len(valores))
+        return registro
+
+    @staticmethod
     def rateio_acessorios(total, valores):
         """Quinhão de cada item nas despesas acessórias do documento.
 
@@ -1022,20 +1082,13 @@ class SpedDocument:
                         key=lambda k: (k[0], k[1], float(k[2])))
 
         # remove os C190 antigos do documento
+        largura = self._ncampos("C190")      # antes de remover os antigos
         antigos = [f for f in c100.filhos if f.reg == "C190"]
         n_rem = len(antigos)
         for a in antigos:
             self.remover_registro(a)
 
-        # âncora: último filho cujo número de registro seja anterior ao 190
-        def numreg(r):
-            try:
-                return int(r.reg[1:])
-            except ValueError:
-                return 999
-        anteriores = [f for f in sorted(c100.filhos, key=lambda x: x.ordem)
-                      if numreg(f) < 190]
-        ancora = anteriores[-1] if anteriores else c100
+        ancora = self._ancora_antes(c100, "C190")
 
         n_cri = 0
         usou_pc = 0          # grupos em que a base de PIS/COFINS substituiu
@@ -1060,11 +1113,12 @@ class SpedDocument:
             else:
                 vl_red = 0.0
             novo = self.novo_registro("C190", pai=c100, depois=ancora)
-            novo.campos = ["C190", g["cst"], g["cfop"], _fmt_val(g["aliq"]),
-                           _fmt_val(g["VL_OPR"]), _fmt_val(g["VL_BC"]),
-                           _fmt_val(g["VL_ICMS"]), _fmt_val(g["VL_BCST"]),
-                           _fmt_val(g["VL_ICMSST"]), _fmt_val(vl_red),
-                           _fmt_val(g["VL_IPI"]), ""]
+            self._preencher(novo, [
+                "C190", g["cst"], g["cfop"], _fmt_val(g["aliq"]),
+                _fmt_val(g["VL_OPR"]), _fmt_val(g["VL_BC"]),
+                _fmt_val(g["VL_ICMS"]), _fmt_val(g["VL_BCST"]),
+                _fmt_val(g["VL_ICMSST"]), _fmt_val(vl_red),
+                _fmt_val(g["VL_IPI"]), ""], largura)
             ancora = novo
             n_cri += 1
 
@@ -1399,30 +1453,25 @@ class SpedDocument:
             tot_pis += it.pis_vpis or 0.0
             tot_cof += it.cofins_vcofins or 0.0
 
+        largura = self._ncampos("C175")      # antes de remover os antigos
         antigos = [f for f in c100.filhos if f.reg == "C175"]
         n_rem = len(antigos)
         for a in antigos:
             self.remover_registro(a)
 
-        def numreg(r):
-            try:
-                return int(r.reg[1:])
-            except ValueError:
-                return 999
-        ant = [f for f in sorted(c100.filhos, key=lambda x: x.ordem)
-               if numreg(f) < 175]
-        ancora = ant[-1] if ant else c100
+        ancora = self._ancora_antes(c100, "C175")
 
         n_cri = 0
         for chave in ordem:
             g = grupos[chave]
             novo = self.novo_registro("C175", pai=c100, depois=ancora)
-            novo.campos = ["C175", g["cfop"], _fmt_val(g["VL_OPR"]),
-                           _fmt_val(g["VL_DESC"]), g["cstp"],
-                           _fmt_val(g["VL_BC_PIS"]), fmt_aliq(g["aliq_pis"]),
-                           "", "", _fmt_val(g["VL_PIS"]), g["cstc"],
-                           _fmt_val(g["VL_BC_COF"]), fmt_aliq(g["aliq_cof"]),
-                           "", "", _fmt_val(g["VL_COF"]), "", ""]
+            self._preencher(novo, [
+                "C175", g["cfop"], _fmt_val(g["VL_OPR"]),
+                _fmt_val(g["VL_DESC"]), g["cstp"],
+                _fmt_val(g["VL_BC_PIS"]), fmt_aliq(g["aliq_pis"]),
+                "", "", _fmt_val(g["VL_PIS"]), g["cstc"],
+                _fmt_val(g["VL_BC_COF"]), fmt_aliq(g["aliq_cof"]),
+                "", "", _fmt_val(g["VL_COF"]), "", ""], largura)
             ancora = novo
             n_cri += 1
 
@@ -2391,7 +2440,8 @@ class SpedDocument:
             # cadastro 0200 do item, se ainda não existir
             if criar_0200 and cod not in cad and r0001 is not None:
                 novo = self.novo_registro(
-                    "0200", pai=r0001, depois=(ult_0200 or ult_0190 or r0001))
+                    "0200", pai=r0001,
+                    depois=(ult_0200 or self._ancora_antes(r0001, "0200")))
                 novo.campos = ["0200"] + [""] * (n_0200 - 1)
                 setv(novo, z["COD_ITEM"], cod)
                 for chave, campo in CAMPOS_0200:
@@ -2414,7 +2464,8 @@ class SpedDocument:
             # unidade nova -> 0190
             if unid and unid.upper() not in unids and r0001 is not None:
                 u = self.novo_registro(
-                    "0190", pai=r0001, depois=(ult_0190 or r0001))
+                    "0190", pai=r0001,
+                    depois=(ult_0190 or self._ancora_antes(r0001, "0190")))
                 u.campos = ["0190"] + [""] * (n_0190 - 1)
                 setv(u, self._ix("0190", "UNID"), unid)
                 setv(u, self._ix("0190", "DESCR"), unid)
@@ -2547,8 +2598,13 @@ class SpedDocument:
         tot_pis = tot_cof = 0.0
         for c100 in c100s:
             sp = sc = 0.0
+            # documento consolidado (C175) soma só o C175: os C170 que
+            # convivem com ele são os fictícios da validação por XML, e
+            # somar os dois dobrava o VL_PIS/VL_COFINS do C100
+            fonte = ("C175" if any(f.reg == "C175" for f in c100.filhos)
+                     else "C170")
             for f in c100.filhos:
-                if f.reg in ("C170", "C175"):
+                if f.reg == fonte:
                     _, _, fvp, _, _, fvc = idx[f.reg]
                     if fvp is not None:
                         sp += _to_num(f.valor(fvp))
@@ -3122,6 +3178,7 @@ class SpedDocument:
             # o último M205/M605 (que precede os M210); se não houver, o registro
             # anterior ao 1º M210 atual; por fim, o próprio M200/M600. Isso
             # conserta inclusive arquivos onde o M210 ficou à frente do M205.
+            largura = self._ncampos(reg_det)  # antes de remover os antigos
             antigos = [f for f in cons.filhos if f.reg == reg_det]
             reg_rec = "M205" if reg_det == "M210" else "M605"
             recs = [f for f in cons.filhos if f.reg == reg_rec]
@@ -3145,11 +3202,12 @@ class SpedDocument:
                 novo = self.novo_registro(reg_det, pai=cons, depois=ancora)
                 # campos de M210/M610 (mesma ordem). Zeros como "0" (formato do
                 # arquivo original); QUANT_BC e ALIQ_QUANT ficam "0"/"".
-                novo.campos = [reg_det, cod_cont, _fmt_val(g["rec"]),
-                               _fmt_val(g["bc"]), "0", "0",
-                               _fmt_val(g["bc"]), g["aliq"], "0", "",
-                               _fmt_val(apur), "0", "0",
-                               "0", "0", _fmt_val(apur)]
+                self._preencher(novo, [
+                    reg_det, cod_cont, _fmt_val(g["rec"]),
+                    _fmt_val(g["bc"]), "0", "0",
+                    _fmt_val(g["bc"]), g["aliq"], "0", "",
+                    _fmt_val(apur), "0", "0",
+                    "0", "0", _fmt_val(apur)], largura)
                 ancora = novo
 
             # atualiza a consolidação M200/M600

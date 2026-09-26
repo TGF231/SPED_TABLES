@@ -11,9 +11,8 @@ CST por NCM:
   * Tabela de **gênero do item** (2 primeiros dígitos do NCM = capítulo);
   * Tabela **NCM vigente** (XLSX do Portal Siscomex), para validar/expandir NCMs.
 
-As tabelas do PVA ficam, por padrão, em
-``C:\\Arquivos de Programas RFB\\Programas SPED\\EFD-Contribuicoes\\recursos\\tabelas``
-com nomes versionados, por exemplo
+As tabelas do PVA ficam na pasta de tabelas do EFD Contribuições (ver
+`config.pasta_tabelas_rfb`), com nomes versionados, por exemplo
 ``SPEDPISCOFINS_OPER_CONTRIB$SPEDPISCOFINS_PROD_ALIQ_ZERO$51$166``.
 O número após o nome da tabela é a **versão**; `localizar_tabela` escolhe a maior.
 Também é possível informar o caminho de cada arquivo diretamente.
@@ -23,8 +22,13 @@ import os
 import re
 import glob
 
-PASTA_PADRAO = (r"C:\Arquivos de Programas RFB\Programas SPED"
-                r"\EFD-Contribuicoes\recursos\tabelas")
+import config
+
+
+def pasta_padrao():
+    """Onde o PVA do EFD Contribuições guarda as tabelas de NCM (`config`)."""
+    return config.pasta_tabelas_rfb()
+
 
 # fragmento que identifica cada tabela no nome do arquivo
 CHAVE_ALIQ_ZERO = "PROD_ALIQ_ZERO"
@@ -233,7 +237,13 @@ def carregar_tudo(pasta=None, caminho_zero=None, caminho_mono=None,
                   caminho_mono_difer=None):
     """Conveniência: localiza (na `pasta`) e/ou carrega as tabelas pelos caminhos
     informados e devolve um ClassificadorNCM pronto. Caminhos explícitos têm
-    prioridade sobre a detecção por nome na pasta."""
+    prioridade sobre a detecção por nome na pasta.
+
+    Sem pasta, vale a do PVA (`config`): antes, o cadastro de empresas sem
+    configuração salva montava um classificador **vazio**, e a rotina de
+    CST por NCM não acusava nada.
+    """
+    pasta = pasta or pasta_padrao()
     czero = caminho_zero or localizar_tabela(pasta, CHAVE_ALIQ_ZERO)
     cmono = caminho_mono or localizar_tabela(pasta, CHAVE_MONO)
     cdifer = caminho_mono_difer or localizar_tabela(pasta, CHAVE_MONO_DIFER)
@@ -248,6 +258,23 @@ def carregar_tudo(pasta=None, caminho_zero=None, caminho_mono=None,
     return ClassificadorNCM(tab_zero, tab_mono, genero, ncm_vig), {
         "zero": czero, "mono": cmono, "mono_difer": cdifer, "genero": cgen,
         "ncm": caminho_ncm}
+
+
+def classificador(cfg=None):
+    """O classificador a partir da configuração escolhida pelo usuário
+    (`config.tabelas_rfb()`). Um caminho só para os dois diálogos que o
+    montavam — e o do cadastro de empresas esquecia a tabela 4.3.10.
+
+    Devolve `(classificador, caminhos_usados)`.
+    """
+    cfg = cfg if cfg is not None else config.tabelas_rfb()
+    return carregar_tudo(
+        pasta=cfg.get("pasta") or None,
+        caminho_zero=cfg.get("zero") or None,
+        caminho_mono=cfg.get("mono") or None,
+        caminho_mono_difer=cfg.get("mono_difer") or None,
+        caminho_genero=cfg.get("genero") or None,
+        caminho_ncm=cfg.get("ncm") or None)
 
 
 # ---------------------------------------------------------------------------

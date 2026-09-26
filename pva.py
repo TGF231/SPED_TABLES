@@ -46,8 +46,11 @@ import subprocess
 import sys
 import time
 
+import config
+
 # ------------------------------------------------------------ instalações
-RAIZ_PVA = r"C:\Arquivos de Programas RFB\Programas SPED"
+# a raiz das instalações e a pasta de cada PVA vêm de `config`; aqui fica só
+# o que é da automação (executável e títulos de janela)
 
 # O `titulo` é o da janela principal, exatamente como o PVA o monta a partir
 # do `titulo` do seu `aplicacao.properties`. Tem de ser o texto **inteiro**: a
@@ -55,11 +58,11 @@ RAIZ_PVA = r"C:\Arquivos de Programas RFB\Programas SPED"
 # não aceita foco — casar por "Sped Fiscal" pegava ela e a automação morria
 # aos 6 segundos, com o PVA ainda carregando.
 INSTALACOES = {
-    "ICMS": {"pasta": "Fiscal", "exe": "SpedEFD.exe",
+    "ICMS": {"exe": "SpedEFD.exe",
              "titulo": "Sped Fiscal - EFD ICMS/IPI - Sistema Público de "
                        "Escrituração Digital",
              "nome": "PVA do EFD ICMS/IPI"},
-    "CONTRIB": {"pasta": "EFD-Contribuicoes", "exe": "SpedContribuicoes.exe",
+    "CONTRIB": {"exe": "SpedContribuicoes.exe",
                 "titulo": "Sistema Público de Escrituração Digital - EFD "
                           "Contribuições",
                 "nome": "PVA do EFD Contribuições"},
@@ -102,7 +105,7 @@ def instalacao(layout, raiz=None):
     cfg = INSTALACOES.get(layout)
     if not cfg:
         return None
-    pasta = os.path.join(raiz or RAIZ_PVA, cfg["pasta"])
+    pasta = config.pasta_pva(layout, raiz)
     exe = os.path.join(pasta, cfg["exe"])
     if not os.path.isfile(exe):
         return None
@@ -486,7 +489,7 @@ def abrir(caminho, layout, importar=True, confirmar=True, validar=True,
         return {"estado": "sem_pva", "aberto_agora": False,
                 "mensagem": "Não encontrei o %s em %s."
                             % (INSTALACOES.get(layout, {}).get("nome", "PVA"),
-                               raiz or RAIZ_PVA)}
+                               raiz or config.raiz_pva())}
 
     try:
         return _abrir(caminho, layout, importar, confirmar, validar, raiz,

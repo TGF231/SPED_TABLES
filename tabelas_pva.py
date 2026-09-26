@@ -39,10 +39,17 @@ import os
 import re
 import glob
 
-PASTA_FISCAL = (r"C:\Arquivos de Programas RFB\Programas SPED"
-                r"\Fiscal\recursos\TabelasExternas")
-PASTA_CONTRIB = (r"C:\Arquivos de Programas RFB\Programas SPED"
-                 r"\EFD-Contribuicoes\recursos\tabelas")
+import config
+
+
+def _pasta_fiscal(pasta=None):
+    """Tabelas externas do PVA Fiscal — de `config`, salvo quando passadas."""
+    return pasta or config.pasta_tabelas("ICMS")
+
+
+def _pasta_contrib(pasta=None):
+    return pasta or config.pasta_tabelas("CONTRIB")
+
 
 # Campo do leiaute -> tabela do PVA. `{UF}` é trocado pela UF do arquivo.
 # Só entram campos cujo domínio é uma tabela fechada de códigos.
@@ -264,7 +271,7 @@ def cfops_com_credito(pasta_contrib=None, data_ref=None):
     Devolve `(codigos, versao)`; `(None, None)` se a tabela não estiver
     instalada — sem ela a verificação não roda, em vez de aprovar no escuro.
     """
-    tabs = listar_tabelas(pasta_contrib or PASTA_CONTRIB)
+    tabs = listar_tabelas(_pasta_contrib(pasta_contrib))
     return codigos_de("SPEDPISCOFINS_OPER_CREDITO$SPEDPISCOFINS_CFOP_CREDITO",
                       tabs, None, data_ref)
 
@@ -281,7 +288,7 @@ def naturezas_cfop_credito(pasta_contrib=None, data_ref=None):
     Devolve `{}` quando a tabela não está instalada: sem ela não dá para
     refazer o crédito, e chutar a natureza seria pior que não mexer.
     """
-    tabs = listar_tabelas(pasta_contrib or PASTA_CONTRIB)
+    tabs = listar_tabelas(_pasta_contrib(pasta_contrib))
     alvo = tabs.get("SPEDPISCOFINS_OPER_CREDITO$SPEDPISCOFINS_CFOP_CREDITO")
     if not alvo:
         return {}
@@ -311,7 +318,7 @@ def prazo_entrega(mes_ano, pasta_contrib=None):
     Vem de `SPEDPISCOFINS_DATA_LIMITE_ENTREGA`, a mesma tabela que o PVA cita
     ao pedir o registro 0900. Devolve `DDMMAAAA` ou `""`.
     """
-    tabs = listar_tabelas(pasta_contrib or PASTA_CONTRIB)
+    tabs = listar_tabelas(_pasta_contrib(pasta_contrib))
     alvo = tabs.get("SPEDPISCOFINS_GLOBAL$SPEDPISCOFINS_DATA_LIMITE_ENTREGA")
     if not alvo:
         return ""
@@ -328,8 +335,8 @@ def carregar_dominios(layout, pasta_fiscal=None, pasta_contrib=None, uf=None,
     encontrado e o que faltou — silêncio sobre tabela ausente é pior que erro,
     porque a validação passaria a aprovar o que não conferiu.
     """
-    pasta_fiscal = pasta_fiscal or PASTA_FISCAL
-    pasta_contrib = pasta_contrib or PASTA_CONTRIB
+    pasta_fiscal = _pasta_fiscal(pasta_fiscal)
+    pasta_contrib = _pasta_contrib(pasta_contrib)
     # o CST do ICMS vem sempre das tabelas do PVA Fiscal, mesmo no arquivo de
     # Contribuições: é o mesmo domínio, e só o Fiscal o publica separado
     tabs = dict(listar_tabelas(pasta_fiscal))
@@ -402,8 +409,8 @@ def dominios_por_datasource(estrutura, layout, pasta_fiscal=None,
     `CST_PIS` tem tabela diferente no C175, no C181 e no C191. Validar por
     nome de campo, como antes, achatava essas diferenças.
     """
-    tabs = dict(listar_tabelas(pasta_fiscal or PASTA_FISCAL))
-    tabs.update(listar_tabelas(pasta_contrib or PASTA_CONTRIB))
+    tabs = dict(listar_tabelas(_pasta_fiscal(pasta_fiscal)))
+    tabs.update(listar_tabelas(_pasta_contrib(pasta_contrib)))
     cache = {}
     out = {}
     faltando = set()
@@ -435,5 +442,5 @@ def dominios_por_datasource(estrutura, layout, pasta_fiscal=None,
 def disponivel(pasta_fiscal=None, pasta_contrib=None):
     """Há tabelas de PVA instaladas? Usado para decidir se a validação por
     tabela pode ser oferecida."""
-    return bool(listar_tabelas(pasta_fiscal or PASTA_FISCAL)
-                or listar_tabelas(pasta_contrib or PASTA_CONTRIB))
+    return bool(listar_tabelas(_pasta_fiscal(pasta_fiscal))
+                or listar_tabelas(_pasta_contrib(pasta_contrib)))

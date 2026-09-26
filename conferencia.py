@@ -161,12 +161,11 @@ def carregar_correlacoes(caminho):
 
 
 def salvar_correlacoes(mapa, caminho):
-    """Grava as correlações num JSON legível (listas ordenadas)."""
-    import json
+    """Grava as correlações num JSON legível (listas ordenadas), de forma
+    atômica."""
+    import dados
     serial = {k: sorted(v) for k, v in sorted(mapa.items())}
-    with open(caminho, "w", encoding="utf-8") as fh:
-        json.dump(serial, fh, ensure_ascii=False, indent=2)
-    return caminho
+    return dados.gravar_json(caminho, serial)
 
 
 # despesas acessórias que a NF-e traz por item e o C170 não tem onde guardar

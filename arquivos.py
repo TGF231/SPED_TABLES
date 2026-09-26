@@ -93,16 +93,16 @@ def carregar_indice():
         return []
     try:
         with open(cam, encoding="utf-8") as fh:
-            dados = json.load(fh)
+            conteudo = json.load(fh)
     except Exception:  # noqa: BLE001
         return []
-    return dados if isinstance(dados, list) else []
+    return conteudo if isinstance(conteudo, list) else []
 
 
 def _salvar_indice(entradas):
-    os.makedirs(_base(), exist_ok=True)
-    with open(_caminho_indice(), "w", encoding="utf-8") as fh:
-        json.dump(entradas, fh, ensure_ascii=False, indent=2)
+    # atômico: o índice truncado no meio da gravação apagava o histórico
+    # inteiro da tela, embora as cópias continuassem no disco
+    dados.gravar_json(_caminho_indice(), entradas)
 
 
 def _chave(e):

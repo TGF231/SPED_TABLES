@@ -228,3 +228,9 @@ empresas.json
 
 # Cópias internas dos SPED (memória persistente) — dado de clientes
 arquivos/
+
+# Configuração e registros da máquina (pasta de dados, rodando do código-fonte)
+configuracao.json
+config_tabelas_rfb.json
+logs/
+recuperacao/
