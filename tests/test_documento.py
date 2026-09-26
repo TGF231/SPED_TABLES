@@ -4,7 +4,7 @@
 import os
 import unittest
 
-from sped_model import SpedDocument
+from sped_tables.dominio.sped_model import SpedDocument
 from tests.fabrica import PastaTemporaria, contrib_basico, icms_basico, ler
 
 

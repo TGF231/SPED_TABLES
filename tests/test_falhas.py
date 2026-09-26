@@ -7,8 +7,8 @@ import sys
 import textwrap
 import unittest
 
-import falhas
-from sped_model import SpedDocument
+from sped_tables.infra import falhas
+from sped_tables.dominio.sped_model import SpedDocument
 from tests.fabrica import PastaTemporaria, icms_basico
 
 RAIZ = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -76,7 +76,7 @@ class TestProcessoSobrevive(unittest.TestCase):
         os.environ["SPED_TABLES_DADOS"] = %r
         from PyQt6.QtWidgets import QApplication
         from PyQt6.QtCore import QTimer
-        import falhas
+        from sped_tables.infra import falhas
         app = QApplication([])
         if sys.argv[1] == "com":
             falhas.instalar(avisar=lambda *a: print("avisado"))

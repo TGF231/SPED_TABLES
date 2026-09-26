@@ -1,5 +1,81 @@
 # Changelog
 
+## [0.53.0] - 2026-09-26
+
+Arquitetura em camadas, documentação reescrita e a regra de que uma release
+não tem função pela metade.
+
+### Mudado
+- **O programa virou o pacote `sped_tables/`, em quatro camadas** —
+  `dominio` (documento e regras fiscais), `aplicacao` (casos de uso),
+  `infra` (PVA, disco, Win32) e `interface` (PyQt6) —, com as dependências
+  apontando só para dentro. Um teste reprova quem desobedecer. A explicação
+  completa, e onde entra cada coisa nova, está no `ARQUITETURA.md`.
+- **O `sped_editor.py` de 7.200 linhas virou um lançador de 5.** A interface
+  foi dividida em janela, controladores por área do menu, grade, telas e
+  diálogos por assunto. `python sped_editor.py` continua funcionando.
+- **Tabela única de ações** (`interface/acoes.py`). Cada ação era criada,
+  religada ao `.ui`, habilitada e desabilitada em quatro lugares — esquecer
+  um derrubou a janela duas vezes. Agora é uma linha. Com isso saíram o
+  `sped_editor.ui` (a janela nascia por dois caminhos) e o
+  `sped_editor_ui.py`, código morto de PySide6.
+- **O domínio não lê mais a instalação do PVA.** Pergunta a uma porta
+  (`dominio/referencias.py`), que a montagem liga ao PVA no início do
+  programa. Sem PVA a porta fica vazia e as regras se abstêm, como antes; e
+  os testes ligam uma tabela inventada, o que permite testar as regras de
+  crédito por CFOP e do 0900 numa máquina sem PVA.
+- A classificação de NCM e a conferência de CST saíram de `tabelas_rfb`
+  (leitura de arquivo) para `dominio/ncm.py`. A gravação do cadastro de
+  empresas e das correlações de CFOP saiu dos módulos de regra para
+  `infra/cadastro.py`.
+- Abrir, salvar, fechar e mandar ao PVA viraram casos de uso
+  (`aplicacao/sessao.py`, `aplicacao/envio_pva.py`), testados sem tela.
+- **`FUNCIONALIDADES.md` virou `ROADMAP.md`.** Marcar função como "em
+  amadurecimento" ou "experimental" não cabe numa versão entregue: agora a
+  **versão declara o canal** (`-dev`, `-alpha`, `-beta`, `-rc`, release) e a
+  1.0.0 tem critério de aceite por função (suíte, arquivo real, PVA,
+  executável, documentação), com o que falta para cada uma. Toda a série
+  0.y.z é desenvolvimento.
+- `TESTES.md` reescrito em torno da suíte automática; o roteiro manual ficou
+  só com o que ela não alcança (PVA, executável, janela no Windows).
+- README e CLAUDE.md atualizados para a estrutura nova. Nome e CNPJ de
+  clientes saíram da documentação.
+
+### Adicionado
+- **`version.canal()` e `Acao.pronta`**: numa release, ação não pronta não é
+  criada — nem menu, nem atalho.
+- **Ferramentas → Gerais → Pasta dos PVAs…**, para instalação fora das pastas
+  que a detecção automática conhece.
+- Exportação de CSV única (`infra/exportacao.py`) e formulário de empresa
+  único (`interface/formulario_empresa.py`), no lugar de oito e de duas
+  cópias.
+- Testes: correções que gravam (NULL, COD_GEN, COD_CTA, itens sem
+  referência, ICMS dos itens, C190 em massa, datas), conferência com NF-e
+  sintética, NCM × CST, totais do C100, NFC-e 65 (C170 fictícios e
+  regeneração), camadas, canais — 148 no total. Nos arquivos reais, as
+  correções em lote passaram a ser exercitadas com invariantes.
+- A suíte liga o `faulthandler`: queda nativa sai com rastro, não com um
+  *exit 127* mudo.
+
+### Corrigido
+- **A normalização em lote apagava o `CST_ICMS` = `0` de itens do C170 e do
+  C190.** O domínio vindo das tabelas do PVA tratava o código "só de zeros"
+  como campo vazio disfarçado e sugeria esvaziar — o que trocava um erro por
+  outro, porque o CST é obrigatório ali, e contrariava a regra de que CST e
+  CFOP são apontados, nunca sugeridos. Agora os dois campos nunca recebem
+  sugestão. No arquivo real do cliente A, 5 ocorrências passaram de "nulo"
+  para "domínio" no diagnóstico (o único número do gabarito que mudou).
+- `validacao.normalizar()` sem lista usava os domínios embutidos, enquanto o
+  diagnóstico usava os do PVA — o que o diagnóstico acusava pelas tabelas
+  ficava sem conserto pelo caminho padrão.
+- Os exportadores de CSV desalinhavam as colunas com `;` numa descrição e
+  abortavam com um caractere fora do latin-1.
+- O formulário do painel de empresas não editava o "CST sem crédito", e o
+  do diálogo de rotinas não mostrava a UF.
+- "Conferir entradas (NF-e 55) com XMLs" não estava em menu nenhum desde a
+  reorganização do menu por leiaute; voltou a *Gerais*.
+- Oito funções e duas tabelas sem uso foram removidas.
+
 ## [0.52.0] - 2026-09-26
 
 Configuração num ponto só e os achados menores da revisão de código.
@@ -182,7 +258,7 @@ Os cinco achados **médios** da revisão completa do código.
   o teste que existia montava o `DialogoValidacao` direto e por isso não via o
   defeito. Cobre os três desfechos — com achados, sem achados e sem PVA
   instalado.
-- No arquivo do relato (REAL LIDER, agosto): 2.205 pares registro/campo
+- No arquivo do relato (cliente B, agosto): 2.205 pares registro/campo
   validados e 24.125 campos fora do domínio — 13.343 com `NULL`, 10.312 de
   `TIPO_ITEM` e 470 de tipo/tamanho.
 
@@ -513,7 +589,7 @@ ainda não tinha chegado aos módulos que dependem dele.
   o campo, e a verificação global o cobrava. Passou a valer o princípio: campo
   que o descritor não declara não é validado. No Contribuições, nenhum
   `datasource` é tratado como tabela de validação — lá eles alimentam as
-  listas da edição. No arquivo real da CASA DO ESPETO, as ocorrências caíram
+  listas da edição. No arquivo real da cliente A, as ocorrências caíram
   de 1 para **0**.
 
 ### Alterado
@@ -531,8 +607,8 @@ ainda não tinha chegado aos módulos que dependem dele.
   implementadas em Java. O módulo registra que existem, mas **não as
   reimplementa**: adivinhar produziria divergência silenciosa com o validador
   oficial.
-- Medições nos arquivos reais: REAL LIDER 24.313 ocorrências (era 24.755, a
-  diferença é o excesso removido), CASA DO ESPETO ICMS 8, Contribuições **0**.
+- Medições nos arquivos reais: cliente B 24.313 ocorrências (era 24.755, a
+  diferença é o excesso removido), cliente A ICMS 8, Contribuições **0**.
 
 ## [0.39.0] - 2026-09-22
 
@@ -692,7 +768,7 @@ crédito na revenda.
 - **Saídas ficam de fora.** A sugestão existe (04, 06, 01), mas lá o CST
   depende de o produto ser revenda ou produção própria, e alíquota
   diferenciada (02/03) é legítima.
-- Validado por **controle**: o arquivo real da CASA DO ESPETO já estava certo
+- Validado por **controle**: o arquivo real da cliente A já estava certo
   (entradas de bebida com CST 73), então o erro foi plantado — 12 entradas de
   NCM 2202/21069090 com CST 50 e alíquotas de não-cumulativo. Resultado: 24
   lançamentos corrigidos (PIS e COFINS), CST 73, base e valor zerados,
@@ -827,7 +903,7 @@ qualquer registro que possua o campo.
   e da operação, não do nome do campo.
 - No SPED real de 08/2026: 28.475 registros varridos em 0,11 s, 24.751 campos
   fora do domínio, **14.253 corrigidos num clique** (COD_GEN 10.312, CEST
-  3.499, COD_NCM 442). Nos arquivos da CASA DO ESPETO a regra achou 8
+  3.499, COD_NCM 442). Nos arquivos da cliente A a regra achou 8
   ocorrências que nenhuma outra função via, entre elas um `CST_ICMS` truncado
   em `0`.
 

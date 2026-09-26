@@ -6,7 +6,8 @@ O que precisa viajar junto com o executável e não é código:
 * **Tradução pt-BR do Qt** (`qtbase_pt_BR.qm`). Sem ela, os botões dos
   diálogos voltam ao inglês ("Save", "Discard", "Cancel") — o PyInstaller não
   a inclui sozinho. Vai para a pasta `traducoes/` do pacote, onde
-  `sped_editor.instalar_traducao()` procura antes do caminho do sistema.
+  `sped_tables.interface.app.instalar_traducao()` procura antes do caminho
+  do sistema.
   O `qt_pt_BR.qm` **não** é empacotado de propósito: ele é um meta-catálogo que
   só carrega se os `.qm` irmãos (qtdeclarative, qtmultimedia…) estiverem na
   mesma pasta. É o `qtbase` que traz as strings de diálogo.
@@ -39,7 +40,7 @@ if not _qm:
         "qtbase_pt_BR.qm não encontrado em %s — o executável sairia com os "
         "diálogos em inglês." % _traducoes_qt)
 
-_recursos = [("icon.ico", "."), ("sped_editor.ui", ".")]
+_recursos = [("icon.ico", ".")]
 _opcionais = [("correlacoes_cfop.json", ".")]
 _recursos += [(o, d) for o, d in _opcionais if os.path.isfile(o)]
 

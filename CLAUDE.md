@@ -6,50 +6,69 @@ EFD Contribuições) numa interface mestre-detalhe estilo planilha.
 **Idioma: todo o código, comentários, documentação e conversa em português do
 Brasil.**
 
-## Executar
+## Executar e testar
 
 ```bash
-python sped_editor.py
+py sped_editor.py [arquivo.txt]
+py -m unittest discover -s tests -t .
 ```
 
-Dependências em `requirements.txt` (PyQt6; `openpyxl` para planilhas XLSX).
+O PyQt6 está no interpretador do `py` (`pythoncore-3.14-64`), não no
+`python` do PATH. Dependências em `requirements.txt` (PyQt6; `openpyxl` para
+planilhas XLSX). A suíte (~150 testes, ~8 s) roda **antes de todo commit**;
+ver `TESTES.md`.
 
 ## Arquitetura
 
-| Arquivo | Papel |
-|---|---|
-| `sped_model.py` | Núcleo: `SpedDocument` (carregar/salvar), `Registro`, hierarquia pai/filho, todos os cálculos fiscais. **Sem dependência de GUI.** |
-| `sped_layouts.py` | Layout **completo** dos dois SPEDs (270 registros no ICMS/IPI, 203 no Contribuições): nomes de campos e nível hierárquico, extraídos dos guias práticos. |
-| `sped_editor.py` | Toda a GUI (PyQt6): janela principal, grades, diálogos. |
-| `sped_editor.ui` | Layout Qt Designer (carregado por `uic.loadUi`, com fallback programático). |
-| `tema.py` | Paleta (claro/escuro) e folha de estilo QSS. **Toda cor da GUI sai daqui** — nunca literais no `sped_editor.py`. |
-| `icones.py` | Ícones do QSS (✓ e chevron) desenhados em runtime na cor da paleta. |
-| `xml_fiscal.py` | Parser de NF-e/NFC-e (`NFe`, `ItemNFe`, `ler_pasta`, `chave_doc`, `indexar`). |
-| `conferencia.py` | Conferência XML × SPED (entradas modelo 55, C190) e correlações de CFOP. |
-| `revisao.py` | Regras de revisão extensíveis (lista `REGRAS`). |
-| `validacao.py` | Domínio de cada campo **por nome** (`DOMINIOS`), varredura do arquivo e normalização em lote. Detecta; só `normalizar()` grava. |
-| `tabelas_pva.py` | Tabelas externas dos PVAs (códigos válidos, com vigência). |
-| `descritor_pva.py` | **Descritor de validação** que cada PVA embarca no `.jar`: tipo/tamanho de cada campo, enumerações, referências entre registros e os validadores nomeados. É a fonte mais próxima de "como o PVA valida". |
-| `diagnostico.py` | Roda as camadas de verificação do PVA e diz **qual módulo corrige** cada grupo. Executado ao abrir o arquivo. |
-| `empresas.py` | Cadastro por CNPJ: regime federal e de PIS/COFINS, alíquotas, atividade. Persistido em `empresas.json` (fora do git). |
-| `rotinas.py` | Rotinas de conferência/correção por regime (lista `ROTINAS`). Verificação nunca altera o arquivo; a correção recebe as ocorrências já exibidas. |
-| `arquivos.py` | Memória persistente: cópia do SPED em `arquivos/<CNPJ>/<LEIAUTE>_<AAAAMM>.txt` + `indice.json`. Uma cópia por período. Fora do git. |
-| `dados.py` | **Todo caminho de dado do usuário sai daqui** (`pasta_dados`, `caminho`). Empacotado grava em `%APPDATA%`; do código-fonte, na pasta do projeto. Nunca use `__file__` para gravar. |
-| `janela_custom.py` | Barra de título própria via mensagens nativas do Windows (WM_NCCALCSIZE/NCHITTEST/GETMINMAXINFO). Padrão; `SPED_TABLES_BARRA_NATIVA=1` volta à do Windows. |
-| `tabelas_rfb.py` | Tabelas oficiais da RFB (alíquota zero, monofásicos, gênero, NCM) e verificação de CST. **São duas tabelas de monofásico** — ver abaixo. |
-| `pva.py` | Abre o PVA oficial e leva o arquivo salvo até a tela de importação (Ctrl+I + área de transferência). Win32 puro, sem dependência de GUI. |
-| `version.py` | `__version__` e `APP_NAME`. SemVer. |
+Camadas com portas e adaptadores — a explicação completa, com o porquê, está
+em `ARQUITETURA.md`. **As dependências só apontam para dentro**, e
+`tests/test_arquitetura.py` reprova quem desobedecer:
 
-Regra geral: **lógica fiscal no modelo, nunca na GUI.** A GUI só chama métodos de
-`SpedDocument` e apresenta o resultado.
+```
+interface ──► aplicacao ──► dominio ◄── infra
+    └──────────────────────► infra
+```
+
+| Camada | Pode importar | Módulos |
+|---|---|---|
+| `sped_tables/dominio/` | só o domínio (nem Qt) | `sped_model` (`SpedDocument`, todos os cálculos), `sped_layouts` (leiaute completo: 270 registros no ICMS/IPI, 203 no Contribuições), `validacao`, `revisao` (lista `REGRAS`), `rotinas` (lista `ROTINAS`), `diagnostico`, `conferencia`, `ncm` (classificação do NCM e CST esperado), `empresas` (a entidade), `xml_fiscal`, **`referencias` (a porta)** |
+| `sped_tables/infra/` | domínio | `config` (**ponto único de configuração**), `dados` (pasta de dados, gravação atômica, recursos), `descritor_pva`, `tabelas_pva`, `tabelas_rfb` (leitura), `referencias_pva` (**o adaptador**), `cadastro` (empresas e correlações em JSON), `arquivos` (acervo), `exportacao` (CSV), `pva` (automação Win32), `falhas` (registro e ganchos) |
+| `sped_tables/aplicacao/` | domínio, infra | `sessao` (arquivo aberto: abrir/salvar/fechar + acervo), `envio_pva` (pré-checagem, envio, desfecho), `montagem` (**raiz de composição**) |
+| `sped_tables/interface/` | todos | `app` (`main`), `janela`, **`acoes` (tabela única de ações)**, `controladores/` (mixins da janela por área do menu), `grade`, `telas/`, `dialogos/`, `formulario_empresa`, `comum`, `tema`, `icones`, `barra_titulo`, `janela_custom` |
+
+`sped_editor.py` na raiz é só o lançador. `sped_tables/version.py` tem
+`__version__`, `APP_NAME` e `canal()`.
+
+Regras gerais:
+
+- **Lógica fiscal no domínio, nunca na interface.** A interface chama o
+  domínio (ou um caso de uso) e apresenta o resultado.
+- **Nada do domínio lê a instalação do PVA.** O que precisa de tabela
+  oficial pergunta a `referencias.atual()`; `montagem.configurar()` liga o
+  adaptador do PVA no início do programa e da suíte. Sem fonte ligada, a
+  fonte é vazia e as regras se abstêm. Teste liga fonte inventada com
+  `referencias.definir(...)` e restaura.
+- **Todo caminho sai de `config` (PVA) ou `dados` (pasta do usuário).**
+  Nunca `__file__` para achar dado; recurso empacotado é `dados.recurso()`.
+- **A janela não guarda o estado do arquivo:** `doc`, `caminho` e `alterado`
+  são propriedades que leem `self.sessao`.
 
 ## Convenções obrigatórias
 
-- **SemVer** em `version.py` + entrada no `CHANGELOG.md` (formato Keep a
-  Changelog) a cada mudança relevante; atualizar `README.md` quando a
-  funcionalidade for visível ao usuário.
+- **SemVer** em `sped_tables/version.py` + entrada no `CHANGELOG.md`
+  (formato Keep a Changelog) a cada mudança relevante; atualizar `README.md`
+  quando a funcionalidade for visível ao usuário.
+- **A versão declara o canal** (`version.canal()`): toda a série 0.y.z é
+  desenvolvimento; `-dev`, `-alpha`, `-beta`, `-rc` também. Numa release só
+  aparece ação com `pronta=True` (`acoes.visiveis()`). Não existe função
+  "parcial" numa release — ver `ROADMAP.md`.
+- **Nenhum dado de cliente no repositório** — nem arquivo, nem nome, nem CNPJ,
+  nem em documentação. Os testes usam `tests/fabrica.py`; os arquivos reais
+  ficam fora, apontados por `SPED_TABLES_ARQUIVOS_REAIS`.
 - **Patches direcionados**, nunca reescrita completa de arquivos.
-- **Validar contra arquivos SPED reais** com números exatos, não só compilar.
+- **Validar contra arquivos SPED reais** com números exatos, não só compilar:
+  `tests/test_reais.py` com o `gabarito.json` da pasta dos arquivos reais.
+  Mudança que altera o gabarito precisa ser explicada no CHANGELOG.
 - Formato numérico SPED: valor `1.234,56` (2 casas), alíquota `1,65` / `7,6`
   (vírgula, sem zeros à direita). Helpers no modelo: `_to_num`, `_fmt_val`,
   `_fmt_aliq`, `_fmt_qtd`.
@@ -88,6 +107,15 @@ moda para baixo. `novo_registro` faz essa medição no lugar certo; quem precisa
 do número para outra coisa (o 0500 do plano de contas) guarda numa variável
 antes da criação.
 
+**Quem refaz registros mede antes de remover os antigos.** C190, C175 e
+M210/M610 são apagados e recriados; sem os antigos no arquivo, `_ncampos`
+cai no leiaute conhecido e perde a largura do arquivo (versão de leiaute mais
+nova). O padrão: `largura = self._ncampos(tipo)` antes de remover e
+`self._preencher(novo, valores, largura)` ao gravar a linha — os campos a
+mais ficam vazios em vez de sumir. A posição sai de `_ancora_antes(pai,
+reg)`, que devolve o último filho de código menor (é assim que o 0190 novo
+cai depois do 0150, e não logo após o 0001).
+
 **Abriu um bloco, feche o bloco.** Quem cria o primeiro registro de um bloco que
 ainda não existe no arquivo precisa criar também o **X990**. `gerar_texto`
 reconstrói só o bloco 9, e `atualizar_bloco9_inplace` apenas *atualiza* os X990
@@ -115,7 +143,7 @@ arquivo real): quem limpa é a ação *Limpar campos com NULL*.
 
 ### Ao mexer em cores ou estilo
 
-Cor **nunca** entra literal no `sped_editor.py`: use os tokens de
+Cor **nunca** entra literal na interface: use os tokens de
 `tema.atual()` (`ok`, `warn`, `bad`, `info`, `produto`, `somente_leitura`…) ou
 a propriedade dinâmica `role` (`QLabel[role="ok"]`, `"erro"`, `"aviso"`,
 `"dica"`, `"info"`, `"produto"`). Literal quebra o tema escuro. Só existe um
@@ -135,14 +163,20 @@ ser empacotados no executável.
 
 ### Ao mexer na barra ou no menu
 
-A janela nasce de **dois caminhos**: `uic.loadUi(sped_editor.ui)` quando o
-arquivo existe, e o fallback programático `_criar_barra`. Só
-`_montar_botao_ferramentas` roda nos **dois** — é ali que vão os itens que
-precisam aparecer sempre (foi o que aconteceu com a ação *Empresas*).
+Uma ação é **uma linha** de `interface/acoes.py`: atributo, rótulo, método da
+janela, quando fica habilitada (`SEMPRE`, `ARQUIVO`, `ICMS`, `CONTRIB`,
+`COM_PVA`), onde aparece (`BARRA`, `MENU_ICMS`, `MENU_CONTRIB`,
+`MENU_GERAIS`) e se está `pronta`. A janela cria, conecta, põe no menu e
+habilita tudo a partir dela (`_montar_acoes`, `_montar_barra_ferramentas`,
+`_habilitar_acoes`). O método vai no controlador da área
+(`interface/controladores/`).
 
-O menu Ferramentas é agrupado por leiaute (`menu_icms`, `menu_contrib`,
-`menu_gerais`); `abrir()` habilita/desabilita o submenu inteiro conforme
-`doc.layout`.
+Até a 0.52.0 cada ação existia em quatro lugares e a janela nascia por dois
+caminhos (o `.ui` do Qt Designer e um fallback); esquecer um ponto derrubou
+a janela duas vezes e deixou *Conferir entradas (NF-e 55)* fora de todos os
+menus. O `.ui` saiu. `tests/test_interface.py` confere que todo método da
+tabela existe, que toda ação visível está num menu ou na barra e **dispara
+cada ação** nos dois leiautes.
 
 ### O leiaute é completo — e como mantê-lo assim
 
@@ -240,7 +274,13 @@ Três decisões que evitam estrago:
 - **Origem da mercadoria não se adivinha.** `CST_ICMS` e `CFOP` são apontados,
   nunca sugeridos. O erro mais comum ali nem é lixo: é o **CSOSN do fornecedor
   do Simples copiado sem o dígito de origem** (`101`, `201`), e o diagnóstico
-  diz isso com todas as letras.
+  diz isso com todas as letras. Isso vale também para o domínio que vem das
+  **tabelas do PVA** (`CAMPOS_DE_DECISAO`, `dominio_de_tabela`): até a 0.53.0
+  o `CST_ICMS` = `0` recebia a sugestão "esvaziar" por ser "só zeros", e a
+  normalização em lote apagava o CST de itens do C170/C190.
+- **`normalizar()` sem lista usa os mesmos domínios do diagnóstico**
+  (`dominios_do_documento`). Com os embutidos, o que o diagnóstico acusava
+  pelas tabelas do PVA ficava sem conserto.
 
 ### Navegação mestre-detalhe
 
@@ -390,34 +430,34 @@ como corrigir nenhum. A lista detalhada existe em `DialogoOcorrencias`, atrás
 do botão *Ver ocorrências*, e só faz sentido quando a correção é manual.
 
 Regra ao criar uma verificação nova: se ela tem função que corrige, registre o
-atalho em `acoes` (o mapa é por **rótulo da lista `REGRAS`**, não pelo texto
-de `Problema.regra`, que é mais curto).
+atalho no mapa `acoes` de `ControladorGerais.revisar_erros` (o mapa é por
+**rótulo da lista `REGRAS`**, não pelo texto de `Problema.regra`, que é mais
+curto). Para o diagnóstico, o mapa equivalente fica em
+`ControladorGerais.diagnosticar`.
 
 ### Ao adicionar ações na GUI
 
-Padrão em quatro pontos: criar a `QAction` em `_criar_acoes`, conectar
-defensivamente em `_conectar_ui` (com `hasattr`, para `.ui` antigos), incluir em
-`_montar_botao_ferramentas` e habilitar em `abrir()` conforme
-`doc.layout` (`"ICMS"` ou `"CONTRIB"`). Diálogos não-modais (`show()`) precisam de
-referência guardada (`self._dlg_x`) para não serem coletados.
+Uma linha em `acoes.ACOES` + o método num controlador. Função que ainda não
+cumpre o critério de aceite do `ROADMAP.md` entra com `pronta=False`.
+Diálogos não-modais (`show()`) precisam de referência guardada
+(`self._dlg_x`) para não serem coletados.
 
-**Pular o segundo ponto derruba a janela inteira.** `_criar_acoes` só roda no
-fallback; com o `.ui` presente — o caso normal — quem roda é `_conectar_ui`, e
-`_montar_botao_ferramentas` (que roda nos dois) estoura com `AttributeError` no
-construtor. Já aconteceu com *Empresas* e de novo com *Limpar campos com NULL*.
-Depois de mexer em ação ou menu, confira que a janela nasce:
+**Exceção num slot do Qt encerra o processo** quando o `sys.excepthook` é o
+padrão. O `main()` instala `infra/falhas.py`, que troca isso por registro em
+`logs/`, cópia de emergência em `recuperacao/` e um aviso; mas os testes que
+montam a janela sem `main()` continuam sem essa rede — por isso o teste de
+interface instala um gancho que **reprova** qualquer exceção.
 
-```bash
-QT_QPA_PLATFORM=offscreen py -c "import sped_editor as e;from PyQt6.QtWidgets import QApplication;a=QApplication([]);e.JanelaPrincipal();print('ok')"
-```
-
-O PyQt6 está no interpretador do `py` (`pythoncore-3.14-64`), não no `python`
-do PATH — daí `py` no comando acima. E o `a=` não é enfeite: sem guardar a
-referência, o `QApplication` é coletado antes do widget nascer e o processo
-morre com **exit 127 e nenhum traceback** — o mesmo sintoma da barra de título
-e dos tradutores.
+O `QApplication` precisa de referência guardada: sem ela, é coletado antes do
+widget nascer e o processo morre com **exit 127 e nenhum traceback** — o
+mesmo sintoma da barra de título e dos tradutores. Na suíte, use `_app()` de
+`tests/test_interface.py`.
 
 ## Abrir o PVA já com o arquivo
+
+A automação é `infra/pva.py`; a decisão em volta dela (pré-checagem, como
+apresentar cada desfecho) é `aplicacao/envio_pva.py`; a espera com barra de
+progresso e cancelar, `ControladorArquivo.abrir_no_pva`.
 
 Não há linha de comando para isso: os dois PVAs aceitam só `-buildVersion` e
 `-atualizarTabelas`. O que existe é o `ppgdmenubar.xml` que cada um carrega do
@@ -527,6 +567,11 @@ caractere '—'"), porque trocar por `?` mudaria a descrição do produto sem
 ninguém saber. O caso típico é texto colado de outro programa — travessão,
 aspas curvas.
 
+O mesmo vale para todo JSON do usuário (cadastro, acervo, configuração,
+correlações): `dados.gravar_json`, que escreve em `.tmp` e troca. Já o CSV
+exportado (`infra/exportacao.py`) troca o caractere impossível por `?`: num
+relatório isso é aceitável, e o `csv` põe aspas no `;` de uma descrição.
+
 ## Armadilha: scripts de teste que sombreiam o stdlib
 
 Os testes põem a própria pasta no `sys.path`. Um arquivo chamado `bisect.py`,
@@ -534,7 +579,9 @@ Os testes põem a própria pasta no `sys.path`. Um arquivo chamado `bisect.py`,
 importado no lugar do módulo real — e, como o import **executa** o arquivo, o
 sintoma é surreal: o teste A imprime a saída do script B, o processo morre sem
 traceback e o diagnóstico vai para o lado errado (já custou horas aqui).
-Use nomes com prefixo (`teste_`, `montar_`) nos scripts auxiliares.
+Use nomes com prefixo (`teste_`, `montar_`, `test_`) nos scripts auxiliares.
+`tests/test_estrutura.py` reprova módulo do projeto com nome da biblioteca
+padrão.
 
 ## Ao mexer na barra de título
 
@@ -560,18 +607,14 @@ arquivo continua compilando e o `py_compile` não acusa — o erro só aparece e
 runtime como `AttributeError`. Afetou `consolidar_c175_de_itens` e
 `_registros_aliq_escopo`.
 
-Verificação após qualquer edição estrutural:
+`tests/test_estrutura.py` confere isso em **todo** arquivo do projeto, junto
+com import sem uso e método definido duas vezes na mesma classe. Outra
+variante da mesma armadilha, vista na reestruturação: um patch que engole o
+`\` de continuação deixa duas linhas coladas — compila, mas fica ilegível.
 
-```bash
-python -c "
-import ast
-for f in ['sped_model.py','sped_editor.py','conferencia.py','revisao.py','xml_fiscal.py','tabelas_rfb.py']:
-    t=ast.parse(open(f,encoding='utf-8').read())
-    p=[(n.name,s.lineno) for n in ast.walk(t) if isinstance(n,ast.FunctionDef)
-       for i,s in enumerate(n.body[:-1]) if isinstance(s,ast.Return)]
-    print(f, p or 'ok')
-"
-```
+Duas mais, que a suíte pegou antes do commit na 0.52/0.53: variável local com
+o nome de um módulo importado (`ajustes = ajustes()`, `cadastro =
+cadastro.carregar_empresas()`) vira `UnboundLocalError` na função inteira.
 
 ## Índices de campos validados
 
@@ -663,7 +706,9 @@ Obter sempre por nome (`doc._ix(tipo, nome)`), nunca por número fixo. Referênc
 - **Só o CST 01 tem alíquota conferível:** 02 é "alíquota diferenciada" e 03 é
   por quantidade. Cobrar deles a alíquota nominal gera falso positivo.
 
-## Empresa usada na validação
+## Arquivos reais usados na validação
 
-CASA DO ESPETO LTDA — CNPJ 22763092000102, MG, comércio/revenda. Os arquivos SPED
-e XMLs reais usados nos testes ficam fora do repositório.
+Ficam **fora do repositório**, numa pasta apontada por
+`SPED_TABLES_ARQUIVOS_REAIS` (ver `TESTES.md`), com o `gabarito.json` dos
+números esperados. Nunca cite nome, CNPJ ou caminho de cliente em código,
+teste, commit ou documentação; nos textos, "cliente A" / "cliente B".

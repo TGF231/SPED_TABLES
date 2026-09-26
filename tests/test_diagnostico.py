@@ -3,8 +3,8 @@
 
 import unittest
 
-import diagnostico
-from sped_model import SpedDocument
+from sped_tables.dominio import diagnostico
+from sped_tables.dominio.sped_model import SpedDocument
 from tests.fabrica import PastaTemporaria, contrib_basico, icms_basico
 
 

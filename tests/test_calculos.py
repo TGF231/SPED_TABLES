@@ -4,7 +4,7 @@ implementadas (não regredir)" no CLAUDE.md."""
 
 import unittest
 
-from sped_model import (SpedDocument, _fmt_aliq, _fmt_qtd, _fmt_val,
+from sped_tables.dominio.sped_model import (SpedDocument, _fmt_aliq, _fmt_qtd, _fmt_val,
                         _gtin_corrigido, _texto_planilha, _to_num,
                         _zero_a_esquerda)
 from tests.fabrica import PastaTemporaria, icms_basico

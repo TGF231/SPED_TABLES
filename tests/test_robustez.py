@@ -5,13 +5,13 @@ import os
 import unittest
 from unittest import mock
 
-import arquivos
-import config
-import conferencia
-import dados
-import descritor_pva
-import empresas as emp_mod
-from sped_model import SpedDocument
+from sped_tables.infra import cadastro
+from sped_tables.infra import arquivos
+from sped_tables.infra import config
+from sped_tables.infra import dados
+from sped_tables.infra import descritor_pva
+from sped_tables.dominio import empresas as emp_mod
+from sped_tables.dominio.sped_model import SpedDocument
 from tests.fabrica import (CNPJ_TESTE, PastaTemporaria, contrib_basico,
                            icms_basico)
 
@@ -111,22 +111,22 @@ class TestGravacoesJson(unittest.TestCase):
     def test_falha_no_meio_preserva_o_anterior(self):
         with PastaTemporaria() as p:
             cam = os.path.join(p, "empresas.json")
-            emp_mod.salvar({CNPJ_TESTE: emp_mod.Empresa(cnpj=CNPJ_TESTE,
+            cadastro.salvar_empresas({CNPJ_TESTE: emp_mod.Empresa(cnpj=CNPJ_TESTE,
                                                          nome="A")}, cam)
             novo = {CNPJ_TESTE: emp_mod.Empresa(cnpj=CNPJ_TESTE, nome="B")}
             # a troca final falha (antivírus segurando o arquivo, disco cheio)
             with mock.patch("os.replace", side_effect=OSError("ocupado")):
                 with self.assertRaises(OSError):
-                    emp_mod.salvar(novo, cam)
-            self.assertEqual(emp_mod.carregar(cam)[CNPJ_TESTE].nome, "A")
+                    cadastro.salvar_empresas(novo, cam)
+            self.assertEqual(cadastro.carregar_empresas(cam)[CNPJ_TESTE].nome, "A")
             self.assertEqual([n for n in os.listdir(p) if n.endswith(".tmp")],
                              [])
 
     def test_correlacoes_ida_e_volta(self):
         with PastaTemporaria() as p:
             cam = os.path.join(p, "correlacoes.json")
-            conferencia.salvar_correlacoes({"5102": ["1102"]}, cam)
-            self.assertEqual(conferencia.carregar_correlacoes(cam)["5102"],
+            cadastro.salvar_correlacoes({"5102": ["1102"]}, cam)
+            self.assertEqual(cadastro.carregar_correlacoes(cam)["5102"],
                              {"1102"})
 
 
@@ -198,6 +198,25 @@ class TestIndiceDoAcervo(unittest.TestCase):
                 self.assertEqual(len(arquivos.carregar_indice()), 1)
         finally:
             os.environ["SPED_TABLES_DADOS"] = anterior
+
+
+class TestExportacaoCsv(unittest.TestCase):
+    """Um exportador só: `;` na descrição e travessão não quebram o CSV."""
+
+    def test_ponto_e_virgula_e_caractere_fora_do_latin1(self):
+        import csv
+        from sped_tables.infra import exportacao
+        with PastaTemporaria() as p:
+            cam = os.path.join(p, "x.csv")
+            _c, n = exportacao.gravar_csv(
+                cam, ["cod", "descr", "valor"],
+                [["1", "ARROZ; TIPO 1", "10,00"],
+                 ["2", "FEIJÃO — PRETO", None]])
+            self.assertEqual(n, 2)
+            with open(cam, encoding="latin-1", newline="") as fh:
+                linhas = list(csv.reader(fh, delimiter=";"))
+        self.assertEqual(linhas[1], ["1", "ARROZ; TIPO 1", "10,00"])
+        self.assertEqual(linhas[2], ["2", "FEIJÃO ? PRETO", ""])
 
 
 if __name__ == "__main__":

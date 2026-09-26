@@ -3,7 +3,7 @@
 
 import unittest
 
-from sped_model import SpedDocument
+from sped_tables.dominio.sped_model import SpedDocument
 from tests.fabrica import PastaTemporaria, contrib_basico
 
 # o pedaço da tabela 4.3.7 do PVA que os arquivos de teste usam

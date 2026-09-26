@@ -4,9 +4,9 @@
 import os
 import unittest
 
-import arquivos
-import dados
-from sped_model import SpedDocument
+from sped_tables.infra import arquivos
+from sped_tables.infra import dados
+from sped_tables.dominio.sped_model import SpedDocument
 from tests.fabrica import CNPJ_TESTE, PastaTemporaria, icms_basico, ler
 
 

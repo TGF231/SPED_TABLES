@@ -1,7 +1,8 @@
 # SPED Tables (EFD ICMS/IPI e EFD Contribuições)
 
-> Antes chamado *Editor SPED* (renomeado na v0.6.0). A versão corrente está em
-> [`version.py`](version.py); o histórico, em [CHANGELOG.md](CHANGELOG.md).
+> A versão corrente está em [`sped_tables/version.py`](sped_tables/version.py);
+> o histórico, em [CHANGELOG.md](CHANGELOG.md); os próximos passos, em
+> [ROADMAP.md](ROADMAP.md).
 
 Editor visual para arquivos **SPED Fiscal**, em estilo planilha, com a mesma
 navegação **mestre-detalhe** do *Validador do SPED*: cada **bloco** é uma aba,
@@ -34,9 +35,9 @@ pip install -r requirements.txt
   funcionando).
 
 > **Antes de usar em produção:** trabalhe sempre sobre uma **cópia** do arquivo
-> SPED e valide o resultado no **PVA** antes de transmitir. O grau de maturidade
-> de cada função está em [FUNCIONALIDADES.md](FUNCIONALIDADES.md) e o roteiro de
-> validação em [TESTES.md](TESTES.md).
+> SPED e valide o resultado no **PVA** antes de transmitir. Enquanto a versão
+> for 0.y.z, o programa está em desenvolvimento — o que falta para a 1.0.0
+> está no [ROADMAP.md](ROADMAP.md).
 
 ## 2. Como executar
 
@@ -725,7 +726,7 @@ Dê **duplo-clique** numa linha do relatório (ou use **Ir para o registro**) e 
 editor abre o bloco, a sub-aba e a linha exata do registro com problema —
 inclusive descendo até registros-filho como o C190 (dentro do C100). O
 relatório fica aberto enquanto você navega. As regras estão centralizadas em
-`revisao.py` (lista `REGRAS`) e novas verificações podem ser acrescentadas com
+`sped_tables/dominio/revisao.py` (lista `REGRAS`) e novas verificações podem ser acrescentadas com
 poucas linhas.
 
 ### Modo Relatório (comparação com o banco)
@@ -969,10 +970,6 @@ set SPED_TABLES_BARRA_NATIVA=1
 python sped_editor.py
 ```
 
-> **Por que ainda é opcional:** a parte nativa não pôde ser validada por teste
-> automatizado, e uma falha nesse nível derruba o processo sem mensagem. Depois
-> de confirmada em uso, o padrão pode ser invertido em `janela_custom.VARIAVEL`.
-
 ### Tema claro e escuro
 
 A interface tem paleta própria, com **tema claro e escuro**. O botão à direita
@@ -987,63 +984,92 @@ para a coluna **REG** (a chave estrutural) —, de modo que a cor de ação nunc
 confunde com a cor de estado. No tema escuro elas não são invertidas
 automaticamente: sobem de saturação para continuar legíveis sobre fundo escuro.
 
-A paleta e a folha de estilo ficam em **`tema.py`**; os ícones do "✓" e da seta
+A paleta e a folha de estilo ficam em **`sped_tables/interface/tema.py`**; os ícones do "✓" e da seta
 dos combos são desenhados em tempo de execução na cor da paleta ativa
-(**`icones.py`**), porque o Qt Style Sheets não aceita imagem embutida.
+(**`interface/icones.py`**), porque o Qt Style Sheets não aceita imagem embutida.
 
-### Editar o layout no Qt Designer
-A janela principal é descrita em **`sped_editor.ui`** (formato padrão do Qt). O
-aplicativo carrega esse arquivo automaticamente quando ele está presente, de modo
-que você pode abrir o **Qt Designer**, reorganizar a barra de ferramentas e as
-ações, e ver as mudanças sem mexer no código. Se o arquivo não existir (ou não
-puder ser lido), a interface é montada programaticamente como alternativa. As
-ações mantêm nomes fixos (`act_abrir`, `act_salvar`, `act_revisar`, …) e o
-`QTabWidget` central chama-se `tabs_bloco` — preserve esses nomes ao editar. O
-botão **Ferramentas** da barra é montado em código (reúne as ações de
-ferramentas num menu suspenso ao lado de *Salvar como*).
+### Pasta dos PVAs
+
+As verificações que dependem das tabelas oficiais (validação de campos,
+crédito por CFOP, prazo do 0900, descritor do PVA) e o **Abrir no PVA**
+precisam saber onde os PVAs estão instalados. O programa procura sozinho na
+pasta padrão da Receita (`C:\Arquivos de Programas RFB\Programas SPED`) e
+nas de *Arquivos de Programas*. Se a instalação estiver noutro lugar, aponte
+em **Ferramentas → Gerais → Pasta dos PVAs…** — a pasta certa é a que contém
+`Fiscal` e/ou `EFD-Contribuicoes`. A escolha fica gravada; para voltar à
+detecção automática, escolha a pasta padrão de novo.
+
+### Quando algo dá errado
+
+Um erro que o programa não esperava **não fecha a janela**. Ele é gravado
+num registro, e uma caixa diz o que aconteceu e onde ficou o registro. Se
+havia alteração não salva, uma **cópia de emergência** do arquivo é gravada
+antes, na pasta `recuperacao` (ver 3A) — nunca por cima do seu arquivo.
+
+Ao pedir ajuda, mande o arquivo `logs\sped_tables.log`: ele tem o rastro
+completo do erro.
 
 ## 3A. Onde ficam os dados
 
-Rodando **do código-fonte**, cadastro, configurações e cópias dos SPED ficam na
-pasta do projeto — como sempre foi.
+Rodando **do código-fonte**, cadastro, configurações e cópias dos SPED ficam
+na pasta do projeto. No **executável**, vão para `%APPDATA%\SPED Tables`: o
+pacote *onefile* é extraído numa pasta temporária que o Windows apaga ao sair,
+e gravar ao lado do programa perderia tudo a cada fechamento.
 
-No **executável**, vão para `%APPDATA%\SPED Tables`. O motivo é técnico e
-importante: o pacote *onefile* é extraído numa pasta temporária que o Windows
-apaga ao sair, de modo que gravar ao lado do programa perderia o cadastro e o
-histórico a cada fechamento — sem erro nenhum, apenas esquecendo tudo.
+| Na pasta de dados | O que é |
+|---|---|
+| `empresas.json` | Cadastro das empresas (regime, alíquotas). |
+| `correlacoes_cfop.json` | Correlações de CFOP saída → entrada. |
+| `configuracao.json` | Pasta dos PVAs e caminhos das tabelas da RFB escolhidos. |
+| `arquivos\` | O acervo: uma cópia de cada SPED por empresa e período. |
+| `logs\` | Registro de erros (`sped_tables.log`) e de quedas nativas. |
+| `recuperacao\` | Cópias de emergência gravadas quando um erro acontece. |
 
-Na **primeira execução** do executável, o programa cria essa pasta, copia para
-lá os padrões que vieram no pacote (sem sobrescrever nada que já seja seu) e
-oferece criar um **atalho na área de trabalho**.
+Nada disso vai para o repositório (`.gitignore`): são dados de clientes.
+
+Na **primeira execução** do executável, o programa cria essa pasta, copia
+para lá os padrões que vieram no pacote (sem sobrescrever nada que já seja
+seu) e oferece criar um **atalho na área de trabalho**.
+
+Duas variáveis de ambiente mudam os caminhos:
+
+| Variável | Efeito |
+|---|---|
+| `SPED_TABLES_DADOS` | Usa outra pasta de dados (um disco de rede, por exemplo). |
+| `SPED_TABLES_PVA` | Força a raiz das instalações dos PVAs. |
+| `SPED_TABLES_BARRA_NATIVA=1` | Usa a barra de título do Windows. |
 
 ## 4. Estrutura do projeto
 
-| Arquivo            | Função                                                         |
-|--------------------|----------------------------------------------------------------|
-| `sped_editor.py`   | Interface gráfica PyQt6 (mestre-detalhe recursivo).            |
-| `sped_editor.ui`   | Layout da janela principal (editável no Qt Designer).         |
-| `sped_model.py`    | Modelo de dados: parser, árvore pai/filho, CRUD e gravação.    |
-| `sped_layouts.py`  | Níveis hierárquicos e nomes oficiais de campos por registro.   |
-| `xml_fiscal.py`    | Leitura de XML NF-e/NFC-e e motor de vínculo genérico.        |
-| `conferencia.py`   | Conferência de entradas modelo 55 (item XML ↔ C170).          |
-| `tabelas_rfb.py`   | Tabelas RFB (alíq. zero, monofásicos, gênero, NCM) + CST.     |
-| `correlacoes_cfop.json` | Correlações CFOP saída→entrada (gerado/editável).        |
-| `revisao.py`       | Regras de revisão de erros (extensível).                      |
-| `version.py`       | Versão do aplicativo (SemVer).                                |
-| `empresas.py`      | Cadastro por CNPJ: regime tributário e alíquotas.             |
-| `rotinas.py`       | Rotinas de conferência/correção por regime (extensível).      |
-| `arquivos.py`      | Memória persistente: cópias internas por empresa e período.   |
-| `dados.py`         | Onde gravar (projeto × %APPDATA%), instalação e atalho.       |
-| `tema.py`          | Paleta clara/escura e folha de estilo (QSS).                  |
-| `janela_custom.py` | Barra de título própria via mensagens nativas (opcional).     |
-| `icones.py`        | Ícones do QSS desenhados em runtime na cor da paleta.         |
-| `config_tabelas_rfb.json` | Caminhos das tabelas da RFB (gerado/editável).           |
-| `CHANGELOG.md`     | Histórico de versões (Keep a Changelog).                       |
-| `FUNCIONALIDADES.md` | Inventário das funções, com maturidade e regras de uso.      |
-| `TESTES.md`        | Roteiro de testes (smoke test e checagens automáticas).        |
-| `CLAUDE.md`        | Convenções do projeto para desenvolvimento assistido.          |
-| `Versions/`        | Snapshots de cada versão (fora do controle de versão).         |
-| `requirements.txt` | Dependências (PyQt6; openpyxl para XLSX).                      |
+O programa é o pacote `sped_tables/`, organizado em camadas — a explicação
+completa está em [ARQUITETURA.md](ARQUITETURA.md).
+
+| Caminho | Conteúdo |
+|---|---|
+| `sped_editor.py` | Lançador: `python sped_editor.py [arquivo.txt]`. |
+| `sped_tables/dominio/` | O documento SPED e as regras fiscais (sem tela, sem disco, sem PVA). |
+| `sped_tables/aplicacao/` | Casos de uso: o arquivo aberto (abrir/salvar/fechar), mandar ao PVA, a montagem. |
+| `sped_tables/infra/` | Configuração, pasta de dados, tabelas e automação do PVA, acervo, registro de falhas. |
+| `sped_tables/interface/` | A aplicação PyQt6: janela, tabela de ações, controladores, grades, diálogos, tema. |
+| `tests/` | Suíte automática (ver [TESTES.md](TESTES.md)). |
+| `SPED Tables.spec` | Empacotamento (PyInstaller, arquivo único). |
+| `icon.ico`, `correlacoes_cfop.json` | Recursos que vão junto no executável. |
+| `ARQUITETURA.md` | Como o código se organiza e onde entra o que é novo. |
+| `ROADMAP.md` | Canais de versão, critério de aceite e o caminho até a 1.0.0. |
+| `TESTES.md` | A suíte automática e o roteiro manual (PVA, executável). |
+| `CHANGELOG.md` | Histórico de versões (Keep a Changelog). |
+| `CLAUDE.md` | Convenções do projeto para desenvolvimento assistido. |
+
+### Testes
+
+```bash
+py -m unittest discover -s tests -t .
+```
+
+A suíte monta arquivos SPED sintéticos na hora — nenhum dado de cliente entra
+no repositório — e roda também contra cópias de arquivos reais quando
+`SPED_TABLES_ARQUIVOS_REAIS` aponta para elas. Detalhes em
+[TESTES.md](TESTES.md).
 
 ## 5. Notas e limitações
 
@@ -1057,9 +1083,9 @@ oferece criar um **atalho na área de trabalho**.
   (ex.: criar o primeiro C170 de um C100 que só tem C190), seria necessário um
   catálogo completo de filhos permitidos por registro — fora do escopo atual.
   Adicionar **mais** registros de um tipo já presente funciona normalmente.
-- Os nomes de coluna são os oficiais para os registros mais comuns das amostras;
-  registros sem mapeamento específico recebem colunas genéricas
-  (`Campo 02`, `Campo 03`, …), sem prejuízo da edição nem da gravação.
+- O leiaute cobre os dois SPEDs inteiros; uma coluna genérica (`Campo NN`)
+  só aparece se o arquivo trouxer mais campos que o leiaute conhecido — e
+  mesmo assim a edição e a gravação preservam tudo.
 - Arquivos grandes (dezenas de milhares de registros) abrem em frações de
   segundo; as abas de bloco são construídas sob demanda para manter a abertura
   rápida.
@@ -1067,9 +1093,12 @@ oferece criar um **atalho na área de trabalho**.
   sessão** — ao reabrir o programa, tudo volta ao padrão.
 - **Não há desfazer (undo)** para edições em lote: prefira executar as rotinas
   com o arquivo já salvo, para poder voltar à cópia anterior.
-- Funções ainda **experimentais** (ver [FUNCIONALIDADES.md](FUNCIONALIDADES.md)):
-  a validação do C175 por item (modelo 65) e a importação do inventário do bloco
-  H. No fluxo do modelo 65, entre *Validar C175* e *Regenerar C175* o arquivo
-  fica com registros C170 em documentos modelo 65 — estrutura **inválida** para
-  o EFD Contribuições. **Não salve nem transmita nesse estado:** rode sempre o
-  *Regenerar C175* antes de gerar o arquivo final.
+- No fluxo da NFC-e (modelo 65), entre *Validar C175* e *Regenerar C175* o
+  arquivo fica com registros C170 em documentos modelo 65 — estrutura
+  **inválida** para o EFD Contribuições. **Não salve nem transmita nesse
+  estado:** rode sempre o *Regenerar C175* antes de gerar o arquivo final.
+- Os CST esperados na verificação por NCM (`CST_ACEITOS`/`CST_SUGERIDO`, em
+  `sped_tables/dominio/ncm.py`) foram montados para **comércio/revenda**.
+- As regras compostas do PVA (implementadas em Java dentro dele) não são
+  reproduzidas; o diagnóstico diz quantas se aplicam ao arquivo. O validador
+  oficial continua sendo o juiz.

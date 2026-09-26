@@ -14,7 +14,7 @@ fechados, X990 e bloco 9 com as contagens certas, CRLF no fim de linha.
 import os
 import tempfile
 
-from sped_layouts import CAMPOS_CONTRIB, CAMPOS_ICMS
+from sped_tables.dominio.sped_layouts import CAMPOS_CONTRIB, CAMPOS_ICMS
 
 # CNPJ válido de exemplo (dígitos verificadores corretos), não é de ninguém
 CNPJ_TESTE = "11222333000181"
@@ -197,3 +197,40 @@ def ler(caminho):
     ResourceWarning e, no Windows, pode segurar o arquivo aberto)."""
     with open(caminho, "rb") as fh:
         return fh.read()
+
+
+def nfe_xml(itens=None, nnf="123", serie="1", mod="55", cfop="5102",
+            vicms="1.80"):
+    """XML mínimo de uma NF-e, casando com a nota de `icms_basico`.
+
+    Só os grupos que o parser (`xml_fiscal.ler_nfe`) lê. `itens` é uma lista
+    de dicts que sobrepõem os campos do item padrão (vProd 10.00, ICMS00 a
+    18%); `CSOSN` no dict troca o grupo ICMS00 por um ICMSSN.
+    """
+    itens = itens or [{}, {}, {}]
+    dets = []
+    for n, extra in enumerate(itens, 1):
+        c = {"cProd": "P%d" % n, "CFOP": cfop, "vProd": "10.00",
+             "NCM": "21069090", "orig": "0", "CST": "00", "vBC": "10.00",
+             "pICMS": "18.00", "vICMS": vicms}
+        c.update(extra)
+        if "CSOSN" in c:
+            icms = ("<ICMSSN102><orig>%s</orig><CSOSN>%s</CSOSN></ICMSSN102>"
+                    % (c["orig"], c["CSOSN"]))
+        else:
+            icms = ("<ICMS00><orig>%s</orig><CST>%s</CST><vBC>%s</vBC>"
+                    "<pICMS>%s</pICMS><vICMS>%s</vICMS></ICMS00>"
+                    % (c["orig"], c["CST"], c["vBC"], c["pICMS"], c["vICMS"]))
+        dets.append(
+            '<det nItem="%d"><prod><cProd>%s</cProd><xProd>PRODUTO</xProd>'
+            "<NCM>%s</NCM><CFOP>%s</CFOP><uCom>UN</uCom><qCom>1</qCom>"
+            "<vProd>%s</vProd></prod><imposto><ICMS>%s</ICMS></imposto></det>"
+            % (n, c["cProd"], c["NCM"], c["CFOP"], c["vProd"], icms))
+    return (
+        '<?xml version="1.0" encoding="UTF-8"?>'
+        '<nfeProc xmlns="http://www.portalfiscal.inf.br/nfe"><NFe>'
+        '<infNFe Id="NFe31260811444777000161550010000001231000001230">'
+        "<ide><mod>%s</mod><serie>%s</serie><nNF>%s</nNF>"
+        "<dhEmi>2026-08-05T10:00:00-03:00</dhEmi><tpNF>1</tpNF></ide>%s"
+        "<total><ICMSTot><vProd>30.00</vProd><vNF>30.00</vNF></ICMSTot>"
+        "</total></infNFe></NFe></nfeProc>" % (mod, serie, nnf, "".join(dets)))

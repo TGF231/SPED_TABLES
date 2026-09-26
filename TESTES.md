@@ -1,233 +1,163 @@
-# Roteiro de testes — SPED Tables
+# Testes — SPED Tables
 
-Checklist de validação manual e automatizada. A ideia é rodar o **smoke test**
-antes de qualquer entrega e a seção completa da área que foi mexida.
-
-Marque o resultado: ✅ passou · ❌ falhou · ⏭️ não se aplica.
-
-## Preparação
-
-- Trabalhe sempre com **cópias** dos arquivos SPED reais.
-- Tenha à mão, num diretório fora do repositório:
-  - um **EFD ICMS/IPI** com C170, C190 e E110;
-  - um **EFD Contribuições** com C170 (entradas) e C175 (NFC-e mod. 65);
-  - uma pasta de **XMLs** do mesmo período (modelos 55 e 65);
-  - as **tabelas da RFB** (pasta de recursos do PVA);
-  - uma **planilha de inventário** (XLSX).
-- Referência de valores conferidos (arquivo de abril/2026): C190 saída
-  **11.921,50** = débitos do E110; C190 entrada **4.202,70** = créditos.
+Duas partes: a **suíte automática** (`tests/`), que roda a cada mudança, e o
+**roteiro manual**, só para o que a automação não alcança — o PVA de verdade,
+o executável e o comportamento da janela no Windows.
 
 ---
 
-## 0. Verificações automáticas (rodar sempre)
+## 1. Suíte automática
+
+### Rodar
+
+Da raiz do projeto, com o interpretador que tem o PyQt6 (`py`):
 
 ```bash
-# 0.1 tudo compila
-python -m py_compile *.py
-
-# 0.2 o .ui continua válido
-python -c "import xml.dom.minidom as m; m.parse('sped_editor.ui')"
-
-# 0.3 nenhum método perdeu a assinatura (armadilha recorrente — ver CLAUDE.md)
-python -c "
-import ast
-for f in ['sped_model.py','sped_editor.py','conferencia.py','revisao.py','xml_fiscal.py','tabelas_rfb.py']:
-    t=ast.parse(open(f,encoding='utf-8').read())
-    p=[(n.name,s.lineno) for n in ast.walk(t) if isinstance(n,ast.FunctionDef)
-       for i,s in enumerate(n.body[:-1]) if isinstance(s,ast.Return)]
-    print(f, p or 'ok')
-"
-
-# 0.4 todos os módulos importam
-python -c "import sped_model, sped_layouts, xml_fiscal, conferencia, revisao, tabelas_rfb; print('ok')"
-
-# 0.5 métodos-chave existem (pega AttributeError antes do usuário)
-python -c "
-from sped_model import SpedDocument as D
-faltam=[m for m in ['consolidar_c190','recalcular_totais_c100','consolidar_c175_de_itens',
- '_registros_aliq_escopo','trocar_aliquotas_pis_cofins','alterar_datas_c100','recalcular_bloco_m',
- 'importar_inventario_h010','comparar_inventario_h010','gerar_c170_ficticios_65',
- 'regenerar_c175_de_c170_65','itens_relatorio','itens_relatorio_c175','itens_relatorio_c190',
- 'resumo_c190','apuracao_e110','consolidacao_cst_pis_cofins'] if not hasattr(D,m)]
-print('faltando:', faltam or 'nenhum')
-"
+py -m unittest discover -s tests -t .
 ```
 
-- [ ] 0.1 a 0.5 sem erros
+Os testes são `unittest` puro; com o pytest instalado, `py -m pytest tests`
+também roda. A suíte leva cerca de 8 segundos.
+
+A interface roda **sem tela** (`QT_QPA_PLATFORM=offscreen`, definido em
+`tests/__init__.py`). Cadastro de empresas, acervo, registros e preferências
+que os testes gravam vão para uma pasta temporária (`SPED_TABLES_DADOS`). O
+cadastro de verdade e o registro do Windows não são tocados.
+
+### O que cada arquivo cobre
+
+| Arquivo | Cobre |
+|---|---|
+| `test_documento` | Ida e volta byte a byte, hierarquia, encoding (UTF-8 lido, latin-1 gravado), gravação que não destrói o destino, bloco 9, largura de registro novo. |
+| `test_calculos` | Formatos numéricos, zero à esquerda de planilha, GTIN, `NULL` do ERP, rateio de acessórios, C190 (agrupamento, frete, x20, x70 pela base de PIS/COFINS). |
+| `test_bloco_m` | Débito, crédito refeito das entradas, ordem do leiaute, idempotência, cumulativo, conferência igual à geração. |
+| `test_correcoes` | Cada correção que **grava**: limpar NULL, COD_GEN, COD_CTA + 0500, itens sem referência, ICMS dos itens, C190 em massa, datas. Confere o conserto, a idempotência e o arquivo bem formado depois de salvar. |
+| `test_conferencia` | Leitura de NF-e (XML sintético); conferência de entradas (casamento, divergência por item, CSOSN ignorado, nota sem C100); classificação de NCM (prefixo, exceção, vigência) e CST esperado; totais do C100; NFC-e 65 — C170 fictícios, regeneração do C175 e rateio igual na conferência e na geração. |
+| `test_validacao` | Domínios de campo, sugestões (só com um dígito faltando), CST_ICMS e CFOP nunca sugeridos, normalização. |
+| `test_revisao` | Todas as regras nos dois leiautes sem exceção, e as que reproduzem mensagens do PVA. |
+| `test_diagnostico` | Diagnóstico nos dois leiautes e a pré-checagem do que o PVA recusa na importação. |
+| `test_empresas_rotinas` | Alíquota normalizada, cadastro corrompido, rotinas por regime, `executar` sem propagar exceção. |
+| `test_arquivos` | Acervo: cópia por período, índice, abrir do histórico sem truncar, remover. |
+| `test_robustez` | Um teste por achado da revisão de código; configuração (`config`); JSON atômico; CSV com `;` e travessão. |
+| `test_arquitetura` | **Regra de dependência entre as camadas**; a porta das tabelas oficiais com fonte inventada (regras testadas sem PVA); sessão e envio ao PVA sem tela; canal da versão. |
+| `test_estrutura` | Armadilhas: código depois de `return`, import sem uso, nome da biblioteca padrão, método duplicado. |
+| `test_interface` | A janela nasce; **toda ação do menu roda** nos dois leiautes; a tabela de ações é coerente; o formulário de empresa; `main()` inteiro pelo `sped_editor.py`. |
+| `test_falhas` | Fallback de exceções: registro, cópia de emergência, aviso sem empilhar, e — em subprocesso — o processo sobrevive à exceção num slot (e morre sem o gancho). |
+| `test_pva` | Cancelamento de cada espera da automação e classificação das telas do PVA, **sem abrir o PVA**. |
+| `test_reais` | Arquivos reais, fora do repositório (ver 1.2). |
+
+### 1.1 Arquivos de teste: sintéticos, nunca de cliente
+
+`tests/fabrica.py` monta SPED completos na hora, **pelo nome dos campos**:
+
+```python
+m = icms_basico(itens=[{"COD_ITEM": "P1", "CST_ICMS": "020",
+                        "VL_BC_ICMS": "6,00"}], frete="1,00")
+doc = SpedDocument.carregar(m.gravar(pasta))
+```
+
+Os blocos são abertos e fechados, o X990 e o bloco 9 são contados e o fim de
+linha é CRLF, como num arquivo de verdade. O CNPJ é inventado
+(`CNPJ_TESTE`). **Nenhum arquivo, XML, planilha ou nome de cliente entra no
+repositório.**
+
+### 1.2 Arquivos reais: invariantes e gabarito
+
+`test_reais` só roda quando uma variável aponta para uma pasta com cópias
+dos arquivos reais (fora do git):
+
+```bash
+set SPED_TABLES_ARQUIVOS_REAIS=C:\caminho\das\copias
+py -m unittest tests.test_reais
+```
+
+Em todo `.txt` que começa com `|0000|`, confere:
+
+- gravar e reabrir não perde registro e estabiliza;
+- recálculo do bloco M idempotente;
+- nenhuma verificação levanta exceção;
+- **as correções em lote** (limpar NULL, COD_GEN, normalizar, C190 em
+  massa, bloco M): acabam com o que corrigem, não criam erro de estrutura,
+  são idempotentes e o arquivo gravado volta idêntico;
+- **gabarito**: se houver um `gabarito.json` na pasta, os números exatos de
+  cada arquivo — quantos achados por regra de revisão e por tipo de
+  diagnóstico. Gerar (depois de conferir os números à mão):
+
+  ```bash
+  py -m tests.test_reais gerar
+  ```
+
+É o "validar contra arquivos reais com números exatos" do projeto, sem pôr
+dado de cliente no git. Mudança que altera o gabarito tem de ser explicada no
+CHANGELOG.
+
+### 1.3 Ao escrever um teste
+
+- **Teste de ação de menu chama a ação**, não o diálogo. Foi pulando o
+  método do menu que o "Validar campos pelo leiaute" derrubou o programa por
+  três versões sem teste nenhum ver.
+- **Guarde a referência do `QApplication`** (`_app()` em `test_interface`).
+  Sem ela o processo morre com *exit 127* e nenhum traceback.
+- **Nunca abra o PVA nem mande tecla**: troque `pva.janela`, `pva._janelas`
+  e afins por falsos (`unittest.mock`).
+- **Nome de arquivo com prefixo** (`test_`): um `select.py` na pasta sombreia
+  a biblioteca padrão (há um teste que confere).
+- Regra que precisa de tabela do PVA: ligue uma fonte inventada com
+  `referencias.definir(...)` e restaure no `tearDown` (ver
+  `test_arquitetura.FonteDeTeste`).
 
 ---
 
-## 1. Smoke test (5 minutos, antes de qualquer entrega)
+## 2. Roteiro manual
 
-- [ ] 1.1 Abrir um **EFD ICMS/IPI**: abas de bloco aparecem, Resumo mostra razão
-      social, CNPJ e período corretos
-- [ ] 1.2 Abrir um **EFD Contribuições**: idem, e as ferramentas de PIS/COFINS
-      ficam habilitadas (as de ICMS, desabilitadas)
-- [ ] 1.3 Navegar C100 → sub-abas de detalhe (C170/C190) carregam
-- [ ] 1.4 Editar uma célula, salvar como novo arquivo, reabrir: valor persistiu
-- [ ] 1.5 **Salvar sem alterar nada** e comparar com o original: o arquivo deve
-      sair equivalente (só os totalizadores recalculados)
-- [ ] 1.6 Modo Relatório: gera linhas nas três fontes
-- [ ] 1.7 Abrir o menu Ferramentas: nenhuma ação dispara erro ao ser clicada
+Só o que a suíte não cobre. Trabalhe sempre com **cópias**.
 
----
+Marque: ✅ passou · ❌ falhou · ⏭️ não se aplica.
 
-## 2. Edição e navegação
+### 2.1 No PVA (antes de cada release)
 
-- [ ] 2.1 Setas/Enter avançam a edição como no Excel
-- [ ] 2.2 Adicionar linha: registro entra na posição certa e o bloco 9 é recontado
-- [ ] 2.3 Remover linha: registro e filhos somem; contagens batem
-- [ ] 2.4 Busca no bloco localiza e navega
-- [ ] 2.5 Soma da seleção: selecionar valores mostra Soma/Média/Contagem
-- [ ] 2.6 Soma **ignora** chave de acesso (44 dígitos) e códigos como `3.1.1`
-- [ ] 2.7 Arrastar aba: **o conteúdo acompanha** o rótulo (regressão da v0.10.0)
-- [ ] 2.8 Botão direito na sub-aba: fixar / fechar / resetar funcionam
-- [ ] 2.9 Com aba fixada, trocar de C100 abre nela sempre que existir
-- [ ] 2.10 Sem aba fixada, o detalhe abre sempre na **primeira** aba da ordem atual
+O único juiz do arquivo é o validador oficial. Para cada fluxo que grava,
+numa cópia de arquivo real:
 
----
+- [ ] Recalcular C190 (um documento e em massa) → importar e validar no PVA
+- [ ] Recalcular ICMS dos itens → PVA
+- [ ] Trocar alíquotas de PIS/COFINS + recalcular bloco M → PVA
+- [ ] Rotinas por regime (aplicar a correção) + bloco M → PVA
+- [ ] Validar e regenerar C175 (NFC-e 65) → PVA
+- [ ] Importar inventário (bloco H) → PVA
+- [ ] Limpar NULL, preencher COD_GEN e COD_CTA, normalizar campos → PVA
+- [ ] Alterar datas (C100) → PVA
+- [ ] **Abrir no PVA** pelo botão, com o PVA fechado e com ele aberto numa
+      escrituração: chega até "Validando a escrituração…"
+- [ ] Anote os números (erros antes × depois) na entrada do CHANGELOG
 
-## 3. Modo Relatório
+### 2.2 No executável
 
-- [ ] 3.1 Trocar a fonte habilita só os filtros aplicáveis
-- [ ] 3.2 Filtro simples (ex.: CFOP `1101`) reduz corretamente
-- [ ] 3.3 Multi-valor: `1101;1102` retorna a **união** dos dois filtros isolados
-- [ ] 3.4 Alíquota multi-valor `1,65;0,65` funciona (vírgula decimal preservada)
-- [ ] 3.5 NCM por prefixo (`02;2202`) traz os dois grupos
-- [ ] 3.6 Editar célula editável grava no registro (conferir no Modo Tabela após
-      reabrir)
-- [ ] 3.7 Colunas cinza **não** são editáveis
-- [ ] 3.8 Ordenar por uma coluna e depois editar grava no **registro certo**
-- [ ] 3.9 Ctrl+D preenche para baixo; Ctrl+R para a direita
-- [ ] 3.10 Ctrl+D sobre bloco que inclui coluna cinza pula as read-only
-- [ ] 3.11 Exportar CSV abre corretamente no Excel (latin-1, separador `;`)
+```bash
+pyinstaller "SPED Tables.spec"
+```
 
----
+- [ ] Primeira execução: cria `%APPDATA%\SPED Tables`, oferece o atalho
+- [ ] Diálogos em português (o `qtbase_pt_BR.qm` foi empacotado)
+- [ ] Ícone na janela e na barra própria
+- [ ] Abrir, salvar, reabrir um arquivo real; conferir o acervo
+- [ ] Um erro provocado gera `logs\sped_tables.log` e o aviso (sem fechar)
+- [ ] Atualizar o executável não apaga cadastro nem acervo
 
-## 4. Recálculos (ICMS)
+### 2.3 Na janela, no Windows
 
-- [ ] 4.1 Recalcular C190 de um documento: grupos por CST+CFOP+alíquota corretos
-- [ ] 4.2 **Soma dos VL_OPR = soma dos itens + despesas acessórias** (caso de
-      referência: itens 3.293,00 + VL_OUT_DA 1,50 = **3.294,50**)
-- [ ] 4.3 CST \*20/\*70: VL_RED_BC = VL_OPR − VL_BC_ICMS; demais CST = 0
-- [ ] 4.4 Recalcular totais do C100: VL_MERC = soma dos itens; VL_DOC recomposto
-- [ ] 4.5 Frete/seguro/outras despesas do C100 **preservados** no VL_DOC
-- [ ] 4.6 Sem C100 selecionado, oferece recalcular todos
-- [ ] 4.7 Após recalcular, salvar e validar no **PVA**: sem erro de layout
+- [ ] Barra de título própria: arrastar, Aero Snap, redimensionar pelas
+      oito bordas, duplo clique maximiza, menu de sistema
+- [ ] Monitor com escala acima de 100%
+- [ ] Arrastar uma aba leva o conteúdo junto; fixar/fechar/resetar sub-aba
+- [ ] Tema escuro: grade, diálogos e células coloridas legíveis
+- [ ] Arrastar um `.txt` para a tela inicial abre o arquivo
 
----
+### 2.4 Conferência com XMLs reais
 
-## 5. PIS/COFINS (Contribuições)
+A lógica é coberta pela suíte; a leitura dos XMLs de cada emissor, não.
 
-- [ ] 5.1 Abrir "Trocar alíquotas": diálogo abre e sugere a alíquota
-      predominante (regressão da v0.14.2 — `_registros_aliq_escopo`)
-- [ ] 5.2 Escopo **saídas** sugere ~1,65/7,6; **entradas**, as de crédito
-      (ex.: 1,86/8,54)
-- [ ] 5.3 Escopo saídas altera C175 **e** C170 de saída
-- [ ] 5.4 Filtro "apenas onde a alíquota atual for X" não toca nas demais
-- [ ] 5.5 "Somente tributados" preserva CST sem tributação
-- [ ] 5.6 VL_PIS/VL_COFINS recalculados = base × alíquota ÷ 100
-- [ ] 5.7 Totais do C100 pai atualizados
-- [ ] 5.8 Recalcular bloco M: ordem **M200 → M205 → M210** (idem M600/M605/M610)
-- [ ] 5.9 Arquivo resultante validado no PVA sem erro de hierarquia
-
----
-
-## 6. Conferência com XMLs
-
-- [ ] 6.1 Conferir entradas 55: documentos casam por modelo+série+número
-- [ ] 6.2 Divergência de VL_ITEM é apontada item a item
-- [ ] 6.3 Divergência de **CST_ICMS** e de valores de ICMS é apontada
-- [ ] 6.4 Duplo clique numa divergência navega até o C170
-- [ ] 6.5 Itens só no XML e só no SPED aparecem separados
-- [ ] 6.6 Exportar CSV
-- [ ] 6.7 Conferir C190: com XML de CFOP único (ex.: 5102) e C170 com CFOPs
-      distintos (1101/1102), os grupos são reconstruídos **pelo C170**
-- [ ] 6.8 Sem divergências reais, o resultado vem zerado (sem falso positivo)
-- [ ] 6.9 Correlações de CFOP: editar, salvar e reabrir o app mantém o JSON
-
----
-
-## 7. Tabelas RFB / CST por NCM
-
-- [ ] 7.1 Localiza automaticamente a **maior versão** das tabelas na pasta do PVA
-- [ ] 7.2 Caminho manual de cada arquivo funciona
-- [ ] 7.3 Classificação por prefixo de NCM: carnes (02xx) = alíquota zero;
-      bebidas (2202/2203/2208) = monofásico
-- [ ] 7.4 Vigência respeitada (registros com DT_FIM não classificam)
-- [ ] 7.5 Aponta entradas de monofásico com CST 50
-- [ ] 7.6 Resultado navegável e exportável
-- [ ] 7.7 Config persistida em `config_tabelas_rfb.json`
-
----
-
-## 8. NFC-e modelo 65 (C175 por item) — experimental
-
-- [ ] 8.1 Validar C175 com XMLs cria os C170 fictícios nos documentos casados
-- [ ] 8.2 O C170 fictício traz **todos** os dados do item (descrição, quantidade,
-      unidade, ICMS, ICMS-ST, IPI, PIS/COFINS)
-- [ ] 8.3 C170 fictício com o **número correto de campos** (37 no Contribuições)
-- [ ] 8.4 Relatório mostra as discrepâncias com o C175 escriturado
-- [ ] 8.5 Documentos sem XML são reportados no resumo
-- [ ] 8.6 Corrigir um item no Modo Relatório e regenerar: C175 reflete a correção
-- [ ] 8.7 Após regenerar, **nenhum C170 sobra** nos documentos modelo 65
-- [ ] 8.8 Arquivo final validado no PVA
-
----
-
-## 9. Inventário — bloco H — experimental
-
-- [ ] 9.1 Ler XLSX e CSV; linhas vazias ignoradas
-- [ ] 9.2 Auto-detecção de colunas acerta cabeçalhos comuns ("Código do
-      Produto", "Quantidade", "Valor Unitário"…)
-- [ ] 9.3 Mapeamento manual funciona para cabeçalhos fora do padrão
-- [ ] 9.4 Faltando coluna obrigatória, avisa em vez de importar errado
-- [ ] 9.5 **Conferir com o 0200**: separa novos, existentes, duplicados e
-      divergências de descrição/unidade/NCM
-- [ ] 9.6 **Comparar com inventário atual**: quantidade divergente com sinal,
-      só no SPED, só na planilha, somas dos dois lados
-- [ ] 9.7 A comparação **não altera** o arquivo (contar H010 antes e depois)
-- [ ] 9.8 Importar: H001 com IND_MOV=0, H005 com data/motivo, VL_INV = soma
-- [ ] 9.9 Itens já cadastrados **não duplicam** no 0200; novos são criados
-- [ ] 9.10 Unidade nova gera 0190
-- [ ] 9.11 Registros com o número correto de campos (H005=4, H010=11, 0200=13,
-      0190=3) — sem pipes sobrando
-- [ ] 9.12 Reimportar substitui o inventário anterior (com confirmação)
-- [ ] 9.13 Arquivo final validado no PVA
-
----
-
-## 10. Revisão
-
-- [ ] 10.1 Número de campos: sem falso positivo em arquivo íntegro
-- [ ] 10.2 C190 com CST \*20/\*70 e VL_RED_BC zerado é apontado
-- [ ] 10.3 **C170 sem C190 compatível**: zero em arquivo correto; aponta ao
-      alterar o CFOP de um item
-- [ ] 10.4 0200 não utilizados/duplicados
-- [ ] 10.5 Navegação até o registro a partir do resultado
-
----
-
-## 11. Integridade do arquivo (fazer ao final de qualquer alteração)
-
-- [ ] 11.1 Salvar e reabrir: hierarquia preservada (filhos no pai certo)
-- [ ] 11.2 Totalizadores **X990** de cada bloco corretos
-- [ ] 11.3 **9900** com a contagem por tipo de registro
-- [ ] 11.4 **9990** e **9999** corretos
-- [ ] 11.5 Encoding **latin-1** preservado (acentos das descrições intactos)
-- [ ] 11.6 Nenhum registro com número de campos fora do layout
-- [ ] 11.7 **Validação no PVA sem erros**
-
----
-
-## 12. Regressões conhecidas (verificar sempre)
-
-Casos que já quebraram e precisam de conferência a cada entrega:
-
-- [ ] 12.1 Método com assinatura perdida → `AttributeError` em runtime
-      (`consolidar_c175_de_itens`, `_registros_aliq_escopo`) — cobre-se com 0.3/0.5
-- [ ] 12.2 Aba movida sem levar o conteúdo (`tabMoved.disconnect()`)
-- [ ] 12.3 Rateio de despesas com soma estourando centavos
-- [ ] 12.4 Bloco M com M210 antes do M205
-- [ ] 12.5 Registro criado com 40 campos em vez do tamanho real do layout
-- [ ] 12.6 Filtro de modelo invertido (aplicar × ignorar) na alteração de datas
+- [ ] Conferir entradas (NF-e 55): documentos casam por modelo+série+número
+- [ ] Conferir C190 com XMLs: grupos reconstruídos pela classificação do C170
+- [ ] Validar C175 (NFC-e 65): C170 fictícios criados e removidos, contagem
+      final igual à inicial

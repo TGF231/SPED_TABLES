@@ -3,8 +3,8 @@
 
 import unittest
 
-import revisao
-from sped_model import SpedDocument
+from sped_tables.dominio import revisao
+from sped_tables.dominio.sped_model import SpedDocument
 from tests.fabrica import PastaTemporaria, contrib_basico, icms_basico
 
 
@@ -63,7 +63,7 @@ class TestRegras(unittest.TestCase):
         self.assertIn("entrada", p.descricao)
 
     def test_0900_so_depois_do_prazo(self):
-        import tabelas_pva
+        from sped_tables.infra import tabelas_pva
         if not tabelas_pva.prazo_entrega("082026"):
             self.skipTest("tabela de prazos do PVA não instalada")
         doc = _doc(contrib_basico())

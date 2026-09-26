@@ -3,8 +3,8 @@
 
 import unittest
 
-import validacao
-from sped_model import SpedDocument
+from sped_tables.dominio import validacao
+from sped_tables.dominio.sped_model import SpedDocument
 from tests.fabrica import PastaTemporaria, icms_basico
 
 
@@ -87,6 +87,28 @@ class TestNormalizar(unittest.TestCase):
         reg.set_valor(doc._ix("0200", "COD_NCM"), "12345678")
         self.assertEqual(validacao.normalizar(doc, achados)["campos"], 0)
         self.assertEqual(reg.valor(doc._ix("0200", "COD_NCM")), "12345678")
+
+
+class TestDecisaoFiscal(unittest.TestCase):
+    """CST_ICMS e CFOP vindos de tabela do PVA: aponta, nunca sugere."""
+
+    def test_cst_icms_so_de_zeros_nao_vira_esvaziar(self):
+        d = validacao.dominio_de_tabela("CST_ICMS", "CST do ICMS",
+                                        {"000", "060"}, "t", "1")
+        motivo, sugestao = d.avaliar("0")
+        self.assertIn("zeros", motivo)
+        self.assertIsNone(sugestao)
+        # completar o zero seria escolher a origem da mercadoria
+        self.assertIsNone(d.avaliar("60")[1])
+
+    def test_cfop_nao_e_sugerido(self):
+        d = validacao.dominio_de_tabela("CFOP", "CFOP", {"1102", "5102"})
+        self.assertIsNone(d.avaliar("0000")[1])
+
+    def test_outros_campos_continuam_sugerindo(self):
+        d = validacao.dominio_de_tabela("CEST", "CEST", {"0100100"})
+        self.assertEqual(d.avaliar("0000000")[1], "")
+        self.assertEqual(d.avaliar("100100")[1], "0100100")
 
 
 if __name__ == "__main__":

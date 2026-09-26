@@ -54,6 +54,34 @@ class TestArmadilhas(unittest.TestCase):
                     if os.path.splitext(os.path.basename(c))[0] in nomes]
         self.assertEqual(conflito, [])
 
+    def test_nenhum_import_sem_uso(self):
+        """Import que sobrou de uma mudança esconde dependência que não
+        existe mais — e, entre camadas, faz parecer que uma depende da outra.
+        `# noqa: F401` marca reexportação intencional."""
+        achados = []
+        for caminho in _fontes():
+            if os.path.basename(caminho) == "__init__.py":
+                continue
+            with open(caminho, encoding="utf-8") as fh:
+                texto = fh.read()
+            linhas = texto.split("\n")
+            arvore = ast.parse(texto)
+            importados = {}
+            for no in arvore.body:
+                if isinstance(no, (ast.Import, ast.ImportFrom)):
+                    if "noqa: F401" in linhas[no.lineno - 1]:
+                        continue
+                    for a in no.names:
+                        nome = (a.asname or a.name).split(".")[0]
+                        importados[nome] = no.lineno
+            usados = {n.id for n in ast.walk(arvore)
+                      if isinstance(n, ast.Name)}
+            for nome, linha in importados.items():
+                if nome not in usados:
+                    achados.append("%s:%d %s" % (
+                        os.path.relpath(caminho, RAIZ), linha, nome))
+        self.assertEqual(achados, [])
+
     def test_nenhum_metodo_definido_duas_vezes_na_mesma_classe(self):
         """A segunda definição apaga a primeira em silêncio."""
         achados = []
@@ -64,6 +92,11 @@ class TestArmadilhas(unittest.TestCase):
                 vistos = set()
                 for st in no.body:
                     if isinstance(st, ast.FunctionDef):
+                        # `@x.setter` redefine de propósito
+                        if any(isinstance(d, ast.Attribute)
+                               and d.attr in ("setter", "deleter")
+                               for d in st.decorator_list):
+                            continue
                         if st.name in vistos:
                             achados.append("%s:%d %s.%s" % (
                                 os.path.relpath(caminho, RAIZ), st.lineno,

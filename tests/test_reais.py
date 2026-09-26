@@ -28,10 +28,10 @@ import os
 import sys
 import unittest
 
-import diagnostico
-import revisao
-import validacao
-from sped_model import SpedDocument
+from sped_tables.dominio import diagnostico
+from sped_tables.dominio import revisao
+from sped_tables.dominio import validacao
+from sped_tables.dominio.sped_model import SpedDocument
 from tests.fabrica import PastaTemporaria
 
 VARIAVEL = "SPED_TABLES_ARQUIVOS_REAIS"
@@ -107,6 +107,46 @@ class TestArquivosReais(unittest.TestCase):
                 revisao.revisar_por_regra(doc)
                 validacao.validar(doc)
                 diagnostico.verificar(doc)
+
+    def test_correcoes_automaticas(self):
+        """As correções em lote sobre o arquivo real: acabam com o que
+        corrigem, não criam erro de estrutura, são idempotentes e o arquivo
+        gravado volta idêntico ao reabrir."""
+        estruturais = ("num_campos", "bloco")
+        for caminho in arquivos_reais():
+            with self.subTest(arquivo=_chave(caminho)), \
+                    PastaTemporaria() as p:
+                doc = SpedDocument.carregar(caminho)
+                antes, _i = diagnostico.verificar(doc)
+
+                def corrigir():
+                    doc.limpar_campos_nulos()
+                    doc.preencher_cod_gen()
+                    validacao.normalizar(doc)
+                    if doc.layout == "ICMS":
+                        doc.consolidar_c190_em_massa()
+                    else:
+                        doc.recalcular_bloco_m()
+
+                corrigir()
+                uma = doc.gerar_texto()
+                corrigir()
+                self.assertEqual(doc.gerar_texto(), uma, "não idempotente")
+
+                depois, _i = diagnostico.verificar(doc)
+                conta = lambda achados, t: sum(          # noqa: E731
+                    a.quantidade for a in achados if a.tipo == t)
+                self.assertEqual(conta(depois, "nulo"), 0)
+                self.assertEqual(doc.campos_nulos(), [])
+                self.assertEqual(doc.divergencias_cod_gen(), [])
+                for tipo in estruturais:
+                    self.assertLessEqual(conta(depois, tipo),
+                                         conta(antes, tipo), tipo)
+
+                copia = os.path.join(p, "corrigido.txt")
+                doc.salvar(copia)
+                self.assertEqual(SpedDocument.carregar(copia).gerar_texto(),
+                                 uma)
 
     def test_gabarito(self):
         cam = os.path.join(PASTA, GABARITO)

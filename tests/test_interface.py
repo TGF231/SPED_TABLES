@@ -34,8 +34,16 @@ FORA_DO_TESTE = ("act_abrir_pva", "act_sair")
 POR_ULTIMO = ("act_empresas", "act_fechar")
 
 
+_APLICACAO = []
+
+
 def _app():
-    return QApplication.instance() or QApplication([])
+    """O QApplication da suíte, **com referência guardada**: sem ela o
+    coletor de lixo leva o objeto antes de o widget nascer e o processo morre
+    com exit 127 e nenhum traceback (CLAUDE.md, "Ao adicionar ações")."""
+    if not _APLICACAO:
+        _APLICACAO.append(QApplication.instance() or QApplication([]))
+    return _APLICACAO[0]
 
 
 def _esperar(ms=250):
@@ -51,8 +59,8 @@ class TestJanela(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.app = _app()
-        import sped_editor
-        cls.ed = sped_editor
+        from sped_tables.interface import janela
+        cls.ed = janela
         Sim = QMessageBox.StandardButton.Yes
         cls._patches = [
             mock.patch.object(QDialog, "exec", lambda self: 1),
@@ -133,6 +141,89 @@ class TestJanela(unittest.TestCase):
 
 
 @unittest.skipUnless(TEM_QT, "PyQt6 não instalado")
+class TestTabelaDeAcoes(unittest.TestCase):
+    """Uma ação é uma linha de `acoes.ACOES` — e a linha tem de valer."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.app = _app()
+        from sped_tables.interface import acoes, janela
+        cls.acoes = acoes
+        cls.janela = janela.JanelaPrincipal()
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.janela.close()
+
+    def test_todo_metodo_existe(self):
+        for a in self.acoes.ACOES + (self.acoes.ACAO_TEMA,):
+            with self.subTest(acao=a.atributo):
+                self.assertTrue(callable(getattr(self.janela, a.metodo, None)))
+
+    def test_toda_acao_visivel_esta_num_menu_ou_na_barra(self):
+        alcancaveis = set()
+        for menu in (self.janela.menu_icms, self.janela.menu_contrib,
+                     self.janela.menu_gerais):
+            alcancaveis |= set(menu.actions())
+        alcancaveis |= set(self.janela.toolbar.actions())
+        for a in self.acoes.ACOES:
+            if a.onde == self.acoes.OCULTA:
+                continue
+            with self.subTest(acao=a.atributo):
+                self.assertIn(getattr(self.janela, a.atributo), alcancaveis)
+
+    def test_sem_arquivo_so_o_que_nao_precisa_de_arquivo(self):
+        for a in self.acoes.ACOES:
+            with self.subTest(acao=a.atributo):
+                self.assertEqual(getattr(self.janela, a.atributo).isEnabled(),
+                                 a.quando == self.acoes.SEMPRE)
+
+    def test_habilitacao_por_leiaute(self):
+        h = self.acoes.habilitada
+        icms = next(a for a in self.acoes.ACOES
+                    if a.atributo == "act_recalc_icms")
+        contrib = next(a for a in self.acoes.ACOES
+                       if a.atributo == "act_recalc_m")
+        pva = next(a for a in self.acoes.ACOES
+                   if a.atributo == "act_abrir_pva")
+        self.assertTrue(h(icms, "ICMS"))
+        self.assertFalse(h(icms, "CONTRIB"))
+        self.assertTrue(h(contrib, "CONTRIB"))
+        self.assertFalse(h(pva, "ICMS", tem_pva=False))
+        self.assertTrue(h(pva, "ICMS", tem_pva=True))
+        self.assertFalse(h(pva, None, tem_pva=True))
+
+
+@unittest.skipUnless(TEM_QT, "PyQt6 não instalado")
+class TestFormularioEmpresa(unittest.TestCase):
+    """O formulário único do painel e do diálogo de empresa."""
+
+    def test_mostrar_e_aplicar(self):
+        _app()
+        from sped_tables.dominio import empresas as emp_mod
+        from sped_tables.interface.formulario_empresa import FormularioEmpresa
+        gravou = []
+        f = FormularioEmpresa("Cadastro", lambda: gravou.append(1))
+        e = emp_mod.Empresa(cnpj="11222333000181", nome="X", uf="mg",
+                            regime_pis_cofins="nao_cumulativo",
+                            aliq_pis_saida="1,65", aliq_cofins_saida="7,6",
+                            cst_entrada_sem_credito="73")
+        f.mostrar(e)
+        # mostrar não pode trocar as alíquotas pelo padrão do regime
+        self.assertEqual(f.ed_pis_s.text(), "1,65")
+        self.assertEqual(f.ed_cnpj.text(), "11.222.333/0001-81")
+        f.ed_pis_s.setText("1.65")          # digitado com ponto
+        f.ed_uf.setText("sp")
+        novo = f.aplicar(emp_mod.Empresa(cnpj=e.cnpj))
+        self.assertEqual((novo.aliq_pis_saida, novo.uf,
+                          novo.cst_entrada_sem_credito), ("1,65", "SP", "73"))
+        # trocar o regime propõe as alíquotas nominais dele
+        f._selecionar(f.cb_pc, "cumulativo")
+        self.assertEqual((f.ed_pis_s.text(), f.ed_cof_s.text()), ("0,65", "3"))
+        f.close()
+
+
+@unittest.skipUnless(TEM_QT, "PyQt6 não instalado")
 class TestInicializacao(unittest.TestCase):
     """`main()` inteiro, em subprocesso: tradução, tema, fallback, janela e
     abertura pela linha de comando — até o laço de eventos e de volta."""
@@ -144,23 +235,27 @@ class TestInicializacao(unittest.TestCase):
         os.environ["SPED_TABLES_DADOS"] = %r
         from PyQt6.QtWidgets import QApplication
         from PyQt6.QtCore import QTimer
-        import sped_editor as e
+        import runpy
+        from sped_tables.interface import app
+        from sped_tables.interface.janela import JanelaPrincipal
         exec_original = QApplication.exec
         def exec_curto(app):
             QTimer.singleShot(500, app.quit)
             return exec_original()
         QApplication.exec = exec_curto
-        abrir = e.JanelaPrincipal.abrir_caminho
+        abrir = JanelaPrincipal.abrir_caminho
         def abrir_e_contar(self, caminho):
             ok = abrir(self, caminho)
             print("aberto", ok, self.doc.layout, len(self.doc.registros))
             return ok
-        e.JanelaPrincipal.abrir_caminho = abrir_e_contar
+        JanelaPrincipal.abrir_caminho = abrir_e_contar
         # erro vira linha na saída em vez da caixa modal, que travaria o teste
-        e.avisar_erro = lambda t, v, d, c: print("ERRO", t.__name__, v)
+        app.avisar_erro = lambda t, v, d, c: print("ERRO", t.__name__, v)
         sys.argv = ["sped_editor.py", %r]
         try:
-            e.main()
+            # o lançador de verdade, como o usuário roda
+            runpy.run_path(os.path.join(%r, "sped_editor.py"),
+                           run_name="__main__")
         except SystemExit as fim:
             print("saiu", fim.code)
     """)
@@ -170,7 +265,7 @@ class TestInicializacao(unittest.TestCase):
         with PastaTemporaria() as p:
             arq = icms_basico().gravar(p)
             r = subprocess.run(
-                [sys.executable, "-c", self.SCRIPT % (raiz, p, arq)],
+                [sys.executable, "-c", self.SCRIPT % (raiz, p, arq, raiz)],
                 capture_output=True, text=True, timeout=120)
         self.assertNotIn("ERRO", r.stdout)
         self.assertIn("aberto True ICMS", r.stdout, r.stderr)

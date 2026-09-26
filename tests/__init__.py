@@ -14,9 +14,13 @@ quando `SPED_TABLES_ARQUIVOS_REAIS` aponta para uma pasta com eles — e essa
 pasta nunca entra no git.
 """
 
+import faulthandler
 import os
 import sys
 import tempfile
+
+# queda nativa (Qt, ctypes) sai com rastro em vez de um "exit 127" mudo
+faulthandler.enable()
 
 # a interface roda sem tela; precisa estar definido antes de o Qt carregar
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
@@ -25,6 +29,14 @@ os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 # pasta temporária, nunca para a pasta de dados de verdade
 if not os.environ.get("SPED_TABLES_DADOS"):
     os.environ["SPED_TABLES_DADOS"] = tempfile.mkdtemp(prefix="sped_dados_")
+
+# as regras fiscais consultam as tabelas oficiais pela porta
+# `dominio.referencias`; a suíte liga a mesma fonte que o programa (o PVA
+# instalado — sem ele, a fonte fica vazia e os testes que dependem dela se
+# pulam). Teste que precisa de tabela própria troca a fonte e restaura.
+from sped_tables.aplicacao import montagem  # noqa: E402
+
+montagem.configurar()
 
 # a saída dos testes tem acento; o console do Windows não é UTF-8 por padrão
 for _fluxo in (sys.stdout, sys.stderr):

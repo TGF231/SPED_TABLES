@@ -13,7 +13,7 @@ import unittest
 from unittest import mock
 
 if sys.platform == "win32":
-    import pva
+    from sped_tables.infra import pva
 
 
 @unittest.skipUnless(sys.platform == "win32", "automação Win32")

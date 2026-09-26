@@ -4,9 +4,10 @@
 import os
 import unittest
 
-import empresas as emp_mod
-import rotinas
-from sped_model import SpedDocument
+from sped_tables.infra import cadastro
+from sped_tables.dominio import empresas as emp_mod
+from sped_tables.dominio import rotinas
+from sped_tables.dominio.sped_model import SpedDocument
 from tests.fabrica import CNPJ_TESTE, PastaTemporaria, contrib_basico
 
 
@@ -36,8 +37,8 @@ class TestAliquotaDoCadastro(unittest.TestCase):
             cam = os.path.join(p, "empresas.json")
             e = emp_mod.Empresa(cnpj=CNPJ_TESTE, nome="TESTE",
                                 regime_pis_cofins="nao_cumulativo")
-            emp_mod.salvar({CNPJ_TESTE: e}, cam)
-            lido = emp_mod.carregar(cam)
+            cadastro.salvar_empresas({CNPJ_TESTE: e}, cam)
+            lido = cadastro.carregar_empresas(cam)
         self.assertEqual(lido[CNPJ_TESTE].nome, "TESTE")
         self.assertTrue(lido[CNPJ_TESTE].nao_cumulativo)
 
@@ -46,7 +47,7 @@ class TestAliquotaDoCadastro(unittest.TestCase):
             cam = os.path.join(p, "empresas.json")
             with open(cam, "w", encoding="utf-8") as fh:
                 fh.write("{isto não é json")
-            self.assertEqual(emp_mod.carregar(cam), {})
+            self.assertEqual(cadastro.carregar_empresas(cam), {})
 
 
 class TestRotinas(unittest.TestCase):
