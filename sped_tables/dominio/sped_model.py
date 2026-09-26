@@ -3467,8 +3467,14 @@ class SpedDocument:
         n_tipos_sem_9900 = len(cont_tipo)
         cont_tipo["9900"] = n_tipos_sem_9900 + 1  # +1 por causa do próprio 9900
 
-        # ordena tipos para saída estável
-        tipos_ordenados = sorted(cont_tipo.keys())
+        # a ordem dos 9900 é a que o arquivo já tinha: cada ERP usa a sua
+        # (alfabética, a dos blocos do leiaute…) e o PVA aceita qualquer
+        # uma. Reordenar fazia "abrir e salvar sem mexer" devolver um arquivo
+        # diferente. Tipo que não existia entra no fim, em ordem alfabética.
+        ja = [r.valor(1) for r in self._linhas_em_ordem() if r.reg == "9900"]
+        tipos_ordenados = [t for t in dict.fromkeys(ja) if t in cont_tipo]
+        presentes = set(tipos_ordenados)
+        tipos_ordenados += sorted(t for t in cont_tipo if t not in presentes)
 
         linhas.append("|9001|0|")
         for t in tipos_ordenados:

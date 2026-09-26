@@ -34,7 +34,7 @@ interface ──► aplicacao ──► dominio ◄── infra
 | `sped_tables/dominio/` | só o domínio (nem Qt) | `sped_model` (`SpedDocument`, todos os cálculos), `sped_layouts` (leiaute completo: 270 registros no ICMS/IPI, 203 no Contribuições), `validacao`, `revisao` (lista `REGRAS`), `rotinas` (lista `ROTINAS`), `diagnostico`, `conferencia`, `ncm` (classificação do NCM e CST esperado), `empresas` (a entidade), `xml_fiscal`, **`referencias` (a porta)** |
 | `sped_tables/infra/` | domínio | `config` (**ponto único de configuração**), `dados` (pasta de dados, gravação atômica, recursos), `descritor_pva`, `tabelas_pva`, `tabelas_rfb` (leitura), `referencias_pva` (**o adaptador**), `cadastro` (empresas e correlações em JSON), `arquivos` (acervo), `exportacao` (CSV), `pva` (automação Win32), `falhas` (registro e ganchos) |
 | `sped_tables/aplicacao/` | domínio, infra | `sessao` (arquivo aberto: abrir/salvar/fechar + acervo), `envio_pva` (pré-checagem, envio, desfecho), `montagem` (**raiz de composição**) |
-| `sped_tables/interface/` | todos | `app` (`main`), `janela`, **`acoes` (tabela única de ações)**, `controladores/` (mixins da janela por área do menu), `grade`, `telas/`, `dialogos/`, `formulario_empresa`, `comum`, `tema`, `icones`, `barra_titulo`, `janela_custom` |
+| `sped_tables/interface/` | todos | `app` (`main`), `janela`, **`acoes` (tabela única de ações)**, `controladores/` (mixins da janela por área do menu), `grade`, `telas/`, `dialogos/`, `formulario_empresa`, `comum`, `tema`, `icones`, `barra_titulo`, `janela_custom`, `autoteste` (`--autoteste`: o roteiro 2.2 de dentro do executável) |
 
 `sped_editor.py` na raiz é só o lançador. `sped_tables/version.py` tem
 `__version__`, `APP_NAME` e `canal()`.
@@ -90,6 +90,10 @@ Regras gerais:
 `_ncampos(tipo)` antes de inserir e preenche o resto com vazios. Quem monta o
 conteúdo pode sobrescrever `campos` inteiro, como sempre; quem não monta
 (o botão "+" da grade) recebe a linha certa de graça.
+
+**O bloco 9 mantém a ordem dos 9900 que o arquivo tinha.** Cada ERP usa a
+sua (alfabética, a dos blocos do leiaute); reordenar fazia "abrir e salvar
+sem mexer" devolver outro arquivo. Tipo novo entra no fim.
 
 Até a 0.49.0 não era assim: o registro nascia com **um campo só**, e a linha
 criada pela grade saía `|C170|` no arquivo — recusa certa no PVA por

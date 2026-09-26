@@ -67,7 +67,9 @@ def carregar_correlacoes(caminho=None):
     arquivo (ou se ele estiver corrompido)."""
     cam = caminho_correlacoes(caminho)
     bruto = _ler_json(cam) if os.path.exists(cam) else None
-    if bruto is None:
+    # JSON válido no formato errado (uma lista, por exemplo) impedia a
+    # janela principal de nascer: o programa simplesmente não abria
+    if not isinstance(bruto, dict):
         bruto = conferencia.CORRELACOES_CFOP_PADRAO
     return conferencia.normalizar_correlacoes(bruto)
 

@@ -136,8 +136,10 @@ def normalizar_correlacoes(d):
             continue
         if isinstance(v, str):
             itens = v.replace(";", ",").replace(" ", ",").split(",")
+        elif isinstance(v, (list, tuple, set, frozenset)):
+            itens = [str(x) for x in v]
         else:
-            itens = list(v)
+            continue                  # valor que não é lista de CFOP
         out[chave] = {so_digitos(x) for x in itens if so_digitos(x)}
     return out
 

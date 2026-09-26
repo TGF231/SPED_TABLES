@@ -21,6 +21,29 @@ class TestIdaEVolta(unittest.TestCase):
                 doc.salvar(caminho)
                 self.assertEqual(ler(caminho), original)
 
+    def test_ordem_dos_9900_do_arquivo_e_mantida(self):
+        """Cada ERP ordena os 9900 do seu jeito; nos arquivos reais do
+        cliente A, abrir e salvar reordenava 31 e 39 linhas."""
+        with PastaTemporaria() as p:
+            caminho = icms_basico().gravar(p)
+            linhas = ler(caminho).split(b"\r\n")
+            ix = [i for i, l in enumerate(linhas) if l.startswith(b"|9900|")]
+            linhas[ix[0]:ix[-1] + 1] = linhas[ix[0]:ix[-1] + 1][::-1]
+            with open(caminho, "wb") as fh:
+                fh.write(b"\r\n".join(linhas))
+            original = ler(caminho)
+            doc = SpedDocument.carregar(caminho)
+            doc.salvar(caminho)
+            self.assertEqual(ler(caminho), original)
+            # tipo que some sai da lista; os demais não mudam de lugar
+            for c190 in [r for r in doc.registros if r.reg == "C190"]:
+                doc.remover_registro(c190)
+            tipos = [l.split("|")[2] for l in doc.gerar_texto().splitlines()
+                     if l.startswith("|9900|")]
+            antes = [l.split(b"|")[2].decode() for l in original.split(b"\r\n")
+                     if l.startswith(b"|9900|")]
+            self.assertEqual(tipos, [t for t in antes if t != "C190"])
+
     def test_hierarquia_pai_filho(self):
         with PastaTemporaria() as p:
             doc = SpedDocument.carregar(icms_basico().gravar(p))

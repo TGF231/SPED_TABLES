@@ -272,5 +272,47 @@ class TestInicializacao(unittest.TestCase):
         self.assertIn("saiu 0", r.stdout, r.stderr)
 
 
+@unittest.skipUnless(TEM_QT, "PyQt6 não instalado")
+class TestAutoteste(unittest.TestCase):
+    """`--autoteste`: o roteiro 2.2 que o executável roda sobre si mesmo.
+    Aqui, do código-fonte, pelo lançador de verdade."""
+
+    def test_autoteste_pelo_lancador(self):
+        import json
+        raiz = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        with PastaTemporaria() as p:
+            arq = contrib_basico().gravar(p)
+            rel = os.path.join(p, "relatorio.json")
+            dados = os.path.join(p, "dados")
+            ambiente = dict(os.environ, QT_QPA_PLATFORM="offscreen",
+                            SPED_TABLES_DADOS=dados)
+            r = subprocess.run(
+                [sys.executable, os.path.join(raiz, "sped_editor.py"),
+                 "--autoteste", rel, arq],
+                capture_output=True, text=True, timeout=120, env=ambiente)
+            with open(rel, encoding="utf-8") as fh:
+                saida = json.load(fh)
+            self.assertTrue(os.path.isdir(os.path.join(dados, "logs")))
+        falhou = [i for i in saida["itens"] if not i["ok"]]
+        self.assertEqual(falhou, [], r.stderr)
+        self.assertEqual(r.returncode, 0)
+        nomes = [i["nome"] for i in saida["itens"]]
+        self.assertIn("tradução pt-BR do Qt", nomes)
+        self.assertIn("abrir, salvar e reabrir", nomes)
+
+    def test_sem_pasta_indicada_isola_os_dados(self):
+        from sped_tables.interface import autoteste
+        with mock.patch.dict(os.environ, {}, clear=False):
+            os.environ.pop("SPED_TABLES_DADOS", None)
+            pasta = autoteste._isolar_dados()
+            try:
+                self.assertEqual(os.environ["SPED_TABLES_DADOS"], pasta)
+                self.assertIn("autoteste", pasta)
+            finally:
+                os.rmdir(pasta)
+        # com a pasta indicada, é ela que vale
+        self.assertIsNone(autoteste._isolar_dados())
+
+
 if __name__ == "__main__":
     unittest.main()

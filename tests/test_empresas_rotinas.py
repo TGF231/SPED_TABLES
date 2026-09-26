@@ -49,6 +49,24 @@ class TestAliquotaDoCadastro(unittest.TestCase):
                 fh.write("{isto não é json")
             self.assertEqual(cadastro.carregar_empresas(cam), {})
 
+    def test_correlacoes_no_formato_errado_viram_a_padrao(self):
+        """JSON válido mas no formato errado derrubava a janela principal
+        na criação — o programa não abria (achado no autoteste do pacote)."""
+        from sped_tables.dominio import conferencia
+        padrao = conferencia.normalizar_correlacoes(
+            conferencia.CORRELACOES_CFOP_PADRAO)
+        with PastaTemporaria() as p:
+            cam = os.path.join(p, "correlacoes_cfop.json")
+            for conteudo in ('[{"saida": "5102"}]', '"5102"', "{isto não"):
+                with open(cam, "w", encoding="utf-8") as fh:
+                    fh.write(conteudo)
+                self.assertEqual(cadastro.carregar_correlacoes(cam), padrao)
+            # valor que não é lista de CFOP é ignorado, o resto vale
+            with open(cam, "w", encoding="utf-8") as fh:
+                fh.write('{"5102": ["1102"], "5405": 7}')
+            self.assertEqual(cadastro.carregar_correlacoes(cam),
+                             {"5102": {"1102"}})
+
 
 class TestRotinas(unittest.TestCase):
 

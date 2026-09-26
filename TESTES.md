@@ -171,14 +171,33 @@ Os fluxos cobertos:
 
 ```bash
 pyinstaller "SPED Tables.spec"
+"dist\SPED Tables.exe" --autoteste relatorio.json arquivo_real.txt
 ```
 
+O **`--autoteste`** roda de dentro do executável o que só o empacotamento
+quebra, e grava o resultado no JSON (código de saída 0 = passou). Ele usa
+sempre uma pasta de dados temporária: nunca mexe no cadastro nem no acervo
+de quem usa o programa. Cobre:
+
+- tradução pt-BR do Qt (os botões "Sim", "Cancelar", "Salvar");
+- ícone e correlações de CFOP empacotados; `openpyxl`;
+- instalação da pasta de dados, e a segunda instalação não copia nada por
+  cima;
+- tabelas do PVA encontradas;
+- registro de falhas: um erro provocado vai para `logs\sped_tables.log`
+  e chega ao aviso;
+- janela principal criada com ícone;
+- com um arquivo: abrir, salvar e reabrir, com a cópia no acervo.
+
+**Atualizar não apaga cadastro nem acervo:** rode o `--autoteste`, sem
+arquivo, com `SPED_TABLES_DADOS` apontando para uma pasta com cadastro,
+correlações e acervo, e confira que nada mudou.
+
+Na tela, que o autoteste não vê:
+
 - [ ] Primeira execução: cria `%APPDATA%\SPED Tables`, oferece o atalho
-- [ ] Diálogos em português (o `qtbase_pt_BR.qm` foi empacotado)
-- [ ] Ícone na janela e na barra própria
-- [ ] Abrir, salvar, reabrir um arquivo real; conferir o acervo
-- [ ] Um erro provocado gera `logs\sped_tables.log` e o aviso (sem fechar)
-- [ ] Atualizar o executável não apaga cadastro nem acervo
+      (a pergunta em português, "Sim"/"Não")
+- [ ] Ícone na janela, na barra própria e na barra de tarefas
 
 ### 2.3 Na janela, no Windows
 

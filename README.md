@@ -1033,6 +1033,12 @@ Na **primeira execução** do executável, o programa cria essa pasta, copia
 para lá os padrões que vieram no pacote (sem sobrescrever nada que já seja
 seu) e oferece criar um **atalho na área de trabalho**.
 
+Para conferir se o executável está inteiro — tradução, ícone, pasta de
+dados, tabelas do PVA, registro de erros —, rode
+`"SPED Tables.exe" --autoteste relatorio.json` (com um SPED no fim, testa
+também abrir e salvar). Ele trabalha numa pasta temporária, sem tocar no
+seu cadastro, e grava o resultado no `relatorio.json`.
+
 Duas variáveis de ambiente mudam os caminhos:
 
 | Variável | Efeito |

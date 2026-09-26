@@ -1,5 +1,5 @@
 # -*- mode: python ; coding: utf-8 -*-
-"""Empacotamento do SPED Tables (PyInstaller, arquivo único).
+r"""Empacotamento do SPED Tables (PyInstaller, arquivo único).
 
 O que precisa viajar junto com o executável e não é código:
 

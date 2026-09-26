@@ -124,6 +124,11 @@ def primeira_instalacao(janela):
 
 def main():
     app = QApplication(sys.argv)
+    if sys.argv[1:2] == ["--autoteste"]:
+        # conferência do pacote (TESTES.md 2.2), sem janela e sem tocar nos
+        # dados de quem usa o programa
+        from sped_tables.interface import autoteste
+        sys.exit(autoteste.executar(app, sys.argv[2:]))
     # antes de qualquer janela: exceção num slot, sem isto, encerra o processo
     falhas.instalar(avisar=avisar_erro)
     # liga as regras fiscais às tabelas oficiais do PVA instalado

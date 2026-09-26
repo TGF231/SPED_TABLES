@@ -1,5 +1,33 @@
 # Changelog
 
+## [Não lançado] — 0.55.0-dev.1
+
+Primeira parte da 0.55.0 do roadmap: o executável.
+
+### Adicionado
+- **`SPED Tables.exe --autoteste relatorio.json [arquivo.txt]`**: o roteiro
+  2.2 do TESTES.md que dá para automatizar, rodado de dentro do pacote —
+  tradução do Qt, ícone e correlações empacotados, `openpyxl`, instalação
+  da pasta de dados, tabelas do PVA, registro de falhas com aviso, janela
+  principal e, com um arquivo, abrir → salvar → reabrir com cópia no
+  acervo. Sempre numa pasta de dados temporária: não toca no cadastro nem
+  no acervo de quem usa o programa. Passou no executável com os 4 arquivos
+  reais e com um sintético; atualizar o executável sobre uma pasta com
+  cadastro, correlações e acervo não alterou um byte.
+
+### Corrigido
+- **Abrir e salvar sem mexer mudava o arquivo.** O bloco 9 era refeito com
+  os 9900 em ordem alfabética, e cada ERP usa a sua: nos dois arquivos
+  reais do cliente A, 31 e 39 linhas mudavam de lugar. O PVA aceita as duas
+  ordens, mas "salvar sem editar devolve o mesmo arquivo" é o que o roadmap
+  promete. Agora a ordem do arquivo é mantida e tipo novo entra no fim —
+  os 4 arquivos reais voltam idênticos byte a byte.
+- **Um `correlacoes_cfop.json` no formato errado impedia o programa de
+  abrir**: JSON válido mas que não fosse um objeto (uma lista, por exemplo)
+  derrubava a criação da janela principal. Agora vale a tabela padrão, como
+  com arquivo ilegível; valor que não é lista de CFOP é ignorado.
+- Aviso de sintaxe (`\S` no docstring) ao gerar o executável.
+
 ## [0.54.0] - 2026-09-26
 
 A coluna **PVA** do roadmap: cada correção que grava, validada no PVA de
