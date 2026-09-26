@@ -36,7 +36,7 @@ não prontas simplesmente não são criadas — nem menu, nem atalho
 (`acoes.visiveis()`, com teste em `tests/test_arquitetura.py`). Uma função
 nova nasce com `pronta=False` e só vira `True` quando passa pelo critério.
 
-**Onde estamos:** `0.55.0-dev.1`, canal **dev**. Toda a série 0.y.z é sandbox:
+**Onde estamos:** `0.55.0`, canal **dev**. Toda a série 0.y.z é sandbox:
 nenhuma versão antes da 1.0.0 é entregue como release.
 
 ---
@@ -112,8 +112,8 @@ reais. Se não ganharem caso até o rc.1, saem da 1.0.0 com `pronta=False`.
 | 0.52.0 | Configuração num ponto só; achados menores da revisão | ✔ |
 | 0.53.0 | Arquitetura em camadas; tabela de ações; correções cobertas pela suíte; canais de versão | ✔ |
 | 0.54.0 | Coluna **PVA** da tabela 4.1 inteira (roteiro 2.1) e as três funções sem arquivo real | ✔ — menos NFC-e 65 e CST por NCM, sem caso |
-| 0.55.0 | Executável: gerar, rodar o roteiro 2.2 e 2.3 sobre ele | em andamento: gera ✔, autoteste do pacote ✔ nos 4 arquivos reais, atualização preserva os dados ✔; falta o que é de tela (2.2 visual e 2.3) |
-| 1.0.0-rc.1 | Congelamento: só correção; README revisado de ponta a ponta | pendente |
+| 0.55.0 | Executável: gerar, rodar o roteiro 2.2 e 2.3 sobre ele | ✔ — falta só arrastar um `.txt` do Explorador (a lógica está na suíte) e a escala acima de 100%, sem monitor para isso aqui: entram no rc.1 |
+| 1.0.0-rc.1 | Congelamento: só correção; README revisado de ponta a ponta; do roteiro 2.3, arrastar um `.txt` do Explorador e um monitor acima de 100% | pendente |
 | **1.0.0** | Release — ver 4.3 | — |
 
 Função que não fechar a coluna PVA até o rc.1 sai da 1.0.0 com

@@ -1,8 +1,36 @@
 # Changelog
 
-## [Não lançado] — 0.55.0-dev.1
+## [0.55.0] - 2026-09-26
 
-Primeira parte da 0.55.0 do roadmap: o executável.
+O executável: gerado, conferido por dentro (`--autoteste`) e usado na tela
+— roteiros 2.2 e 2.3 do TESTES.md.
+
+### Roteiro na tela (executável, pasta de dados de ensaio)
+
+| Item | Resultado |
+|---|---|
+| Primeira execução: cria a pasta de dados, pergunta do atalho em português (Sim/Não) | ✔ |
+| Ícone na janela, na barra própria, nos diálogos e na barra de tarefas | ✔ |
+| Arrastar pela barra; duplo clique maximiza e restaura | ✔ |
+| Aero Snap na borda esquerda; depois dele, maximizar/restaurar volta ao tamanho de antes | ✔ |
+| Redimensionar pelas 8 bordas (medido: 40 px em cada uma) | ✔ |
+| Menu de sistema | ✔ depois da correção abaixo |
+| Maximizada: ocupa a área útil a partir do pixel 0, sem cobrir a barra de tarefas | ✔ |
+| Arrastar aba de bloco leva o conteúdo; fixar, fechar e resetar sub-aba | ✔ |
+| Tema escuro na grade, nas abas, na barra e no cadastro de empresas | ✔ |
+| Abrir pelo seletor nativo, diagnóstico, cópia no acervo | ✔ |
+| Soltar um `.txt` na tela inicial | lógica na suíte; o gesto do Explorador não foi feito |
+| Monitor com escala acima de 100% | não se aplica: os dois monitores daqui estão a 100% |
+
+### Corrigido
+- **O menu de sistema não abria na barra de título própria.** Clique
+  direito na barra não fazia nada: o Windows abre esse menu ao tratar o
+  `WM_CONTEXTMENU`, e o Qt intercepta a mensagem para os menus dele. O
+  comentário do código dizia que o menu "saía de graça". Agora o clique
+  direito na barra abre o menu nativo, em português, com Restaurar,
+  Mover, Tamanho e Maximizar habilitados conforme a janela esteja ou não
+  maximizada — conferido na tela, com Maximizar e Restaurar executados por
+  ele.
 
 ### Adicionado
 - **`SPED Tables.exe --autoteste relatorio.json [arquivo.txt]`**: o roteiro

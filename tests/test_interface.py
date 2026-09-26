@@ -110,6 +110,31 @@ class TestJanela(unittest.TestCase):
         self.assertTrue(hasattr(j, "act_abrir_pva"))
         j.close()
 
+    def test_soltar_um_txt_na_tela_inicial_abre(self):
+        """O gesto de arrastar do Explorador é do roteiro 2.3; aqui, o que a
+        tela faz com o que recebe: `.txt` abre, o resto é recusado."""
+        from PyQt6.QtCore import QMimeData, QPointF, QUrl
+        from PyQt6.QtGui import QDropEvent
+        from PyQt6.QtCore import Qt
+        with PastaTemporaria() as p:
+            j = self.ed.JanelaPrincipal()
+            tela = j.tela_inicial
+            outro = os.path.join(p, "planilha.xlsx")
+            open(outro, "w").close()
+            for caminho, abre in ((outro, False),
+                                  (icms_basico().gravar(p), True)):
+                dados = QMimeData()
+                dados.setUrls([QUrl.fromLocalFile(caminho)])
+                ev = QDropEvent(QPointF(10, 10), Qt.DropAction.CopyAction,
+                                dados, Qt.MouseButton.LeftButton,
+                                Qt.KeyboardModifier.NoModifier)
+                tela.dropEvent(ev)
+                _esperar()
+                self.assertEqual(j.doc is not None, abre, caminho)
+            self.assertEqual(j.doc.layout, "ICMS")
+            j.close()
+        self.assertEqual(self.erros, [], self._falhas())
+
     def test_todas_as_acoes_nos_dois_leiautes(self):
         for montador in (icms_basico(), contrib_basico()):
             with self.subTest(layout=montador.layout), \

@@ -624,6 +624,12 @@ padrão.
 
 ## Ao mexer na barra de título
 
+**O menu de sistema não sai de graça do `HTCAPTION`.** O Windows o abre ao
+tratar o `WM_CONTEXTMENU`, e o Qt intercepta essa mensagem. Por isso
+`janela_custom.tratar` responde ao `WM_NCRBUTTONUP` na faixa da barra e
+abre o menu à mão (`TrackPopupMenu` + `WM_SYSCOMMAND`). Até a 0.55.0 o
+clique direito na barra não fazia nada.
+
 **Nunca chamar `super().nativeEvent(...)`** — no PyQt6 isso derruba o processo
 sem traceback. Devolva `(False, 0)` para "não tratei".
 

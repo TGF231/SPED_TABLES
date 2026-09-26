@@ -17,7 +17,13 @@ mensagens:
   achando que existe moldura, e é por isso que o Snap sobrevive.
 * **WM_NCHITTEST** — como a área não-cliente sumiu, somos nós que dizemos o que
   é borda, canto e faixa de arrasto. Devolver HTCAPTION na faixa da barra dá de
-  graça o arrastar, o duplo clique para maximizar e o menu de sistema.
+  graça o arrastar e o duplo clique para maximizar.
+* **WM_NCRBUTTONUP** — o menu de sistema no clique direito da barra **não**
+  vem de graça: o Windows o abriria ao tratar o `WM_CONTEXTMENU`, e o Qt
+  intercepta essa mensagem para os menus de contexto dele. Até a 0.55.0 o
+  clique direito na barra não fazia nada; agora o menu é aberto aqui, com
+  Restaurar/Maximizar/Mover/Tamanho habilitados conforme o estado. (O
+  Alt+Espaço segue pelo caminho nativo.)
 * **WM_GETMINMAXINFO** — maximizar uma janela sem moldura cobriria a barra de
   tarefas; aqui o tamanho é limitado à área de trabalho do monitor **daquela**
   janela (importante com dois monitores de resoluções diferentes).
@@ -51,6 +57,21 @@ import sys
 WM_NCCALCSIZE = 0x0083
 WM_NCHITTEST = 0x0084
 WM_GETMINMAXINFO = 0x0024
+WM_NCRBUTTONUP = 0x00A5
+WM_SYSCOMMAND = 0x0112
+
+# menu de sistema
+TPM_RIGHTBUTTON = 0x0002
+TPM_RETURNCMD = 0x0100
+MF_BYCOMMAND = 0x0000
+MF_ENABLED = 0x0000
+MF_GRAYED = 0x0001
+SC_SIZE = 0xF000
+SC_MOVE = 0xF010
+SC_MINIMIZE = 0xF020
+SC_MAXIMIZE = 0xF030
+SC_CLOSE = 0xF060
+SC_RESTORE = 0xF120
 
 HTCLIENT = 1
 HTCAPTION = 2
@@ -148,6 +169,19 @@ if _WIN:
             _dpi_disponivel = True
         except AttributeError:
             _dpi_disponivel = False
+        _user32.GetSystemMenu.argtypes = [wintypes.HWND, wintypes.BOOL]
+        _user32.GetSystemMenu.restype = wintypes.HMENU
+        _user32.EnableMenuItem.argtypes = [wintypes.HMENU, wintypes.UINT,
+                                           wintypes.UINT]
+        _user32.EnableMenuItem.restype = wintypes.BOOL
+        # com TPM_RETURNCMD devolve o comando escolhido (0 = nenhum)
+        _user32.TrackPopupMenu.argtypes = [
+            wintypes.HMENU, wintypes.UINT, ctypes.c_int, ctypes.c_int,
+            ctypes.c_int, wintypes.HWND, ctypes.c_void_p]
+        _user32.TrackPopupMenu.restype = ctypes.c_int
+        _user32.PostMessageW.argtypes = [wintypes.HWND, wintypes.UINT,
+                                         wintypes.WPARAM, wintypes.LPARAM]
+        _user32.PostMessageW.restype = wintypes.BOOL
         _dwmapi.DwmExtendFrameIntoClientArea.argtypes = [
             wintypes.HWND, ctypes.POINTER(MARGINS)]
         _dwmapi.DwmExtendFrameIntoClientArea.restype = ctypes.c_long
@@ -221,6 +255,29 @@ def _margem_moldura(hwnd=None):
     return larg, alt
 
 
+def itens_do_menu(maximizada):
+    """`{comando: habilitado}` do menu de sistema, como o Windows faria:
+    maximizada, não se move nem redimensiona e só dá para restaurar."""
+    return {SC_RESTORE: maximizada, SC_MOVE: not maximizada,
+            SC_SIZE: not maximizada, SC_MINIMIZE: True,
+            SC_MAXIMIZE: not maximizada, SC_CLOSE: True}
+
+
+def _menu_de_sistema(hwnd, x, y):
+    """Abre o menu de sistema em (x, y) de tela e executa o escolhido."""
+    menu = _user32.GetSystemMenu(hwnd, False)
+    if not menu:
+        return
+    for comando, ligado in itens_do_menu(
+            bool(_user32.IsZoomed(hwnd))).items():
+        _user32.EnableMenuItem(menu, comando, MF_BYCOMMAND | (
+            MF_ENABLED if ligado else MF_GRAYED))
+    escolhido = _user32.TrackPopupMenu(
+        menu, TPM_RETURNCMD | TPM_RIGHTBUTTON, x, y, 0, hwnd, None)
+    if escolhido:
+        _user32.PostMessageW(hwnd, WM_SYSCOMMAND, escolhido, 0)
+
+
 def tratar(janela, mensagem_ptr, altura_barra, ponto_arrastavel=None):
     """Trata as mensagens nativas. Devolve (tratado, resultado).
 
@@ -237,9 +294,19 @@ def tratar(janela, mensagem_ptr, altura_barra, ponto_arrastavel=None):
     try:
         msg = ctypes.cast(int(mensagem_ptr), ctypes.POINTER(MSG)).contents
         codigo = msg.message
-        if codigo not in (WM_NCCALCSIZE, WM_NCHITTEST, WM_GETMINMAXINFO):
+        if codigo not in (WM_NCCALCSIZE, WM_NCHITTEST, WM_GETMINMAXINFO,
+                          WM_NCRBUTTONUP):
             return False, 0
         hwnd = msg.hWnd
+
+        # ------------------------------------------------- WM_NCRBUTTONUP
+        if codigo == WM_NCRBUTTONUP:
+            if int(msg.wParam or 0) != HTCAPTION:
+                return False, 0
+            lp = int(msg.lParam or 0)
+            _menu_de_sistema(hwnd, ctypes.c_short(lp & 0xFFFF).value,
+                             ctypes.c_short((lp >> 16) & 0xFFFF).value)
+            return True, 0
 
         # -------------------------------------------------- WM_NCCALCSIZE
         if codigo == WM_NCCALCSIZE:
