@@ -12,7 +12,7 @@ from PyQt6.QtWidgets import (
 
 from sped_tables.interface.comum import exportar_csv
 from sped_tables.interface import tema
-from sped_tables.interface.comum import _br
+from sped_tables.interface.comum import _br, calcular
 
 
 # ---------------------------------------------------------------------------
@@ -237,6 +237,7 @@ class DialogoImportarInventario(QDialog):
         self.doc = doc
         self.cabecalho = []
         self.linhas_brutas = []
+        self.numeros_linha = []      # linha de cada uma na planilha
         self.setWindowTitle("Importar inventário (bloco H) de planilha")
         self.resize(720, 640)
         lay = QVBoxLayout(self)
@@ -336,7 +337,8 @@ class DialogoImportarInventario(QDialog):
             return
         self.ed_arq.setText(caminho)
         try:
-            self.cabecalho, self.linhas_brutas = self._ler(caminho)
+            (self.cabecalho, self.linhas_brutas,
+             self.numeros_linha) = self._ler(caminho)
         except Exception as exc:  # noqa: BLE001
             QMessageBox.critical(self, "Planilha",
                                  "Não foi possível ler:\n%s" % exc)
@@ -353,7 +355,9 @@ class DialogoImportarInventario(QDialog):
 
     @staticmethod
     def _ler(caminho):
-        """Devolve (cabecalho, linhas) da primeira aba/arquivo."""
+        """Devolve (cabecalho, linhas, números das linhas na planilha) da
+        primeira aba/arquivo — o número é o que a pessoa vê no Excel, para a
+        mensagem de célula inválida apontar o lugar certo."""
         if caminho.lower().endswith(".csv"):
             import csv
             linhas = []
@@ -377,12 +381,13 @@ class DialogoImportarInventario(QDialog):
                 except UnicodeDecodeError:
                     continue
             if not linhas:
-                return [], []
-            return linhas[0], linhas[1:]
+                return [], [], []
+            return (linhas[0], linhas[1:],
+                    list(range(2, len(linhas) + 1)))
         import openpyxl
         wb = openpyxl.load_workbook(caminho, read_only=True, data_only=True)
         ws = wb.active
-        linhas = []
+        linhas, numeros = [], []
         cabecalho = []
         for i, row in enumerate(ws.iter_rows(values_only=True)):
             if i == 0:
@@ -391,7 +396,8 @@ class DialogoImportarInventario(QDialog):
             if all(v is None or str(v).strip() == "" for v in row):
                 continue
             linhas.append(list(row))
-        return cabecalho, linhas
+            numeros.append(i + 1)
+        return cabecalho, linhas, numeros
 
     def _auto_mapear(self):
         """Pré-seleciona cada coluna pelo nome do cabeçalho."""
@@ -433,10 +439,12 @@ class DialogoImportarInventario(QDialog):
                 "Informe a coluna para: %s" % ", ".join(faltando))
             return None
         out = []
-        for row in self.linhas_brutas:
+        for k, row in enumerate(self.linhas_brutas):
             d = {}
             for chave, i in mapa.items():
                 d[chave] = row[i] if i < len(row) else None
+            if k < len(self.numeros_linha):
+                d["_linha"] = self.numeros_linha[k]
             if str(d.get("cod_item") or "").strip():
                 out.append(d)
         return out
@@ -531,11 +539,14 @@ class DialogoImportarInventario(QDialog):
                     return
                 atualizar = dlg.escolhidos()
 
-        res = self.doc.importar_inventario_h010(
+        ok, res = calcular(
+            self, "Importar inventário", self.doc.importar_inventario_h010,
             linhas, dt_inv=dt,
             mot_inv=self.MOTIVOS[self.cb_motivo.currentIndex()][0],
             ind_prop_padrao=self.ed_prop.text().strip() or "0",
             atualizar_0200=atualizar)
+        if not ok:
+            return
         if res.get("erro"):
             QMessageBox.critical(self, "Importar inventário", res["erro"])
             return

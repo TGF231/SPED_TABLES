@@ -36,7 +36,8 @@ não prontas simplesmente não são criadas — nem menu, nem atalho
 (`acoes.visiveis()`, com teste em `tests/test_arquitetura.py`). Uma função
 nova nasce com `pronta=False` e só vira `True` quando passa pelo critério.
 
-**Onde estamos:** `0.56.0`, canal **dev**. Toda a série 0.y.z é sandbox:
+**Onde estamos:** `0.57.0`, canal **dev** — pronta para virar `1.0.0-rc.1`
+quando você decidir. Toda a série 0.y.z é sandbox:
 nenhuma versão antes da 1.0.0 é entregue como release.
 
 ---
@@ -83,12 +84,12 @@ exemplo). O item 4 (executável) é comum a todas e está na seção 4.2.
 | ICMS/IPI | Recalcular C190 (documento e em massa) | ✔ | ✔ | ✔ |
 | | Recalcular ICMS dos itens (e C190/totais dos alterados) | ✔ | ✔ | ✔ |
 | | Totais do C100 | ✔ | ✔ | ✔ |
-| | Inventário do bloco H (importar, comparar, atualizar 0200) | ✔ parcial | ✔ 11.585 itens | ✔ importar — só num arquivo acima do teto de 1.000 erros |
+| | Inventário do bloco H (importar, comparar, atualizar 0200) | ✔ | ✔ 11.585 itens | ✔ na cadeia, abaixo do teto |
 | | Preencher COD_GEN | ✔ | ✔ | ✔ |
 | Contribuições | Recalcular bloco M (apuração e crédito) | ✔ | ✔ | ✔ |
 | | Trocar alíquotas de PIS/COFINS | ✔ | ✔ | ✔ |
-| | NFC-e 65: validar e regenerar C175 | ✔ | ✔ 205 documentos | **pendente** — precisa dos XMLs |
-| | CST por NCM (verificar e corrigir) | ✔ | ✔ | **pendente** — sem caso nos arquivos reais |
+| | NFC-e 65: importar XMLs, validar e regenerar C175 | ✔ | ✔ 205 documentos | **pendente** — precisa dos XMLs; `pronta=False` |
+| | CST por NCM (verificar e corrigir) | ✔ | ✔ 79 casos | ✔ com o erro injetado no arquivo real: 34 → 0 |
 | | Empresas e rotinas por regime | ✔ | ✔ verificação; correção por controle | ✔ |
 | Gerais | Diagnóstico, revisão, validação de campos | ✔ | ✔ gabarito | ✔ contra o banco do PVA |
 | | Normalizar campos (inclui NULL), COD_CTA, itens sem referência | ✔ | ✔ | ✔ |
@@ -98,11 +99,11 @@ exemplo). O item 4 (executável) é comum a todas e está na seção 4.2.
 | | Acervo e histórico por empresa | ✔ | ✔ | — |
 | Sistema | Fallback de exceções, registro, cópia de emergência | ✔ | — | — |
 
-**PVA:** 53 validações sobre 4 arquivos reais, nenhuma correção criando
-erro que o original não tenha — os números estão no CHANGELOG da 0.54.0.
-Faltam duas funções, por falta de caso, não de defeito: **NFC-e 65** precisa
-dos XMLs dos cupons e **CST por NCM** não tem o que corrigir nos arquivos
-reais. Se não ganharem caso até o rc.1, saem da 1.0.0 com `pronta=False`.
+**PVA:** 56 validações sobre 4 arquivos reais, nenhuma correção criando
+erro que o original não tenha — os números estão no CHANGELOG (0.54.0,
+0.56.0 e 0.57.0). A única função sem a coluna fechada é a **NFC-e 65**, que
+precisa dos XMLs dos cupons de um mês real: ela está com `pronta=False` e
+**some de uma release** até lá.
 
 ### 4.2 Etapas
 
@@ -114,6 +115,7 @@ reais. Se não ganharem caso até o rc.1, saem da 1.0.0 com `pronta=False`.
 | 0.54.0 | Coluna **PVA** da tabela 4.1 inteira (roteiro 2.1) e as três funções sem arquivo real | ✔ — menos NFC-e 65 e CST por NCM, sem caso |
 | 0.55.0 | Executável: gerar, rodar o roteiro 2.2 e 2.3 sobre ele | ✔ — falta só arrastar um `.txt` do Explorador (a lógica está na suíte) e a escala acima de 100%, sem monitor para isso aqui: entram no rc.1 |
 | 0.56.0 | Validar na entrada: leitura sem descarte, cálculos que recusam número inválido, JSON ilegível preservado; *Limpar NULL* e *Validar campos* absorvidos pelo Diagnóstico | ✔ |
+| 0.57.0 | Preparação do rc.1: CST por NCM e inventário fechados no PVA; NFC-e 65 com `pronta=False`; planilha de inventário conferida célula a célula; README revisado de ponta a ponta | ✔ |
 | 1.0.0-rc.1 | Congelamento: só correção; README revisado de ponta a ponta; do roteiro 2.3, arrastar um `.txt` do Explorador e um monitor acima de 100% | pendente |
 | **1.0.0** | Release — ver 4.3 | — |
 

@@ -31,7 +31,7 @@ cadastro de verdade e o registro do Windows não são tocados.
 | `test_documento` | Ida e volta byte a byte, hierarquia, encoding (UTF-8 lido, latin-1 gravado), gravação que não destrói o destino, bloco 9, largura de registro novo. |
 | `test_calculos` | Formatos numéricos, zero à esquerda de planilha, GTIN, `NULL` do ERP, rateio de acessórios, C190 (agrupamento, frete, x20, x70 pela base de PIS/COFINS). |
 | `test_bloco_m` | Débito, crédito refeito das entradas, ordem do leiaute, idempotência, cumulativo, conferência igual à geração. |
-| `test_correcoes` | Cada correção que **grava**: NULL pela validação e normalizar, COD_GEN, COD_CTA + 0500, itens sem referência, ICMS dos itens, C190 em massa, datas. Confere o conserto, a idempotência e o arquivo bem formado depois de salvar. |
+| `test_correcoes` | Cada correção que **grava**: NULL pela validação e normalizar, planilha de inventário com célula inválida, cálculos que recusam número inválido, COD_GEN, COD_CTA + 0500, itens sem referência, ICMS dos itens, C190 em massa, datas. Confere o conserto, a idempotência e o arquivo bem formado depois de salvar. |
 | `test_conferencia` | Leitura de NF-e (XML sintético); conferência de entradas (casamento, divergência por item, CSOSN ignorado, nota sem C100); classificação de NCM (prefixo, exceção, vigência) e CST esperado; totais do C100; NFC-e 65 — C170 fictícios, regeneração do C175 e rateio igual na conferência e na geração. |
 | `test_validacao` | Domínios de campo, sugestões (só com um dígito faltando), CST_ICMS e CFOP nunca sugeridos, normalização. |
 | `test_revisao` | Todas as regras nos dois leiautes sem exceção, e as que reproduzem mensagens do PVA. |
@@ -145,6 +145,10 @@ py ferramentas/validar_no_pva.py relatorio --saida D:\saida
   completado com zeros. São decisões que o programa, de propósito, não toma
   sozinho — valem só para o roteiro poder julgar as correções pela
   validação, e não pela recusa.
+- **CST por NCM** não tinha caso que grava nos arquivos reais (a correção só
+  age em entrada que **toma** crédito). A série `arqNN_…_cstncm` põe o erro
+  clássico sobre o arquivo real — entrada de monofásico ou alíquota zero com
+  CST 50 e crédito, bloco M refeito — e julga só a correção contra ela.
 - **O teto do PVA:** o relatório para de listar erros em 1.000 (as
   advertências vêm à parte). Acima disso, uma correção isolada só troca
   erros por outros que estavam escondidos, e o relatório diz

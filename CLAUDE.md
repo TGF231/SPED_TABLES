@@ -15,7 +15,7 @@ py -m unittest discover -s tests -t .
 
 O PyQt6 está no interpretador do `py` (`pythoncore-3.14-64`), não no
 `python` do PATH. Dependências em `requirements.txt` (PyQt6; `openpyxl` para
-planilhas XLSX). A suíte (~150 testes, ~8 s) roda **antes de todo commit**;
+planilhas XLSX). A suíte (~190 testes, ~11 s) roda **antes de todo commit**;
 ver `TESTES.md`.
 
 ## Arquitetura
@@ -137,6 +137,13 @@ só completa quando o **dígito verificador** confirma.
 
 Número de planilha nunca vai para o arquivo via `str()`: `11.24` e `155.7` são
 inválidos no SPED. Passe por `_fmt_val` / `_fmt_qtd` / `_fmt_aliq`.
+
+E número de planilha que **grava** passa por **`num_planilha_estrito()`**, nunca
+por `_to_num_planilha`: esta lê `abc`, `1.2.3` e `NULL` como zero, e o item
+entrava no inventário com quantidade zerada. A importação confere **todas** as
+células numéricas antes de mexer no arquivo e recusa com `CelulasInvalidas`,
+dizendo a linha da planilha (`_linha`, que o diálogo preenche). Conferências
+que só **contam** (a prévia do inventário) podem continuar lenientes.
 
 Texto de célula sai por **`_texto_planilha()`**, nunca por `str(v or "")`: ERPs
 exportam o `NULL` do banco por extenso, e o PVA recusa cada campo desses com

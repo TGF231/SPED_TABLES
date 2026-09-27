@@ -22,7 +22,11 @@ práticos. Nenhuma coluna aparece como "Campo NN".
 
 ## 1. Instalação
 
-Requer **Python 3.10+**:
+Para usar, basta o **`SPED Tables.exe`**: um arquivo só, sem instalação. Na
+primeira execução ele cria a pasta de dados (ver 3A) e oferece o atalho na
+área de trabalho.
+
+Para rodar do código-fonte, requer **Python 3.10+**:
 
 ```bash
 pip install -r requirements.txt
@@ -87,8 +91,8 @@ banco). O Modo Tabela funciona assim:
   fixa, pois define a hierarquia.
 - **➕ Adicionar linha / ➖ Remover linha**: inserem/excluem registros no nível
   da grade atual. Remover um registro remove também toda a subárvore dele.
-- **Salvar / Salvar como** (Ctrl+S): grava o arquivo no formato SPED, com a
-  mesma codificação do original (latin-1), recalculando automaticamente os
+- **Salvar / Salvar como** (Ctrl+S): grava o arquivo no formato SPED, sempre
+  em latin-1 (arquivo aberto em UTF-8 é convertido), recalculando automaticamente os
   registros de totalização: **X990** (total por bloco), **9900** (um por tipo
   de registro), **9990** e **9999**.
 
@@ -131,7 +135,11 @@ correspondente.
 
 ### Importar XMLs → consolidar C175 (EFD Contribuições)
 
-**Ferramentas → Importar XMLs → consolidar C175…** lê uma pasta de XMLs de
+> **Em desenvolvimento.** Nenhum arquivo gerado por esta função passou ainda
+> pelo PVA (faltam os XMLs de um mês real), então ela não entra numa versão de
+> release até isso acontecer — ver ROADMAP.
+
+**Ferramentas → EFD Contribuições → Importar XMLs → consolidar C175…** lê uma pasta de XMLs de
 NFC-e (modelo 65) e gera os registros **C175** dos documentos correspondentes:
 
 - **Vínculo** XML ↔ C100 pelas tags **mod + série + nNF** (lidas de dentro de
@@ -148,34 +156,9 @@ função casa **item XML ↔ C170** pela chave **mod + série + nNF + nItem** (�
 para conferir entradas modelo 55, em que o código do produto muda entre a saída
 do fornecedor e a entrada do comprador, mas a ordem do item se mantém).
 
-### Recalcular bloco M — apuração PIS/COFINS (EFD Contribuições)
-
-**Ferramentas → Recalcular bloco M (apuração)…** recompõe a apuração de PIS
-(**M200/M210**) e COFINS (**M600/M610**) a partir das receitas tributadas de
-saída (C175 e C170), agrupadas por alíquota. Fórmula validada contra arquivos
-reais:
-
-- `VL_REC_BRT` = Σ VL_OPR do grupo;
-- `VL_BC_CONT` = Σ VL_BC do grupo;
-- `VL_CONT_APUR` = VL_BC_CONT × alíquota (ex.: PIS 1,65 %, COFINS 7,6 %).
-
-O **regime** é lido do registro **0110 (COD_INC_TRIB)** e respeitado:
-
-- **Cumulativo (2):** a contribuição é lançada nos campos *CUM* do M200/M600
-  (COD_CONT 51) e os registros de crédito **M100/M105/M500/M505 não são usados
-  nem criados** — como você indicou, no regime cumulativo não há créditos.
-- **Não-cumulativo (1) / ambos (3):** a contribuição vai nos campos *NC*
-  (COD_CONT 01); os créditos já existentes (M100/M500) são **preservados** e
-  apenas descontados na consolidação (`VL_TOT_CONT_NC_DEV = apurado − créditos`).
-
-Este recálculo cobre o **débito** (apuração da contribuição). Ele não recompõe
-os **créditos** (M100/M105/M500/M505), que dependem da classificação das
-entradas — por isso são mantidos como estão. Recomenda-se conferência por
-profissional antes da transmissão.
-
 ### Trocar alíquotas de PIS/COFINS
 
-**Ferramentas → Trocar alíquotas PIS/COFINS…** (EFD Contribuições) substitui as
+**Ferramentas → EFD Contribuições → Trocar alíquotas PIS/COFINS…** substitui as
 alíquotas de PIS e/ou COFINS e recalcula **VL_PIS** e **VL_COFINS** (base ×
 alíquota ÷ 100), atualizando os totais dos **C100**. Um seletor de **escopo**
 define onde aplicar:
@@ -193,7 +176,7 @@ são corrigidos, deixando os demais intactos.
 
 ### Alterar datas de emissão/saída (C100)
 
-**Ferramentas → Alterar datas emissão/saída (C100)…** seleciona documentos por
+**Ferramentas → Gerais → Alterar datas emissão/saída (C100)…** seleciona documentos por
 um **intervalo de datas** (avaliado sobre a data de entrada/saída *DT_E_S* ou a
 de emissão *DT_DOC*), podendo restringir por **tipo de movimento** (entrada/saída)
 e por **modelo** (campo *Somente modelos*, ex.: `55, 65`; em branco, todos). Nos
@@ -203,7 +186,7 @@ documentos filtrados, altera a **DT_DOC**, a **DT_E_S** ou **ambas**, para uma
 
 ### Conferir entradas (NF-e modelo 55) com os XMLs
 
-**Ferramentas → Conferir entradas (NF-e 55) com XMLs…** compara cada item dos
+**Ferramentas → Gerais → Conferir entradas (NF-e 55) com XMLs…** compara cada item dos
 XMLs de compra com o **C170** correspondente do SPED, usando o mesmo motor de
 vínculo (`xml_fiscal.vincular`) — aqui no nível de item, pela chave
 **mod + série + nNF + nItem**.
@@ -242,15 +225,15 @@ compra lançado como **1102** é apontado, indicando que o correto seria **1401*
 ou **1403**.
 
 A lista de correlações válidas é **editável na interface** em **Ferramentas →
-Correlações de CFOP (entradas)…**: uma tabela *CFOP de saída → CFOPs de entrada
+Gerais → Correlações de CFOP (entradas)…**: uma tabela *CFOP de saída → CFOPs de entrada
 válidos* (separados por vírgula), com botões para adicionar, remover, restaurar o
-padrão e salvar. As correlações ficam em **`correlacoes_cfop.json`** (ao lado do
-programa); o aplicativo já vem com um conjunto inicial que cobre os casos mais
+padrão e salvar. As correlações ficam em **`correlacoes_cfop.json`**, na pasta
+de dados (ver 3A); o aplicativo já vem com um conjunto inicial que cobre os casos mais
 comuns e pode ser ajustado à realidade da empresa.
 
 ### Conferir C190 (ICMS) com os XMLs
 
-**Ferramentas → Conferir C190 (ICMS) com XMLs…** (EFD ICMS/IPI) compara o
+**Ferramentas → EFD ICMS/IPI → Conferir C190 (ICMS) com XMLs…** compara o
 analítico **C190** com os XMLs, tanto nas entradas quanto nas saídas.
 
 O ponto delicado é o agrupamento: numa compra, o CFOP do XML é o de **saída do
@@ -367,12 +350,12 @@ documento; nas demais (ex.: **0200**, **H010**) pesquisa em **todas as colunas**
 útil para localizar um item, um produto ou um saldo entre milhares de linhas.
 
 ### Revisão de erros
-**Ferramentas → Revisar erros…** abre um **painel de resumo**: uma linha por
+**Ferramentas → Gerais → Revisar erros…** abre um **painel de resumo**: uma linha por
 verificação, com quantos erros ela achou e o **atalho para a função que
 corrige**. Verificação sem correção automática traz *Ver ocorrências*, que
 abre a lista item a item para corrigir na grade.
 
-As regras implementadas hoje são cinco:
+As regras implementadas hoje:
 
 1. **Número de campos divergente** — registros cujo número de campos destoa dos
    demais do **mesmo tipo** no próprio arquivo (detecta uma linha editada com um
@@ -386,9 +369,9 @@ As regras implementadas hoje são cinco:
 4. **0200 não utilizados / duplicados** — produtos cadastrados que nenhum outro
    registro referencia (as referências são coletadas de qualquer registro com
    COD_ITEM, não só C170/H010) e códigos de item repetidos no cadastro.
-5. **TIPO_ITEM fora da tabela (0200)** — o campo só aceita 00 a 10 e 99. ERPs
-   que exportam a coluna errada gravam ali a origem da mercadoria ou um "N" de
-   nacional; num arquivo real eram 10.312 itens, todos recusados pelo PVA.
+5. **TIPO_ITEM fora da tabela (0200)** — o campo só aceita 00 a 10 e 99. Num
+   arquivo real vinha ali um "N" de nacional em 10.312 itens, e o PVA recusou
+   a importação inteira.
 6. **COD_GEN incoerente com o NCM (0200)** — o gênero são os dois primeiros
    dígitos do NCM; a regra aponta tanto o campo vazio quanto o que não bate
    com o capítulo.
@@ -417,6 +400,13 @@ As regras implementadas hoje são cinco:
     prazo de entrega, na tabela do PVA, já venceu.
 
 A revisão **não substitui o PVA** — é uma triagem rápida antes dele.
+
+Dê **duplo-clique** numa linha do relatório (ou use **Ir para o registro**) e o
+editor abre o bloco, a sub-aba e a linha exata do registro com problema —
+inclusive descendo até registros-filho como o C190 (dentro do C100). O
+relatório fica aberto enquanto você navega. As regras estão centralizadas em
+`sped_tables/dominio/revisao.py` (lista `REGRAS`) e novas verificações podem ser acrescentadas com
+poucas linhas.
 
 ### Verificar CST por NCM — as duas tabelas de monofásico
 
@@ -455,7 +445,7 @@ de rotinas por regime, com a mesma implementação.
 
 ### Recalcular C190 com redução de base zerada (em massa)
 
-**Ferramentas → EFD ICMS/IPI → Recalcular C190 com redução de base zerada…**
+**Ferramentas → EFD ICMS/IPI → Recalcular C190 (analítico) em massa…**
 refaz o analítico dos documentos em que algum C190 tem CST terminado em **20**
 ou **70** e o `VL_RED_BC` em branco — erro que o PVA acusa. Só esses documentos
 são tocados: refazer o analítico que já está certo seria substituir registro
@@ -516,7 +506,8 @@ aparecem num seletor.
 
 ### Recalcular o bloco M (EFD Contribuições)
 
-Refaz a apuração a partir dos documentos: as contribuições (M200/M210 e
+**Ferramentas → EFD Contribuições → Recalcular bloco M (apuração)…** refaz a
+apuração a partir dos documentos: as contribuições (M200/M210 e
 M600/M610) pelas receitas tributadas de saída, e os **créditos** (M100/M105 e
 M500/M505) pelas entradas — um grupo por alíquota, com a natureza da base
 vinda do CFOP pela tabela 4.3.7 do PVA. O desconto vai até o limite do débito
@@ -530,6 +521,11 @@ Quando a divisão do crédito não sai dos documentos, ele **não mexe** e diz o
 motivo: incidência não exclusivamente não-cumulativa, ajustes de crédito
 (M110/M115/M510/M515), crédito fora do bloco C (D101, F100…) ou tabela do PVA
 ausente.
+
+O **regime** vem do **0110 (COD_INC_TRIB)**: no **cumulativo** a contribuição
+vai para os campos *CUM* (COD_CONT 51) e não há crédito — M100/M105/M500/M505
+não são usados nem criados; no **não-cumulativo** vai para os campos *NC*
+(COD_CONT 01), com o crédito descontado até o limite do débito.
 
 ### Abrir no PVA depois de salvar
 
@@ -606,7 +602,7 @@ corrige** — cada linha tem o botão que abre a função certa:
 Corrigir campos pelo leiaute          24313   [Abrir]
 Preencher COD_GEN pelo NCM            12478   [Abrir]
 Itens do 0200 sem referência          10312   [Abrir]
-Recalcular C190 com redução zerada       66   [Abrir]
+Recalcular C190 (analítico)              66   [Abrir]
 Correção manual na grade                 26   campo obrigatório em branco
 ```
 
@@ -728,13 +724,6 @@ O diálogo mostra quantos itens estão sem COD_GEN e quantos têm outro valor,
 com exemplos, antes de gravar. Itens sem NCM de 8 dígitos ficam de fora: não há
 capítulo de onde tirar o gênero.
 
-Dê **duplo-clique** numa linha do relatório (ou use **Ir para o registro**) e o
-editor abre o bloco, a sub-aba e a linha exata do registro com problema —
-inclusive descendo até registros-filho como o C190 (dentro do C100). O
-relatório fica aberto enquanto você navega. As regras estão centralizadas em
-`sped_tables/dominio/revisao.py` (lista `REGRAS`) e novas verificações podem ser acrescentadas com
-poucas linhas.
-
 ### Modo Relatório (comparação com o banco)
 A aba **📊 Modo Relatório** mostra os itens do arquivo numa **tabela achatada**.
 Um seletor de **Fonte** escolhe o registro de origem, porque nem todo documento
@@ -772,6 +761,10 @@ confrontado com a saída do mesmo relatório no banco.
 
 ### Validar e corrigir o C175 (NFC-e modelo 65) por item
 
+> **Em desenvolvimento.** Nenhum arquivo gerado por esta função passou ainda
+> pelo PVA (faltam os XMLs de um mês real), então ela não entra numa versão de
+> release até isso acontecer — ver ROADMAP.
+
 Como as NFC-e (modelo 65) são escrituradas de forma **consolidada** em C175 (sem
 itens), validar valor a valor exige um artifício. O fluxo, em **Ferramentas**
 (EFD Contribuições), tem três passos:
@@ -790,7 +783,7 @@ itens), validar valor a valor exige um artifício. O fluxo, em **Ferramentas**
 
 ### Importar inventário (bloco H) de planilha
 
-**Ferramentas → Importar inventário (bloco H) de planilha…** (EFD ICMS/IPI) lê
+**Ferramentas → EFD ICMS/IPI → Importar inventário (bloco H) de planilha…** lê
 uma planilha **XLSX** ou **CSV** com o inventário e gera os registros do bloco H:
 **H001** (com movimento), **H005** (data, motivo e valor total), um **H010** por
 item — com unidade, quantidade, valor unitário, valor total, indicador de
@@ -811,6 +804,12 @@ itens que estavam certos. Quando a planilha **zeraria a alíquota de ICMS**, o
 aviso é separado, porque isso é mudança de tributação e não de cadastro.
 
 Coluna não mapeada e célula vazia **nunca apagam** o que já está no cadastro.
+
+**Número que não é número recusa a importação.** Quantidade, valores e
+alíquota com `abc`, `1.2.3` ou `NULL` não viram zero: a importação inteira é
+recusada antes de mexer no arquivo, e a mensagem diz a **linha da planilha** e
+a coluna de cada célula. Até a 0.56.0 o item entrava no inventário com
+quantidade zerada.
 
 A primeira linha da planilha deve ser o **cabeçalho**. As colunas são
 reconhecidas automaticamente pelo nome (por exemplo *Código do Produto*,
@@ -835,7 +834,7 @@ descrição, unidade, tipo e NCM da planilha) e os existentes **não são
 duplicados**; unidades ainda não declaradas geram registros **0190**.
 
 ### Verificar CST por NCM (tabelas da RFB)
-**Ferramentas → Verificar CST por NCM (tabelas RFB)…** (EFD Contribuições)
+**Ferramentas → EFD Contribuições → Verificar CST por NCM (tabelas RFB)…**
 classifica cada item **C170** pelo NCM e aponta CST de PIS/COFINS incoerentes,
 separando entradas e saídas. A classificação usa as tabelas oficiais do
 EFD-Contribuições: **produtos de alíquota zero** (CST 06) e **monofásicos**.
@@ -918,7 +917,7 @@ clientes.
 
 ### Configuração por empresa e rotinas de correção
 
-**Ferramentas → Empresa e rotinas…** abre o cadastro da empresa do arquivo
+**Ferramentas → EFD Contribuições → Empresa e rotinas…** abre o cadastro da empresa do arquivo
 (identificada pelo **CNPJ do registro 0000**) e as rotinas que dependem dele.
 
 O cadastro guarda o que o arquivo não diz: **regime federal** (Simples
@@ -926,7 +925,7 @@ Nacional, Lucro Presumido, Lucro Real), **regime de PIS/COFINS** (cumulativo,
 não-cumulativo ou ambos), atividade, as alíquotas de saída e de crédito e o CST
 a gravar quando um crédito indevido é retirado. Uma empresa ainda não cadastrada
 vem pré-preenchida com o nome, a UF e o regime do registro **0110** — confira
-antes de gravar. Os dados ficam em `empresas.json`, ao lado do programa.
+antes de gravar. Os dados ficam em `empresas.json`, na pasta de dados (ver 3A).
 
 Quando o **0110 do arquivo contraria o cadastro**, o diálogo avisa: é a
 escrituração discordando do que a empresa declara ser, e vale conferir qual dos
@@ -939,7 +938,9 @@ As rotinas desta versão:
 | Alíquota de saída fora do regime | Itens de saída com CST 01 fora da alíquota do regime | Sim — aplica a alíquota e recalcula o valor |
 | Crédito indevido na entrada | Entradas com CST de crédito (50-56, 60-66) e valor lançado, em empresa **cumulativa** | Sim — zera base/alíquota/valor e troca o CST |
 | Alíquota de crédito fora do regime | Entradas do não-cumulativo com alíquota de crédito errada | Sim — aplica a alíquota de crédito |
-| CST incoerente com o NCM | Monofásico / alíquota zero, pelas tabelas da RFB | Não — o CST correto depende do produto |
+| Valor lançado em CST sem direito a crédito | Entradas em CST sem crédito com base ou valor lançados | Sim — zera base/alíquota/valor |
+| CST incoerente com o NCM | Monofásico / alíquota zero, pelas tabelas da RFB | Nas **entradas** que tomam crédito, sim; nas saídas, não — lá o CST depende de o produto ser revenda |
+| Crédito em CFOP que não dá direito | CST de crédito em CFOP fora da tabela 4.3.7 do PVA | Sim — troca o CST e zera o crédito |
 
 **Toda rotina roda primeiro em conferência.** O relatório é navegável (duplo
 clique vai ao registro) e exportável em CSV; a correção só é aplicada depois de

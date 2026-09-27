@@ -78,12 +78,15 @@ ACOES = (
     # ---- EFD Contribuições
     Acao("act_conferir_itens_pc", "Conferir itens com XMLs (PIS/COFINS)…",
          "conferir_itens_xml", CONTRIB, MENU_CONTRIB, argumento="PIS_COFINS"),
+    # NFC-e 65: gravam o C175 a partir dos XMLs dos cupons, e nenhum
+    # arquivo gerado por elas passou pelo PVA — faltam os XMLs de um mês
+    # real (critério 3 do ROADMAP). Somem de uma release até lá.
     Acao("act_importar_xml", "Importar XMLs → consolidar C175…",
-         "importar_xml_c175", CONTRIB, MENU_CONTRIB),
+         "importar_xml_c175", CONTRIB, MENU_CONTRIB, pronta=False),
     Acao("act_validar_c175_65", "Validar C175 (modelo 65) com XMLs…",
-         "validar_c175_65", CONTRIB, MENU_CONTRIB),
+         "validar_c175_65", CONTRIB, MENU_CONTRIB, pronta=False),
     Acao("act_regenerar_c175_65", "Regenerar C175 (modelo 65) dos itens…",
-         "regenerar_c175_65", CONTRIB, MENU_CONTRIB),
+         "regenerar_c175_65", CONTRIB, MENU_CONTRIB, pronta=False),
     Acao("act_trocar_aliquotas", "Trocar alíquotas PIS/COFINS…",
          "trocar_aliquotas", CONTRIB, MENU_CONTRIB, separador=True),
     Acao("act_recalc_m", "Recalcular bloco M (apuração)…",

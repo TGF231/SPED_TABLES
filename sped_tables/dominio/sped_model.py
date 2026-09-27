@@ -169,7 +169,12 @@ def _valor_0200(chave, ln):
     if chave == "cod_barra":
         return _gtin_corrigido(v)
     if chave == "aliq_icms" and v:
-        return _fmt_aliq(_to_num_planilha(ln.get(chave)))
+        # a prévia mostra o valor como veio; quem grava recusa antes
+        # (`importar_inventario_h010` confere a coluna)
+        try:
+            return _fmt_aliq(num_planilha_estrito(ln.get(chave)))
+        except ValueError:
+            return v
     return v
 
 
@@ -291,7 +296,56 @@ RE_NUM_SPED = re.compile(r"^-?\d{1,18}(,\d{1,8})?$")
 PREFIXOS_NUMERICOS = ("VL_", "ALIQ_", "QTD", "PERC_", "VL")
 
 
-class CamposInvalidos(ValueError):
+class EntradaInvalida(ValueError):
+    """Dado que não é o que o campo exige, achado **antes** de qualquer
+    alteração. Quem grava recusa com uma destas em vez de ler lixo como
+    zero; a interface mostra a mensagem (`comum.calcular`)."""
+
+
+# Número numa célula de planilha, como texto: brasileiro (1.234,56 / 12,5)
+# ou com ponto decimal (12.5). Número nativo do Excel dispensa a regra.
+RE_NUM_PLANILHA = re.compile(
+    r"^-?(\d{1,3}(\.\d{3})+|\d+)(,\d+)?$|^-?\d+\.\d+$")
+
+
+def num_planilha_estrito(v):
+    """Número de uma célula de planilha, ou `ValueError`. Célula vazia é
+    zero; `abc`, `1.2.3` e `NULL` **não** são — `_to_num_planilha` os lia
+    como zero, e o item entrava no inventário com quantidade zerada."""
+    if v is None or isinstance(v, bool):
+        if v is None:
+            return 0.0
+        raise ValueError(v)
+    if isinstance(v, (int, float)):
+        if v != v:                                  # NaN
+            raise ValueError(v)
+        return float(v)
+    s = str(v).strip()
+    if not s:
+        return 0.0
+    if not RE_NUM_PLANILHA.match(s):
+        raise ValueError(v)
+    return _to_num(s) if "," in s else float(s)
+
+
+class CelulasInvalidas(EntradaInvalida):
+    """Células numéricas da planilha que não são número.
+    `celulas` = `[(linha, coluna, valor)]`."""
+
+    def __init__(self, ruins):
+        self.celulas = list(ruins)
+        amostra = "\n".join("linha %s, %s = %r" % c for c in self.celulas[:5])
+        mais = len(self.celulas) - 5
+        super().__init__(
+            "A planilha não foi importada: %d célula(s) numéricas com valor "
+            "que não é número — seriam lidas como zero, e o item entraria "
+            "no inventário com quantidade ou valor zerado.\n%s%s\n\nCorrija "
+            "a planilha e importe de novo."
+            % (len(self.celulas), amostra,
+               "\n… e mais %d." % mais if mais > 0 else ""))
+
+
+class CamposInvalidos(EntradaInvalida):
     """Um cálculo que grava encontrou campo numérico que não é número do
     SPED. `campos` = `[(registro, nome_do_campo, valor)]`.
 
@@ -2436,6 +2490,21 @@ class SpedDocument:
         if self.layout != "ICMS":
             return {"erro": "O bloco H (inventário) é do EFD ICMS/IPI."}
 
+        # confere todas as células numéricas antes de mexer em qualquer
+        # coisa: "abc" ou "NULL" na quantidade não pode virar zero calado
+        ruins = []
+        for k, ln in enumerate(linhas, 1):
+            if not _texto_planilha(ln.get("cod_item")):
+                continue
+            for chave in ("qtd", "vl_unit", "vl_item", "vl_item_ir",
+                          "aliq_icms"):
+                try:
+                    num_planilha_estrito(ln.get(chave))
+                except ValueError:
+                    ruins.append((ln.get("_linha", k), chave, ln.get(chave)))
+        if ruins:
+            raise CelulasInvalidas(ruins)
+
         h = {c: self._ix("H010", c) for c in (
             "COD_ITEM", "UNID", "QTD", "VL_UNIT", "VL_ITEM", "IND_PROP",
             "COD_PART", "TXT_COMPL", "COD_CTA", "VL_ITEM_IR")}
@@ -2498,7 +2567,8 @@ class SpedDocument:
         campos_0200 = {}        # campo do 0200 -> quantos itens corrigidos
         itens_0200 = set()      # itens cujo cadastro mudou
 
-        num = _to_num_planilha
+        # já conferido no início: aqui só converte
+        num = num_planilha_estrito
 
         # quais campos do 0200 a planilha pode corrigir nesta execução
         if atualizar_0200 is True:

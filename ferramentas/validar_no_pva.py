@@ -39,7 +39,7 @@ from sped_tables.aplicacao import montagem  # noqa: E402
 from sped_tables.dominio import empresas as emp_mod  # noqa: E402
 from sped_tables.dominio import diagnostico, rotinas, validacao  # noqa: E402
 from sped_tables.dominio.sped_model import (  # noqa: E402
-    TIPOS_ITEM_0200, SpedDocument, _to_num)
+    TIPOS_ITEM_0200, SpedDocument, _fmt_aliq, _fmt_val, _to_num)
 from sped_tables.infra import banco_pva, config, pva  # noqa: E402
 from sped_tables.infra import tabelas_rfb  # noqa: E402
 
@@ -151,13 +151,21 @@ def _datas(doc):
 
 def _inventario(doc):
     """Reimporta o próprio H010 como se viesse de planilha."""
-    h = {c: doc._ix("H010", c) for c in ("COD_ITEM", "UNID", "QTD",
-                                          "VL_UNIT", "VL_ITEM", "IND_PROP")}
+    # todas as colunas que a planilha de verdade traz — sem a conta
+    # contábil, a reimportação apagava o COD_CTA que a cadeia preencheu e o
+    # PVA acusava 997 H010 sem conta
+    h = {c: doc._ix("H010", c) for c in (
+        "COD_ITEM", "UNID", "QTD", "VL_UNIT", "VL_ITEM", "IND_PROP",
+        "COD_PART", "TXT_COMPL", "COD_CTA", "VL_ITEM_IR")}
     linhas = [{"cod_item": r.valor(h["COD_ITEM"]), "unid": r.valor(h["UNID"]),
                "qtd": _to_num(r.valor(h["QTD"])),
                "vl_unit": _to_num(r.valor(h["VL_UNIT"])),
                "vl_item": _to_num(r.valor(h["VL_ITEM"])),
-               "ind_prop": r.valor(h["IND_PROP"])}
+               "ind_prop": r.valor(h["IND_PROP"]),
+               "cod_part": r.valor(h["COD_PART"]),
+               "txt_compl": r.valor(h["TXT_COMPL"]),
+               "cod_cta": r.valor(h["COD_CTA"]),
+               "vl_item_ir": r.valor(h["VL_ITEM_IR"])}
               for r in doc.registros if r.reg == "H010"]
     if not linhas:
         return 0
@@ -196,7 +204,10 @@ def _cadeia(doc):
                    lambda d: d.consolidar_c190_em_massa().get("documentos",
                                                              0),
                    lambda d: d.recalcular_icms_itens(
-                       refazer_c190=True)["alterados"]]
+                       refazer_c190=True)["alterados"],
+                   # isolado, o inventário só foi validado num arquivo
+                   # acima do teto de erros: na cadeia, fica abaixo dele
+                   _inventario]
     else:
         passos += [_rotinas, _cst_ncm]
     n = 0
@@ -262,6 +273,45 @@ def _preparar_importacao(doc):
     return n
 
 
+def _injetar_credito_indevido(doc):
+    """Régua do roteiro, **não** correção: o erro que *CST por NCM* existe
+    para consertar, posto sobre o arquivo real.
+
+    A correção só age em entrada que **toma** crédito de produto que não o
+    admite (monofásico, alíquota zero), e nos arquivos reais nenhuma entrada
+    fazia isso — estavam todas em CST 99. Aqui essas entradas passam a tomar
+    crédito (CST 50, base = valor líquido do item, 1,65 / 7,6) e o bloco M
+    é refeito com ele. Julgar a correção é comparar esta régua com ela
+    corrigida. Devolve quantos itens ganharam o crédito indevido.
+    """
+    emp = _empresa_do_arquivo(doc)
+    clf, _c = tabelas_rfb.classificador()
+    ocs = [o for o in rotinas.verificar_cst_ncm(
+        doc, emp, classificador=clf, data_ref=doc.data_final())
+        if o.escopo == "entrada"]
+    por_uid = {r.uid: r for r in doc.registros}
+    ix = {c: doc._ix("C170", c) for c in (
+        "VL_ITEM", "VL_DESC", "CST_PIS", "VL_BC_PIS", "ALIQ_PIS", "VL_PIS",
+        "CST_COFINS", "VL_BC_COFINS", "ALIQ_COFINS", "VL_COFINS")}
+    n = 0
+    for oc in ocs:
+        r = por_uid.get(oc.uid)
+        if r is None or r.reg != "C170":
+            continue
+        base = round(_to_num(r.valor(ix["VL_ITEM"]))
+                     - _to_num(r.valor(ix["VL_DESC"])), 2)
+        for trib, aliq in (("PIS", 1.65), ("COFINS", 7.6)):
+            r.set_valor(ix["CST_" + trib], "50")
+            r.set_valor(ix["VL_BC_" + trib], _fmt_val(base))
+            r.set_valor(ix["ALIQ_" + trib], _fmt_aliq(aliq))
+            r.set_valor(ix["VL_" + trib], _fmt_val(round(base * aliq / 100,
+                                                         2)))
+        n += 1
+    if n:
+        doc.recalcular_bloco_m()
+    return n
+
+
 def _impede_importacao(doc):
     achados, _info = diagnostico.verificar(doc)
     return diagnostico.impedem_importacao(achados)
@@ -283,16 +333,24 @@ def gerar(reais, saida, somente=None):
     for k, cam in enumerate(_reais(reais), 1):
         base = SpedDocument.carregar(cam)
         rotulo = "arq%02d_%s" % (k, base.layout)
-        series = [(rotulo, None)]
+        series = [(rotulo, None, None)]
         # arquivo que o PVA recusa na importação ganha uma segunda série,
         # sobre a régua importável: na primeira, toda correção esbarra no
         # mesmo teto de erros de estrutura e nada se conclui
         if _impede_importacao(base):
-            series.append((rotulo + "_prep", _preparar_importacao))
-        for rot, prep in series:
+            series.append((rotulo + "_prep", _preparar_importacao, None))
+        # a correção de CST por NCM não tinha caso nos arquivos reais: esta
+        # série põe o erro que ela conserta e julga só ela
+        if (base.layout == "CONTRIB"
+                and _injetar_credito_indevido(SpedDocument.carregar(cam))):
+            series.append((rotulo + "_cstncm", _injetar_credito_indevido,
+                           ("original", "cst_ncm")))
+        for rot, prep, so_estes in series:
             for nome, fn, layouts in FLUXOS:
                 if base.layout not in layouts or (somente and
                                                   nome not in somente):
+                    continue
+                if so_estes and nome not in so_estes:
                     continue
                 doc = SpedDocument.carregar(cam)
                 try:

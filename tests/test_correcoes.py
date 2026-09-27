@@ -215,6 +215,45 @@ class TestCadeiaIcms(Base):
         self.assertBemFormado(doc)
 
 
+class TestPlanilhaDeInventario(Base):
+    """Célula numérica que não é número recusa a importação inteira, antes
+    de mexer no arquivo — até a 0.56.0 virava zero e o item entrava com
+    quantidade zerada."""
+
+    def test_numero_de_celula(self):
+        from sped_tables.dominio.sped_model import num_planilha_estrito
+        for v, esperado in ((None, 0.0), ("", 0.0), (3, 3.0), (2.5, 2.5),
+                            ("12,5", 12.5), ("1.234,56", 1234.56),
+                            ("12.5", 12.5), (" -3 ", -3.0)):
+            self.assertEqual(num_planilha_estrito(v), esperado, v)
+        for v in ("abc", "1.2.3", "NULL", "12,5,1", "1,234.56", True,
+                  float("nan")):
+            with self.assertRaises(ValueError, msg=repr(v)):
+                num_planilha_estrito(v)
+
+    def test_importacao_recusa_e_nao_mexe(self):
+        from sped_tables.dominio.sped_model import CelulasInvalidas
+        doc = _doc(icms_basico())
+        antes = doc.gerar_texto()
+        linhas = [{"cod_item": "P1", "qtd": "10", "vl_item": "100,00",
+                   "_linha": 2},
+                  {"cod_item": "P2", "qtd": "abc", "vl_item": "5",
+                   "_linha": 3},
+                  {"cod_item": "P3", "qtd": "1", "vl_item": "1",
+                   "aliq_icms": "NULL", "_linha": 7}]
+        with self.assertRaises(CelulasInvalidas) as ctx:
+            doc.importar_inventario_h010(linhas, "31122025")
+        self.assertEqual(ctx.exception.celulas,
+                         [(3, "qtd", "abc"), (7, "aliq_icms", "NULL")])
+        self.assertIn("linha 3, qtd = 'abc'", str(ctx.exception))
+        self.assertEqual(doc.gerar_texto(), antes)
+        # corrigida a planilha, importa
+        linhas[1]["qtd"], linhas[2]["aliq_icms"] = "2", "18"
+        res = doc.importar_inventario_h010(linhas, "31122025")
+        self.assertEqual(res["itens"], 3)
+        self.assertBemFormado(doc)
+
+
 class TestNumerosInvalidos(Base):
     """Cálculo que grava recusa campo numérico que não é número do SPED —
     antes de mexer em qualquer coisa. Até a 0.55.0 o `NULL` num VL_ITEM era

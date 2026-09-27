@@ -7,7 +7,7 @@ import re
 from PyQt6.QtCore import QSettings
 from PyQt6.QtWidgets import QFileDialog, QMessageBox
 
-from sped_tables.dominio.sped_model import CamposInvalidos
+from sped_tables.dominio.sped_model import EntradaInvalida
 from sped_tables.infra import dados
 from sped_tables.infra import exportacao
 from sped_tables.version import APP_NAME
@@ -24,7 +24,7 @@ def calcular(parent, titulo, funcao, *args, **kwargs):
     """
     try:
         return True, funcao(*args, **kwargs)
-    except CamposInvalidos as exc:
+    except EntradaInvalida as exc:
         QMessageBox.warning(parent, titulo, str(exc))
         return False, None
 

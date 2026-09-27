@@ -1,5 +1,48 @@
 # Changelog
 
+## [0.57.0] - 2026-09-27
+
+Preparação da 1.0.0-rc.1, sem entrar nela: toda função fechou os critérios
+do roadmap ou saiu de uma release; README revisado de ponta a ponta.
+
+### Corrigido
+- **A planilha de inventário lia célula inválida como zero.** `abc`, `1.2.3`
+  ou `NULL` na quantidade, nos valores ou na alíquota viravam 0, e o item
+  entrava no inventário com quantidade zerada. Agora a importação confere
+  todas as células numéricas **antes** de mexer no arquivo e recusa, dizendo
+  a linha da planilha e a coluna de cada uma. A planilha real de 11.585 itens
+  importa sem nenhuma recusa indevida.
+
+### PVA (roteiro 2.1)
+- **CST por NCM validado.** Nenhum arquivo real tinha o caso que a correção
+  grava: ela só age em entrada que **toma** crédito, e as entradas
+  encontradas já estavam sem crédito. O roteiro ganhou a série `_cstncm`, que
+  põe o erro clássico sobre o arquivo real: 15 entradas de monofásico ou
+  alíquota zero passam a CST 50 com crédito, e o bloco M é refeito. Nessa
+  cópia o PVA acusa 34 inconsistências; corrigida, **0**.
+- **Inventário validado abaixo do teto.** Isolado, ele só tinha passado num
+  arquivo acima de 1.000 erros. Agora ele está na cadeia, que no arquivo 2
+  fica em 63 inconsistências, todas já presentes no original. De passagem,
+  o fluxo do roteiro reimportava o H010 **sem a conta contábil** e apagava o
+  COD_CTA: era defeito do roteiro, não da importação, que traz a coluna.
+- 56 validações ao todo, nenhuma correção criando erro que o original não
+  tenha.
+
+### Mudado
+- **NFC-e 65** (importar XMLs e consolidar C175, validar e regenerar C175)
+  com `pronta=False`: sem os XMLs de um mês real, nada do que elas gravam
+  passou pelo PVA. As ações continuam nos canais de desenvolvimento e somem
+  de uma release, como manda o roadmap.
+- **README revisado de ponta a ponta:**
+  - a seção antiga do bloco M, que dizia que o crédito não era refeito,
+    contradizia a nova e saiu;
+  - "cinco" regras de revisão eram 14;
+  - a tabela de rotinas trazia 4 das 6;
+  - os caminhos de menu e os locais da pasta de dados estavam desatualizados;
+  - a gravação sempre em latin-1 e o executável como forma de uso agora
+    estão descritos;
+  - as funções de NFC-e estão marcadas como em desenvolvimento.
+
 ## [0.56.0] - 2026-09-26
 
 Validar na entrada, nunca tolerar em silêncio. Uma revisão das funções que
