@@ -36,7 +36,7 @@ não prontas simplesmente não são criadas — nem menu, nem atalho
 (`acoes.visiveis()`, com teste em `tests/test_arquitetura.py`). Uma função
 nova nasce com `pronta=False` e só vira `True` quando passa pelo critério.
 
-**Onde estamos:** `0.57.0`, canal **dev** — pronta para virar `1.0.0-rc.1`
+**Onde estamos:** `0.58.0-dev.1`, canal **dev** (a 0.57.0 está pronta para virar `1.0.0-rc.1`
 quando você decidir. Toda a série 0.y.z é sandbox:
 nenhuma versão antes da 1.0.0 é entregue como release.
 
@@ -131,6 +131,36 @@ contendo o código da 1.0.0, e um CHANGELOG que começa na 1.0.0. O histórico
 publicado. As tags 0.x não são recriadas.
 
 ---
+
+### 4.4 Em desenvolvimento: gerar o SPED a partir dos XMLs
+
+Gerar o **EFD ICMS/IPI e o EFD Contribuições** de um período só com os XMLs
+de entradas e saídas (NF-e 55, NFC-e 65 e **CT-e 57**) e o cadastro da
+empresa. Entra com `pronta=False` e só fica pronta pelo critério da seção 3,
+contra um mês real com os XMLs **e o SPED entregue** desse mês (o gabarito,
+fora do repositório).
+
+Decisões tomadas:
+
+- **Os dois leiautes**, da mesma pasta de XMLs.
+- **CT-e nos dois papéis**, documento a documento pelo CNPJ: emitente =
+  saída; tomador = entrada.
+- **Código do item nas entradas** por uma **memória persistente por
+  empresa** (um arquivo por CNPJ na pasta de dados, carregado só quando a
+  geração precisa): código do fornecedor → código próprio, e também como a
+  empresa escritura aquele produto (CFOP, CST de ICMS e de PIS/COFINS).
+  Ela é **aprendida** casando o SPED entregue com os XMLs do mesmo mês
+  (chave da nota + número do item); o que ela não souber vai para uma lista
+  de revisão, nunca para um palpite gravado.
+
+| Etapa | Entrega | Situação |
+|---|---|---|
+| 1 | Leitura: NF-e com participantes, protocolo e cancelamento; **CT-e**; eventos; pasta inteira sem descartar nada | ✔ 0.58.0-dev.1 |
+| 2 | Memória de itens por empresa e o aprendizado a partir do SPED entregue | pendente |
+| 3 | Gerador do EFD ICMS/IPI (0, C, D, E, H, 9) e comparação com o gabarito | pendente |
+| 4 | Gerador do EFD Contribuições (0, A, C, D, F, M, 9) | pendente |
+| 5 | Tela: pasta, período, prévia, lista de revisão, abrir o resultado | pendente |
+| 6 | PVA de ensaio com o mês real | pendente |
 
 ## 5. Depois da 1.0
 

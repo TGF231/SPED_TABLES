@@ -1,5 +1,25 @@
 # Changelog
 
+## [Não lançado] — 0.58.0-dev.1
+
+Primeira etapa de **gerar o SPED a partir dos XMLs** (ROADMAP 4.4).
+
+### Adicionado
+- **Leitura de CT-e (modelo 57)**: chave, série, número, CFOP, municípios de
+  início e fim, participantes (emitente, remetente, expedidor, recebedor,
+  destinatário), o **tomador** — pelo `toma3` ou, no `toma4`, com dados
+  próprios —, valor da prestação, os grupos de ICMS (00, 20, 45, 60, 90,
+  outra UF e Simples), protocolo e as NF-e transportadas.
+- **NF-e com o que o 0150 e o C100 pedem**: emitente e destinatário com
+  endereço e município, data de entrada/saída, finalidade, notas
+  referenciadas, totais de impostos, situação do protocolo e o código de
+  barras do item.
+- **Eventos de cancelamento** de NF-e e CT-e, e `ler_pasta_fiscal`: lê a
+  pasta e as subpastas, aplica os cancelamentos (o documento fica, com a
+  situação "cancelada", para ir ao SPED com COD_SIT 02), conta repetido uma
+  vez só e **lista o que não leu**, com o motivo — nada é descartado em
+  silêncio.
+
 ## [0.57.0] - 2026-09-27
 
 Preparação da 1.0.0-rc.1, sem entrar nela: toda função fechou os critérios

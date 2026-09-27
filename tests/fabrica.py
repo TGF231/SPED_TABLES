@@ -199,6 +199,63 @@ def ler(caminho):
         return fh.read()
 
 
+def _parte_xml(tag, cnpj, nome, uf="MG", cmun="3106200", ie="0010000000"):
+    ender = {"emit": "enderEmit", "rem": "enderReme", "exped": "enderExped",
+             "receb": "enderReceb", "dest": "enderDest",
+             "toma4": "enderToma"}.get(tag, "ender")
+    return ("<%s><CNPJ>%s</CNPJ><IE>%s</IE><xNome>%s</xNome><%s>"
+            "<xLgr>RUA TESTE</xLgr><nro>10</nro><xBairro>CENTRO</xBairro>"
+            "<cMun>%s</cMun><xMun>CIDADE</xMun><CEP>30000000</CEP><UF>%s</UF>"
+            "</%s></%s>" % (tag, cnpj, ie, nome, ender, cmun, uf, ender, tag))
+
+
+def cte_xml(chave="31260899888777000166570010000004561000004560",
+            nct="456", toma="3", emit=("99888777000166", "TRANSPORTADORA"),
+            rem=("11444777000161", "FORNECEDOR TESTE"),
+            dest=(CNPJ_TESTE, "EMPRESA TESTE LTDA"), toma4=None,
+            icms="<ICMS00><CST>00</CST><vBC>100.00</vBC><pICMS>12.00</pICMS>"
+                 "<vICMS>12.00</vICMS></ICMS00>",
+            vtprest="100.00", tpcte="0", cstat="100", cfop="6352",
+            chaves_nfe=("31260811444777000161550010000001231000001230",)):
+    """XML de CT-e 4.00 (modelo 57) com protocolo. `toma` é o código do
+    <toma3> (0 remetente, 1 expedidor, 2 recebedor, 3 destinatário); com
+    `toma4=(cnpj, nome)` o tomador é um terceiro com dados próprios."""
+    if toma4:
+        tomador = ("<toma4><toma>4</toma>%s</toma4>"
+                   % _parte_xml("toma4", *toma4)[len("<toma4>"):-len(
+                       "</toma4>")])
+    else:
+        tomador = "<toma3><toma>%s</toma></toma3>" % toma
+    docs = "".join("<infNFe><chave>%s</chave></infNFe>" % c
+                   for c in chaves_nfe)
+    return (
+        '<?xml version="1.0" encoding="UTF-8"?>'
+        '<cteProc xmlns="http://www.portalfiscal.inf.br/cte" versao="4.00">'
+        '<CTe><infCte Id="CTe%s" versao="4.00"><ide><CFOP>%s</CFOP>'
+        "<natOp>PRESTACAO DE SERVICO</natOp><mod>57</mod><serie>1</serie>"
+        "<nCT>%s</nCT><dhEmi>2026-08-10T09:00:00-03:00</dhEmi>"
+        "<tpCTe>%s</tpCTe><cMunIni>3550308</cMunIni><UFIni>SP</UFIni>"
+        "<cMunFim>3106200</cMunFim><UFFim>MG</UFFim>%s</ide>%s%s%s"
+        "<vPrest><vTPrest>%s</vTPrest><vRec>%s</vRec></vPrest>"
+        "<imp><ICMS>%s</ICMS></imp><infCTeNorm><infDoc>%s</infDoc>"
+        "</infCTeNorm></infCte></CTe><protCTe><infProt><chCTe>%s</chCTe>"
+        "<nProt>131260000000001</nProt><cStat>%s</cStat></infProt>"
+        "</protCTe></cteProc>"
+        % (chave, cfop, nct, tpcte, tomador, _parte_xml("emit", *emit),
+           _parte_xml("rem", *rem), _parte_xml("dest", *dest), vtprest,
+           vtprest, icms, docs, chave, cstat))
+
+
+def evento_cancelamento_xml(chave, modelo="nfe", cstat="135"):
+    """procEventoNFe/procEventoCTe de cancelamento (110111)."""
+    ch = "chNFe" if modelo == "nfe" else "chCTe"
+    raiz = "procEventoNFe" if modelo == "nfe" else "procEventoCTe"
+    return ('<?xml version="1.0" encoding="UTF-8"?><%s><evento><infEvento>'
+            "<%s>%s</%s><tpEvento>110111</tpEvento></infEvento></evento>"
+            "<retEvento><infEvento><cStat>%s</cStat></infEvento></retEvento>"
+            "</%s>" % (raiz, ch, chave, ch, cstat, raiz))
+
+
 def nfe_xml(itens=None, nnf="123", serie="1", mod="55", cfop="5102",
             vicms="1.80"):
     """XML mínimo de uma NF-e, casando com a nota de `icms_basico`.
