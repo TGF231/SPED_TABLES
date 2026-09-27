@@ -11,7 +11,7 @@ from PyQt6.QtWidgets import (
 )
 
 from sped_tables.interface import tema
-from sped_tables.interface.comum import _br, _num_celula
+from sped_tables.interface.comum import _br, _num_celula, calcular
 
 
 # ---------------------------------------------------------------------------
@@ -865,7 +865,10 @@ class MasterDetailWidget(QWidget):
                 "totais de TODOS os C100 com itens?",
                 QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
             if resp == QMessageBox.StandardButton.Yes:
-                n = self.doc.recalcular_totais_todos_c100()
+                ok, n = calcular(self, "Recalcular totais",
+                                 self.doc.recalcular_totais_todos_c100)
+                if not ok:
+                    return
                 self.recarregar()
                 if self.on_change:
                     self.on_change()
@@ -878,7 +881,10 @@ class MasterDetailWidget(QWidget):
                 self, "Recalcular totais",
                 "Este C100 não possui itens C170 para somar.")
             return
-        tot = self.doc.recalcular_totais_c100(reg)
+        ok, tot = calcular(self, "Recalcular totais",
+                           self.doc.recalcular_totais_c100, reg)
+        if not ok:
+            return
         self.recarregar()
         if self.on_change:
             self.on_change()
@@ -898,7 +904,10 @@ class MasterDetailWidget(QWidget):
         """Recalcula os C190 do C100 pai a partir dos itens C170."""
         if self.pai is None:
             return
-        res = self.doc.consolidar_c190(self.pai)
+        ok, res = calcular(self, "Recalcular C190",
+                           self.doc.consolidar_c190, self.pai)
+        if not ok:
+            return
         if res is None:
             QMessageBox.information(
                 self, "Recalcular C190",

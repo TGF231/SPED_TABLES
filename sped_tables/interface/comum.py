@@ -7,9 +7,26 @@ import re
 from PyQt6.QtCore import QSettings
 from PyQt6.QtWidgets import QFileDialog, QMessageBox
 
+from sped_tables.dominio.sped_model import CamposInvalidos
 from sped_tables.infra import dados
 from sped_tables.infra import exportacao
 from sped_tables.version import APP_NAME
+
+
+def calcular(parent, titulo, funcao, *args, **kwargs):
+    """Roda um cálculo que grava no arquivo. Devolve `(True, resultado)`,
+    ou `(False, None)` quando ele recusou por campo numérico inválido — e
+    aí a pessoa já viu quais campos e onde corrigir.
+
+    O cálculo recusa **antes** de alterar qualquer coisa
+    (`SpedDocument._exigir_numeros`): lixo num campo de valor seria lido
+    como zero e gravado num total com cara de certo.
+    """
+    try:
+        return True, funcao(*args, **kwargs)
+    except CamposInvalidos as exc:
+        QMessageBox.warning(parent, titulo, str(exc))
+        return False, None
 
 
 def ajustes():

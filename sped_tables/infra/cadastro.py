@@ -11,8 +11,6 @@ cadastro vazio (empresas) ou a tabela padrão (correlações). A gravação é
 atômica (`dados.gravar_json`).
 """
 
-import json
-import os
 
 from sped_tables.dominio import conferencia
 from sped_tables.dominio import empresas
@@ -23,11 +21,10 @@ ARQUIVO_CORRELACOES = "correlacoes_cfop.json"
 
 
 def _ler_json(caminho):
-    try:
-        with open(caminho, encoding="utf-8") as fh:
-            return json.load(fh)
-    except (OSError, ValueError):
-        return None
+    """Objeto JSON do arquivo; ilegível é guardado à parte e avisado
+    (`dados.ler_json_do_usuario`) — nunca vira vazio para ser
+    sobrescrito."""
+    return dados.ler_json_do_usuario(caminho, dict)
 
 
 # ------------------------------------------------------------- empresas
@@ -37,9 +34,11 @@ def caminho_empresas(caminho=None):
 
 
 def carregar_empresas(caminho=None):
-    """`{cnpj: Empresa}`; vazio se o arquivo faltar ou estiver corrompido."""
+    """`{cnpj: Empresa}`; vazio se o arquivo faltar. Ilegível, ele é
+    guardado como `.corrompido-…` antes — senão cadastrar uma empresa
+    gravaria por cima do cadastro inteiro."""
     bruto = _ler_json(caminho_empresas(caminho))
-    if not isinstance(bruto, dict):
+    if bruto is None:
         return {}
     mapa = {}
     for cnpj, registro in bruto.items():
@@ -65,11 +64,10 @@ def caminho_correlacoes(caminho=None):
 def carregar_correlacoes(caminho=None):
     """`{cfop_saida: {cfops_entrada}}`; a tabela padrão se não houver
     arquivo (ou se ele estiver corrompido)."""
-    cam = caminho_correlacoes(caminho)
-    bruto = _ler_json(cam) if os.path.exists(cam) else None
+    bruto = _ler_json(caminho_correlacoes(caminho))
     # JSON válido no formato errado (uma lista, por exemplo) impedia a
-    # janela principal de nascer: o programa simplesmente não abria
-    if not isinstance(bruto, dict):
+    # janela principal de nascer; agora ele é guardado à parte e avisado
+    if bruto is None:
         bruto = conferencia.CORRELACOES_CFOP_PADRAO
     return conferencia.normalizar_correlacoes(bruto)
 

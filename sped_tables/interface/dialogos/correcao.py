@@ -18,7 +18,7 @@ from sped_tables.dominio import empresas as emp_mod
 from sped_tables.dominio import rotinas
 from sped_tables.dominio import ncm
 from sped_tables.infra import tabelas_rfb as trfb
-from sped_tables.interface.comum import _br
+from sped_tables.interface.comum import _br, calcular
 
 
 # ---------------------------------------------------------------------------
@@ -599,13 +599,16 @@ class DialogoRecalcularICMS(QDialog):
         uids = (self.uids_relatorio
                 if self.rb_relatorio.isChecked() and self.uids_relatorio
                 else None)
-        res = self.doc.recalcular_icms_itens(
+        ok, res = calcular(
+            self, "Recalcular ICMS dos itens", self.doc.recalcular_icms_itens,
             uids=uids,
             recalcular_base=self.ck_base.isChecked(),
             reducao_pct=(self.ed_reducao.value()
                          if self.ck_base.isChecked() else None),
             zerar_sem_debito=self.ck_zerar.isChecked(),
             refazer_c190=self.ck_c190.isChecked())
+        if not ok:
+            return
         self.resultado = res
         docs = res.get("c190_refeitos", 0)
 

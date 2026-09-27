@@ -110,6 +110,23 @@ class TestJanela(unittest.TestCase):
         self.assertTrue(hasattr(j, "act_abrir_pva"))
         j.close()
 
+    def test_calculo_recusado_mostra_os_campos_e_nao_segue(self):
+        from sped_tables.dominio.sped_model import CamposInvalidos
+        from sped_tables.interface.comum import calcular
+
+        class R:
+            reg, ordem = "C170", 9
+
+        def recusa():
+            raise CamposInvalidos([(R(), "VL_ITEM", "NULL")])
+        with mock.patch.object(QMessageBox, "warning") as aviso:
+            self.assertEqual(calcular(None, "T", recusa), (False, None))
+            self.assertEqual(calcular(None, "T", lambda x: x + 1, 1),
+                             (True, 2))
+        self.assertEqual(aviso.call_count, 1)
+        self.assertIn("C170 VL_ITEM = 'NULL' (linha 10)",
+                      aviso.call_args[0][2])
+
     def test_soltar_um_txt_na_tela_inicial_abre(self):
         """O gesto de arrastar do Explorador é do roteiro 2.3; aqui, o que a
         tela faz com o que recebe: `.txt` abre, o resto é recusado."""
@@ -156,8 +173,10 @@ class TestJanela(unittest.TestCase):
                         _esperar(50)
                     self.assertEqual(self.erros, [],
                                      "%s:\n%s" % (nome, self._falhas()))
-                # o leiaute habilita a maior parte do menu
-                self.assertGreater(disparadas, 20)
+                # o leiaute habilita a maior parte do menu (desde a 0.56.0
+                # sem *Limpar NULL* e *Validar campos*, absorvidos pelo
+                # Diagnóstico)
+                self.assertGreater(disparadas, 18)
                 for dlg in QApplication.topLevelWidgets():
                     if dlg is not j:
                         dlg.close()

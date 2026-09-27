@@ -3,7 +3,6 @@
 
 import os
 
-from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QDialog, QFileDialog, QMessageBox
 
 from sped_tables.dominio import conferencia as cf
@@ -170,7 +169,7 @@ class ControladorGerais:
             "0200 não utilizados / duplicados":
                 ("Itens sem referência…", self.itens_sem_referencia),
             "TIPO_ITEM fora da tabela (0200)":
-                ("Validar campos…", self.validar_campos),
+                ("Corrigir campos…", self.validar_campos),
             "M210/M610 com receita bruta divergente":
                 ("Recalcular bloco M…", self.recalcular_bloco_m),
             "M210/M610 com base de cálculo divergente":
@@ -183,54 +182,6 @@ class ControladorGerais:
         self._dlg_revisao.show()
         total = sum(len(ps) for _r, ps in por_regra)
         self.statusBar().showMessage("Revisão: %d ocorrência(s)." % total)
-
-    def limpar_campos_nulos(self):
-        """Esvazia os campos em que o ERP gravou o "vazio" por extenso
-        (`NULL`, `#N/A`…). O PVA recusa esses campos com "Conteúdo de Campo
-        inválido", e num arquivo real isso atingiu 82% dos itens do 0200."""
-        if not self.doc:
-            return
-        achados = self.doc.campos_nulos()
-        if not achados:
-            QMessageBox.information(
-                self, "Limpar campos com NULL",
-                "Nenhum campo preenchido com texto de vazio "
-                "(NULL, #N/A, None…) foi encontrado neste arquivo.")
-            return
-
-        por_campo = {}
-        for r, _i, nome, _v in achados:
-            por_campo[(r.reg, nome)] = por_campo.get((r.reg, nome), 0) + 1
-        detalhe = "<br>".join(
-            "&nbsp;&nbsp;• <b>%s</b> · %s — %d campo(s)" % (reg, nome, n)
-            for (reg, nome), n in sorted(por_campo.items(),
-                                         key=lambda x: -x[1])[:12])
-        registros = len({r.uid for r, _i, _n, _v in achados})
-
-        caixa = QMessageBox(self)
-        caixa.setWindowTitle("Limpar campos com NULL")
-        caixa.setTextFormat(Qt.TextFormat.RichText)
-        caixa.setIcon(QMessageBox.Icon.Question)
-        caixa.setText(
-            "Foram encontrados <b>%d</b> campo(s) preenchidos com texto de "
-            "vazio em <b>%d</b> registro(s):<br><br>%s<br><br>"
-            "Esses campos serão esvaziados. Deseja continuar?"
-            % (len(achados), registros, detalhe))
-        # rótulos à mão: a tradução do Qt pode não vir no executável
-        b_limpar = caixa.addButton("Limpar",
-                                   QMessageBox.ButtonRole.AcceptRole)
-        caixa.addButton("Cancelar", QMessageBox.ButtonRole.RejectRole)
-        caixa.setDefaultButton(b_limpar)
-        caixa.exec()
-        if caixa.clickedButton() is not b_limpar:
-            return
-
-        res = self.doc.limpar_campos_nulos(achados)
-        self._marcar_alterado()
-        self._montar_abas()
-        self.statusBar().showMessage(
-            "Limpeza: %d campo(s) esvaziados em %d registro(s)."
-            % (res["campos"], res["registros"]), 6000)
 
     def itens_sem_referencia(self):
         """Itens do 0200 que nenhum outro registro cita. O Guia Prático manda
@@ -293,8 +244,7 @@ class ControladorGerais:
                 8000)
             return
         acoes = {
-            "Limpar campos com NULL": self.limpar_campos_nulos,
-            "Validar campos pelo leiaute": self.validar_campos,
+            "Corrigir campos pelo leiaute": self.validar_campos,
             "Itens do 0200 sem referência": self.itens_sem_referencia,
             "Preencher conta contábil (COD_CTA)": self.preencher_cod_cta,
             "Preencher COD_GEN pelo NCM": self.preencher_cod_gen,

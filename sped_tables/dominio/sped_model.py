@@ -121,11 +121,6 @@ VALORES_NULOS = frozenset((
     "#N/A", "#N/D", "#VALOR!", "#VALUE!", "#REF!", "#DIV/0!"))
 
 
-def _e_nulo(v):
-    """O campo está preenchido com um desses textos de 'vazio'?"""
-    return (v or "").strip().upper() in VALORES_NULOS
-
-
 def _texto_planilha(v):
     """Texto de uma célula, já sem o 'vazio' que o ERP escreveu por extenso."""
     s = "" if v is None else str(v).strip()
@@ -289,6 +284,57 @@ class Registro:
             self.reg, self.uid, self.nivel, len(self.filhos))
 
 
+# Número no formato do SPED: vírgula decimal, sem separador de milhar. É a
+# mesma regra da validação de leiaute (`validacao` importa daqui), para que o
+# que ela acusa seja exatamente o que os cálculos recusam.
+RE_NUM_SPED = re.compile(r"^-?\d{1,18}(,\d{1,8})?$")
+PREFIXOS_NUMERICOS = ("VL_", "ALIQ_", "QTD", "PERC_", "VL")
+
+
+class CamposInvalidos(ValueError):
+    """Um cálculo que grava encontrou campo numérico que não é número do
+    SPED. `campos` = `[(registro, nome_do_campo, valor)]`.
+
+    O `_to_num` lê lixo como zero — `NULL` e `12a` viram 0,0 —, e um
+    recálculo que gravasse com isso transformaria um erro detectável num
+    total plausível e errado. Por isso quem grava confere antes e recusa,
+    sem ter mexido em nada."""
+
+    def __init__(self, ruins):
+        self.campos = list(ruins)
+        amostra = "\n".join(
+            "%s %s = %r (linha %d)" % (r.reg, nome, v, r.ordem + 1)
+            for r, nome, v in self.campos[:5])
+        mais = len(self.campos) - 5
+        super().__init__(
+            "O cálculo não foi feito: %d campo(s) numéricos com valor que "
+            "não é número no formato do SPED — seriam lidos como zero e o "
+            "resultado sairia errado sem aviso.\n%s%s\n\nCorrija pelo "
+            "Diagnóstico (Corrigir campos pelo leiaute) e repita."
+            % (len(self.campos), amostra,
+               "\n… e mais %d." % mais if mais > 0 else ""))
+
+
+# espaço, tab e CR no fim da linha não contam para o pipe final
+_BRANCOS_FIM = " \t\r"
+
+
+class LinhasInvalidas(ValueError):
+    """O arquivo lido tinha linhas fora do formato SPED; gravá-lo as
+    perderia. `linhas` = `[(nº da linha, texto)]`."""
+
+    def __init__(self, linhas):
+        self.linhas = list(linhas)
+        amostra = "\n".join("linha %d: %s" % (n, (t or "")[:80])
+                            for n, t in self.linhas[:5])
+        mais = len(self.linhas) - 5
+        super().__init__(
+            "O arquivo tem %d linha(s) fora do formato SPED (sem o | "
+            "inicial), que não podem ser gravadas:\n%s%s"
+            % (len(self.linhas), amostra,
+               "\n… e mais %d." % mais if mais > 0 else ""))
+
+
 class SpedDocument:
     """Documento SPED completo: lista ordenada + floresta hierárquica."""
 
@@ -301,6 +347,10 @@ class SpedDocument:
         self.caminho = None
         self._cad_itens = None   # cache COD_ITEM -> DESCR_ITEM (registros 0200)
         self._cad_part = None    # cache COD_PART -> dados do 0150
+        # o que a leitura não conseguiu ler como registro — nunca descartado
+        # em silêncio (ver `_montar`)
+        self.linhas_invalidas = []   # [(nº da linha, texto)] sem o | inicial
+        self.sem_pipe_final = []     # [(nº da linha, REG)]
 
     # ------------------------------------------------------------------ load
     @classmethod
@@ -338,15 +388,30 @@ class SpedDocument:
         return doc
 
     def _montar(self, linhas):
+        """Monta a árvore. **Nada do arquivo some sem aviso.**
+
+        Até a 0.55.0 a linha que não começava por `|` era pulada — e sumia
+        ao salvar — e a que não terminava por `|` perdia o **último campo**
+        (o `[1:-1]` do `Registro` supõe o pipe final): num 0200 assim, o NCM
+        ia embora e o diagnóstico nem notava. Agora a primeira fica em
+        `linhas_invalidas` (e salvar exige decisão explícita) e a segunda é
+        lida inteira e anotada em `sem_pipe_final`.
+        """
         self.registros.clear()
         self.raizes.clear()
+        self.linhas_invalidas = []
+        self.sem_pipe_final = []
         # pilha de ancestrais (apenas dentro do MESMO bloco)
         pilha = []
         bloco_atual = None
         for i, ln in enumerate(linhas):
             if not ln.startswith("|"):
+                self.linhas_invalidas.append((i + 1, ln))
                 continue
             partes = ln.split("|")
+            if not ln.rstrip(_BRANCOS_FIM).endswith("|"):
+                partes = ln.rstrip(_BRANCOS_FIM).split("|") + [""]
+                self.sem_pipe_final.append((i + 1, partes[1]))
             r = Registro(partes, self.layout, i)
             self.registros.append(r)
 
@@ -1010,6 +1075,44 @@ class SpedDocument:
             ideal_ant = ideal
         return out
 
+    # -------------------------------------------------------------------
+    # Números que os cálculos leem
+    # -------------------------------------------------------------------
+    def numeros_invalidos(self, registros):
+        """`[(registro, campo, valor)]` dos campos numéricos (pelo nome, como
+        na validação de leiaute) preenchidos com o que não é número do SPED.
+        Vazio não entra: é zero legítimo."""
+        saida, plano = [], {}
+        for r in registros:
+            chave = (r.reg, len(r.campos))
+            ixs = plano.get(chave)
+            if ixs is None:
+                nomes = campos(r.reg, self.layout, len(r.campos))
+                ixs = [(i, n) for i, n in enumerate(nomes)
+                       if i and n.startswith(PREFIXOS_NUMERICOS)]
+                plano[chave] = ixs
+            for i, nome in ixs:
+                if i < len(r.campos):
+                    v = (r.campos[i] or "").strip()
+                    if v and not RE_NUM_SPED.match(v):
+                        saida.append((r, nome, v))
+        return saida
+
+    def _exigir_numeros(self, registros):
+        """Levanta `CamposInvalidos` antes de qualquer alteração."""
+        ruins = self.numeros_invalidos(registros)
+        if ruins:
+            raise CamposInvalidos(ruins)
+
+    @staticmethod
+    def _com_itens(documentos, tipo="C170"):
+        """Os documentos e os filhos `tipo` de cada um, numa lista só."""
+        saida = []
+        for c in documentos:
+            saida.append(c)
+            saida.extend(f for f in c.filhos if f.reg == tipo)
+        return saida
+
     def consolidar_c190(self, c100):
         """
         (Apenas EFD ICMS/IPI) Recalcula os registros **C190** (analítico) de um
@@ -1029,6 +1132,7 @@ class SpedDocument:
         c170 = [f for f in c100.filhos if f.reg == "C170"]
         if not c170:
             return {"grupos": 0, "removidos": 0, "criados": 0, "sem_c170": True}
+        self._exigir_numeros([c100] + c170)
 
         # índices dos campos do C170
         i_item = self._ix("C170", "VL_ITEM")
@@ -1206,6 +1310,9 @@ class SpedDocument:
             for c in self.documentos_c190_duplicados():
                 alvos.setdefault(id(c), c)
             documentos = list(alvos.values())
+        # confere todos antes do primeiro: parar no meio deixaria metade dos
+        # documentos refeitos
+        self._exigir_numeros(self._com_itens(documentos))
         tot = {"documentos": 0, "corrigidos": 0, "grupos": 0, "removidos": 0,
                "criados": 0, "base_pis_cofins": 0, "sem_base": 0,
                "sem_c170": 0}
@@ -1296,6 +1403,14 @@ class SpedDocument:
             return {"itens": 0, "alterados": 0, "sem_campos": True}
 
         alvo = set(uids) if uids is not None else None
+        itens = [r for r in self.registros if r.reg == "C170"
+                 and (alvo is None or r.uid in alvo)]
+        lidos = list(itens)
+        if refazer_c190:
+            # o C190 e os totais refeitos leem o documento inteiro
+            pais = {id(r.pai): r.pai for r in itens if r.pai is not None}
+            lidos = self._com_itens(pais.values())
+        self._exigir_numeros(lidos)
         resumo = {"itens": 0, "alterados": 0, "base_alterada": 0,
                   "valor_alterado": 0, "zerados": 0, "por_situacao": {},
                   "delta_icms": 0.0, "c190_refeitos": 0}
@@ -1380,6 +1495,7 @@ class SpedDocument:
         itens). Devolve um dicionário {campo: total} com o que foi recalculado.
         """
         c170s = [f for f in c100.filhos if f.reg == "C170"]
+        self._exigir_numeros([c100] + c170s)
         tot = {}
         for campo_c100, campo_c170 in self.TOTAIS_C100.items():
             i100 = self._ix("C100", campo_c100)
@@ -1410,13 +1526,12 @@ class SpedDocument:
     def recalcular_totais_todos_c100(self):
         """Recalcula os totais de todos os C100 que possuem itens C170.
         Devolve a quantidade de documentos recalculados."""
-        n = 0
-        for c100 in self.registros:
-            if c100.reg == "C100" and any(f.reg == "C170"
-                                          for f in c100.filhos):
-                self.recalcular_totais_c100(c100)
-                n += 1
-        return n
+        docs = [c for c in self.registros if c.reg == "C100"
+                and any(f.reg == "C170" for f in c.filhos)]
+        self._exigir_numeros(self._com_itens(docs))
+        for c100 in docs:
+            self.recalcular_totais_c100(c100)
+        return len(docs)
 
     def consolidar_c175_de_itens(self, c100, itens, atualizar_c100=True):
         """
@@ -1747,6 +1862,9 @@ class SpedDocument:
         if self.layout != "CONTRIB":
             return {"erro": "Disponível apenas no EFD Contribuições."}
         i_mod = self._ix("C100", "COD_MOD")
+        self._exigir_numeros(self._com_itens(
+            [c for c in self.registros if c.reg == "C100"
+             and (c.valor(i_mod) or "").strip() == "65"]))
         docs = c175 = 0
         for c100 in self.registros:
             if c100.reg != "C100":
@@ -1769,43 +1887,6 @@ class SpedDocument:
     # -------------------------------------------------------------------
     # Limpeza de campos preenchidos com "vazio" por extenso
     # -------------------------------------------------------------------
-    def campos_nulos(self):
-        """Campos cujo conteúdo é um texto de "vazio" (`NULL`, `#N/A`…) em vez
-        de estarem realmente vazios. **Não altera nada.**
-
-        Devolve `[(registro, indice, nome_campo, valor)]`. É erro de origem:
-        o ERP exporta o `NULL` do banco por extenso e o PVA recusa o arquivo
-        com "Conteúdo de Campo inválido".
-        """
-        achados = []
-        for r in self.registros:
-            nomes = None
-            for i, v in enumerate(r.campos):
-                if i == 0 or not _e_nulo(v):
-                    continue
-                if nomes is None:
-                    nomes = campos(r.reg, self.layout, len(r.campos))
-                nome = nomes[i] if i < len(nomes) else "Campo %d" % i
-                achados.append((r, i, nome, (v or "").strip()))
-        return achados
-
-    def limpar_campos_nulos(self, achados=None):
-        """Esvazia os campos apontados por `campos_nulos()`. Recebe a lista já
-        exibida ao usuário, para corrigir exatamente o que ele viu."""
-        if achados is None:
-            achados = self.campos_nulos()
-        por_campo = {}
-        regs = set()
-        for r, i, nome, _v in achados:
-            r.set_valor(i, "")
-            chave = (r.reg, nome)
-            por_campo[chave] = por_campo.get(chave, 0) + 1
-            regs.add(r.uid)
-        if any(r.reg == "0200" for r, _i, _n, _v in achados):
-            self._cad_itens = None
-        return {"campos": len(achados), "registros": len(regs),
-                "por_campo": por_campo}
-
     # -------------------------------------------------------------------
     # Itens do 0200 — referências e limpeza do cadastro
     # -------------------------------------------------------------------
@@ -2591,6 +2672,10 @@ class SpedDocument:
         alvos = self._registros_aliq_escopo(escopo)
         if not alvos:
             return {"itens": 0, "c100": 0, "sem_alvo": True}
+        # os totais dos C100 dos itens também são refeitos
+        pais = {id(r.pai): r.pai for r in alvos
+                if r.pai is not None and r.pai.reg == "C100"}
+        self._exigir_numeros(list(alvos) + list(pais.values()))
 
         n = 0
         c100s = set()
@@ -3159,6 +3244,10 @@ class SpedDocument:
         """
         if self.layout != "CONTRIB":
             return None
+        # a apuração soma receitas e créditos dos blocos A, C, D e F e
+        # reescreve o M: todos precisam de números de verdade
+        self._exigir_numeros([r for r in self.registros
+                              if r.bloco in ("A", "C", "D", "F", "M")])
         r0110 = [r for r in self.registros if r.reg == "0110"]
         cod_inc = "1"
         if r0110:
@@ -3488,8 +3577,13 @@ class SpedDocument:
 
         return "\r\n".join(linhas) + "\r\n"
 
-    def salvar(self, caminho=None):
+    def salvar(self, caminho=None, descartar_invalidas=False):
         """Grava o arquivo **sem destruir o destino se algo der errado**.
+
+        Linha que a leitura não reconheceu como registro (`linhas_invalidas`)
+        não tem como ir para o arquivo gravado: salvar é recusado com
+        `LinhasInvalidas`, a menos que quem chama tenha perguntado ao usuário
+        e passe `descartar_invalidas=True`.
 
         O modo `"w"` trunca o arquivo no momento em que é aberto: qualquer
         falha depois disso — disco cheio, ou um caractere fora do latin-1
@@ -3499,6 +3593,8 @@ class SpedDocument:
         (`os.replace`, que é atômico no mesmo volume).
         """
         caminho = caminho or self.caminho
+        if self.linhas_invalidas and not descartar_invalidas:
+            raise LinhasInvalidas(self.linhas_invalidas)
         texto = self.gerar_texto()
         try:
             dados = texto.encode(self.encoding)

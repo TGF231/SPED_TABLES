@@ -43,12 +43,20 @@ log = logging.getLogger("sped_tables")
 # Achado -> módulo que corrige. O texto é o nome do item de menu, para a
 # pessoa saber exatamente onde clicar.
 MODULOS = {
-    "nulo": ("Limpar campos com NULL",
-             "Ferramentas → Gerais → Limpar campos com NULL"),
-    "dominio": ("Validar campos pelo leiaute",
-                "Ferramentas → Gerais → Validar campos pelo leiaute"),
-    "formato": ("Validar campos pelo leiaute",
-                "Ferramentas → Gerais → Validar campos pelo leiaute"),
+    # os três pela mesma tela, aberta daqui: é a validação de leiaute, e o
+    # botão de normalizar dela esvazia o "NULL" e completa o zero que falta
+    "nulo": ("Corrigir campos pelo leiaute",
+             "Diagnóstico → Corrigir campos pelo leiaute (normalizar)"),
+    "dominio": ("Corrigir campos pelo leiaute",
+                "Diagnóstico → Corrigir campos pelo leiaute"),
+    "formato": ("Corrigir campos pelo leiaute",
+                "Diagnóstico → Corrigir campos pelo leiaute (normalizar)"),
+    "linha_invalida": ("Correção no arquivo de origem",
+                       "linha sem o | inicial: não é registro, e salvar "
+                       "pergunta antes de descartá-la"),
+    "sem_pipe_final": ("Salvar",
+                       "linha sem o | final: lida inteira, e o | é "
+                       "acrescentado ao salvar — confira o último campo"),
     "item_orfao": ("Itens do 0200 sem referência",
                    "Ferramentas → Gerais → Itens do 0200 sem referência"),
     "ref_ausente": ("Correção manual na grade",
@@ -164,6 +172,19 @@ def verificar(doc):
     info = {"descritor": info_desc.get("descritor"),
             "registros_descritor": info_desc.get("registros", 0),
             "sem_pva": not estrutura}
+
+    # ---- o que a leitura não conseguiu ler como registro ------------------
+    # vem antes de tudo e não depende do PVA: é o arquivo que está quebrado
+    invalidas = getattr(doc, "linhas_invalidas", [])
+    if invalidas:
+        achados.append(Achado(
+            "linha_invalida", "", "",
+            "linha fora do formato SPED, sem o | inicial (a primeira é a "
+            "linha %d)" % invalidas[0][0], len(invalidas)))
+    sem_fim = Counter(reg for _n, reg in getattr(doc, "sem_pipe_final", []))
+    for reg, n in sem_fim.items():
+        achados.append(Achado("sem_pipe_final", reg, "",
+                              "linha sem o | final", n))
 
     # ---- domínio, tipo e tamanho (o grosso, já implementado) -------------
     dominios, info_dom = validacao.dominios_do_documento(doc)
@@ -398,7 +419,8 @@ def regras_nao_cobertas(doc, estrutura):
 # importou sem reclamar — são as obrigatoriedades condicionais que ele
 # dispensa. Avisar por causa delas seria assustar à toa.
 TIPOS_QUE_IMPEDEM_IMPORTACAO = ("nulo", "formato", "num_campos", "bloco",
-                                "dominio")
+                                "dominio", "linha_invalida",
+                                "sem_pipe_final")
 
 
 def impedem_importacao(achados):

@@ -10,8 +10,9 @@ import datetime
 import os
 import unittest
 
-from sped_tables.dominio.sped_model import SpedDocument
-from tests.fabrica import PastaTemporaria, icms_basico
+from sped_tables.dominio import validacao
+from sped_tables.dominio.sped_model import CamposInvalidos, SpedDocument
+from tests.fabrica import PastaTemporaria, contrib_basico, icms_basico
 
 
 def _doc(montador):
@@ -43,15 +44,24 @@ class Base(unittest.TestCase):
         self.assertEqual(relido.gerar_texto(), doc.gerar_texto())
 
 
-class TestLimparNulos(Base):
+class TestNulos(Base):
+    """O "vazio" por extenso é erro de leiaute em qualquer campo, e quem
+    corrige é o normalizar — desde a 0.56.0 não há ação à parte."""
 
-    def test_esvazia_e_para(self):
-        m = _alterar(icms_basico(), "0200", CEST="NULL", COD_GEN="#N/A")
+    def _nulos(self, doc):
+        return sorted((o.reg, o.campo) for o in validacao.validar(doc)
+                      if o.sugestao == "" and "vazio" in o.motivo)
+
+    def test_validacao_acusa_e_normalizar_esvazia(self):
+        m = _alterar(icms_basico(), "0200", CEST="NULL", COD_GEN="#N/A",
+                     DESCR_ITEM="NULL")
         doc = _doc(m)
-        achados = doc.campos_nulos()
-        self.assertEqual(sorted(a[2] for a in achados), ["CEST", "COD_GEN"])
-        doc.limpar_campos_nulos(achados)
-        self.assertEqual(doc.campos_nulos(), [])
+        # a descrição é texto livre: o domínio dela aceitaria "NULL"
+        self.assertEqual(self._nulos(doc), [("0200", "CEST"),
+                                            ("0200", "COD_GEN"),
+                                            ("0200", "DESCR_ITEM")])
+        validacao.normalizar(doc)
+        self.assertEqual(self._nulos(doc), [])
         self.assertBemFormado(doc)
 
 
@@ -203,6 +213,54 @@ class TestCadeiaIcms(Base):
         (c190_1,) = [f for f in primeiro.filhos if f.reg == "C190"]
         self.assertEqual(c190_1.valor(doc._ix("C190", "VL_ICMS")), "5,40")
         self.assertBemFormado(doc)
+
+
+class TestNumerosInvalidos(Base):
+    """Cálculo que grava recusa campo numérico que não é número do SPED —
+    antes de mexer em qualquer coisa. Até a 0.55.0 o `NULL` num VL_ITEM era
+    lido como zero e o total gravado saía errado, com cara de certo."""
+
+    def _recusa_sem_mexer(self, doc, calculo):
+        antes = doc.gerar_texto()
+        with self.assertRaises(CamposInvalidos) as ctx:
+            calculo()
+        self.assertEqual(doc.gerar_texto(), antes)
+        return ctx.exception
+
+    def test_icms_recusa_nos_calculos_que_gravam(self):
+        doc = _doc(_alterar(icms_basico(), "C170", VL_ITEM="NULL"))
+        c100 = next(r for r in doc.registros if r.reg == "C100")
+        exc = self._recusa_sem_mexer(doc, lambda: doc.consolidar_c190(c100))
+        self.assertEqual([(r.reg, n, v) for r, n, v in exc.campos],
+                         [("C170", "VL_ITEM", "NULL")])
+        self.assertIn("C170 VL_ITEM = 'NULL'", str(exc))
+        for calculo in (lambda: doc.consolidar_c190_em_massa([c100]),
+                        lambda: doc.recalcular_totais_c100(c100),
+                        doc.recalcular_totais_todos_c100,
+                        lambda: doc.recalcular_icms_itens(refazer_c190=True)):
+            self._recusa_sem_mexer(doc, calculo)
+
+    def test_icms_dos_itens_confere_o_documento_inteiro(self):
+        """Com `refazer_c190`, o C190 e os totais leem todos os itens do
+        documento — inclusive os que não foram escolhidos."""
+        doc = _doc(_alterar(icms_basico(), "C100", VL_FRT="1.5.0"))
+        c170 = next(r for r in doc.registros if r.reg == "C170")
+        self._recusa_sem_mexer(doc, lambda: doc.recalcular_icms_itens(
+            uids={c170.uid}, refazer_c190=True))
+        # sem refazer o C190, o C100 não é lido: segue
+        doc.recalcular_icms_itens(uids={c170.uid})
+
+    def test_contribuicoes_recusa(self):
+        doc = _doc(_alterar(contrib_basico(), "C170", VL_BC_PIS="12a"))
+        self._recusa_sem_mexer(doc, doc.recalcular_bloco_m)
+        self._recusa_sem_mexer(doc, lambda: doc.trocar_aliquotas_pis_cofins(
+            aliq_pis=1.65, escopo="ambos"))
+
+    def test_numero_valido_e_vazio_passam(self):
+        doc = _doc(icms_basico())
+        self.assertEqual(doc.numeros_invalidos(doc.registros), [])
+        c100 = next(r for r in doc.registros if r.reg == "C100")
+        self.assertIsNotNone(doc.consolidar_c190(c100))
 
 
 if __name__ == "__main__":

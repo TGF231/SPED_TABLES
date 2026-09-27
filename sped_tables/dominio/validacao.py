@@ -26,7 +26,8 @@ import re
 
 from sped_tables.dominio import referencias
 from sped_tables.dominio.sped_layouts import campos
-from sped_tables.dominio.sped_model import TIPOS_ITEM_0200, VALORES_NULOS
+from sped_tables.dominio.sped_model import (
+    PREFIXOS_NUMERICOS, RE_NUM_SPED, TIPOS_ITEM_0200, VALORES_NULOS)
 
 # --------------------------------------------------------------------- tabelas
 # CST do ICMS = origem (0 a 8) + situação tributária
@@ -51,7 +52,6 @@ CST_PIS_COFINS = (
 # primeiro dígito do CFOP: 1/2/3 entradas, 5/6/7 saídas
 INICIAIS_CFOP = set("123567")
 
-RE_NUM_SPED = re.compile(r"^-?\d{1,18}(,\d{1,8})?$")
 RE_SO_DIGITOS = re.compile(r"^\d+$")
 
 
@@ -279,7 +279,6 @@ for _dt in ("DT_DOC", "DT_E_S", "DT_INV", "DT_INI", "DT_FIN", "DT_A_P",
                             validador=_valida_data, normaliza=False)
 
 # campos numéricos são reconhecidos pelo prefixo do nome
-PREFIXOS_NUMERICOS = ("VL_", "ALIQ_", "QTD", "PERC_", "VL")
 DOMINIO_NUMERO = Dominio("valor fora do formato numérico do SPED",
                          validador=_valida_numero, normaliza=False)
 
@@ -493,7 +492,7 @@ def validar(doc, tipos=None, dominios_pva=None):
     for r in doc.registros:
         if tipos and r.reg not in tipos:
             continue
-        plano = cache.get((r.reg, len(r.campos)))
+        plano, nomes = cache.get((r.reg, len(r.campos))) or (None, None)
         if plano is None:
             nomes = campos(r.reg, doc.layout, len(r.campos))
             plano = []
@@ -505,7 +504,8 @@ def validar(doc, tipos=None, dominios_pva=None):
                     d = _dominio_do_campo(nome)
                 if d is not None:
                     plano.append((i, nome, d))
-            cache[(r.reg, len(r.campos))] = plano
+            cache[(r.reg, len(r.campos))] = (plano, nomes)
+        apontados = set()
         for i, nome, dom in plano:
             if i >= len(r.campos):
                 continue
@@ -519,6 +519,20 @@ def validar(doc, tipos=None, dominios_pva=None):
                 sugestao = _num_sugerido(v)
             achados.append(Ocorrencia(r.uid, r.reg, r.bloco, nome, i, v,
                                       motivo, sugestao))
+            apontados.add(i)
+        # o "vazio" por extenso é lixo em **qualquer** campo — inclusive no
+        # de texto livre, cujo domínio aceita "NULL" como descrição. Até a
+        # 0.55.0 quem via esses era uma ação à parte, *Limpar campos com
+        # NULL*; agora é a validação, e quem corrige é o normalizar
+        for i in range(1, len(r.campos)):
+            if i in apontados:
+                continue
+            v = (r.campos[i] or "").strip()
+            if v and v.upper() in VALORES_NULOS:
+                nome = nomes[i] if i < len(nomes) else "Campo %d" % i
+                achados.append(Ocorrencia(
+                    r.uid, r.reg, r.bloco, nome, i, v,
+                    "texto de vazio gravado como valor (%s)" % v, ""))
     return achados
 
 

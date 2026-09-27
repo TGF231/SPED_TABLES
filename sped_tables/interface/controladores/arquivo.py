@@ -14,6 +14,7 @@ from PyQt6.QtWidgets import (
 )
 
 from sped_tables.aplicacao import envio_pva
+from sped_tables.dominio.sped_model import LinhasInvalidas
 from sped_tables.version import APP_NAME
 from sped_tables.version import __version__
 
@@ -156,7 +157,26 @@ class ControladorArquivo:
 
     def _gravar(self, caminho):
         try:
-            resultado = self.sessao.salvar(caminho)
+            try:
+                resultado = self.sessao.salvar(caminho)
+            except LinhasInvalidas as inv:
+                # nada some sem a pessoa decidir: são linhas que a leitura
+                # não reconheceu como registro e que não têm como ir adiante
+                cx = QMessageBox(QMessageBox.Icon.Warning,
+                                 "Linhas fora do formato", str(inv),
+                                 parent=self)
+                cx.setInformativeText(
+                    "Gravar sem essas linhas? O arquivo original continua "
+                    "como está até você escolher gravar por cima dele.")
+                b_sim = cx.addButton("Gravar sem elas",
+                                     QMessageBox.ButtonRole.AcceptRole)
+                cx.addButton("Cancelar", QMessageBox.ButtonRole.RejectRole)
+                cx.setDefaultButton(b_sim)
+                cx.exec()
+                if cx.clickedButton() is not b_sim:
+                    return
+                resultado = self.sessao.salvar(caminho,
+                                               descartar_invalidas=True)
         except Exception as e:  # noqa: BLE001
             QMessageBox.critical(self, "Erro ao salvar",
                                  "Não foi possível gravar:\n%s" % e)

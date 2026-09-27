@@ -23,7 +23,6 @@ latin-1 e as quebras de linha originais.
 Sem dependência de GUI.
 """
 
-import json
 import os
 import shutil
 
@@ -84,15 +83,9 @@ def caminho_copia(cnpj, layout, periodo):
 
 # ----------------------------------------------------------------- índice
 def carregar_indice():
-    cam = _caminho_indice()
-    if not os.path.exists(cam):
-        return []
-    try:
-        with open(cam, encoding="utf-8") as fh:
-            conteudo = json.load(fh)
-    except Exception:  # noqa: BLE001
-        return []
-    return conteudo if isinstance(conteudo, list) else []
+    # ilegível, é guardado à parte e avisado: o próximo arquivamento
+    # gravaria um índice novo por cima do antigo
+    return dados.ler_json_do_usuario(_caminho_indice(), list) or []
 
 
 def _salvar_indice(entradas):

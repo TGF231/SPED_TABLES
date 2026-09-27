@@ -132,5 +132,61 @@ class TestNovoRegistro(unittest.TestCase):
         self.assertNotIn("Campo", "".join(novo.campos))
 
 
+class TestLinhasMalformadas(unittest.TestCase):
+    """Nada do arquivo some sem aviso (até a 0.55.0: a linha sem o | final
+    perdia o último campo; a sem o | inicial sumia ao salvar)."""
+
+    def _arquivo(self, pasta, mexer):
+        caminho = icms_basico().gravar(pasta)
+        linhas = ler(caminho).decode("latin-1").split("\r\n")
+        mexer(linhas)
+        with open(caminho, "wb") as fh:
+            fh.write("\r\n".join(linhas).encode("latin-1"))
+        return caminho
+
+    def test_sem_pipe_final_le_o_ultimo_campo_e_acusa(self):
+        from sped_tables.dominio import diagnostico
+
+        def tirar_pipe(linhas):
+            i = next(k for k, l in enumerate(linhas)
+                     if l.startswith("|0200|"))
+            linhas[i] = linhas[i].rstrip("|")
+        with PastaTemporaria() as p:
+            doc = SpedDocument.carregar(self._arquivo(p, tirar_pipe))
+            r = next(r for r in doc.registros if r.reg == "0200")
+            self.assertEqual(r.valor(doc._ix("0200", "COD_NCM")), "21069090")
+            self.assertEqual([reg for _n, reg in doc.sem_pipe_final],
+                             ["0200"])
+            achados, _i = diagnostico.verificar(doc)
+            self.assertIn(("sem_pipe_final", 1),
+                          diagnostico.impedem_importacao(achados))
+            # salvar grava a linha com o pipe, sem perder o campo
+            doc.salvar(os.path.join(p, "saida.txt"))
+            texto = ler(os.path.join(p, "saida.txt")).decode("latin-1")
+            self.assertIn("|21069090|", texto)
+
+    def test_linha_sem_pipe_inicial_exige_decisao_ao_salvar(self):
+        from sped_tables.aplicacao.sessao import Sessao
+        from sped_tables.dominio import diagnostico
+        from sped_tables.dominio.sped_model import LinhasInvalidas
+        with PastaTemporaria() as p:
+            caminho = self._arquivo(
+                p, lambda linhas: linhas.insert(3, "lixo sem pipe"))
+            original = ler(caminho)
+            s = Sessao()
+            s.abrir(caminho)
+            self.assertEqual(s.doc.linhas_invalidas, [(4, "lixo sem pipe")])
+            achados, _i = diagnostico.verificar(s.doc)
+            self.assertIn(("linha_invalida", 1),
+                          diagnostico.impedem_importacao(achados))
+            with self.assertRaises(LinhasInvalidas) as ctx:
+                s.salvar()
+            self.assertIn("linha 4: lixo sem pipe", str(ctx.exception))
+            self.assertEqual(ler(caminho), original)     # nada gravado
+            s.salvar(descartar_invalidas=True)
+            self.assertNotIn(b"lixo", ler(caminho))
+            self.assertEqual(s.doc.linhas_invalidas, [])
+
+
 if __name__ == "__main__":
     unittest.main()

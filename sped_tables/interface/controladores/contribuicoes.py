@@ -6,7 +6,7 @@ from PyQt6.QtWidgets import QDialog, QFileDialog, QMessageBox
 
 from sped_tables.dominio import xml_fiscal as xf
 from sped_tables.infra import config
-from sped_tables.interface.comum import _br
+from sped_tables.interface.comum import _br, calcular
 from sped_tables.interface.dialogos.cadastro import DialogoEmpresa
 from sped_tables.interface.dialogos.conferencia import DialogoDiscrepanciasC175
 from sped_tables.interface.dialogos.correcao import (
@@ -100,7 +100,9 @@ class ControladorContribuicoes:
                 self, "Bloco M",
                 "A apuração do bloco M aplica-se ao EFD Contribuições.")
             return
-        res = self.doc.recalcular_bloco_m()
+        ok, res = calcular(self, "Bloco M", self.doc.recalcular_bloco_m)
+        if not ok:
+            return
         if not res:
             QMessageBox.warning(self, "Bloco M",
                                 "Não foi possível recalcular o bloco M.")
@@ -235,7 +237,10 @@ class ControladorContribuicoes:
         caixa.exec()
         if caixa.clickedButton() is not b_sim:
             return
-        r = self.doc.regenerar_c175_de_c170_65()
+        ok, r = calcular(self, "Regenerar C175",
+                         self.doc.regenerar_c175_de_c170_65)
+        if not ok:
+            return
         self._marcar_alterado()
         self._montar_abas()
         QMessageBox.information(
@@ -292,10 +297,13 @@ class ControladorContribuicoes:
             dlg.valores()
         if aliq_pis is None and aliq_cofins is None:
             return
-        res = self.doc.trocar_aliquotas_pis_cofins(
+        ok, res = calcular(
+            self, "Trocar alíquotas", self.doc.trocar_aliquotas_pis_cofins,
             aliq_pis=aliq_pis, aliq_cofins=aliq_cofins,
             apenas_tributados=apenas_trib, escopo=escopo,
             de_pis=de_pis, de_cofins=de_cof)
+        if not ok:
+            return
         if res.get("sem_alvo"):
             alvo = "C175/C170 de saída" if escopo == "saidas" else \
                 ("C170 de entrada" if escopo == "entradas" else "C170/C175")

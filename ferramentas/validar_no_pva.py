@@ -23,6 +23,8 @@ recusa), porque são arquivos de cliente.
 """
 
 import argparse
+import ctypes
+import ctypes.wintypes
 import datetime
 import json
 import os
@@ -40,6 +42,13 @@ from sped_tables.dominio.sped_model import (  # noqa: E402
     TIPOS_ITEM_0200, SpedDocument, _to_num)
 from sped_tables.infra import banco_pva, config, pva  # noqa: E402
 from sped_tables.infra import tabelas_rfb  # noqa: E402
+
+if sys.platform == "win32":
+    # declarado uma vez, no import (armadilha do ctypes: ver CLAUDE.md)
+    _GetWindowRect = ctypes.WinDLL("user32").GetWindowRect
+    _GetWindowRect.argtypes = [ctypes.wintypes.HWND,
+                               ctypes.POINTER(ctypes.wintypes.RECT)]
+    _GetWindowRect.restype = ctypes.wintypes.BOOL
 
 PORTAS = {"Fiscal": ("spedfiscal.properties", 3347),
           "EFD-Contribuicoes": ("spedpiscofins.properties", 3348)}
@@ -179,8 +188,7 @@ def _cadeia(doc):
     comparação que o teto do PVA não mascara: o relatório para de listar
     erros em 1.000, e uma correção isolada só troca uns erros por outros que
     estavam escondidos atrás deles."""
-    passos = [lambda d: d.limpar_campos_nulos()["campos"],
-              lambda d: validacao.normalizar(d)["campos"],
+    passos = [lambda d: validacao.normalizar(d)["campos"],
               lambda d: d.preencher_cod_gen()["itens"],
               _itens_sem_ref]
     if doc.layout == "ICMS":
@@ -201,7 +209,6 @@ def _cadeia(doc):
 AMBOS = ("ICMS", "CONTRIB")
 FLUXOS = [
     ("original", lambda d: 0, AMBOS),
-    ("nulos", lambda d: d.limpar_campos_nulos()["campos"], AMBOS),
     ("normalizar", lambda d: validacao.normalizar(d)["campos"], AMBOS),
     ("cod_gen", lambda d: d.preencher_cod_gen()["itens"], AMBOS),
     ("itens_sem_ref", _itens_sem_ref, AMBOS),
@@ -226,7 +233,7 @@ def _preparar_importacao(doc):
     arquivo que o PVA recusa já na importação, para que as correções possam
     ser julgadas pela validação e não pelo teto de 1.000 erros de estrutura.
 
-    Limpa NULL, normaliza e decide o que o programa, de propósito, não
+    Normaliza (o que esvazia o NULL) e decide o que o programa, de propósito, não
     decide sozinho:
 
     - `00` (mercadoria para revenda) no TIPO_ITEM do 0200 fora da tabela —
@@ -237,8 +244,7 @@ def _preparar_importacao(doc):
     No programa as duas decisões são do usuário (planilha com prévia; CST
     nunca é sugerido); aqui são só o que falta para o PVA aceitar o arquivo.
     """
-    n = doc.limpar_campos_nulos()["campos"]
-    n += validacao.normalizar(doc)["campos"]
+    n = validacao.normalizar(doc)["campos"]
     if doc.layout != "ICMS":
         return n
     i = doc._ix("0200", "TIPO_ITEM")
@@ -318,26 +324,44 @@ def gerar(reais, saida, somente=None):
 
 
 # ------------------------------------------------------------ validar
-# avisos que o PVA abre depois de validar, todos só com Ok: "O arquivo foi
-# validado com sucesso" (Mensagem) e "A escrituração está pronta para ser
-# gerada para entrega/assinatura" (Aviso)
+# avisos que o PVA abre depois de validar ou de recusar, todos só com Ok:
+# "O arquivo foi validado com sucesso" (Mensagem), "A escrituração está
+# pronta para ser gerada" (Aviso), "O arquivo contém erros e avisos" (Erro)
 TITULOS_CONCLUSAO = ("mensagem", "aviso", "erro")
 # a janela com o relatório da importação recusada não tem botão de Ok ao
 # alcance do Enter: é fechada por mensagem de janela
 TITULOS_FECHAR = ("resultado da importação",)
+# O PVA também tem uma tela de **falha interna** chamada "Erro" ("Erro
+# durante a validacao no banco"), com caixa de texto e os botões "Não
+# Enviar" e "Enviar Relatório de Erros" — para a Receita. Enter ali pode
+# mandar o relatório. Ela é bem maior que um JOptionPane de Ok (670×474
+# contra ~430×120), e é pelo tamanho que o roteiro a reconhece: diálogo
+# maior que isto nunca recebe tecla, e a rodada para.
+ALTURA_MAXIMA_OK = 250
+
+
+class FalhaDoPva(RuntimeError):
+    """O PVA abriu uma tela que não é de Ok. A resposta é de quem usa."""
+
+
+def _altura(hwnd):
+    r = ctypes.wintypes.RECT()
+    if not _GetWindowRect(hwnd, ctypes.byref(r)):
+        return 0
+    return r.bottom - r.top
 
 
 def _dispensar_conclusao(layout, raiz, limite=30, sossego=3.0):
     """Fecha os avisos de conclusão da validação — ou da recusa.
 
     No programa eles ficam para a pessoa ver; no roteiro, travam o próximo
-    Ctrl+I. Só roda **depois** de a validação terminar, só age em janela com
-    um desses títulos, do processo da instalação de ensaio, e só dá por
-    encerrado quando nenhum aparece por `sossego` segundos (eles vêm um
-    depois do outro).
+    Ctrl+I. Só age em janela com um desses títulos, do processo da
+    instalação de ensaio, e **só aperta Enter em diálogo pequeno** (um Ok).
+    Janela "Erro" maior é a falha interna do PVA: levanta `FalhaDoPva` sem
+    tocar nela. Dá por encerrado quando nenhum aparece por `sossego`
+    segundos (eles vêm um depois do outro).
 
-    Devolve `(sossegou, vistos)`: `vistos` são os títulos que apareceram —
-    "erro" ou "resultado da importação" quer dizer importação recusada.
+    Devolve `(sossegou, vistos)`: `vistos` são os títulos que apareceram.
     """
     vistos = set()
     hwnd, pid = pva.janela(layout, raiz)
@@ -350,6 +374,14 @@ def _dispensar_conclusao(layout, raiz, limite=30, sossego=3.0):
                    if p == pid]
         vistos.update(t for _h, t in janelas
                       if t in TITULOS_FECHAR + TITULOS_CONCLUSAO)
+        for h, t in janelas:
+            if t in TITULOS_CONCLUSAO and _altura(h) > ALTURA_MAXIMA_OK:
+                raise FalhaDoPva(
+                    "O %s abriu uma tela de falha interna (\"%s\", %d px de "
+                    "altura), com a opção de enviar relatório à Receita. O "
+                    "roteiro parou sem tocar nela: responda no PVA (\"Não "
+                    "Enviar\") e rode de novo — ele retoma de onde parou."
+                    % (pva.INSTALACOES[layout]["nome"], t, _altura(h)))
         for h, t in janelas:
             if t in TITULOS_FECHAR:
                 pva._user32.PostMessageW(h, 0x0010, 0, 0)   # WM_CLOSE
@@ -364,8 +396,8 @@ def _dispensar_conclusao(layout, raiz, limite=30, sossego=3.0):
             time.sleep(0.5)
             continue
         livre_desde = time.time()
-        if pva._focar(msgs[0], pid, limite=5) and \
-                pva._pid_do_primeiro_plano()[0] == msgs[0]:
+        if (pva._focar(msgs[0], pid, limite=5)
+                and pva._pid_do_primeiro_plano()[0] == msgs[0]):
             pva._tecla(pva.VK_RETURN)
         time.sleep(1)
     return False, vistos
@@ -375,6 +407,11 @@ def _dispensar_conclusao(layout, raiz, limite=30, sossego=3.0):
 # validação que achou erros ("O arquivo contém erros e avisos"). A recusa
 # da importação é a única que abre o relatório.
 RECUSA = {"resultado da importação"}
+# Só estes desfechos dizem que o banco tem o resultado de uma validação (ou
+# da recusa). "importado" é importação **sem** validação: o banco existe e a
+# tabela de inconsistências está vazia — ler isso como "0 erros" foi um
+# falso positivo da primeira rodada da 0.56.0.
+VALIDADO = ("validando", "manual", "erro_pva")
 
 
 def _validar_um(item, raiz, limite=1800, manual=False):
@@ -403,16 +440,20 @@ def _validar_um(item, raiz, limite=1800, manual=False):
     time.sleep(3)                           # o PVA grava e fecha a tabela
     novos = sorted(set(banco_pva.bancos(layout, raiz)) - antes)
     item["bd"] = novos[-1] if novos else None
+    item["segundos"] = round(time.time() - t0)
+    # lê **antes** de fechar as telas: na recusa, o PVA apaga o banco quando
+    # o relatório da importação é fechado
     cont = (banco_pva.inconsistencias(layout, item["bd"], raiz)
             if item["bd"] else None)
-    item["inconsistencias"] = (
-        None if cont is None
-        else {"%s|%s" % k: v for k, v in sorted(cont.items())})
-    item["segundos"] = round(time.time() - t0)
     if not manual:
         _ok, vistos = _dispensar_conclusao(layout, raiz)
         item["recusado"] = (bool(vistos & RECUSA)
                             or item["estado"] == "erro_pva")
+    if item["estado"] not in VALIDADO and not item.get("recusado"):
+        cont = None                 # importado sem validar: não é "0 erros"
+    item["inconsistencias"] = (
+        None if cont is None
+        else {"%s|%s" % k: v for k, v in sorted(cont.items())})
     return item
 
 
@@ -436,8 +477,12 @@ def validar(ensaio, saida, somente=None, rotulos=None, manual=False):
                 feitos[item["arquivo"]].get("inconsistencias") is not None:
             continue
         print("%s %s…" % (item["rotulo"], item["fluxo"]), flush=True)
-        feitos[item["arquivo"]] = _validar_um(dict(item), raiz,
-                                              manual=manual)
+        try:
+            feitos[item["arquivo"]] = _validar_um(dict(item), raiz,
+                                                  manual=manual)
+        except FalhaDoPva as exc:
+            # o que já foi validado está gravado; a rodada retoma daqui
+            sys.exit("\n%s" % exc)
         r = feitos[item["arquivo"]]
         total = sum((r["inconsistencias"] or {}).values()) \
             if r["inconsistencias"] is not None else "?"

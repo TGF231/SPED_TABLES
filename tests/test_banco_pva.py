@@ -131,6 +131,45 @@ class TestComparacaoDoRoteiro(unittest.TestCase):
         self.assertEqual(piores, [("MSG_B|C170", 25, 26)])
         self.assertEqual(melhores, [("MSG_A|C190", 63, 37)])
 
+    @unittest.skipUnless(sys.platform == "win32", "Win32")
+    def test_falha_interna_do_pva_para_sem_tecla(self):
+        """A tela de falha interna ("Erro durante a validacao no banco")
+        tem o botão de enviar relatório à Receita: nenhuma tecla vai para
+        ela, e a rodada para."""
+        teclas = []
+        janelas = [(10, "Sped Fiscal", 99), (11, "Erro", 99)]
+        with mock.patch.object(self.mod.pva, "janela",
+                               lambda layout, raiz=None: (10, 99)), \
+                mock.patch.object(self.mod.pva, "_janelas",
+                                  lambda exigir_titulo=True: janelas), \
+                mock.patch.object(self.mod.pva, "_tecla",
+                                  lambda vk, ctrl=False: teclas.append(vk)), \
+                mock.patch.object(self.mod.pva, "_focar",
+                                  lambda h, p, **k: h), \
+                mock.patch.object(self.mod, "_altura", lambda h: 474):
+            with self.assertRaises(self.mod.FalhaDoPva) as ctx:
+                self.mod._dispensar_conclusao("ICMS", "x", limite=2)
+        self.assertEqual(teclas, [])
+        self.assertIn("Não Enviar", str(ctx.exception))
+
+    def test_importado_sem_validar_nao_conta_como_zero_erros(self):
+        """O banco existe e a tabela está vazia quando a validação não
+        rodou: isso não é "0 inconsistências"."""
+        item = {"layout": "ICMS", "arquivo": "x.txt"}
+        bancos = iter([["bd1"], ["bd1", "bd2"]])
+        with mock.patch.object(self.mod, "_dispensar_conclusao",
+                               lambda *a, **k: (True, set())), \
+                mock.patch.object(self.mod.banco_pva, "bancos",
+                                  lambda *a: next(bancos)), \
+                mock.patch.object(self.mod.banco_pva, "inconsistencias",
+                                  lambda *a: {}), \
+                mock.patch.object(self.mod.pva, "abrir",
+                                  lambda *a, **k: {"estado": "importado"}), \
+                mock.patch.object(self.mod.time, "sleep", lambda s: None):
+            r = self.mod._validar_um(item, "raiz")
+        self.assertEqual(r["bd"], "bd2")
+        self.assertIsNone(r["inconsistencias"])
+
     def test_recusa_na_importacao(self):
         estrutura = {"MSG_ERRO_TIPO_CAMPO|0200": 634,
                      "MSG_ERRO_TAMANHO_CAMPO|0200": 366}

@@ -17,7 +17,7 @@ série 0.y.z é desenvolvimento.
 
 import re
 
-__version__ = "0.55.0"
+__version__ = "0.56.0"
 APP_NAME = "SPED Tables"
 
 CANAIS = ("dev", "alpha", "beta", "rc")

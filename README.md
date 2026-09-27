@@ -569,6 +569,22 @@ não aparecendo, a automação para e avisa o que falta fazer.
 
 Medido aqui, do clique ao validador rodando: **19 segundos**.
 
+### Nada é descartado nem lido como zero em silêncio
+
+- **Linha fora do formato.** Linha sem o `|` inicial não é registro. Ela
+  aparece no Diagnóstico, e salvar pergunta antes de gravar sem ela: até a
+  0.55.0 ela sumia ao salvar. Linha sem o `|` final é lida inteira (antes,
+  perdia o último campo; num 0200, o NCM) e também é apontada.
+- **Número inválido nos cálculos.** Recalcular C190, totais do C100, ICMS dos
+  itens, bloco M, alíquotas de PIS/COFINS e C175 da NFC-e **recusam** quando
+  algum campo de valor que eles leem não é número do SPED (`NULL`, `12a`,
+  `1.234,5.6`). A mensagem diz o registro, o campo, o valor e a linha. Nada é
+  alterado: antes, o lixo era lido como zero e o total saía gravado errado,
+  com cara de certo.
+- **Cadastro, acervo ou configuração ilegíveis.** O arquivo é guardado como
+  `nome.corrompido-<data>` e você é avisado. Antes ele virava "vazio", e
+  cadastrar uma empresa gravava por cima do cadastro inteiro.
+
 ### Segurança ao salvar
 
 O arquivo só é substituído quando a gravação inteira deu certo: o conteúdo é
@@ -587,9 +603,8 @@ PVA e mostra um painel com os problemas **agrupados pelo módulo que os
 corrige** — cada linha tem o botão que abre a função certa:
 
 ```
-Limpar campos com NULL                13343   [Abrir]
+Corrigir campos pelo leiaute          24313   [Abrir]
 Preencher COD_GEN pelo NCM            12478   [Abrir]
-Validar campos pelo leiaute           10970   [Abrir]
 Itens do 0200 sem referência          10312   [Abrir]
 Recalcular C190 com redução zerada       66   [Abrir]
 Correção manual na grade                 26   campo obrigatório em branco
@@ -643,7 +658,7 @@ validador oficial.
 
 ### Validação contra as tabelas dos PVAs
 
-**Ferramentas → Gerais → Validar campos pelo leiaute…** usa, quando os PVAs
+O **Diagnóstico** (e a tela *Corrigir campos pelo leiaute*, aberta por ele) usa, quando os PVAs
 estão instalados, **as mesmas tabelas que o fisco aplica** — as dos programas
 validadores do EFD ICMS/IPI e do EFD Contribuições. Assim a lista de códigos
 válidos acompanha a atualização do PVA sem depender de o programa ser
@@ -665,9 +680,9 @@ códigos de **ajuste são estaduais**, e a UF sai do próprio 0000; e **zero à
 esquerda sobrando não é erro** (`COD_PAIS 01058` é o `1058` da tabela), embora
 código só de zeros seja tratado como campo vazio.
 
-### Validar campos pelo leiaute
+### Corrigir campos pelo leiaute
 
-**Ferramentas → Gerais → Validar campos pelo leiaute…** confere **todo o
+Aberta pelo **Diagnóstico**, na linha *Corrigir campos pelo leiaute*, confere **todo o
 arquivo** contra o domínio de cada campo — NCM com 8 dígitos, CEST com 7, CFOP
 com 4 começando por 1/2/3/5/6/7, CST de PIS e COFINS na tabela oficial, datas
 que existem de verdade, campos de valor no formato numérico do SPED, e assim por
@@ -678,7 +693,8 @@ O resultado vem separado em duas naturezas:
 
 - **Com conserto automático** — o valor está certo mas perdeu o zero à esquerda
   (CEST com 6 dígitos, NCM com 7, `TIPO_ITEM` com 1) ou é texto de vazio
-  (`NULL`, `#N/A`). O botão **Normalizar** corrige todos de uma vez, e a
+  (`NULL`, `None`, `#N/A`, `#REF!`) em **qualquer** campo, inclusive nos de
+  texto livre, como a descrição. O botão **Normalizar** corrige todos de uma vez, e a
   sugestão só existe quando falta **exatamente um** dígito — repor dois zeros
   seria inventar.
 - **Exigem correção manual** — CST do ICMS incompleto, CFOP inexistente, data
@@ -711,18 +727,6 @@ planilha, use `=LEFT(TEXT(NCM;"00000000");2)`.)
 O diálogo mostra quantos itens estão sem COD_GEN e quantos têm outro valor,
 com exemplos, antes de gravar. Itens sem NCM de 8 dígitos ficam de fora: não há
 capítulo de onde tirar o gênero.
-
-### Limpar campos com NULL
-**Ferramentas → Gerais → Limpar campos com NULL…** procura campos em que o
-sistema de origem gravou o "vazio" por extenso — `NULL`, `None`, `#N/A`,
-`#REF!` — e os esvazia. É um defeito comum de exportação: o ERP despeja o
-`NULL` do banco dentro do arquivo, e o PVA recusa cada ocorrência com
-*"Conteúdo de Campo inválido"*. Num arquivo real de supermercado eram **13.341
-campos**, em 82,6% dos itens cadastrados no 0200.
-
-O diálogo mostra antes quantos campos foram encontrados, agrupados por registro
-e campo, e só esvazia depois da confirmação. `-` e `N/A` **não** são tocados:
-podem ser descrição legítima de produto.
 
 Dê **duplo-clique** numa linha do relatório (ou use **Ir para o registro**) e o
 editor abre o bloco, a sub-aba e a linha exata do registro com problema —

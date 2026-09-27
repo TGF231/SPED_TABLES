@@ -152,6 +152,11 @@ def main():
     # e troca o tema para a densidade compacta
     janela.dimensionar_para_a_tela()
     janela.show()
+    # arquivo de dados ilegível (cadastro, acervo, configuração) é guardado à
+    # parte pela infra; aqui a pessoa fica sabendo — inclusive dos achados
+    # antes de a janela existir
+    dados.ao_avisar(lambda texto: QMessageBox.warning(
+        janela, "Arquivo de dados ilegível", texto))
     primeira_instalacao(janela)
     # abre direto se um caminho for passado na linha de comando. Pelo mesmo
     # caminho do histórico: montar as abas à mão deixava o menu desabilitado,

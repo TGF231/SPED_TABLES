@@ -55,15 +55,24 @@ class Sessao:
             aviso = "Arquivo sem CNPJ no 0000: não foi arquivado no histórico."
         return Resultado(caminho, entrada, aviso)
 
-    def salvar(self, caminho=None):
+    def salvar(self, caminho=None, descartar_invalidas=False):
         """Grava (atomicamente — ver `SpedDocument.salvar`) e atualiza a
-        cópia do período. Sem caminho, grava onde o arquivo está."""
+        cópia do período. Sem caminho, grava onde o arquivo está.
+
+        Arquivo com linhas fora do formato levanta `LinhasInvalidas`: quem
+        chama pergunta ao usuário e, com o sim, repete com
+        `descartar_invalidas=True`.
+        """
         if self.doc is None:
             raise ValueError("Nenhum arquivo aberto.")
         destino = caminho or self.doc.caminho or self.caminho
         if not destino:
             raise ValueError("O arquivo ainda não tem onde ser gravado.")
-        self.doc.salvar(destino)
+        self.doc.salvar(destino, descartar_invalidas=descartar_invalidas)
+        if descartar_invalidas:
+            falhas.log.warning("gravado sem %d linha(s) fora do formato: %s",
+                               len(self.doc.linhas_invalidas), destino)
+            self.doc.linhas_invalidas = []
         self.caminho = destino
         self.alterado = False
         entrada, aviso = self._arquivar("salvamento", destino)

@@ -49,6 +49,38 @@ class TestAliquotaDoCadastro(unittest.TestCase):
                 fh.write("{isto não é json")
             self.assertEqual(cadastro.carregar_empresas(cam), {})
 
+    def test_cadastro_ilegivel_e_guardado_e_nao_sobrescrito(self):
+        """Até a 0.55.0: ilegível virava vazio e cadastrar uma empresa
+        gravava por cima do cadastro inteiro."""
+        from sped_tables.infra import dados
+        avisos = []
+        dados.ao_avisar(lambda _t: None)    # descarta pendentes de outros
+        dados.ao_avisar(avisos.append)
+        try:
+            with PastaTemporaria() as p:
+                cam = os.path.join(p, "empresas.json")
+                with open(cam, "w", encoding="utf-8") as fh:
+                    fh.write('{"11222333000181": {"nome": "A",}')  # vírgula
+                self.assertEqual(cadastro.carregar_empresas(cam), {})
+                guardados = [n for n in os.listdir(p)
+                             if n.startswith("empresas.json.corrompido-")]
+                self.assertEqual(len(guardados), 1)
+                e = emp_mod.Empresa(cnpj=CNPJ_TESTE, nome="NOVA")
+                cadastro.salvar_empresas({CNPJ_TESTE: e}, cam)
+                with open(os.path.join(p, guardados[0]),
+                          encoding="utf-8") as fh:
+                    self.assertIn('"nome": "A",', fh.read())   # intacto
+                # o segundo no mesmo segundo não apaga o primeiro
+                with open(cam, "w", encoding="utf-8") as fh:
+                    fh.write("[]")
+                cadastro.carregar_empresas(cam)
+                self.assertEqual(len([n for n in os.listdir(p)
+                                      if ".corrompido-" in n]), 2)
+        finally:
+            dados.ao_avisar(None)
+        self.assertEqual(len(avisos), 2)
+        self.assertIn("guardado como empresas.json.corrompido-", avisos[0])
+
     def test_correlacoes_no_formato_errado_viram_a_padrao(self):
         """JSON válido mas no formato errado derrubava a janela principal
         na criação — o programa não abria (achado no autoteste do pacote)."""

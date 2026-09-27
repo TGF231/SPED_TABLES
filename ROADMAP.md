@@ -36,7 +36,7 @@ não prontas simplesmente não são criadas — nem menu, nem atalho
 (`acoes.visiveis()`, com teste em `tests/test_arquitetura.py`). Uma função
 nova nasce com `pronta=False` e só vira `True` quando passa pelo critério.
 
-**Onde estamos:** `0.55.0`, canal **dev**. Toda a série 0.y.z é sandbox:
+**Onde estamos:** `0.56.0`, canal **dev**. Toda a série 0.y.z é sandbox:
 nenhuma versão antes da 1.0.0 é entregue como release.
 
 ---
@@ -91,7 +91,7 @@ exemplo). O item 4 (executável) é comum a todas e está na seção 4.2.
 | | CST por NCM (verificar e corrigir) | ✔ | ✔ | **pendente** — sem caso nos arquivos reais |
 | | Empresas e rotinas por regime | ✔ | ✔ verificação; correção por controle | ✔ |
 | Gerais | Diagnóstico, revisão, validação de campos | ✔ | ✔ gabarito | ✔ contra o banco do PVA |
-| | Limpar NULL, normalizar campos, COD_CTA, itens sem referência | ✔ | ✔ | ✔ |
+| | Normalizar campos (inclui NULL), COD_CTA, itens sem referência | ✔ | ✔ | ✔ |
 | | Alterar datas (C100) | ✔ | ✔ | ✔ |
 | | Conferência com XMLs (entradas, C190, itens) | ✔ | ✔ | — |
 | | Abrir no PVA (importar e validar) | ✔ sem PVA | ✔ nos dois PVAs | — |
@@ -113,6 +113,7 @@ reais. Se não ganharem caso até o rc.1, saem da 1.0.0 com `pronta=False`.
 | 0.53.0 | Arquitetura em camadas; tabela de ações; correções cobertas pela suíte; canais de versão | ✔ |
 | 0.54.0 | Coluna **PVA** da tabela 4.1 inteira (roteiro 2.1) e as três funções sem arquivo real | ✔ — menos NFC-e 65 e CST por NCM, sem caso |
 | 0.55.0 | Executável: gerar, rodar o roteiro 2.2 e 2.3 sobre ele | ✔ — falta só arrastar um `.txt` do Explorador (a lógica está na suíte) e a escala acima de 100%, sem monitor para isso aqui: entram no rc.1 |
+| 0.56.0 | Validar na entrada: leitura sem descarte, cálculos que recusam número inválido, JSON ilegível preservado; *Limpar NULL* e *Validar campos* absorvidos pelo Diagnóstico | ✔ |
 | 1.0.0-rc.1 | Congelamento: só correção; README revisado de ponta a ponta; do roteiro 2.3, arrastar um `.txt` do Explorador e um monitor acima de 100% | pendente |
 | **1.0.0** | Release — ver 4.3 | — |
 
@@ -139,7 +140,6 @@ Sem data; entram pelo canal dev e seguem a seção 1.
 - Refazer a densidade da interface ao mover a janela entre monitores.
 - `CST_ACEITOS`/`CST_SUGERIDO` editáveis pela interface (hoje montados para
   comércio/revenda).
-- Oferecer a limpeza de campos `NULL` ao abrir um arquivo que os tenha.
 - Copiar/colar em bloco no Modo Relatório, compatível com o Excel.
 - Aviso ao salvar com C170 fictícios de NFC-e ainda no arquivo.
 - Conferência do ICMS das NFC-e usando os C170 fictícios.

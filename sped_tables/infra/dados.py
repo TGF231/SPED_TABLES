@@ -19,7 +19,9 @@ Sem dependência de GUI: a interface só chama `pasta_dados()` e
 `criar_atalho_area_trabalho()`.
 """
 
+import datetime
 import json
+import logging
 import os
 import shutil
 import subprocess
@@ -120,6 +122,77 @@ def gravar_json(caminho_destino, objeto):
     """JSON legível (UTF-8, indentado), gravado de forma atômica."""
     texto = json.dumps(objeto, ensure_ascii=False, indent=2)
     return gravar_atomico(caminho_destino, texto.encode("utf-8"))
+
+
+# ------------------------------------------------- JSON do usuário ilegível
+# Até a 0.55.0, cadastro, correlações, acervo e configuração ilegíveis viravam
+# "vazio" sem aviso — e o próximo salvamento gravava por cima: bastava
+# cadastrar uma empresa para o cadastro inteiro sumir. Agora o arquivo é
+# guardado à parte e quem usa o programa é avisado.
+_avisos = []
+_ao_avisar = [None]
+
+
+def ao_avisar(funcao):
+    """Liga quem mostra os avisos (a interface) e entrega os pendentes."""
+    _ao_avisar[0] = funcao
+    while funcao is not None and _avisos:
+        funcao(_avisos.pop(0))
+
+
+def _avisar(texto):
+    logging.getLogger("sped_tables").warning(texto)
+    if _ao_avisar[0] is not None:
+        _ao_avisar[0](texto)
+    else:
+        _avisos.append(texto)
+
+
+def preservar_corrompido(caminho_arquivo, motivo):
+    """Renomeia o arquivo ilegível para `<nome>.corrompido-<data>` — assim
+    ele não é sobrescrito — e avisa. Devolve o novo caminho (ou None)."""
+    base = "%s.corrompido-%s" % (
+        caminho_arquivo, datetime.datetime.now().strftime("%Y%m%d-%H%M%S"))
+    # dois no mesmo segundo não podem ter o mesmo nome: o segundo apagaria
+    # o primeiro guardado
+    destino, n = base, 1
+    while os.path.exists(destino):
+        n += 1
+        destino = "%s-%d" % (base, n)
+    try:
+        os.replace(caminho_arquivo, destino)
+    except OSError:
+        destino = None
+    _avisar("O arquivo %s está ilegível (%s). %s O programa segue sem ele."
+            % (os.path.basename(caminho_arquivo), motivo,
+               "Ele foi guardado como %s, sem nada apagado."
+               % os.path.basename(destino) if destino
+               else "Não foi possível guardá-lo à parte: não salve nada "
+                    "desse tipo antes de recuperá-lo."))
+    return destino
+
+
+def ler_json_do_usuario(caminho_arquivo, tipo):
+    """O conteúdo do JSON, ou None se o arquivo não existe. Arquivo que não
+    é JSON — ou é JSON do tipo errado (uma lista onde se espera objeto) —
+    é preservado e avisado (`preservar_corrompido`), e também dá None."""
+    if not os.path.exists(caminho_arquivo):
+        return None
+    try:
+        with open(caminho_arquivo, encoding="utf-8") as fh:
+            conteudo = json.load(fh)
+    except OSError:
+        return None                    # sem acesso: não é corrupção
+    except ValueError as exc:
+        preservar_corrompido(caminho_arquivo, "não é JSON válido: %s" % exc)
+        return None
+    if not isinstance(conteudo, tipo):
+        preservar_corrompido(
+            caminho_arquivo, "esperava %s e encontrou %s"
+            % ("uma lista" if tipo is list else "um objeto",
+               type(conteudo).__name__))
+        return None
+    return conteudo
 
 
 def primeira_execucao():

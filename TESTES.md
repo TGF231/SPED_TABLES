@@ -31,7 +31,7 @@ cadastro de verdade e o registro do Windows não são tocados.
 | `test_documento` | Ida e volta byte a byte, hierarquia, encoding (UTF-8 lido, latin-1 gravado), gravação que não destrói o destino, bloco 9, largura de registro novo. |
 | `test_calculos` | Formatos numéricos, zero à esquerda de planilha, GTIN, `NULL` do ERP, rateio de acessórios, C190 (agrupamento, frete, x20, x70 pela base de PIS/COFINS). |
 | `test_bloco_m` | Débito, crédito refeito das entradas, ordem do leiaute, idempotência, cumulativo, conferência igual à geração. |
-| `test_correcoes` | Cada correção que **grava**: limpar NULL, COD_GEN, COD_CTA + 0500, itens sem referência, ICMS dos itens, C190 em massa, datas. Confere o conserto, a idempotência e o arquivo bem formado depois de salvar. |
+| `test_correcoes` | Cada correção que **grava**: NULL pela validação e normalizar, COD_GEN, COD_CTA + 0500, itens sem referência, ICMS dos itens, C190 em massa, datas. Confere o conserto, a idempotência e o arquivo bem formado depois de salvar. |
 | `test_conferencia` | Leitura de NF-e (XML sintético); conferência de entradas (casamento, divergência por item, CSOSN ignorado, nota sem C100); classificação de NCM (prefixo, exceção, vigência) e CST esperado; totais do C100; NFC-e 65 — C170 fictícios, regeneração do C175 e rateio igual na conferência e na geração. |
 | `test_validacao` | Domínios de campo, sugestões (só com um dígito faltando), CST_ICMS e CFOP nunca sugeridos, normalização. |
 | `test_revisao` | Todas as regras nos dois leiautes sem exceção, e as que reproduzem mensagens do PVA. |
@@ -76,7 +76,7 @@ Em todo `.txt` que começa com `|0000|`, confere:
 - gravar e reabrir não perde registro e estabiliza;
 - recálculo do bloco M idempotente;
 - nenhuma verificação levanta exceção;
-- **as correções em lote** (limpar NULL, COD_GEN, normalizar, C190 em
+- **as correções em lote** (normalizar — que esvazia o NULL —, COD_GEN, C190 em
   massa, bloco M): acabam com o que corrigem, não criam erro de estrutura,
   são idempotentes e o arquivo gravado volta idêntico;
 - **gabarito**: se houver um `gabarito.json` na pasta, os números exatos de
@@ -140,8 +140,8 @@ py ferramentas/validar_no_pva.py relatorio --saida D:\saida
 - Retoma de onde parou: o que já foi validado não é refeito. `gerar
   --fluxos x` refaz só esses e mantém o resto do manifesto.
 - **Arquivo que o PVA recusa na importação** ganha uma segunda série,
-  `arqNN_…_prep`, sobre uma **régua importável**: NULL limpos, campos
-  normalizados, `TIPO_ITEM` inválido do 0200 como `00` e CST_ICMS curto
+  `arqNN_…_prep`, sobre uma **régua importável**: campos
+  normalizados (o que esvazia o NULL), `TIPO_ITEM` inválido do 0200 como `00` e CST_ICMS curto
   completado com zeros. São decisões que o programa, de propósito, não toma
   sozinho — valem só para o roteiro poder julgar as correções pela
   validação, e não pela recusa.
@@ -161,7 +161,7 @@ Os fluxos cobertos:
 - [ ] Rotinas por regime (aplicar a correção) + bloco M → PVA
 - [ ] Validar e regenerar C175 (NFC-e 65) → PVA
 - [ ] Importar inventário (bloco H) → PVA
-- [ ] Limpar NULL, preencher COD_GEN e COD_CTA, normalizar campos → PVA
+- [ ] Normalizar campos (inclui NULL), preencher COD_GEN e COD_CTA → PVA
 - [ ] Alterar datas (C100) → PVA
 - [ ] **Abrir no PVA** pelo botão, com o PVA fechado e com ele aberto numa
       escrituração: chega até "Validando a escrituração…"

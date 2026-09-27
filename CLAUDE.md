@@ -142,8 +142,37 @@ Texto de célula sai por **`_texto_planilha()`**, nunca por `str(v or "")`: ERPs
 exportam o `NULL` do banco por extenso, e o PVA recusa cada campo desses com
 "Conteúdo de Campo inválido". A lista está em `VALORES_NULOS` — e `-` e `N/A`
 estão fora dela de propósito, porque podem ser descrição legítima de produto.
-O mesmo lixo aparece **dentro do SPED** que o cliente entrega (13.341 campos num
-arquivo real): quem limpa é a ação *Limpar campos com NULL*.
+O mesmo lixo apareceu **dentro de um SPED** antes de qualquer importação
+(13.341 campos num arquivo real, de origem não identificada — não foi o ERP).
+Ali quem acusa é a **validação de leiaute**, em qualquer campo, inclusive nos de
+texto livre, e quem corrige é o *Normalizar*. Até a 0.55.0 havia uma ação à
+parte, *Limpar campos com NULL*: era a mesma detecção em dois lugares.
+
+### Validar na entrada, nunca tolerar em silêncio
+
+Regra da 0.56.0: o que está errado é **acusado** onde entra, e a correção é
+explícita, com prévia. Tolerância silenciosa esconde o erro e piora o arquivo.
+Quatro lugares faziam isso e não fazem mais:
+
+- **Leitura do SPED.** Linha sem o `|` inicial ia embora (e sumia ao salvar);
+  linha sem o `|` final perdia o **último campo** — o `[1:-1]` do `Registro`
+  supõe o pipe. Agora a primeira fica em `doc.linhas_invalidas` (salvar
+  levanta `LinhasInvalidas`, e a GUI pergunta antes de gravar sem elas) e a
+  segunda é lida inteira e anotada em `doc.sem_pipe_final`. As duas viram
+  achado do diagnóstico e impedem o envio ao PVA.
+- **Números nos cálculos que gravam.** `_to_num` lê lixo como zero, e é
+  certo que leia — mas cálculo que **grava** chama antes
+  `_exigir_numeros(registros)`, que levanta `CamposInvalidos` sem ter mexido
+  em nada. A regra de "número do SPED" (`RE_NUM_SPED`, `PREFIXOS_NUMERICOS`)
+  mora no `sped_model` e a validação de leiaute importa dali: o que ela acusa
+  é exatamente o que os cálculos recusam. **Cálculo novo que grava chama
+  `_exigir_numeros` sobre tudo o que lê, antes do primeiro `set_valor`**; na
+  GUI, passa por `comum.calcular(...)`.
+- **JSON do usuário.** Cadastro, correlações, acervo e configuração ilegíveis
+  viravam vazio e eram sobrescritos no próximo salvamento. Agora
+  `dados.ler_json_do_usuario(caminho, tipo)` guarda o arquivo como
+  `.corrompido-<data>` e avisa (`dados.ao_avisar`, ligado no `main()`).
+- **NULL** — acima.
 
 ### Ao mexer em cores ou estilo
 

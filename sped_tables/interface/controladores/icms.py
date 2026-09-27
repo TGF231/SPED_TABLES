@@ -7,6 +7,7 @@ from PyQt6.QtWidgets import QFileDialog, QMessageBox
 from sped_tables.dominio import conferencia as cf
 from sped_tables.dominio import revisao as rev
 from sped_tables.dominio import xml_fiscal as xf
+from sped_tables.interface.comum import calcular
 from sped_tables.interface.dialogos.conferencia import DialogoConfC190
 from sped_tables.interface.dialogos.correcao import DialogoRecalcularICMS
 from sped_tables.interface.dialogos.inventario import DialogoImportarInventario
@@ -122,7 +123,11 @@ class ControladorIcms:
         if caixa.clickedButton() is not b_ok:
             return
 
-        res = self.doc.consolidar_c190_em_massa([c for c, _v in docs])
+        ok, res = calcular(self, "Recalcular C190",
+                           self.doc.consolidar_c190_em_massa,
+                           [c for c, _v in docs])
+        if not ok:
+            return
         self._marcar_alterado()
         self._montar_abas()
         restantes = len(rev.verificar_c190_reducao(self.doc))

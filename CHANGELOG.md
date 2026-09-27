@@ -1,5 +1,61 @@
 # Changelog
 
+## [0.56.0] - 2026-09-26
+
+Validar na entrada, nunca tolerar em silêncio. Uma revisão das funções que
+existiam para contornar dado ruim achou quatro lugares em que o programa
+**escondia** o erro em vez de acusá-lo, e duas ações que repetiam o que a
+validação de leiaute já faz.
+
+### Corrigido
+- **A leitura descartava dado sem avisar.**
+  - Linha **sem o `|` final** perdia o último campo. Num 0200 assim, o NCM ia
+    embora, o diagnóstico não acusava nada e salvar gravava sem ele. Agora a
+    linha é lida inteira e apontada.
+  - Linha **sem o `|` inicial** era pulada e sumia ao salvar. Agora ela
+    aparece no Diagnóstico, e salvar pergunta antes de gravar sem ela.
+
+  As duas impedem o envio ao PVA, como qualquer erro de estrutura.
+- **Cálculos que gravam liam lixo como zero.** `NULL` ou `12a` num campo de
+  valor viravam 0,0, e o C190, os totais do C100, o ICMS dos itens, o bloco M,
+  a troca de alíquotas ou o C175 da NFC-e gravavam um total errado com cara
+  de certo. Agora esses cálculos **recusam antes de mexer em qualquer coisa**,
+  dizendo o registro, o campo, o valor e a linha. A regra de "número do SPED"
+  é a mesma da validação de leiaute: o que ela acusa é o que eles recusam.
+- **Cadastro, correlações, acervo e configuração ilegíveis viravam vazio** e
+  eram sobrescritos no próximo salvamento: bastava cadastrar uma empresa para
+  o cadastro inteiro sumir. Agora o arquivo é guardado como
+  `nome.corrompido-<data>`, e o usuário é avisado. Isso vale também para o
+  `correlacoes_cfop.json` da 0.55.0, que caía na tabela padrão em silêncio.
+
+### Roteiro de validação no PVA
+- **Revalidado no PVA de ensaio: 54 arquivos, resultado idêntico ao da
+  0.54.0.** Nenhuma correção cria erro que o original não tenha. A
+  revalidação era necessária porque, desde a 0.55.0, os arquivos do cliente
+  A saem com a ordem dos 9900 preservada e o 0500 criado pelo COD_CTA entra
+  no fim da lista. O PVA aceitou os dois.
+- **O roteiro apertava Enter em toda janela chamada "Erro"**, inclusive na
+  tela de falha interna do PVA ("Erro durante a validacao no banco"), que
+  tem um botão de enviar relatório à Receita. Nesta rodada o Enter caiu na
+  caixa de texto e nada foi enviado. Agora o roteiro só responde a diálogo
+  de um Ok (pelo tamanho da janela); diante da falha interna, **para** sem
+  tocar em nada e diz o que fazer.
+- **Arquivo importado mas não validado contava como "0 inconsistências"**:
+  o banco existe, e a tabela fica vazia. Agora só conta se a validação rodou.
+- Na recusa da importação, o PVA apaga o banco ao fechar o relatório: o
+  roteiro lê o resultado antes de fechar as telas.
+
+### Removido
+- **Limpar campos com NULL.** A validação de leiaute já acusava o NULL e o
+  *Normalizar* já o esvaziava: num arquivo real, o *Normalizar* sozinho
+  corrigiu os mesmos 13.341 campos. O único caso que só a ação removida
+  pegava, NULL num campo de texto livre como a descrição, agora é da
+  validação.
+- **Validar campos pelo leiaute**, do menu. Era um subconjunto do
+  *Diagnóstico*, com a mesma validação e os mesmos domínios. A tela continua,
+  como **Corrigir campos pelo leiaute**, aberta pela linha correspondente do
+  Diagnóstico.
+
 ## [0.55.0] - 2026-09-26
 
 O executável: gerado, conferido por dentro (`--autoteste`) e usado na tela

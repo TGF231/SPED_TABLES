@@ -120,7 +120,6 @@ class TestArquivosReais(unittest.TestCase):
                 antes, _i = diagnostico.verificar(doc)
 
                 def corrigir():
-                    doc.limpar_campos_nulos()
                     doc.preencher_cod_gen()
                     validacao.normalizar(doc)
                     if doc.layout == "ICMS":
@@ -137,7 +136,6 @@ class TestArquivosReais(unittest.TestCase):
                 conta = lambda achados, t: sum(          # noqa: E731
                     a.quantidade for a in achados if a.tipo == t)
                 self.assertEqual(conta(depois, "nulo"), 0)
-                self.assertEqual(doc.campos_nulos(), [])
                 self.assertEqual(doc.divergencias_cod_gen(), [])
                 for tipo in estruturais:
                     self.assertLessEqual(conta(depois, tipo),

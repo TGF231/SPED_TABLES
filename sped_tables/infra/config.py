@@ -57,13 +57,9 @@ def caminho_arquivo():
 
 
 def ler():
-    """Conteúdo do `configuracao.json` (vazio se ausente ou corrompido)."""
-    try:
-        with open(caminho_arquivo(), encoding="utf-8") as fh:
-            conteudo = json.load(fh)
-        return conteudo if isinstance(conteudo, dict) else {}
-    except (OSError, ValueError):
-        return {}
+    """Conteúdo do `configuracao.json` (vazio se ausente). Ilegível, é
+    guardado à parte e avisado, e não é sobrescrito pelo próximo `gravar`."""
+    return dados.ler_json_do_usuario(caminho_arquivo(), dict) or {}
 
 
 def gravar(**valores):
