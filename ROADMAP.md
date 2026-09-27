@@ -36,8 +36,9 @@ não prontas simplesmente não são criadas — nem menu, nem atalho
 (`acoes.visiveis()`, com teste em `tests/test_arquitetura.py`). Uma função
 nova nasce com `pronta=False` e só vira `True` quando passa pelo critério.
 
-**Onde estamos:** `0.58.0-dev.1`, canal **dev** (a 0.57.0 está pronta para virar `1.0.0-rc.1`
-quando você decidir. Toda a série 0.y.z é sandbox:
+**Onde estamos:** `0.58.0-dev.1`, canal **dev**. A 0.57.0 está pronta para
+virar `1.0.0-rc.1` quando você decidir; a 0.58 acrescenta a geração a partir
+dos XMLs (4.4). Toda a série 0.y.z é sandbox:
 nenhuma versão antes da 1.0.0 é entregue como release.
 
 ---
