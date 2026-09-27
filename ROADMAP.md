@@ -160,7 +160,7 @@ Decisões tomadas:
 | 2 | Memória de itens por empresa e o aprendizado a partir do SPED entregue | ✔ 0.58.0-dev.2 — reproduz 567 de 577 itens do mês real |
 | 3 | Gerador do EFD ICMS/IPI (0, C, D, E, H, 9) e comparação com o gabarito | ✔ 0.58.0-dev.3 — mês real: 0 inconsistências no PVA |
 | 4 | Gerador do EFD Contribuições (0, A, C, D, F, M, 9) | ✔ 0.58.0-dev.4 — mês real: C175 e bloco M idênticos; PVA igual ao entregue |
-| 5 | Tela: pasta, período, prévia, lista de revisão, abrir o resultado | pendente |
+| 5 | Tela: pasta, período, prévia, lista de revisão, abrir o resultado | ✔ 0.58.0-dev.5 — decisões gravadas na memória; mês real sem bloqueio |
 | 6 | PVA de ensaio com o mês real | pendente |
 
 ## 5. Depois da 1.0

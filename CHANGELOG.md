@@ -1,8 +1,51 @@
 # Changelog
 
-## [Não lançado] — 0.58.0-dev.4
+## [Não lançado] — 0.58.0-dev.5
 
-Etapas 1 a 4 de **gerar o SPED a partir dos XMLs** (ROADMAP 4.4).
+Etapas 1 a 5 de **gerar o SPED a partir dos XMLs** (ROADMAP 4.4).
+
+### Adicionado (etapa 5)
+- **Ferramentas → Gerais → Gerar SPED a partir dos XMLs…** (canal de
+  desenvolvimento, `pronta=False`). Empresa pelo CNPJ, pasta dos XMLs,
+  período e leiautes; a tela mostra:
+  - **Documentos** do período, cada um com a caixa *Incluir*. A nota que a
+    empresa não escritura é desmarcada ali e continua na lista.
+  - **Revisão**: o que o gerador não soube, com os bloqueios primeiro. Com
+    algum bloqueio, o leiaute não é gravado.
+  - **Fora do período e ignorados**, inclusive o arquivo ilegível e o XML
+    repetido.
+- **A decisão da pessoa volta para a memória.** Duplo clique num produto:
+  CFOP, CST, crédito, código próprio, PIS/COFINS. Ela passa à frente do que
+  foi aprendido e substitui uma decisão anterior. A próxima geração já sabe.
+  - O digitado é conferido antes de gravar (`validar_decisao`), com todos
+    os problemas de uma vez; alíquota sai no formato do SPED.
+  - A decisão parte da escrituração **que a geração usou**. Sem isso, dizer
+    só o CST de PIS de um produto escriturado pela correlação de CFOP
+    guardava o CFOP vazio — e, como a memória passava a "saber", a geração
+    seguinte não bloquearia. Escrituração sem CFOP ou CST do ICMS é recusada.
+- **Aprender com SPED entregue…** na própria tela: um SPED de cada leiaute,
+  do mesmo mês, da mesma empresa (recusa os outros casos).
+- Os leiautes marcáveis são os que a memória sabe gerar.
+- O participante novo recebe o mesmo código nos dois leiautes.
+- Caso de uso `aplicacao/geracao_xml.py`: a memória só é gravada ao
+  aprender, decidir ou salvar — nunca por gerar uma prévia.
+
+### Corrigido
+- **Abrir outro arquivo descartava as alterações sem perguntar.** Menu,
+  histórico, painel de empresas e arrastar e soltar passavam direto por
+  cima do arquivo alterado. Agora perguntam, como o *Fechar*.
+- A comparação com o SPED entregue conferia PIS/COFINS também no EFD
+  ICMS/IPI. Lá esses campos são informativos e o gerador os deixa vazios
+  (o PVA aceita), então todo item saía "diferente". Voltam a ser comparados
+  só no EFD Contribuições.
+
+### Mês real pela tela (junho de 2026)
+- Aprender com os dois SPED entregues e gerar: 20 bloqueios (o CFOP 5908 e
+  o CST de PIS/COFINS de itens das 13 notas que a empresa não escriturou).
+- Desmarcadas as 13 notas: **nenhum bloqueio** e os números da dev.3/dev.4
+  (393 C100 e 562 C170 no ICMS/IPI; C175 e bloco M idênticos).
+- Com as 13 notas e 9 decisões gravadas na memória: nenhum bloqueio, e a
+  pré-checagem de importação limpa nos dois leiautes.
 
 ### Adicionado (etapa 4)
 - **Gerador do EFD Contribuições.**

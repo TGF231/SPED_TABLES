@@ -152,6 +152,30 @@ class TestJanela(unittest.TestCase):
             j.close()
         self.assertEqual(self.erros, [], self._falhas())
 
+    def test_abrir_outro_pergunta_pelas_alteracoes(self):
+        """Até a 0.58.0 abrir outro arquivo (menu, histórico, arrastar)
+        por cima de um alterado descartava as alterações sem perguntar."""
+        with PastaTemporaria() as p:
+            j = self.ed.JanelaPrincipal()
+            self.assertTrue(j.abrir_caminho(icms_basico().gravar(p)))
+            doc = j.doc
+            j.alterado = True
+            outro = os.path.join(p, "outro")
+            os.makedirs(outro)
+            segundo = contrib_basico().gravar(outro)
+            with mock.patch.object(type(j), "_perguntar_salvar",
+                                   lambda *a: "cancelar"):
+                self.assertFalse(j.abrir_caminho(segundo))
+            self.assertIs(j.doc, doc)
+            with mock.patch.object(type(j), "_perguntar_salvar",
+                                   lambda *a: "descartar"):
+                self.assertTrue(j.abrir_caminho(segundo))
+            self.assertEqual(j.doc.layout, "CONTRIB")
+            _esperar()
+            j.alterado = False
+            j.close()
+        self.assertEqual(self.erros, [], self._falhas())
+
     def test_todas_as_acoes_nos_dois_leiautes(self):
         for montador in (icms_basico(), contrib_basico()):
             with self.subTest(layout=montador.layout), \

@@ -133,6 +133,37 @@ pelo `IND_OPER` (`0` = entrada, `1` = saída) e o rótulo mostra "X de Y". Com u
 filtro ativo, ao **Adicionar linha** o novo registro já nasce com o `IND_OPER`
 correspondente.
 
+### Gerar SPED a partir dos XMLs
+
+> **Em desenvolvimento.** Falta o ensaio no PVA do arquivo gerado pela tela
+> e um mês real com CT-e — ver ROADMAP 4.4.
+
+**Ferramentas → Gerais → Gerar SPED a partir dos XMLs…** gera o **EFD
+ICMS/IPI** e o **EFD Contribuições** de um período só com os XMLs de
+entradas e saídas (NF-e 55, NFC-e 65, CT-e 57 e eventos de cancelamento).
+Funciona sem arquivo aberto.
+
+O XML diz o que aconteceu; **como a empresa escritura** vem de uma memória
+por empresa, gravada na pasta de dados (`memoria/<CNPJ>.json`):
+
+- **Aprender com SPED entregue…** casa o SPED de um mês com os XMLs do
+  mesmo mês (chave da nota + número do item). A memória guarda o código
+  próprio de cada produto do fornecedor, a escrituração dele por CFOP e CST
+  de origem, a conversão de unidade, os participantes, o cadastro 0200 e os
+  registros que não saem dos XMLs (cabeçalho, contabilista, E116, 0110…).
+  Quanto mais meses aprendidos, menos revisão.
+- **Gerar** mostra os documentos do período (desmarque a nota que a empresa
+  não escritura), o que ficou fora e a **revisão**: tudo o que o gerador
+  decidiu sem saber, com o motivo.
+- **Bloqueio** é o ponto que deixaria o arquivo inválido — um CFOP de
+  entrada que ninguém sabe, um CST de PIS que falta. Com bloqueio o leiaute
+  não é gravado. **Duplo clique** no produto e informe o que falta: a
+  decisão fica na memória e vale para os meses seguintes.
+- Gravado o arquivo, *Abrir no editor* leva direto ao diagnóstico e ao PVA.
+
+Limites: os textos complementares (C110/C195) não são montados; o saldo
+credor anterior do ICMS vem da memória ou do campo da tela.
+
 ### Importar XMLs → consolidar C175 (EFD Contribuições)
 
 > **Em desenvolvimento.** Nenhum arquivo gerado por esta função passou ainda

@@ -13,12 +13,17 @@ from sped_tables.dominio.sped_model import _to_num
 
 C100 = ("COD_SIT", "DT_DOC", "DT_E_S", "VL_DOC", "IND_PGTO", "VL_DESC",
         "VL_MERC", "IND_FRT", "VL_FRT", "VL_SEG", "VL_OUT_DA", "VL_BC_ICMS",
-        "VL_ICMS", "VL_BC_ICMS_ST", "VL_ICMS_ST", "VL_IPI", "VL_PIS",
-        "VL_COFINS")
+        "VL_ICMS", "VL_BC_ICMS_ST", "VL_ICMS_ST", "VL_IPI")
 C170 = ("COD_ITEM", "QTD", "UNID", "VL_ITEM", "VL_DESC", "CST_ICMS", "CFOP",
         "COD_NAT", "VL_BC_ICMS", "ALIQ_ICMS", "VL_ICMS", "VL_ICMS_ST",
-        "CST_IPI", "VL_IPI", "CST_PIS", "VL_BC_PIS", "ALIQ_PIS", "VL_PIS",
-        "CST_COFINS", "VL_BC_COFINS", "ALIQ_COFINS", "VL_COFINS", "COD_CTA")
+        "CST_IPI", "VL_IPI")
+# PIS/COFINS só se comparam no EFD Contribuições: no ICMS/IPI esses campos
+# são informativos, o gerador os deixa vazios e o PVA aceita — comparados
+# ali, cada item do mês real saía "diferente" sem ser
+C100_CONTRIB = C100 + ("VL_PIS", "VL_COFINS")
+C170_CONTRIB = C170 + ("CST_PIS", "VL_BC_PIS", "ALIQ_PIS", "VL_PIS",
+                       "CST_COFINS", "VL_BC_COFINS", "ALIQ_COFINS",
+                       "VL_COFINS", "COD_CTA")
 C175 = ("VL_OPR", "VL_DESC", "VL_BC_PIS", "VL_PIS", "VL_BC_COFINS",
         "VL_COFINS")
 C190 = ("VL_OPR", "VL_BC_ICMS", "VL_ICMS", "VL_BC_ICMS_ST", "VL_ICMS_ST",
@@ -60,7 +65,9 @@ def comparar(gerado, entregue):
     """`{secao: {"so_gerado", "so_entregue", "diferencas", "iguais"}}` e,
     em `diferencas`, `(chave, campo, gerado, entregue)`."""
     out = {}
-    for reg, chave, nomes in (("C100", "CHV_NFE", C100),
+    contrib = gerado.layout == "CONTRIB"
+    c100, c170 = (C100_CONTRIB, C170_CONTRIB) if contrib else (C100, C170)
+    for reg, chave, nomes in (("C100", "CHV_NFE", c100),
                               ("D100", "CHV_CTE", D100)):
         g, e = _docs(gerado, reg, chave), _docs(entregue, reg, chave)
         sec = {"so_gerado": sorted(set(g) - set(e)),
@@ -76,7 +83,7 @@ def comparar(gerado, entregue):
             _dif_part(sec, k, gerado, g[k], entregue, e[k], reg)
             if reg == "C100":
                 _filhos(itens, k, gerado, g[k], entregue, e[k], "C170",
-                        ("NUM_ITEM",), C170)
+                        ("NUM_ITEM",), c170)
                 if gerado.layout == "CONTRIB":
                     _filhos(anal, k, gerado, g[k], entregue, e[k], "C175",
                             ("CFOP", "CST_PIS", "ALIQ_PIS"), C175)

@@ -10,7 +10,7 @@ from sped_tables.dominio import diagnostico
 from sped_tables.dominio import revisao as rev
 from sped_tables.dominio import validacao
 from sped_tables.dominio import xml_fiscal as xf
-from sped_tables.infra import config
+from sped_tables.infra import cadastro, config
 from sped_tables.interface.dialogos.cadastro import (
     DialogoCodCta, DialogoItensNaoUsados,
 )
@@ -18,6 +18,7 @@ from sped_tables.interface.dialogos.conferencia import (
     DialogoConferencia, DialogoCorrelacoesCFOP,
 )
 from sped_tables.interface.dialogos.correcao import DialogoAlterarDatas
+from sped_tables.interface.dialogos.geracao import DialogoGerarDeXml
 from sped_tables.interface.dialogos.verificacao import (
     DialogoDiagnostico, DialogoRevisao, DialogoValidacao,
 )
@@ -29,6 +30,16 @@ class ControladorGerais:
     Mixin da `JanelaPrincipal`: usa `self.doc`, `self.statusBar()` e os
     demais membros da janela.
     """
+
+    def gerar_de_xml(self):
+        """Gera o SPED de um período só com os XMLs e a memória da empresa
+        (`aplicacao/geracao_xml.py`). Gravado o arquivo, a pessoa pode
+        abri-lo aqui para conferir e mandar ao PVA."""
+        dlg = DialogoGerarDeXml(self, empresas=cadastro.carregar_empresas(),
+                                correlacoes=self.correlacoes_cfop)
+        dlg.exec()
+        if dlg.abrir_depois:
+            self.abrir_caminho(dlg.abrir_depois)
 
     def conferir_entradas_55(self):
         """Confere os itens das NF-e modelo 55 (entradas) de uma pasta de XMLs

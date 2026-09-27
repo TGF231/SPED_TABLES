@@ -30,8 +30,10 @@ Tudo aqui é dado puro (dicts e listas), para caber num JSON; quem lê e grava
 o arquivo é `infra/memoria.py`.
 """
 
+import re
+
 from sped_tables.dominio import xml_fiscal as xf
-from sped_tables.dominio.sped_model import so_digitos
+from sped_tables.dominio.sped_model import _fmt_aliq, so_digitos
 
 VERSAO = 3
 CAMPOS_0200 = ("DESCR_ITEM", "COD_BARRA", "UNID_INV", "TIPO_ITEM", "COD_NCM",
@@ -115,6 +117,100 @@ def escrituracao(memoria, cnpj_fornecedor, cod_fornecedor, item):
     if visto is None:
         return None
     return dict(zip(ESCRITURACAO, visto.split("|")))
+
+
+# peso de uma decisão da pessoa: passa à frente do que foi aprendido do SPED
+# (a contagem de um mês raramente chega a isso para o mesmo produto)
+PESO_DECISAO = 1000
+
+
+# o que a pessoa pode digitar numa decisão, e como tem de estar
+_FORMATOS = {
+    "CFOP": (re.compile(r"^[123]\d{3}$"), "4 dígitos, de entrada (1, 2 ou 3)"),
+    "CST_ICMS": (re.compile(r"^\d{3}$"), "3 dígitos (origem + situação)"),
+    "CREDITA_ICMS": (re.compile(r"^[SN]$"), "S ou N"),
+    "CST_PIS": (re.compile(r"^\d{2}$"), "2 dígitos"),
+    "CST_COFINS": (re.compile(r"^\d{2}$"), "2 dígitos"),
+    "CST_IPI": (re.compile(r"^\d{2}$"), "2 dígitos"),
+    "ALIQ_PIS": (re.compile(r"^\d{1,3}([.,]\d{1,4})?$"), "percentual"),
+    "ALIQ_COFINS": (re.compile(r"^\d{1,3}([.,]\d{1,4})?$"), "percentual"),
+    "COD_NAT": (re.compile(r"^[^|]{1,10}$"), "até 10 caracteres, sem |"),
+    "COD_CTA": (re.compile(r"^[^|]{1,255}$"), "sem |"),
+    "COD_ITEM": (re.compile(r"^[^|]{1,60}$"), "até 60 caracteres, sem |"),
+}
+
+
+def validar_decisao(campos):
+    """O que a pessoa digitou, conferido e no formato do SPED; campo vazio
+    fica de fora (quer dizer "não mexer"). Levanta ValueError com todos os
+    problemas de uma vez — a decisão errada iria para a memória e dali para
+    todo mês seguinte."""
+    limpos, erros = {}, []
+    for nome, valor in campos.items():
+        valor = (valor or "").strip()
+        if not valor:
+            continue
+        if nome not in _FORMATOS:
+            raise KeyError(nome)
+        padrao, dica = _FORMATOS[nome]
+        if not padrao.match(valor):
+            erros.append("%s \"%s\": %s" % (nome, valor, dica))
+            continue
+        if nome.startswith("ALIQ_"):
+            valor = _fmt_aliq(float(valor.replace(",", ".")))
+        limpos[nome] = valor
+    if erros:
+        raise ValueError("Valores inválidos:\n" + "\n".join(erros))
+    return limpos
+
+
+def ensinar(memoria, fornecedor, cod_fornecedor, cfop_origem, cst_origem,
+            campos, cod_proprio=None, usado=None):
+    """Grava a decisão da pessoa para este produto nesta situação.
+
+    `campos` sobrepõe a escrituração (CFOP, CST_ICMS, CREDITA_ICMS…); o que
+    ele não traz vem do que a memória já sabia do produto, da prática da
+    empresa ou, sem nenhum dos dois, do que a geração usou (`usado`, a
+    correlação de CFOP). `cod_proprio`, se dado, passa a ser o código do
+    produto. Escrituração sem CFOP ou sem CST do ICMS é recusada: iria para
+    todo mês seguinte com o campo em branco, e sem bloqueio — a memória
+    responde "sei".
+    """
+    campos = validar_decisao(dict(campos, **(
+        {"COD_ITEM": cod_proprio} if cod_proprio else {})))
+    cod_proprio = campos.pop("COD_ITEM", None)
+
+    class _Item:
+        cfop, icms_cst = cfop_origem, cst_origem
+    base = (escrituracao(memoria, fornecedor, cod_fornecedor, _Item)
+            or (pratica(memoria, _Item) or ({}, 0))[0]
+            or dict(usado or {}))
+    # sem nada aprendido, o CST do fornecedor e sem crédito — como a
+    # geração faz quando não sabe
+    if not base.get("CST_ICMS") and len((cst_origem or "").strip()) == 3:
+        base["CST_ICMS"] = cst_origem.strip()
+    base.setdefault("CREDITA_ICMS", "N")
+    base.update(campos)
+    faltam = [c for c in ("CFOP", "CST_ICMS") if campos and not base.get(c)]
+    if faltam:
+        raise ValueError("Informe também: %s." % ", ".join(faltam))
+
+    prod = memoria["produtos"].setdefault(
+        chave_produto(fornecedor, cod_fornecedor),
+        {"codigos": {}, "escrituracao": {}, "fatores": {},
+         "descr": "", "cean": "", "ncm": ""})
+    if campos:
+        valores = "|".join(base.get(c, "") for c in ESCRITURACAO)
+        _decide(prod["escrituracao"].setdefault(_contexto(_Item), {}),
+                valores)
+    if cod_proprio:
+        _decide(prod["codigos"], cod_proprio)
+
+
+def _decide(contagem, escolha):
+    """A escolha passa à frente de tudo o que já foi contado — inclusive de
+    uma decisão anterior, que a nova substitui."""
+    contagem[escolha] = max(contagem.values(), default=0) + PESO_DECISAO
 
 
 def cod_participante(memoria, documento):

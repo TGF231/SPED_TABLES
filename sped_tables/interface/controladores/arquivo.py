@@ -107,7 +107,16 @@ class ControladorArquivo:
 
     def abrir_caminho(self, caminho):
         """Abre um arquivo pelo caminho (menu, histórico, linha de comando,
-        arrastar e soltar)."""
+        arrastar e soltar).
+
+        Com o arquivo aberto alterado, pergunta antes: abrir outro por cima
+        descartava as alterações sem aviso."""
+        nome = os.path.basename(self.caminho or "") or "o arquivo aberto"
+        if not self._resolver_alteracoes(
+                "Abrir arquivo",
+                "As alterações em <b>%s</b> ainda não foram salvas.<br><br>"
+                "Deseja salvar antes de abrir outro arquivo?" % nome):
+            return False
         try:
             resultado = self.sessao.abrir(caminho)
         except Exception as e:  # noqa: BLE001

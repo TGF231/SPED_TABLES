@@ -48,12 +48,15 @@ class Resultado:
         self.participantes_novos = {}   # documento -> código atribuído
         self.contagem = {}
 
-    def apontar(self, tipo, documento, item, detalhe, bloqueia=False):
+    def apontar(self, tipo, documento, item, detalhe, bloqueia=False,
+                dados=None):
         """`bloqueia`: o arquivo sairia inválido (um CFOP em branco, por
-        exemplo) — a tela não deixa gravar enquanto houver algum."""
+        exemplo) — a tela não deixa gravar enquanto houver algum. `dados`
+        identifica o produto (fornecedor, código dele, CFOP e CST de
+        origem), para a decisão da pessoa voltar para a memória."""
         self.revisar.append({"tipo": tipo, "documento": documento,
                              "item": item, "detalhe": detalhe,
-                             "bloqueia": bloqueia})
+                             "bloqueia": bloqueia, "dados": dados or {}})
 
     @property
     def bloqueios(self):
@@ -235,36 +238,48 @@ class _Itens:
         self.unidades = {}           # unidade -> descrição
         self.naturezas = {}          # COD_NAT -> descrição (0400)
         self.contas = set()          # COD_CTA usadas (0500)
+        self._atual = {}             # o produto em escrituração agora
+
+    def _apontar(self, *args, **k):
+        # o mesmo dict em todos os apontamentos do item: a escrituração
+        # usada ("usado") só se conhece depois, e entra em todos eles
+        self.res.apontar(*args, dados=self._atual, **k)
 
     def entrada(self, nfe, item):
         """Campos do C170 de um item comprado."""
         onde = "NF %s/%s" % (nfe.serie, nfe.nnf)
         emit = nfe.emit.documento
+        self._atual = {"fornecedor": so_digitos(emit), "cprod": item.cprod,
+                       "xprod": item.xprod, "cfop": item.cfop or "",
+                       "cst": item.icms_cst or ""}
         cod, ambiguo = mi.codigo_proprio(self.m, emit, item.cprod)
         if cod is None:
             cod = ("%s-%s" % (so_digitos(emit)[:8], item.cprod))[:60]
-            self.res.apontar("produto sem código próprio", onde, item.nitem,
+            self._apontar("produto sem código próprio", onde, item.nitem,
                              "%s (código do fornecedor %s): usei %s"
                              % (item.xprod, item.cprod, cod))
         elif ambiguo:
-            self.res.apontar("código próprio ambíguo", onde, item.nitem,
+            self._apontar("código próprio ambíguo", onde, item.nitem,
                              "%s: a empresa já usou mais de um código; usei "
                              "o mais frequente, %s" % (item.xprod, cod))
         fator, fator_amb = mi.fator_conversao(self.m, emit, item.cprod)
         if fator_amb:
-            self.res.apontar("conversão de unidade ambígua", onde,
+            self._apontar("conversão de unidade ambígua", onde,
                              item.nitem, "%s: usei o fator %s"
                              % (item.xprod, _fmt_qtd(fator)))
         esc = mi.escrituracao(self.m, emit, item.cprod, item)
         if esc is None:
             esc = self._regra(nfe, item, onde)
+        # a decisão da pessoa parte do que foi usado aqui
+        self._atual["usado"] = {k: v for k, v in esc.items()
+                                if k in mi.ESCRITURACAO}
         cad = self._cadastro(cod, item)
         nat = esc.get("COD_NAT", "")
         if nat:
             self.naturezas.setdefault(
                 nat, self.m.get("naturezas", {}).get(nat, ""))
             if not self.naturezas[nat]:
-                self.res.apontar("natureza sem descrição", "0400", nat,
+                self._apontar("natureza sem descrição", "0400", nat,
                                  "a memória não tem a descrição do COD_NAT")
         unid = cad.get("UNID_INV") or item.unid or ""
         self.unidades.setdefault(unid, self.m["unidades"].get(unid, unid))
@@ -314,7 +329,7 @@ class _Itens:
             base = (round(valor - (item.icms_vicms or 0), 2)
                     if cst in CST_COM_CREDITO else 0.0)
             if not cst:
-                self.res.apontar(
+                self._apontar(
                     "CST de %s desconhecido" % trib, onde, item.nitem,
                     "%s: nem a memória nem a prática da empresa dizem o CST "
                     "de %s desta entrada" % (item.xprod, trib), bloqueia=True)
@@ -337,7 +352,7 @@ class _Itens:
         vista = mi.pratica(self.m, item)
         if vista is not None:
             esc, parcela = vista
-            self.res.apontar(
+            self._apontar(
                 "escrituração pela prática da empresa", onde, item.nitem,
                 "%s (CFOP %s, CST %s do fornecedor, produto nunca "
                 "escriturado): usei CFOP %s e CST %s, como em %d%% dos "
@@ -356,13 +371,13 @@ class _Itens:
         if not cfop:
             # nem memória, nem prática, nem correlação: não há de onde tirar
             # o CFOP, e em branco o PVA recusa o item
-            self.res.apontar(
+            self._apontar(
                 "CFOP de entrada desconhecido", onde, item.nitem,
                 "%s: o CFOP %s do fornecedor nunca apareceu nesta empresa e "
                 "não está nas correlações de CFOP — informe o CFOP de "
                 "entrada" % (item.xprod, item.cfop), bloqueia=True)
         else:
-            self.res.apontar(
+            self._apontar(
                 "escrituração sem memória", onde, item.nitem,
                 "%s (CFOP %s, CST %s do fornecedor): usei CFOP %s, CST %s, "
                 "%scrédito" % (item.xprod, item.cfop, item.icms_cst, cfop,
@@ -379,7 +394,7 @@ class _Itens:
                    "COD_BARRA": item.cean or "",
                    "UNID_INV": item.unid or "", "TIPO_ITEM": "00",
                    "COD_NCM": item.ncm or ""}
-            self.res.apontar("produto fora do cadastro", "0200", cod,
+            self._apontar("produto fora do cadastro", "0200", cod,
                              "cadastro montado do XML (tipo 00 — mercadoria "
                              "para revenda); confira")
         self.cadastro_usado[cod] = cad

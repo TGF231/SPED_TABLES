@@ -37,3 +37,12 @@ def salvar(memoria):
     os.makedirs(os.path.dirname(cam), exist_ok=True)
     dados.gravar_json(cam, memoria)
     return cam
+
+
+def cnpjs():
+    """CNPJ das empresas que já têm memória gravada."""
+    pasta = os.path.join(dados.pasta_dados(), PASTA)
+    if not os.path.isdir(pasta):
+        return []
+    return sorted(n[:-5] for n in os.listdir(pasta)
+                  if n.endswith(".json") and n[:-5].isdigit())

@@ -31,9 +31,9 @@ interface ──► aplicacao ──► dominio ◄── infra
 
 | Camada | Pode importar | Módulos |
 |---|---|---|
-| `sped_tables/dominio/` | só o domínio (nem Qt) | `sped_model` (`SpedDocument`, todos os cálculos), `sped_layouts` (leiaute completo: 270 registros no ICMS/IPI, 203 no Contribuições), `validacao`, `revisao` (lista `REGRAS`), `rotinas` (lista `ROTINAS`), `diagnostico`, `conferencia`, `ncm` (classificação do NCM e CST esperado), `empresas` (a entidade), `xml_fiscal`, **`referencias` (a porta)** |
-| `sped_tables/infra/` | domínio | `config` (**ponto único de configuração**), `dados` (pasta de dados, gravação atômica, recursos), `descritor_pva`, `tabelas_pva`, `tabelas_rfb` (leitura), `referencias_pva` (**o adaptador**), `cadastro` (empresas e correlações em JSON), `arquivos` (acervo), `exportacao` (CSV), `pva` (automação Win32), `falhas` (registro e ganchos) |
-| `sped_tables/aplicacao/` | domínio, infra | `sessao` (arquivo aberto: abrir/salvar/fechar + acervo), `envio_pva` (pré-checagem, envio, desfecho), `montagem` (**raiz de composição**) |
+| `sped_tables/dominio/` | só o domínio (nem Qt) | `sped_model` (`SpedDocument`, todos os cálculos), `sped_layouts` (leiaute completo: 270 registros no ICMS/IPI, 203 no Contribuições), `validacao`, `revisao` (lista `REGRAS`), `rotinas` (lista `ROTINAS`), `diagnostico`, `conferencia`, `ncm` (classificação do NCM e CST esperado), `empresas` (a entidade), `xml_fiscal`, `memoria_itens` e `geracao` (SPED a partir dos XMLs), `comparacao_sped`, **`referencias` (a porta)** |
+| `sped_tables/infra/` | domínio | `config` (**ponto único de configuração**), `dados` (pasta de dados, gravação atômica, recursos), `descritor_pva`, `tabelas_pva`, `tabelas_rfb` (leitura), `referencias_pva` (**o adaptador**), `cadastro` (empresas e correlações em JSON), `arquivos` (acervo), `exportacao` (CSV), `pva` (automação Win32), `falhas` (registro e ganchos), `memoria` (memória de cada empresa em JSON) |
+| `sped_tables/aplicacao/` | domínio, infra | `sessao` (arquivo aberto: abrir/salvar/fechar + acervo), `envio_pva` (pré-checagem, envio, desfecho), `geracao_xml` (gerar pelos XMLs: aprender, gerar, decidir, salvar), `montagem` (**raiz de composição**) |
 | `sped_tables/interface/` | todos | `app` (`main`), `janela`, **`acoes` (tabela única de ações)**, `controladores/` (mixins da janela por área do menu), `grade`, `telas/`, `dialogos/`, `formulario_empresa`, `comum`, `tema`, `icones`, `barra_titulo`, `janela_custom`, `autoteste` (`--autoteste`: o roteiro 2.2 de dentro do executável) |
 
 `sped_editor.py` na raiz é só o lançador. `sped_tables/version.py` tem
@@ -492,6 +492,42 @@ O `QApplication` precisa de referência guardada: sem ela, é coletado antes do
 widget nascer e o processo morre com **exit 127 e nenhum traceback** — o
 mesmo sintoma da barra de título e dos tradutores. Na suíte, use `_app()` de
 `tests/test_interface.py`.
+
+## Gerar o SPED a partir dos XMLs
+
+O XML diz **o que aconteceu**; a **memória da empresa**
+(`memoria_itens`, um JSON por CNPJ em `dados/memoria/`) diz **como ela
+escritura**. Num mês real, 322 de 323 produtos tinham código próprio
+diferente do do fornecedor, e o mesmo CFOP de fornecedor virava três CFOPs
+de entrada conforme o produto: não há regra geral, a decisão é por produto.
+
+- **A memória é aprendida, nunca chutada.** `aprender` casa o SPED entregue
+  com os XMLs do mesmo mês pela chave da nota e o `NUM_ITEM`. O que ela não
+  sabe devolve None; quem gera usa uma regra (prática da empresa, depois a
+  correlação de CFOP) e **aponta** para revisão.
+- **Bloqueio** é o apontamento que deixaria o arquivo inválido (CFOP de
+  entrada vazio, CST de PIS ausente no Contribuições). A tela não grava o
+  leiaute enquanto houver algum.
+- **A decisão da pessoa parte do que a geração usou.** Cada apontamento de
+  produto carrega `dados` (fornecedor, código dele, CFOP e CST de origem) e
+  `dados["usado"]` (a escrituração aplicada). `ensinar` completa o que a
+  pessoa não informou com a memória, a prática ou esse `usado` — e recusa
+  escrituração sem CFOP/CST: memória com CFOP vazio "sabe", e a geração
+  seguinte não bloquearia. A decisão pesa `PESO_DECISAO` e substitui a
+  anterior (`_decide`).
+- **O cálculo é o do botão.** C190, C175 e bloco M saem de
+  `consolidar_c190`, `consolidar_c175_de_itens` e `recalcular_bloco_m`;
+  quem gera e quem confere continuam sendo o mesmo código.
+- **O que o PVA cobrou no mês real e o código incorpora:** a NFC-e deixa
+  `VL_BC_ICMS_ST`, `VL_ICMS_ST` e `VL_IPI` **vazios** no C100 (zero dá
+  `MSG_NFE_CONSUMIDOR`, 954 vezes); a largura de cada registro é a do SPED
+  entregue limitada pela do descritor (o 0200 do Contribuições tem 12
+  campos no PVA e 13 no leiaute do programa); o E510 só leva CST de IPI
+  preenchido.
+- **Comparar com o entregue** (`comparacao_sped`) confere PIS/COFINS só no
+  Contribuições: no ICMS/IPI esses campos são informativos e ficam vazios.
+- CT-e sai pelo CNPJ: emitente = frete prestado, tomador = D100 de entrada.
+  **Ainda sem mês real com CT-e** — só testes sintéticos.
 
 ## Abrir o PVA já com o arquivo
 

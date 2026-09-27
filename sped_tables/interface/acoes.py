@@ -97,8 +97,11 @@ ACOES = (
          MENU_CONTRIB),
 
     # ---- Gerais
+    # sem arquivo aberto: é daqui que o arquivo nasce
+    Acao("act_gerar_xml", "Gerar SPED a partir dos XMLs…", "gerar_de_xml",
+         SEMPRE, MENU_GERAIS, pronta=False),
     Acao("act_conferir_55", "Conferir entradas (NF-e 55) com XMLs…",
-         "conferir_entradas_55", ARQUIVO, MENU_GERAIS),
+         "conferir_entradas_55", ARQUIVO, MENU_GERAIS, separador=True),
     Acao("act_alterar_datas", "Alterar datas emissão/saída (C100)…",
          "alterar_datas", ARQUIVO, MENU_GERAIS),
     Acao("act_diagnostico", "Diagnóstico do arquivo…", "diagnosticar",
