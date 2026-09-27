@@ -285,11 +285,20 @@ def nfe_xml(itens=None, nnf="123", serie="1", mod="55", cfop="5102",
             icms = ("<ICMS00><orig>%s</orig><CST>%s</CST><vBC>%s</vBC>"
                     "<pICMS>%s</pICMS><vICMS>%s</vICMS></ICMS00>"
                     % (c["orig"], c["CST"], c["vBC"], c["pICMS"], c["vICMS"]))
+        # PIS/COFINS do item: {"pis": (cst, vBC, aliq, valor), "cofins": …}
+        contrib = ""
+        for t in ("PIS", "COFINS"):
+            if c.get(t.lower()):
+                cst, vbc, aliq, v = c[t.lower()]
+                contrib += ("<{t}><{t}Aliq><CST>{0}</CST><vBC>{1}</vBC>"
+                            "<p{t}>{2}</p{t}><v{t}>{3}</v{t}></{t}Aliq>"
+                            "</{t}>".format(cst, vbc, aliq, v, t=t))
         dets.append(
             '<det nItem="%d"><prod><cProd>%s</cProd><xProd>PRODUTO</xProd>'
             "<NCM>%s</NCM><CFOP>%s</CFOP><uCom>UN</uCom><qCom>1</qCom>"
-            "<vProd>%s</vProd></prod><imposto><ICMS>%s</ICMS></imposto></det>"
-            % (n, c["cProd"], c["NCM"], c["CFOP"], c["vProd"], icms))
+            "<vProd>%s</vProd></prod><imposto><ICMS>%s</ICMS>%s</imposto>"
+            "</det>"
+            % (n, c["cProd"], c["NCM"], c["CFOP"], c["vProd"], icms, contrib))
     return (
         '<?xml version="1.0" encoding="UTF-8"?>'
         '<nfeProc xmlns="http://www.portalfiscal.inf.br/nfe"><NFe>'

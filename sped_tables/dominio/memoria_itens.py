@@ -33,12 +33,12 @@ o arquivo é `infra/memoria.py`.
 from sped_tables.dominio import xml_fiscal as xf
 from sped_tables.dominio.sped_model import so_digitos
 
-VERSAO = 2
+VERSAO = 3
 CAMPOS_0200 = ("DESCR_ITEM", "COD_BARRA", "UNID_INV", "TIPO_ITEM", "COD_NCM",
                "EX_IPI", "COD_GEN", "CEST", "ALIQ_ICMS")
 # a escrituração de um item de entrada, na ordem em que fica guardada
 ESCRITURACAO = ("CFOP", "CST_ICMS", "CREDITA_ICMS", "CST_PIS", "ALIQ_PIS",
-                "CST_COFINS", "ALIQ_COFINS", "CST_IPI", "COD_NAT")
+                "CST_COFINS", "ALIQ_COFINS", "CST_IPI", "COD_NAT", "COD_CTA")
 # Registros que não saem dos XMLs: são decisões da empresa (quem é o
 # contabilista, o código de receita do ICMS, o perfil, o que ela declara no
 # 1010). A memória guarda a última versão entregue como **modelo**, por
@@ -46,7 +46,8 @@ ESCRITURACAO = ("CFOP", "CST_ICMS", "CREDITA_ICMS", "CST_PIS", "ALIQ_PIS",
 MODELOS = {
     "ICMS": ("0000", "0001", "0002", "0005", "0100", "E116", "E200", "E210",
              "E300", "E310", "E500", "E520", "1010"),
-    "CONTRIB": ("0000", "0001", "0100", "0110", "0140", "C010"),
+    "CONTRIB": ("0000", "0001", "0100", "0110", "0140", "C010", "M205",
+                "M605"),
 }
 
 
@@ -154,7 +155,7 @@ def aprender(memoria, lote, doc_icms=None, doc_contrib=None):
                                      "COD_NAT", "QTD", "UNID"))
     ip = _indices(doc_contrib, "C170", ("NUM_ITEM", "COD_ITEM", "CFOP",
                                         "CST_PIS", "ALIQ_PIS", "CST_COFINS",
-                                        "ALIQ_COFINS"))
+                                        "ALIQ_COFINS", "COD_CTA"))
     i_oper = base._ix("C100", "IND_OPER")
     chaves = [k for k, r in (icms or contrib).items()
               if (r.valor(i_oper) or "").strip() == "0"]
@@ -199,7 +200,8 @@ def aprender(memoria, lote, doc_icms=None, doc_contrib=None):
                     (fp or {}).get("CST_COFINS", ""),
                     (fp or {}).get("ALIQ_COFINS", ""),
                     (fa or {}).get("CST_IPI", ""),
-                    (fa or fp).get("COD_NAT", "")]
+                    (fa or fp).get("COD_NAT", ""),
+                    (fp or {}).get("COD_CTA", "")]
             _conta(prod["escrituracao"].setdefault(_contexto(item), {}),
                    "|".join(vals))
             # a prática da empresa, somando todos os produtos: é a segunda
@@ -264,6 +266,12 @@ def _aprender_modelos(memoria, doc):
         if r.reg in tipos and r.reg not in modelos:
             modelos[r.reg] = list(r.campos)
     memoria["modelos"][doc.layout] = modelos
+    # largura de cada registro na versão de leiaute que a empresa entrega
+    larguras = {}
+    for r in doc.registros:
+        _conta(larguras.setdefault(r.reg, {}), str(len(r.campos)))
+    memoria.setdefault("larguras", {})[doc.layout] = {
+        reg: int(_mais_frequente(c)) for reg, c in larguras.items()}
     # bloco sem movimento: só abertura (X001 com 1) e encerramento
     por_bloco = {}
     for r in doc.registros:
@@ -286,6 +294,26 @@ def _aprender_modelos(memoria, doc):
     memoria.setdefault("padroes", {})[doc.layout] = {
         k: {c: _mais_frequente(v) for c, v in campos.items()}
         for k, campos in contagem.items()}
+    # plano de contas (0500), inteiro, pela conta
+    for r in doc.registros:
+        if r.reg == "0500":
+            conta = (r.valor(doc._ix("0500", "COD_CTA")) or "").strip()
+            memoria.setdefault("contas", {})[conta] = list(r.campos)
+    if doc.layout == "CONTRIB":
+        # a alíquota do regime nas saídas, por CST — o XML da empresa pode
+        # vir com outra (num mês real, 1,65/7,60 num contribuinte
+        # cumulativo que escritura 0,65/3)
+        cont = {}
+        c175 = {c: doc._ix("C175", c) for c in (
+            "CST_PIS", "ALIQ_PIS", "CST_COFINS", "ALIQ_COFINS")}
+        for r in doc.registros:
+            if r.reg == "C175":
+                v = [(r.valor(i) or "").strip() for i in c175.values()]
+                _conta(cont.setdefault(v[0], {}), "|".join(v[1:]))
+        memoria["aliquotas_saida"] = {
+            cst: dict(zip(("ALIQ_PIS", "CST_COFINS", "ALIQ_COFINS"),
+                          _mais_frequente(c).split("|")))
+            for cst, c in cont.items()}
     if doc.layout == "ICMS":
         i = doc._ix("E110", "VL_SLD_CREDOR_TRANSPORTAR")
         e110 = next((r for r in doc.registros if r.reg == "E110"), None)

@@ -1,8 +1,39 @@
 # Changelog
 
-## [Não lançado] — 0.58.0-dev.3
+## [Não lançado] — 0.58.0-dev.4
 
-Etapas 1 a 3 de **gerar o SPED a partir dos XMLs** (ROADMAP 4.4).
+Etapas 1 a 4 de **gerar o SPED a partir dos XMLs** (ROADMAP 4.4).
+
+### Adicionado (etapa 4)
+- **Gerador do EFD Contribuições.**
+  - Entradas: C100 + C170, com PIS/COFINS e conta contábil pela memória.
+    A base existe só nas entradas com crédito e é o valor do item menos o
+    ICMS.
+  - NFC-e: C100 + C175, pelo `consolidar_c175_de_itens`. A alíquota é
+    trocada para a do regime pelo mesmo caminho do *Trocar alíquotas* —
+    no mês real, o XML das NFC-e vinha com 1,65/7,60 num contribuinte
+    cumulativo que escritura 0,65/3.
+  - Bloco M pelo `recalcular_bloco_m`, e M205/M605 (código de receita)
+    pelos modelos.
+- A memória aprende também:
+  - a conta contábil de cada item e o plano de contas (0500);
+  - a alíquota de saída do regime;
+  - a **largura de cada registro** na versão que a empresa entrega. O
+    gerador limita essa largura pela do descritor do PVA: o 0200 do EFD
+    Contribuições tem 12 campos lá e 13 no leiaute do programa, e com 13 o
+    PVA recusava a importação.
+- CSOSN do fornecedor do Simples não vai para o CST de ICMS do item no
+  Contribuições (lá o ICMS é o do XML): vale o da escrituração.
+
+### Mês real (junho de 2026, EFD Contribuições)
+- **C175: 424 de 424 idênticos**; **bloco M inteiro idêntico** (M200, M205,
+  M210, M600, M605, M610); 378 C100 idênticos.
+- **PVA de ensaio: a mesma única inconsistência do entregue**
+  (`MSG_PREENCHIMENTO_0900`, escrituração fora do prazo).
+- Diferenças no C170 que ficam: o ERP escritura o mesmo item de forma
+  diferente nos dois SPEDs do mesmo mês (CFOP 1101 num e 1403 no outro,
+  quantidade arredondada). O gerador usa a mesma escrituração nos dois. A
+  apuração não muda.
 
 ### Adicionado (etapa 3)
 - **Gerador do EFD ICMS/IPI** (`dominio/geracao.py`): blocos 0, B, C, D, E,

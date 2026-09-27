@@ -13,10 +13,14 @@ from sped_tables.dominio.sped_model import _to_num
 
 C100 = ("COD_SIT", "DT_DOC", "DT_E_S", "VL_DOC", "IND_PGTO", "VL_DESC",
         "VL_MERC", "IND_FRT", "VL_FRT", "VL_SEG", "VL_OUT_DA", "VL_BC_ICMS",
-        "VL_ICMS", "VL_BC_ICMS_ST", "VL_ICMS_ST", "VL_IPI")
+        "VL_ICMS", "VL_BC_ICMS_ST", "VL_ICMS_ST", "VL_IPI", "VL_PIS",
+        "VL_COFINS")
 C170 = ("COD_ITEM", "QTD", "UNID", "VL_ITEM", "VL_DESC", "CST_ICMS", "CFOP",
         "COD_NAT", "VL_BC_ICMS", "ALIQ_ICMS", "VL_ICMS", "VL_ICMS_ST",
-        "CST_IPI", "VL_IPI")
+        "CST_IPI", "VL_IPI", "CST_PIS", "VL_BC_PIS", "ALIQ_PIS", "VL_PIS",
+        "CST_COFINS", "VL_BC_COFINS", "ALIQ_COFINS", "VL_COFINS", "COD_CTA")
+C175 = ("VL_OPR", "VL_DESC", "VL_BC_PIS", "VL_PIS", "VL_BC_COFINS",
+        "VL_COFINS")
 C190 = ("VL_OPR", "VL_BC_ICMS", "VL_ICMS", "VL_BC_ICMS_ST", "VL_ICMS_ST",
         "VL_RED_BC", "VL_IPI")
 D100 = ("COD_SIT", "DT_DOC", "VL_DOC", "IND_FRT", "VL_SERV", "VL_BC_ICMS",
@@ -73,15 +77,22 @@ def comparar(gerado, entregue):
             if reg == "C100":
                 _filhos(itens, k, gerado, g[k], entregue, e[k], "C170",
                         ("NUM_ITEM",), C170)
-                _filhos(anal, k, gerado, g[k], entregue, e[k], "C190",
-                        ("CST_ICMS", "CFOP", "ALIQ_ICMS"), C190)
+                if gerado.layout == "CONTRIB":
+                    _filhos(anal, k, gerado, g[k], entregue, e[k], "C175",
+                            ("CFOP", "CST_PIS", "ALIQ_PIS"), C175)
+                else:
+                    _filhos(anal, k, gerado, g[k], entregue, e[k], "C190",
+                            ("CST_ICMS", "CFOP", "ALIQ_ICMS"), C190)
             else:
                 _filhos(anal, k, gerado, g[k], entregue, e[k], "D190",
                         ("CST_ICMS", "CFOP", "ALIQ_ICMS"), C190[:3])
         out[reg] = sec
         out[reg[0] + ("170" if reg == "C100" else "_itens")] = itens
-        out[reg[0] + "190"] = anal
-    out["E110"] = _unico(gerado, entregue, "E110")
+        out[reg[0] + ("175" if reg == "C100" and gerado.layout == "CONTRIB"
+                      else "190")] = anal
+    for unico in (("E110",) if gerado.layout == "ICMS" else
+                  ("M200", "M205", "M210", "M600", "M605", "M610")):
+        out[unico] = _unico(gerado, entregue, unico)
     out["0150"] = _cadastro(gerado, entregue, "0150", ("CNPJ", "CPF"))
     out["0200"] = _cadastro(gerado, entregue, "0200", ("COD_ITEM",))
     return out

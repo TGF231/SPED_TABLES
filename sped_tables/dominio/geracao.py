@@ -19,6 +19,7 @@ Cálculo que gera e cálculo que confere continuam sendo o mesmo código.
 
 import calendar
 
+from sped_tables.dominio import diagnostico, referencias
 from sped_tables.dominio import memoria_itens as mi
 from sped_tables.dominio.sped_layouts import CAMPOS_CONTRIB, CAMPOS_ICMS
 from sped_tables.dominio.sped_model import (SpedDocument, _fmt_aliq_pct,
@@ -31,6 +32,9 @@ SEM_CREDITO_ICMS = ("30", "40", "41", "50", "60")
 # campos do C100 que a NFC-e (65) deixa vazios — o PVA acusa
 # MSG_NFE_CONSUMIDOR em cada um que vier preenchido, mesmo com zero
 NFCE_C100_VAZIOS = ("VL_BC_ICMS_ST", "VL_ICMS_ST", "VL_IPI")
+# CST de PIS/COFINS de entrada com crédito: só neles o item tem base
+CST_COM_CREDITO = {"50", "51", "52", "53", "54", "55", "56",
+                   "60", "61", "62", "63", "64", "65", "66"}
 
 
 class Resultado:
@@ -76,9 +80,13 @@ def limites(periodo):
 class _Linhas:
     """Registros montados pelo **nome** dos campos, na largura do leiaute."""
 
-    def __init__(self, layout):
+    def __init__(self, layout, larguras=None):
         self.tabela = CAMPOS_CONTRIB if layout == "CONTRIB" else CAMPOS_ICMS
         self.linhas = []
+        # largura de cada registro na versão de leiaute que a empresa usa
+        # (aprendida do SPED entregue): o 0200 do EFD Contribuições tem 12
+        # campos no PVA, e o leiaute do programa, 13 — a mais é recusa
+        self.larguras = larguras or {}
 
     def reg(self, tipo, **valores):
         nomes = self.tabela[tipo]
@@ -107,8 +115,13 @@ class _Linhas:
         self.linhas.append(c)
 
     def texto(self):
-        return "\r\n".join("|" + "|".join(c) + "|" for c in self.linhas) \
-            + "\r\n"
+        linhas = []
+        for c in self.linhas:
+            n = self.larguras.get(c[0])
+            if n:
+                c = (list(c) + [""] * n)[:n]
+            linhas.append("|" + "|".join(c) + "|")
+        return "\r\n".join(linhas) + "\r\n"
 
 
 # ---------------------------------------------------------- classificação
@@ -212,13 +225,16 @@ class _Itens:
     """Código, unidade e escrituração de cada item de entrada, pela memória
     — e o que ela não sabe, apontado."""
 
-    def __init__(self, memoria, res, correlacoes, uf_empresa):
+    def __init__(self, memoria, res, correlacoes, uf_empresa,
+                 contrib=False):
         self.m, self.res = memoria, res
         self.correlacoes = correlacoes or {}
         self.uf = uf_empresa
+        self.contrib = contrib       # EFD Contribuições: PIS/COFINS e conta
         self.cadastro_usado = {}     # código -> campos do 0200
         self.unidades = {}           # unidade -> descrição
         self.naturezas = {}          # COD_NAT -> descrição (0400)
+        self.contas = set()          # COD_CTA usadas (0500)
 
     def entrada(self, nfe, item):
         """Campos do C170 de um item comprado."""
@@ -253,7 +269,7 @@ class _Itens:
         unid = cad.get("UNID_INV") or item.unid or ""
         self.unidades.setdefault(unid, self.m["unidades"].get(unid, unid))
         credita = esc.get("CREDITA_ICMS") == "S"
-        return {
+        campos = {
             "COD_ITEM": cod, "QTD": _fmt_qtd((item.qtd or 0) * (fator or 1)),
             "UNID": unid, "VL_ITEM": _fmt_val(item.vprod or 0),
             "VL_DESC": _fmt_val(item.vdesc or 0), "IND_MOV": "0",
@@ -267,6 +283,51 @@ class _Itens:
             "IND_APUR": "0", "CST_IPI": esc.get("CST_IPI", ""),
             "VL_BC_IPI": "0", "ALIQ_IPI": "0", "VL_IPI": "0",
         }
+        if self.contrib:
+            # No EFD Contribuições o item vale com as outras despesas dele,
+            # e o ICMS do item é o do documento (informativo): é o valor da
+            # operação que forma a base do PIS/COFINS. Assim estava no mês
+            # real — e o ICMS/IPI do mesmo mês, com a escrituração do ICMS
+            # da empresa e o item sem as despesas.
+            campos.update(
+                VL_ITEM=_fmt_val((item.vprod or 0) + (item.voutro or 0)),
+                # CSOSN do fornecedor do Simples (origem + 3) não cabe no
+                # CST: aí vale o da escrituração da empresa
+                CST_ICMS=(item.icms_cst if len(item.icms_cst or "") == 3
+                          else esc.get("CST_ICMS", "")),
+                VL_BC_ICMS=_fmt_val(item.icms_vbc or 0),
+                ALIQ_ICMS=_fmt_aliq_pct(item.icms_aliq) or "0",
+                VL_ICMS=_fmt_val(item.icms_vicms or 0))
+            campos.update(self._pis_cofins(esc, item, onde))
+        return campos
+
+    def _pis_cofins(self, esc, item, onde):
+        """PIS/COFINS do item de entrada como a empresa escritura: CST e
+        alíquota da memória. A base, só nas entradas **com crédito**, é o
+        valor do item menos o ICMS (o ICMS fora da base, como decidiu o
+        STF); sem crédito, zero."""
+        valor = ((item.vprod or 0) + (item.voutro or 0) - (item.vdesc or 0))
+        out = {}
+        for trib in ("PIS", "COFINS"):
+            cst = esc.get("CST_" + trib, "")
+            aliq = esc.get("ALIQ_" + trib, "") or "0"
+            base = (round(valor - (item.icms_vicms or 0), 2)
+                    if cst in CST_COM_CREDITO else 0.0)
+            if not cst:
+                self.res.apontar(
+                    "CST de %s desconhecido" % trib, onde, item.nitem,
+                    "%s: nem a memória nem a prática da empresa dizem o CST "
+                    "de %s desta entrada" % (item.xprod, trib), bloqueia=True)
+            out.update({
+                "CST_" + trib: cst, "VL_BC_" + trib: _fmt_val(base),
+                "ALIQ_" + trib: aliq,
+                "VL_" + trib: _fmt_val(round(base * _to_num(aliq) / 100,
+                                             2))})
+        conta = esc.get("COD_CTA", "")
+        if conta:
+            self.contas.add(conta)
+        out["COD_CTA"] = conta
+        return out
 
     def _regra(self, nfe, item, onde):
         """Sem memória do produto nesta situação. Primeiro, a **prática da
@@ -410,7 +471,7 @@ def gerar_icms(memoria, lote, periodo, saldo_credor_anterior=None,
         _cte_icms(d, ct, ct in grupos["fretes_entrada"], part, res, uf)
 
     # ---- o documento, montado e calculado pelo código de sempre
-    t = _Linhas("ICMS")
+    t = _Linhas("ICMS", _larguras(memoria, "ICMS"))
     t.modelo(modelos["0000"], DT_INI=ini, DT_FIN=fim, COD_FIN="0")
     t.reg("0001", IND_MOV="0")
     for tipo in ("0002", "0005", "0100"):
@@ -446,6 +507,19 @@ def gerar_icms(memoria, lote, periodo, saldo_credor_anterior=None,
     res.doc = SpedDocument.de_texto(doc.gerar_texto())
     res.contagem = {k: len(v) for k, v in grupos.items()}
     return res
+
+
+def _larguras(memoria, layout):
+    """Largura de cada registro: a do SPED que a empresa entregou, limitada
+    pela do descritor do PVA instalado quando ele existe — vale a menor, que
+    é o que o PVA aceita (o 0200 do EFD Contribuições tem 12 campos lá e 13
+    no leiaute do programa)."""
+    larguras = dict(memoria.get("larguras", {}).get(layout) or {})
+    estrutura, _info = referencias.atual().estrutura(layout)
+    if estrutura:
+        for reg, n in diagnostico._num_campos_descritor(estrutura).items():
+            larguras[reg] = min(larguras.get(reg, n), n)
+    return larguras
 
 
 def _modelo_valor(campos, nome, layout):
@@ -566,7 +640,7 @@ def _apuracao_icms(doc, memoria, modelos, periodo, ini, fim,
                    saldo_credor_anterior, res):
     """Bloco E: ICMS próprio pela soma dos analíticos; ST e DIFAL sem
     movimento (do modelo); IPI pelos itens de entrada."""
-    e = _Linhas("ICMS")
+    e = _Linhas("ICMS", _larguras(memoria, "ICMS"))
     debitos = creditos = 0.0
     for reg in ("C190", "D190"):
         i = doc._ix(reg, "VL_ICMS")
@@ -668,3 +742,183 @@ def _apuracao_ipi(doc, e):
 def _positivo(v):
     """max(v, 0) sem o zero negativo, que sairia "-0,00" no arquivo."""
     return v if v > 0 else 0.0
+
+
+# ---------------------------------------------------------- Contribuições
+def gerar_contrib(memoria, lote, periodo, correlacoes=None, excluir=()):
+    """O EFD Contribuições do período (`AAAAMM`). Devolve `Resultado`.
+
+    Entradas com C170 (PIS/COFINS e conta pela memória); NFC-e com C175
+    consolidado pelo `consolidar_c175_de_itens` e a alíquota trocada para a
+    do regime pelo `trocar_aliquotas_pis_cofins` — os dois do programa, o
+    segundo já validado no PVA —; e o bloco M pelo `recalcular_bloco_m`.
+    """
+    res = Resultado()
+    modelos = memoria.get("modelos", {}).get("CONTRIB")
+    if not modelos or "0000" not in modelos:
+        raise ValueError(
+            "A memória desta empresa ainda não tem o cabeçalho do EFD "
+            "Contribuições: aprenda primeiro com um SPED entregue.")
+    ini, fim = limites(periodo)
+    entrada_pad = memoria.get("padroes", {}).get("entrada", {})
+    grupos = classificar(lote, memoria["cnpj"], periodo, res,
+                         entrada_pad.get("DT_E_S"), set(excluir or ()))
+    uf = _modelo_valor(memoria.get("modelos", {}).get("ICMS", {}).get(
+        "0000", ["0000"]), "UF", "ICMS") if "ICMS" in memoria.get(
+        "modelos", {}) else ""
+    part = _Participantes(memoria, res)
+    itens = _Itens(memoria, res, correlacoes, uf, contrib=True)
+    padroes = memoria.get("padroes", {}).get("CONTRIB", {})
+
+    c = _Linhas("CONTRIB")
+    docs = sorted(grupos["entradas"] + grupos["saidas"],
+                  key=lambda n: (_data(n.dhemi)[4:] + _data(n.dhemi)[2:4]
+                                 + _data(n.dhemi)[:2], n.mod, n.serie,
+                                 int(n.nnf or 0)))
+    xml_nfce = {}
+    for n in docs:
+        entrada = n in grupos["entradas"]
+        oper = "0" if entrada else "1"
+        sit = _cod_sit(n)
+        base = dict(IND_OPER=oper, IND_EMIT="1" if entrada else "0",
+                    COD_MOD=n.mod, COD_SIT=sit, SER=n.serie or "",
+                    NUM_DOC=n.nnf, CHV_NFE=n.chave)
+        if sit in ("02", "04"):
+            c.reg("C100", **base)
+            continue
+        pad = padroes.get("%s|%s" % (n.mod, oper), {})
+        data_doc = _data(n.dhemi)
+        if entrada:
+            data_es = (data_doc if entrada_pad.get("DT_E_S") == "emissao"
+                       else _data(n.dhsaient) or data_doc)
+            frete = 0.0 if entrada_pad.get("VL_FRT") == "zero" else n.vfrete
+        else:
+            data_es = data_doc
+            frete = n.vfrete
+        zeros = {k: "0" for k in (
+            "VL_ABAT_NT", "VL_BC_ICMS_ST", "VL_ICMS_ST", "VL_IPI",
+            "VL_PIS_ST", "VL_COFINS_ST")}
+        c.reg("C100", **base, **zeros,
+              COD_PART=part.codigo(n.emit) if entrada else "",
+              DT_DOC=data_doc, DT_E_S=data_es, VL_DOC=_fmt_val(n.vnf),
+              IND_PGTO=pad.get("IND_PGTO", "2"), VL_DESC=_fmt_val(n.vdesc),
+              VL_MERC=_fmt_val(n.vprod), IND_FRT=pad.get("IND_FRT", "9"),
+              VL_FRT=_fmt_val(frete), VL_SEG=_fmt_val(n.vseg),
+              VL_OUT_DA=_fmt_val(n.voutro),
+              VL_BC_ICMS=_fmt_val(n.vbc), VL_ICMS=_fmt_val(n.vicms),
+              VL_PIS="0", VL_COFINS="0")
+        if entrada:
+            for k, it in enumerate(n.itens, 1):
+                c.reg("C170", NUM_ITEM=str(it.nitem or k),
+                      **itens.entrada(n, it))
+        else:
+            xml_nfce[n.chave] = n
+
+    t = _Linhas("CONTRIB", _larguras(memoria, "CONTRIB"))
+    t.modelo(modelos["0000"], DT_INI=ini, DT_FIN=fim, TIPO_ESCRIT="0",
+             IND_SIT_ESP="", NUM_REC_ANTERIOR="")
+    t.reg("0001", IND_MOV="0")
+    for tipo in ("0100", "0110", "0140"):
+        if tipo in modelos:
+            t.modelo(modelos[tipo])
+    part.registros(t)
+    itens.registros(t)
+    for conta in sorted(itens.contas):
+        campos = memoria.get("contas", {}).get(conta)
+        if campos:
+            t.modelo(campos)
+        else:
+            res.apontar("conta sem cadastro", "0500", conta,
+                        "a memória não tem esta conta do plano de contas")
+    t.reg("0990", QTD_LIN_0="0")
+    vazios = memoria.get("blocos_vazios", {}).get("CONTRIB", [])
+    if "A" in vazios:
+        t.bloco_vazio("A")
+    t.reg("C001", IND_MOV="0" if c.linhas else "1")
+    if "C010" in modelos:
+        t.modelo(modelos["C010"])
+    t.linhas += c.linhas
+    t.reg("C990", QTD_LIN_C="0")
+    for bloco in ("D", "F", "I"):
+        if bloco in vazios:
+            t.bloco_vazio(bloco)
+    t.reg("M001", IND_MOV="0")
+    # o recálculo refaz um bloco M existente: abre-se o M200/M600 zerado e
+    # ele preenche (e cria o M210/M610)
+    for reg in ("M200", "M600"):
+        t.reg(reg, **{n: "0" for n in t.tabela[reg][1:]})
+    t.reg("M990", QTD_LIN_M="0")
+    for bloco in ("P", "1"):
+        if bloco in vazios:
+            t.bloco_vazio(bloco)
+    doc = SpedDocument.de_texto(t.texto())
+
+    # C100 de entrada: mercadorias e PIS/COFINS pela soma dos itens (que
+    # aqui já trazem as outras despesas de cada um)
+    ic = {k: doc._ix("C100", k) for k in ("CHV_NFE", "VL_PIS", "VL_COFINS",
+                                           "VL_MERC")}
+    i7 = {k: doc._ix("C170", k) for k in ("VL_PIS", "VL_COFINS", "VL_ITEM")}
+    for c100 in [r for r in doc.registros if r.reg == "C100"]:
+        filhos = [f for f in c100.filhos if f.reg == "C170"]
+        if filhos:
+            for campo, de in (("VL_PIS", "VL_PIS"),
+                              ("VL_COFINS", "VL_COFINS"),
+                              ("VL_MERC", "VL_ITEM")):
+                c100.set_valor(ic[campo], _fmt_val(sum(
+                    _to_num(f.valor(i7[de])) for f in filhos)))
+        nfe = xml_nfce.get(c100.valor(ic["CHV_NFE"]))
+        if nfe is not None:
+            doc.consolidar_c175_de_itens(c100, nfe.itens)
+    _aliquota_do_regime(doc, memoria, res)
+    doc.recalcular_bloco_m()
+    _codigos_de_receita(doc, modelos)
+    res.doc = SpedDocument.de_texto(doc.gerar_texto())
+    res.contagem = {k: len(v) for k, v in grupos.items()}
+    return res
+
+
+def _aliquota_do_regime(doc, memoria, res):
+    """Troca, nas saídas, a alíquota que veio do XML pela do regime — pela
+    mesma função do botão *Trocar alíquotas*. Só onde o XML trouxe outra."""
+    regime = memoria.get("aliquotas_saida", {}).get("01")
+    if not regime:
+        res.apontar("alíquota do regime", "C175", "",
+                    "a memória não tem a alíquota de saída do regime: "
+                    "ficou a do XML")
+        return
+    i = {k: doc._ix("C175", k) for k in ("CST_PIS", "ALIQ_PIS",
+                                          "ALIQ_COFINS")}
+    vistas = {(r.valor(i["ALIQ_PIS"]), r.valor(i["ALIQ_COFINS"]))
+              for r in doc.registros
+              if r.reg == "C175" and r.valor(i["CST_PIS"]) == "01"}
+    alvo = (_to_num(regime["ALIQ_PIS"]), _to_num(regime["ALIQ_COFINS"]))
+    for ap, ac in vistas:
+        de = (_to_num(ap), _to_num(ac))
+        if de != alvo:
+            doc.trocar_aliquotas_pis_cofins(
+                aliq_pis=alvo[0], aliq_cofins=alvo[1], escopo="saidas",
+                de_pis=de[0], de_cofins=de[1])
+            res.apontar("alíquota do XML trocada", "C175", "",
+                        "as NFC-e vieram com %s/%s; o regime da empresa é "
+                        "%s/%s" % (ap, ac, regime["ALIQ_PIS"],
+                                   regime["ALIQ_COFINS"]))
+
+
+def _codigos_de_receita(doc, modelos):
+    """M205/M605 (código de receita do débito) pelos modelos da memória,
+    com o valor do campo do M200/M600 que o modelo aponta."""
+    for pai, filho in (("M200", "M205"), ("M600", "M605")):
+        m = next((r for r in doc.registros if r.reg == pai), None)
+        modelo = modelos.get(filho)
+        if m is None or not modelo:
+            continue
+        num = _modelo_valor(modelo, "NUM_CAMPO", "CONTRIB")
+        try:
+            valor = m.campos[int(num) - 1]           # o Guia conta o REG
+        except (ValueError, IndexError):
+            continue
+        if not _to_num(valor):
+            continue
+        novo = doc.novo_registro(filho, pai=m)
+        novo.campos = list(modelo)
+        novo.set_valor(doc._ix(filho, "VL_DEBITO"), valor)
