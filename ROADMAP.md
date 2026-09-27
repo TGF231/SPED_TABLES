@@ -36,7 +36,7 @@ não prontas simplesmente não são criadas — nem menu, nem atalho
 (`acoes.visiveis()`, com teste em `tests/test_arquitetura.py`). Uma função
 nova nasce com `pronta=False` e só vira `True` quando passa pelo critério.
 
-**Onde estamos:** `0.58.0-dev.2`, canal **dev**. A 0.57.0 está pronta para
+**Onde estamos:** `0.58.0-dev.3`, canal **dev**. A 0.57.0 está pronta para
 virar `1.0.0-rc.1` quando você decidir; a 0.58 acrescenta a geração a partir
 dos XMLs (4.4). Toda a série 0.y.z é sandbox:
 nenhuma versão antes da 1.0.0 é entregue como release.
@@ -158,7 +158,7 @@ Decisões tomadas:
 |---|---|---|
 | 1 | Leitura: NF-e com participantes, protocolo e cancelamento; **CT-e**; eventos; pasta inteira sem descartar nada | ✔ 0.58.0-dev.1 |
 | 2 | Memória de itens por empresa e o aprendizado a partir do SPED entregue | ✔ 0.58.0-dev.2 — reproduz 567 de 577 itens do mês real |
-| 3 | Gerador do EFD ICMS/IPI (0, C, D, E, H, 9) e comparação com o gabarito | pendente |
+| 3 | Gerador do EFD ICMS/IPI (0, C, D, E, H, 9) e comparação com o gabarito | ✔ 0.58.0-dev.3 — mês real: 0 inconsistências no PVA |
 | 4 | Gerador do EFD Contribuições (0, A, C, D, F, M, 9) | pendente |
 | 5 | Tela: pasta, período, prévia, lista de revisão, abrir o resultado | pendente |
 | 6 | PVA de ensaio com o mês real | pendente |

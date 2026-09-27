@@ -33,18 +33,28 @@ o arquivo é `infra/memoria.py`.
 from sped_tables.dominio import xml_fiscal as xf
 from sped_tables.dominio.sped_model import so_digitos
 
-VERSAO = 1
+VERSAO = 2
 CAMPOS_0200 = ("DESCR_ITEM", "COD_BARRA", "UNID_INV", "TIPO_ITEM", "COD_NCM",
                "EX_IPI", "COD_GEN", "CEST", "ALIQ_ICMS")
 # a escrituração de um item de entrada, na ordem em que fica guardada
 ESCRITURACAO = ("CFOP", "CST_ICMS", "CREDITA_ICMS", "CST_PIS", "ALIQ_PIS",
-                "CST_COFINS", "ALIQ_COFINS")
+                "CST_COFINS", "ALIQ_COFINS", "CST_IPI", "COD_NAT")
+# Registros que não saem dos XMLs: são decisões da empresa (quem é o
+# contabilista, o código de receita do ICMS, o perfil, o que ela declara no
+# 1010). A memória guarda a última versão entregue como **modelo**, por
+# leiaute; o gerador copia e ajusta só o período.
+MODELOS = {
+    "ICMS": ("0000", "0001", "0002", "0005", "0100", "E116", "E200", "E210",
+             "E300", "E310", "E500", "E520", "1010"),
+    "CONTRIB": ("0000", "0001", "0100", "0110", "0140", "C010"),
+}
 
 
 def nova(cnpj):
     return {"versao": VERSAO, "cnpj": so_digitos(cnpj), "periodos": [],
             "produtos": {}, "cadastro": {}, "participantes": {},
-            "unidades": {}}
+            "unidades": {}, "modelos": {}, "blocos_vazios": {},
+            "saldos": {}, "padroes": {}}
 
 
 def chave_produto(cnpj_fornecedor, cod_fornecedor):
@@ -75,6 +85,19 @@ def codigo_proprio(memoria, cnpj_fornecedor, cod_fornecedor):
     if not p:
         return None, False
     return _mais_frequente(p["codigos"]), len(p["codigos"]) > 1
+
+
+def pratica(memoria, item):
+    """Como a empresa **costuma** escriturar esta situação (CFOP e CST do
+    fornecedor), somando todos os produtos — para produto que ela nunca
+    comprou. `(campos, parcela)`: a parcela diz quão dominante é a escolha
+    (1,0 = sempre a mesma); None se a situação nunca apareceu."""
+    cont = memoria.get("praticas", {}).get(_contexto(item))
+    if not cont:
+        return None
+    visto = _mais_frequente(cont)
+    return (dict(zip(ESCRITURACAO, visto.split("|"))),
+            cont[visto] / float(sum(cont.values())))
 
 
 def escrituracao(memoria, cnpj_fornecedor, cod_fornecedor, item):
@@ -127,18 +150,24 @@ def aprender(memoria, lote, doc_icms=None, doc_contrib=None):
 
     icms, contrib = c100s(doc_icms), c100s(doc_contrib)
     ia = _indices(doc_icms, "C170", ("NUM_ITEM", "COD_ITEM", "CFOP",
-                                     "CST_ICMS", "VL_ICMS"))
+                                     "CST_ICMS", "VL_ICMS", "CST_IPI",
+                                     "COD_NAT", "QTD", "UNID"))
     ip = _indices(doc_contrib, "C170", ("NUM_ITEM", "COD_ITEM", "CFOP",
                                         "CST_PIS", "ALIQ_PIS", "CST_COFINS",
                                         "ALIQ_COFINS"))
     i_oper = base._ix("C100", "IND_OPER")
     chaves = [k for k, r in (icms or contrib).items()
               if (r.valor(i_oper) or "").strip() == "0"]
+    datas, fretes = {}, {}
+    i_dts = base._ix("C100", "DT_E_S")
+    i_frt = base._ix("C100", "VL_FRT")
     for chave in chaves:
         nfe = por_chave.get(chave)
         if nfe is None or nfe.emit is None:
             res["notas_sem_xml"] += 1
             continue
+        _aprender_entrada(icms.get(chave) or contrib.get(chave), nfe,
+                          i_dts, i_frt, datas, fretes)
         itens_xml = {xf.norm(i.nitem): i for i in nfe.itens}
         a = _filhos(icms.get(chave), ia, "NUM_ITEM")
         p = _filhos(contrib.get(chave), ip, "NUM_ITEM")
@@ -152,9 +181,14 @@ def aprender(memoria, lote, doc_icms=None, doc_contrib=None):
             cod = (fa or fp)["COD_ITEM"]
             prod = memoria["produtos"].setdefault(
                 chave_produto(nfe.emit.cnpj, item.cprod),
-                {"codigos": {}, "escrituracao": {}, "descr": "",
-                 "cean": "", "ncm": ""})
+                {"codigos": {}, "escrituracao": {}, "fatores": {},
+                 "descr": "", "cean": "", "ncm": ""})
             _conta(prod["codigos"], cod)
+            # a unidade escriturada é a do cadastro próprio: um fardo de 2
+            # no XML pode ser 12 unidades no SPED
+            fator = _fator(fa, item)
+            if fator is not None:
+                _conta(prod["fatores"], fator)
             prod.update(descr=item.xprod or "", cean=item.cean or "",
                         ncm=item.ncm or "")
             vals = [(fa or fp).get("CFOP", ""),
@@ -163,10 +197,23 @@ def aprender(memoria, lote, doc_icms=None, doc_contrib=None):
                     (fp or {}).get("CST_PIS", ""),
                     (fp or {}).get("ALIQ_PIS", ""),
                     (fp or {}).get("CST_COFINS", ""),
-                    (fp or {}).get("ALIQ_COFINS", "")]
+                    (fp or {}).get("ALIQ_COFINS", ""),
+                    (fa or {}).get("CST_IPI", ""),
+                    (fa or fp).get("COD_NAT", "")]
             _conta(prod["escrituracao"].setdefault(_contexto(item), {}),
                    "|".join(vals))
+            # a prática da empresa, somando todos os produtos: é a segunda
+            # opção para produto que ela nunca comprou
+            _conta(memoria.setdefault("praticas", {}).setdefault(
+                _contexto(item), {}), "|".join(vals))
     res["produtos"] = len(memoria["produtos"])
+    # como a empresa data e totaliza a entrada: só vale o que os documentos
+    # mostram sem exceção — na dúvida, fica o padrão do SPED
+    padroes = memoria.setdefault("padroes", {}).setdefault("entrada", {})
+    if datas:
+        padroes["DT_E_S"] = _mais_frequente(datas)
+    if fretes:
+        padroes["VL_FRT"] = _mais_frequente(fretes)
 
     # cadastro próprio, participantes e unidades: do SPED, como a empresa
     # os declarou (vale o mais recente)
@@ -187,11 +234,18 @@ def aprender(memoria, lote, doc_icms=None, doc_contrib=None):
                 if documento:
                     memoria["participantes"][documento] = \
                         (r.valor(i150["COD_PART"]) or "").strip()
+        i400 = _indices(doc, "0400", ("COD_NAT", "DESCR_NAT"))
+        for r in doc.registros:
+            if r.reg == "0400":
+                cod_nat = (r.valor(i400["COD_NAT"]) or "").strip()
+                memoria.setdefault("naturezas", {})[cod_nat] = (
+                    r.valor(i400["DESCR_NAT"]) or "").strip()
         i190 = _indices(doc, "0190", ("UNID", "DESCR"))
         for r in doc.registros:
             if r.reg == "0190":
                 memoria["unidades"][(r.valor(i190["UNID"]) or "").strip()] = \
                     (r.valor(i190["DESCR"]) or "").strip()
+        _aprender_modelos(memoria, doc)
     res["cadastro"] = len(memoria["cadastro"])
     res["participantes"] = len(memoria["participantes"])
     periodo = base.data_final()[4:] + base.data_final()[2:4]
@@ -199,6 +253,95 @@ def aprender(memoria, lote, doc_icms=None, doc_contrib=None):
         memoria["periodos"].append(periodo)
         memoria["periodos"].sort()
     return res
+
+
+def _aprender_modelos(memoria, doc):
+    """Modelos por leiaute, blocos que a empresa entrega sem movimento e o
+    saldo credor de ICMS que passa para o mês seguinte."""
+    tipos = MODELOS.get(doc.layout, ())
+    modelos = {}
+    for r in doc.registros:
+        if r.reg in tipos and r.reg not in modelos:
+            modelos[r.reg] = list(r.campos)
+    memoria["modelos"][doc.layout] = modelos
+    # bloco sem movimento: só abertura (X001 com 1) e encerramento
+    por_bloco = {}
+    for r in doc.registros:
+        por_bloco.setdefault(r.bloco, []).append(r.reg)
+    memoria["blocos_vazios"][doc.layout] = sorted(
+        b for b, regs in por_bloco.items()
+        if b != "9" and sorted(set(regs)) == sorted({b + "001", b + "990"}))
+    # indicadores do C100 que a empresa preenche sempre igual, por modelo e
+    # operação (pagamento, frete): o XML não os traz no formato do SPED
+    ic = {c: doc._ix("C100", c) for c in ("COD_MOD", "IND_OPER",
+                                          "IND_PGTO", "IND_FRT")}
+    contagem = {}
+    for r in doc.registros:
+        if r.reg == "C100":
+            k = "%s|%s" % (r.valor(ic["COD_MOD"]), r.valor(ic["IND_OPER"]))
+            for c in ("IND_PGTO", "IND_FRT"):
+                if ic[c] is not None:
+                    _conta(contagem.setdefault(k, {}).setdefault(c, {}),
+                           (r.valor(ic[c]) or "").strip())
+    memoria.setdefault("padroes", {})[doc.layout] = {
+        k: {c: _mais_frequente(v) for c, v in campos.items()}
+        for k, campos in contagem.items()}
+    if doc.layout == "ICMS":
+        i = doc._ix("E110", "VL_SLD_CREDOR_TRANSPORTAR")
+        e110 = next((r for r in doc.registros if r.reg == "E110"), None)
+        if e110 is not None and i is not None:
+            periodo = doc.data_final()[4:] + doc.data_final()[2:4]
+            memoria["saldos"][periodo] = (e110.valor(i) or "0").strip()
+
+
+def _aprender_entrada(c100, nfe, i_dts, i_frt, datas, fretes):
+    """Data de entrada (emissão ou saída do XML?) e frete (o do XML ou
+    zero?) — só nas notas em que as duas hipóteses dão resultado diferente,
+    senão não ensinam nada."""
+    dts = (c100.valor(i_dts) or "").strip()
+    emissao, saida = _ddmmaaaa(nfe.dhemi), _ddmmaaaa(nfe.dhsaient)
+    if saida and saida != emissao:
+        if dts == emissao:
+            _conta(datas, "emissao")
+        elif dts == saida:
+            _conta(datas, "saida")
+    if nfe.vfrete:
+        frt = _numero(c100.valor(i_frt)) or 0.0
+        _conta(fretes, "xml" if abs(frt - nfe.vfrete) < 0.005 else "zero")
+
+
+def _ddmmaaaa(iso):
+    iso = (iso or "").strip()
+    return iso[8:10] + iso[5:7] + iso[0:4] if len(iso) >= 10 else ""
+
+
+def _fator(c170, item):
+    """Quantidade escriturada ÷ quantidade do XML, como texto (chave de
+    contagem), ou None se não der para saber."""
+    if not c170 or not item.qtd:
+        return None
+    q = _numero(c170.get("QTD"))
+    if q is None:
+        return None
+    return "%.6g" % (q / item.qtd)
+
+
+def _numero(v):
+    v = (v or "").strip().replace(".", "").replace(",", ".")
+    try:
+        return float(v)
+    except ValueError:
+        return None
+
+
+def fator_conversao(memoria, cnpj_fornecedor, cod_fornecedor):
+    """`(fator, ambíguo?)` da quantidade do XML para a do SPED; `(None,
+    False)` se nunca visto."""
+    p = memoria["produtos"].get(chave_produto(cnpj_fornecedor,
+                                              cod_fornecedor))
+    if not p or not p.get("fatores"):
+        return None, False
+    return float(_mais_frequente(p["fatores"])), len(p["fatores"]) > 1
 
 
 def _indices(doc, reg, campos):
@@ -222,11 +365,8 @@ def _filhos(c100, indices, chave):
 
 
 def _positivo(v):
-    v = (v or "").replace(".", "").replace(",", ".")
-    try:
-        return float(v) > 0
-    except ValueError:
-        return False
+    n = _numero(v)
+    return n is not None and n > 0
 
 
 def resumo(memoria):

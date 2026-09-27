@@ -257,20 +257,27 @@ def evento_cancelamento_xml(chave, modelo="nfe", cstat="135"):
 
 
 def nfe_xml(itens=None, nnf="123", serie="1", mod="55", cfop="5102",
-            vicms="1.80"):
+            vicms="1.80",
+            chave="31260811444777000161550010000001231000001230",
+            emit=("11444777000161", "FORNECEDOR TESTE"),
+            dest=(CNPJ_TESTE, "EMPRESA TESTE LTDA"),
+            dhemi="2026-08-05T10:00:00-03:00"):
     """XML mínimo de uma NF-e, casando com a nota de `icms_basico`.
 
     Só os grupos que o parser (`xml_fiscal.ler_nfe`) lê. `itens` é uma lista
     de dicts que sobrepõem os campos do item padrão (vProd 10.00, ICMS00 a
-    18%); `CSOSN` no dict troca o grupo ICMS00 por um ICMSSN.
+    18%); `CSOSN` no dict troca o grupo ICMS00 por um ICMSSN. `dest=None`
+    tira o destinatário (NFC-e de consumidor não identificado).
     """
     itens = itens or [{}, {}, {}]
     dets = []
+    total = 0.0
     for n, extra in enumerate(itens, 1):
         c = {"cProd": "P%d" % n, "CFOP": cfop, "vProd": "10.00",
              "NCM": "21069090", "orig": "0", "CST": "00", "vBC": "10.00",
              "pICMS": "18.00", "vICMS": vicms}
         c.update(extra)
+        total += float(c["vProd"])
         if "CSOSN" in c:
             icms = ("<ICMSSN102><orig>%s</orig><CSOSN>%s</CSOSN></ICMSSN102>"
                     % (c["orig"], c["CSOSN"]))
@@ -286,10 +293,11 @@ def nfe_xml(itens=None, nnf="123", serie="1", mod="55", cfop="5102",
     return (
         '<?xml version="1.0" encoding="UTF-8"?>'
         '<nfeProc xmlns="http://www.portalfiscal.inf.br/nfe"><NFe>'
-        '<infNFe Id="NFe31260811444777000161550010000001231000001230">'
+        '<infNFe Id="NFe%s">'
         "<ide><mod>%s</mod><serie>%s</serie><nNF>%s</nNF>"
-        "<dhEmi>2026-08-05T10:00:00-03:00</dhEmi><tpNF>1</tpNF></ide>%s%s"
-        "<total><ICMSTot><vProd>30.00</vProd><vNF>30.00</vNF></ICMSTot>"
+        "<dhEmi>%s</dhEmi><tpNF>1</tpNF></ide>%s%s%s"
+        "<total><ICMSTot><vProd>%.2f</vProd><vNF>%.2f</vNF></ICMSTot>"
         "</total></infNFe></NFe></nfeProc>"
-        % (mod, serie, nnf, _parte_xml("emit", "11444777000161",
-                                        "FORNECEDOR TESTE"), "".join(dets)))
+        % (chave, mod, serie, nnf, dhemi, _parte_xml("emit", *emit),
+           _parte_xml("dest", *dest) if dest else "", "".join(dets), total,
+           total))

@@ -434,12 +434,24 @@ class SpedDocument:
         # aceita. Abrir um SPED em UTF-8 e salvar aqui conserta o arquivo.
         doc.encoding = "latin-1"
 
+        doc._de_texto(dados)
+        return doc
+
+    @classmethod
+    def de_texto(cls, texto, caminho=None):
+        """Documento a partir do texto de um SPED (quem gera do zero monta o
+        texto e passa por aqui: a leitura é a mesma do arquivo)."""
+        doc = cls()
+        doc.caminho = caminho
+        doc._de_texto(texto)
+        return doc
+
+    def _de_texto(self, dados):
         linhas = [l for l in dados.replace("\r\n", "\n").split("\n")]
         # remove linha final vazia
         linhas = [l for l in linhas if l.strip() != ""]
-        doc.layout = detectar_layout(linhas)
-        doc._montar(linhas)
-        return doc
+        self.layout = detectar_layout(linhas)
+        self._montar(linhas)
 
     def _montar(self, linhas):
         """Monta a árvore. **Nada do arquivo some sem aviso.**

@@ -74,19 +74,19 @@ class TestCTe(unittest.TestCase):
 class TestNFeParaGerar(unittest.TestCase):
 
     def test_participantes_e_protocolo(self):
-        texto = nfe_xml().replace(
+        texto = nfe_xml(dest=None).replace(
             "<ide>", "<ide><finNFe>1</finNFe>").replace(
-            "</ide>", "</ide>" + "<emit><CNPJ>11444777000161</CNPJ>"
-            "<xNome>FORNECEDOR</xNome><enderEmit><cMun>3106200</cMun>"
-            "<UF>MG</UF></enderEmit><IE>0010000000</IE></emit>").replace(
             "</NFe>", "</NFe><protNFe><infProt><cStat>100</cStat>"
             "</infProt></protNFe>")
         with PastaTemporaria() as p:
             n = xf.ler_nfe(_grava(p, "n.xml", texto))
         self.assertEqual((n.emit.cnpj, n.emit.nome, n.emit.cod_mun),
-                         ("11444777000161", "FORNECEDOR", "3106200"))
+                         ("11444777000161", "FORNECEDOR TESTE", "3106200"))
         self.assertIsNone(n.dest)
         self.assertEqual((n.fin, n.situacao), ("1", "autorizada"))
+        with PastaTemporaria() as p:
+            n = xf.ler_nfe(_grava(p, "n.xml", nfe_xml()))
+        self.assertEqual(n.dest.cnpj, CNPJ_TESTE)
 
 
 class TestPasta(unittest.TestCase):

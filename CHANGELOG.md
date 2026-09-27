@@ -1,8 +1,46 @@
 # Changelog
 
-## [Não lançado] — 0.58.0-dev.2
+## [Não lançado] — 0.58.0-dev.3
 
-Etapas 1 e 2 de **gerar o SPED a partir dos XMLs** (ROADMAP 4.4).
+Etapas 1 a 3 de **gerar o SPED a partir dos XMLs** (ROADMAP 4.4).
+
+### Adicionado (etapa 3)
+- **Gerador do EFD ICMS/IPI** (`dominio/geracao.py`): blocos 0, B, C, D, E,
+  G, H, K, 1 e 9 a partir dos XMLs e da memória da empresa.
+  - Os itens de todos os documentos são montados antes. O C190 sai do mesmo
+    recálculo do botão; depois saem os C170 que o leiaute não pede (NFC-e e
+    NF-e própria).
+  - O C190 soma o VL_DOC: frete, ST e IPI que a empresa não separa entram
+    no rateio.
+  - A apuração do ICMS e do IPI é calculada. E116, E200/E300, 1010 e o
+    cabeçalho saem dos **modelos** aprendidos do SPED entregue.
+  - CT-e tomado vira D100/D190 de entrada.
+- A memória aprende também:
+  - o fator de conversão de unidade (um fardo no XML pode ser 12 unidades
+    no SPED);
+  - a data de entrada da empresa (emissão ou saída do XML) e se ela separa
+    o frete;
+  - as naturezas (0400), os indicadores do C100 e o saldo credor;
+  - a **prática da empresa** por CFOP e CST de fornecedor, que é a segunda
+    opção para produto nunca comprado.
+- O que não se sabe vai para a lista de revisão. O que deixaria o arquivo
+  inválido (um CFOP de entrada impossível de decidir) **bloqueia**.
+- `comparacao_sped`: compara dois SPED do mesmo período documento a
+  documento, com números comparados como números e participante pelo CNPJ.
+
+### Mês real (junho de 2026, EFD ICMS/IPI)
+- Com as mesmas notas do entregue e o saldo credor de maio: **393 C100
+  idênticos**, **562 dos 572 C170**, **E110 idêntico**, os 21 participantes.
+- **PVA de ensaio: 0 inconsistências**, como o entregue. A primeira versão
+  tinha 954, porque a NFC-e exige vazios os campos de ST e IPI do C100,
+  e o gerador gravava zero.
+- Diferenças que ficam, todas explicadas:
+  - 10 itens que a própria empresa escriturou de dois jeitos;
+  - a fórmula do VL_RED_BC do ERP, que difere da do Guia;
+  - centavos do rateio de outras despesas entre grupos;
+  - os textos complementares (C110/C195), que o gerador ainda não monta.
+- Com as 13 notas que a empresa não escriturou incluídas, o PVA acusa só o
+  item cujo CFOP ninguém sabe — exatamente o que o gerador bloqueia.
 
 ### Adicionado (etapa 2)
 - **Memória de itens por empresa** (`dominio/memoria_itens.py`, gravada em
