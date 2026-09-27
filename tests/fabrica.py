@@ -288,6 +288,8 @@ def nfe_xml(itens=None, nnf="123", serie="1", mod="55", cfop="5102",
         '<nfeProc xmlns="http://www.portalfiscal.inf.br/nfe"><NFe>'
         '<infNFe Id="NFe31260811444777000161550010000001231000001230">'
         "<ide><mod>%s</mod><serie>%s</serie><nNF>%s</nNF>"
-        "<dhEmi>2026-08-05T10:00:00-03:00</dhEmi><tpNF>1</tpNF></ide>%s"
+        "<dhEmi>2026-08-05T10:00:00-03:00</dhEmi><tpNF>1</tpNF></ide>%s%s"
         "<total><ICMSTot><vProd>30.00</vProd><vNF>30.00</vNF></ICMSTot>"
-        "</total></infNFe></NFe></nfeProc>" % (mod, serie, nnf, "".join(dets)))
+        "</total></infNFe></NFe></nfeProc>"
+        % (mod, serie, nnf, _parte_xml("emit", "11444777000161",
+                                        "FORNECEDOR TESTE"), "".join(dets)))

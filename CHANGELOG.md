@@ -1,8 +1,24 @@
 # Changelog
 
-## [Não lançado] — 0.58.0-dev.1
+## [Não lançado] — 0.58.0-dev.2
 
-Primeira etapa de **gerar o SPED a partir dos XMLs** (ROADMAP 4.4).
+Etapas 1 e 2 de **gerar o SPED a partir dos XMLs** (ROADMAP 4.4).
+
+### Adicionado (etapa 2)
+- **Memória de itens por empresa** (`dominio/memoria_itens.py`, gravada em
+  `memoria/<CNPJ>.json` na pasta de dados e lida só quando a geração
+  precisa): produto do fornecedor → código próprio e **como a empresa o
+  escritura** em cada situação (CFOP e CST de origem → CFOP, CST de ICMS,
+  crédito, CST e alíquota de PIS/COFINS); o cadastro próprio (0200), os
+  códigos de participante e as unidades.
+- **Aprendizado a partir do SPED entregue**: casa cada C170 de entrada com o
+  item do XML pela chave da nota e pelo número do item. Num mês real
+  casaram os 577 itens, e a memória reproduz 567 exatamente como foram
+  escriturados; os outros 10 são produtos que a própria empresa escriturou
+  de dois jeitos, e ficam apontados como ambíguos. O que a memória não sabe
+  é respondido com "não sei" — nunca com um palpite gravado.
+
+### Adicionado (etapa 1)
 
 ### Adicionado
 - **Leitura de CT-e (modelo 57)**: chave, série, número, CFOP, municípios de
