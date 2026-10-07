@@ -2,15 +2,20 @@
 """Ações do menu: ferramentas que valem para os dois leiautes"""
 
 import os
+from collections import Counter
 
+from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QDialog, QFileDialog, QMessageBox
 
 from sped_tables.dominio import conferencia as cf
 from sped_tables.dominio import diagnostico
+from sped_tables.dominio import regras_guia
 from sped_tables.dominio import revisao as rev
 from sped_tables.dominio import validacao
 from sped_tables.dominio import xml_fiscal as xf
 from sped_tables.infra import cadastro, config
+from sped_tables.interface.comum import (calcular, lista_de_mudancas,
+                                         ler_pasta_xml)
 from sped_tables.interface.dialogos.cadastro import (
     DialogoCodCta, DialogoItensNaoUsados,
 )
@@ -136,6 +141,60 @@ class ControladorGerais:
         DialogoCorrelacoesCFOP(
             self.correlacoes_cfop, self._caminho_correl, aplicar, self).exec()
 
+    def datas_pelo_xml(self):
+        """Acerta as datas do C100 pelo XML e passa à situação extemporânea
+        (01/07) o documento emitido antes do período — o caso da NFC-e em
+        contingência autorizada no mês seguinte. No ICMS/IPI a apuração
+        acompanha: o ICMS dessas saídas é débito especial (E110)."""
+        if not self.doc:
+            return
+        titulo = "Datas pelo XML"
+        lote = ler_pasta_xml(self, titulo,
+                             "Pasta dos XMLs do período (as subpastas entram)")
+        if lote is None:
+            return
+        achados = cf.datas_pelo_xml(self.doc, lote.nfes)
+        if not achados:
+            QMessageBox.information(
+                self, titulo, "As datas de todos os %d documento(s) com XML "
+                "conferem." % len(lote.nfes))
+            return
+        por_campo = Counter(a["campo"] for a in achados)
+        docs = len({id(a["c100"]) for a in achados})
+        texto = ("<b>%d</b> documento(s) com data diferente do XML:<br><br>"
+                 % docs)
+        rotulos = {"DT_DOC": "data de emissão (DT_DOC)",
+                   "DT_E_S": "data de saída (DT_E_S)",
+                   "COD_SIT": "<b>situação 01/07 — extemporâneo</b> "
+                              "(emitido antes do período)"}
+        for campo in ("DT_DOC", "DT_E_S", "COD_SIT"):
+            if campo in por_campo:
+                texto += "• %s: %d<br>" % (rotulos[campo], por_campo[campo])
+        if "COD_SIT" in por_campo and self.doc.layout == "ICMS":
+            texto += ("<br>O ICMS das saídas extemporâneas passa a ser "
+                      "<b>débito especial</b> no E110 (extra-apuração), e a "
+                      "apuração é recalculada.")
+        caixa = QMessageBox(self)
+        caixa.setWindowTitle(titulo)
+        caixa.setTextFormat(Qt.TextFormat.RichText)
+        caixa.setIcon(QMessageBox.Icon.Question)
+        caixa.setText(texto + "<br><br>Aplicar?")
+        b_ok = caixa.addButton("Aplicar", QMessageBox.ButtonRole.AcceptRole)
+        caixa.addButton("Cancelar", QMessageBox.ButtonRole.RejectRole)
+        caixa.setDefaultButton(b_ok)
+        caixa.exec()
+        if caixa.clickedButton() is not b_ok:
+            return
+        n, ndocs = cf.corrigir_datas_pelo_xml(self.doc, achados)
+        msg = "%d campo(s) alterado(s) em %d documento(s)." % (n, ndocs)
+        if self.doc.layout == "ICMS" and "COD_SIT" in por_campo:
+            ok, mudou = calcular(self, titulo, self.doc.recalcular_e110)
+            if ok and mudou:
+                msg += "\n\nApuração (E110):\n" + lista_de_mudancas(mudou)
+        self._marcar_alterado()
+        self._montar_abas()
+        QMessageBox.information(self, titulo, msg)
+
     def alterar_datas(self):
         """Altera datas de emissão/saída dos C100 conforme filtro de data."""
         if not self.doc:
@@ -159,6 +218,25 @@ class ControladorGerais:
             % (res["no_filtro"], res["c100"], campos,
                ("\n%d sem data válida no campo de filtro." % res["sem_data"])
                if res["sem_data"] else ""))
+
+    def _acoes_dos_modulos(self):
+        """Módulo de correção (o rótulo de `diagnostico.MODULOS` e de
+        `Regra.modulo`) → método da janela. O diagnóstico e a revisão montam
+        os botões daqui: um mapa por tela deixava módulo sem botão numa
+        delas (o "Datas e extemporâneos pelos XMLs" no diagnóstico)."""
+        return {
+            "Corrigir campos pelo leiaute": self.validar_campos,
+            "Itens do 0200 sem referência": self.itens_sem_referencia,
+            "Preencher conta contábil (COD_CTA)": self.preencher_cod_cta,
+            "Preencher COD_GEN pelo NCM": self.preencher_cod_gen,
+            regras_guia.RECALCULAR_C190[0]: self.recalcular_c190_massa,
+            regras_guia.ALTERAR_DATAS[0]: self.alterar_datas,
+            "Datas e extemporâneos pelos XMLs": self.datas_pelo_xml,
+            "Recalcular bloco M (apuração PIS/COFINS)":
+                self.recalcular_bloco_m,
+            "Empresa e rotinas": self.configurar_empresa,
+            regras_guia.RECALCULAR_E110[0]: self.recalcular_apuracao_icms,
+        }
 
     def revisar_erros(self):
         """Executa as regras de revisão e abre o relatório (não-modal, para
@@ -187,7 +265,26 @@ class ControladorGerais:
                 ("Recalcular bloco M…", self.recalcular_bloco_m),
             "M105/M505 fora da base de crédito dos documentos":
                 ("Recalcular bloco M…", self.recalcular_bloco_m),
+            "E110 com débitos diferentes dos analíticos":
+                ("Recalcular E110…", self.recalcular_apuracao_icms),
+            "CST 02 (monofásico) sem alíquota (C170)":
+                ("Empresa e rotinas…", self.configurar_empresa),
+            "Natureza da receita fora da tabela do CST (M410/M810)":
+                ("Empresa e rotinas…", self.configurar_empresa),
+            "Crédito em NCM monofásico ou de alíquota zero":
+                ("Empresa e rotinas…", self.configurar_empresa),
+            "Data de entrada/saída antes da emissão (C100)":
+                ("Datas pelos XMLs…", self.datas_pelo_xml),
         }
+        # as regras do guia: o botão sai do módulo da regra, pelo mesmo mapa
+        # do diagnóstico (o C190 daqui reabre a revisão depois de corrigir)
+        modulos = self._acoes_dos_modulos()
+        modulos[regras_guia.RECALCULAR_C190[0]] = \
+            self._corrigir_c190_da_revisao
+        for regra in regras_guia.REGRAS:
+            fn = modulos.get(regra.modulo)
+            if fn is not None:
+                acoes.setdefault(regra.rotulo, (regra.modulo + "…", fn))
         self._dlg_revisao = DialogoRevisao(
             por_regra, self.ir_para_registro, self, acoes=acoes)
         self._dlg_revisao.show()
@@ -254,19 +351,9 @@ class ControladorGerais:
                 "Diagnóstico: nenhum problema nas verificações automáticas.",
                 8000)
             return
-        acoes = {
-            "Corrigir campos pelo leiaute": self.validar_campos,
-            "Itens do 0200 sem referência": self.itens_sem_referencia,
-            "Preencher conta contábil (COD_CTA)": self.preencher_cod_cta,
-            "Preencher COD_GEN pelo NCM": self.preencher_cod_gen,
-            "Recalcular C190 (analítico)": self.recalcular_c190_massa,
-            "Alterar datas emissão/saída (C100)": self.alterar_datas,
-            "Recalcular bloco M (apuração PIS/COFINS)":
-                self.recalcular_bloco_m,
-            "Rotinas de conferência (PIS/COFINS)": self.configurar_empresa,
-        }
-        self._dlg_diag = DialogoDiagnostico(achados, info, acoes,
-                                            self.ir_para_registro, self)
+        self._dlg_diag = DialogoDiagnostico(
+            achados, info, self._acoes_dos_modulos(), self.ir_para_registro,
+            self)
         self._dlg_diag.show()
         self.statusBar().showMessage(
             "Diagnóstico: %d problema(s) em %d verificação(ões)."

@@ -186,6 +186,8 @@ class PainelEmpresas(QWidget):
             return
         e = self.cx_cad.aplicar(
             self.mapa.get(cnpj) or emp_mod.Empresa(cnpj=cnpj))
+        if e is None:
+            return
         self.mapa[cnpj] = e
         try:
             cadastro.salvar_empresas(self.mapa)

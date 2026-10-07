@@ -11,6 +11,7 @@ Modelo de dados do SPED em árvore.
   recalculados).
 """
 
+import contextlib
 import itertools
 import os
 import re
@@ -39,6 +40,17 @@ def so_digitos(texto):
     de planilha é aceito. Havia quatro cópias desta função, duas por regex e
     duas por `isdigit`."""
     return "".join(c for c in str(texto or "") if c.isdigit())
+
+
+def data_aaaammdd(ddmmaaaa):
+    """DDMMAAAA -> AAAAMMDD, para comparar data como texto; "" quando não é
+    data (8 dígitos, com dia e mês possíveis). Separadores são ignorados.
+    Havia seis cópias, uma delas estrita e as outras não — e duas regras
+    discordavam sobre o mesmo DT_E_S malformado."""
+    d = so_digitos(ddmmaaaa)
+    if len(d) != 8 or not (1 <= int(d[2:4]) <= 12 and 1 <= int(d[:2]) <= 31):
+        return ""
+    return d[4:] + d[2:4] + d[:2]
 
 
 def _fmt_val(v):
@@ -405,6 +417,7 @@ class SpedDocument:
         # em silêncio (ver `_montar`)
         self.linhas_invalidas = []   # [(nº da linha, texto)] sem o | inicial
         self.sem_pipe_final = []     # [(nº da linha, REG)]
+        self._lote = None            # ver `lote()`
 
     # ------------------------------------------------------------------ load
     @classmethod
@@ -994,23 +1007,208 @@ class SpedDocument:
                 tot[i] += v[i]
         return linhas, tot
 
-    def apuracao_e110(self):
-        """Campos do registro E110 (apuração do ICMS de operações próprias),
-        como dicionário nomeado; None se não houver E110."""
-        e = next((r for r in self.registros if r.reg == "E110"), None)
-        if e is None:
-            return None
-        campos = ["VL_TOT_DEBITOS", "VL_AJ_DEBITOS", "VL_TOT_AJ_DEBITOS",
-                  "VL_ESTORNOS_CRED", "VL_TOT_CREDITOS", "VL_AJ_CREDITOS",
-                  "VL_TOT_AJ_CREDITOS", "VL_ESTORNOS_DEB", "VL_SLD_CREDOR_ANT",
-                  "VL_SLD_APURADO", "VL_TOT_DED", "VL_ICMS_RECOLHER",
-                  "VL_SLD_CREDOR_TRANSPORTAR", "DEB_ESP"]
+    CAMPOS_E110 = ("VL_TOT_DEBITOS", "VL_AJ_DEBITOS", "VL_TOT_AJ_DEBITOS",
+                   "VL_ESTORNOS_CRED", "VL_TOT_CREDITOS", "VL_AJ_CREDITOS",
+                   "VL_TOT_AJ_CREDITOS", "VL_ESTORNOS_DEB",
+                   "VL_SLD_CREDOR_ANT", "VL_SLD_APURADO", "VL_TOT_DED",
+                   "VL_ICMS_RECOLHER", "VL_SLD_CREDOR_TRANSPORTAR",
+                   "DEB_ESP")
+
+    @staticmethod
+    def saldos_e110(v):
+        """Os três saldos do E110 pelas expressões do guia (campos 11, 13 e
+        14), a partir dos débitos, créditos, ajustes e deduções em `v`.
+
+        O saldo credor a transportar inclui a **dedução** que sobra: com
+        saldo apurado 100 e dedução 150, recolhe-se 0 e transportam-se 50.
+        Até a 1.0.0-rc.1 o recálculo transportava só o saldo negativo e
+        perdia a dedução excedente. Quem recalcula e quem confere usam esta
+        mesma função."""
+        saldo = (v["VL_TOT_DEBITOS"] + v["VL_AJ_DEBITOS"]
+                 + v["VL_TOT_AJ_DEBITOS"] + v["VL_ESTORNOS_CRED"]
+                 - v["VL_TOT_CREDITOS"] - v["VL_AJ_CREDITOS"]
+                 - v["VL_TOT_AJ_CREDITOS"] - v["VL_ESTORNOS_DEB"]
+                 - v["VL_SLD_CREDOR_ANT"])
+        apurado = max(round(saldo, 2), 0.0)
+        liquido = round(saldo - v["VL_TOT_DED"], 2)
+        return {"VL_SLD_APURADO": apurado,
+                "VL_ICMS_RECOLHER": max(round(apurado - v["VL_TOT_DED"], 2),
+                                        0.0),
+                "VL_SLD_CREDOR_TRANSPORTAR": max(-liquido, 0.0)}
+
+    def valores_e110(self, e110):
+        """`{campo: número}` de um E110 (os de `CAMPOS_E110` que o leiaute
+        tem)."""
         out = {}
-        for c in campos:
+        for c in self.CAMPOS_E110:
             ix = self._ix("E110", c)
             if ix is not None:
-                out[c] = _to_num(e.valor(ix))
+                out[c] = _to_num(e110.valor(ix))
         return out
+
+    def apuracao_e110(self):
+        """Campos do primeiro E110 (apuração do ICMS de operações próprias),
+        como dicionário nomeado; None se não houver E110."""
+        e = next((r for r in self.registros if r.reg == "E110"), None)
+        return None if e is None else self.valores_e110(e)
+
+    # E111 por tipo de ajuste: 3º caractere do COD_AJ_APUR 0 (ICMS próprio)
+    # e o 4º diz qual total do E110 ele compõe (guia, E110 campos 04 a 09)
+    E111_POR_TIPO = {"0": "VL_TOT_AJ_DEBITOS", "1": "VL_ESTORNOS_CRED",
+                     "2": "VL_TOT_AJ_CREDITOS", "3": "VL_ESTORNOS_DEB"}
+
+    def _ajustes_e111(self, e110):
+        """Os quatro totais de ajuste do E110 pela soma dos seus E111."""
+        i_cod = self._ix("E111", "COD_AJ_APUR")
+        i_vl = self._ix("E111", "VL_AJ_APUR")
+        tot = dict.fromkeys(self.E111_POR_TIPO.values(), 0.0)
+        if i_cod is None or i_vl is None:
+            return tot
+        for f in e110.filhos:
+            cod = (f.valor(i_cod) or "").strip() if f.reg == "E111" else ""
+            if len(cod) >= 4 and cod[2] == "0" and cod[3] in self.E111_POR_TIPO:
+                tot[self.E111_POR_TIPO[cod[3]]] += _to_num(f.valor(i_vl))
+        return {k: round(v, 2) for k, v in tot.items()}
+
+    def e110_esperado(self, e110, primeiro=True):
+        """O E110 como o arquivo o determina: débitos e débito especial pelos
+        analíticos do período do E100 (o extemporâneo, que não tem período,
+        no `primeiro`), os quatro totais de ajuste pelos E111, e os saldos
+        pelas expressões do guia sobre esses valores. Créditos, ajustes de
+        documento (C197…), deduções e saldo anterior ficam como declarados.
+
+        É a fonte única: `recalcular_e110` grava isto, e as verificações
+        (`revisao.verificar_e110_debitos`, a regra do guia) comparam com
+        isto — verificação e correção que discordam acusariam o que o botão
+        acabou de gravar."""
+        novo = self.valores_e110(e110)
+        deb, ext = self.debitos_icms_por_situacao(self.periodo_e110(e110))
+        novo["VL_TOT_DEBITOS"] = deb
+        novo["DEB_ESP"] = round((ext if primeiro else 0.0)
+                                + self._ajustes_debito_especial(e110), 2)
+        novo.update(self._ajustes_e111(e110))
+        novo.update(self.saldos_e110(novo))
+        return novo
+
+    # analíticos que somam no E110 (os que existem no arquivo entram)
+    ANALITICOS_ICMS = ("C190", "C320", "C390", "C490", "C590", "C690",
+                       "C790", "C850", "C890", "D190", "D300", "D390",
+                       "D410", "D590", "D690", "D696")
+    # documento extemporâneo: o ICMS da saída é débito **especial**
+    # (extra-apuração), não débito do período
+    SITUACOES_EXTEMPORANEAS = ("01", "07")
+
+    @staticmethod
+    def _cfop_de_debito(cfop):
+        """CFOP que entra no VL_TOT_DEBITOS (guia, E110 campo 02, e a
+        consulta do PVA): saídas 5/6/7, **menos** a 5605 (transferência de
+        saldo devedor, que sai do estabelecimento) e **mais** a 1605 (o saldo
+        devedor recebido de outro estabelecimento)."""
+        return cfop == "1605" or (cfop[:1] in ("5", "6", "7")
+                                  and cfop != "5605")
+
+    def _data_do_documento(self, doc):
+        """`aaaammdd` da data em que o documento entra na apuração —
+        DT_E_S, DT_A_P ou DT_DOC, o primeiro preenchido —, ou ""."""
+        for nome in ("DT_E_S", "DT_A_P", "DT_DOC"):
+            i = self._ix(doc.reg, nome)
+            data = data_aaaammdd(doc.valor(i)) if i is not None else ""
+            if data:
+                return data
+        return ""
+
+    def debitos_icms_por_situacao(self, periodo=None):
+        """`(débitos do período, débitos extemporâneos)` — soma do VL_ICMS
+        dos analíticos de débito (`_cfop_de_debito`), separando os documentos
+        com COD_SIT 01/07. É o que o PVA confere em `MSG_VL_TOT_DEBITOS_E110`
+        e `MSG_DEB_ESP_E110`.
+
+        `periodo` (`(aaaammdd, aaaammdd)`, o do E100) limita os documentos
+        regulares aos que entram na apuração dentro dele, como faz o PVA;
+        o extemporâneo é de outro mês por definição e não passa pelo
+        filtro."""
+        no_periodo = extemp = 0.0
+        indices = {}
+        for reg in self.ANALITICOS_ICMS:
+            i_icms, i_cfop = self._ix(reg, "VL_ICMS"), self._ix(reg, "CFOP")
+            if i_icms is not None and i_cfop is not None:
+                indices[reg] = (i_icms, i_cfop)
+        for r in self.registros:            # uma passada, não uma por tipo
+            par = indices.get(r.reg)
+            if par is None or not self._cfop_de_debito(
+                    (r.valor(par[1]) or "").strip()):
+                continue
+            v = _to_num(r.valor(par[0]))
+            pai = r.pai
+            i_sit = self._ix(pai.reg, "COD_SIT") if pai is not None else None
+            sit = (pai.valor(i_sit) or "").strip() if i_sit is not None \
+                else ""
+            if sit in self.SITUACOES_EXTEMPORANEAS:
+                extemp += v
+                continue
+            if periodo and pai is not None:
+                data = self._data_do_documento(pai)
+                if data and not periodo[0] <= data <= periodo[1]:
+                    continue
+            no_periodo += v
+        return round(no_periodo, 2), round(extemp, 2)
+
+    def periodo_e110(self, e110):
+        """`(aaaammdd, aaaammdd)` do E100 pai do E110, ou None."""
+        e100 = e110.pai
+        if e100 is None or e100.reg != "E100":
+            return None
+        datas = tuple(data_aaaammdd(e100.valor(self._ix("E100", nome)))
+                      for nome in ("DT_INI", "DT_FIN"))
+        return datas if all(datas) else None
+
+    def _ajustes_debito_especial(self, e110):
+        """E111 de débito especial do E110: COD_AJ_APUR com 3º caractere 0
+        (ICMS próprio) e 4º 5 (débito especial) — a outra parcela do
+        DEB_ESP."""
+        i_cod = self._ix("E111", "COD_AJ_APUR")
+        i_vl = self._ix("E111", "VL_AJ_APUR")
+        if i_cod is None or i_vl is None:
+            return 0.0
+        return sum(_to_num(f.valor(i_vl)) for f in e110.filhos
+                   if f.reg == "E111"
+                   and (f.valor(i_cod) or "")[2:4] == "05")
+
+    def recalcular_e110(self):
+        """Grava em cada E110 o `e110_esperado`: débitos pelos analíticos,
+        `DEB_ESP` com o ICMS das saídas extemporâneas mais o que já era
+        débito especial de outra origem (ajustes), os totais de ajuste pelos
+        E111 e os saldos a partir deles. Créditos, ajustes de documento e
+        deduções ficam como estão (não saem dos documentos).
+
+        Cada E110 recebe os débitos dos documentos do período do seu E100,
+        como no PVA. Com mais de um E100 no arquivo, o ICMS extemporâneo —
+        que não tem período — vai para o primeiro, e a chave de cada campo
+        devolvido leva o período ("01/09–15/09 VL_TOT_DEBITOS").
+
+        Devolve `{campo: (antes, depois)}` do que mudou, ou None sem E110.
+        """
+        e110s = [r for r in self.registros if r.reg == "E110"]
+        if not e110s:
+            return None
+        self._exigir_numeros(e110s + [r for r in self.registros
+                                      if r.reg in self.ANALITICOS_ICMS
+                                      or r.reg == "E111"])
+        mudou = {}
+        for k, e in enumerate(e110s):
+            v = self.valores_e110(e)
+            novo = self.e110_esperado(e, primeiro=k == 0)
+            rotulo = ""
+            if len(e110s) > 1:
+                per = self.periodo_e110(e)
+                rotulo = ("%s/%s–%s/%s " % (per[0][6:], per[0][4:6],
+                                            per[1][6:], per[1][4:6])
+                          if per else "E110 %d " % (k + 1))
+            for campo, valor in novo.items():
+                if round(valor, 2) != round(v.get(campo, 0.0), 2):
+                    e.set_valor(self._ix("E110", campo), _fmt_val(valor))
+                    mudou[rotulo + campo] = (v.get(campo, 0.0), valor)
+        return mudou
 
     def consolidacao_cst_pis_cofins(self):
         """Consolida C170 (aquisições) e C175 (receitas) por CST de PIS,
@@ -1072,10 +1270,24 @@ class SpedDocument:
         return sum(1 for c in campos(tipo, self.layout, 40)
                    if not _re.match(r"^Campo \d+$", c))
 
+    # {(layout, tipo): {nome: índice}} — o leiaute é fixo durante a execução
+    _INDICES = {}
+
     def _ix(self, tipo, nome):
-        """Índice da coluna `nome` no layout atual para o registro `tipo`."""
-        cols = campos(tipo, self.layout, 40)
-        return cols.index(nome) if nome in cols else None
+        """Índice da coluna `nome` no layout atual para o registro `tipo`.
+
+        Com cache: montar a lista de colunas a cada chamada custava mais que
+        a regra que a chamava — as regras do guia consultam campo a campo, e
+        num arquivo de 45 mil linhas o diagnóstico dobrava de tempo."""
+        chave = (self.layout, tipo)
+        mapa = self._INDICES.get(chave)
+        if mapa is None:
+            cols = campos(tipo, self.layout, 40)
+            mapa = {}
+            for i, c in enumerate(cols):
+                mapa.setdefault(c, i)
+            self._INDICES[chave] = mapa
+        return mapa.get(nome)
 
     @staticmethod
     def _ancora_antes(pai, reg):
@@ -1203,10 +1415,7 @@ class SpedDocument:
         # índices dos campos do C170
         i_item = self._ix("C170", "VL_ITEM")
         i_desc = self._ix("C170", "VL_DESC")
-        i_cst = self._ix("C170", "CST_ICMS")
-        i_cfop = self._ix("C170", "CFOP")
         i_bc = self._ix("C170", "VL_BC_ICMS")
-        i_aliq = self._ix("C170", "ALIQ_ICMS")
         i_icms = self._ix("C170", "VL_ICMS")
         i_bcst = self._ix("C170", "VL_BC_ICMS_ST")
         i_icmsst = self._ix("C170", "VL_ICMS_ST")
@@ -1230,13 +1439,10 @@ class SpedDocument:
 
         grupos = {}
         for pos, it in enumerate(c170):
-            cst = it.valor(i_cst)
-            cfop = it.valor(i_cfop)
-            aliq = _to_num(it.valor(i_aliq))
-            chave = (cst, cfop, "%.2f" % aliq)
+            chave = self.chave_c190(it)
             g = grupos.get(chave)
             if g is None:
-                g = {"cst": cst, "cfop": cfop, "aliq": aliq,
+                g = {"cst": chave[0], "cfop": chave[1], "aliq": chave[2],
                      "VL_OPR": 0.0, "VL_BC": 0.0, "VL_ICMS": 0.0,
                      "VL_BCST": 0.0, "VL_ICMSST": 0.0, "VL_IPI": 0.0,
                      "VL_BC_PC": 0.0}
@@ -1256,11 +1462,10 @@ class SpedDocument:
                 bc_pc = _to_num(it.valor(i_bccof))
             g["VL_BC_PC"] += bc_pc
 
-        chaves = sorted(grupos.keys(),
-                        key=lambda k: (k[0], k[1], float(k[2])))
+        chaves = sorted(grupos)
 
         # remove os C190 antigos do documento
-        largura = self._ncampos("C190")      # antes de remover os antigos
+        largura = self._largura("C190")      # antes de remover os antigos
         antigos = [f for f in c100.filhos if f.reg == "C190"]
         n_rem = len(antigos)
         for a in antigos:
@@ -1304,6 +1509,15 @@ class SpedDocument:
         return {"grupos": len(chaves), "removidos": n_rem, "criados": n_cri,
                 "base_pis_cofins": usou_pc, "sem_base": sem_base}
 
+    def chave_c190(self, r):
+        """`(CST_ICMS, CFOP, alíquota)` de um C170 ou C190 — a chave do
+        analítico. Sem espaços e com a alíquota como número: "18" e "18,00"
+        são o mesmo grupo. Era refeita em seis lugares, e um deles comparava
+        a alíquota como texto (via "0" e "0,00" como chaves diferentes)."""
+        return ((r.valor(self._ix(r.reg, "CST_ICMS")) or "").strip(),
+                (r.valor(self._ix(r.reg, "CFOP")) or "").strip(),
+                round(_to_num(r.valor(self._ix(r.reg, "ALIQ_ICMS"))), 2))
+
     def documentos_c190_com_reducao_zerada(self):
         """C100 que têm algum C190 com CST x20/x70 e `VL_RED_BC` zerado —
         os candidatos ao recálculo. **Não altera nada.**
@@ -1337,10 +1551,6 @@ class SpedDocument:
         """
         if self.layout != "ICMS":
             return []
-        idx = [self._ix("C190", c)
-               for c in ("CST_ICMS", "CFOP", "ALIQ_ICMS")]
-        if any(i is None for i in idx):
-            return []
         out = []
         for c100 in self.registros:
             if c100.reg != "C100":
@@ -1349,19 +1559,45 @@ class SpedDocument:
             for f in c100.filhos:
                 if f.reg != "C190":
                     continue
-                k = tuple((f.valor(i) or "").strip() for i in idx)
+                k = self.chave_c190(f)
                 if k in vistos:
                     out.append(c100)
                     break
                 vistos.add(k)
         return out
 
+    def documentos_para_refazer_c190(self):
+        """Os C100 cujo analítico o *Recalcular C190* refaz pelos itens, por
+        motivo, cada documento num motivo só: `{"reducao", "duplicados",
+        "nfce", "divergentes": [c100…]}` — redução de base zerada, chave
+        repetida, NFC-e com C170 fictícios e C190 que não confere com os
+        itens pelas regras do guia. O botão e o padrão de
+        `consolidar_c190_em_massa` (que os roteiros usam) partem daqui."""
+        if self.layout != "ICMS":
+            return {}
+        from sped_tables.dominio import regras_guia
+        candidatos = (
+            ("reducao", [c for c, _r in
+                         self.documentos_c190_com_reducao_zerada()]),
+            ("duplicados", self.documentos_c190_duplicados()),
+            ("nfce", self.documentos_65_com_c170()),
+            ("divergentes", regras_guia.documentos_c190_divergentes(self)))
+        vistos = set()
+        out = {}
+        for motivo, docs in candidatos:
+            out[motivo] = []
+            for c in docs:
+                if c.uid not in vistos:
+                    vistos.add(c.uid)
+                    out[motivo].append(c)
+        return out
+
     def consolidar_c190_em_massa(self, documentos=None):
         """Roda `consolidar_c190` em vários documentos de uma vez.
 
-        Sem `documentos`, corrige apenas os que têm C190 com redução de base
-        zerada — o recálculo substitui os C190 do documento, e refazer os que
-        já estão certos seria mexer no que não pede conserto.
+        Sem `documentos`, refaz só os de `documentos_para_refazer_c190` — o
+        recálculo substitui os C190 do documento, e refazer os que já estão
+        certos seria mexer no que não pede conserto.
 
         Devolve o somatório, com quantos grupos usaram a base de PIS/COFINS no
         lugar da base de ICMS (CST x70) e quantos ficaram sem base alguma.
@@ -1369,13 +1605,9 @@ class SpedDocument:
         if self.layout != "ICMS":
             return {"erro": "O C190 é do EFD ICMS/IPI."}
         if documentos is None:
-            # os dois defeitos que refazer o analítico conserta: redução de
-            # base zerada e chave repetida no mesmo documento
-            alvos = {id(c): c for c, _r
-                     in self.documentos_c190_com_reducao_zerada()}
-            for c in self.documentos_c190_duplicados():
-                alvos.setdefault(id(c), c)
-            documentos = list(alvos.values())
+            documentos = [c for docs in
+                          self.documentos_para_refazer_c190().values()
+                          for c in docs]
         # confere todos antes do primeiro: parar no meio deixaria metade dos
         # documentos refeitos
         self._exigir_numeros(self._com_itens(documentos))
@@ -1388,24 +1620,24 @@ class SpedDocument:
             return sum(_to_num(f.valor(i_red)) for f in c100.filhos
                        if f.reg == "C190")
 
-        for c100 in documentos:
-            antes = red_do_doc(c100)
-            res = self.consolidar_c190(c100)
-            if not res:
-                continue
-            if res.get("sem_c170"):
-                tot["sem_c170"] += 1
-                continue
-            tot["documentos"] += 1
-            # documento em que a redução realmente mudou — sem isso, rodar de
-            # novo diria "33 recalculados" sobre documentos que não têm
-            # conserto possível, e o usuário não saberia o que aconteceu
-            if round(red_do_doc(c100), 2) != round(antes, 2):
-                tot["corrigidos"] += 1
-            for k in ("grupos", "removidos", "criados", "base_pis_cofins",
-                      "sem_base"):
-                tot[k] += res.get(k, 0)
-        self.atualizar_bloco9_inplace()
+        with self.lote():
+            for c100 in documentos:
+                antes = red_do_doc(c100)
+                res = self.consolidar_c190(c100)
+                if not res:
+                    continue
+                if res.get("sem_c170"):
+                    tot["sem_c170"] += 1
+                    continue
+                tot["documentos"] += 1
+                # documento em que a redução realmente mudou — sem isso, rodar
+                # de novo diria "33 recalculados" sobre documentos que não têm
+                # conserto possível, e o usuário não saberia o que aconteceu
+                if round(red_do_doc(c100), 2) != round(antes, 2):
+                    tot["corrigidos"] += 1
+                for k in ("grupos", "removidos", "criados",
+                          "base_pis_cofins", "sem_base"):
+                    tot[k] += res.get(k, 0)
         return tot
 
     # somas diretas: campo do C100 <- soma do campo correspondente nos C170
@@ -1656,7 +1888,7 @@ class SpedDocument:
             tot_pis += it.pis_vpis or 0.0
             tot_cof += it.cofins_vcofins or 0.0
 
-        largura = self._ncampos("C175")      # antes de remover os antigos
+        largura = self._largura("C175")      # antes de remover os antigos
         antigos = [f for f in c100.filhos if f.reg == "C175"]
         n_rem = len(antigos)
         for a in antigos:
@@ -1694,17 +1926,25 @@ class SpedDocument:
     # NFC-e (modelo 65): C170 "fictício" para validar/corrigir o C175 por item
     # -------------------------------------------------------------------
     def gerar_c170_ficticios_65(self, nfes):
-        """(EFD Contribuições) Para cada C100 modelo 65 casado com um XML (por
-        série + número), cria registros **C170 fictícios** — um por item do XML —
-        com COD_ITEM, valor, CFOP e os campos de PIS/COFINS. Como o modelo 65 é
-        escriturado consolidado (C175, sem C170), esses C170 são um andaime para
-        validação/correção por item; depois o C175 é regenerado a partir deles.
+        """Para cada C100 modelo 65 casado com um XML (por série + número),
+        cria registros **C170 fictícios** — um por item do XML — com COD_ITEM,
+        valor, CFOP, ICMS e PIS/COFINS. O modelo 65 é escriturado consolidado
+        (sem C170), e esses C170 são um andaime para corrigir por item:
+
+        * no **EFD Contribuições**, o C175 é regenerado a partir deles
+          (`regenerar_c175_de_c170_65`);
+        * no **EFD ICMS/IPI**, o C190 é refeito por `consolidar_c190` — com a
+          base de PIS/COFINS do XML, que é o que permite achar a redução de
+          base no CST x70 —, e depois eles saem por
+          `remover_c170_ficticios_65`.
+
+        Nos dois, documento modelo 65 com C170 é estrutura **inválida**: o
+        andaime não pode ser gravado.
 
         C170 fictícios anteriores (de execução prévia) são substituídos. Retorna
-        um resumo com documentos e itens criados e os documentos sem XML.
+        um resumo com documentos e itens criados, os documentos sem XML e
+        quantos itens vieram com CSOSN (emitente do Simples) no lugar do CST.
         """
-        if self.layout != "CONTRIB":
-            return {"erro": "Disponível apenas no EFD Contribuições."}
         from sped_tables.dominio import xml_fiscal as xf
         idx_xml = xf.indexar(nfes, xf.chave_doc)
         i_mod = self._ix("C100", "COD_MOD")
@@ -1724,9 +1964,10 @@ class SpedDocument:
             if i is not None and i < len(reg.campos):
                 reg.set_valor(i, valor)
 
-        docs = itens = 0
+        docs = itens = csosn = 0
         sem_xml = []
-        for c100 in list(self.registros):
+        alvos = []
+        for c100 in self.registros:
             if c100.reg != "C100":
                 continue
             if (c100.valor(i_mod) or "").strip() != "65":
@@ -1737,49 +1978,88 @@ class SpedDocument:
             if not achados:
                 sem_xml.append(chave)
                 continue
-            nfe = achados[0]
-            for f in [x for x in c100.filhos if x.reg == "C170"]:
-                self.remover_registro(f)
-            # âncora: inserir os C170 logo após o C100 (antes dos C175)
-            ancora = c100
-            for k, it in enumerate(nfe.itens, 1):
-                novo = self.novo_registro("C170", pai=c100, depois=ancora)
-                novo.campos = ["C170"] + [""] * (ncampos - 1)
-                setv(novo, "NUM_ITEM", str(k))
-                setv(novo, "COD_ITEM", (it.cprod or "").strip())
-                setv(novo, "DESCR_COMPL", (it.xprod or "").strip())
-                if it.qtd:
-                    setv(novo, "QTD", _fmt_qtd(it.qtd))
-                setv(novo, "UNID", (it.unid or "").strip())
-                setv(novo, "VL_ITEM", _fmt_val(it.vprod or 0.0))
-                setv(novo, "VL_DESC", _fmt_val(it.vdesc or 0.0))
-                setv(novo, "CST_ICMS", (it.icms_cst or "").strip())
-                setv(novo, "CFOP", (it.cfop or "").strip())
-                setv(novo, "VL_BC_ICMS", _fmt_val(it.icms_vbc or 0.0))
-                setv(novo, "ALIQ_ICMS", _fmt_aliq_pct(it.icms_aliq))
-                setv(novo, "VL_ICMS", _fmt_val(it.icms_vicms or 0.0))
-                setv(novo, "VL_BC_ICMS_ST", _fmt_val(it.icms_vbcst or 0.0))
-                setv(novo, "ALIQ_ST", _fmt_aliq_pct(it.icms_aliqst))
-                setv(novo, "VL_ICMS_ST", _fmt_val(it.icms_vicmsst or 0.0))
-                setv(novo, "CST_IPI", (it.ipi_cst or "").strip())
-                setv(novo, "VL_BC_IPI", _fmt_val(it.ipi_vbc or 0.0)
-                     if it.ipi_vbc else "")
-                setv(novo, "ALIQ_IPI", _fmt_aliq_pct(it.ipi_aliq))
-                setv(novo, "VL_IPI", _fmt_val(it.vipi or 0.0)
-                     if it.vipi else "")
-                setv(novo, "CST_PIS", (it.pis_cst or "").strip())
-                setv(novo, "VL_BC_PIS", _fmt_val(it.pis_vbc or 0.0))
-                setv(novo, "ALIQ_PIS", _fmt_aliq_pct(it.pis_aliq))
-                setv(novo, "VL_PIS", _fmt_val(it.pis_vpis or 0.0))
-                setv(novo, "CST_COFINS", (it.cofins_cst or "").strip())
-                setv(novo, "VL_BC_COFINS", _fmt_val(it.cofins_vbc or 0.0))
-                setv(novo, "ALIQ_COFINS", _fmt_aliq_pct(it.cofins_aliq))
-                setv(novo, "VL_COFINS", _fmt_val(it.cofins_vcofins or 0.0))
-                ancora = novo
-                itens += 1
-            docs += 1
-        self.atualizar_bloco9_inplace()
-        return {"docs": docs, "itens": itens, "sem_xml": sem_xml}
+            alvos.append((c100, achados[0]))
+        with self.lote():
+            for c100, nfe in alvos:
+                itens_doc, csosn_doc = self._ficticios_do_documento(
+                    c100, nfe, ncampos, setv)
+                itens += itens_doc
+                csosn += csosn_doc
+                docs += 1
+        return {"docs": docs, "itens": itens, "sem_xml": sem_xml,
+                "csosn": csosn}
+
+    def _ficticios_do_documento(self, c100, nfe, ncampos, setv):
+        """Os C170 fictícios de um C100 modelo 65, um por item do XML.
+        Devolve `(itens, itens com CSOSN)`."""
+        itens = csosn = 0
+        for f in [x for x in c100.filhos if x.reg == "C170"]:
+            self.remover_registro(f)
+        # âncora: inserir os C170 logo após o C100 (antes dos C175)
+        ancora = c100
+        for k, it in enumerate(nfe.itens, 1):
+            novo = self.novo_registro("C170", pai=c100, depois=ancora)
+            novo.campos = ["C170"] + [""] * (ncampos - 1)
+            setv(novo, "NUM_ITEM", str(k))
+            setv(novo, "COD_ITEM", (it.cprod or "").strip())
+            setv(novo, "DESCR_COMPL", (it.xprod or "").strip())
+            if it.qtd:
+                setv(novo, "QTD", _fmt_qtd(it.qtd))
+            setv(novo, "UNID", (it.unid or "").strip())
+            setv(novo, "VL_ITEM", _fmt_val(it.vprod or 0.0))
+            setv(novo, "VL_DESC", _fmt_val(it.vdesc or 0.0))
+            cst = (it.icms_cst or "").strip()
+            if len(cst) == 4:
+                # origem + CSOSN: não é CST, e o C190 sairia com ele
+                csosn += 1
+            setv(novo, "CST_ICMS", cst)
+            setv(novo, "CFOP", (it.cfop or "").strip())
+            setv(novo, "VL_BC_ICMS", _fmt_val(it.icms_vbc or 0.0))
+            setv(novo, "ALIQ_ICMS", _fmt_aliq_pct(it.icms_aliq))
+            setv(novo, "VL_ICMS", _fmt_val(it.icms_vicms or 0.0))
+            setv(novo, "VL_BC_ICMS_ST", _fmt_val(it.icms_vbcst or 0.0))
+            setv(novo, "ALIQ_ST", _fmt_aliq_pct(it.icms_aliqst))
+            setv(novo, "VL_ICMS_ST", _fmt_val(it.icms_vicmsst or 0.0))
+            setv(novo, "CST_IPI", (it.ipi_cst or "").strip())
+            setv(novo, "VL_BC_IPI", _fmt_val(it.ipi_vbc or 0.0)
+                 if it.ipi_vbc else "")
+            setv(novo, "ALIQ_IPI", _fmt_aliq_pct(it.ipi_aliq))
+            setv(novo, "VL_IPI", _fmt_val(it.vipi or 0.0)
+                 if it.vipi else "")
+            setv(novo, "CST_PIS", (it.pis_cst or "").strip())
+            setv(novo, "VL_BC_PIS", _fmt_val(it.pis_vbc or 0.0))
+            setv(novo, "ALIQ_PIS", _fmt_aliq_pct(it.pis_aliq))
+            setv(novo, "VL_PIS", _fmt_val(it.pis_vpis or 0.0))
+            setv(novo, "CST_COFINS", (it.cofins_cst or "").strip())
+            setv(novo, "VL_BC_COFINS", _fmt_val(it.cofins_vbc or 0.0))
+            setv(novo, "ALIQ_COFINS", _fmt_aliq_pct(it.cofins_aliq))
+            setv(novo, "VL_COFINS", _fmt_val(it.cofins_vcofins or 0.0))
+            ancora = novo
+            itens += 1
+        return itens, csosn
+
+    def documentos_65_com_c170(self):
+        """C100 modelo 65 com C170 — o andaime dos fictícios ainda no
+        arquivo. Estrutura inválida nos dois leiautes: quem grava pergunta."""
+        i_mod = self._ix("C100", "COD_MOD")
+        return [c for c in self.registros
+                if c.reg == "C100"
+                and (c.valor(i_mod) or "").strip() == "65"
+                and any(f.reg == "C170" for f in c.filhos)]
+
+    def remover_c170_ficticios_65(self):
+        """Tira os C170 dos documentos modelo 65, devolvendo a NFC-e à forma
+        consolidada. No EFD ICMS/IPI é o passo final, depois de refazer o
+        C190; no EFD Contribuições, o `regenerar_c175_de_c170_65` já faz isso
+        (remover sem regenerar é desistir da correção)."""
+        docs = self.documentos_65_com_c170()
+        itens = 0
+        with self.lote():
+            for c100 in docs:
+                for f in [x for x in c100.filhos if x.reg == "C170"]:
+                    self.remover_registro(f)
+                    itens += 1
+        return {"docs": len(docs), "itens": itens}
 
     def discrepancias_c175_65(self):
         """Compara, em cada C100 modelo 65 que tenha C170 fictícios, a soma dos
@@ -1932,22 +2212,16 @@ class SpedDocument:
             [c for c in self.registros if c.reg == "C100"
              and (c.valor(i_mod) or "").strip() == "65"]))
         docs = c175 = 0
-        for c100 in self.registros:
-            if c100.reg != "C100":
-                continue
-            if (c100.valor(i_mod) or "").strip() != "65":
-                continue
-            c170s = [f for f in c100.filhos if f.reg == "C170"]
-            if not c170s:
-                continue
-            itens = [_ItemC170View(self, f) for f in c170s]
-            res = self.consolidar_c175_de_itens(c100, itens)
-            if res:
-                c175 += res.get("criados", 0)
-            for f in c170s:
-                self.remover_registro(f)
-            docs += 1
-        self.atualizar_bloco9_inplace()
+        with self.lote():
+            for c100 in self.documentos_65_com_c170():
+                c170s = [f for f in c100.filhos if f.reg == "C170"]
+                itens = [_ItemC170View(self, f) for f in c170s]
+                res = self.consolidar_c175_de_itens(c100, itens)
+                if res:
+                    c175 += res.get("criados", 0)
+                for f in c170s:
+                    self.remover_registro(f)
+                docs += 1
         return {"docs": docs, "c175": c175}
 
     # -------------------------------------------------------------------
@@ -3431,6 +3705,15 @@ class SpedDocument:
             cons.set_valor(8, z(cum_per))
             cons.set_valor(11, z(cum_rec))
             cons.set_valor(12, z(nc_rec + cum_rec))
+            # o detalhamento por código de receita (M205/M605) acompanha o
+            # valor a recolher do campo de origem (08 = NC, 12 = cumulativo).
+            # Até aqui ele ficava com o débito antigo, e o PVA acusava
+            # MSG_VALIDA_DET_RECEITA_DCTF no M200/M600 (num arquivo real,
+            # 3.340,22 no M200 e 3.338,47 no M205). Com mais de um código no
+            # mesmo campo a divisão é do contribuinte: fica como está.
+            self._acompanhar_codigos_receita(
+                "M205" if tributo == "PIS" else "M605",
+                {"08": nc_rec, "12": cum_rec}, resumo, tributo)
             resumo[tributo] = {"grupos": len(grupos),
                                "apurado": round(total_apur, 2),
                                "a_recolher": round(nc_rec + cum_rec, 2)}
@@ -3443,6 +3726,27 @@ class SpedDocument:
                             else "ambos")
         return resumo
 
+    def _acompanhar_codigos_receita(self, reg, a_recolher, resumo, tributo):
+        i_campo = self._ix(reg, "NUM_CAMPO")
+        i_deb = self._ix(reg, "VL_DEBITO")
+        if i_campo is None or i_deb is None:
+            return
+        por_campo = {}
+        for r in self.registros:
+            if r.reg == reg:
+                por_campo.setdefault((r.valor(i_campo) or "").strip(),
+                                     []).append(r)
+        for campo, regs in por_campo.items():
+            if campo not in a_recolher:
+                continue
+            if len(regs) != 1:
+                resumo.setdefault("avisos", []).append(
+                    "%s: %d códigos de receita no campo %s do %s — a divisão "
+                    "do débito é do contribuinte; confira a soma"
+                    % (tributo, len(regs), campo, reg))
+                continue
+            regs[0].set_valor(i_deb, _fmt_val(a_recolher[campo]))
+
     def atualizar_bloco9_inplace(self):
         """
         Atualiza, sem alterar a estrutura, os registros de contagem para que a
@@ -3452,8 +3756,11 @@ class SpedDocument:
           * 9990  -> nº de linhas do bloco 9;
           * 9999  -> total de linhas do arquivo.
         A gravação (gerar_texto) reconstrói o bloco 9 do zero e continua sendo
-        a fonte definitiva; este método serve para exibição imediata.
+        a fonte definitiva; este método serve para exibição imediata. Dentro
+        de um `lote()`, fica para a saída dele.
         """
+        if self._lote is not None:
+            return
         base = [r for r in self.registros if r.bloco != "9"]
         cont_bloco = {}
         for r in base:
@@ -3497,16 +3804,22 @@ class SpedDocument:
         """
         # a largura é medida ANTES de inserir: `_ncampos` usa a moda dos
         # registros já presentes, e um recém-criado puxaria a moda para baixo
-        n_campos = max(1, self._ncampos(tipo))
+        # (em lote, uma vez por tipo: medir é varrer o arquivo)
+        n_campos = max(1, self._largura(tipo))
         partes = ["", tipo, ""]
         r = Registro(partes, self.layout, 0)
         r.campos = [tipo] + [""] * (n_campos - 1)
         r.pai = pai
-        # ordem de inserção
+        # ordem de inserção. Fora do lote a árvore é renumerada a cada
+        # inserção e meio basta; em lote ela só é renumerada no fim, e uma
+        # sequência de inserções encadeadas (cada uma depois da anterior)
+        # andaria de meio em meio até alcançar o irmão seguinte — daí o passo
+        # mínimo, que só precisa ordenar entre irmãos
+        passo = self._PASSO_EM_LOTE if self._lote is not None else 0.5
         if depois is not None:
-            r.ordem = depois.ordem + 0.5
+            r.ordem = depois.ordem + passo
         elif pai is not None:
-            r.ordem = pai.ordem + 0.5
+            r.ordem = pai.ordem + passo
         else:
             r.ordem = (self.registros[-1].ordem + 1) if self.registros else 0
 
@@ -3517,7 +3830,8 @@ class SpedDocument:
             self.raizes.append(r)
             self.raizes.sort(key=lambda x: x.ordem)
         self.registros.append(r)
-        self._reordenar()
+        if self._lote is None:
+            self._reordenar()
         if tipo == "0200":
             self._cad_itens = None
         return r
@@ -3534,8 +3848,53 @@ class SpedDocument:
             r.pai.filhos = [c for c in r.pai.filhos if c.uid != r.uid]
         else:
             self.raizes = [c for c in self.raizes if c.uid != r.uid]
-        self.registros = [x for x in self.registros if x.uid not in remover]
+        if self._lote is not None:
+            # a lista inteira é refeita uma vez, no fim do lote
+            self._lote["remover"] |= remover
+        else:
+            self.registros = [x for x in self.registros
+                              if x.uid not in remover]
         self._cad_itens = None
+
+    _PASSO_EM_LOTE = 1e-7
+
+    def _largura(self, tipo):
+        """`_ncampos(tipo)`; dentro de um `lote()`, medido uma vez por tipo
+        (medir é varrer o arquivo, e o lote insere milhares)."""
+        if self._lote is None:
+            return self._ncampos(tipo)
+        larguras = self._lote["larguras"]
+        if tipo not in larguras:
+            larguras[tipo] = self._ncampos(tipo)
+        return larguras[tipo]
+
+    @contextlib.contextmanager
+    def lote(self):
+        """Muitas inserções e remoções de uma vez — os C170 fictícios de um
+        mês de NFC-e, o analítico refeito de milhares de documentos.
+
+        Fora do lote, cada `novo_registro` mede a largura (varre o arquivo) e
+        renumera a árvore, e cada `remover_registro` refaz a lista inteira:
+        custo quadrático, que num mês real (~32 mil itens de NFC-e) passava
+        de minutos com a tela parada. Dentro do lote, a largura é medida uma
+        vez por tipo, as remoções se acumulam, e a renumeração e o bloco 9 são
+        refeitos uma vez, na saída. Durante o lote, `registros` ainda traz os
+        removidos e a ordem não está renumerada: navegue pela árvore
+        (`filhos`). Reentrante."""
+        if self._lote is not None:
+            yield
+            return
+        self._lote = {"larguras": {}, "remover": set()}
+        try:
+            yield
+        finally:
+            remover = self._lote["remover"]
+            self._lote = None
+            if remover:
+                self.registros = [x for x in self.registros
+                                  if x.uid not in remover]
+            self._reordenar()
+            self.atualizar_bloco9_inplace()
 
     def _reordenar(self):
         """Recalcula 'ordem' inteira percorrendo a árvore em profundidade."""

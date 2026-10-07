@@ -120,6 +120,14 @@ mais ficam vazios em vez de sumir. A posição sai de `_ancora_antes(pai,
 reg)`, que devolve o último filho de código menor (é assim que o 0190 novo
 cai depois do 0150, e não logo após o 0001).
 
+**Muitos registros de uma vez: `with doc.lote():`.** Fora do lote, cada
+`novo_registro` mede a largura (varre o arquivo) e renumera a árvore, e
+cada `remover_registro` refaz a lista inteira — custo quadrático: refazer o
+C190 de 2.000 NFC-e levava 25 s, e os C170 fictícios de um mês, minutos.
+No lote, a largura é medida uma vez por tipo (`_largura`), as remoções se
+acumulam e a renumeração e o bloco 9 saem uma vez, no fim. Dentro dele,
+navegue pela árvore (`filhos`): `registros` ainda traz os removidos.
+
 **Abriu um bloco, feche o bloco.** Quem cria o primeiro registro de um bloco que
 ainda não existe no arquivo precisa criar também o **X990**. `gerar_texto`
 reconstrói só o bloco 9, e `atualizar_bloco9_inplace` apenas *atualiza* os X990
@@ -449,10 +457,13 @@ transformaria "nenhum erro" numa falsa aprovação:
 - **fiel**, porque a declaração vem do descritor do próprio PVA: quantidade de
   campos, obrigatoriedade de campo, tipo/tamanho/decimais, enumeração, tabela
   externa, referência entre registros e bloco sem encerramento;
-- **não reproduzido**: as ~1.400 regras compostas (`REGRA_CST_ICMS_CAMPOS_...`),
-  implementadas em Java sobre o banco embutido. O bytecode não carrega as
-  condições, e adivinhá-las criaria divergência silenciosa. O painel **lista**
-  quantas se aplicam ao arquivo.
+- **reproduzido com a condição do PVA**: as regras compostas que o guia
+  escreve por extenso e cuja condição o PVA deixa legível
+  (`dominio/regras_guia.py`, ver "Regras do guia" abaixo). Cada uma declara
+  os validadores (`REGRA_…`) que reproduz;
+- **não reproduzido**: o resto das ~1.300 regras compostas. Adivinhá-las
+  criaria divergência silenciosa; o painel **lista** quantas se aplicam ao
+  arquivo, já descontadas as reproduzidas. `COBERTURA.md` tem a conta.
 
 **Obrigatoriedade condicional não está no descritor.** O campo é declarado
 obrigatório e uma regra Java o dispensa em certos casos. As exceções que dá
@@ -492,6 +503,115 @@ O `QApplication` precisa de referência guardada: sem ela, é coletado antes do
 widget nascer e o processo morre com **exit 127 e nenhum traceback** — o
 mesmo sintoma da barra de título e dos tradutores. Na suíte, use `_app()` de
 `tests/test_interface.py`.
+
+## Os guias práticos e as regras do guia
+
+Os dois guias (EFD ICMS/IPI 3.2.4, EFD Contribuições 1.35) estão extraídos
+em `recursos/guia_*.json` por `ferramentas/extrair_guias.py`, que roda o
+`pdftotext -layout` (vem com o Git para Windows). O domínio os pede à porta:
+`referencias.atual().guia(layout)`; `referencias.texto_do_campo` devolve o
+texto de um campo **só se o nome bater** (o guia 3.2.4 já descreve campos de
+leiaute mais novo que o do PVA instalado, como o `IND_BENEFICIO` do E111).
+Usos: a ajuda F1 e a dica de cabeçalho da grade (`dominio/ajuda.py`,
+`interface/dialogos/ajuda.py`).
+
+Três coisas que o extrator precisa respeitar: no modo corrido o PDF
+embaralha tabelas (o C100 sai "Nº Campo 01 REG 02 IND_OPER…" numa linha),
+por isso `-layout`; o registro pode trazer **duas tabelas** (M210 até 2018 e
+a partir de 2019) — vale a maior, a última no empate; e a linha da tabela é
+a da **margem da tabela** (que pode vir toda recuada, C114): recuada é
+continuação da descrição, mesmo começando com "01 - …".
+
+**Regras do guia** (`dominio/regras_guia.py`): cada `Regra` tem a função,
+os validadores do descritor que reproduz (`pva`), a gravidade e o módulo
+que corrige; entra sozinha na revisão (`revisao.todas()`) e no diagnóstico
+(achado `guia_<id>`). Antes de escrever uma, procure a condição no PVA:
+
+- **as regras de soma e existência do ICMS/IPI são SQL legível** em
+  `descritor/comum/queries/queries.xml` (dentro do `.jar` do descritor; o
+  Contribuições tem o seu). Ali está o que o guia não diz: VL_MERC só
+  abaixo da soma dos itens; NF-e de emissão própria e NFC-e fora do
+  C190 × C170; CFOP só em COD_SIT 00/01;
+- **a tolerância é constante de classe**: `EnumComparadoresSql.TOLERANCIA =
+  0,5` nas somas do ICMS/IPI; `RegraVlPisCofinsAbstrata.TOLERANCIA = 0,99`
+  no VL_PIS, que além disso é `getAdvertencia` (aviso). O validador → classe
+  está no `descritor/comum/configurador/configurador.xml`; o pool de
+  constantes da classe diz tolerância, mensagem e severidade;
+- **passe a regra nos arquivos reais** antes de ligar: acusação onde o PVA
+  aceita é regressão, não rigor. As primeiras 15 não acusaram nada nos 10
+  arquivos, salvo os 6 CFOP de D190 que o PVA também acusa.
+
+Não copie o SQL do PVA para o repositório: reimplemente a condição em
+Python e cite de onde veio.
+
+### O descritor: comentários, posições e nomes
+
+- **Campo dentro de `<!-- -->` não existe.** O PVA guarda ali campos
+  excluídos (o `IND_ST` do 1010, com o mesmo `n` do campo seguinte); lidos
+  como reais, viravam obrigatórios fantasmas. `descritor_pva` remove os
+  comentários antes de ler.
+- **A posição é a ordem dos `<campo>`, não o atributo `n`** — que tem
+  `n="17'"` (D750) e `n` repetido (0220, C890).
+- **Os nomes do descritor nem sempre são os do guia** (`ENDERECO`/`END`,
+  `VL_OPER`/`VL_OPR`, `ALIQ_PIS_PERC`/`ALIQ_PIS`, `VL_COFIS`). O adaptador
+  entrega a estrutura **alinhada ao leiaute por posição**
+  (`referencias.alinhar_ao_leiaute`, nome do PVA em `id_pva`); sem isso
+  quem procurava o campo pelo nome do descritor recebia `None` e pulava.
+- **O leiaute do programa tem a estrutura do descritor instalado** —
+  `tests/test_guias.py` confere largura e posição, registro a registro. Até
+  a 1.0.0-rc.1 o C870 tinha CST e CFOP trocados e uma dezena de registros
+  (C181, C330, E310…) estava desatualizada, com cabeçalho errado na grade.
+  Exceção declarada: o 0200 do Contribuições (CEST).
+- **Tabela de datasource confirmada na pasta do PVA.** O `COD_OR` casava por
+  prefixo com a tabela de códigos de receita da UF; a dele é a
+  `SPEDFISCAL_GLOBAL$OBR_ICMS_RECOL`. A `VERSOES_LEIAUTE` diz a vigência de
+  cada `COD_VER` (020 = 2026, 021 = 2027).
+
+## Situações do contribuinte que o PVA cobra (cliente B, setembro)
+
+- **Documento extemporâneo:** NFC-e em contingência autorizada no mês
+  seguinte entra no período da autorização com a **data do XML** e COD_SIT
+  01 (07 no complementar) — `conferencia.datas_pelo_xml`. O ICMS da saída
+  extemporânea **não é débito do período**: vai para o `DEB_ESP` do E110
+  (`recalcular_e110`, `debitos_icms_por_situacao`). O PVA confere os dois
+  (`MSG_VL_TOT_DEBITOS_E110`, `MSG_DEB_ESP_E110`) e **não** acusa a data
+  fora do período nesses documentos.
+- **CSOSN do Simples no CST:** a conversão é **decisão da empresa**, no
+  cadastro (`Empresa.converter_csosn`, `csosn_cst`, `origem_csosn`,
+  `cst_compra_st`). Só se trata como CSOSN o que é inválido como CST (101,
+  103, 201, 203, 900) ou x02 sem alíquota (102, 202) — 300/400/500 são CST
+  válidos. CST válido que a nota trouxer (x10, x70) não é tocado. Trocar o
+  CST do C170 obriga a trocar o do C190 e **fundir** os que ficarem com a
+  mesma chave.
+- **Documento cancelado/denegado/inutilizado** (COD_SIT 02–05) leva só a
+  identificação: o resto em branco **não** é "obrigatório em branco"
+  (`diagnostico.IDENTIFICACAO`).
+- **Município do participante** zerado ou inexistente não se conserta no
+  arquivo — o ERP gravou o padrão (às vezes o município da própria empresa).
+  `validacao.CADASTRO_NO_ERP` tira a sugestão (o normalizar não esvazia) e o
+  diagnóstico manda corrigir o cadastro no ERP. O PVA importa e acusa na
+  validação (`MSG_EXISTE_COD_MUN`).
+- **COD_GEN em branco** não é cobrado pelo PVA: aviso, não erro.
+- **Redução do CST 070 na entrada** não sai do arquivo (ICMS por ST, sem base
+  própria): sai do **XML de compra** (`conferencia.reducao_c190_pelo_xml`) —
+  operação − `vBC`, ou operação × `pRedBC` quando a base vem zerada. O XML
+  que o ERP exporta da entrada não tem chave (`Lote.sem_chave`): casa pelo
+  CNPJ do fornecedor + valor do documento, só se único.
+- **No EFD Contribuições a saída extemporânea fica no mês** (o PVA de lá
+  recusa a data de outro mês mesmo com COD_SIT 01); no ICMS/IPI vai com a
+  data real. `datas_pelo_xml` decide pelo leiaute.
+- **NCM monofásico/alíquota zero respeita o "Ex" da TIPI:** a linha da
+  tabela com EX_IPI só vale para o produto com o mesmo EX_IPI no 0200. Sem
+  isso o classificador acusava 86 entradas contra as 9 do PVA.
+- **Bebida fria no varejo é CST 06 / natureza 918** (Lei 13.097/2015). O
+  918 da tabela 4.3.13 não traz NCM na coluna (só no texto): a regra está
+  em `rotinas.NCM_BEBIDAS_FRIAS`, e o NCM do código errado sai da tabela de
+  monofásicos (`referencias.ncms_da_natureza`). Refazer o M410 inteiro
+  pelos XMLs **não** serve: o ERP escritura pelo cadastro dele, e a
+  reconstrução divergia em quase todos os códigos.
+- **Recalcular o M200 obriga a recalcular o M205** (e M600/M605): o PVA
+  confere o detalhamento por código de receita (`MSG_VALIDA_DET_RECEITA_
+  DCTF`).
 
 ## Gerar o SPED a partir dos XMLs
 
@@ -752,7 +872,9 @@ Obter sempre por nome (`doc._ix(tipo, nome)`), nunca por número fixo. Referênc
 - **H010:** COD_ITEM 1, UNID 2, QTD 3, VL_UNIT 4, VL_ITEM 5, IND_PROP 6 — 11 campos
 - **0200:** COD_ITEM 1, DESCR_ITEM 2, UNID_INV 5, TIPO_ITEM 6, COD_NCM 7 — 13 campos
 - **E110:** VL_TOT_DEBITOS 1, VL_TOT_CREDITOS 5, VL_SLD_CREDOR_ANT 9,
-  VL_ICMS_RECOLHER 12, VL_SLD_CREDOR_TRANSPORTAR 13
+  VL_ICMS_RECOLHER 12, VL_SLD_CREDOR_TRANSPORTAR 13. Os saldos saem de
+  `SpedDocument.saldos_e110` — a dedução que sobra vai para o saldo credor
+  (campo 14 do guia), e recálculo e conferência usam a mesma função.
 
 ## Regras fiscais já implementadas (não regredir)
 

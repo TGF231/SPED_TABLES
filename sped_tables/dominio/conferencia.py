@@ -20,7 +20,8 @@ Este módulo orquestra xml_fiscal (parsing/vínculo) + o SpedDocument (índices 
 campo por layout); não depende de PyQt.
 """
 
-from sped_tables.dominio.sped_model import _to_num, so_digitos
+from sped_tables.dominio.sped_model import (_fmt_val, _to_num,
+                                            data_aaaammdd, so_digitos)
 from sped_tables.dominio import xml_fiscal as xf
 
 
@@ -585,3 +586,215 @@ def conferir_c190_com_xml(doc, nfes, tol=0.01):
         "grupos_so_xml": grupos_so_xml,
         "docs_sem_xml": docs_sem_xml,
     }
+
+
+# ---------------------------------------------------------------------------
+# Datas do C100 pelo XML (e o documento extemporâneo)
+# ---------------------------------------------------------------------------
+# Documento autorizado depois do mês da emissão — NFC-e em contingência
+# transmitida no mês seguinte é o caso típico — entra na escrituração do
+# período em que chegou, mas **com a data real** e a situação de documento
+# extemporâneo: 01 (regular) e 07 (complementar). Num arquivo real de
+# supermercado foram 3.578 NFC-e de junho a agosto que o ERP escriturou em
+# setembro com a data de emissão trocada para setembro — e só no EFD ICMS/IPI:
+# no Contribuições a data de saída ficou a real. Os dois arquivos discordavam
+# entre si e com o XML.
+SITUACAO_EXTEMPORANEA = {"00": "01", "06": "07"}
+
+
+def _ddmmaaaa(iso):
+    iso = (iso or "").strip()
+    return iso[8:10] + iso[5:7] + iso[0:4] if len(iso) >= 10 else ""
+
+
+def datas_pelo_xml(doc, nfes):
+    """C100 cujas datas discordam do XML. **Não altera nada.**
+
+    Para cada documento casado pela chave: `DT_DOC` tem de ser o `dhEmi`; na
+    saída, `DT_E_S` é o `dhSaiEnt` (ou o `dhEmi`, na NFC-e). A data de
+    entrada é do comprador e não sai do XML. Emitido antes do período, o
+    documento passa à situação extemporânea (`SITUACAO_EXTEMPORANEA`).
+
+    **No EFD Contribuições é diferente:** o PVA recusa a saída com data de
+    outro mês mesmo com COD_SIT 01 (`MSG_PERIODO_INCOMPATIVEL_SAIDA` — 7.156
+    num arquivo real). Ali o documento emitido antes do período fica no mês:
+    a data de emissão do arquivo é mantida e a de saída passa a ser ela.
+
+    Devolve `[{c100, chave, campo, atual, esperado}]` — um item por campo que
+    muda, inclusive `COD_SIT`.
+    """
+    por_chave = {n.chave: n for n in nfes if getattr(n, "chave", None)}
+    i0 = doc._ix("0000", "DT_INI")
+    r0 = next((r for r in doc.registros if r.reg == "0000"), None)
+    ini = data_aaaammdd(r0.valor(i0)) if r0 is not None and i0 else ""
+    ix = {c: doc._ix("C100", c) for c in ("CHV_NFE", "DT_DOC", "DT_E_S",
+                                          "COD_SIT", "IND_OPER")}
+    out = []
+    for c100 in doc.registros:
+        if c100.reg != "C100":
+            continue
+        n = por_chave.get((c100.valor(ix["CHV_NFE"]) or "").strip())
+        sit = (c100.valor(ix["COD_SIT"]) or "").strip()
+        if n is None or sit not in ("00", "01", "06", "07"):
+            continue
+        emissao = _ddmmaaaa(n.dhemi)
+        if not emissao:
+            continue
+        saida = (c100.valor(ix["IND_OPER"]) or "").strip() == "1"
+        anterior = bool(ini) and data_aaaammdd(emissao) < ini
+        if anterior and saida and doc.layout == "CONTRIB":
+            dt_doc = (c100.valor(ix["DT_DOC"]) or "").strip()
+            if not dt_doc or data_aaaammdd(dt_doc) < ini:
+                continue                # não há data do mês a manter
+            novos = {"DT_E_S": dt_doc}
+        else:
+            novos = {"DT_DOC": emissao}
+            if saida:
+                novos["DT_E_S"] = (_ddmmaaaa(getattr(n, "dhsaient", ""))
+                                   or emissao)
+            if anterior and sit in SITUACAO_EXTEMPORANEA:
+                novos["COD_SIT"] = SITUACAO_EXTEMPORANEA[sit]
+        for campo, esperado in novos.items():
+            atual = (c100.valor(ix[campo]) or "").strip()
+            if atual != esperado:
+                out.append({"c100": c100, "chave": n.chave, "campo": campo,
+                            "atual": atual, "esperado": esperado})
+    return out
+
+
+def corrigir_datas_pelo_xml(doc, achados):
+    """Aplica o que `datas_pelo_xml` apontou. Devolve `(campos, documentos)`
+    alterados."""
+    docs = set()
+    n = 0
+    for a in achados:
+        i = doc._ix("C100", a["campo"])
+        c100 = a["c100"]
+        if i is None or (c100.valor(i) or "").strip() != a["atual"]:
+            continue                       # mudou depois da verificação
+        c100.set_valor(i, a["esperado"])
+        docs.add(id(c100))
+        n += 1
+    return n, len(docs)
+
+
+# ---------------------------------------------------------------------------
+# Redução de base do C190 (CST x20/x70) pelo XML de compra
+# ---------------------------------------------------------------------------
+def reducao_c190_pelo_xml(doc, nfes):
+    """C190 de **entrada** com CST x20/x70 e `VL_RED_BC` zerado cuja redução
+    sai do XML da compra. **Não altera nada.**
+
+    Na entrada com CST 070 o ICMS veio por ST e a empresa não escritura base
+    própria: a redução não sai do arquivo. O XML traz, por item, o que foi
+    reduzido: a redução do item é a operação (produto + frete + seguro +
+    outras − desconto) menos a base reduzida (`vBC`) ou, quando a base vem
+    zerada, a operação × `pRedBC` — o "valor não tributado em função da
+    redução" que o campo pede. A do C190 é a soma dos itens do grupo.
+
+    O documento casa pela chave. Sem chave — o XML que o ERP exporta da
+    entrada como ele a escriturou, com o fornecedor no `dest` — casa pelo
+    CNPJ do fornecedor e o valor do documento, e só quando um único C100
+    serve. Os itens casam pelo número, conferindo o valor.
+
+    Devolve `[{c190, chave, atual, esperado}]`.
+    """
+    por_chave = {n.chave: n for n in nfes if getattr(n, "chave", None)}
+    sem_chave = [n for n in nfes if not getattr(n, "chave", None)]
+    i100 = {c: doc._ix("C100", c) for c in ("CHV_NFE", "IND_OPER",
+                                            "COD_PART", "VL_DOC")}
+    i170 = {c: doc._ix("C170", c) for c in ("NUM_ITEM", "CST_ICMS", "CFOP",
+                                            "ALIQ_ICMS", "VL_ITEM")}
+    proprio = _cnpj_do_arquivo(doc)
+    cnpj_part = _cnpj_dos_participantes(doc)
+    i190 = {c: doc._ix("C190", c) for c in ("CST_ICMS", "CFOP", "ALIQ_ICMS",
+                                            "VL_OPR", "VL_RED_BC")}
+    if None in i190.values() or None in i170.values():
+        return []
+    out = []
+    for c100 in doc.registros:
+        if c100.reg != "C100" or \
+                (c100.valor(i100["IND_OPER"]) or "").strip() != "0":
+            continue
+        alvos = [f for f in c100.filhos if f.reg == "C190"
+                 and (f.valor(i190["CST_ICMS"]) or "").strip()[-2:]
+                 in ("20", "70")
+                 and not _to_num(f.valor(i190["VL_RED_BC"]))]
+        if not alvos:
+            continue
+        nfe = por_chave.get((c100.valor(i100["CHV_NFE"]) or "").strip())
+        if nfe is None:
+            fornecedor = cnpj_part.get(
+                (c100.valor(i100["COD_PART"]) or "").strip(), "")
+            vl_doc = _to_num(c100.valor(i100["VL_DOC"]))
+            serve = [n for n in sem_chave if fornecedor
+                     and fornecedor in _documentos_da_nota(n, proprio)
+                     and abs((n.vnf or 0.0) - vl_doc) < 0.01]
+            if len(serve) != 1:
+                continue
+            nfe = serve[0]
+        itens = {xf.norm(i.nitem): i for i in nfe.itens}
+        for c190 in alvos:
+            k = doc.chave_c190(c190)
+            red = 0.0
+            achou = False
+            for f in c100.filhos:
+                if f.reg != "C170" or doc.chave_c190(f) != k:
+                    continue
+                it = itens.get(xf.norm(f.valor(i170["NUM_ITEM"])))
+                if it is None or abs((it.vprod or 0.0)
+                                     - _to_num(f.valor(i170["VL_ITEM"]))) \
+                        >= 0.01:
+                    achou = False             # o item não é o mesmo
+                    break
+                achou = True
+                red += _reducao_do_item(it)
+            red = round(red, 2)
+            if achou and red > 0:
+                out.append({"c190": c190, "chave": nfe.chave or "",
+                            "atual": c190.valor(i190["VL_RED_BC"]),
+                            "esperado": _fmt_val(red)})
+    return out
+
+
+def _reducao_do_item(it):
+    """Valor não tributado pela redução da base, de um item do XML."""
+    oper = ((it.vprod or 0.0) + (it.vfrete or 0.0) + (it.vseg or 0.0)
+            + (it.voutro or 0.0) - (it.vdesc or 0.0))
+    if it.icms_vbc:
+        return max(oper - it.icms_vbc, 0.0)
+    return oper * (it.icms_predbc or 0.0) / 100.0
+
+
+def _cnpj_do_arquivo(doc):
+    i = doc._ix("0000", "CNPJ")
+    r0 = next((r for r in doc.registros if r.reg == "0000"), None)
+    return so_digitos(r0.valor(i)) if r0 is not None and i is not None \
+        else ""
+
+
+def _cnpj_dos_participantes(doc):
+    i_cod, i_cnpj, i_cpf = (doc._ix("0150", c)
+                            for c in ("COD_PART", "CNPJ", "CPF"))
+    return {(r.valor(i_cod) or "").strip():
+            so_digitos(r.valor(i_cnpj) or r.valor(i_cpf) or "")
+            for r in doc.registros if r.reg == "0150"}
+
+
+def _documentos_da_nota(nfe, proprio):
+    """CNPJ/CPF do outro lado da nota (emitente ou destinatário que não é o
+    próprio contribuinte)."""
+    return {so_digitos(p.documento) for p in (nfe.emit, nfe.dest)
+            if p is not None and so_digitos(p.documento) != proprio}
+
+
+def corrigir_reducao_c190(doc, achados):
+    """Grava o VL_RED_BC apontado por `reducao_c190_pelo_xml`."""
+    i = doc._ix("C190", "VL_RED_BC")
+    n = 0
+    for a in achados:
+        if (a["c190"].valor(i) or "") != a["atual"]:
+            continue
+        a["c190"].set_valor(i, a["esperado"])
+        n += 1
+    return n

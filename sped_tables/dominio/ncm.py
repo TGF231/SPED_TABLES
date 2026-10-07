@@ -10,6 +10,14 @@ da RFB que vêm com o PVA do EFD Contribuições — são lidas por
 from sped_tables.dominio.sped_model import so_digitos
 
 
+
+def normalizar_ex(texto):
+    """O "Ex" da TIPI com dois dígitos ("2" -> "02"), ou "". Quem lê a
+    tabela (`infra.tabelas_rfb`) e quem compara com o EX_IPI do 0200 usam
+    esta: se divergissem, o Ex deixaria de casar em silêncio."""
+    d = so_digitos(texto)
+    return d.zfill(2) if d else ""
+
 class ClassificadorNCM:
     """Classifica um NCM (8 dígitos) como alíquota zero e/ou monofásico, casando
     o NCM do produto com os prefixos das tabelas (posição/capítulo). Considera as
@@ -26,11 +34,13 @@ class ClassificadorNCM:
 
     @staticmethod
     def _indexar(tab):
-        """Indexa prefixos por tamanho + exceções, com a vigência de cada."""
-        por_tam = {}          # tamanho -> {prefixo: [(dt_ini, dt_fim), ...]}
+        """Indexa prefixos por tamanho + exceções, com a vigência de cada e
+        o "Ex" da TIPI a que a linha se restringe ("" = todo o NCM)."""
+        por_tam = {}   # tamanho -> {prefixo: [(dt_ini, dt_fim, ex), ...]}
         exc = set()
         for reg in (tab or {}).get("registros", []):
-            vig = (reg.get("dt_ini", ""), reg.get("dt_fim", ""))
+            vig = (reg.get("dt_ini", ""), reg.get("dt_fim", ""),
+                   reg.get("ex_ipi", "") or "")
             for n in reg["ncm"]:
                 por_tam.setdefault(len(n), {}).setdefault(n, []).append(vig)
             for n in reg.get("ncm_ex", []):
@@ -38,10 +48,17 @@ class ClassificadorNCM:
         return {"por_tam": por_tam, "exc": exc}
 
     @staticmethod
-    def _vigente(vigencias, data):
-        if not data:
-            return True
-        for dt_ini, dt_fim in vigencias:
+    def _vigente(vigencias, data, ex_ipi=""):
+        """Alguma linha vigente na data e aplicável ao produto: a que tem Ex
+        da TIPI só vale para o mesmo EX_IPI. É o que o PVA faz — sem isso,
+        toda preparação alimentícia do 21069010 virava monofásico (num
+        arquivo real, 86 entradas acusadas contra 9 do validador)."""
+        ex_ipi = normalizar_ex(ex_ipi)
+        for dt_ini, dt_fim, ex in vigencias:
+            if ex and ex != ex_ipi:
+                continue
+            if not data:
+                return True
             ini = dt_ini or "00000000"
             fim = dt_fim or "99999999"
             # datas em DDMMAAAA -> chave AAAAMMDD para comparar
@@ -53,34 +70,34 @@ class ClassificadorNCM:
                 return True
         return False
 
-    def _casa(self, idx, ncm, data=None):
+    def _casa(self, idx, ncm, data=None, ex_ipi=""):
         d = so_digitos(ncm)
         if d in idx["exc"]:
             return False
         for t, prefixos in idx["por_tam"].items():
             if len(d) >= t and d[:t] in prefixos:
-                if self._vigente(prefixos[d[:t]], data):
+                if self._vigente(prefixos[d[:t]], data, ex_ipi):
                     return True
         return False
 
-    def eh_aliquota_zero(self, ncm, data=None):
-        return self._casa(self._zero, ncm, data)
+    def eh_aliquota_zero(self, ncm, data=None, ex_ipi=""):
+        return self._casa(self._zero, ncm, data, ex_ipi)
 
-    def eh_monofasico(self, ncm, data=None):
-        return self._casa(self._mono, ncm, data)
+    def eh_monofasico(self, ncm, data=None, ex_ipi=""):
+        return self._casa(self._mono, ncm, data, ex_ipi)
 
     def genero_do(self, ncm):
         d = so_digitos(ncm)
         cap = d[:2]
         return cap, self.genero.get(cap, "")
 
-    def classificar(self, ncm, data=None):
+    def classificar(self, ncm, data=None, ex_ipi=""):
         d = so_digitos(ncm)
         cap, gen = self.genero_do(d)
         return {
             "ncm": d,
-            "aliquota_zero": self.eh_aliquota_zero(d, data),
-            "monofasico": self.eh_monofasico(d, data),
+            "aliquota_zero": self.eh_aliquota_zero(d, data, ex_ipi),
+            "monofasico": self.eh_monofasico(d, data, ex_ipi),
             "vigente_ncm": (d in self.ncm_vigente) if self.ncm_vigente else None,
             "genero_cod": cap,
             "genero_desc": gen,
@@ -124,10 +141,14 @@ def verificar_cst_pis_cofins(doc, classificador, data_ref=None):
     """
     i0c = doc._ix("0200", "COD_ITEM")
     i0n = doc._ix("0200", "COD_NCM")
-    ncm_de = {}
+    i0x = doc._ix("0200", "EX_IPI")
+    ncm_de, ex_de = {}, {}
     for r in doc.registros:
         if r.reg == "0200":
-            ncm_de[(r.valor(i0c) or "").strip()] = (r.valor(i0n) or "").strip()
+            cod = (r.valor(i0c) or "").strip()
+            ncm_de[cod] = (r.valor(i0n) or "").strip()
+            if i0x is not None:
+                ex_de[cod] = (r.valor(i0x) or "").strip()
 
     c_item = doc._ix("C170", "COD_ITEM")
     c_cstp = doc._ix("C170", "CST_PIS")
@@ -136,6 +157,9 @@ def verificar_cst_pis_cofins(doc, classificador, data_ref=None):
     if c_item is None or c_cstp is None:
         return []
 
+    # um arquivo real tem ~36 mil C170 e ~2 mil produtos: classificar por
+    # (NCM, Ex) uma vez só tirava ~0,2 s do diagnóstico de cada abertura
+    classes = {}
     problemas = []
     for r in doc.registros:
         if r.reg != "C170":
@@ -148,7 +172,11 @@ def verificar_cst_pis_cofins(doc, classificador, data_ref=None):
         ncm = ncm_de.get(cod, "")
         if not ncm:
             continue
-        info = classificador.classificar(ncm, data_ref)
+        chave = (ncm, ex_de.get(cod, ""))
+        info = classes.get(chave)
+        if info is None:
+            info = classes[chave] = classificador.classificar(
+                ncm, data_ref, chave[1])
         if info["monofasico"]:
             classe = "mono"
         elif info["aliquota_zero"]:

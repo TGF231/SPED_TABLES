@@ -114,7 +114,12 @@ DATASOURCE_ICMS = {
 PREFIXOS_DATASOURCE_ICMS = (
     ("COD_AJ_APURACAO", "SPEDFISCAL_{UF}$AJ_APUR_DED"),
     ("COD_REC", "SPEDFISCAL_{UF}$REC_REF_OBRIGACAO"),
-    ("COD_OR", "SPEDFISCAL_{UF}$REC_REF_OBRIGACAO"),
+    # obrigações do ICMS a recolher (000, 003, 090...): COD_OR no E116,
+    # E250 e 1926, COD_OR_E316 no E316. Até a 1.0.0-rc.1 apontava para a
+    # tabela de códigos de RECEITA da UF e não acusava nada só porque o
+    # descritor trazia, num comentário XML, uma enumeração lida como se
+    # valesse
+    ("COD_OR", "SPEDFISCAL_GLOBAL$OBR_ICMS_RECOL"),
 )
 # CST do ICMS é o par origem+situação, tratado à parte
 DATASOURCE_COMPOSTO = {"CST_ICMS": ("SPEDFISCAL_ST$SIT_TRIB_ICMS_A",
@@ -242,6 +247,56 @@ def cfops_com_credito(pasta_contrib=None, data_ref=None):
                       tabs, None, data_ref)
 
 
+# Tabela da natureza da receita (NAT_REC do M410/M810) pelo CST do M400/M800
+TABELAS_NAT_REC = {
+    "04": ("PROD_MONO_ALIQ_DIFER", "PROD_MONO_ALIQ_UNID"),   # 4.3.10/4.3.11
+    "05": ("PROD_ST",),                                     # 4.3.12
+    "06": ("PROD_ALIQ_ZERO",),                              # 4.3.13
+    "07": ("OPER_COM_ISENCAO",),                            # 4.3.14
+    "08": ("OPER_SEM_INCIDENCIA",),                         # 4.3.15
+    "09": ("OPER_COM_SUSPENSAO",),                          # 4.3.16
+}
+
+
+def naturezas_receita(cst, pasta_contrib=None, data_ref=None):
+    """Códigos de natureza da receita válidos para o CST do M400/M800, ou
+    None quando o CST não tem tabela (ou ela não está instalada)."""
+    nomes = TABELAS_NAT_REC.get((cst or "").strip())
+    if not nomes:
+        return None
+    tabs = listar_tabelas(_pasta_contrib(pasta_contrib))
+    out = set()
+    achou = False
+    for nome in nomes:
+        alvo = tabs.get("SPEDPISCOFINS_OPER_CONTRIB$SPEDPISCOFINS_" + nome)
+        if alvo:
+            achou = True
+            out |= set(carregar_codigos(alvo[0], data_ref)["codigos"])
+    return out if achou else None
+
+
+def ncms_da_natureza(codigo, pasta_contrib=None):
+    """Prefixos de NCM que as tabelas de natureza da receita (4.3.10 a
+    4.3.16) associam ao `codigo` — o produto de que a receita é."""
+    from sped_tables.infra import tabelas_rfb    # o leitor do formato
+    tabs = listar_tabelas(_pasta_contrib(pasta_contrib))
+    out = set()
+    for nomes in TABELAS_NAT_REC.values():
+        for nome in nomes:
+            alvo = tabs.get("SPEDPISCOFINS_OPER_CONTRIB$SPEDPISCOFINS_" + nome)
+            if not alvo:
+                continue
+            try:
+                tabela = tabelas_rfb.carregar_tabela_produtos(alvo[0])
+            except OSError:
+                continue
+            for reg in tabela["registros"]:
+                if reg["codigo"] == codigo:
+                    out.update(reg["ncm"])
+    out.discard("")
+    return out
+
+
 def naturezas_cfop_credito(pasta_contrib=None, data_ref=None):
     """`{cfop: NAT_BC_CRED}` — a natureza da base do crédito por CFOP.
 
@@ -292,6 +347,19 @@ def prazo_entrega(mes_ano, pasta_contrib=None):
     return t["codigos"].get(mes_ano, "")
 
 
+def codigos_receita_icms(uf, data_ref=None, pasta_fiscal=None):
+    """`{código: descrição}` da tabela de receitas da UF
+    (`SPEDFISCAL_{UF}$REC_REF_OBRIGACAO`, o datasource do COD_REC do E116),
+    só os vigentes em `data_ref`."""
+    if not uf:
+        return {}
+    tabs = listar_tabelas(_pasta_fiscal(pasta_fiscal))
+    alvo = tabs.get("SPEDFISCAL_%s$REC_REF_OBRIGACAO" % uf.upper())
+    if alvo is None:
+        return {}
+    return carregar_codigos(alvo[0], data_ref)["codigos"]
+
+
 def codigos_de(chave, tabs, uf=None, data_ref=None):
     """Conjunto de códigos vigentes de uma tabela, resolvendo `{UF}`."""
     if "{UF}" in chave:
@@ -314,7 +382,7 @@ def dominios_por_datasource(estrutura, layout, pasta_fiscal=None,
     `CST_PIS` tem tabela diferente no C175, no C181 e no C191. Validar por
     nome de campo, como antes, achatava essas diferenças.
     """
-    tabs = dict(listar_tabelas(_pasta_fiscal(pasta_fiscal)))
+    tabs = listar_tabelas(_pasta_fiscal(pasta_fiscal))
     tabs.update(listar_tabelas(_pasta_contrib(pasta_contrib)))
     cache = {}
     out = {}

@@ -115,7 +115,7 @@ class ItemNFe:
                  "pis_cst", "pis_vbc", "pis_aliq", "pis_vpis",
                  "cofins_cst", "cofins_vbc", "cofins_aliq", "cofins_vcofins",
                  "icms_cst", "icms_vbc", "icms_aliq", "icms_vicms",
-                 "icms_vbcst", "icms_aliqst", "icms_vicmsst",
+                 "icms_vbcst", "icms_aliqst", "icms_vicmsst", "icms_predbc",
                  "ipi_cst", "ipi_vbc", "ipi_aliq", "vipi")
 
     def __init__(self, **k):
@@ -244,6 +244,11 @@ def _nfe_de(root, caminho):
             cean=_gtin(prod.findtext("cEAN")),
             icms_cst=icms_cst,
             icms_vbc=_num(icms.findtext("vBC")) if icms is not None else 0.0,
+            # percentual de redução da base (ICMS20/70/51…): é o que sobra
+            # quando o XML vem com a base zerada, como na entrada exportada
+            # pelo ERP
+            icms_predbc=(_num(icms.findtext("pRedBC"))
+                         if icms is not None else 0.0),
             icms_aliq=(icms.findtext("pICMS") if icms is not None else None),
             icms_vicms=_num(icms.findtext("vICMS")) if icms is not None else 0.0,
             icms_vbcst=_num(icms.findtext("vBCST")) if icms is not None else 0.0,
@@ -422,6 +427,10 @@ class Lote:
         self.nfes, self.ctes, self.eventos = [], [], []
         self.erros = []              # [(arquivo, motivo)]
         self.repetidos = []          # [(arquivo, chave)]
+        # NF-e sem chave de acesso: não é documento autorizado, mas é o que o
+        # ERP exporta da entrada como ele a escriturou (o fornecedor no
+        # `dest`). Só serve a conferências que casam pelo conteúdo.
+        self.sem_chave = []
 
     @property
     def documentos(self):
@@ -459,7 +468,10 @@ def ler_pasta_fiscal(pasta, recursivo=True):
             lote.eventos.append(doc)
             continue
         if not doc.chave:
-            lote.erros.append((nome, "documento sem chave de acesso"))
+            if isinstance(doc, NFe):
+                lote.sem_chave.append(doc)
+            else:
+                lote.erros.append((nome, "documento sem chave de acesso"))
             continue
         if doc.chave in vistos:
             lote.repetidos.append((nome, doc.chave))

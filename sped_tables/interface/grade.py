@@ -10,8 +10,10 @@ from PyQt6.QtWidgets import (
     QTableWidgetItem, QVBoxLayout, QWidget,
 )
 
+from sped_tables.dominio import ajuda
 from sped_tables.interface import tema
 from sped_tables.interface.comum import _br, _num_celula, calcular
+from sped_tables.interface.dialogos.ajuda import DialogoAjuda, dica_html
 
 
 # ---------------------------------------------------------------------------
@@ -158,6 +160,7 @@ class MasterDetailWidget(QWidget):
         self._filtro = "TODOS"        # TODOS | ENTRADAS | SAIDAS
         self._filtro_mod = ""         # COD_MOD selecionado ("" = todos)
         self._texto_busca = ""        # texto da pesquisa
+        self._dicas = {}              # dica do cabeçalho por (coluna, nome)
 
         layout = QVBoxLayout(self)
         layout.setContentsMargins(4, 4, 4, 4)
@@ -274,7 +277,8 @@ class MasterDetailWidget(QWidget):
         # entre as várias grades abertas)
         for seq, fn in ((QKeySequence.StandardKey.Copy, self._copiar),
                         (QKeySequence.StandardKey.Paste, self._colar),
-                        (QKeySequence("Ctrl+D"), self._preencher_baixo)):
+                        (QKeySequence("Ctrl+D"), self._preencher_baixo),
+                        (QKeySequence("F1"), self.abrir_ajuda)):
             sc = QShortcut(seq, self.tabela, fn)
             sc.setContext(Qt.ShortcutContext.WidgetWithChildrenShortcut)
         self.splitter.addWidget(self.tabela)
@@ -376,6 +380,7 @@ class MasterDetailWidget(QWidget):
         self.tabela.clear()
         self.tabela.setColumnCount(len(colunas))
         self.tabela.setHorizontalHeaderLabels(colunas)
+        self._dicas_do_cabecalho(colunas)
         self.tabela.setRowCount(len(self._visiveis))
 
         for i, r in enumerate(self._visiveis):
@@ -421,6 +426,29 @@ class MasterDetailWidget(QWidget):
         # não deixar uma linha marcada sem querer nas ações em lote.
         if len(self._visiveis) == 1 and self.doc.tem_detalhe(self._visiveis[0]):
             self.tabela.setCurrentCell(0, 0)
+
+    def _dicas_do_cabecalho(self, colunas):
+        """A dica de cada coluna é o que o guia prático e o descritor do
+        PVA dizem do campo — o "o que vai aqui?" sem sair da grade."""
+        for j, nome in enumerate(colunas):
+            item = self.tabela.horizontalHeaderItem(j)
+            if item is None or nome.startswith("Campo "):
+                continue
+            # o texto é o mesmo para o registro: monta uma vez por grade, e
+            # não a cada tecla da pesquisa (que repreenche a tabela)
+            dica = self._dicas.get((j, nome))
+            if dica is None:
+                dica = self._dicas[(j, nome)] = dica_html(ajuda.do_campo(
+                    self.doc.layout, self.tipo, j + 1, nome))
+            item.setToolTip(dica)
+
+    def abrir_ajuda(self):
+        """F1: a ajuda do registro desta grade, rolada até a coluna atual."""
+        col = self.tabela.currentColumn()
+        campo = self._colunas[col] if 0 <= col < len(self._colunas) else None
+        self._dlg_ajuda = DialogoAjuda(self.doc.layout, self.tipo, campo,
+                                       self)
+        self._dlg_ajuda.show()
 
     def _filtro_mudou(self, _idx):
         self._filtro = self.combo_filtro.currentData() or "TODOS"
@@ -569,6 +597,10 @@ class MasterDetailWidget(QWidget):
         a_copy = menu.addAction("Copiar\tCtrl+C")
         a_paste = menu.addAction("Colar\tCtrl+V")
         a_down = menu.addAction("Preencher para baixo\tCtrl+D")
+        menu.addSeparator()
+        a_ajuda = menu.addAction("📖 Ajuda do registro %s (guia prático)\tF1"
+                                 % self.tipo)
+        a_ajuda.triggered.connect(self.abrir_ajuda)
         a_fill.triggered.connect(self._preencher_dialogo)
         a_copy.triggered.connect(self._copiar)
         a_paste.triggered.connect(self._colar)

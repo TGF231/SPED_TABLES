@@ -17,7 +17,7 @@ Sem dependência de GUI: a interface lê e grava por estas funções.
 """
 
 
-from dataclasses import asdict, dataclass, fields
+from dataclasses import asdict, dataclass, field, fields
 
 from sped_tables.dominio.sped_model import _fmt_aliq, so_digitos
 
@@ -56,6 +56,48 @@ _COD_INC_TRIB = {"1": "nao_cumulativo", "2": "cumulativo", "3": "ambos"}
 # Lucro Real, por exemplo), e por isso os dois campos são independentes.
 _REGIME_SUGERIDO = {"simples": "cumulativo", "presumido": "cumulativo",
                     "real": "nao_cumulativo"}
+
+
+# CSOSN (Simples Nacional) -> situação tributária (2 últimos dígitos do CST)
+# correspondente, a tabela de equivalência usual. Editável no cadastro.
+CSOSN_CST_PADRAO = {
+    "101": "00",   # tributada com permissão de crédito
+    "102": "00",   # tributada sem permissão de crédito
+    "103": "40",   # isenção para faixa de receita bruta
+    "201": "10",   # tributada com crédito e com cobrança por ST
+    "202": "10",   # tributada sem crédito e com cobrança por ST
+    "203": "30",   # isenção por faixa e com cobrança por ST
+    "300": "41",   # imune
+    "400": "41",   # não tributada
+    "500": "60",   # ICMS cobrado anteriormente por ST
+    "900": "90",   # outros
+}
+# compra para comercialização com mercadoria sujeita a ST
+CFOP_COMPRA_ST = {"1403", "2403"}
+
+
+def tabela_csosn_texto(tabela):
+    """`{"102": "00", …}` -> `102=00, …` (o campo do formulário)."""
+    return ", ".join("%s=%s" % (k, tabela[k]) for k in sorted(tabela))
+
+
+def tabela_csosn_de_texto(texto):
+    """O inverso de `tabela_csosn_texto`. Par mal escrito é recusado com
+    `ValueError`: a tabela decide o CST que vai para o arquivo fiscal."""
+    out = {}
+    for par in (texto or "").replace(";", ",").split(","):
+        par = par.strip()
+        if not par:
+            continue
+        k, sep, v = par.partition("=")
+        k, v = k.strip(), v.strip()
+        valido = (sep and k.isdigit() and len(k) == 3
+                  and v.isdigit() and len(v) in (1, 2))
+        if not valido:
+            raise ValueError("Par inválido na tabela CSOSN → situação: "
+                             "\"%s\" (use 102=00)" % par)
+        out[k] = v.zfill(2)
+    return out
 
 
 def formatar_cnpj(cnpj):
@@ -108,6 +150,20 @@ class Empresa:
     # outros cenários, por isso é configurável.
     cst_entrada_sem_credito: str = "70"
     observacoes: str = ""
+    # ---- ICMS das entradas: CSOSN do fornecedor do Simples no lugar do CST
+    # O XML do fornecedor do Simples traz CSOSN (101, 102, 202…), e o ERP o
+    # copia para o CST_ICMS do C170. Sem o dígito de origem, "102" vira
+    # origem 1 + situação 02 — monofásico de combustível, que o PVA recusa
+    # sem alíquota. A conversão é decisão da empresa, por isso configurável.
+    converter_csosn: bool = True
+    origem_csosn: str = "0"
+    csosn_cst: dict = field(default_factory=lambda: dict(CSOSN_CST_PADRAO))
+    # compra para revenda com ST (CFOP 1403/2403): o ICMS já foi retido, e a
+    # situação da empresa é 60 — vale para o CSOSN convertido; um CST válido
+    # (x10, x70) que a nota trouxer não é tocado
+    cst_compra_st: str = "60"
+    # ---- código de receita do ICMS a recolher (E116), da tabela da UF
+    cod_rec_icms: str = ""
 
     def __post_init__(self):
         """Normaliza as alíquotas na entrada — de qualquer origem: cadastro
@@ -115,6 +171,29 @@ class Empresa:
         for campo in ("aliq_pis_saida", "aliq_cofins_saida",
                       "aliq_pis_credito", "aliq_cofins_credito"):
             setattr(self, campo, normalizar_aliquota(getattr(self, campo)))
+        # cadastro antigo ou editado à mão: o que não for tabela vira o
+        # padrão, e a situação fica com dois dígitos
+        if not isinstance(self.csosn_cst, dict):
+            self.csosn_cst = dict(CSOSN_CST_PADRAO)
+        self.csosn_cst = {str(k).strip(): str(v).strip().zfill(2)[-2:]
+                          for k, v in self.csosn_cst.items()
+                          if str(k).strip() and str(v).strip()}
+        self.origem_csosn = (str(self.origem_csosn or "0").strip()[:1]
+                             or "0")
+        compra_st = str(self.cst_compra_st or "").strip()
+        self.cst_compra_st = compra_st.zfill(2)[-2:] if compra_st else ""
+        self.converter_csosn = bool(self.converter_csosn)
+
+    def cst_do_csosn(self, csosn, cfop):
+        """CST de 3 dígitos que a empresa escritura no lugar do `csosn`, ou
+        None quando não há regra (CSOSN fora da tabela)."""
+        if (cfop or "").strip() in CFOP_COMPRA_ST and self.cst_compra_st:
+            situacao = self.cst_compra_st
+        else:
+            situacao = self.csosn_cst.get((csosn or "").strip())
+        if not situacao:
+            return None
+        return self.origem_csosn + situacao
 
     # ------------------------------------------------------------- derivados
     @property

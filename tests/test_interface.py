@@ -176,6 +176,59 @@ class TestJanela(unittest.TestCase):
             j.close()
         self.assertEqual(self.erros, [], self._falhas())
 
+    def test_gravar_com_c170_em_nfce_pergunta(self):
+        """NFC-e com C170 fictícios é estrutura inválida: gravar pergunta, e
+        no ICMS/IPI oferece remover o andaime antes."""
+        from tests.test_conferencia import _nfes, icms_nfce, xml_nfce_st
+
+        def escolhe(rotulo):
+            return lambda caixa: next(
+                (b for b in caixa.buttons() if b.text() == rotulo), None)
+        with PastaTemporaria() as p:
+            j = self.ed.JanelaPrincipal()
+            self.assertTrue(j.abrir_caminho(icms_nfce().gravar(p)))
+            j.doc.gerar_c170_ficticios_65(_nfes(xml_nfce_st()))
+            destino = os.path.join(p, "saida.txt")
+            with mock.patch.object(QMessageBox, "clickedButton",
+                                   escolhe("Cancelar")):
+                j._gravar(destino)
+            self.assertFalse(os.path.exists(destino))
+            with mock.patch.object(QMessageBox, "clickedButton",
+                                   escolhe("Remover e gravar")):
+                j._gravar(destino)
+            with open(destino, encoding="latin-1") as fh:
+                self.assertNotIn("|C170|", fh.read())
+            self.assertEqual(j.doc.documentos_65_com_c170(), [])
+            _esperar()
+            j.alterado = False
+            j.close()
+        self.assertEqual(self.erros, [], self._falhas())
+
+    def test_ajuda_do_guia_na_grade(self):
+        """O cabeçalho da coluna traz o que o guia diz do campo, e o F1 abre
+        a ajuda do registro rolada até a coluna atual."""
+        from sped_tables.interface.grade import MasterDetailWidget
+        from sped_tables.interface.dialogos.ajuda import DialogoAjuda
+        with PastaTemporaria() as p:
+            j = self.ed.JanelaPrincipal()
+            self.assertTrue(j.abrir_caminho(icms_basico().gravar(p)))
+            _esperar()
+            from sped_tables.interface.grade import BlocoWidget
+            bloco = next(w for w in j.findChildren(BlocoWidget)
+                         if w.bloco == "C")
+            g = bloco.widget_do_tipo("C100")
+            self.assertIsInstance(g, MasterDetailWidget)
+            nome = g._colunas[1]
+            self.assertIn(nome, g.tabela.horizontalHeaderItem(1).toolTip())
+            g.tabela.setCurrentCell(0, 1)
+            g.abrir_ajuda()
+            self.assertIsInstance(g._dlg_ajuda, DialogoAjuda)
+            self.assertIn(nome, g._dlg_ajuda.texto.toPlainText())
+            g._dlg_ajuda.close()
+            j.alterado = False
+            j.close()
+        self.assertEqual(self.erros, [], self._falhas())
+
     def test_todas_as_acoes_nos_dois_leiautes(self):
         for montador in (icms_basico(), contrib_basico()):
             with self.subTest(layout=montador.layout), \

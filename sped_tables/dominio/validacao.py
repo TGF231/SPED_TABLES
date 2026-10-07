@@ -517,6 +517,9 @@ def validar(doc, tipos=None, dominios_pva=None):
                 continue
             if sugestao is None and dom is DOMINIO_NUMERO:
                 sugestao = _num_sugerido(v)
+            if (r.reg, nome) in CADASTRO_NO_ERP:
+                # esvaziar só troca um erro por outro (campo obrigatório)
+                motivo, sugestao = CADASTRO_NO_ERP[(r.reg, nome)], None
             achados.append(Ocorrencia(r.uid, r.reg, r.bloco, nome, i, v,
                                       motivo, sugestao))
             apontados.add(i)
@@ -548,6 +551,17 @@ def resumo(achados):
             g[1] += 1
     return sorted(((k[0], k[1], k[2], v[0], v[1], v[2])
                    for k, v in grupos.items()), key=lambda x: -x[3])
+
+
+# Campo errado que não se conserta no arquivo: o PVA cobra o município de
+# quem tem CNPJ (`MSG_EXISTE_COD_MUN`) e a fonte certa é o cadastro no ERP —
+# num arquivo real eram dois fornecedores com município 0000000, e o EFD
+# Contribuições do mesmo mês trazia neles o município da própria empresa.
+# Por isso não há sugestão: o normalizar não esvazia.
+CADASTRO_NO_ERP = {
+    ("0150", "COD_MUN"): "participante com município zerado ou inexistente "
+                         "— corrija a cidade no cadastro dele no ERP",
+}
 
 
 def normalizar(doc, achados=None, campos_alvo=None):

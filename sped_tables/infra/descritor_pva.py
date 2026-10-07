@@ -26,6 +26,7 @@ não tem `valores-validos` lá — e deixa passar o que ele cobra por enumeraç�
 inline.
 """
 
+import html
 import os
 import re
 import zipfile
@@ -40,10 +41,13 @@ RE_REGISTRO = re.compile(r"<registro\b([^>]*)>", re.S)
 RE_CAMPO = re.compile(r"<campo\b([^>]*?)(/?)>", re.S)
 RE_ATTR = re.compile(r'(\w+)\s*=\s*"([^"]*)"')
 RE_VALORES = re.compile(r"<valores-validos\b([^>]*)/?>", re.S)
+RE_COMENTARIO = re.compile(r"<!--.*?-->", re.S)
 
 
 def _attrs(txt):
-    return dict(RE_ATTR.findall(txt or ""))
+    # os textos vêm com entidades XML (&quot;, &#8220;): o rótulo e a
+    # descrição aparecem na ajuda do campo
+    return {k: html.unescape(v) for k, v in RE_ATTR.findall(txt or "")}
 
 
 def descritor_mais_recente(jar):
@@ -95,6 +99,11 @@ def _ler(jar):
         return {}, {"jar": jar, "descritor": None, "erro": "PVA não instalado"}
     with z:
         xml = z.read(caminho).decode("utf-8", "replace")
+    # o descritor guarda campos excluídos do leiaute dentro de comentário
+    # ("Campo excluído devido à exclusão do registro" — o IND_ST do 1010, com
+    # o mesmo n=4 do IND_COMB). Lidos como campos, viravam obrigatórios
+    # fantasmas e desalinhavam a posição dos demais.
+    xml = RE_COMENTARIO.sub("", xml)
 
     # corta o XML nos limites de cada <registro ...> ... próximo <registro
     pos = [(m.start(), _attrs(m.group(1))) for m in RE_REGISTRO.finditer(xml)]
@@ -117,11 +126,17 @@ def _ler(jar):
             vv = RE_VALORES.search(corpo)
             va = _attrs(vv.group(1)) if vv else {}
             valores = None
+            significados = {}
             if va.get("valores"):
                 valores = [p.split("=")[0].strip()
                            for p in va["valores"].split(";") if p.strip()]
+                significados = {p.split("=")[0].strip(): p.split("=", 1)[1]
+                                for p in va["valores"].split(";")
+                                if "=" in p}
+            # n="17'" (D750.DED): o número vale, a aspa é erro de digitação
+            num = re.match(r"\s*(\d+)", ca.get("n", ""))
             campos[nome] = {
-                "n": int(ca["n"]) if ca.get("n", "").isdigit() else None,
+                "n": int(num.group(1)) if num else None,
                 "tipo": ca.get("tipo", ""),
                 "tamanho": ca.get("tamanho", ""),
                 "decimais": ca.get("casasdecimais", ""),
@@ -129,12 +144,17 @@ def _ler(jar):
                 "valores": valores,
                 "datasource": va.get("datasource"),
                 "referencia": ca.get("referenciaPesquisa"),
+                "rotulo": ca.get("rotulo", ""),
+                "descricao": ca.get("descricao", ""),
+                "significados": significados,
             }
         out[reg] = {
             "nivel": int(at["nivel"]) if at.get("nivel", "").isdigit() else None,
             "ocorrencia": at.get("ocorrencia", ""),
             "obrigatorio": at.get("obrigatorio", ""),
             "chave": at.get("chave", ""),
+            "rotulo": at.get("rotulo", ""),
+            "descricao": at.get("descricao", ""),
             "validadores": re.findall(r'<validador\s+id\s*=\s*"([^"]+)"',
                                       trecho),
             "campos": campos,

@@ -22,7 +22,7 @@ import os
 import re
 import glob
 
-from sped_tables.dominio.ncm import ClassificadorNCM
+from sped_tables.dominio.ncm import ClassificadorNCM, normalizar_ex
 from sped_tables.dominio.sped_model import so_digitos
 from sped_tables.infra import config
 
@@ -97,6 +97,10 @@ def carregar_tabela_produtos(caminho, encoding="latin-1"):
             "ncm": [so_digitos(x) for x in p[4].split(";") if x.strip()],
             "ncm_ex": [so_digitos(x) for x in
                        (p[5].split(";") if len(p) > 5 else []) if x.strip()],
+            # "Ex" da TIPI: a linha só vale para o produto com esse EX_IPI
+            # no 0200 (o 21069010 com Ex 02 é o concentrado para
+            # refrigerante, não toda preparação alimentícia)
+            "ex_ipi": normalizar_ex(p[6]) if len(p) > 6 else "",
         }
         if len(p) >= 10:            # 4.3.11: ...|EX_IPI|UNID|ALIQ_PIS|ALIQ_COFINS
             reg["unid"] = p[7].strip()

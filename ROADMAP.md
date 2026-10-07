@@ -36,10 +36,14 @@ não prontas simplesmente não são criadas — nem menu, nem atalho
 (`acoes.visiveis()`, com teste em `tests/test_arquitetura.py`). Uma função
 nova nasce com `pronta=False` e só vira `True` quando passa pelo critério.
 
-**Onde estamos:** `0.58.0-dev.4`, canal **dev**. A 0.57.0 está pronta para
-virar `1.0.0-rc.1` quando você decidir; a 0.58 acrescenta a geração a partir
-dos XMLs (4.4). Toda a série 0.y.z é sandbox:
-nenhuma versão antes da 1.0.0 é entregue como release.
+**Onde estamos:** `1.0.0-rc.2`, canal **rc**. O rc.1 estava congelado (só
+correção); o rc.2 é exceção pedida pelo usuário — "profissionalizar a
+ferramenta seguindo os manuais dos dois SPEDs" antes da 1.0.0: os guias
+práticos como fonte (ajuda de campo, regras com as condições do PVA) e o
+leiaute alinhado ao descritor instalado. A 1.0.0 sai quando fecharem as
+verificações manuais que faltam (4.2).
+Toda a série 0.y.z foi sandbox: nenhuma versão antes da 1.0.0 é entregue
+como release.
 
 ---
 
@@ -89,7 +93,7 @@ exemplo). O item 4 (executável) é comum a todas e está na seção 4.2.
 | | Preencher COD_GEN | ✔ | ✔ | ✔ |
 | Contribuições | Recalcular bloco M (apuração e crédito) | ✔ | ✔ | ✔ |
 | | Trocar alíquotas de PIS/COFINS | ✔ | ✔ | ✔ |
-| | NFC-e 65: importar XMLs, validar e regenerar C175 | ✔ | ✔ 205 documentos | **pendente** — precisa dos XMLs; `pronta=False` |
+| | NFC-e 65: importar XMLs, validar e regenerar C175; no ICMS/IPI, C170 fictícios para refazer o C190 | ✔ | ✔ 205 documentos; ICMS/IPI: 318 NFC-e, C190 idêntico salvo o VL_RED_BC | **pendente** — `pronta=False` |
 | | CST por NCM (verificar e corrigir) | ✔ | ✔ 79 casos | ✔ com o erro injetado no arquivo real: 34 → 0 |
 | | Empresas e rotinas por regime | ✔ | ✔ verificação; correção por controle | ✔ |
 | Gerais | Diagnóstico, revisão, validação de campos | ✔ | ✔ gabarito | ✔ contra o banco do PVA |
@@ -117,11 +121,13 @@ precisa dos XMLs dos cupons de um mês real: ela está com `pronta=False` e
 | 0.55.0 | Executável: gerar, rodar o roteiro 2.2 e 2.3 sobre ele | ✔ — falta só arrastar um `.txt` do Explorador (a lógica está na suíte) e a escala acima de 100%, sem monitor para isso aqui: entram no rc.1 |
 | 0.56.0 | Validar na entrada: leitura sem descarte, cálculos que recusam número inválido, JSON ilegível preservado; *Limpar NULL* e *Validar campos* absorvidos pelo Diagnóstico | ✔ |
 | 0.57.0 | Preparação do rc.1: CST por NCM e inventário fechados no PVA; NFC-e 65 com `pronta=False`; planilha de inventário conferida célula a célula; README revisado de ponta a ponta | ✔ |
-| 1.0.0-rc.1 | Congelamento: só correção; README revisado de ponta a ponta; do roteiro 2.3, arrastar um `.txt` do Explorador e um monitor acima de 100% | pendente |
+| 1.0.0-rc.1 | Congelamento: só correção; licença GPL-3.0; executável e `--autoteste`; do roteiro 2.3, arrastar um `.txt` do Explorador e um monitor acima de 100% | em curso — faltam arrastar um `.txt` do Explorador para o executável e o monitor acima de 100% |
+| 1.0.0-rc.2 | Os guias práticos como fonte: ajuda de campo (F1), regras do guia com as condições e tolerâncias do PVA, leiaute conferido contra o descritor, `COBERTURA.md` | ✔ — suíte, arquivos reais, executável gerado e `--autoteste` (com os guias no pacote) |
 | **1.0.0** | Release — ver 4.3 | — |
 
 Função que não fechar a coluna PVA até o rc.1 sai da 1.0.0 com
-`pronta=False` e volta numa 1.x.
+`pronta=False` e volta numa 1.x. Saem assim: a NFC-e 65 por XML (4.1) e
+*Gerar SPED a partir dos XMLs* (4.4).
 
 ### 4.3 Publicação da 1.0.0
 
@@ -130,6 +136,10 @@ Toda a história até aqui é sandbox. O que vai para o GitHub na 1.0.0 é um
 contendo o código da 1.0.0, e um CHANGELOG que começa na 1.0.0. O histórico
 0.x — que contém nome e CNPJ de clientes em documentos antigos — não é
 publicado. As tags 0.x não são recriadas.
+
+Decidido no rc.1: licença **GPL-3.0** (a do PyQt6, que vai dentro do
+executável); o começo limpo é preparado **localmente**, num repositório à
+parte, e nada é publicado nem tornado público até você decidir.
 
 ---
 
@@ -179,6 +189,20 @@ Sem data; entram pelo canal dev e seguem a seção 1.
 - Redução de base por produto no recálculo de ICMS.
 - Catálogo de filhos permitidos por registro (criar o primeiro C170 de um
   C100 que só tem C190).
+- **Mais regras do PVA** (`COBERTURA.md`): só nos registros que aparecem
+  nos arquivos reais faltam ~200 validadores no ICMS/IPI. Primeiro os que
+  têm consulta SQL legível (combinação CST × campos do C170/C190, E210,
+  E310/E316, ajustes do C197 no E110, duplicidade do C100/D100), depois os
+  de classe.
+- **Descritor da versão do arquivo** (`COD_VER`), não só o mais recente:
+  o `.jar` traz um por ato (ato019 = 2025, ato020 = 2026); hoje vale o
+  último para qualquer arquivo.
+- **Obrigatoriedade por perfil** (seção 2 do guia do ICMS/IPI: registro
+  obrigatório, facultativo ou vedado para o perfil A, B e C).
+- **Inscrição estadual por UF** (dígito verificador de cada estado), que o
+  PVA confere no 0000 e no 0150.
+- Leiaute 2027 do ICMS/IPI (guia 3.2.4: `IND_BENEFICIO` no E111, C197,
+  D197…, `COD_PROD` no C180) quando o PVA trouxer o descritor.
 
 ---
 
@@ -189,9 +213,10 @@ README, que uma versão futura pode ampliar.
 
 - A ordem, a fixação e o fechamento de abas valem durante a sessão.
 - Não há desfazer: as rotinas em lote devem rodar com o arquivo salvo.
-- As ~1.400 regras compostas do PVA (em Java) não são reproduzidas; o
-  diagnóstico diz quantas se aplicam ao arquivo. O validador oficial
-  continua sendo o juiz.
+- Das ~1.300 regras compostas do PVA, o programa reproduz as que o guia
+  escreve e o PVA deixa legível (92 validadores na 1.0.0-rc.2, ver
+  `COBERTURA.md`); o diagnóstico diz quantas das outras se aplicam ao
+  arquivo. O validador oficial continua sendo o juiz.
 - Os CST esperados por NCM valem para comércio/revenda.
 - Entre *Validar C175* e *Regenerar C175* (NFC-e 65) o arquivo tem C170 em
   documento modelo 65, estrutura inválida: não salve nesse estado.

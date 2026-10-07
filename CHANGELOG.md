@@ -1,6 +1,278 @@
 # Changelog
 
-## [Não lançado] — 0.58.0-dev.5
+## [1.0.0-rc.2] — 2026-10-07
+
+**Os guias práticos como fonte.** Pedido do usuário antes da 1.0.0: seguir
+os manuais dos dois SPEDs (Guia Prático EFD ICMS/IPI 3.2.4, de 30/07/2026,
+e EFD Contribuições 1.35). Exceção ao congelamento do rc.1, registrada no
+`ROADMAP.md`.
+
+### Adicionado
+- **Os dois guias, extraídos** por `ferramentas/extrair_guias.py` para
+  `recursos/guia_icms.json` (268 registros) e `recursos/guia_contrib.json`
+  (201): título, objetivo, *Validação do Registro*, nível, ocorrência e, de
+  cada campo, *Valores válidos*, *Preenchimento* e *Validação*. Viajam no
+  executável.
+- **Ajuda de campo na grade.** A dica do cabeçalho de cada coluna mostra o
+  que o guia e o descritor do PVA dizem do campo (tipo, tamanho,
+  obrigatoriedade, valores válidos com o significado, preenchimento,
+  validação). **F1** (ou o menu de contexto) abre a ajuda do registro
+  inteiro, rolada até a coluna atual. Texto do guia que é de um leiaute
+  mais novo que o do PVA instalado (o `IND_BENEFICIO` do E111) não vira
+  ajuda do campo errado.
+- **Regras do guia com as condições e as tolerâncias do PVA**
+  (`dominio/regras_guia.py`), na revisão e no diagnóstico: CFOP × operação
+  (C170/C190/C590/D190/D590, NFC-e só 5, itens com o mesmo primeiro
+  dígito); combinação CST/CFOP/alíquota entre C170 e C190 nos dois
+  sentidos; C190 = soma dos C170; totais do C100/D100 = soma dos
+  analíticos; VL_MERC; datas até o fim do período; mês do 0000; CNPJ/CPF
+  (dígito, exclusão mútua, participante do Brasil), município na UF; chave
+  da NF-e/NFC-e (dígito, modelo, série, número, CNPJ e UF na emissão
+  própria); contagens X990/9900/9999; apuração do E110 (ajustes do E111,
+  saldos, E116); H005; quantidade do C170; VL_PIS/VL_COFINS = base ×
+  alíquota; 0190.
+  - As **condições** vêm das consultas SQL do próprio PVA
+    (`descritor/comum/queries/queries.xml`, no `.jar` do descritor) e
+    dizem o que o guia não diz: o VL_MERC só é cobrado **abaixo** da soma
+    dos itens; NF-e de emissão própria e NFC-e ficam fora da conferência
+    C190 × C170; CFOP só em documento 00/01.
+  - As **tolerâncias** são as das classes do PVA: R$ 0,50 nas somas do
+    ICMS/IPI (`EnumComparadoresSql.TOLERANCIA`) e R$ 0,99 no VL_PIS/
+    VL_COFINS, que lá é só advertência.
+  - Cada regra declara os validadores do descritor que reproduz, e o
+    diagnóstico deixa de listá-los como "só o PVA verifica".
+- `--autoteste` confere que os guias viajaram no executável.
+- **`COBERTURA.md`** (`ferramentas/cobertura_guias.py`): validações do guia
+  e validadores do PVA por registro, e quantos o programa reproduz — hoje
+  60 de 739 no ICMS/IPI e 32 no Contribuições.
+
+### Corrigido
+- **Leiaute divergente do PVA instalado**, com coluna errada na grade e
+  validação no campo vizinho: C870 com CST e CFOP trocados; C177 (o do
+  selo do IPI, revogado), C181, C185, C186, C330, C380, C430, C480, C815,
+  C880, E310 e E312 com campos a menos ou fora de ordem; nomes errados no
+  1010 (`ND_GIAF1`), C113, D530 e D600. No Contribuições: C188 (`CFOP` no
+  lugar de `IND_PROC`), C505/C605 (`ALIQ_PIS`/`VL_PIS` num registro de
+  COFINS), F560, C199, 0111 e o `CHV_DOC_E` do D500. `tests/test_guias.py`
+  confere a estrutura contra o descritor instalado.
+- **Campos comentados no descritor eram lidos como reais.** O PVA guarda
+  campos excluídos dentro de `<!-- -->` (o `IND_ST` do 1010, com o mesmo
+  `n` do campo seguinte); e um `n="17'"` (D750) ficava sem posição.
+- **Campo com nome interno do PVA não era validado.** O descritor chama de
+  `ENDERECO` o `END` do guia, de `VL_OPER` o `VL_OPR` do C175, de
+  `ALIQ_PIS_PERC` o `ALIQ_PIS` do C170; obrigatoriedade, domínio, chave e
+  referência procuravam o campo por esse nome e pulavam em silêncio. O
+  descritor agora é alinhado ao leiaute **por posição**
+  (`referencias.alinhar_ao_leiaute`).
+- **COD_OR do E116 contra a tabela errada.** Apontava para a tabela de
+  códigos de receita da UF e só não acusava nada porque o descritor trazia,
+  num comentário, uma enumeração que era lida como se valesse. Agora é a
+  `OBR_ICMS_RECOL` do PVA.
+- **Saldo credor do E110 perdia a dedução excedente.** Com saldo apurado
+  100 e dedução 150, o recálculo transportava 0; pelo campo 14 do guia,
+  são 50. Recálculo e conferência usam a mesma função
+  (`SpedDocument.saldos_e110`).
+- A chave de NF-e da fábrica de testes tinha dígito verificador inválido.
+
+### Corrigido na revisão de código
+- **Largura do registro pelo descritor** vinha do atributo `n`, que o PVA
+  repete no 0220 e no C890: todo 0220 com código de barras virava "mais
+  campos que o leiaute" — achado que **impede a importação** na
+  pré-checagem — e o gerador pelos XMLs cortava o COD_BARRA. Agora é a
+  posição do último `<campo>`.
+- **Diagnóstico sem o PVA instalado** pulava as regras do guia, que não
+  dependem dele.
+- **Recalcular C190** (revisão e diagnóstico) só refazia documento com
+  redução zerada ou NFC-e com fictícios: anunciado para C190 que não
+  confere com os itens, não fazia nada. Passa a refazer também esses.
+- **Chave da NF-e própria no Contribuições** conferida contra a UF e o
+  CNPJ do estabelecimento (C010/0140), não do 0000 — nota de filial noutra
+  UF era acusada. Regime especial (COD_SIT 08) fica fora, e a chave de
+  **terceiros** passa a ser conferida com o CNPJ/CPF do participante.
+- **Débitos do E110**: CFOP 5605 sai e 1605 entra (E110, campo 02 do guia);
+  cada E110 recebe os documentos do período do seu E100, como na consulta
+  do PVA — com dois E100, o recálculo jogava o mês inteiro no primeiro.
+- Saída com DT_E_S depois do período conta uma vez só: o limite superior
+  é da regra do guia, para todo C100 (inclusive o extemporâneo, que antes
+  escapava das duas verificações), e o inferior da saída, da verificação
+  própria.
+
+### Simplificação e desempenho (revisão de qualidade)
+- **Modo em lote no documento** (`SpedDocument.lote()`): inserções e
+  remoções em massa medem a largura uma vez por tipo e renumeram a árvore e
+  o bloco 9 uma vez, no fim. Refazer o C190 de 2.000 NFC-e caiu de 25 s para
+  0,2 s; gerar os C170 fictícios de 300 NFC-e, de ~30 s para 0,06 s (o custo
+  era quadrático: num mês real, minutos com a tela parada).
+- **Uma fonte para cada cálculo que gera e confere:** `chave_c190` (CST,
+  CFOP, alíquota — "18" e "18,00" são o mesmo grupo, inclusive na detecção
+  de chave repetida), `data_aaaammdd` (havia seis cópias), `e110_esperado`
+  (o recálculo do E110 agora também grava os totais de ajuste pelos E111,
+  que a regra cobrava e o botão não corrigia) e `documentos_para_refazer_c190`
+  (o botão e os roteiros refazem os mesmos documentos, inclusive os de chave
+  repetida).
+- O **E116** virou regra própria, de correção manual: o recálculo do E110
+  não divide o valor entre as obrigações.
+- **CST x02 sem alíquota** se divide no diagnóstico: o CSOSN de entrada vai
+  para a rotina que o converte; combustível de verdade ou saída, para
+  correção manual.
+- O **COD_OR do E316** (datasource `COD_OR_E316`) voltou a ser validado.
+- Diagnóstico e revisão montam os botões pelo mesmo mapa de módulos; o
+  "Datas e extemporâneos pelos XMLs" ganhou botão no diagnóstico.
+- Classificação por NCM uma vez por (NCM, Ex), não por C170; natureza da
+  receita e guias com cache no adaptador; uma passada só pelos débitos do
+  E110 e pelas regras do C190. Diagnóstico do maior arquivo real: 0,75 s.
+
+### Desempenho
+- `SpedDocument._ix` com cache: montar a lista de colunas a cada consulta
+  custava mais que as regras. O diagnóstico do maior arquivo real caiu de
+  3,1 s para 1,1 s, já com as regras novas.
+
+### Gabarito dos arquivos reais
+Muda só a revisão: entram os rótulos das regras do guia (zero em todos,
+salvo o abaixo) e sai *C170 sem C190 compatível*, substituída pela regra
+da combinação com as condições do PVA (zero em todos). No ICMS/IPI de
+agosto do cliente A, **+6 CFOP incompatível**: os CT-e de entrada com CFOP
+5353 no D190 — os mesmos 6 `MSG_CFOP_D190` que o PVA gravou no banco da
+validação desse arquivo. Nos demais, nenhuma regra nova acusa o que o PVA
+aceita.
+
+## [1.0.0-rc.1] — 2026-10-02
+
+Candidata à primeira release. **Congelada:** daqui até a 1.0.0, só
+correção.
+
+### Adicionado
+- **Licença GNU GPL versão 3** (`LICENSE`), a mesma do PyQt6 que vai dentro
+  do executável. README, seção 6.
+
+### Adicionado (fora da 1.0.0, `pronta=False`)
+- **C170 fictícios da NFC-e também no EFD ICMS/IPI**, para o *Recalcular
+  C190 em massa* refazer o analítico das NFC-e pelos itens do XML.
+  - *Gerar C170 fictícios da NFC-e (65) com XMLs…* e *Remover C170
+    fictícios da NFC-e (65)*, no menu do ICMS/IPI.
+  - O recálculo em massa passa a incluir as NFC-e com fictícios. Antes ele
+    só olhava a redução zerada e, num arquivo sem esse defeito, não fazia
+    nada mesmo com os itens no lugar.
+  - Item com CSOSN no lugar do CST é contado e avisado.
+- **Salvar com C170 em NFC-e pede confirmação**, nos dois leiautes; no
+  ICMS/IPI oferece remover os fictícios antes de gravar.
+
+Mês real (junho de 2026, numa cópia do ICMS/IPI entregue): 318 de 318
+NFC-e casadas, 1.137 itens. Os 531 C190 refeitos têm **VL_OPR, base e
+ICMS idênticos** ao entregue; só o `VL_RED_BC` muda (40.996,80 →
+87.843,85, em 256 NFC-e), que é a diferença já conhecida entre a fórmula do
+ERP e a do Guia (`VL_OPR − VL_BC_ICMS`). Nenhum achado impede a importação.
+Falta o ensaio no PVA.
+
+### Situações de contribuinte que não eram tratadas (cliente B, setembro)
+Os dois SPEDs de setembro de um supermercado (cliente B), com os XMLs das
+NFC-e e NF-e, validados no PVA de ensaio. O PVA acusou no ICMS/IPI: E116
+sem código de receita (1), redução de base x70 zerada (47), município do
+participante (2) e CST final 2 sem alíquota (31).
+
+#### Adicionado
+- **Cadastro da empresa** com o código de receita do E116 (seletor com a
+  tabela da UF do PVA) e as regras das **entradas do Simples**: conversão
+  ligada/desligada, origem, tabela CSOSN → situação e situação da compra
+  com ST (CFOP 1403/2403).
+- Rotina **CSOSN do Simples no CST do ICMS** (os dois leiautes): troca o
+  CSOSN pelo CST do cadastro nos C170 e, no ICMS/IPI, nos C190 — somando os
+  que passem a ter a mesma chave. No arquivo real: 78 registros no
+  ICMS/IPI, 62 no Contribuições; os 31 "CST final 2" somem.
+- Rotina **Código de receita em branco**: E116 pelo cadastro, M205/M605
+  pelo campo do M200/M600.
+- *Empresa e rotinas…* passa ao menu **Gerais**: as rotinas valem para os
+  dois leiautes.
+- **Datas e extemporâneos pelos XMLs**: 3.578 NFC-e
+  emitidas de junho a agosto e autorizadas em setembro estavam com a data
+  de setembro no ICMS/IPI (e com a data real só na saída, no
+  Contribuições); mais 562 de setembro com o dia trocado. A correção grava
+  a data do XML e COD_SIT 01 — e o PVA não acusa a data fora do período.
+- **Recalcular apuração do ICMS (E110)** e a verificação
+  *E110 com débitos diferentes dos analíticos*: o ICMS da saída
+  extemporânea é débito especial. No arquivo real, R$ 4.889,67 saíram do
+  total de débitos para o `DEB_ESP` — exatamente os 19.108,92 e 4.889,67
+  que o PVA esperava. Nos cinco arquivos reais do gabarito a verificação
+  dá zero: o cálculo reproduz o E110 entregue.
+- **Redução de base do C190 pelos XMLs de compra**: para o CST 070 de
+  entrada, sem base no arquivo. Aceita também o XML que o ERP exporta da
+  entrada — sem chave, com o fornecedor no `dest` e só o `pRedBC` —,
+  casado pelo CNPJ do fornecedor e o valor do documento (os 50 do cliente
+  casaram um a um). No arquivo real: 41 → 6; os 6 que sobram são itens que
+  o próprio ERP exportou com CST 70 e `pRedBC` zerado, e um sem XML.
+- Três verificações que o PVA faz e o programa não fazia:
+  - **data de entrada/saída antes da emissão** (`MSG_DATA_MAIOR_IGUAL_
+    DT_DOC`): 4.142 no Contribuições original;
+  - **natureza da receita fora da tabela do CST** do M400/M800
+    (`MSG_EXISTE_NAT_REC`), pelas tabelas 4.3.10 a 4.3.16 do PVA: a cerveja
+    (423/424, monofásico) sob o CST 06 — o PDV a vende com CST 06;
+  - **crédito na entrada de produto monofásico ou de alíquota zero**
+    (`MSG_COMPATIBILIDADE_NCM_*`), no diagnóstico e na revisão.
+- No EFD ICMS/IPI a "data de saída fora do período" poupa o COD_SIT 01/07,
+  que o PVA aceita; e não conta de novo o documento cuja saída é anterior à
+  emissão (o PVA não acusa as duas).
+
+#### Corrigido (segunda rodada)
+- **O classificador de NCM ignorava o "Ex" da TIPI.** As três tabelas do
+  PVA (alíquota zero e as duas de monofásico) trazem a coluna EX_IPI, e a
+  linha com Ex só vale para o produto com o mesmo EX_IPI no 0200 — o
+  21069010 Ex 02 é o concentrado para refrigerante, não toda preparação
+  alimentícia. Num arquivo real: **86 entradas acusadas contra as 9 do
+  PVA**; agora as 9, mais a cerveja revendida com crédito (que o PVA não
+  acusa, mas é creditamento indevido).
+- **Recalcular bloco M deixava o M205/M605 com o débito antigo**, e o PVA
+  acusava `MSG_VALIDA_DET_RECEITA_DCTF` (3.340,22 no M200 e 3.338,47 no
+  M205). O débito do código de receita acompanha o campo de origem; com
+  mais de um código no mesmo campo, o recálculo avisa e não mexe.
+- **No EFD Contribuições a NFC-e extemporânea fica no mês.** O PVA de lá
+  recusa a saída com data de outro mês mesmo com COD_SIT 01
+  (`MSG_PERIODO_INCOMPATIVEL_SAIDA`, 7.156 vezes): a correção pelos XMLs
+  mantém a emissão do arquivo e iguala a saída a ela.
+
+- Rotina **Natureza da receita fora da tabela do CST** (M410/M810). A
+  bebida fria vendida pelo varejista é CST 06 com natureza **918** (Lei
+  13.097/2015) — como o ERP já fazia em quase tudo. As cervejas que o PDV
+  emitiu com CST 02/CFOP 5101 entraram certas no C175 (CST 06), mas o M410
+  ficou com 423/424, códigos da tabela de monofásicos (venda do
+  fabricante). A rotina troca para 918 e soma na linha que já existe; só
+  propõe a troca para empresa de comércio, com o NCM do código errado
+  confirmado como bebida fria pela tabela do PVA.
+
+#### PVA de ensaio, setembro do cliente B
+- **ICMS/IPI:** 81 erros (4 tipos) → **8** — 6 C190 sem dado de redução e 2
+  participantes com município zerado (cadastro no ERP).
+- **Contribuições:** 4.194 (10 tipos) → **4** — a natureza da receita da
+  cerveja, que depende do CST com que o PDV vende.
+- Retirar o crédito indevido (20 em CFOP de bonificação, 24 por NCM)
+  aumenta o PIS a recolher em R$ 171,76 e a COFINS em R$ 791,13.
+
+#### Corrigido
+- O diagnóstico cobrava data, valor, participante e indicadores de NF-e
+  **cancelada**, denegada e inutilizada, que pelo Guia só levam a
+  identificação. Eram os "25 campos obrigatórios em branco que o PVA
+  importou sem reclamar" da 0.57.0. Gabarito: obrigatórios 25 → 0, 16 → 1
+  e 26 → 1 nos arquivos do cliente B.
+- **COD_GEN em branco** deixou de ser erro (é aviso): o PVA não o cobra —
+  1.355 no arquivo real, nenhuma mensagem.
+- **Município zerado do participante** deixou de ser "campo vazio
+  disfarçado": o *Normalizar* o esvaziava, trocando um erro por outro. Agora
+  é achado próprio, que manda corrigir o cadastro do participante no ERP, e
+  não impede a importação (o PVA importa e acusa na validação). Gabarito:
+  os 2 do agosto do cliente B saem de "nulo" para "município".
+
+### Fica fora da 1.0.0
+Entram nesta candidata (canal rc), mas **somem da release** pelo
+`pronta=False`, porque ainda não fecharam o critério do ROADMAP:
+- NFC-e 65 por XML (*Importar XMLs → consolidar C175*, *Validar* e
+  *Regenerar C175*; no ICMS/IPI, os C170 fictícios): falta o ensaio no
+  PVA.
+- *Gerar SPED a partir dos XMLs*: falta o ensaio no PVA do arquivo gravado
+  pela tela e um mês real com CT-e.
+
+### Falta para a 1.0.0
+- Roteiro 2.3: monitor com escala acima de 100%.
+
+## [0.58.0-dev.5]
 
 Etapas 1 a 5 de **gerar o SPED a partir dos XMLs** (ROADMAP 4.4).
 

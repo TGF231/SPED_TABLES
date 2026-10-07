@@ -35,6 +35,7 @@ import logging
 from collections import Counter
 
 from sped_tables.dominio import referencias
+from sped_tables.dominio import regras_guia
 from sped_tables.dominio import validacao
 
 log = logging.getLogger("sped_tables")
@@ -65,25 +66,42 @@ MODULOS = {
                 "Ferramentas → Gerais → Preencher conta contábil"),
     "cod_gen": ("Preencher COD_GEN pelo NCM",
                 "Ferramentas → EFD ICMS/IPI → Preencher COD_GEN pelo NCM"),
-    "red_bc": ("Recalcular C190 (analítico)",
-               "Ferramentas → EFD ICMS/IPI → Recalcular C190"),
+    "municipio": ("Cadastro do participante no ERP",
+                  "corrija a cidade no cadastro do participante no ERP "
+                  "(o município do CNPJ está na consulta pública do "
+                  "Sintegra) e gere o arquivo de novo"),
+    "red_bc": regras_guia.RECALCULAR_C190,
     "obrigatorio": ("Correção manual na grade",
                     "campo obrigatório em branco"),
     "num_campos": ("Correção manual na grade",
                    "o registro tem mais ou menos campos que o leiaute"),
-    "chave_c190": ("Recalcular C190 (analítico)",
-                   "Ferramentas → EFD ICMS/IPI → Recalcular C190"),
+    "chave_c190": regras_guia.RECALCULAR_C190,
     "chave": ("Correção manual na grade", "chave repetida no mesmo nível"),
-    "data_periodo": ("Alterar datas emissão/saída (C100)",
-                     "Ferramentas → Gerais → Alterar datas"),
+    "data_periodo": regras_guia.ALTERAR_DATAS,
     "bloco": ("Correção manual na grade", "bloco aberto sem encerramento"),
-    "cst_aliq_02": ("Correção manual na grade",
-                    "CST terminado em 02 exige alíquota; costuma ser CSOSN "
-                    "do fornecedor do Simples"),
+    "cst_aliq_02": ("Empresa e rotinas",
+                    "Ferramentas → Gerais → Empresa e rotinas → CSOSN do "
+                    "Simples no CST do ICMS (a conversão é configurada no "
+                    "cadastro da empresa)"),
+    # x02 que a rotina do CSOSN não toca: saída, ou combustível de verdade
+    "cst_aliq_02_manual": ("Correção manual na grade",
+                           "CST x02 (monofásico de combustível) sem "
+                           "alíquota: informe a alíquota ou corrija o CST"),
+    "nat_rec": ("Empresa e rotinas",
+                "Ferramentas → Gerais → Empresa e rotinas → Natureza da "
+                "receita fora da tabela do CST (bebida fria do varejista → "
+                "918; o resto, conferir o CST no ERP/PDV)"),
+    "data_es": ("Datas e extemporâneos pelos XMLs",
+                "Ferramentas → Gerais → Datas e extemporâneos pelos XMLs "
+                "(ou Alterar datas)"),
+    "credito_ncm": ("Empresa e rotinas",
+                    "Ferramentas → Gerais → Empresa e rotinas → CST "
+                    "incoerente com o NCM (retira o crédito das entradas)"),
+    "apuracao_icms": regras_guia.RECALCULAR_E110,
     "ind_emit": ("Correção manual na grade",
                  "saída escriturada como documento de terceiro"),
-    "cfop_credito": ("Rotinas de conferência (PIS/COFINS)",
-                     "Ferramentas → EFD Contribuições → Rotinas → Crédito em "
+    "cfop_credito": ("Empresa e rotinas",
+                     "Ferramentas → Gerais → Empresa e rotinas → Crédito em "
                      "CFOP que não dá direito"),
     "apuracao_m": ("Recalcular bloco M (apuração PIS/COFINS)",
                    "Ferramentas → EFD Contribuições → Recalcular bloco M"),
@@ -94,6 +112,11 @@ MODULOS = {
     "reg_0900": ("Correção manual na grade",
                  "registro 0900 ausente numa escrituração fora do prazo"),
 }
+# as regras do guia prático: uma entrada por regra, com o módulo dela
+MODULOS.update({
+    "guia_" + r.id: (r.modulo, r.onde or "regra do guia prático — na grade, "
+                                          "F1 mostra o texto do campo")
+    for r in regras_guia.REGRAS})
 
 
 # Obrigatoriedade que o descritor declara como fixa, mas que o PVA dispensa
@@ -117,6 +140,28 @@ def _dispensa_cod_part(doc, r):
 DISPENSAS = {("C100", "COD_PART"): _dispensa_cod_part,
              ("C500", "COD_PART"): _dispensa_cod_part,
              ("D100", "COD_PART"): _dispensa_cod_part}
+
+# Documento cancelado (02, 03), denegado (04) ou numeração inutilizada (05):
+# o Guia manda informar **só** a identificação, e todo o resto vai em branco
+# (exceção 1 do C100; idem D100). O descritor declara DT_DOC, VL_DOC,
+# IND_PGTO… como obrigatórios, e sem esta exceção cada NF-e cancelada
+# gerava cinco "campos obrigatórios em branco" que o PVA não acusa.
+SITUACOES_SO_IDENTIFICACAO = {"02", "03", "04", "05"}
+IDENTIFICACAO = {
+    "C100": {"IND_OPER", "IND_EMIT", "COD_MOD", "COD_SIT", "SER", "NUM_DOC",
+             "CHV_NFE"},
+    "D100": {"IND_OPER", "IND_EMIT", "COD_MOD", "COD_SIT", "SER", "SUB",
+             "NUM_DOC", "CHV_CTE"},
+}
+
+
+def _so_identificacao(doc, r):
+    """Documento que, pela situação, só leva os campos de identificação."""
+    if r.reg not in IDENTIFICACAO:
+        return False
+    i = doc._ix(r.reg, "COD_SIT")
+    return (i is not None and i < len(r.campos)
+            and (r.valor(i) or "").strip() in SITUACOES_SO_IDENTIFICACAO)
 
 
 class Achado:
@@ -157,7 +202,13 @@ def _cadastros(doc, estrutura):
 
 
 def _num_campos_descritor(estrutura):
-    return {reg: max((c["n"] or 0) for c in d["campos"].values())
+    """Largura de cada registro segundo o descritor: a posição do último
+    campo (`pos`, a ordem dos `<campo>` no XML), não o atributo `n` — que tem
+    erros de digitação (0220 e C890 repetem o `n`, K300, 1710 e M800 o têm
+    a mais). Pelo `n`, o 0220 tinha 3 campos e todo 0220 com código de barras
+    virava "mais campos que o leiaute", achado que impede a importação."""
+    return {reg: max((c.get("pos") or c["n"] or 0)
+                     for c in d["campos"].values())
             for reg, d in estrutura.items() if d["campos"]}
 
 
@@ -195,10 +246,18 @@ def verificar(doc):
     for o in ocorrencias:
         tipo = "nulo" if o.sugestao == "" else (
             "dominio" if o.sugestao is None else "formato")
+        if (o.reg, o.campo) in validacao.CADASTRO_NO_ERP:
+            tipo = "municipio"       # conserto é o cadastro no ERP
         grupos.setdefault((tipo, o.reg, o.campo, o.motivo), []).append(o)
     for (tipo, reg, campo, motivo), lista in grupos.items():
         achados.append(Achado(tipo, reg, campo, motivo, len(lista),
                               lista[0].uid))
+
+    # ---- regras do guia e verificações próprias --------------------------
+    # antes do retorno sem descritor: nenhuma delas depende do PVA instalado
+    # (as que usam tabela dele se abstêm sozinhas)
+    achados.extend(_achados_do_guia(doc))
+    achados.extend(_achados_proprios(doc))
 
     if not estrutura:
         return achados, info
@@ -243,8 +302,11 @@ def verificar(doc):
         if not idx:
             continue
         for r in por_tipo[reg]:
+            so_id = _so_identificacao(doc, r)
             for nome, i in idx:
                 if i >= len(r.campos) or (r.valor(i) or "").strip():
+                    continue
+                if so_id and nome not in IDENTIFICACAO[reg]:
                     continue
                 dispensa = DISPENSAS.get((reg, nome))
                 if dispensa is not None and dispensa(doc, r):
@@ -305,93 +367,138 @@ def verificar(doc):
                                   "bloco %s aberto sem o registro de "
                                   "encerramento" % b, 1))
 
-    # ---- verificações próprias que têm módulo de correção ----------------
-    # entram aqui porque o PVA também as acusa, por regra composta: são as
-    # que o programa sabe consertar sozinho
-    try:
-        from sped_tables.dominio import revisao
-        red = revisao.verificar_c190_reducao(doc)
-        if red:
-            achados.append(Achado("red_bc", "C190", "VL_RED_BC",
-                                  "CST x20/x70 com redução de base zerada",
-                                  len(red), red[0].uid))
-        dup = revisao.verificar_chave_duplicada(doc)
-        if dup:
-            por_reg = Counter(x.reg for x in dup)
-            for reg, n in por_reg.items():
-                achados.append(Achado(
-                    "chave_c190" if reg == "C190" else "chave", reg, "",
-                    "chave repetida no mesmo registro-pai", n,
-                    next(x.uid for x in dup if x.reg == reg)))
-        fora = revisao.verificar_data_fora_periodo(doc)
-        if fora:
-            achados.append(Achado("data_periodo", "C100", "DT_E_S",
-                                  "saída com data fora do período do arquivo",
-                                  len(fora), fora[0].uid))
-        gen = revisao.verificar_cod_gen_0200(doc)
-        if gen:
-            achados.append(Achado("cod_gen", "0200", "COD_GEN",
-                                  "gênero ausente ou diferente do capítulo "
-                                  "do NCM", len(gen), gen[0].uid))
-        # ---- regras tiradas do banco de inconsistências do próprio PVA ----
-        cst02 = revisao.verificar_cst_combustivel_sem_aliquota(doc)
-        if cst02:
-            achados.append(Achado(
-                "cst_aliq_02", "C170", "ALIQ_ICMS",
-                "CST terminado em 02 (monofásico de combustível) com "
-                "alíquota zerada", len(cst02), cst02[0].uid))
-        emit = revisao.verificar_ind_emit(doc)
-        if emit:
-            achados.append(Achado(
-                "ind_emit", "C100", "IND_EMIT",
-                "saída com documento de emissão de terceiro", len(emit),
-                emit[0].uid))
-        for fn, campo in ((revisao.verificar_m210_receita_bruta,
-                           "VL_REC_BRT"),
-                          (revisao.verificar_m210_base_calculo,
-                           "VL_BC_CONT")):
-            ps = fn(doc)
-            if ps:
-                achados.append(Achado(
-                    "apuracao_m", ps[0].reg, campo,
-                    "apuração diverge da receita dos documentos", len(ps),
-                    ps[0].uid, ps[0].gravidade))
-        cred = revisao.verificar_credito_m105(doc)
-        if cred:
-            achados.append(Achado(
-                "credito_m", cred[0].reg, "VL_BC_TOT",
-                "base de crédito declarada diferente da dos documentos",
-                len(cred), cred[0].uid))
-        isentas = revisao.verificar_m400_sem_lastro(doc)
-        if isentas:
-            achados.append(Achado(
-                "m400", isentas[0].reg, "VL_TOT_REC",
-                "receita isenta declarada sem lastro nos documentos",
-                len(isentas), isentas[0].uid, isentas[0].gravidade))
-        r0900 = revisao.verificar_0900_ausente(doc)
-        if r0900:
-            achados.append(Achado(
-                "reg_0900", "0900", "",
-                "registro 0900 ausente e prazo de entrega vencido", 1,
-                r0900[0].uid, "aviso"))
-    except Exception:                                       # noqa: BLE001
-        log.exception("diagnóstico: verificação interrompida")
-
-    # ---- crédito em CFOP que não dá direito (tabela 4.3.7 do PVA) --------
-    try:
-        from sped_tables.dominio import rotinas
-        cfop = rotinas.verificar_cfop_sem_credito(doc)
-        if cfop:
-            achados.append(Achado("cfop_credito", "C170", "CST_PIS/CST_COFINS",
-                                  "crédito tomado em CFOP que não consta da "
-                                  "tabela de CFOP com direito a crédito",
-                                  len(cfop), cfop[0].uid, "aviso"))
-    except Exception:                                       # noqa: BLE001
-        log.exception("diagnóstico: verificação interrompida")
-
     achados.sort(key=lambda a: -a.quantidade)
     info["regras_do_pva"] = regras_nao_cobertas(doc, estrutura)
     return achados, info
+
+
+def _verificacoes_proprias():
+    """`(tipo, registro, campo, texto, função, gravidade)` das verificações
+    próprias que têm módulo de correção — o PVA também as acusa, por regra
+    composta. Registro `None` é o do primeiro problema; gravidade `None`, a
+    dele."""
+    from sped_tables.dominio import revisao, rotinas
+    return (
+        ("red_bc", "C190", "VL_RED_BC",
+         "CST x20/x70 com redução de base zerada",
+         revisao.verificar_c190_reducao, None),
+        ("data_periodo", "C100", "DT_E_S",
+         "saída com data fora do período do arquivo",
+         revisao.verificar_data_fora_periodo, None),
+        ("nat_rec", "M410", "NAT_REC",
+         "natureza da receita fora da tabela do CST do M400/M800",
+         revisao.verificar_nat_rec, None),
+        ("data_es", "C100", "DT_E_S",
+         "data de entrada/saída anterior à data de emissão",
+         revisao.verificar_data_es_antes_emissao, None),
+        ("credito_ncm", "C170", "CST_PIS/CST_COFINS",
+         "crédito na entrada de produto monofásico ou de alíquota zero",
+         revisao.verificar_credito_ncm, "aviso"),
+        ("apuracao_icms", "E110", "VL_TOT_DEBITOS/DEB_ESP",
+         "débitos do E110 diferentes dos analíticos de saída",
+         revisao.verificar_e110_debitos, None),
+        ("ind_emit", "C100", "IND_EMIT",
+         "saída com documento de emissão de terceiro",
+         revisao.verificar_ind_emit, None),
+        ("apuracao_m", None, "VL_REC_BRT",
+         "apuração diverge da receita dos documentos",
+         revisao.verificar_m210_receita_bruta, None),
+        ("apuracao_m", None, "VL_BC_CONT",
+         "apuração diverge da receita dos documentos",
+         revisao.verificar_m210_base_calculo, None),
+        ("credito_m", None, "VL_BC_TOT",
+         "base de crédito declarada diferente da dos documentos",
+         revisao.verificar_credito_m105, None),
+        ("m400", None, "VL_TOT_REC",
+         "receita isenta declarada sem lastro nos documentos",
+         revisao.verificar_m400_sem_lastro, None),
+        ("cfop_credito", "C170", "CST_PIS/CST_COFINS",
+         "crédito tomado em CFOP que não consta da tabela de CFOP com "
+         "direito a crédito", rotinas.verificar_cfop_sem_credito, "aviso"),
+    )
+
+
+def _achados_proprios(doc):
+    """As verificações próprias, cada uma no seu `try`: exceção numa delas
+    (a que carrega as tabelas da RFB, por exemplo) não some com as outras."""
+    from sped_tables.dominio import revisao, rotinas
+    achados = []
+
+    def tentar(fn):
+        try:
+            return fn(doc)
+        except Exception:                                   # noqa: BLE001
+            log.exception("diagnóstico: %s interrompida", fn.__name__)
+            return []
+
+    for tipo, reg, campo, texto, fn, grav in _verificacoes_proprias():
+        ps = tentar(fn)
+        if ps:
+            achados.append(Achado(
+                tipo, reg or ps[0].reg, campo, texto, len(ps), ps[0].uid,
+                grav or getattr(ps[0], "gravidade", "erro")))
+    # chave repetida: o C190 vai para o recálculo, o resto é manual
+    dup = tentar(revisao.verificar_chave_duplicada)
+    for reg, n in Counter(x.reg for x in dup).items():
+        achados.append(Achado(
+            "chave_c190" if reg == "C190" else "chave", reg, "",
+            "chave repetida no mesmo registro-pai", n,
+            next(x.uid for x in dup if x.reg == reg)))
+    # gênero diferente do NCM é erro; vazio, só aviso — o PVA não o cobra
+    # (num arquivo real, 1.355 vazios e nenhuma mensagem)
+    gen = tentar(revisao.verificar_cod_gen_0200)
+    for grav, texto in (("erro", "gênero diferente do capítulo do NCM"),
+                        ("aviso", "gênero em branco")):
+        lista = [p for p in gen if p.gravidade == grav]
+        if lista:
+            achados.append(Achado("cod_gen", "0200", "COD_GEN", texto,
+                                  len(lista), lista[0].uid, gravidade=grav))
+    # CST x02 sem alíquota: o CSOSN de entrada vai para a rotina que o
+    # converte, pelo mesmo critério dela; o resto é correção manual
+    por_uid = {r.uid: r for r in doc.registros}
+    i_cst = doc._ix("C170", "CST_ICMS")
+    i_aliq = doc._ix("C170", "ALIQ_ICMS")
+    i_oper = doc._ix("C100", "IND_OPER")
+
+    def da_rotina(p):
+        r = por_uid.get(p.uid)
+        return (r is not None and r.pai is not None
+                and (r.pai.valor(i_oper) or "").strip() == "0"
+                and rotinas._e_csosn((r.valor(i_cst) or "").strip(),
+                                     r.valor(i_aliq)))
+    cst02 = tentar(revisao.verificar_cst_combustivel_sem_aliquota)
+    for tipo, lista in (("cst_aliq_02", [p for p in cst02 if da_rotina(p)]),
+                        ("cst_aliq_02_manual",
+                         [p for p in cst02 if not da_rotina(p)])):
+        if lista:
+            achados.append(Achado(
+                tipo, "C170", "ALIQ_ICMS", "CST terminado em 02 (monofásico "
+                "de combustível) com alíquota zerada", len(lista),
+                lista[0].uid))
+    r0900 = tentar(revisao.verificar_0900_ausente)
+    if r0900:
+        achados.append(Achado("reg_0900", "0900", "",
+                              "registro 0900 ausente e prazo de entrega "
+                              "vencido", 1, r0900[0].uid, "aviso"))
+    return achados
+
+
+def _achados_do_guia(doc):
+    """Um achado por regra de `regras_guia` que acusou alguma coisa."""
+    achados = []
+    for regra in regras_guia.regras(doc.layout):
+        try:
+            ps = regra.verificar(doc)
+        except Exception:                                   # noqa: BLE001
+            log.exception("diagnóstico: regra %s interrompida", regra.id)
+            continue
+        if ps:
+            achados.append(Achado(
+                "guia_" + regra.id, ps[0].reg, regra.campo, regra.rotulo,
+                len(ps), ps[0].uid,
+                "erro" if any(p.gravidade == "erro" for p in ps)
+                else "aviso"))
+    return achados
 
 
 def regras_nao_cobertas(doc, estrutura):
@@ -399,14 +506,44 @@ def regras_nao_cobertas(doc, estrutura):
     que aqui não são reproduzidos. Listar é mais honesto que omitir: sem isso,
     "nenhum erro" pareceria aprovação."""
     presentes = {r.reg for r in doc.registros}
+    reproduzidas = validadores_reproduzidos()
     regras = Counter()
     for reg in presentes:
         d = estrutura.get(reg)
         if not d:
             continue
         for v in d.get("validadores", ()):
-            regras[v] += 1
+            if v not in reproduzidas:
+                regras[v] += 1
     return sorted(regras)
+
+
+def validadores_reproduzidos():
+    """Os validadores do descritor que o programa reproduz: os das regras do
+    guia e os das verificações próprias. O painel e o `COBERTURA.md` contam
+    por aqui."""
+    return regras_guia.validadores_reproduzidos() | REPRODUZIDAS
+
+
+# validadores do descritor que as verificações próprias (fora de
+# `regras_guia`) reproduzem: conferidos um a um contra o banco de
+# inconsistências do PVA nos arquivos reais
+REPRODUZIDAS = {
+    "REGRA_CST_ICMS_RED_BC_COM_COD_SIT_C190",       # red_bc
+    "REGRA_IND_EMIT",                               # ind_emit
+    "REGRA_VL_TOT_DEBITOS_E110_17002_V1",           # apuracao_icms
+    "REGRA_DEB_ESP_E110_17002_V1",
+    "REGRA_PERIODO_INCOMPATIVEL_SAIDA",             # data_periodo (CONTRIB)
+    "REGRA_DT_E_S_MAIOR_IGUAL_DT_DOC",              # data_es
+    "REGRA_DATA_MAIOR_IGUAL_DT_DOC_DT_E_S",
+    "REGRA_VL_REC_BRT_7003_V1",                     # apuracao_m
+    "REGRA_VL_BC_CONT_IND_NAT_PJ_7003_V1",
+    "REGRA_EXISTE_COD_ITEM", "REGRA_EXISTE_COD_ITEM_V2",   # referências
+    "REGRA_EXISTE_COD_PART", "REGRA_EXISTE_COD_PART_V2",
+    "REGRA_EXISTE_UNID", "REGRA_EXISTE_UNID_V2",
+    "REGRA_EXISTE_COD_NAT", "REGRA_EXISTE_COD_NAT_V2",
+    "REGRA_EXISTE_COD_CTA",
+}
 
 
 # Achados que o PVA recusa **na importação**, antes de validar: são os que

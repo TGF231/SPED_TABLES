@@ -49,6 +49,50 @@ class Referencias:
         """Data limite (DDMMAAAA) da EFD Contribuições do período MMAAAA."""
         return ""
 
+    def naturezas_receita(self, cst, data_ref=None):
+        """Códigos de NAT_REC válidos para o CST do M400/M800 (tabelas
+        4.3.10 a 4.3.16), ou None para "não sei" — a regra se abstém."""
+        return None
+
+    def ncms_da_natureza(self, codigo):
+        """Prefixos de NCM do produto a que a natureza da receita `codigo`
+        se refere, pelas tabelas 4.3.10 a 4.3.16."""
+        return set()
+
+    def classificador_ncm(self):
+        """`ncm.ClassificadorNCM` com as tabelas de alíquota zero e
+        monofásico do PVA, ou None."""
+        return None
+
+    def codigos_receita_icms(self, uf, data_ref=None):
+        """`{código: descrição}` dos códigos de receita do ICMS da UF — o
+        domínio do `COD_REC` do E116."""
+        return {}
+
+    def guia(self, layout):
+        """O **guia prático** do leiaute, já extraído (ver
+        `ferramentas/extrair_guias.py`): `{"guia", "versao", "atualizacao",
+        "registros": {reg: {"titulo", "objetivo", "validacao_registro",
+        "observacoes", "nivel", "ocorrencia", "campos": {"n": {"nome",
+        "valores", "preenchimento", "validacao"}}}}}`. Vazio quando não há."""
+        return {}
+
+
+def texto_do_campo(guia, reg, n, nome=""):
+    """O que o guia diz do campo `n` (1 = REG) do registro: `{"nome",
+    "valores", "preenchimento", "validacao", "texto"}`, ou `{}`.
+
+    Quando o parágrafo do guia traz o nome e ele é outro, o texto não é
+    deste campo — acontece quando o guia já descreve um leiaute mais novo
+    que o do arquivo (o IND_BENEFICIO do E111) — e o retorno é vazio, em
+    vez de ajuda errada."""
+    d = (guia.get("registros") or {}).get(reg) or {}
+    c = (d.get("campos") or {}).get(str(n)) or {}
+    nome_guia = c.get("nome_no_paragrafo") or ""
+    if nome and nome_guia and nome_guia != nome:
+        return {}
+    return c
+
 
 _atual = [Referencias()]
 
@@ -64,6 +108,51 @@ def definir(fonte):
     anterior = _atual[0]
     _atual[0] = fonte if fonte is not None else Referencias()
     return anterior
+
+
+def alinhar_ao_leiaute(estrutura, layout):
+    """O descritor com os campos **renomeados para os nomes do leiaute**,
+    pela posição no registro.
+
+    O PVA dá aos campos nomes internos que nem sempre são os do guia:
+    `ENDERECO` no lugar de `END` (0150), `ALIQ_PIS_PERC` no de `ALIQ_PIS`
+    (C170 do ICMS/IPI), `VL_OPER` no de `VL_OPR` (C175), `VL_COFIS` (sic) no
+    C350. Quem consulta o arquivo pelo nome do descritor — obrigatoriedade,
+    domínio, chave, referência — recebia `None` do `_ix` e **pulava o campo
+    em silêncio**. O nome original fica em `id_pva`.
+
+    A posição é a ordem dos `<campo>` no XML, não o atributo `n`, que tem
+    erros de digitação (`n="17'"`, `n` repetido no 0220 e no C890). Campo
+    além da largura do leiaute mantém o nome do PVA.
+    """
+    from sped_tables.dominio import sped_layouts
+    tabela = (sped_layouts.CAMPOS_CONTRIB if layout == "CONTRIB"
+              else sped_layouts.CAMPOS_ICMS)
+    nomes_por_reg = {}
+    out = {}
+    for reg, d in estrutura.items():
+        nomes = tabela.get(reg) or []
+        traducao = {}
+        campos = {}
+        for i, (id_pva, c) in enumerate(d.get("campos", {}).items()):
+            nome = nomes[i] if i < len(nomes) else id_pva
+            traducao[id_pva] = nome
+            campos[nome] = dict(c, id_pva=id_pva, pos=i + 1)
+        nomes_por_reg[reg] = traducao
+        out[reg] = dict(d, campos=campos)
+    for reg, d in out.items():
+        traducao = nomes_por_reg[reg]
+        if d.get("chave"):
+            d["chave"] = ",".join(traducao.get(c.strip(), c.strip())
+                                  for c in d["chave"].split(","))
+        for c in d["campos"].values():
+            ref = c.get("referencia")
+            if ref and ";" in ref:
+                alvo, campo_alvo = (x.strip() for x in ref.split(";", 1))
+                campo_alvo = nomes_por_reg.get(alvo, {}).get(campo_alvo,
+                                                             campo_alvo)
+                c["referencia"] = "%s;%s" % (alvo, campo_alvo)
+    return out
 
 
 def do_descritor(estrutura):

@@ -94,6 +94,16 @@ class TestNcm(unittest.TestCase):
         self.assertFalse(clf.eh_monofasico("21069010"))     # exceção
         self.assertFalse(clf.eh_aliquota_zero("22021000"))
 
+    def test_linha_com_ex_da_tipi_so_vale_para_o_mesmo_ex(self):
+        """21069010 Ex 02 é o concentrado para refrigerante, não toda
+        preparação alimentícia: sem o EX_IPI no 0200, não é monofásico."""
+        tab = _tabela("21069010")
+        tab["registros"][0]["ex_ipi"] = "02"
+        clf = ncm.ClassificadorNCM(tab_mono=tab)
+        self.assertFalse(clf.eh_monofasico("21069010"))
+        self.assertFalse(clf.eh_monofasico("21069010", ex_ipi="01"))
+        self.assertTrue(clf.eh_monofasico("21069010", ex_ipi="2"))
+
     def test_vigencia(self):
         tab = _tabela("2202")
         tab["registros"][0]["dt_fim"] = "31122020"
@@ -171,6 +181,60 @@ class TestNfce65(unittest.TestCase):
         doc.regenerar_c175_de_c170_65()
         (c175,) = [r for r in doc.registros if r.reg == "C175"]
         self.assertEqual(c175.valor(doc._ix("C175", "VL_OPR")), "31,00")
+
+
+def icms_nfce():
+    """EFD ICMS/IPI com uma NFC-e (65) sem itens e um C190 de CST 070 com a
+    redução de base zerada — o caso que o recálculo em massa não alcançava,
+    porque não havia C170 de onde refazer o analítico."""
+    m = icms_basico()
+    m.linhas = [c for c in m.linhas if c[0] not in ("C100", "C170", "C190")]
+    m.reg("C100", IND_OPER="1", IND_EMIT="0", COD_MOD="65", COD_SIT="00",
+          SER="1", NUM_DOC="123", DT_DOC="05082026", VL_DOC="30,00",
+          IND_PGTO="0", VL_MERC="30,00", IND_FRT="9")
+    m.reg("C190", CST_ICMS="070", CFOP="5405", ALIQ_ICMS="0",
+          VL_OPR="30,00", VL_BC_ICMS="0", VL_ICMS="0", VL_BC_ICMS_ST="0",
+          VL_ICMS_ST="0", VL_RED_BC="0", VL_IPI="0")
+    return m
+
+
+def xml_nfce_st():
+    """Os três itens da NFC-e: CST 70, sem base própria de ICMS, com base
+    de PIS de R$ 8,00 cada."""
+    item = {"CST": "70", "vBC": "0.00", "pICMS": "0.00", "vICMS": "0.00",
+            "CFOP": "5405", "pis": ("01", "8.00", "1.65", "0.13")}
+    return nfe_xml(mod="65", itens=[dict(item) for _ in range(3)], dest=None)
+
+
+class TestNfce65Icms(unittest.TestCase):
+    """No EFD ICMS/IPI o andaime serve ao C190: gerar os fictícios,
+    refazer o analítico em massa, remover os fictícios."""
+
+    def test_c190_refeito_pelos_itens_do_xml(self):
+        doc = _doc(icms_nfce())
+        antes = len(doc.registros)
+        res = doc.gerar_c170_ficticios_65(_nfes(xml_nfce_st()))
+        self.assertEqual((res["docs"], res["itens"], res["csosn"]), (1, 3, 0))
+        self.assertEqual(len(doc.documentos_65_com_c170()), 1)
+
+        tot = doc.consolidar_c190_em_massa()
+        self.assertEqual((tot["documentos"], tot["corrigidos"],
+                          tot["base_pis_cofins"]), (1, 1, 1))
+        (c190,) = [r for r in doc.registros if r.reg == "C190"]
+        # x70 sem base de ICMS: 30,00 da operação − 24,00 da base de PIS
+        self.assertEqual(c190.valor(doc._ix("C190", "VL_RED_BC")), "6,00")
+        self.assertEqual(c190.valor(doc._ix("C190", "VL_OPR")), "30,00")
+
+        self.assertEqual(doc.remover_c170_ficticios_65(),
+                         {"docs": 1, "itens": 3})
+        self.assertEqual(doc.documentos_65_com_c170(), [])
+        self.assertEqual(len(doc.registros), antes)
+
+    def test_csosn_do_simples_e_contado(self):
+        doc = _doc(icms_nfce())
+        res = doc.gerar_c170_ficticios_65(_nfes(nfe_xml(
+            mod="65", dest=None, itens=[{"CSOSN": "102"}])))
+        self.assertEqual(res["csosn"], 1)
 
 
 if __name__ == "__main__":

@@ -48,6 +48,49 @@ class TestVerificar(unittest.TestCase):
         self.assertIn("nulo", {a.tipo for a in achados})
         self.assertIn("nulo", dict(diagnostico.impedem_importacao(achados)))
 
+    def test_municipio_zerado_vai_para_o_cadastro_no_erp(self):
+        """Participante com CNPJ e município 0000000: o PVA importa e acusa
+        na validação. Esvaziar não conserta — o normalizar deixa como está e
+        o diagnóstico manda corrigir o cadastro no ERP."""
+        from sped_tables.dominio import validacao
+        m = icms_basico()
+        linha = next(c for c in m.linhas if c[0] == "0150")
+        linha[m.tabela["0150"].index("COD_MUN")] = "0000000"
+        doc = _doc(m)
+        achados, info = diagnostico.verificar(doc)
+        if info.get("sem_pva"):
+            self.skipTest("o domínio do município vem da tabela do PVA")
+        mun = [a for a in achados if a.reg == "0150" and a.campo == "COD_MUN"]
+        self.assertEqual([a.tipo for a in mun], ["municipio"])
+        self.assertNotIn("municipio",
+                         dict(diagnostico.impedem_importacao(achados)))
+        validacao.normalizar(doc)
+        self.assertEqual(doc.registros[[r.reg for r in doc.registros]
+                                       .index("0150")].valor(
+            doc._ix("0150", "COD_MUN")), "0000000")
+
+    def test_cancelada_so_leva_a_identificacao(self):
+        """NF-e cancelada (COD_SIT 02) no formato do Guia: só identificação.
+        Não é "campo obrigatório em branco" — mas a identificação continua
+        cobrada."""
+        m = icms_basico()
+        m.linhas = [c for c in m.linhas if c[0] not in ("C170", "C190")]
+        c100 = next(c for c in m.linhas if c[0] == "C100")
+        nomes = m.tabela["C100"]
+        for i, nome in enumerate(nomes):
+            if nome not in diagnostico.IDENTIFICACAO["C100"] | {"REG"}:
+                c100[i] = ""
+        c100[nomes.index("COD_SIT")] = "02"
+        achados, info = diagnostico.verificar(_doc(m))
+        if info.get("sem_pva"):
+            self.skipTest("obrigatoriedade vem do descritor do PVA")
+        obr = {(a.reg, a.campo) for a in achados if a.tipo == "obrigatorio"}
+        self.assertFalse({x for x in obr if x[0] == "C100"}, obr)
+        c100[nomes.index("NUM_DOC")] = ""
+        achados, _info = diagnostico.verificar(_doc(m))
+        self.assertIn(("C100", "NUM_DOC"), {(a.reg, a.campo) for a in achados
+                                             if a.tipo == "obrigatorio"})
+
 
 if __name__ == "__main__":
     unittest.main()

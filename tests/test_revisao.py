@@ -35,11 +35,13 @@ class TestTodasAsRegras(unittest.TestCase):
 
 class TestRegras(unittest.TestCase):
 
-    def test_saida_fora_do_periodo(self):
+    def test_saida_antes_do_periodo(self):
+        """No ICMS/IPI, só o limite inferior: o superior é da regra do guia
+        `datas_fim`, que confere todo C100."""
         m = _alterar(icms_basico(), "C100", IND_OPER="1", IND_EMIT="0",
-                     DT_E_S="01092026")
+                     DT_DOC="30072026", DT_E_S="31072026")
         (p,) = revisao.verificar_data_fora_periodo(_doc(m))
-        self.assertIn("01092026", p.descricao)
+        self.assertIn("31072026", p.descricao)
 
     def test_entrada_fora_do_periodo_e_legitima(self):
         m = _alterar(icms_basico(), "C100", DT_E_S="01072026")
@@ -74,7 +76,7 @@ class TestRegras(unittest.TestCase):
 
     def test_resumo_por_regra(self):
         problemas, resumo = revisao.revisar(_doc(icms_basico()))
-        self.assertEqual(len(resumo), len(revisao.REGRAS))
+        self.assertEqual(len(resumo), len(revisao.todas()))
         self.assertEqual(sum(n for _r, n in resumo), len(problemas))
 
 

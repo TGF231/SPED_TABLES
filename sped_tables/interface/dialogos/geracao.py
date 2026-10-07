@@ -452,6 +452,8 @@ class DialogoGerarDeXml(QDialog):
             for c, d in previa.fora_periodo]
             + [[c, m] for c, m in previa.ignorados]
             + [[os.path.basename(a), m] for a, m in lote.erros]
+            + [[os.path.basename(d.arquivo or ""), "sem chave de acesso "
+                "(não é documento autorizado)"] for d in lote.sem_chave]
             + [[os.path.basename(a), "repetido (%s)" % c]
                for a, c in lote.repetidos])
         _preencher(self.t_fora, fora)

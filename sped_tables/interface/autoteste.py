@@ -146,6 +146,18 @@ def _conferir(app, rel, arquivo, dados, falhas):
         return True, info
     rel.conferir("tabelas do PVA", tabelas_pva)
 
+    def guias_praticos():
+        # viajam em recursos/ (SPED Tables.spec); sem eles a ajuda F1 some
+        from sped_tables.infra import guias
+        info = {}
+        for layout in ("ICMS", "CONTRIB"):
+            g = guias.carregar(layout)
+            info[layout] = ("%s %s, %d registros" % (
+                g.get("guia"), g.get("versao"), len(g.get("registros", {})))
+                if g else "ausente")
+        return all(v != "ausente" for v in info.values()), info
+    rel.conferir("guias práticos", guias_praticos)
+
     def registro_de_falhas():
         try:
             raise RuntimeError("falha provocada pelo autoteste")

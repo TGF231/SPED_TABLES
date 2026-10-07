@@ -13,8 +13,9 @@ até ele ao clicar no relatório.
 
 from collections import Counter
 
-from sped_tables.dominio import referencias
-from sped_tables.dominio.sped_model import _to_num, _fmt_val, TIPOS_ITEM_0200
+from sped_tables.dominio import ncm, referencias
+from sped_tables.dominio.sped_model import (CST_CREDITO, TIPOS_ITEM_0200,
+                                            _fmt_val, _to_num, data_aaaammdd)
 
 
 class Problema:
@@ -123,49 +124,6 @@ def verificar_0200_nao_utilizados(doc):
                 descricao="COD_ITEM %s não é referenciado por nenhum registro "
                           "(C170, H010, ...)." % cod,
                 gravidade="aviso"))
-    return problemas
-
-
-def verificar_c170_sem_c190(doc):
-    """C170 (item) sem um C190 (analítico) compatível no mesmo documento — ou
-    seja, cuja combinação de CST_ICMS, CFOP e ALIQ_ICMS não aparece em nenhum
-    C190 do C100. Indica que o item não foi consolidado no analítico."""
-    if doc.layout != "ICMS":
-        return []
-    ic = doc._ix("C170", "CST_ICMS")
-    iff = doc._ix("C170", "CFOP")
-    ia = doc._ix("C170", "ALIQ_ICMS")
-    inum = doc._ix("C170", "NUM_ITEM")
-    jc = doc._ix("C190", "CST_ICMS")
-    jf = doc._ix("C190", "CFOP")
-    ja = doc._ix("C190", "ALIQ_ICMS")
-    if None in (ic, iff, ia, jc, jf, ja):
-        return []
-
-    def chave(r, i_cst, i_cfop, i_aliq):
-        return ((r.valor(i_cst) or "").strip(), (r.valor(i_cfop) or "").strip(),
-                "%.2f" % _to_num(r.valor(i_aliq)))
-
-    problemas = []
-    for c100 in doc.registros:
-        if c100.reg != "C100":
-            continue
-        c170s = [f for f in c100.filhos if f.reg == "C170"]
-        if not c170s:
-            continue
-        chaves_190 = {chave(f, jc, jf, ja) for f in c100.filhos
-                      if f.reg == "C190"}
-        for f in c170s:
-            if chave(f, ic, iff, ia) not in chaves_190:
-                problemas.append(Problema(
-                    uid=f.uid, reg=f.reg, bloco=f.bloco,
-                    regra="C170 sem C190 compatível",
-                    descricao="Item %s (CST %s, CFOP %s, alíq. %s) não possui "
-                              "C190 correspondente no documento."
-                              % ((f.valor(inum) or "").strip(),
-                                 (f.valor(ic) or "").strip(),
-                                 (f.valor(iff) or "").strip(),
-                                 (f.valor(ia) or "").strip())))
     return problemas
 
 
@@ -284,14 +242,12 @@ def verificar_data_fora_periodo(doc):
     i_fim = doc._ix("0000", "DT_FIN")
     i_op = doc._ix("C100", "IND_OPER")
     i_es = doc._ix("C100", "DT_E_S")
+    i_doc = doc._ix("C100", "DT_DOC")
     i_num = doc._ix("C100", "NUM_DOC")
     if None in (i_ini, i_fim, i_op, i_es):
         return []
 
-    def chave(v):
-        d = "".join(c for c in (v or "") if c.isdigit())
-        return d[4:8] + d[2:4] + d[0:2] if len(d) == 8 else ""
-
+    chave = data_aaaammdd
     ini = fim = ""
     for r in doc.registros:
         if r.reg == "0000":
@@ -300,13 +256,27 @@ def verificar_data_fora_periodo(doc):
     if not ini or not fim:
         return []
 
+    # no EFD ICMS/IPI o documento extemporâneo (COD_SIT 01/07) entra com a
+    # data real, e o PVA não acusa — no Contribuições, acusa. E no ICMS/IPI
+    # o limite superior (DT_E_S depois do DT_FIN) é da regra do guia
+    # `datas_fim`, que confere todo C100: aqui fica só o inferior, para o
+    # mesmo documento não ser contado duas vezes
+    i_sit = doc._ix("C100", "COD_SIT")
+    isentos = ("01", "07") if doc.layout == "ICMS" else ()
+    if doc.layout == "ICMS":
+        fim = "99999999"
     problemas = []
     for r in doc.registros:
         if r.reg != "C100" or (r.valor(i_op) or "").strip() != "1":
             continue
+        if i_sit is not None and (r.valor(i_sit) or "").strip() in isentos:
+            continue
         v = (r.valor(i_es) or "").strip()
         k = chave(v)
         if not k or ini <= k <= fim:
+            continue
+        # saída antes da emissão é outra regra, e o PVA não acusa as duas
+        if i_doc is not None and k < chave(r.valor(i_doc)):
             continue
         problemas.append(Problema(
             uid=r.uid, reg=r.reg, bloco=r.bloco,
@@ -315,12 +285,6 @@ def verificar_data_fora_periodo(doc):
                       % ((r.valor(i_num) or "").strip()
                          if i_num is not None else "", v)))
     return problemas
-
-
-def _data_chave(v):
-    """DDMMAAAA -> AAAAMMDD, para comparar data como texto."""
-    d = "".join(c for c in (v or "") if c.isdigit())
-    return d[4:8] + d[2:4] + d[0:2] if len(d) == 8 else ""
 
 
 def _registro_0000(doc):
@@ -340,8 +304,10 @@ def verificar_cst_combustivel_sem_aliquota(doc):
     Na prática quase nunca é combustível: é o **CSOSN 102/202 do fornecedor
     do Simples** copiado do documento de entrada, que o PVA lê como origem +
     CST 02. Num arquivo real de supermercado eram 25 itens, exatamente os 25
-    que o validador oficial acusou. Não há correção automática: trocar o CSOSN
-    pelo CST da própria operação exige saber a origem da mercadoria.
+    que o validador oficial acusou. Na entrada, a conversão do CSOSN é a
+    rotina *CSOSN do Simples no CST* (pelo cadastro da empresa, que diz a
+    origem e o CST de cada CSOSN); o x02 de combustível de verdade, ou de
+    saída, é correção manual — o diagnóstico separa os dois.
     """
     if doc.layout != "ICMS":
         return []
@@ -349,7 +315,7 @@ def verificar_cst_combustivel_sem_aliquota(doc):
     i_ini = doc._ix("0000", "DT_INI")
     if r0 is None or i_ini is None:
         return []
-    if _data_chave(r0.valor(i_ini)) < "20230401":
+    if data_aaaammdd(r0.valor(i_ini)) < "20230401":
         return []
     i_cst = doc._ix("C170", "CST_ICMS")
     i_al = doc._ix("C170", "ALIQ_ICMS")
@@ -562,7 +528,7 @@ def verificar_0900_ausente(doc, hoje=None):
     if hoje is None:
         from datetime import date
         hoje = date.today().strftime("%Y%m%d")
-    if hoje <= _data_chave(prazo):
+    if hoje <= data_aaaammdd(prazo):
         return []
     return [Problema(
         uid=r0.uid, reg="0000", bloco="0",
@@ -573,10 +539,127 @@ def verificar_0900_ausente(doc, hoje=None):
         gravidade="aviso")]
 
 
+def verificar_e110_debitos(doc):
+    """Débitos do E110 diferentes dos analíticos de saída.
+
+    O PVA soma o VL_ICMS dos analíticos de saída e separa os documentos
+    extemporâneos (COD_SIT 01/07), cujo ICMS é **débito especial**
+    (`MSG_VL_TOT_DEBITOS_E110`, `MSG_DEB_ESP_E110`). Num arquivo real, passar
+    3.578 NFC-e emitidas no mês anterior à situação 01 tirou R$ 4.889,67 do
+    total de débitos e o levou ao DEB_ESP — o recálculo reproduz os dois
+    valores que o PVA esperava.
+    """
+    if doc.layout != "ICMS":
+        return []
+    out = []
+    # o mesmo esperado que o recálculo grava (`e110_esperado`): cada E110
+    # com os documentos do período do seu E100, o extemporâneo no primeiro
+    for k, e in enumerate(r for r in doc.registros if r.reg == "E110"):
+        v = doc.valores_e110(e)
+        esperado_e110 = doc.e110_esperado(e, primeiro=k == 0)
+        for campo in ("VL_TOT_DEBITOS", "DEB_ESP"):
+            esperado = esperado_e110[campo]
+            if campo in v and abs(v[campo] - esperado) >= 0.005:
+                out.append(Problema(
+                    uid=e.uid, reg="E110", bloco="E", regra="Débitos do E110",
+                    descricao="%s declarado %s, os analíticos somam %s."
+                              % (campo, _fmt_val(v[campo]),
+                                 _fmt_val(esperado))))
+    return out
+
+
+def verificar_nat_rec(doc):
+    """Natureza da receita (M410/M810) fora da tabela do CST do M400/M800 —
+    `MSG_EXISTE_NAT_REC`. Num arquivo real de supermercado, a cerveja
+    (423/424, da tabela de monofásicos) estava sob o M400 de CST 06
+    (alíquota zero): o PDV vende cerveja com CST 06 em vez do 04 da revenda
+    de monofásico."""
+    if doc.layout != "CONTRIB":
+        return []
+    out = []
+    cache = {}
+    data = doc.data_final()
+    for reg, filho in (("M400", "M410"), ("M800", "M810")):
+        i_cst = doc._ix(reg, "CST_PIS" if reg == "M400" else "CST_COFINS")
+        i_nat = doc._ix(filho, "NAT_REC")
+        if i_cst is None or i_nat is None:
+            continue
+        for r in doc.registros:
+            if r.reg != filho or r.pai is None:
+                continue
+            cst = (r.pai.valor(i_cst) or "").strip()
+            if cst not in cache:
+                cache[cst] = referencias.atual().naturezas_receita(cst, data)
+            validos = cache[cst]
+            nat = (r.valor(i_nat) or "").strip()
+            if validos is None or not nat or nat in validos:
+                continue
+            out.append(Problema(
+                uid=r.uid, reg=filho, bloco="M",
+                regra="Natureza da receita",
+                descricao="%s com NAT_REC %s, que não existe na tabela do "
+                          "CST %s do %s." % (filho, nat, cst, reg)))
+    return out
+
+
+def verificar_data_es_antes_emissao(doc):
+    """Data de entrada/saída anterior à de emissão
+    (`MSG_DATA_MAIOR_IGUAL_DT_DOC`). Num arquivo real, 4.142 NFC-e no EFD
+    Contribuições: o ERP pôs a emissão no mês da autorização e deixou a saída
+    com a data real."""
+    i_doc = doc._ix("C100", "DT_DOC")
+    i_es = doc._ix("C100", "DT_E_S")
+    i_num = doc._ix("C100", "NUM_DOC")
+    if i_doc is None or i_es is None:
+        return []
+    out = []
+    for r in doc.registros:
+        if r.reg != "C100":
+            continue
+        emi, es = data_aaaammdd(r.valor(i_doc)), data_aaaammdd(r.valor(i_es))
+        if emi and es and es < emi:
+            out.append(Problema(
+                uid=r.uid, reg="C100", bloco="C",
+                regra="Data de entrada/saída antes da emissão",
+                descricao="Documento %s: DT_E_S %s anterior à DT_DOC %s."
+                          % ((r.valor(i_num) or "").strip(),
+                             r.valor(i_es), r.valor(i_doc))))
+    return out
+
+
+def verificar_credito_ncm(doc):
+    """Crédito de PIS/COFINS na entrada de produto **monofásico** ou de
+    **alíquota zero** — o que o PVA adverte em
+    `MSG_COMPATIBILIDADE_NCM_TRIB_MONO` e `MSG_COMPATIBILIDADE_NCM_ALIQ_ZERO`.
+
+    Pelas tabelas do PVA, respeitando o "Ex" da TIPI (EX_IPI do 0200): sem
+    isso, toda preparação alimentícia do 21069010 virava monofásico — 86
+    entradas acusadas num arquivo real contra as 9 do validador. Com ele, as
+    9 e mais uma: cerveja revendida com crédito, que o PVA não acusa mas é
+    creditamento indevido.
+    """
+    if doc.layout != "CONTRIB":
+        return []
+    clf = referencias.atual().classificador_ncm()
+    if clf is None:
+        return []
+    out = []
+    for p in ncm.verificar_cst_pis_cofins(doc, clf, data_ref=doc.data_final()):
+        if p["op"] != "E" or not ({p["cst_pis"], p["cst_cofins"]}
+                                  & CST_CREDITO):
+            continue
+        out.append(Problema(
+            uid=p["uid"], reg="C170", bloco="C", regra="Crédito por NCM",
+            descricao="Item %s (NCM %s, %s) com crédito: CST %s."
+                      % (p["cod_item"], p["ncm"], p["classe_desc"],
+                         p["cst_pis"]),
+            gravidade="aviso"))
+    return out
+
+
 REGRAS = [
     ("Número de campos divergente do layout", verificar_num_campos),
     ("C190 CST x20/x70 com VL_RED_BC zerado", verificar_c190_reducao),
-    ("C170 sem C190 compatível", verificar_c170_sem_c190),
     ("0200 não utilizados / duplicados", verificar_0200_nao_utilizados),
     ("TIPO_ITEM fora da tabela (0200)", verificar_tipo_item_0200),
     ("COD_GEN incoerente com o NCM (0200)", verificar_cod_gen_0200),
@@ -591,7 +674,22 @@ REGRAS = [
     ("Registro 0900 ausente fora do prazo", verificar_0900_ausente),
     ("M105/M505 fora da base de crédito dos documentos",
      verificar_credito_m105),
+    ("E110 com débitos diferentes dos analíticos", verificar_e110_debitos),
+    ("Crédito em NCM monofásico ou de alíquota zero",
+     verificar_credito_ncm),
+    ("Natureza da receita fora da tabela do CST (M410/M810)",
+     verificar_nat_rec),
+    ("Data de entrada/saída antes da emissão (C100)",
+     verificar_data_es_antes_emissao),
 ]
+
+
+def todas():
+    """As regras daqui e as do guia prático (`regras_guia`), na ordem em
+    que o painel as lista. A combinação C170 × C190 mora lá, com as
+    condições do PVA; a versão antiga daqui (todo C170 sem C190) saiu."""
+    from sped_tables.dominio import regras_guia
+    return REGRAS + regras_guia.como_regras_da_revisao()
 
 
 def revisar_por_regra(doc, regras=None):
@@ -601,7 +699,7 @@ def revisar_por_regra(doc, regras=None):
     oferecer, em cada linha, a função que corrige **aquela** regra: o texto do
     `Problema.regra` é mais curto que o rótulo da lista e não serve de chave.
     """
-    regras = regras if regras is not None else REGRAS
+    regras = regras if regras is not None else todas()
     return [(rotulo, fn(doc)) for rotulo, fn in regras]
 
 

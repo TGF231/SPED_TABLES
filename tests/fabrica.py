@@ -38,6 +38,14 @@ class Montador:
         self.linhas.append(campos)
         return self
 
+    def alterar(self, tipo, n=0, **valores):
+        """Altera campos do `n`-ésimo registro `tipo` já incluído."""
+        nomes = self.tabela[tipo]
+        alvo = [c for c in self.linhas if c[0] == tipo][n]
+        for nome, v in valores.items():
+            alvo[nomes.index(nome)] = v
+        return self
+
     def texto(self):
         """O arquivo inteiro: abre/fecha os blocos que faltarem e monta o 9."""
         corpo = []
@@ -100,7 +108,7 @@ def icms_basico(itens=None, frete="0", uf="MG"):
               TIPO_ITEM="00", COD_NCM="21069090")
     m.reg("C100", IND_OPER="0", IND_EMIT="1", COD_PART="F1", COD_MOD="55",
           COD_SIT="00", SER="1", NUM_DOC="123",
-          CHV_NFE="31260811444777000161550010000001231000001230",
+          CHV_NFE="31260811444777000161550010000001231000001238",
           DT_DOC="05082026", DT_E_S="06082026", VL_DOC="30,00",
           IND_PGTO="0", VL_MERC="30,00", IND_FRT="9", VL_FRT=frete,
           VL_SEG="0", VL_OUT_DA="0", VL_BC_ICMS="30,00", VL_ICMS="5,40")
@@ -216,7 +224,7 @@ def cte_xml(chave="31260899888777000166570010000004561000004560",
             icms="<ICMS00><CST>00</CST><vBC>100.00</vBC><pICMS>12.00</pICMS>"
                  "<vICMS>12.00</vICMS></ICMS00>",
             vtprest="100.00", tpcte="0", cstat="100", cfop="6352",
-            chaves_nfe=("31260811444777000161550010000001231000001230",)):
+            chaves_nfe=("31260811444777000161550010000001231000001238",)):
     """XML de CT-e 4.00 (modelo 57) com protocolo. `toma` é o código do
     <toma3> (0 remetente, 1 expedidor, 2 recebedor, 3 destinatário); com
     `toma4=(cnpj, nome)` o tomador é um terceiro com dados próprios."""
@@ -258,7 +266,7 @@ def evento_cancelamento_xml(chave, modelo="nfe", cstat="135"):
 
 def nfe_xml(itens=None, nnf="123", serie="1", mod="55", cfop="5102",
             vicms="1.80",
-            chave="31260811444777000161550010000001231000001230",
+            chave="31260811444777000161550010000001231000001238",
             emit=("11444777000161", "FORNECEDOR TESTE"),
             dest=(CNPJ_TESTE, "EMPRESA TESTE LTDA"),
             dhemi="2026-08-05T10:00:00-03:00"):

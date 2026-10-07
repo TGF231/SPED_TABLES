@@ -4,9 +4,10 @@
 import os
 import re
 
-from PyQt6.QtCore import QSettings
-from PyQt6.QtWidgets import QFileDialog, QMessageBox
+from PyQt6.QtCore import QSettings, Qt
+from PyQt6.QtWidgets import QApplication, QFileDialog, QMessageBox
 
+from sped_tables.dominio import xml_fiscal
 from sped_tables.dominio.sped_model import EntradaInvalida
 from sped_tables.infra import dados
 from sped_tables.infra import exportacao
@@ -27,6 +28,32 @@ def calcular(parent, titulo, funcao, *args, **kwargs):
     except EntradaInvalida as exc:
         QMessageBox.warning(parent, titulo, str(exc))
         return False, None
+
+
+def ler_pasta_xml(pai, titulo, pergunta):
+    """Escolhe uma pasta e lê os XMLs dela (as subpastas entram), com o
+    cursor de espera. Devolve o lote, ou None se a pessoa cancelou ou a
+    leitura falhou — o erro já foi mostrado."""
+    pasta = QFileDialog.getExistingDirectory(pai, pergunta)
+    if not pasta:
+        return None
+    QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
+    erro = None
+    try:
+        lote = xml_fiscal.ler_pasta_fiscal(pasta)
+    except Exception as e:                                  # noqa: BLE001
+        lote, erro = None, e
+    finally:
+        QApplication.restoreOverrideCursor()
+    if erro is not None:
+        QMessageBox.critical(pai, titulo, "Erro ao ler a pasta:\n%s" % erro)
+    return lote
+
+
+def lista_de_mudancas(mudou):
+    """`{campo: (antes, depois)}` como linhas "• campo: antes → depois"."""
+    return "\n".join("• %s: %s → %s" % (c, _br(a), _br(b))
+                     for c, (a, b) in mudou.items())
 
 
 def ajustes():

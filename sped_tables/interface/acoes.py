@@ -74,6 +74,19 @@ ACOES = (
          "preencher_cod_gen", ICMS, MENU_ICMS),
     Acao("act_recalc_c190_massa", "Recalcular C190 (analítico) em massa…",
          "recalcular_c190_massa", ICMS, MENU_ICMS),
+    Acao("act_reducao_xml", "Redução de base do C190 pelos XMLs de compra…",
+         "reducao_c190_pelo_xml", ICMS, MENU_ICMS),
+    Acao("act_apuracao_icms", "Recalcular apuração do ICMS (E110)",
+         "recalcular_apuracao_icms", ICMS, MENU_ICMS),
+    # NFC-e 65 no ICMS/IPI: o mesmo andaime do Contribuições, para o C190
+    # sair dos itens do XML. Família NFC-e: sem ensaio no PVA, pronta=False
+    Acao("act_c170_ficticios_icms",
+         "Gerar C170 fictícios da NFC-e (65) com XMLs…",
+         "gerar_c170_ficticios_icms", ICMS, MENU_ICMS, separador=True,
+         pronta=False),
+    Acao("act_remover_ficticios_icms",
+         "Remover C170 fictícios da NFC-e (65)",
+         "remover_c170_ficticios_icms", ICMS, MENU_ICMS, pronta=False),
 
     # ---- EFD Contribuições
     Acao("act_conferir_itens_pc", "Conferir itens com XMLs (PIS/COFINS)…",
@@ -93,10 +106,12 @@ ACOES = (
          "recalcular_bloco_m", CONTRIB, MENU_CONTRIB),
     Acao("act_verificar_cst", "Verificar CST por NCM (tabelas RFB)…",
          "verificar_cst_ncm", CONTRIB, MENU_CONTRIB, separador=True),
-    Acao("act_empresa", "Empresa e rotinas…", "configurar_empresa", CONTRIB,
-         MENU_CONTRIB),
 
     # ---- Gerais
+    # as rotinas valem para os dois leiautes desde que o ICMS/IPI ganhou as
+    # suas (CSOSN no CST, código de receita)
+    Acao("act_empresa", "Empresa e rotinas…", "configurar_empresa", ARQUIVO,
+         MENU_GERAIS),
     # sem arquivo aberto: é daqui que o arquivo nasce
     Acao("act_gerar_xml", "Gerar SPED a partir dos XMLs…", "gerar_de_xml",
          SEMPRE, MENU_GERAIS, pronta=False),
@@ -104,6 +119,8 @@ ACOES = (
          "conferir_entradas_55", ARQUIVO, MENU_GERAIS, separador=True),
     Acao("act_alterar_datas", "Alterar datas emissão/saída (C100)…",
          "alterar_datas", ARQUIVO, MENU_GERAIS),
+    Acao("act_datas_xml", "Datas e extemporâneos pelos XMLs…",
+         "datas_pelo_xml", ARQUIVO, MENU_GERAIS),
     Acao("act_diagnostico", "Diagnóstico do arquivo…", "diagnosticar",
          ARQUIVO, MENU_GERAIS, separador=True),
     Acao("act_revisar", "Revisar erros…", "revisar_erros", ARQUIVO,

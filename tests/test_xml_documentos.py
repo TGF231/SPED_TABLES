@@ -39,7 +39,7 @@ class TestCTe(unittest.TestCase):
                          ("00", 100.0, "12.00", 12.0))
         self.assertEqual(c.situacao, "autorizada")
         self.assertEqual(c.chaves_nfe,
-                         ["31260811444777000161550010000001231000001230"])
+                         ["31260811444777000161550010000001231000001238"])
         self.assertEqual(c.emit.cnpj, "99888777000166")
         self.assertEqual(c.emit.cod_mun, "3106200")
 
@@ -92,7 +92,7 @@ class TestNFeParaGerar(unittest.TestCase):
 class TestPasta(unittest.TestCase):
 
     def test_le_tudo_aplica_cancelamento_e_nao_descarta_nada(self):
-        chave_nfe = "31260811444777000161550010000001231000001230"
+        chave_nfe = "31260811444777000161550010000001231000001238"
         chave_cte = "31260899888777000166570010000004561000004560"
         with PastaTemporaria() as p:
             _grava(p, "nfe/n1.xml", nfe_xml())
@@ -113,7 +113,7 @@ class TestPasta(unittest.TestCase):
                          ["lixo.xml", "quebrado.xml"])
 
     def test_evento_sem_registro_nao_cancela(self):
-        chave = "31260811444777000161550010000001231000001230"
+        chave = "31260811444777000161550010000001231000001238"
         with PastaTemporaria() as p:
             _grava(p, "n.xml", nfe_xml())
             _grava(p, "e.xml", evento_cancelamento_xml(chave, cstat="573"))

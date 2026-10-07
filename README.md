@@ -39,9 +39,10 @@ pip install -r requirements.txt
   funcionando).
 
 > **Antes de usar em produção:** trabalhe sempre sobre uma **cópia** do arquivo
-> SPED e valide o resultado no **PVA** antes de transmitir. Enquanto a versão
-> for 0.y.z, o programa está em desenvolvimento — o que falta para a 1.0.0
-> está no [ROADMAP.md](ROADMAP.md).
+> SPED e valide o resultado no **PVA** antes de transmitir. A `1.0.0-rc.1` é a
+> candidata à primeira release: congelada, só recebe correção. Funções ainda
+> em desenvolvimento (NFC-e 65 por XML e *Gerar SPED a partir dos XMLs*)
+> aparecem nela, mas **não** na 1.0.0 — ver [ROADMAP.md](ROADMAP.md).
 
 ## 2. Como executar
 
@@ -204,6 +205,27 @@ define onde aplicar:
 Há ainda o filtro opcional **“Trocar apenas onde a alíquota atual for”**: com ele
 marcado, só os registros cuja alíquota atual seja exatamente o valor informado
 são corrigidos, deixando os demais intactos.
+
+### Datas e extemporâneos pelos XMLs
+
+**Ferramentas → Gerais → Datas e extemporâneos pelos XMLs…** confere a
+`DT_DOC` (e, na saída, a `DT_E_S`) de cada C100 com o XML de mesma chave —
+a pasta escolhida entra com as subpastas. A NFC-e emitida em contingência e
+autorizada no mês seguinte é o caso típico: o ERP a escritura no mês da
+autorização com a **data trocada**. A correção grava a data do XML e, se a
+emissão é anterior ao período, a situação de **documento extemporâneo**
+(COD_SIT 01, ou 07 no complementar).
+
+**No EFD Contribuições é diferente:** o PVA recusa a saída com data de
+outro mês mesmo como extemporânea. Ali o documento emitido antes do
+período fica no mês — a emissão do arquivo é mantida e a saída passa a ser
+ela.
+
+No EFD ICMS/IPI a apuração acompanha: o ICMS da saída extemporânea **não é
+débito do período** — vai para o **débito especial** (`DEB_ESP`, extra-
+apuração) do E110, que é refeito na hora (*Recalcular apuração do ICMS
+(E110)*, também no menu do ICMS/IPI). O total a recolher não muda; muda o
+que é apuração e o que é extra-apuração — confira o E116.
 
 ### Alterar datas de emissão/saída (C100)
 
@@ -492,6 +514,44 @@ manual, em vez de chutado.
 O mesmo conserto é oferecido como botão dentro de **Revisar erros**, junto da
 lista que o apontou.
 
+### Redução de base do C190 pelos XMLs de compra
+
+Na **entrada com CST 070** o ICMS veio por substituição e a empresa não
+escritura base própria: a redução de base não sai do arquivo, e o
+recálculo em massa a deixa zerada (o PVA acusa `MSG_CST_ICMS_RED_BC`).
+**Ferramentas → EFD ICMS/IPI → Redução de base do C190 pelos XMLs de
+compra…** lê os XMLs das compras, casa cada C170 com o item do XML pelo
+número (conferindo o valor) e grava no C190 o que não foi tributado: a
+operação menos a **base reduzida** do XML ou, quando a base vem zerada, a
+operação × o **percentual de redução** (`pRedBC`). Serve o XML autorizado
+do fornecedor (casado pela chave) e também o que o ERP exporta da entrada,
+sem chave — casado pelo CNPJ do fornecedor e o valor do documento, só
+quando um único C100 serve.
+
+### NFC-e (modelo 65): refazer o C190 pelos itens do XML
+
+> **Em desenvolvimento** (como todo o fluxo da NFC-e por XML): falta o
+> ensaio no PVA — ver ROADMAP.
+
+A NFC-e não tem C170 no EFD ICMS/IPI, e sem itens o recálculo em massa não
+tinha de onde refazer o analítico. O fluxo, em **Ferramentas → EFD
+ICMS/IPI**, tem três passos:
+
+1. **Gerar C170 fictícios da NFC-e (65) com XMLs…** — escolha a pasta com os
+   XMLs das NFC-e (só ela, sem subpastas). Cada NFC-e do arquivo casada com o
+   XML (modelo, série e número) ganha um C170 por item, com ICMS, ICMS-ST,
+   IPI e **base de PIS/COFINS** — é ela que permite achar a redução de base
+   no CST x70. Item com CSOSN (emitente do Simples) no lugar do CST é
+   contado e avisado.
+2. **Recalcular C190 (analítico) em massa…** — além dos documentos com a
+   redução zerada, refaz o C190 de toda NFC-e que tem fictícios.
+3. **Remover C170 fictícios da NFC-e (65)** — devolve as NFC-e à forma
+   consolidada.
+
+NFC-e com C170 é estrutura inválida nos dois leiautes: ao **salvar** com
+fictícios no arquivo, o programa avisa e, no ICMS/IPI, oferece removê-los
+antes de gravar.
+
 ### Itens do 0200 sem referência
 
 **Ferramentas → Gerais → Itens do 0200 sem referência…** aplica a regra do Guia
@@ -648,10 +708,52 @@ casas decimais, enumerações, tabelas externas, referências entre registros
 (`COD_ITEM` → 0200, `COD_PART` → 0150, `UNID` → 0190, `COD_CTA` → 0500) e
 bloco aberto sem encerramento.
 
-**O que ele não reproduz:** as cerca de 1.400 regras compostas do PVA,
-implementadas em Java. O painel diz **quantas** se aplicam ao arquivo e cita
-alguns nomes, para deixar claro que validar no PVA continua necessário — o
-diagnóstico adianta trabalho, não substitui o validador oficial.
+**As regras do guia prático, com as condições do PVA:** CFOP × operação,
+combinação CST/CFOP/alíquota entre C170 e C190, somas do C190 e do C100
+(e do D190/D100), VL_MERC, datas até o fim do período, CNPJ/CPF e chave da
+NF-e (dígito e coerência com o documento), contagens do bloco 9, apuração do
+E110/E116, inventário, VL_PIS/VL_COFINS e outras — ver *Regras do guia
+prático* abaixo.
+
+**O que ele ainda não reproduz:** o restante das regras compostas do PVA. O
+painel diz **quantas** se aplicam ao arquivo e cita alguns nomes, para deixar
+claro que validar no PVA continua necessário — o diagnóstico adianta
+trabalho, não substitui o validador oficial. A conta, registro a registro,
+está em [`COBERTURA.md`](COBERTURA.md).
+
+### Regras do guia prático
+
+Cada regra é o que o guia escreve por extenso ("a soma dos valores do campo
+VL_ICMS dos registros analíticos (C190) deve ser igual ao valor informado
+neste campo") **com a condição e a tolerância que o PVA aplica** — e que o
+guia nem sempre diz:
+
+| Regra | Condição do PVA que o guia não diz |
+|---|---|
+| Somas do ICMS/IPI (C190 × C170, C100 × C190, D100 × D190, E111, E116, H005) | tolerância de **R$ 0,50** |
+| VL_MERC do C100 | só quando fica **abaixo** da soma dos itens; NF-e de emissão própria fora |
+| Combinação C190 × C170 | só documento regular/extemporâneo; NF-e de emissão própria fora; NFC-e fora no sentido C190 → C170 |
+| CFOP × entrada/saída | só documento regular/extemporâneo (COD_SIT 00/01) |
+| VL_PIS/VL_COFINS = base × alíquota | tolerância de **R$ 0,99**, e é só advertência |
+
+As condições saem das consultas SQL que o próprio PVA usa e as tolerâncias,
+das constantes das classes dele. Cada regra foi passada nos arquivos reais
+que o PVA validou: nenhuma acusa o que o PVA aceita. Estão na **Revisão de
+erros** e no **Diagnóstico**, com o atalho para a função que corrige.
+
+### Ajuda do guia prático (F1)
+
+Passe o mouse no **cabeçalho de uma coluna**: a dica mostra o que o guia e o
+PVA dizem daquele campo — descrição, tipo e tamanho, se é obrigatório, os
+valores válidos com o significado de cada um, como preencher e como o
+validador confere. **F1** na grade (ou *📖 Ajuda do registro* no menu de
+contexto) abre a página do registro inteiro, rolada até a coluna em que
+você está.
+
+Os textos são dos guias oficiais — *Guia Prático EFD ICMS/IPI 3.2.4* e *EFD
+Contribuições 1.35* —, extraídos para `recursos/` por
+`ferramentas/extrair_guias.py`. Saiu guia novo: rode a ferramenta com o PDF
+e gere o executável de novo.
 
 ### Crédito em CFOP que não dá direito (EFD Contribuições)
 
@@ -679,9 +781,15 @@ Isso corrige um excesso e uma falta:
   heurística por prefixo `VL_`/`ALIQ_`.
 
 As regras compostas do PVA (`REGRA_CST_ICMS_CAMPOS_ICMS_C170` e afins) são
-implementadas em Java; o programa reconhece que existem, mas não as
-reimplementa — adivinhar o conteúdo produziria divergência silenciosa com o
-validador oficial.
+implementadas em Java. O programa reproduz as que o guia escreve por extenso
+e cuja condição o PVA deixa legível (as consultas SQL do descritor); as
+outras ele reconhece que existem e lista, sem adivinhar o conteúdo —
+adivinhar produziria divergência silenciosa com o validador oficial.
+
+Os nomes de campo do descritor nem sempre são os do guia (`ENDERECO` no
+lugar de `END`, `VL_OPER` no de `VL_OPR`): o programa os alinha **pela
+posição** no registro, e um teste confere que o leiaute dele tem a mesma
+estrutura do descritor instalado.
 
 ### Validação contra as tabelas dos PVAs
 
@@ -948,8 +1056,9 @@ clientes.
 
 ### Configuração por empresa e rotinas de correção
 
-**Ferramentas → EFD Contribuições → Empresa e rotinas…** abre o cadastro da empresa do arquivo
-(identificada pelo **CNPJ do registro 0000**) e as rotinas que dependem dele.
+**Ferramentas → Gerais → Empresa e rotinas…** abre o cadastro da empresa do
+arquivo (identificada pelo **CNPJ do registro 0000**) e as rotinas que
+dependem dele — nos dois leiautes.
 
 O cadastro guarda o que o arquivo não diz: **regime federal** (Simples
 Nacional, Lucro Presumido, Lucro Real), **regime de PIS/COFINS** (cumulativo,
@@ -957,6 +1066,20 @@ não-cumulativo ou ambos), atividade, as alíquotas de saída e de crédito e o 
 a gravar quando um crédito indevido é retirado. Uma empresa ainda não cadastrada
 vem pré-preenchida com o nome, a UF e o regime do registro **0110** — confira
 antes de gravar. Os dados ficam em `empresas.json`, na pasta de dados (ver 3A).
+
+O cadastro também decide duas coisas do **ICMS**:
+
+- **Código de receita do E116** — um seletor com a tabela de receitas da UF
+  tirada do PVA (para supermercado em MG, *1206 – ICMS COMÉRCIO - OUTROS*).
+- **Entradas do Simples** — o fornecedor do Simples emite com **CSOSN**
+  (101, 102, 202…) e o ERP o copia para o CST do item; o PVA lê `102` como
+  monofásico de combustível e o recusa sem alíquota. Com a caixa marcada, a
+  rotina troca o CSOSN pelo CST que a empresa escritura: a **tabela CSOSN →
+  situação** (padrão 101/102 → 00, 103 → 40, 201/202 → 10, 203 → 30,
+  300/400 → 41, 500 → 60, 900 → 90, editável como `102=00, 202=10`), a
+  **origem** (padrão 0) e a situação da **compra com ST** (CFOP 1403/2403,
+  padrão 60). CST que já é válido — o x10 ou x70 que a nota de compra
+  trouxer — não é tocado.
 
 Quando o **0110 do arquivo contraria o cadastro**, o diálogo avisa: é a
 escrituração discordando do que a empresa declara ser, e vale conferir qual dos
@@ -972,6 +1095,9 @@ As rotinas desta versão:
 | Valor lançado em CST sem direito a crédito | Entradas em CST sem crédito com base ou valor lançados | Sim — zera base/alíquota/valor |
 | CST incoerente com o NCM | Monofásico / alíquota zero, pelas tabelas da RFB | Nas **entradas** que tomam crédito, sim; nas saídas, não — lá o CST depende de o produto ser revenda |
 | Crédito em CFOP que não dá direito | CST de crédito em CFOP fora da tabela 4.3.7 do PVA | Sim — troca o CST e zera o crédito |
+| CSOSN do Simples no CST do ICMS (os dois leiautes) | Entradas com CSOSN no `CST_ICMS` (C170 e, no ICMS/IPI, C190) | Sim, pelo cadastro — o C190 acompanha, e dois que passem a ter a mesma chave são somados |
+| Natureza da receita fora da tabela do CST | M410/M810 com código que não existe na tabela do CST do M400/M800 | Bebida fria vendida por empresa de **comércio** com CST 06 → **918** (Lei 13.097/2015), somando na linha que já existir; o resto é apontado para conferir o CST no ERP/PDV |
+| Código de receita em branco | E116 (ICMS) e M205/M605 (PIS/COFINS) sem `COD_REC` | Sim — E116 pelo cadastro; M205/M605 pelo campo do M200/M600 (08: 6912-01/5856-01; 12: 8109-02/2172-01) |
 
 **Toda rotina roda primeiro em conferência.** O relatório é navegável (duplo
 clique vai ao registro) e exportável em CSV; a correção só é aplicada depois de
@@ -1098,11 +1224,15 @@ completa está em [ARQUITETURA.md](ARQUITETURA.md).
 | `tests/` | Suíte automática (ver [TESTES.md](TESTES.md)). |
 | `SPED Tables.spec` | Empacotamento (PyInstaller, arquivo único). |
 | `icon.ico`, `correlacoes_cfop.json` | Recursos que vão junto no executável. |
+| `recursos/guia_*.json` | Os guias práticos extraídos (ajuda F1 e texto das regras); vão junto no executável. |
+| `ferramentas/` | `extrair_guias.py` (PDF do guia → `recursos/`), `cobertura_guias.py` (gera o `COBERTURA.md`), `validar_no_pva.py` (roteiro 2.1 no PVA de ensaio). |
+| `COBERTURA.md` | Quanto das validações do guia e do PVA o programa reproduz, por registro. |
 | `ARQUITETURA.md` | Como o código se organiza e onde entra o que é novo. |
 | `ROADMAP.md` | Canais de versão, critério de aceite e o caminho até a 1.0.0. |
 | `TESTES.md` | A suíte automática e o roteiro manual (PVA, executável). |
 | `CHANGELOG.md` | Histórico de versões (Keep a Changelog). |
 | `CLAUDE.md` | Convenções do projeto para desenvolvimento assistido. |
+| `LICENSE` | GNU GPL versão 3. |
 
 ### Testes
 
@@ -1137,12 +1267,27 @@ no repositório — e roda também contra cópias de arquivos reais quando
   sessão** — ao reabrir o programa, tudo volta ao padrão.
 - **Não há desfazer (undo)** para edições em lote: prefira executar as rotinas
   com o arquivo já salvo, para poder voltar à cópia anterior.
-- No fluxo da NFC-e (modelo 65), entre *Validar C175* e *Regenerar C175* o
-  arquivo fica com registros C170 em documentos modelo 65 — estrutura
-  **inválida** para o EFD Contribuições. **Não salve nem transmita nesse
-  estado:** rode sempre o *Regenerar C175* antes de gerar o arquivo final.
+- No fluxo da NFC-e (modelo 65), entre *Validar C175* e *Regenerar C175*
+  (Contribuições) ou entre *Gerar C170 fictícios* e *Remover C170 fictícios*
+  (ICMS/IPI) o arquivo fica com registros C170 em documentos modelo 65 —
+  estrutura **inválida**. Salvar nesse estado pede confirmação.
 - Os CST esperados na verificação por NCM (`CST_ACEITOS`/`CST_SUGERIDO`, em
   `sped_tables/dominio/ncm.py`) foram montados para **comércio/revenda**.
 - As regras compostas do PVA (implementadas em Java dentro dele) não são
   reproduzidas; o diagnóstico diz quantas se aplicam ao arquivo. O validador
   oficial continua sendo o juiz.
+
+## 6. Licença
+
+O SPED Tables é software livre, distribuído sob a **GNU General Public
+License, versão 3** (GPL-3.0) — o texto completo está em [LICENSE](LICENSE).
+Você pode usar, estudar, modificar e redistribuir o programa; quem
+distribuir uma versão modificada precisa fazê-lo sob a mesma licença e com
+o código-fonte.
+
+O programa é oferecido **sem nenhuma garantia** (seções 15 e 16 da
+licença). Ele não substitui o validador oficial: confira todo arquivo no
+PVA antes de transmitir.
+
+A interface usa o **PyQt6**, também GPL-3.0, e a leitura de planilhas, o
+**openpyxl** (MIT).

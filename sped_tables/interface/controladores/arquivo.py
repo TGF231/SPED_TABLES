@@ -164,7 +164,41 @@ class ControladorArquivo:
             return
         self._gravar(caminho)
 
+    def _ficticios_antes_de_gravar(self):
+        """NFC-e com C170 — o andaime dos fictícios — é estrutura inválida
+        nos dois leiautes. Pergunta antes de gravar; no ICMS/IPI oferece
+        removê-los (o C190 já foi refeito), no Contribuições lembra do
+        *Regenerar C175*, que é quem aproveita a correção."""
+        docs = self.doc.documentos_65_com_c170()
+        if not docs:
+            return True
+        icms = self.doc.layout == "ICMS"
+        cx = QMessageBox(
+            QMessageBox.Icon.Warning, "C170 em NFC-e",
+            "%d NFC-e (modelo 65) ainda têm C170 fictícios. NFC-e com C170 é "
+            "estrutura inválida: o PVA recusa o arquivo." % len(docs),
+            parent=self)
+        cx.setInformativeText(
+            "Remova os fictícios antes de gravar." if icms else
+            "Rode \"Regenerar C175 (modelo 65) dos itens\" antes de gravar.")
+        b_rem = None
+        if icms:
+            b_rem = cx.addButton("Remover e gravar",
+                                 QMessageBox.ButtonRole.AcceptRole)
+        b_assim = cx.addButton("Gravar assim",
+                               QMessageBox.ButtonRole.DestructiveRole)
+        b_canc = cx.addButton("Cancelar", QMessageBox.ButtonRole.RejectRole)
+        cx.setDefaultButton(b_rem or b_canc)
+        cx.exec()
+        if b_rem is not None and cx.clickedButton() is b_rem:
+            self.doc.remover_c170_ficticios_65()
+            self._montar_abas()
+            return True
+        return cx.clickedButton() is b_assim
+
     def _gravar(self, caminho):
+        if not self._ficticios_antes_de_gravar():
+            return
         try:
             try:
                 resultado = self.sessao.salvar(caminho)

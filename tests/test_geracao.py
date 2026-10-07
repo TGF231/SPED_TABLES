@@ -21,7 +21,7 @@ from sped_tables.dominio.sped_model import SpedDocument, _to_num
 from tests.fabrica import (CNPJ_TESTE, PastaTemporaria, cte_xml,
                            evento_cancelamento_xml, icms_basico, nfe_xml)
 
-CHAVE_ENTRADA = "31260811444777000161550010000001231000001230"
+CHAVE_ENTRADA = "31260811444777000161550010000001231000001238"
 CHAVE_NFCE = "31260811222333000181650010000000011000000019"
 
 

@@ -28,7 +28,7 @@ import inspect
 from dataclasses import dataclass
 
 from sped_tables.dominio import ncm
-from sped_tables.dominio import referencias
+from sped_tables.dominio import referencias, revisao
 from sped_tables.dominio.sped_model import _to_num, _fmt_val, _fmt_aliq
 
 # ------------------------------------------------------------ conjuntos CST
@@ -110,7 +110,7 @@ def _rotulo_item(reg, doc_num, registro, doc):
     if reg == "C170":
         i = doc._ix("C170", "NUM_ITEM")
         return (registro.valor(i) or "").strip() if i is not None else ""
-    i = doc._ix("C175", "CFOP")
+    i = doc._ix(reg if reg in ("C175", "C190") else "C175", "CFOP")
     return "CFOP %s" % ((registro.valor(i) or "").strip()
                         if i is not None else "")
 
@@ -453,6 +453,251 @@ def verificar_cfop_sem_credito(doc, empresa=None, data_ref=None):
     return achados
 
 
+# ================================================================ rotina 7
+# CSOSN que não é CST: inválidos como situação (101 → origem 1 + "01", que
+# não existe) ou lidos como monofásico de combustível (x02) sem alíquota —
+# exatamente o que o PVA recusa (MSG_VALIDA_CST_ALIQ_ICMS_C170_CST_FINAL_2).
+# 300, 400 e 500 também são CST válidos (origem 3/4/5 + 00) e ficam de fora:
+# ali a leitura como CSOSN seria palpite.
+CSOSN_INVALIDOS_COMO_CST = {"101", "103", "201", "203", "900"}
+CSOSN_LIDOS_COMO_X02 = {"102", "202"}
+
+
+def _e_csosn(cst, aliq):
+    if cst in CSOSN_INVALIDOS_COMO_CST:
+        return True
+    return cst in CSOSN_LIDOS_COMO_X02 and not _to_num(aliq)
+
+
+def verificar_csosn_no_cst(doc, empresa):
+    """Entradas com o **CSOSN do fornecedor do Simples** no `CST_ICMS`.
+
+    O CST que a empresa escritura sai do cadastro: a tabela CSOSN → situação,
+    a origem padrão e a situação da compra com ST (CFOP 1403/2403). Valem os
+    C170 e, no ICMS/IPI, os C190 do mesmo documento — que agrupam pelo mesmo
+    CST e precisam acompanhar a troca. Sem a conversão ligada no cadastro, a
+    rotina só aponta.
+    """
+    i_oper = doc._ix("C100", "IND_OPER")
+    i_num = doc._ix("C100", "NUM_DOC")
+    idx = {reg: tuple(doc._ix(reg, c) for c in ("CST_ICMS", "CFOP",
+                                                 "ALIQ_ICMS"))
+           for reg in ("C170", "C190")}
+    achados = []
+    for c100 in doc.registros:
+        if c100.reg != "C100" or (c100.valor(i_oper) or "").strip() != "0":
+            continue
+        num = (c100.valor(i_num) or "").strip()
+        for f in c100.filhos:
+            ix = idx.get(f.reg)
+            if ix is None or None in ix:
+                continue
+            i_cst, i_cfop, i_aliq = ix
+            cst = (f.valor(i_cst) or "").strip()
+            if not _e_csosn(cst, f.valor(i_aliq)):
+                continue
+            cfop = (f.valor(i_cfop) or "").strip()
+            esperado = ""
+            if empresa is not None and empresa.converter_csosn:
+                esperado = empresa.cst_do_csosn(cst, cfop) or ""
+            achados.append(Ocorrencia(
+                uid=f.uid, reg=f.reg, escopo="entrada", doc=num,
+                item=_rotulo_item(f.reg, num, f, doc), tributo="ICMS",
+                campo="CST_ICMS", atual=cst, esperado=esperado,
+                detalhe="CSOSN do fornecedor do Simples no lugar do CST "
+                        "(CFOP %s)%s" % (cfop, "" if esperado else
+                                         " — sem regra no cadastro")))
+    return achados
+
+
+def corrigir_csosn_no_cst(doc, empresa, ocorrencias):
+    """Troca o CSOSN pelo CST do cadastro. No ICMS/IPI, C190 que passarem a
+    ter a mesma chave (CST, CFOP, alíquota) no documento são somados num só —
+    dois C190 de mesma chave o PVA recusa. Devolve quantos registros mudaram.
+    """
+    por_uid = {r.uid: r for r in doc.registros}
+    i_cst = {reg: doc._ix(reg, "CST_ICMS") for reg in ("C170", "C190")}
+    mudou = 0
+    pais = []
+    for o in ocorrencias:
+        r = por_uid.get(o.uid)
+        if r is None or not o.esperado or r.reg not in i_cst:
+            continue
+        if (r.valor(i_cst[r.reg]) or "").strip() != o.atual:
+            continue                      # o arquivo mudou desde a verificação
+        r.set_valor(i_cst[r.reg], o.esperado)
+        mudou += 1
+        if r.reg == "C190" and r.pai is not None and r.pai not in pais:
+            pais.append(r.pai)
+    for c100 in pais:
+        _fundir_c190(doc, c100)
+    if mudou:
+        doc.atualizar_bloco9_inplace()
+    return mudou
+
+
+C190_SOMAS = ("VL_OPR", "VL_BC_ICMS", "VL_ICMS", "VL_BC_ICMS_ST",
+              "VL_ICMS_ST", "VL_RED_BC", "VL_IPI")
+
+
+def _fundir_c190(doc, c100):
+    soma_ix = [doc._ix("C190", c) for c in C190_SOMAS]
+    vistos = {}
+    for f in [x for x in c100.filhos if x.reg == "C190"]:
+        k = doc.chave_c190(f)
+        if k not in vistos:
+            vistos[k] = f
+            continue
+        alvo = vistos[k]
+        for i in soma_ix:
+            if i is not None:
+                alvo.set_valor(i, _fmt_val(_to_num(alvo.valor(i))
+                                           + _to_num(f.valor(i))))
+        doc.remover_registro(f)
+
+
+# ================================================================ rotina 8
+# Código de receita do PIS/COFINS a recolher (M205/M605) pelo campo do M200
+# que o originou: 08 = contribuição não cumulativa, 12 = cumulativa. São os
+# códigos de DARF da pessoa jurídica em geral (6912-01/5856-01 e
+# 8109-02/2172-01), com a variação de 2 dígitos que o leiaute pede.
+COD_REC_CONTRIB = {
+    ("M205", "08"): "691201", ("M605", "08"): "585601",
+    ("M205", "12"): "810902", ("M605", "12"): "217201",
+}
+
+
+def verificar_cod_rec(doc, empresa):
+    """Código de receita **em branco** no débito a recolher: E116 (ICMS),
+    M205/M605 (PIS/COFINS). O PVA cobra o campo (`MSG_CAMPO_OBRIGATORIO`).
+
+    No ICMS o código depende da UF e da atividade — vem do **cadastro da
+    empresa** (seletor com a tabela da UF tirada do PVA); sem ele, a rotina
+    só aponta. No PIS/COFINS, sai do campo do M200 de origem."""
+    achados = []
+    if doc.layout == "ICMS":
+        i_rec = doc._ix("E116", "COD_REC")
+        i_or = doc._ix("E116", "COD_OR")
+        esperado = (getattr(empresa, "cod_rec_icms", "") or "") \
+            if empresa is not None else ""
+        for r in doc.registros:
+            if r.reg != "E116" or i_rec is None:
+                continue
+            if (r.valor(i_rec) or "").strip():
+                continue
+            achados.append(Ocorrencia(
+                uid=r.uid, reg="E116", escopo="apuração", doc="E116",
+                item="COD_OR %s" % (r.valor(i_or) or "").strip(),
+                tributo="ICMS", campo="COD_REC", atual="",
+                esperado=esperado,
+                detalhe="" if esperado else
+                "informe o código de receita no cadastro da empresa"))
+        return achados
+    for reg, tributo in (("M205", "PIS"), ("M605", "COFINS")):
+        i_rec = doc._ix(reg, "COD_REC")
+        i_campo = doc._ix(reg, "NUM_CAMPO")
+        if i_rec is None or i_campo is None:
+            continue
+        for r in doc.registros:
+            if r.reg != reg or (r.valor(i_rec) or "").strip():
+                continue
+            campo = (r.valor(i_campo) or "").strip()
+            esperado = COD_REC_CONTRIB.get((reg, campo), "")
+            achados.append(Ocorrencia(
+                uid=r.uid, reg=reg, escopo="apuração", doc=reg,
+                item="NUM_CAMPO %s" % campo, tributo=tributo,
+                campo="COD_REC", atual="", esperado=esperado,
+                detalhe="" if esperado else
+                "campo %s do M200/M600 sem código conhecido" % campo))
+    return achados
+
+
+def corrigir_campo(doc, empresa, ocorrencias):
+    """Grava `esperado` no `campo` de cada ocorrência que tenha esperado."""
+    por_uid = {r.uid: r for r in doc.registros}
+    n = 0
+    for o in ocorrencias:
+        r = por_uid.get(o.uid)
+        i = doc._ix(r.reg, o.campo) if r is not None else None
+        if i is None or not o.esperado:
+            continue
+        r.set_valor(i, o.esperado)
+        n += 1
+    return n
+
+
+# ================================================================ rotina 9
+# Bebidas frias (Lei 13.097/2015): na venda pelo **varejista** a alíquota é
+# zero — CST 06 com a natureza 918 da tabela 4.3.13. Os códigos 4xx da
+# tabela de monofásicos (423/424 da cerveja) são da venda do fabricante, e
+# sob o CST 06 o PVA os recusa (MSG_EXISTE_NAT_REC). Num arquivo real: as
+# cervejas que o PDV emitiu com CST 02/CFOP 5101 entraram no C175 como 06,
+# certo, mas o M410 ficou com 423/424.
+NAT_REC_BEBIDAS_FRIAS_VAREJO = "918"
+NCM_BEBIDAS_FRIAS = ("210690", "2201", "2202", "2203")
+
+
+def verificar_nat_rec(doc, empresa):
+    """Natureza da receita (M410/M810) fora da tabela do CST do M400/M800.
+    A correção só é proposta quando a regra é afirmável: receita de bebida
+    fria no CST 06 de empresa de comércio → 918. O resto fica apontado."""
+    if doc.layout != "CONTRIB":
+        return []
+    varejo = empresa is not None and empresa.atividade == "comercio"
+    por_uid = {r.uid: r for r in doc.registros}
+    achados = []
+    for p in revisao.verificar_nat_rec(doc):
+        r = por_uid.get(p.uid)
+        i_nat = doc._ix(r.reg, "NAT_REC")
+        nat = (r.valor(i_nat) or "").strip()
+        i_cst = doc._ix(r.pai.reg, "CST_PIS" if r.pai.reg == "M400"
+                        else "CST_COFINS")
+        cst = (r.pai.valor(i_cst) or "").strip()
+        ncms = referencias.atual().ncms_da_natureza(nat)
+        bebida = bool(ncms) and all(n.startswith(NCM_BEBIDAS_FRIAS)
+                                    for n in ncms)
+        esperado = NAT_REC_BEBIDAS_FRIAS_VAREJO \
+            if (cst == "06" and bebida and varejo) else ""
+        detalhe = ("bebida fria vendida pelo varejista: natureza 918 da "
+                   "tabela 4.3.13" if esperado else
+                   "a natureza é de outra tabela — confira o CST da venda "
+                   "no cadastro do ERP/PDV")
+        achados.append(Ocorrencia(
+            uid=r.uid, reg=r.reg, escopo="saída", doc=r.pai.reg,
+            item="CST %s" % cst,
+            tributo="PIS" if r.reg == "M410" else "COFINS",
+            campo="NAT_REC", atual=nat, esperado=esperado, detalhe=detalhe))
+    return achados
+
+
+def corrigir_nat_rec(doc, empresa, ocorrencias):
+    """Troca a natureza e soma na linha que já tenha a nova natureza sob o
+    mesmo M400/M800 — duas linhas de mesma natureza o PVA recusa."""
+    por_uid = {r.uid: r for r in doc.registros}
+    n = 0
+    for o in ocorrencias:
+        r = por_uid.get(o.uid)
+        if r is None or not o.esperado:
+            continue
+        i_nat = doc._ix(r.reg, "NAT_REC")
+        i_vl = doc._ix(r.reg, "VL_REC")
+        if (r.valor(i_nat) or "").strip() != o.atual:
+            continue
+        irma = next((f for f in r.pai.filhos if f is not r
+                     and f.reg == r.reg
+                     and (f.valor(i_nat) or "").strip() == o.esperado), None)
+        if irma is not None:
+            irma.set_valor(i_vl, _fmt_val(_to_num(irma.valor(i_vl))
+                                          + _to_num(r.valor(i_vl))))
+            doc.remover_registro(r)
+        else:
+            r.set_valor(i_nat, o.esperado)
+        n += 1
+    if n:
+        doc.atualizar_bloco9_inplace()
+    return n
+
+
 # ------------------------------------------------------------------- lista
 ROTINAS = [
     Rotina(
@@ -526,6 +771,43 @@ ROTINAS = [
         rotulo_correcao="Retirar o crédito (zera base/alíquota/valor e troca "
                         "o CST)",
         requer="tabelas_pva",
+    ),
+    Rotina(
+        id="csosn_cst",
+        nome="CSOSN do Simples no CST do ICMS (entradas)",
+        descricao="Itens e analíticos de entrada com o CSOSN do fornecedor "
+                  "do Simples copiado para o CST_ICMS — o PVA lê 102 como "
+                  "monofásico de combustível e o recusa sem alíquota. O CST "
+                  "certo sai do cadastro da empresa (tabela CSOSN → CST, "
+                  "origem e compra com ST).",
+        layouts=("ICMS", "CONTRIB"),
+        verificar=verificar_csosn_no_cst,
+        corrigir=corrigir_csosn_no_cst,
+        rotulo_correcao="Trocar o CSOSN pelo CST do cadastro (no ICMS/IPI, "
+                        "o C190 acompanha)",
+    ),
+    Rotina(
+        id="cod_rec",
+        nome="Código de receita em branco (E116 / M205 / M605)",
+        descricao="Débito a recolher sem código de receita. No ICMS o código "
+                  "vem do cadastro da empresa; no PIS/COFINS, do campo do "
+                  "M200/M600 que gerou o débito.",
+        layouts=("ICMS", "CONTRIB"),
+        verificar=verificar_cod_rec,
+        corrigir=corrigir_campo,
+        rotulo_correcao="Preencher o código de receita",
+    ),
+    Rotina(
+        id="nat_rec",
+        nome="Natureza da receita fora da tabela do CST (M410/M810)",
+        descricao="Natureza da receita que não existe na tabela do CST do "
+                  "M400/M800. Bebida fria vendida pelo varejista (empresa "
+                  "de comércio) com CST 06 vai para a 918 (Lei 13.097/2015); "
+                  "o resto é apontado para conferir o CST no ERP/PDV.",
+        layouts=("CONTRIB",),
+        verificar=verificar_nat_rec,
+        corrigir=corrigir_nat_rec,
+        rotulo_correcao="Trocar a natureza (somando na linha que já existir)",
     ),
 ]
 

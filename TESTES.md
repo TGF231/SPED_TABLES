@@ -91,6 +91,28 @@ Em todo `.txt` que começa com `|0000|`, confere:
 dado de cliente no git. Mudança que altera o gabarito tem de ser explicada no
 CHANGELOG.
 
+**Regra nova do guia (`dominio/regras_guia.py`) passa antes nos arquivos
+reais que o PVA validou**: ela não pode acusar nada que o PVA aceite. O
+banco de cada validação do PVA de ensaio (`banco_pva.inconsistencias`)
+diz o que o PVA acusou; o que a regra acusa a mais é falso positivo — quase
+sempre condição ou tolerância que o guia não escreve e o PVA aplica (ver
+CLAUDE.md, "Os guias práticos e as regras do guia").
+
+### 1.2.1 Leiaute contra o PVA instalado
+
+`tests/test_guias.py` confere, com o PVA instalado, que o leiaute do
+programa tem a **estrutura** do descritor (largura e posição de cada campo,
+registro a registro) e que, onde o guia nomeia o campo, o nome bate com o do
+leiaute na mesma posição. Atualizou o PVA ou saiu guia novo: rode a suíte
+antes de qualquer outra coisa — a divergência aparece aqui, não na grade do
+usuário. Para refazer os JSON dos guias:
+
+```bash
+py ferramentas/extrair_guias.py ICMS "Guia Prático EFD - Versão X.pdf"
+py ferramentas/extrair_guias.py CONTRIB "Guia_Pratico_EFD_Contribuicoes_X.pdf"
+py ferramentas/cobertura_guias.py
+```
+
 ### 1.3 Ao escrever um teste
 
 - **Teste de ação de menu chama a ação**, não o diálogo. Foi pulando o

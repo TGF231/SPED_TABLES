@@ -411,6 +411,8 @@ class DialogoEmpresa(QDialog):
 
     def _gravar(self):
         e = self._coletar()
+        if e is None:
+            return
         self.mapa[e.cnpj] = e
         try:
             caminho = cadastro.salvar_empresas(self.mapa)
@@ -476,8 +478,7 @@ class DialogoEmpresa(QDialog):
         self.cb_rotina.blockSignals(False)
         if self.cb_rotina.count() == 0:
             self.lbl_desc.setText(
-                "Nenhuma rotina se aplica a este leiaute (as atuais são do "
-                "EFD Contribuições).")
+                "Nenhuma rotina se aplica a este leiaute.")
         else:
             self._rotina_mudou()
 
@@ -508,7 +509,8 @@ class DialogoEmpresa(QDialog):
         r = self._rotina()
         if r is None:
             return
-        self._coletar()
+        if self._coletar() is None:
+            return
         extra = {}
         if r.requer == "tabelas_rfb":
             clf = self._classificador()
