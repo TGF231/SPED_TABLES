@@ -11,9 +11,9 @@ A memória só é gravada quando a pessoa **aprende** com um SPED entregue,
 uma prévia.
 """
 
+from sped_tables.aplicacao import leitura_xml
 from sped_tables.dominio import geracao
 from sped_tables.dominio import memoria_itens as mi
-from sped_tables.dominio import xml_fiscal as xf
 from sped_tables.dominio.sped_model import SpedDocument, so_digitos
 from sped_tables.infra import cadastro, memoria as memoria_infra
 
@@ -43,7 +43,7 @@ class GeracaoXml:
         modelos = self.memoria.get("modelos", {})
         return tuple(x for x in LEIAUTES if "0000" in modelos.get(x, {}))
 
-    def aprender(self, pasta_xml, *speds):
+    def aprender(self, pasta_xml, *speds, progresso=None, cancelar=None):
         """Aprende com os SPED entregues de um mês (um de cada leiaute, no
         máximo) e os XMLs do mesmo mês. Recusa SPED de outra empresa, dois
         do mesmo leiaute e leiautes de meses diferentes."""
@@ -62,7 +62,8 @@ class GeracaoXml:
             raise ValueError("Informe ao menos um SPED entregue.")
         if len({d.data_final() for d in docs.values()}) > 1:
             raise ValueError("Os SPED escolhidos são de meses diferentes.")
-        res = mi.aprender(self.memoria, xf.ler_pasta_fiscal(pasta_xml),
+        lote = leitura_xml.ler_pasta_fiscal(pasta_xml, progresso, cancelar)
+        res = mi.aprender(self.memoria, lote,
                           doc_icms=docs.get("ICMS"),
                           doc_contrib=docs.get("CONTRIB"))
         memoria_infra.salvar(self.memoria)
@@ -80,9 +81,10 @@ class GeracaoXml:
         memoria_infra.salvar(self.memoria)
 
     # ------------------------------------------------------------- geração
-    def ler(self, pasta_xml):
-        """Lê a pasta de XMLs (NF-e, NFC-e, CT-e e eventos)."""
-        self.lote = xf.ler_pasta_fiscal(pasta_xml)
+    def ler(self, pasta_xml, progresso=None, cancelar=None):
+        """Lê a pasta de XMLs (NF-e, NFC-e, CT-e e eventos), em paralelo."""
+        self.lote = leitura_xml.ler_pasta_fiscal(pasta_xml, progresso,
+                                                 cancelar)
         return self.lote
 
     def documentos(self, periodo):

@@ -229,6 +229,49 @@ class TestJanela(unittest.TestCase):
             j.close()
         self.assertEqual(self.erros, [], self._falhas())
 
+    def test_leitura_de_xmls_em_segundo_plano(self):
+        """A ação que lê uma pasta de XMLs passa pela barra de andamento
+        (leitura fora da thread da interface) e chega ao resultado; erro e
+        cancelamento do trabalho voltam para a thread da interface."""
+        from sped_tables.infra.paralelo import Cancelado
+        from sped_tables.interface.comum import em_segundo_plano
+        from tests.fabrica import nfe_xml
+        with PastaTemporaria() as p:
+            pasta = os.path.join(p, "xmls")
+            os.makedirs(pasta)
+            with open(os.path.join(pasta, "n.xml"), "w",
+                      encoding="utf-8") as fh:
+                fh.write(nfe_xml())
+            j = self.ed.JanelaPrincipal()
+            self.assertTrue(j.abrir_caminho(icms_basico().gravar(p)))
+            _esperar()
+            with mock.patch.object(QFileDialog, "getExistingDirectory",
+                                   staticmethod(lambda *a, **k: pasta)), \
+                    mock.patch("sped_tables.interface.controladores.gerais."
+                               "DialogoConferencia") as dlg:
+                j.conferir_entradas_55()
+            resultado = dlg.call_args[0][0]
+            self.assertEqual(resultado["resumo"]["itens_conferidos"], 3)
+            j.alterado = False
+            j.close()
+
+        def andando(progresso, cancelar):
+            progresso(1, 2)
+            progresso(2, 2)
+            return "feito"
+        self.assertEqual(em_segundo_plano(None, "t", "x", andando), "feito")
+
+        def quebra(_p, _c):
+            raise ValueError("defeito")
+        with self.assertRaises(ValueError):
+            em_segundo_plano(None, "t", "x", quebra)
+
+        def cancela(_p, cancelar):
+            raise Cancelado()
+        with self.assertRaises(Cancelado):
+            em_segundo_plano(None, "t", "x", cancela)
+        self.assertEqual(self.erros, [], self._falhas())
+
     def test_todas_as_acoes_nos_dois_leiautes(self):
         for montador in (icms_basico(), contrib_basico()):
             with self.subTest(layout=montador.layout), \
@@ -420,6 +463,7 @@ class TestAutoteste(unittest.TestCase):
         nomes = [i["nome"] for i in saida["itens"]]
         self.assertIn("tradução pt-BR do Qt", nomes)
         self.assertIn("abrir, salvar e reabrir", nomes)
+        self.assertIn("leitura paralela de XMLs", nomes)
 
     def test_sem_pasta_indicada_isola_os_dados(self):
         from sped_tables.interface import autoteste

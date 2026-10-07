@@ -29,6 +29,10 @@ from sped_tables.version import __version__
 
 # texto que a tradução pt-BR do Qt dá ao botão "Yes" das caixas de mensagem
 _BOTOES = {"&Yes": "&Sim", "Cancel": "Cancelar", "Save": "Salvar"}
+# NFC-e mínima para a leitura paralela: chave e número
+_XML_MINIMO = ('<nfeProc><NFe><infNFe Id="NFe3126089999999900019965001'
+               '%09d1%08d0"><ide><mod>65</mod><serie>1</serie><nNF>1</nNF>'
+               '</ide></infNFe></NFe></nfeProc>')
 
 
 class _Relatorio:
@@ -157,6 +161,41 @@ def _conferir(app, rel, arquivo, dados, falhas):
                 if g else "ausente")
         return all(v != "ausente" for v in info.values()), info
     rel.conferir("guias práticos", guias_praticos)
+
+    def leitura_paralela():
+        # o processo filho é o próprio executável: sem o `freeze_support` do
+        # lançador cada um abriria uma janela, e sem processos a leitura cai
+        # para threads (avisa no log) — as duas coisas aparecem aqui
+        import logging
+        from sped_tables.aplicacao import leitura_xml
+        from sped_tables.dominio import xml_fiscal
+        from sped_tables.infra import paralelo
+        qtd = paralelo.MINIMO_PROCESSOS + 44
+        pasta = tempfile.mkdtemp(prefix="sped_tables_xml_")
+        avisos_log = []
+
+        class _Captura(logging.Handler):
+            def emit(self, registro):
+                avisos_log.append(registro.getMessage())
+        captura = _Captura(logging.WARNING)
+        paralelo.log.addHandler(captura)
+        try:
+            for i in range(qtd):
+                with open(os.path.join(pasta, "%04d.xml" % i), "w",
+                          encoding="utf-8") as fh:
+                    fh.write(_XML_MINIMO % (i + 1, i + 1))
+            lote = leitura_xml.ler_pasta_fiscal(pasta)
+            serial = xml_fiscal.ler_pasta_fiscal(pasta)
+        finally:
+            paralelo.log.removeHandler(captura)
+            shutil.rmtree(pasta, ignore_errors=True)
+        iguais = ([n.chave for n in lote.nfes]
+                  == [n.chave for n in serial.nfes])
+        ok = len(lote.nfes) == qtd and iguais and not avisos_log
+        return ok, "%d XMLs, %d trabalhadores%s" % (
+            len(lote.nfes), paralelo.trabalhadores(),
+            "; " + avisos_log[0] if avisos_log else "")
+    rel.conferir("leitura paralela de XMLs", leitura_paralela)
 
     def registro_de_falhas():
         try:

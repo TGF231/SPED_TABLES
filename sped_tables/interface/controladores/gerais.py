@@ -14,7 +14,8 @@ from sped_tables.dominio import revisao as rev
 from sped_tables.dominio import validacao
 from sped_tables.dominio import xml_fiscal as xf
 from sped_tables.infra import cadastro, config
-from sped_tables.interface.comum import (calcular, lista_de_mudancas,
+from sped_tables.interface.comum import (calcular, ler_nfes_da_pasta,
+                                         lista_de_mudancas,
                                          ler_pasta_xml)
 from sped_tables.interface.dialogos.cadastro import (
     DialogoCodCta, DialogoItensNaoUsados,
@@ -51,16 +52,12 @@ class ControladorGerais:
         contra os C170 do SPED, vinculando por mod + série + nNF + nItem."""
         if not self.doc:
             return
-        pasta = QFileDialog.getExistingDirectory(
-            self, "Selecione a pasta com os XMLs das NF-e (modelo 55)")
-        if not pasta:
+        lidos = ler_nfes_da_pasta(
+            self, "Conferir entradas",
+            "Selecione a pasta com os XMLs das NF-e (modelo 55)")
+        if lidos is None:
             return
-        try:
-            nfes, erros = xf.ler_pasta(pasta)
-        except Exception as e:  # noqa: BLE001
-            QMessageBox.critical(self, "Conferir entradas",
-                                 "Erro ao ler a pasta:\n%s" % e)
-            return
+        nfes, _erros = lidos
         if not any(xf.norm(n.mod) == "55" for n in nfes):
             QMessageBox.warning(
                 self, "Conferir entradas",
@@ -83,16 +80,12 @@ class ControladorGerais:
         """
         if not self.doc:
             return
-        pasta = QFileDialog.getExistingDirectory(
-            self, "Selecione a pasta com os XMLs das NF-e (modelo 55)")
-        if not pasta:
+        lidos = ler_nfes_da_pasta(
+            self, "Conferir itens",
+            "Selecione a pasta com os XMLs das NF-e (modelo 55)")
+        if lidos is None:
             return
-        try:
-            nfes, _erros = xf.ler_pasta(pasta)
-        except Exception as e:  # noqa: BLE001
-            QMessageBox.critical(self, "Conferir itens",
-                                 "Erro ao ler a pasta:\n%s" % e)
-            return
+        nfes, _erros = lidos
         if not any(xf.norm(n.mod) == "55" for n in nfes):
             QMessageBox.warning(
                 self, "Conferir itens",

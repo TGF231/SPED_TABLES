@@ -165,6 +165,15 @@ por empresa, gravada na pasta de dados (`memoria/<CNPJ>.json`):
 Limites: os textos complementares (C110/C195) não são montados; o saldo
 credor anterior do ICMS vem da memória ou do campo da tela.
 
+### Leitura de XMLs em paralelo
+
+Toda função que pede uma pasta de XMLs lê os arquivos em vários processos ao
+mesmo tempo, com barra de andamento e botão **Cancelar**. Num processador de
+16 núcleos, 5.000 NFC-e levam cerca de 4 s na primeira leitura (eram 25 s) e
+menos de 1 s quando o Windows já tem os arquivos em cache. O número de
+processos é automático (um a menos que os núcleos, até 16); para fixar outro,
+use `"trabalhadores": N` no `configuracao.json` da pasta de dados.
+
 ### Importar XMLs → consolidar C175 (EFD Contribuições)
 
 > **Em desenvolvimento.** Nenhum arquivo gerado por esta função passou ainda

@@ -2,12 +2,13 @@
 """Ações do menu: ferramentas do efd icms/ipi"""
 
 from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import QFileDialog, QMessageBox
+from PyQt6.QtWidgets import QMessageBox
 
 from sped_tables.dominio import conferencia as cf
 from sped_tables.dominio import revisao as rev
 from sped_tables.dominio import xml_fiscal as xf
-from sped_tables.interface.comum import (calcular, ler_pasta_xml,
+from sped_tables.interface.comum import (calcular, ler_nfes_da_pasta,
+                                         ler_pasta_xml,
                                          lista_de_mudancas)
 from sped_tables.interface.dialogos.conferencia import DialogoConfC190
 from sped_tables.interface.dialogos.correcao import DialogoRecalcularICMS
@@ -49,16 +50,12 @@ class ControladorIcms:
         por nItem — resolvendo a diferença de CFOP entre XML e SPED."""
         if not self.doc:
             return
-        pasta = QFileDialog.getExistingDirectory(
-            self, "Selecione a pasta com os XMLs (entradas/saídas)")
-        if not pasta:
+        lidos = ler_nfes_da_pasta(
+            self, "Conferir C190",
+            "Selecione a pasta com os XMLs (entradas/saídas)")
+        if lidos is None:
             return
-        try:
-            nfes, _erros = xf.ler_pasta(pasta)
-        except Exception as e:  # noqa: BLE001
-            QMessageBox.critical(self, "Conferir C190",
-                                 "Erro ao ler a pasta:\n%s" % e)
-            return
+        nfes, _erros = lidos
         if not nfes:
             QMessageBox.warning(self, "Conferir C190",
                                 "Nenhum XML encontrado na pasta.")
@@ -226,16 +223,11 @@ class ControladorIcms:
         if not self.doc or self.doc.layout != "ICMS":
             return
         titulo = "C170 fictícios (NFC-e)"
-        pasta = QFileDialog.getExistingDirectory(
-            self, "Selecione a pasta com os XMLs das NFC-e (modelo 65)")
-        if not pasta:
+        lidos = ler_nfes_da_pasta(
+            self, titulo, "Selecione a pasta com os XMLs das NFC-e (modelo 65)")
+        if lidos is None:
             return
-        try:
-            nfes, _erros = xf.ler_pasta(pasta)
-        except Exception as e:  # noqa: BLE001
-            QMessageBox.critical(self, titulo, "Erro ao ler:\n%s" % e)
-            return
-        nfe65 = [n for n in nfes if xf.norm(n.mod) == "65"]
+        nfe65 = [n for n in lidos[0] if xf.norm(n.mod) == "65"]
         if not nfe65:
             QMessageBox.warning(
                 self, titulo,

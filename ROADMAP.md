@@ -41,7 +41,11 @@ correção); o rc.2 é exceção pedida pelo usuário — "profissionalizar a
 ferramenta seguindo os manuais dos dois SPEDs" antes da 1.0.0: os guias
 práticos como fonte (ajuda de campo, regras com as condições do PVA) e o
 leiaute alinhado ao descritor instalado. A 1.0.0 sai quando fecharem as
-verificações manuais que faltam (4.2).
+verificações manuais que faltam (4.2), a partir do commit do rc.2.
+
+Depois do rc.2 o desenvolvimento seguiu na **1.1.0** (`1.1.0-dev.N`), a
+pedido do usuário: leitura de XMLs em paralelo (dev.1) e integração com
+os bancos dos ERPs por perfil (Firebird 2.5/5.0, SQL Server, MySQL, DBF).
 Toda a série 0.y.z foi sandbox: nenhuma versão antes da 1.0.0 é entregue
 como release.
 
@@ -124,6 +128,8 @@ precisa dos XMLs dos cupons de um mês real: ela está com `pronta=False` e
 | 1.0.0-rc.1 | Congelamento: só correção; licença GPL-3.0; executável e `--autoteste`; do roteiro 2.3, arrastar um `.txt` do Explorador e um monitor acima de 100% | em curso — faltam arrastar um `.txt` do Explorador para o executável e o monitor acima de 100% |
 | 1.0.0-rc.2 | Os guias práticos como fonte: ajuda de campo (F1), regras do guia com as condições e tolerâncias do PVA, leiaute conferido contra o descritor, `COBERTURA.md` | ✔ — suíte, arquivos reais, executável gerado e `--autoteste` (com os guias no pacote) |
 | **1.0.0** | Release — ver 4.3 | — |
+| 1.1.0-dev.1 | Leitura de XMLs em paralelo (processos), com andamento e Cancelar em todas as leituras de pasta | ✔ — suíte, executável e `--autoteste` (item *leitura paralela*) |
+| 1.1.0-dev.2 | Integração com ERP: conexões e perfis salvos, mapeamento de tabela e coluna sem SQL; produtos, participantes, XMLs no banco, estoque | em curso |
 
 Função que não fechar a coluna PVA até o rc.1 sai da 1.0.0 com
 `pronta=False` e volta numa 1.x. Saem assim: a NFC-e 65 por XML (4.1) e

@@ -2,11 +2,12 @@
 """Ações do menu: ferramentas do efd contribuições"""
 
 from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import QDialog, QFileDialog, QMessageBox
+from PyQt6.QtWidgets import QDialog, QMessageBox
 
 from sped_tables.dominio import xml_fiscal as xf
 from sped_tables.infra import config
-from sped_tables.interface.comum import _br, calcular
+from sped_tables.interface.comum import (_br, calcular,
+                                         ler_nfes_da_pasta)
 from sped_tables.interface.dialogos.cadastro import DialogoEmpresa
 from sped_tables.interface.dialogos.conferencia import DialogoDiscrepanciasC175
 from sped_tables.interface.dialogos.correcao import (
@@ -30,16 +31,11 @@ class ControladorContribuicoes:
                 "A consolidação de C175 a partir de XMLs aplica-se ao "
                 "EFD Contribuições.")
             return
-        pasta = QFileDialog.getExistingDirectory(
-            self, "Selecione a pasta com os XMLs das NFC-e")
-        if not pasta:
+        lidos = ler_nfes_da_pasta(self, "Importar XMLs",
+                                  "Selecione a pasta com os XMLs das NFC-e")
+        if lidos is None:
             return
-        try:
-            nfes, erros = xf.ler_pasta(pasta)
-        except Exception as e:  # noqa: BLE001
-            QMessageBox.critical(self, "Importar XMLs",
-                                 "Erro ao ler a pasta:\n%s" % e)
-            return
+        nfes, erros = lidos
         if not nfes:
             QMessageBox.warning(
                 self, "Importar XMLs",
@@ -151,16 +147,12 @@ class ControladorContribuicoes:
                 self, "Validar C175 (modelo 65)",
                 "Disponível apenas no EFD Contribuições.")
             return
-        pasta = QFileDialog.getExistingDirectory(
-            self, "Selecione a pasta com os XMLs das NFC-e (modelo 65)")
-        if not pasta:
+        lidos = ler_nfes_da_pasta(
+            self, "Validar C175",
+            "Selecione a pasta com os XMLs das NFC-e (modelo 65)")
+        if lidos is None:
             return
-        try:
-            nfes, _erros = xf.ler_pasta(pasta)
-        except Exception as e:  # noqa: BLE001
-            QMessageBox.critical(self, "Validar C175", "Erro ao ler:\n%s" % e)
-            return
-        nfe65 = [n for n in nfes if str(n.mod) == "65"]
+        nfe65 = [n for n in lidos[0] if xf.norm(n.mod) == "65"]
         if not nfe65:
             QMessageBox.warning(
                 self, "Validar C175",

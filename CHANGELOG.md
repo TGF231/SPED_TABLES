@@ -1,5 +1,50 @@
 # Changelog
 
+## [1.1.0-dev.1] — 2026-10-07
+
+**Leitura de XMLs em paralelo.** Pedido do usuário: toda função que lê uma
+pasta de XMLs estava ficando lenta. Medido com 5.000 NFC-e de 10 KB num
+processador de 16 núcleos:
+
+| modo | primeira leitura | com cache |
+|---|---|---|
+| um por vez (até a 1.0.0-rc.2) | 24,7 s | 2,5 s |
+| threads | 4,3 s | 2,7 s |
+| **processos (agora)** | **4,2 s** | **0,8 s** |
+
+Na primeira leitura o tempo é espera de disco e do antivírus, que examina
+cada arquivo ao abrir; com cache, é a análise do XML, que no Python só
+processos dividem.
+
+### Adicionado
+- **`infra/paralelo.py`**: reparte uma lista de itens em pedaços de 64
+  entre processos (um a menos que os núcleos, até 16; `trabalhadores` no
+  `configuracao.json` muda isso) e devolve o resultado **na ordem
+  original** — é a ordem que decide qual de dois XMLs repetidos vale. Abaixo
+  de 256 itens usa threads (subir processos custaria mais do que rende); se
+  o sistema não deixar subir processos, segue com threads e registra o
+  aviso no log.
+- **`aplicacao/leitura_xml.py`**: o caminho único de leitura de pasta. Usam
+  esse caminho: *Gerar SPED pelos XMLs* (ler e aprender), *Importar XMLs (C175)*,
+  *Validar C175*, *C170 fictícios*, *Conferir entradas*, *Conferir itens*,
+  *Conferir C190*, *Datas pelo XML* e *Redução de base pelos XMLs de compra*.
+- **Barra de andamento com Cancelar** (`comum.em_segundo_plano`) em todas
+  essas leituras: "Lendo os XMLs… 1.234 de 5.000". A leitura roda fora da
+  thread da interface, e a janela não congela mais.
+- Autoteste do executável: item *leitura paralela de XMLs*. O processo
+  filho é o próprio executável, e o item confere que os processos sobem
+  (sem cair para threads) e que o resultado é igual ao da leitura um por um.
+
+### Alterado
+- `xml_fiscal.ler_pasta_fiscal` e `ler_pasta` recebem o leitor (`ler=`):
+  listar (`listar_xmls`), ler (`ler_arquivos`, a unidade de trabalho que
+  vai para os processos) e montar o lote ficaram separados. O resultado é
+  o mesmo da 1.0.0-rc.2, conferido em teste com XML quebrado, repetido,
+  em subpasta e cancelado por evento.
+- O lançador (`sped_editor.py`) chama `multiprocessing.freeze_support()`
+  antes de carregar a interface: no executável, sem isso cada processo da
+  leitura abriria uma janela do programa.
+
 ## [1.0.0-rc.2] — 2026-10-07
 
 **Os guias práticos como fonte.** Pedido do usuário antes da 1.0.0: seguir

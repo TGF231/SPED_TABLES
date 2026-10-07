@@ -32,8 +32,8 @@ interface ──► aplicacao ──► dominio ◄── infra
 | Camada | Pode importar | Módulos |
 |---|---|---|
 | `sped_tables/dominio/` | só o domínio (nem Qt) | `sped_model` (`SpedDocument`, todos os cálculos), `sped_layouts` (leiaute completo: 270 registros no ICMS/IPI, 203 no Contribuições), `validacao`, `revisao` (lista `REGRAS`), `rotinas` (lista `ROTINAS`), `diagnostico`, `conferencia`, `ncm` (classificação do NCM e CST esperado), `empresas` (a entidade), `xml_fiscal`, `memoria_itens` e `geracao` (SPED a partir dos XMLs), `comparacao_sped`, **`referencias` (a porta)** |
-| `sped_tables/infra/` | domínio | `config` (**ponto único de configuração**), `dados` (pasta de dados, gravação atômica, recursos), `descritor_pva`, `tabelas_pva`, `tabelas_rfb` (leitura), `referencias_pva` (**o adaptador**), `cadastro` (empresas e correlações em JSON), `arquivos` (acervo), `exportacao` (CSV), `pva` (automação Win32), `falhas` (registro e ganchos), `memoria` (memória de cada empresa em JSON) |
-| `sped_tables/aplicacao/` | domínio, infra | `sessao` (arquivo aberto: abrir/salvar/fechar + acervo), `envio_pva` (pré-checagem, envio, desfecho), `geracao_xml` (gerar pelos XMLs: aprender, gerar, decidir, salvar), `montagem` (**raiz de composição**) |
+| `sped_tables/infra/` | domínio | `config` (**ponto único de configuração**), `dados` (pasta de dados, gravação atômica, recursos), `descritor_pva`, `tabelas_pva`, `tabelas_rfb` (leitura), `referencias_pva` (**o adaptador**), `cadastro` (empresas e correlações em JSON), `arquivos` (acervo), `exportacao` (CSV), `pva` (automação Win32), `falhas` (registro e ganchos), `memoria` (memória de cada empresa em JSON), `paralelo` (trabalho repartido entre processos) |
+| `sped_tables/aplicacao/` | domínio, infra | `sessao` (arquivo aberto: abrir/salvar/fechar + acervo), `envio_pva` (pré-checagem, envio, desfecho), `geracao_xml` (gerar pelos XMLs: aprender, gerar, decidir, salvar), `leitura_xml` (toda leitura de pasta de XMLs, em paralelo), `montagem` (**raiz de composição**) |
 | `sped_tables/interface/` | todos | `app` (`main`), `janela`, **`acoes` (tabela única de ações)**, `controladores/` (mixins da janela por área do menu), `grade`, `telas/`, `dialogos/`, `formulario_empresa`, `comum`, `tema`, `icones`, `barra_titulo`, `janela_custom`, `autoteste` (`--autoteste`: o roteiro 2.2 de dentro do executável) |
 
 `sped_editor.py` na raiz é só o lançador. `sped_tables/version.py` tem
@@ -127,6 +127,26 @@ C190 de 2.000 NFC-e levava 25 s, e os C170 fictícios de um mês, minutos.
 No lote, a largura é medida uma vez por tipo (`_largura`), as remoções se
 acumulam e a renumeração e o bloco 9 saem uma vez, no fim. Dentro dele,
 navegue pela árvore (`filhos`): `registros` ainda traz os removidos.
+
+### Muitos arquivos: `infra/paralelo.py`
+
+Leitura de pasta de XMLs passa **sempre** por `aplicacao/leitura_xml.py`,
+que reparte o trabalho entre processos (5.000 NFC-e: de 24,7 s para 4,2 s
+na primeira leitura e de 2,5 s para 0,8 s com cache). Na GUI, por
+`comum.ler_pasta_xml` / `comum.ler_nfes_da_pasta`, que mostram a barra com
+Cancelar (`comum.em_segundo_plano`). Quatro regras:
+
+- **A função que vai para os processos é de módulo** (o filho a acha pelo
+  nome) e não levanta por item: `xml_fiscal.ler_arquivos` devolve o erro
+  como texto, senão um XML ruim derrubaria o pedaço inteiro.
+- **A ordem do resultado é a da entrada.** É ela que decide qual de dois
+  XMLs repetidos vale; `em_lotes` remonta os pedaços na ordem.
+- **Nada de Qt fora da thread da interface.** O trabalho recebe
+  `progresso(feitos, total)` e `cancelar()`; a barra lê o andamento de um
+  dicionário. Exceção do trabalho sobe na thread da interface.
+- **O processo filho é o próprio executável.** O `freeze_support()` do
+  `sped_editor.py` vem antes de qualquer import do programa; o autoteste
+  confere (item *leitura paralela de XMLs*).
 
 **Abriu um bloco, feche o bloco.** Quem cria o primeiro registro de um bloco que
 ainda não existe no arquivo precisa criar também o **X990**. `gerar_texto`

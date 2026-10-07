@@ -437,29 +437,52 @@ class Lote:
         return self.nfes + self.ctes
 
 
-def ler_pasta_fiscal(pasta, recursivo=True):
+def listar_xmls(pasta, recursivo=True):
+    """Os `.xml` da pasta (e das subpastas), em ordem — a ordem decide qual
+    de dois XMLs repetidos vale."""
+    if not recursivo:
+        return [os.path.join(pasta, n) for n in sorted(os.listdir(pasta))
+                if n.lower().endswith(".xml")]
+    caminhos = []
+    for raiz, _d, nomes in os.walk(pasta):
+        caminhos += [os.path.join(raiz, n) for n in sorted(nomes)
+                     if n.lower().endswith(".xml")]
+    return caminhos
+
+
+def ler_arquivos(caminhos):
+    """`[(documento ou None, erro ou None)]` de cada caminho, na ordem.
+
+    É a unidade de trabalho da leitura em paralelo (`infra.paralelo`):
+    função de módulo, porque vai para outro processo pelo nome, e devolve
+    o erro como texto em vez de levantar — um XML ruim não derruba os 63
+    que vieram no mesmo pedaço."""
+    saida = []
+    for cam in caminhos:
+        try:
+            saida.append((ler_documento(cam), None))
+        except Exception as exc:                            # noqa: BLE001
+            saida.append((None, "não foi possível ler: %s" % exc))
+    return saida
+
+
+def ler_pasta_fiscal(pasta, recursivo=True, ler=ler_arquivos):
     """Lê NF-e, NFC-e, CT-e e eventos de uma pasta (e subpastas).
 
     Nada é descartado em silêncio: o que não é documento fiscal vai para
     `erros`, com o motivo, e o documento cancelado por evento continua na
     lista com `cancelada=True` — o SPED o escritura com COD_SIT 02.
+
+    `ler` lê a lista de caminhos (`ler_arquivos`, ou ela repartida entre
+    processos — `aplicacao.leitura_xml`).
     """
     lote = Lote()
     vistos = {}
-    caminhos = []
-    if recursivo:
-        for raiz, _d, nomes in os.walk(pasta):
-            caminhos += [os.path.join(raiz, n) for n in sorted(nomes)]
-    else:
-        caminhos = [os.path.join(pasta, n) for n in sorted(os.listdir(pasta))]
-    for cam in caminhos:
-        if not cam.lower().endswith(".xml"):
-            continue
+    caminhos = listar_xmls(pasta, recursivo)
+    for cam, (doc, erro) in zip(caminhos, ler(caminhos)):
         nome = os.path.relpath(cam, pasta)
-        try:
-            doc = ler_documento(cam)
-        except Exception as exc:                            # noqa: BLE001
-            lote.erros.append((nome, "não foi possível ler: %s" % exc))
+        if erro:
+            lote.erros.append((nome, erro))
             continue
         if doc is None:
             lote.erros.append((nome, "não é NF-e, NFC-e, CT-e nem evento"))
@@ -484,21 +507,19 @@ def ler_pasta_fiscal(pasta, recursivo=True):
     return lote
 
 
-def ler_pasta(pasta):
-    """Lê todos os .xml de uma pasta. Devolve (lista_de_NFe, lista_de_erros)."""
+def ler_pasta(pasta, ler=ler_arquivos):
+    """Lê os .xml de uma pasta (sem subpastas). Devolve (lista_de_NFe,
+    lista_de_erros) — só NF-e/NFC-e com número; o resto vai para os erros."""
     nfes, erros = [], []
-    for nome in sorted(os.listdir(pasta)):
-        if not nome.lower().endswith(".xml"):
-            continue
-        cam = os.path.join(pasta, nome)
-        try:
-            nfe = ler_nfe(cam)
-            if nfe is not None and nfe.nnf:
-                nfes.append(nfe)
-            else:
-                erros.append((nome, "XML sem infNFe/nNF (não é NF-e?)"))
-        except Exception as e:  # noqa: BLE001
-            erros.append((nome, str(e)))
+    caminhos = listar_xmls(pasta, recursivo=False)
+    for cam, (doc, erro) in zip(caminhos, ler(caminhos)):
+        nome = os.path.basename(cam)
+        if erro:
+            erros.append((nome, erro))
+        elif isinstance(doc, NFe) and doc.nnf:
+            nfes.append(doc)
+        else:
+            erros.append((nome, "XML sem infNFe/nNF (não é NF-e?)"))
     return nfes, erros
 
 

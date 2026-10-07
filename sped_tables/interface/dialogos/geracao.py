@@ -24,7 +24,9 @@ from sped_tables.aplicacao.geracao_xml import GeracaoXml, empresas_com_memoria
 from sped_tables.dominio import memoria_itens as mi
 from sped_tables.dominio.sped_model import so_digitos
 from sped_tables.interface import tema
-from sped_tables.interface.comum import _br, _num_celula
+from sped_tables.infra.paralelo import Cancelado
+from sped_tables.interface.comum import (_br, _num_celula,
+                                         em_segundo_plano)
 
 NOMES = {"ICMS": "EFD ICMS/IPI", "CONTRIB": "EFD Contribuições"}
 MOVIMENTO = {"entradas": "Entrada", "saidas": "Saída",
@@ -328,14 +330,16 @@ class DialogoGerarDeXml(QDialog):
             self.pasta.text())
         if not pasta:
             return
-        QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
         try:
-            res = self.geracao.aprender(pasta, *speds)
+            res = em_segundo_plano(
+                self, "Aprender", "Lendo os XMLs…",
+                lambda prog, canc: self.geracao.aprender(
+                    pasta, *speds, progresso=prog, cancelar=canc))
+        except Cancelado:
+            return
         except Exception as exc:  # noqa: BLE001
-            QApplication.restoreOverrideCursor()
             QMessageBox.warning(self, "Aprender", str(exc))
             return
-        QApplication.restoreOverrideCursor()
         self._mostrar_memoria()
         QMessageBox.information(
             self, "Aprender",
@@ -382,12 +386,20 @@ class DialogoGerarDeXml(QDialog):
         except ValueError as exc:
             QMessageBox.warning(self, "Gerar", str(exc))
             return
+        if self.pasta_lida != pasta:
+            try:
+                em_segundo_plano(self, "Gerar", "Lendo os XMLs…",
+                                 lambda prog, canc: self.geracao.ler(
+                                     pasta, prog, canc))
+            except Cancelado:
+                return
+            except Exception as exc:  # noqa: BLE001
+                QMessageBox.warning(self, "Gerar", str(exc))
+                return
+            self.pasta_lida = pasta
+            self.excluir = set()
         QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
         try:
-            if self.pasta_lida != pasta:
-                self.geracao.ler(pasta)
-                self.pasta_lida = pasta
-                self.excluir = set()
             grupos, previa = self.geracao.documentos(periodo)
             self.geracao.gerar(periodo, leiautes, excluir=self.excluir,
                                saldo_credor_anterior=saldo,

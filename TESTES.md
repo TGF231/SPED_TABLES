@@ -210,6 +210,10 @@ de quem usa o programa. Cobre:
 - instalação da pasta de dados, e a segunda instalação não copia nada por
   cima;
 - tabelas do PVA encontradas;
+- leitura paralela de XMLs: 300 XMLs lidos por processos — o processo
+  filho é o próprio executável, e sem o `freeze_support()` do lançador cada
+  um abriria uma janela —, sem cair para threads e com o mesmo resultado da
+  leitura um por um;
 - registro de falhas: um erro provocado vai para `logs\sped_tables.log`
   e chega ao aviso;
 - janela principal criada com ícone;
