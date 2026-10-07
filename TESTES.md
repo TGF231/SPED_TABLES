@@ -193,6 +193,22 @@ Os fluxos cobertos:
       escrituração: chega até "Validando a escrituração…"
 - [ ] Anote os números (erros antes × depois) na entrada do CHANGELOG
 
+### 2.1.1 Bancos de ERP de verdade
+
+`tests/test_erp.py` roda SQLite e DBF sempre. Contra servidor, aponte um
+banco de teste (de preferência com usuário só de leitura) numa variável
+`servidor;porta;banco;usuário;senha`:
+
+```bash
+set SPED_TABLES_ERP_FIREBIRD=localhost;3050;C:\dados\ERP.FDB;LEITOR;senha
+set SPED_TABLES_ERP_SQLSERVER=.\SQL2019;;master;;
+set SPED_TABLES_ERP_MYSQL=localhost;3306;erp;leitor;senha
+py -m unittest tests.test_erp
+```
+
+Cada um conecta, lista as tabelas e lê uma linha da primeira. Sem usuário,
+o SQL Server entra com a conta do Windows.
+
 ### 2.2 No executável
 
 ```bash
@@ -210,6 +226,8 @@ de quem usa o programa. Cobre:
 - instalação da pasta de dados, e a segunda instalação não copia nada por
   cima;
 - tabelas do PVA encontradas;
+- drivers dos bancos de ERP no pacote (`firebirdsql`, `pyodbc`; o
+  `pymysql` é opcional);
 - leitura paralela de XMLs: 300 XMLs lidos por processos — o processo
   filho é o próprio executável, e sem o `freeze_support()` do lançador cada
   um abriria uma janela —, sem cair para threads e com o mesmo resultado da

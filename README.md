@@ -165,6 +165,38 @@ por empresa, gravada na pasta de dados (`memoria/<CNPJ>.json`):
 Limites: os textos complementares (C110/C195) não são montados; o saldo
 credor anterior do ICMS vem da memória ou do campo da tela.
 
+### Integração com o ERP (Firebird, SQL Server, MySQL, DBF)
+
+*Gerais → Sistemas ERP* liga o SPED Tables ao banco do sistema de gestão
+da empresa, **só para leitura**. A configuração tem duas partes:
+
+1. **Sistema (perfil do ERP):** escolha o tipo de banco e, em cada aba
+   (Produtos, Participantes, XMLs, Estoque), a tabela e a coluna de cada
+   informação. Escolha a conexão e clique em *Carregar tabelas*; na aba,
+   *Ler colunas* traz as colunas com um exemplo do conteúdo, e
+   *Sugerir pelo nome* preenche as óbvias. *Pré-visualizar* mostra as
+   primeiras linhas como o programa vai recebê-las. Se a informação estiver
+   espalhada em várias tabelas, use a *consulta própria* (um único
+   `SELECT`). O perfil vale para todos os clientes que usam o mesmo ERP.
+2. **Conexão:** o banco de um cliente. No Firebird, servidor e caminho do
+   `.fdb` (2.5 a 5); no SQL Server, `servidor\instância` e o nome do
+   banco, e sem usuário entra com a conta do Windows; no DBF, a pasta dos
+   arquivos. Vincule o CNPJ da empresa (*Vincular ao arquivo aberto*): ao
+   abrir o SPED dela, o programa já sabe de onde buscar.
+
+Com a conexão pronta:
+
+- *Gerais → Atualizar 0200 (produtos) pelo ERP* e *Atualizar 0150
+  (participantes) pelo ERP* mostram o que mudaria, campo a campo, antes de
+  gravar;
+- *Importar inventário* ganha o botão *Ler do ERP…* (estoque na data);
+- toda função que lê XMLs pergunta se eles vêm de uma pasta ou do banco
+  do ERP (no período do arquivo).
+
+A senha fica guardada cifrada pelo Windows, legível só para o mesmo usuário
+na mesma máquina. Mesmo o programa só lendo, use no banco um usuário com
+permissão apenas de leitura. MySQL precisa do pacote `pymysql`.
+
 ### Leitura de XMLs em paralelo
 
 Toda função que pede uma pasta de XMLs lê os arquivos em vários processos ao

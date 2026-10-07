@@ -272,6 +272,83 @@ class TestJanela(unittest.TestCase):
             em_segundo_plano(None, "t", "x", cancela)
         self.assertEqual(self.erros, [], self._falhas())
 
+    def test_erp_pela_tela(self):
+        """Com uma conexão de ERP (SQLite) vinculada à empresa: o perfil
+        abre e lê a estrutura, 0200 e 0150 são corrigidos pela prévia, o
+        inventário lê o estoque e as conferências leem os XMLs do banco."""
+        from sped_tables.infra import sistemas_erp
+        from sped_tables.interface import comum
+        from sped_tables.interface.dialogos import erp as dlg_erp
+        from sped_tables.interface.dialogos.inventario import (
+            DialogoImportarInventario)
+        from tests.fabrica import CNPJ_TESTE
+        from tests.test_erp import _banco_sqlite, _sistema_sqlite
+        from sped_tables.dominio import erp
+        with PastaTemporaria() as p:
+            banco = os.path.join(p, "erp.db")
+            _banco_sqlite(banco)
+            cfg = sistemas_erp.Configuracao(
+                {"erp_sql": _sistema_sqlite()},
+                [erp.Conexao("Matriz", "erp_sql", base=banco,
+                             cnpjs=[CNPJ_TESTE])])
+            arq_cfg = sistemas_erp.salvar(cfg)
+            self.addCleanup(os.remove, arq_cfg)
+            j = self.ed.JanelaPrincipal()
+            self.assertTrue(j.abrir_caminho(icms_basico().gravar(p)))
+            _esperar()
+            doc = j.doc
+
+            def valor(reg, chave, campo):
+                i_cod = doc._ix(reg, "COD_ITEM" if reg == "0200"
+                                else "COD_PART")
+                r = next(r for r in doc.registros if r.reg == reg
+                         and r.valor(i_cod) == chave)
+                return r.valor(doc._ix(reg, campo))
+
+            j.atualizar_0200_erp()
+            self.assertEqual(valor("0200", "P1", "COD_NCM"), "04012010")
+            self.assertEqual(valor("0200", "P1", "CEST"), "0200400")
+            j.atualizar_0150_erp()
+            self.assertEqual(valor("0150", "F1", "NOME"), "FORNECEDOR ERP")
+            self.assertTrue(j.alterado)
+
+            # as conferências leem os XMLs do banco, no período do arquivo
+            with mock.patch.object(comum, "escolher_origem_xml",
+                                   lambda *a: cfg.conexoes[0]), \
+                    mock.patch("sped_tables.interface.controladores.gerais."
+                               "DialogoConferencia") as conf:
+                j.conferir_entradas_55()
+            self.assertEqual(
+                conf.call_args[0][0]["resumo"]["itens_conferidos"], 3)
+
+            inv = DialogoImportarInventario(doc, "31082026", j)
+            inv._do_erp()
+            self.assertEqual(len(inv.linhas_brutas), 2)
+            inv._importar()
+            self.assertEqual(sum(1 for r in doc.registros
+                                 if r.reg == "H010"), 2)
+
+            # o perfil: tabelas, colunas e prévia pela conexão
+            d = dlg_erp.DialogoSistemasERP(j, doc=doc)
+            self.assertEqual(d.lst_con.count(), 1)
+            d.carregar_tabelas()
+            ed = d.editores["produtos"]
+            self.assertEqual(ed.cb_tabela.count(), 4)
+            ed.ler_colunas()
+            self.assertIn("CLASFISCAL", ed._colunas)
+            self.assertIn("ex.:", ed.exemplos["cod_ncm"].text())
+            with mock.patch.object(dlg_erp.DialogoPrevia, "exec") as prev:
+                ed.previsualizar()
+            prev.assert_called_once()
+            d.novo_sistema()
+            self.assertEqual(d.lst_sis.count(), 2)
+            self.assertTrue(d.salvar())
+            self.assertEqual(len(sistemas_erp.carregar().sistemas), 2)
+            d.close()
+            j.alterado = False
+            j.close()
+        self.assertEqual(self.erros, [], self._falhas())
+
     def test_todas_as_acoes_nos_dois_leiautes(self):
         for montador in (icms_basico(), contrib_basico()):
             with self.subTest(layout=montador.layout), \

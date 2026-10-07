@@ -135,6 +135,13 @@ ACOES = (
          MENU_GERAIS),
     Acao("act_correlacoes_cfop", "Correlações de CFOP (entradas)…",
          "editar_correlacoes_cfop", SEMPRE, MENU_GERAIS, separador=True),
+    # ERP: só leitura do banco; os perfis de cada sistema e as conexões
+    Acao("act_sistemas_erp", "Sistemas ERP (conexões e mapeamento)…",
+         "sistemas_erp", SEMPRE, MENU_GERAIS, separador=True, pronta=False),
+    Acao("act_0200_erp", "Atualizar 0200 (produtos) pelo ERP…",
+         "atualizar_0200_erp", ARQUIVO, MENU_GERAIS, pronta=False),
+    Acao("act_0150_erp", "Atualizar 0150 (participantes) pelo ERP…",
+         "atualizar_0150_erp", ARQUIVO, MENU_GERAIS, pronta=False),
 )
 
 # o rótulo do tema anuncia o destino ("Tema escuro" no tema claro), por isso

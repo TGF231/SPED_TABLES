@@ -2697,6 +2697,37 @@ class SpedDocument:
                 prev.setdefault(campo, []).append((cod, atual, novo))
         return prev
 
+    def atualizar_0200(self, linhas, campos):
+        """Corrige o cadastro 0200 **já existente** com as `linhas` (da
+        planilha ou do banco do ERP), só nos `campos` escolhidos (nomes do
+        0200). É a aplicação da `previa_atualizacao_0200`: a mesma regra —
+        valor vazio não apaga, alíquota comparada como número.
+
+        Devolve `({campo: quantos itens}, {códigos alterados})`."""
+        i_cod = self._ix("0200", "COD_ITEM")
+        z = {c: self._ix("0200", c) for _k, c in CAMPOS_0200}
+        cad = {}
+        for r in self.registros:
+            if r.reg == "0200":
+                cad.setdefault((r.valor(i_cod) or "").strip(), r)
+        contagem, itens, vistos = {}, set(), set()
+        for ln in linhas:
+            cod = _texto_planilha(ln.get("cod_item"))
+            if not cod or cod in vistos:
+                continue
+            vistos.add(cod)
+            reg = cad.get(cod)
+            if reg is None:
+                continue
+            for campo, i, _atual, novo in self._mudancas_item_0200(reg, ln, z):
+                if campo in campos:
+                    reg.set_valor(i, novo)
+                    contagem[campo] = contagem.get(campo, 0) + 1
+                    itens.add(cod)
+        if itens:
+            self._cad_itens = None
+        return contagem, itens
+
     def avisos_previa_0200(self, linhas, previa=None):
         """Riscos de cada campo de uma atualização de 0200, para o diálogo
         avisar **antes** de gravar. Devolve
@@ -2850,17 +2881,17 @@ class SpedDocument:
         n_itens = n_novos_0200 = n_novos_0190 = 0
         vistos = set()
         ignorados = []
-        campos_0200 = {}        # campo do 0200 -> quantos itens corrigidos
-        itens_0200 = set()      # itens cujo cadastro mudou
 
         # já conferido no início: aqui só converte
         num = num_planilha_estrito
 
-        # quais campos do 0200 a planilha pode corrigir nesta execução
+        # a planilha é a fonte: corrige o cadastro que já existia, só nos
+        # campos escolhidos (campo -> quantos itens; itens alterados)
         if atualizar_0200 is True:
             corrigir = {c for _k, c in CAMPOS_0200}
         else:
             corrigir = set(atualizar_0200 or ())
+        campos_0200, itens_0200 = self.atualizar_0200(linhas, corrigir)
 
         for ln in linhas:
             cod = _texto_planilha(ln.get("cod_item"))
@@ -2919,15 +2950,6 @@ class SpedDocument:
                 cad[cod] = novo
                 ult_0200 = novo
                 n_novos_0200 += 1
-            elif corrigir and cod in cad:
-                # a planilha é a fonte: corrige o cadastro que já existe
-                for campo, i, _atual, novo_v in self._mudancas_item_0200(
-                        cad[cod], ln, z):
-                    if campo not in corrigir:
-                        continue
-                    cad[cod].set_valor(i, novo_v)
-                    campos_0200[campo] = campos_0200.get(campo, 0) + 1
-                    itens_0200.add(cod)
 
             # unidade nova -> 0190
             if unid and unid.upper() not in unids and r0001 is not None:

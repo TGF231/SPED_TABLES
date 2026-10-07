@@ -89,7 +89,10 @@ def _participante(el):
 def _raiz(caminho):
     """Elemento raiz do XML, sem namespaces; None se não for XML legível."""
     with open(caminho, "rb") as fh:
-        bruto = fh.read()
+        return _raiz_de_bytes(fh.read())
+
+
+def _raiz_de_bytes(bruto):
     try:
         texto = bruto.decode("utf-8")
     except UnicodeDecodeError:
@@ -404,7 +407,16 @@ def _evento_de(root, caminho):
 
 def ler_documento(caminho):
     """NFe, CTe ou Evento, conforme o XML; None se não for nenhum deles."""
-    root = _raiz(caminho)
+    return _documento(_raiz(caminho), caminho)
+
+
+def documento_de_bytes(bruto, nome):
+    """O mesmo que `ler_documento`, para o XML que não está em arquivo — o
+    que o ERP guarda no banco. `nome` faz o papel do nome do arquivo."""
+    return _documento(_raiz_de_bytes(bruto), nome)
+
+
+def _documento(root, caminho):
     if root is None:
         return None
     if root.find(".//evento/infEvento") is not None:
@@ -466,21 +478,24 @@ def ler_arquivos(caminhos):
     return saida
 
 
-def ler_pasta_fiscal(pasta, recursivo=True, ler=ler_arquivos):
-    """Lê NF-e, NFC-e, CT-e e eventos de uma pasta (e subpastas).
+def ler_conteudos(itens):
+    """`ler_arquivos` para XMLs em memória: `itens` = `[(nome, bytes)]`."""
+    saida = []
+    for nome, bruto in itens:
+        try:
+            saida.append((documento_de_bytes(bruto, nome), None))
+        except Exception as exc:                            # noqa: BLE001
+            saida.append((None, "não foi possível ler: %s" % exc))
+    return saida
 
-    Nada é descartado em silêncio: o que não é documento fiscal vai para
-    `erros`, com o motivo, e o documento cancelado por evento continua na
-    lista com `cancelada=True` — o SPED o escritura com COD_SIT 02.
 
-    `ler` lê a lista de caminhos (`ler_arquivos`, ou ela repartida entre
-    processos — `aplicacao.leitura_xml`).
-    """
+def montar_lote(lidos):
+    """O `Lote` de `[(nome, documento, erro)]`, na ordem: o primeiro de dois
+    documentos com a mesma chave é o que vale, e o cancelamento por evento
+    marca o documento. Serve à pasta e ao banco do ERP."""
     lote = Lote()
     vistos = {}
-    caminhos = listar_xmls(pasta, recursivo)
-    for cam, (doc, erro) in zip(caminhos, ler(caminhos)):
-        nome = os.path.relpath(cam, pasta)
+    for nome, doc, erro in lidos:
         if erro:
             lote.erros.append((nome, erro))
             continue
@@ -507,13 +522,11 @@ def ler_pasta_fiscal(pasta, recursivo=True, ler=ler_arquivos):
     return lote
 
 
-def ler_pasta(pasta, ler=ler_arquivos):
-    """Lê os .xml de uma pasta (sem subpastas). Devolve (lista_de_NFe,
-    lista_de_erros) — só NF-e/NFC-e com número; o resto vai para os erros."""
+def nfes_de(lidos):
+    """`(nfes, erros)` de `[(nome, documento, erro)]`: só NF-e/NFC-e com
+    número, na ordem; o resto vai para os erros."""
     nfes, erros = [], []
-    caminhos = listar_xmls(pasta, recursivo=False)
-    for cam, (doc, erro) in zip(caminhos, ler(caminhos)):
-        nome = os.path.basename(cam)
+    for nome, doc, erro in lidos:
         if erro:
             erros.append((nome, erro))
         elif isinstance(doc, NFe) and doc.nnf:
@@ -521,6 +534,29 @@ def ler_pasta(pasta, ler=ler_arquivos):
         else:
             erros.append((nome, "XML sem infNFe/nNF (não é NF-e?)"))
     return nfes, erros
+
+
+def ler_pasta_fiscal(pasta, recursivo=True, ler=ler_arquivos):
+    """Lê NF-e, NFC-e, CT-e e eventos de uma pasta (e subpastas).
+
+    Nada é descartado em silêncio: o que não é documento fiscal vai para
+    `erros`, com o motivo, e o documento cancelado por evento continua na
+    lista com `cancelada=True` — o SPED o escritura com COD_SIT 02.
+
+    `ler` lê a lista de caminhos (`ler_arquivos`, ou ela repartida entre
+    processos — `aplicacao.leitura_xml`).
+    """
+    caminhos = listar_xmls(pasta, recursivo)
+    return montar_lote((os.path.relpath(cam, pasta), doc, erro)
+                       for cam, (doc, erro) in zip(caminhos, ler(caminhos)))
+
+
+def ler_pasta(pasta, ler=ler_arquivos):
+    """Lê os .xml de uma pasta (sem subpastas). Devolve (lista_de_NFe,
+    lista_de_erros) — só NF-e/NFC-e com número; o resto vai para os erros."""
+    caminhos = listar_xmls(pasta, recursivo=False)
+    return nfes_de((os.path.basename(cam), doc, erro)
+                   for cam, (doc, erro) in zip(caminhos, ler(caminhos)))
 
 
 # --------------------------------------------------- chaves e vínculo genérico

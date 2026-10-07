@@ -1,5 +1,71 @@
 # Changelog
 
+## [1.1.0-dev.2] — 2026-10-07
+
+**Integração com o banco do ERP.** Pedido do usuário: ler Firebird 2.5 e
+5.0, SQL Server, DBF e MySQL, com um perfil por sistema guardado na
+configuração, em que a pessoa aponta a tabela e a coluna de cada
+informação de forma simples. Ações com `pronta=False` até passarem por um
+ERP de verdade.
+
+### Adicionado
+- **Gerais → Sistemas ERP.** Duas abas:
+  - *Sistemas (perfis de ERP)*: o tipo de banco e, para produtos,
+    participantes, XMLs e estoque, a tabela e a coluna de cada
+    informação, escolhidas das listas que o próprio banco devolve.
+    *Sugerir pelo nome* preenche o óbvio (`CLASFISCAL` → NCM, `EAN` →
+    código de barras), cada coluna mostra um exemplo do conteúdo e
+    *Pré-visualizar* lê as primeiras linhas como o programa vai
+    recebê-las. Para ERP que espalha a informação em várias tabelas, há a
+    consulta própria, que aceita **um único `SELECT`**.
+  - *Conexões*: o banco de cada cliente (servidor, arquivo `.fdb`, banco
+    do SQL Server, pasta dos DBF), o código da empresa quando o banco
+    guarda várias e o CNPJ vinculado. Abrir o SPED da empresa já sabe de
+    onde buscar. *Testar conexão* mostra a versão do servidor.
+- **Atualizar 0200 (produtos) e 0150 (participantes) pelo ERP**, com a
+  mesma prévia campo a campo da correção pela planilha: valor vazio não
+  apaga nada; CNPJ com dígito errado e município sem 7 dígitos nascem
+  desmarcados. O 0150 casa pelo `COD_PART`; quando o ERP usa outro código,
+  casa pelo CNPJ/CPF, se ele for único dos dois lados. IE "ISENTO" vira
+  IE vazia (o PVA valida a inscrição pela UF), e CNPJ e CPF numa coluna só
+  são separados pelo tamanho.
+- **Inventário pelo ERP:** botão *Ler do ERP…* no *Importar inventário*. É
+  o estoque na data do inventário (com coluna de data, a posição mais
+  recente até ela; sem data, os depósitos somados), completado com o
+  cadastro de produtos para criar o 0200 dos itens novos.
+- **XMLs do banco:** quando a empresa tem conexão com XMLs, toda leitura de
+  XMLs (conferências, C175, C170 fictícios, datas, redução de base)
+  pergunta se vêm de uma pasta ou do banco, no período do arquivo. O
+  conteúdo pode estar guardado como texto, bytes, gzip, zlib ou base64, e
+  é lido em paralelo como a pasta.
+- Adaptadores (`infra/bancos.py`): Firebird pelo `firebirdsql` (puro
+  Python; tenta SRP com canal cifrado e cai para o `Legacy_Auth` do 2.5),
+  SQL Server pelo `pyodbc` (o melhor driver ODBC instalado; sem usuário,
+  entra com a conta do Windows), MySQL pelo `pymysql` (opcional), SQLite e
+  **DBF por leitor próprio** (`infra/dbf.py`: dBase III/IV, Clipper,
+  FoxPro e Visual FoxPro, memo `.dbt`/`.fpt`, registros apagados de fora,
+  página de código do cabeçalho, cp850 por padrão).
+- **Só leitura:** o programa monta apenas `SELECT`, abre a transação como
+  somente leitura onde o driver deixa (Firebird, MySQL, SQLite) e nunca
+  confirma nada.
+- **A senha não fica legível no disco:** vai para `sistemas_erp.json`
+  cifrada pela DPAPI do Windows (`infra/segredos.py`). JSON trazido de
+  outra conta ou máquina chega sem a senha, e a tela pede de novo.
+- Autoteste do executável: item *drivers dos bancos de ERP*.
+
+### Alterado
+- `SpedDocument.atualizar_0200(linhas, campos)`: a correção do cadastro
+  saiu de dentro do `importar_inventario_h010`, e planilha e ERP usam a
+  mesma função.
+- `xml_fiscal.montar_lote` e `nfes_de`: a montagem do lote (repetidos,
+  cancelamento por evento) é a mesma para a pasta e para o banco.
+
+### Conferido
+- SQL Server 2019 local, pela conta do Windows (banco `master`, só
+  leitura): conectar, listar tabelas e ler amostra. Firebird e MySQL só
+  pelo SQL que o adaptador monta, porque não havia credencial de teste. Os
+  testes contra servidor rodam quando o ambiente aponta um (TESTES.md).
+
 ## [1.1.0-dev.1] — 2026-10-07
 
 **Leitura de XMLs em paralelo.** Pedido do usuário: toda função que lê uma

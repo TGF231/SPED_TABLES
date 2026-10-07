@@ -197,6 +197,21 @@ def _conferir(app, rel, arquivo, dados, falhas):
             "; " + avisos_log[0] if avisos_log else "")
     rel.conferir("leitura paralela de XMLs", leitura_paralela)
 
+    def drivers_erp():
+        # importados só dentro dos adaptadores: o PyInstaller os acha pela
+        # análise, e é aqui que se confere que vieram no pacote
+        info, faltam = {}, []
+        for nome in ("firebirdsql", "pyodbc", "pymysql"):
+            try:
+                mod = __import__(nome)
+                info[nome] = getattr(mod, "__version__", "ok")
+            except ImportError:
+                info[nome] = "ausente"
+                if nome != "pymysql":       # opcional: MySQL
+                    faltam.append(nome)
+        return not faltam, info
+    rel.conferir("drivers dos bancos de ERP", drivers_erp)
+
     def registro_de_falhas():
         try:
             raise RuntimeError("falha provocada pelo autoteste")

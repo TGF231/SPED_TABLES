@@ -129,7 +129,7 @@ precisa dos XMLs dos cupons de um mês real: ela está com `pronta=False` e
 | 1.0.0-rc.2 | Os guias práticos como fonte: ajuda de campo (F1), regras do guia com as condições e tolerâncias do PVA, leiaute conferido contra o descritor, `COBERTURA.md` | ✔ — suíte, arquivos reais, executável gerado e `--autoteste` (com os guias no pacote) |
 | **1.0.0** | Release — ver 4.3 | — |
 | 1.1.0-dev.1 | Leitura de XMLs em paralelo (processos), com andamento e Cancelar em todas as leituras de pasta | ✔ — suíte, executável e `--autoteste` (item *leitura paralela*) |
-| 1.1.0-dev.2 | Integração com ERP: conexões e perfis salvos, mapeamento de tabela e coluna sem SQL; produtos, participantes, XMLs no banco, estoque | em curso |
+| 1.1.0-dev.2 | Integração com ERP: conexões e perfis salvos, mapeamento de tabela e coluna sem SQL; produtos, participantes, XMLs no banco, estoque | ✔ na suíte (SQLite e DBF de verdade, SQL Server local); **falta** um ERP real em Firebird 2.5/5 e em MySQL para virar `pronta=True` |
 
 Função que não fechar a coluna PVA até o rc.1 sai da 1.0.0 com
 `pronta=False` e volta numa 1.x. Saem assim: a NFC-e 65 por XML (4.1) e

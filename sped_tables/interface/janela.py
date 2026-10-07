@@ -27,6 +27,7 @@ from sped_tables.interface.controladores.arquivo import ControladorArquivo
 from sped_tables.interface.controladores.contribuicoes import (
     ControladorContribuicoes,
 )
+from sped_tables.interface.controladores.erp import ControladorERP
 from sped_tables.interface.controladores.gerais import ControladorGerais
 from sped_tables.interface.controladores.icms import ControladorIcms
 from sped_tables.interface.grade import BlocoWidget, GerenciadorOrdemAbas
@@ -38,7 +39,7 @@ from sped_tables.interface.telas.resumo import ResumoWidget
 
 class JanelaPrincipal(ControladorArquivo, ControladorIcms,
                       ControladorContribuicoes, ControladorGerais,
-                      QMainWindow):
+                      ControladorERP, QMainWindow):
     """Janela principal: monta a tela e delega as ações aos
     controladores (um por área do menu)."""
 

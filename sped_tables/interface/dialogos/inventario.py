@@ -113,9 +113,12 @@ class DialogoAtualizar0200(QDialog):
 
     COLS = ["", "Campo", "Itens", "Exemplo"]
 
-    def __init__(self, previa, avisos=None, parent=None):
+    def __init__(self, previa, avisos=None, parent=None, registro="0200",
+                 sujeito="A planilha", titulo=None,
+                 botao="Aplicar e importar"):
         super().__init__(parent)
-        self.setWindowTitle("Atualizar o cadastro 0200 pela planilha")
+        self.setWindowTitle(titulo or "Atualizar o cadastro %s pela "
+                            "planilha" % registro)
         self.resize(760, 460)
         self.previa = previa
         avisos = avisos or {}
@@ -123,8 +126,8 @@ class DialogoAtualizar0200(QDialog):
 
         total = sum(len(v) for v in previa.values())
         lay.addWidget(QLabel(
-            "A planilha mudaria <b>%d</b> valor(es) no cadastro de itens. "
-            "Marque o que deve ser corrigido:" % total))
+            "%s mudaria <b>%d</b> valor(es) no cadastro %s. Marque o que "
+            "deve ser corrigido:" % (sujeito, total, registro)))
 
         pal = tema.atual()
         self.tab = QTableWidget(len(previa), len(self.COLS))
@@ -163,7 +166,7 @@ class DialogoAtualizar0200(QDialog):
             lay.addWidget(av)
 
         nota = QLabel(
-            "Coluna não mapeada e célula vazia nunca apagam o que já está no "
+            "Coluna não mapeada e valor vazio nunca apagam o que já está no "
             "cadastro.")
         nota.setWordWrap(True)
         nota.setProperty("role", "dica")
@@ -171,7 +174,7 @@ class DialogoAtualizar0200(QDialog):
 
         rod = QHBoxLayout()
         rod.addStretch(1)
-        b_ok = QPushButton("Aplicar e importar")
+        b_ok = QPushButton(botao)
         b_ok.clicked.connect(self.accept)
         b_ca = QPushButton("Cancelar")
         b_ca.clicked.connect(self.reject)
@@ -256,8 +259,14 @@ class DialogoImportarInventario(QDialog):
         self.ed_arq.setPlaceholderText("Planilha .xlsx / .csv")
         b_sel = QPushButton("Selecionar…")
         b_sel.clicked.connect(self._escolher)
+        b_erp = QPushButton("Ler do ERP…")
+        b_erp.setToolTip("O estoque do banco do ERP na data do inventário, "
+                         "com o cadastro dos produtos (Gerais → Sistemas "
+                         "ERP)")
+        b_erp.clicked.connect(self._do_erp)
         lin.addWidget(self.ed_arq, 1)
         lin.addWidget(b_sel)
+        lin.addWidget(b_erp)
         lay.addLayout(lin)
 
         cab = QHBoxLayout()
@@ -351,6 +360,46 @@ class DialogoImportarInventario(QDialog):
         self._auto_mapear()
         self.lbl.setText("Planilha lida: %d linha(s), %d coluna(s)."
                          % (len(self.linhas_brutas), len(self.cabecalho)))
+        self.b_imp.setEnabled(True)
+
+    def _do_erp(self):
+        """O estoque do ERP no lugar da planilha: as linhas já chegam nas
+        chaves canônicas, e cada combo aponta para a sua."""
+        from sped_tables.aplicacao import erp as caso
+        from sped_tables.interface.dialogos.erp import (escolher_conexao,
+                                                        no_banco)
+        titulo = "Inventário pelo ERP"
+        dt = self.ed_dt.text().strip()
+        if len(dt) != 8 or not dt.isdigit():
+            QMessageBox.warning(self, titulo, "Informe antes a data do "
+                                "inventário (DDMMAAAA): é a posição do "
+                                "estoque que será lida.")
+            return
+        par = escolher_conexao(self, self.doc, "estoque", titulo)
+        if par is None:
+            return
+        cfg, conexao = par
+        linhas = no_banco(self, titulo, "Lendo o estoque do ERP…",
+                          lambda: caso.estoque(cfg, conexao, dt))
+        if linhas is None:
+            return
+        if not linhas:
+            QMessageBox.information(self, titulo, "O ERP não devolveu "
+                                    "nenhum item de estoque.")
+            return
+        chaves = [c for c, _r, _o, _k in self.CAMPOS]
+        self.cabecalho = chaves
+        self.linhas_brutas = [[ln.get(k) for k in chaves] for ln in linhas]
+        self.numeros_linha = list(range(1, len(linhas) + 1))
+        for chave, cb in self.combos.items():
+            cb.clear()
+            cb.addItem("(não usar)")
+            cb.addItems(chaves)
+            tem = any(ln.get(chave) not in (None, "") for ln in linhas)
+            cb.setCurrentIndex(chaves.index(chave) + 1 if tem else 0)
+        self.ed_arq.setText("ERP: %s" % conexao.nome)
+        self.lbl.setText("Estoque do ERP em %s: %d item(ns)."
+                         % (dt, len(linhas)))
         self.b_imp.setEnabled(True)
 
     @staticmethod

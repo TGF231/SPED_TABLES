@@ -9,6 +9,7 @@ from PyQt6.QtCore import QSettings, Qt
 from PyQt6.QtWidgets import (QApplication, QFileDialog, QMessageBox,
                              QProgressDialog)
 
+from sped_tables.aplicacao import erp as caso_erp
 from sped_tables.aplicacao import leitura_xml
 from sped_tables.dominio.sped_model import EntradaInvalida
 from sped_tables.infra import dados
@@ -86,33 +87,72 @@ def _milhar(n):
     return "{:,}".format(n).replace(",", ".")
 
 
-def _ler_xmls(pai, titulo, pergunta, ler):
-    """Escolhe a pasta e roda `ler(pasta, progresso, cancelar)` com a barra
-    de andamento. None se a pessoa desistiu ou a leitura falhou — o erro já
-    foi mostrado."""
-    pasta = QFileDialog.getExistingDirectory(pai, pergunta)
-    if not pasta:
+def escolher_origem_xml(pai, titulo, conexoes):
+    """"pasta", a conexão do ERP escolhida, ou None (desistiu). Só pergunta
+    quando a empresa do arquivo tem conexão de ERP com XMLs."""
+    caixa = QMessageBox(QMessageBox.Icon.Question, titulo,
+                        "De onde vêm os XMLs?", parent=pai)
+    botoes = {caixa.addButton("Banco do ERP: %s" % c.nome,
+                              QMessageBox.ButtonRole.AcceptRole): c
+              for c in conexoes}
+    b_pasta = caixa.addButton("Uma pasta…",
+                              QMessageBox.ButtonRole.AcceptRole)
+    caixa.addButton("Cancelar", QMessageBox.ButtonRole.RejectRole)
+    caixa.exec()
+    if caixa.clickedButton() is b_pasta:
+        return "pasta"
+    return botoes.get(caixa.clickedButton())
+
+
+def _ler_xmls(pai, titulo, pergunta, ler, do_lote):
+    """Lê os XMLs com a barra de andamento: de uma pasta (`ler(pasta,
+    progresso, cancelar)`) ou, quando a empresa do arquivo tem conexão de
+    ERP com XMLs, do banco — no período do arquivo, convertido por
+    `do_lote(lote)`. None se a pessoa desistiu ou a leitura falhou — o erro
+    já foi mostrado."""
+    doc = getattr(pai, "doc", None)
+    cfg = caso_erp.carregar() if doc is not None else None
+    conexoes = (caso_erp.conexoes_da_empresa(cfg, caso_erp.cnpj(doc), "xmls")
+                if cfg is not None else [])
+    origem = escolher_origem_xml(pai, titulo, conexoes) if conexoes \
+        else "pasta"
+    if origem is None:
         return None
+    if origem == "pasta":
+        pasta = QFileDialog.getExistingDirectory(pai, pergunta)
+        if not pasta:
+            return None
+
+        def trabalho(prog, canc):
+            return ler(pasta, prog, canc)
+    else:
+        dt_ini, dt_fin = caso_erp.periodo(doc)
+
+        def trabalho(prog, canc):
+            return do_lote(caso_erp.xmls(cfg, origem, dt_ini, dt_fin, prog,
+                                         canc))
     try:
-        return em_segundo_plano(pai, titulo, "Lendo os XMLs…",
-                                lambda prog, canc: ler(pasta, prog, canc))
+        return em_segundo_plano(pai, titulo, "Lendo os XMLs…", trabalho)
     except Cancelado:
         return None
     except Exception as e:                                  # noqa: BLE001
-        QMessageBox.critical(pai, titulo, "Erro ao ler a pasta:\n%s" % e)
+        QMessageBox.critical(pai, titulo, "Erro ao ler os XMLs:\n%s" % e)
         return None
 
 
 def ler_pasta_xml(pai, titulo, pergunta):
-    """Escolhe uma pasta e lê os XMLs dela (as subpastas entram), em
+    """Lê os XMLs de uma pasta (as subpastas entram) ou do banco do ERP, em
     paralelo e com andamento. Devolve o lote (`xml_fiscal.Lote`), ou None."""
-    return _ler_xmls(pai, titulo, pergunta, leitura_xml.ler_pasta_fiscal)
+    return _ler_xmls(pai, titulo, pergunta, leitura_xml.ler_pasta_fiscal,
+                     lambda lote: lote)
 
 
 def ler_nfes_da_pasta(pai, titulo, pergunta):
-    """Escolhe uma pasta e lê as NF-e/NFC-e dela (sem subpastas), em
+    """Lê as NF-e/NFC-e de uma pasta (sem subpastas) ou do banco do ERP, em
     paralelo e com andamento. Devolve `(nfes, erros)`, ou None."""
-    return _ler_xmls(pai, titulo, pergunta, leitura_xml.ler_pasta)
+    return _ler_xmls(pai, titulo, pergunta, leitura_xml.ler_pasta,
+                     lambda lote: ([n for n in lote.nfes + lote.sem_chave
+                                    if n.nnf], lote.erros))
 
 
 def lista_de_mudancas(mudou):

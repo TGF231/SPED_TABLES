@@ -32,8 +32,8 @@ interface ──► aplicacao ──► dominio ◄── infra
 | Camada | Pode importar | Módulos |
 |---|---|---|
 | `sped_tables/dominio/` | só o domínio (nem Qt) | `sped_model` (`SpedDocument`, todos os cálculos), `sped_layouts` (leiaute completo: 270 registros no ICMS/IPI, 203 no Contribuições), `validacao`, `revisao` (lista `REGRAS`), `rotinas` (lista `ROTINAS`), `diagnostico`, `conferencia`, `ncm` (classificação do NCM e CST esperado), `empresas` (a entidade), `xml_fiscal`, `memoria_itens` e `geracao` (SPED a partir dos XMLs), `comparacao_sped`, **`referencias` (a porta)** |
-| `sped_tables/infra/` | domínio | `config` (**ponto único de configuração**), `dados` (pasta de dados, gravação atômica, recursos), `descritor_pva`, `tabelas_pva`, `tabelas_rfb` (leitura), `referencias_pva` (**o adaptador**), `cadastro` (empresas e correlações em JSON), `arquivos` (acervo), `exportacao` (CSV), `pva` (automação Win32), `falhas` (registro e ganchos), `memoria` (memória de cada empresa em JSON), `paralelo` (trabalho repartido entre processos) |
-| `sped_tables/aplicacao/` | domínio, infra | `sessao` (arquivo aberto: abrir/salvar/fechar + acervo), `envio_pva` (pré-checagem, envio, desfecho), `geracao_xml` (gerar pelos XMLs: aprender, gerar, decidir, salvar), `leitura_xml` (toda leitura de pasta de XMLs, em paralelo), `montagem` (**raiz de composição**) |
+| `sped_tables/infra/` | domínio | `config` (**ponto único de configuração**), `dados` (pasta de dados, gravação atômica, recursos), `descritor_pva`, `tabelas_pva`, `tabelas_rfb` (leitura), `referencias_pva` (**o adaptador**), `cadastro` (empresas e correlações em JSON), `arquivos` (acervo), `exportacao` (CSV), `pva` (automação Win32), `falhas` (registro e ganchos), `memoria` (memória de cada empresa em JSON), `paralelo` (trabalho repartido entre processos), `bancos` (adaptadores dos bancos de ERP), `dbf`, `segredos` (DPAPI), `sistemas_erp` |
+| `sped_tables/aplicacao/` | domínio, infra | `sessao` (arquivo aberto: abrir/salvar/fechar + acervo), `envio_pva` (pré-checagem, envio, desfecho), `geracao_xml` (gerar pelos XMLs: aprender, gerar, decidir, salvar), `leitura_xml` (toda leitura de pasta de XMLs, em paralelo), `erp` (casos de uso do banco do ERP), `montagem` (**raiz de composição**) |
 | `sped_tables/interface/` | todos | `app` (`main`), `janela`, **`acoes` (tabela única de ações)**, `controladores/` (mixins da janela por área do menu), `grade`, `telas/`, `dialogos/`, `formulario_empresa`, `comum`, `tema`, `icones`, `barra_titulo`, `janela_custom`, `autoteste` (`--autoteste`: o roteiro 2.2 de dentro do executável) |
 
 `sped_editor.py` na raiz é só o lançador. `sped_tables/version.py` tem
@@ -632,6 +632,38 @@ Python e cite de onde veio.
 - **Recalcular o M200 obriga a recalcular o M205** (e M600/M605): o PVA
   confere o detalhamento por código de receita (`MSG_VALIDA_DET_RECEITA_
   DCTF`).
+
+## Integração com o banco do ERP
+
+O programa declara **o que** entende (`dominio/erp.py`, `ENTIDADES`:
+produtos, participantes, XMLs, estoque, com as mesmas chaves da planilha)
+e a pessoa aponta, por **sistema** (perfil do ERP), a tabela e a coluna de
+cada informação. A **conexão** é o banco de um cliente, vinculada ao CNPJ.
+Tudo em `sistemas_erp.json` na pasta de dados (`infra/sistemas_erp.py`),
+com a senha cifrada pela DPAPI (`infra/segredos.py`).
+
+- **O domínio não monta SQL.** Ele entrega uma `Consulta` (origem, colunas,
+  filtros) e o adaptador do banco (`infra/bancos.py`) põe no dialeto:
+  aspas, `FIRST`/`TOP`/`LIMIT`, marcador. O DBF não tem SQL: o filtro roda
+  em Python, e `"001"` casa com `1`.
+- **Só leitura, em três camadas:** só `SELECT` montado pelo programa;
+  consulta própria passa por `erp.sql_so_leitura` (um comando, sem
+  comentário); transação somente leitura onde o driver deixa. Nunca
+  `commit`.
+- **O que vem do ERP entra pelos mesmos cálculos** da planilha e da pasta:
+  `previa_atualizacao_0200`/`atualizar_0200`, `importar_inventario_h010`,
+  `xml_fiscal.montar_lote`. Não existe "importar do ERP" com regra própria.
+- **Firebird:** `firebirdsql` (puro Python). O 3+ autentica por SRP com o
+  canal cifrado; o 2.5 só conhece `Legacy_Auth` — o adaptador tenta nessa
+  ordem e não insiste quando o servidor nem responde (`OSError`).
+- **SQL Server:** o ODBC 18 cifra por padrão e recusa o certificado
+  próprio dos servidores de loja: `TrustServerCertificate=yes`.
+- **XML no banco** chega como texto, bytes, gzip, zlib ou base64
+  (`erp.conteudo_xml`); a unidade de trabalho dos processos é
+  `erp.ler_xmls`. A data é **obrigatória** no perfil de XMLs: sem ela a
+  leitura traria todos os anos do banco.
+- O teste contra servidor de verdade roda quando o ambiente aponta um
+  (`SPED_TABLES_ERP_FIREBIRD`, `_SQLSERVER`, `_MYSQL`, ver TESTES.md).
 
 ## Gerar o SPED a partir dos XMLs
 
