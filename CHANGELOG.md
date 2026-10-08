@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.1.0-dev.3] — 2026-10-08
+
+### Corrigido
+- **Conferência de itens com os XMLs ignorava os impostos somados ao
+  item.** Muitos ERPs gravam no VL_ITEM da entrada o custo da mercadoria,
+  `vProd + vIPI + vICMSST`, e a conferência comparava só com o `vProd`
+  (mais as despesas acessórias), acusando divergência em todo item com IPI
+  ou ST. Agora a composição do VL_ITEM é reconhecida por documento —
+  despesas acessórias, IPI e ICMS-ST, em qualquer combinação — pela que
+  explica mais itens (`conferencia.criterio_valor_item`). Um item errado
+  continua apontado sem contaminar os outros, e a divergência diz a
+  composição usada ("VL_ITEM com IPI + ICMS-ST"). Vale para *Conferir
+  entradas* e *Conferir itens com XMLs* (ICMS/IPI e PIS/COFINS).
+
 ## [1.1.0-dev.2] — 2026-10-07
 
 **Integração com o banco do ERP.** Pedido do usuário: ler Firebird 2.5 e

@@ -154,7 +154,8 @@ def acessorios_do_item(it):
     return sum((getattr(it, nome, 0.0) or 0.0) for nome in ACESSORIOS_ITEM)
 
 
-def valor_item_xml(it, somar_acessorios=True):
+def valor_item_xml(it, somar_acessorios=True, somar_ipi=False,
+                   somar_st=False):
     """Valor do item do XML no critério do C170.
 
     O C170 não tem campo de despesa acessória por item, então o que a NF-e traz
@@ -169,9 +170,56 @@ def valor_item_xml(it, somar_acessorios=True):
     real, em que o C100 trazia `VL_OUT_DA` exatamente igual à soma dos vOutro
     dos itens. Por isso quem decide é `acessorios_no_documento()`, documento a
     documento.
+
+    O mesmo vale para os **impostos cobrados por fora** do produto — IPI e
+    ICMS-ST: muitos ERPs gravam o custo da entrada, `vProd + vIPI + vICMSST`,
+    no VL_ITEM. Quem decide também é o documento (`criterio_valor_item`).
     """
-    base = it.vprod or 0.0
-    return base + acessorios_do_item(it) if somar_acessorios else base
+    v = it.vprod or 0.0
+    if somar_acessorios:
+        v += acessorios_do_item(it)
+    if somar_ipi:
+        v += it.vipi or 0.0
+    if somar_st:
+        v += it.icms_vicmsst or 0.0
+    return v
+
+
+# composições do VL_ITEM tentadas, na ordem de preferência:
+# (despesas acessórias, IPI, ICMS-ST)
+COMPOSICOES_VL_ITEM = (
+    (False, False, False), (True, False, False), (False, True, True),
+    (True, True, True), (False, True, False), (True, True, False),
+    (False, False, True), (True, False, True))
+
+
+def criterio_valor_item(doc, c100, nfe, pares, tol=0.01):
+    """Como o documento compôs o VL_ITEM: `(acessórios, IPI, ICMS-ST)`.
+
+    `pares` são `(item do XML, C170)` do documento. Vale a composição que
+    explica **mais itens** (VL_ITEM igual ao do XML assim composto); no
+    empate, a primeira de `COMPOSICOES_VL_ITEM`. Item a item, e não pela
+    soma, para que um item errado não esconda a composição dos outros.
+    Nenhuma explicando item algum, fica a regra das despesas acessórias
+    pelo C100, sem impostos."""
+    i_vl = doc._ix("C170", "VL_ITEM")
+    melhor, acertos = None, 0
+    if i_vl is not None:
+        escrit = [(it, _to_num(c.valor(i_vl))) for it, c in pares]
+        for comp in COMPOSICOES_VL_ITEM:
+            n = sum(1 for it, vs in escrit
+                    if abs(valor_item_xml(it, *comp) - vs) <= tol)
+            if n > acertos:
+                melhor, acertos = comp, n
+    if melhor is None:
+        return (not acessorios_no_documento(doc, c100, nfe), False, False)
+    return melhor
+
+
+def _descrever_composicao(comp):
+    partes = [n for n, ok in zip(("despesas acessórias", "IPI", "ICMS-ST"),
+                                 comp) if ok]
+    return ("VL_ITEM com " + " + ".join(partes)) if partes else ""
 
 
 def acessorios_no_documento(doc, c100, nfe, tol=0.02):
@@ -358,29 +406,37 @@ def conferir_itens_xml(doc, nfes, movimento="entrada", tributo="ICMS",
 
     itens_conferidos = 0
     csosn = 0                 # itens de fornecedor do Simples, não comparáveis
-    # cache por documento: a decisão sobre as despesas acessórias é do C100
+    # a composição do VL_ITEM (acessórios, IPI, ICMS-ST) é decidida por
+    # documento, com todos os itens dele à vista
+    por_doc = {}
+    for (nfe, it), c170list in pares:
+        por_doc.setdefault(id(c170list[0].pai), []).append((it, c170list[0]))
     criterio = {}
     for (nfe, it), c170list in pares:
         c170 = c170list[0]
         itens_conferidos += 1
         chave = id(c170.pai)
         if chave not in criterio:
-            criterio[chave] = not acessorios_no_documento(doc, c170.pai, nfe)
-        somar = criterio[chave]
+            criterio[chave] = criterio_valor_item(doc, c170.pai, nfe,
+                                                  por_doc[chave])
+        comp = criterio[chave]
         for rot, fn_xml, idx, t in idx_cmp:
             if idx is None:
                 continue
-            # a auto-detecção de acessórios só vale para a função padrão:
+            # a auto-detecção da composição só vale para a função padrão:
             # quem passa a própria função em `comparacoes` manda nela
-            vx = (valor_item_xml(it, somar) if fn_xml is valor_item_xml
+            vx = (valor_item_xml(it, *comp) if fn_xml is valor_item_xml
                   else fn_xml(it)) or 0.0
             vs = _to_num(c170.valor(idx))
             if abs(vx - vs) > t:
+                obs = "cProd XML=%s / COD_ITEM=%s" % (
+                    it.cprod, c170.valor(doc._ix("C170", "COD_ITEM")))
+                if fn_xml is valor_item_xml and _descrever_composicao(comp):
+                    obs += " (%s)" % _descrever_composicao(comp)
                 divergencias.append(Divergencia(
                     mod=nfe.mod, serie=nfe.serie, nnf=nfe.nnf, nitem=it.nitem, uid=c170.uid,
                     escopo="item", campo=rot, valor_xml=vx, valor_sped=vs,
-                    obs="cProd XML=%s / COD_ITEM=%s"
-                        % (it.cprod, c170.valor(doc._ix("C170", "COD_ITEM")))))
+                    obs=obs))
 
         # correlação de CFOP (saída do fornecedor -> entrada do comprador)
         if correl is not None and i170_cfop is not None:

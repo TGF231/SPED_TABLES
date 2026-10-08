@@ -71,6 +71,38 @@ class TestConferirEntradas(unittest.TestCase):
         self.assertEqual(r["resumo"]["docs_sem_c100"], 1)
         self.assertEqual(r["resumo"]["docs_sem_xml"], 1)
 
+    def test_ipi_e_st_somados_ao_item(self):
+        """ERP que grava o custo da entrada (vProd + IPI + ICMS-ST) no
+        VL_ITEM: a composição é reconhecida pelo documento, e só o item
+        realmente diferente é apontado."""
+        xml = nfe_xml().replace(
+            "</vICMS></ICMS00>", "</vICMS><vBCST>12.00</vBCST>"
+            "<vICMSST>0.50</vICMSST></ICMS00>").replace(
+            "</ICMS></imposto>", "</ICMS><IPI><IPITrib><CST>50</CST>"
+            "<vBC>10.00</vBC><pIPI>10.00</pIPI><vIPI>1.00</vIPI></IPITrib>"
+            "</IPI></imposto>")
+        itens = [{"COD_ITEM": "P%d" % i, "VL_ITEM": v, "VL_IPI": "1,00",
+                  "VL_BC_ICMS_ST": "12,00", "VL_ICMS_ST": "0,50"}
+                 for i, v in ((1, "11,50"), (2, "11,50"), (3, "11,50"))]
+        r = conferencia.conferir_entradas_55(_doc(icms_basico(itens)),
+                                             _nfes(xml))
+        self.assertEqual([d for d in r["divergencias"]
+                          if d.escopo == "item"], [])
+        itens[1]["VL_ITEM"] = "12,50"
+        r = conferencia.conferir_entradas_55(_doc(icms_basico(itens)),
+                                             _nfes(xml))
+        (d,) = [d for d in r["divergencias"] if d.escopo == "item"]
+        self.assertEqual((d.nitem, d.campo, d.valor_xml), ("2", "VL_ITEM",
+                                                           11.5))
+        self.assertIn("IPI + ICMS-ST", d.obs)
+        # só o IPI somado também é reconhecido
+        for it in itens:
+            it["VL_ITEM"] = "11,00"
+        r = conferencia.conferir_entradas_55(_doc(icms_basico(itens)),
+                                             _nfes(xml))
+        self.assertEqual([d for d in r["divergencias"]
+                          if d.escopo == "item"], [])
+
     def test_linhas_do_csv(self):
         xml = nfe_xml(itens=[{}, {"vICMS": "2.00"}, {}])
         r = conferencia.conferir_entradas_55(_doc(icms_basico()), _nfes(xml))
