@@ -665,6 +665,17 @@ com a senha cifrada pela DPAPI (`infra/segredos.py`).
 - O teste contra servidor de verdade roda quando o ambiente aponta um
   (`SPED_TABLES_ERP_FIREBIRD`, `_SQLSERVER`, `_MYSQL`, ver TESTES.md).
 
+## Regenerar as entradas pelos XMLs
+
+`dominio/regeneracao.py` **não tem cálculo próprio**: aprende a escrituração
+com o arquivo aberto (`memoria_itens.aprender` sobre uma cópia da memória),
+gera o período com `geracao.gerar_icms`/`gerar_contrib` e **transplanta** os
+C100 de entrada gerados para o arquivo, casando pela chave (`planejar` →
+`Plano`, `aplicar`). Gerador e regeneração são o mesmo código — mudança na
+geração muda as duas. Nota bloqueada pelo gerador (apontamento com
+`bloqueia`) não é transplantada; nota sem XML fica. A apuração não é refeita
+de propósito: a pessoa roda o botão e confere.
+
 ## Gerar o SPED a partir dos XMLs
 
 O XML diz **o que aconteceu**; a **memória da empresa**

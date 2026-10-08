@@ -1,5 +1,30 @@
 # Changelog
 
+## [1.1.0-dev.4] — 2026-10-08
+
+### Adicionado
+- **Gerais → Regenerar entradas pelos XMLs** (`dominio/regeneracao.py`),
+  nos dois leiautes. Refaz as notas de entrada (C100, C170 e C190) pelos
+  XMLs da pasta ou do banco do ERP:
+  - a **escrituração de cada produto** (código próprio, CFOP de entrada,
+    CST, crédito, CST/alíquota de PIS e COFINS, conta) é aprendida do
+    **próprio arquivo aberto**, sobre uma cópia da memória da empresa;
+    quantidades, valores e impostos vêm do XML;
+  - os documentos saem do gerador de sempre (`geracao.gerar_icms` /
+    `gerar_contrib`): C190 e totais do C100 pelos mesmos cálculos dos
+    botões;
+  - nota com XML é trocada (casada pela chave), nota que o arquivo não tinha
+    é incluída, nota sem XML na pasta **fica** como está, e o cadastro novo
+    (0150, 0190, 0200, 0400, 0500) entra junto;
+  - nota com item que sairia inválido (CFOP de entrada desconhecido, CST de
+    PIS ausente) **não** é regenerada, e o original fica;
+  - **prévia antes de gravar:** quantos valores mudam em cada campo (com
+    `0`, `0,00` e vazio tratados como o mesmo valor), o que precisa de
+    revisão e o que ficou de fora. A apuração (E110 / bloco M) não é
+    refeita: a mensagem final diz qual botão rodar.
+- CT-e (D100) e saídas ficam de fora por ora. Ação com `pronta=False` até
+  passar por um mês real.
+
 ## [1.1.0-dev.3] — 2026-10-08
 
 ### Corrigido

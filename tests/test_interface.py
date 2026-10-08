@@ -272,6 +272,29 @@ class TestJanela(unittest.TestCase):
             em_segundo_plano(None, "t", "x", cancela)
         self.assertEqual(self.erros, [], self._falhas())
 
+    def test_regenerar_entradas_pela_tela(self):
+        from tests.fabrica import nfe_xml
+        with PastaTemporaria() as p:
+            pasta = os.path.join(p, "xmls")
+            os.makedirs(pasta)
+            with open(os.path.join(pasta, "n.xml"), "w",
+                      encoding="utf-8") as fh:
+                fh.write(nfe_xml(itens=[{}, {"vProd": "12.00"}, {}]))
+            j = self.ed.JanelaPrincipal()
+            self.assertTrue(j.abrir_caminho(icms_basico().gravar(p)))
+            _esperar()
+            with mock.patch.object(QFileDialog, "getExistingDirectory",
+                                   staticmethod(lambda *a, **k: pasta)):
+                j.regenerar_entradas()
+            i = j.doc._ix("C170", "VL_ITEM")
+            valores = [r.valor(i) for r in j.doc.registros
+                       if r.reg == "C170"]
+            self.assertEqual(valores, ["10,00", "12,00", "10,00"])
+            self.assertTrue(j.alterado)
+            j.alterado = False
+            j.close()
+        self.assertEqual(self.erros, [], self._falhas())
+
     def test_erp_pela_tela(self):
         """Com uma conexão de ERP (SQLite) vinculada à empresa: o perfil
         abre e lê a estrutura, 0200 e 0150 são corrigidos pela prévia, o

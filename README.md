@@ -165,6 +165,24 @@ por empresa, gravada na pasta de dados (`memoria/<CNPJ>.json`):
 Limites: os textos complementares (C110/C195) não são montados; o saldo
 credor anterior do ICMS vem da memória ou do campo da tela.
 
+### Regenerar entradas pelos XMLs
+
+*Gerais → Regenerar entradas pelos XMLs* refaz as notas de entrada do arquivo
+aberto (C100, C170 e C190) a partir dos XMLs, de uma pasta ou do banco do
+ERP. Quantidades, valores e impostos vêm do XML; **como** a empresa
+escritura cada produto (código próprio, CFOP de entrada, CST, crédito,
+PIS/COFINS) vem do próprio arquivo. Antes de gravar, a prévia mostra quantos
+valores mudam em cada campo, o que precisa de revisão (produto novo, sem
+código próprio) e o que ficou de fora:
+
+- nota **sem XML** na pasta continua como está;
+- nota que o arquivo **não tinha** é incluída, com o cadastro necessário;
+- nota cujo item ficaria inválido (CFOP de entrada desconhecido) **não** é
+  regenerada.
+
+Depois, recalcule a apuração (*Recalcular apuração do ICMS (E110)* ou
+*Recalcular bloco M*) e rode o Diagnóstico. CT-e e saídas não entram.
+
 ### Integração com o ERP (Firebird, SQL Server, MySQL, DBF)
 
 *Gerais → Sistemas ERP* liga o SPED Tables ao banco do sistema de gestão

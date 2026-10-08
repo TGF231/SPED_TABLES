@@ -117,6 +117,8 @@ ACOES = (
          SEMPRE, MENU_GERAIS, pronta=False),
     Acao("act_conferir_55", "Conferir entradas (NF-e 55) com XMLs…",
          "conferir_entradas_55", ARQUIVO, MENU_GERAIS, separador=True),
+    Acao("act_regenerar_entradas", "Regenerar entradas pelos XMLs…",
+         "regenerar_entradas", ARQUIVO, MENU_GERAIS, pronta=False),
     Acao("act_alterar_datas", "Alterar datas emissão/saída (C100)…",
          "alterar_datas", ARQUIVO, MENU_GERAIS),
     Acao("act_datas_xml", "Datas e extemporâneos pelos XMLs…",

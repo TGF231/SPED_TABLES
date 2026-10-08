@@ -9,12 +9,16 @@ from PyQt6.QtWidgets import QDialog, QFileDialog, QMessageBox
 
 from sped_tables.dominio import conferencia as cf
 from sped_tables.dominio import diagnostico
+from sped_tables.dominio import regeneracao
 from sped_tables.dominio import regras_guia
 from sped_tables.dominio import revisao as rev
 from sped_tables.dominio import validacao
 from sped_tables.dominio import xml_fiscal as xf
+from sped_tables.dominio.empresas import dados_do_arquivo
 from sped_tables.infra import cadastro, config
-from sped_tables.interface.comum import (calcular, ler_nfes_da_pasta,
+from sped_tables.infra import memoria as memoria_infra
+from sped_tables.interface.comum import (calcular, em_segundo_plano,
+                                         ler_nfes_da_pasta,
                                          lista_de_mudancas,
                                          ler_pasta_xml)
 from sped_tables.interface.dialogos.cadastro import (
@@ -24,6 +28,8 @@ from sped_tables.interface.dialogos.conferencia import (
     DialogoConferencia, DialogoCorrelacoesCFOP,
 )
 from sped_tables.interface.dialogos.correcao import DialogoAlterarDatas
+from sped_tables.interface.dialogos.regeneracao import (
+    DialogoRegenerarEntradas)
 from sped_tables.interface.dialogos.geracao import DialogoGerarDeXml
 from sped_tables.interface.dialogos.verificacao import (
     DialogoDiagnostico, DialogoRevisao, DialogoValidacao,
@@ -46,6 +52,48 @@ class ControladorGerais:
         dlg.exec()
         if dlg.abrir_depois:
             self.abrir_caminho(dlg.abrir_depois)
+
+    def regenerar_entradas(self):
+        """Refaz as notas de entrada (C100/C170/C190) pelos XMLs, com a
+        escrituração de cada produto aprendida do próprio arquivo, depois
+        de mostrar a prévia (`dominio/regeneracao.py`)."""
+        if not self.doc:
+            return
+        titulo = "Regenerar entradas pelos XMLs"
+        lote = ler_pasta_xml(self, titulo, "Pasta dos XMLs de entrada do "
+                                           "período (as subpastas entram)")
+        if lote is None:
+            return
+        doc = self.doc
+        memoria = memoria_infra.carregar(dados_do_arquivo(doc)[0])
+        try:
+            plano = em_segundo_plano(
+                self, titulo, "Montando as entradas…",
+                lambda _p, _c: regeneracao.planejar(
+                    doc, lote, memoria, self.correlacoes_cfop))
+        except (ValueError, KeyError) as exc:
+            QMessageBox.warning(self, titulo, str(exc))
+            return
+        if plano.vazio and not plano.bloqueados:
+            QMessageBox.information(
+                self, titulo, "Nenhuma nota de entrada da pasta é deste "
+                "arquivo (CNPJ de destinatário e período).")
+            return
+        if DialogoRegenerarEntradas(doc, plano, self).exec() != \
+                QDialog.DialogCode.Accepted:
+            return
+        res = regeneracao.aplicar(doc, plano)
+        self._marcar_alterado()
+        self._montar_abas()
+        proximo = ("Recalcular apuração do ICMS (E110)"
+                   if doc.layout == "ICMS" else "Recalcular bloco M")
+        QMessageBox.information(
+            self, titulo,
+            "Entradas regeneradas: %d substituída(s), %d incluída(s), %d "
+            "cadastro(s) novo(s).\n\nA apuração ainda é a de antes: rode "
+            "\"%s\" e confira com o Diagnóstico."
+            % (res["substituidos"], res["incluidos"], res["cadastro"],
+               proximo))
 
     def conferir_entradas_55(self):
         """Confere os itens das NF-e modelo 55 (entradas) de uma pasta de XMLs
