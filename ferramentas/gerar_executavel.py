@@ -35,33 +35,61 @@ def _rodar(*cmd, **k):
     subprocess.run(cmd, check=True, cwd=RAIZ, **k)
 
 
-def _python_do_uv():
-    """O executável do Python gerenciado pelo uv (baixa se faltar).
+def _uv_find():
+    r = subprocess.run(["uv", "python", "find", "--managed-python",
+                        VERSAO_PYTHON], capture_output=True, text=True,
+                       cwd=RAIZ)
+    caminho = r.stdout.strip()
+    return caminho if r.returncode == 0 and os.path.isfile(caminho) else None
 
-    Procura a pasta versionada (`cpython-3.14.6-…`), não o atalho da versão
-    menor (`cpython-3.14-…`): nesta máquina o atalho fica inacessível para
-    o próprio uv depois de uma instalação interrompida, e o
-    `uv python find` falha com o Python instalado."""
-    subprocess.run(["uv", "python", "install", VERSAO_PYTHON], cwd=RAIZ)
+
+def _pasta_versionada():
+    """A pasta `cpython-3.14.X-…` do uv, sem passar pelo atalho da versão
+    menor (`cpython-3.14-…`), que já ficou inacessível para o próprio uv
+    depois de uma instalação interrompida."""
     base = subprocess.run(["uv", "python", "dir"], capture_output=True,
                           text=True, check=True).stdout.strip()
-    achados = sorted(
-        (os.path.join(base, n, "python.exe") for n in os.listdir(base)
-         if n.startswith("cpython-%s." % VERSAO_PYTHON)
-         and "freethreaded" not in n),
-        key=lambda c: [int(x) for x in os.path.basename(
-            os.path.dirname(c)).split("-")[1].split(".")])
+    if not os.path.isdir(base):
+        return None
+    achados = [os.path.join(base, n, "python.exe") for n in os.listdir(base)
+               if n.startswith("cpython-%s." % VERSAO_PYTHON)
+               and "freethreaded" not in n]
     achados = [c for c in achados if os.path.isfile(c)]
-    if not achados:
-        raise SystemExit("Não achei o Python %s do uv em %s"
-                         % (VERSAO_PYTHON, base))
-    return achados[-1]
+    achados.sort(key=lambda c: [int(x) for x in os.path.basename(
+        os.path.dirname(c)).split("-")[1].split(".")])
+    return achados[-1] if achados else None
+
+
+def _python_do_uv():
+    """O executável do Python gerenciado pelo uv; instala se faltar."""
+    caminho = _uv_find() or _pasta_versionada()
+    if caminho:
+        return caminho
+    _rodar("uv", "python", "install", VERSAO_PYTHON)
+    caminho = _uv_find() or _pasta_versionada()
+    if not caminho:
+        raise SystemExit("Não achei o Python %s do uv depois de instalar."
+                         % VERSAO_PYTHON)
+    return caminho
+
+
+def _saudavel():
+    """O `.venv-exe` existe **e** o Python de base dele ainda está lá.
+    O ambiente guarda só o caminho do Python do uv (`pyvenv.cfg`): se esse
+    Python sumir ou for reinstalado noutro lugar, o `python.exe` do
+    ambiente continua no disco e falha ao rodar ("did not find executable
+    at …")."""
+    if not os.path.isfile(PYTHON):
+        return False
+    r = subprocess.run([PYTHON, "-c", "import sys"], capture_output=True)
+    return r.returncode == 0
 
 
 def ambiente(recriar=False):
     if shutil.which("uv") is None:
         raise SystemExit("O uv não está no PATH.")
-    if recriar and os.path.isdir(VENV):
+    if os.path.isdir(VENV) and (recriar or not _saudavel()):
+        print("recriando %s" % VENV, flush=True)
         shutil.rmtree(VENV)
     if not os.path.isfile(PYTHON):
         _rodar("uv", "venv", VENV, "--python", _python_do_uv())

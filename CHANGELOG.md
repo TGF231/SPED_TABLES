@@ -2,6 +2,13 @@
 
 ## [1.1.0-dev.6] — 2026-10-09
 
+### Corrigido (geração do executável)
+- `ferramentas/gerar_executavel.py` reaproveitava um `.venv-exe` cujo
+  Python de base (o do uv) não existia mais e o PyInstaller morria com
+  "did not find executable at …". Agora o ambiente é conferido rodando o
+  Python dele e, quebrado, é recriado; o Python do uv é procurado pelo
+  `uv python find`, pela pasta versionada e, faltando, instalado.
+
 ### Adicionado
 - **Corrigir pelo XML** na tela *Conferir itens com XMLs* (antes só havia
   *Exportar CSV*). Grava no C170 o valor do XML das linhas selecionadas —
