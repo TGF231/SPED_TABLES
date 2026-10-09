@@ -1,5 +1,25 @@
 # Changelog
 
+## [1.1.0-dev.5] — 2026-10-09
+
+### Alterado
+- **Executável enxuto, gerado de um ambiente mínimo do uv:** de 64 MB para
+  **24,4 MB**, com o `--autoteste` inteiro passando.
+  - `ferramentas/gerar_executavel.py` cria `.venv-exe` com o Python do uv,
+    instala só `requirements-executavel.txt` (versões fixas; o `uv pip
+    sync` tira o que não está na lista), roda o PyInstaller e o autoteste.
+    Do Python do sistema, o PyInstaller arrastava tudo o que estivesse
+    instalado lá (41 MB só pela troca de ambiente).
+  - O `SPED Tables.spec` tira o que o programa não carrega: o
+    `opengl32sw.dll` (20 MB — a interface é Widgets, desenha sem OpenGL),
+    `Qt6Pdf`, `Qt6Network`, `Qt6Svg`, os plugins do Qt salvo `qwindows`,
+    `qmodernwindowsstyle` e `qico`, as traduções do Qt em ~40 línguas (a
+    pt-BR vai à parte), e do Python `ssl`/`libssl`, `_hashlib`/`libcrypto`
+    (o SHA-1/SHA-256 do login do Firebird vem do próprio Python), `lzma`,
+    `bz2` e `zstd`. Saíram 36,6 MB, listados em
+    `build/manifesto_executavel.txt` a cada geração.
+  - UPX desligado: corrompe plugin do Qt e dispara antivírus.
+
 ## [1.1.0-dev.4] — 2026-10-08
 
 ### Adicionado

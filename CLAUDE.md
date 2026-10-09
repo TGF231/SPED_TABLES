@@ -845,6 +845,25 @@ declarado. Sem ele o handle de 64 bits é truncado, o `GlobalLock` falha e a
 leitura volta vazia — foi assim que um teste deu "campo vazio" com o campo
 preenchido.
 
+## Gerar o executável
+
+`py ferramentas/gerar_executavel.py`: ambiente mínimo do uv (`.venv-exe`,
+`requirements-executavel.txt` com tudo fixado, inclusive as dependências
+do PyInstaller — o `uv pip sync` remove o que não está na lista),
+PyInstaller e `--autoteste`. **Não gere do Python do sistema**: o
+PyInstaller arrasta o que estiver instalado lá (64 MB contra 24 MB).
+
+O `.spec` tira DLLs e plugins que o programa não carrega
+(`_desnecessario`, `_EXCLUIR`). **Dependência nova que use Qt ou Python
+além do que está lá** (QtSvg para ícone SVG, `ssl` para conexão cifrada,
+outro plugin de imagem) precisa sair dessas listas — senão roda do
+código-fonte e quebra só no executável. O autoteste pega o que ele
+exercita; confira o `build/manifesto_executavel.txt`.
+
+Nesta máquina o atalho `cpython-3.14-…` do uv ficou inacessível depois de
+uma instalação interrompida, e `uv python find` falha com o Python
+instalado: o script procura a pasta versionada (`cpython-3.14.6-…`).
+
 ## Gravar nunca pode destruir o arquivo de destino
 
 `salvar` **codifica o texto inteiro antes de tocar em disco**, escreve num

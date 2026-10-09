@@ -212,9 +212,15 @@ o SQL Server entra com a conta do Windows.
 ### 2.2 No executável
 
 ```bash
-pyinstaller "SPED Tables.spec"
+py ferramentas/gerar_executavel.py
 "dist\SPED Tables.exe" --autoteste relatorio.json arquivo_real.txt
 ```
+
+O primeiro comando monta o ambiente mínimo do uv (`.venv-exe`, com
+`requirements-executavel.txt`), gera o executável e já roda o autoteste
+sobre um SPED sintético. `build/manifesto_executavel.txt` lista o que foi
+no pacote e o que o `.spec` tirou. O executável leva só o plugin de tela do
+Windows: com `QT_QPA_PLATFORM=offscreen` no ambiente ele não abre.
 
 O **`--autoteste`** roda de dentro do executável o que só o empacotamento
 quebra, e grava o resultado no JSON (código de saída 0 = passou). Ele usa
