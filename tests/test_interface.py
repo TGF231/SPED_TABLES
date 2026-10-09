@@ -272,6 +272,33 @@ class TestJanela(unittest.TestCase):
             em_segundo_plano(None, "t", "x", cancela)
         self.assertEqual(self.erros, [], self._falhas())
 
+    def test_corrigir_itens_pelo_xml_na_conferencia(self):
+        from tests.fabrica import nfe_xml
+        with PastaTemporaria() as p:
+            pasta = os.path.join(p, "xmls")
+            os.makedirs(pasta)
+            with open(os.path.join(pasta, "n.xml"), "w",
+                      encoding="utf-8") as fh:
+                fh.write(nfe_xml(itens=[{}, {"vICMS": "2.00"}, {}]))
+            j = self.ed.JanelaPrincipal()
+            self.assertTrue(j.abrir_caminho(icms_basico().gravar(p)))
+            _esperar()
+            with mock.patch.object(QFileDialog, "getExistingDirectory",
+                                   staticmethod(lambda *a, **k: pasta)):
+                j.conferir_itens_xml("ICMS")
+            dlg = j._dlg_conferencia
+            self.assertTrue(dlg._b_corr.isEnabled())
+            dlg.corrigir()
+            i = j.doc._ix("C170", "VL_ICMS")
+            self.assertEqual([r.valor(i) for r in j.doc.registros
+                              if r.reg == "C170"], ["1,80", "2,00", "1,80"])
+            self.assertEqual(dlg.resultado["resumo"]["divergencias"], 0)
+            self.assertTrue(j.alterado)
+            dlg.close()
+            j.alterado = False
+            j.close()
+        self.assertEqual(self.erros, [], self._falhas())
+
     def test_regenerar_entradas_pela_tela(self):
         from tests.fabrica import nfe_xml
         with PastaTemporaria() as p:

@@ -119,6 +119,7 @@ class ItemNFe:
                  "cofins_cst", "cofins_vbc", "cofins_aliq", "cofins_vcofins",
                  "icms_cst", "icms_vbc", "icms_aliq", "icms_vicms",
                  "icms_vbcst", "icms_aliqst", "icms_vicmsst", "icms_predbc",
+                 "icms_vfcpst",
                  "ipi_cst", "ipi_vbc", "ipi_aliq", "vipi")
 
     def __init__(self, **k):
@@ -259,6 +260,10 @@ def _nfe_de(root, caminho):
                          if icms is not None else None),
             icms_vicmsst=(_num(icms.findtext("vICMSST"))
                           if icms is not None else 0.0),
+            # Fundo de Combate à Pobreza retido por ST: vem junto com o ICMS-ST
+            # no custo da entrada
+            icms_vfcpst=(_num(icms.findtext("vFCPST"))
+                         if icms is not None else 0.0),
             ipi_cst=ipi_cst, ipi_vbc=ipi_vbc, ipi_aliq=ipi_aliq, vipi=vipi,
             pis_cst=(pis.findtext("CST") if pis is not None else None),
             pis_vbc=_num(pis.findtext("vBC")) if pis is not None else 0.0,

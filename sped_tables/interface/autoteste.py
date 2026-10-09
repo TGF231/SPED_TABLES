@@ -207,8 +207,7 @@ def _conferir(app, rel, arquivo, dados, falhas):
                 info[nome] = getattr(mod, "__version__", "ok")
             except ImportError:
                 info[nome] = "ausente"
-                if nome != "pymysql":       # opcional: MySQL
-                    faltam.append(nome)
+                faltam.append(nome)
         return not faltam, info
     rel.conferir("drivers dos bancos de ERP", drivers_erp)
 

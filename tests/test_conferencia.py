@@ -103,6 +103,61 @@ class TestConferirEntradas(unittest.TestCase):
         self.assertEqual([d for d in r["divergencias"]
                           if d.escopo == "item"], [])
 
+    def test_fcp_st_desconto_e_centavos(self):
+        """FCP-ST vai junto do ST; VL_ITEM líquido do desconto também é
+        reconhecido; e, sem composição exata (centavos do custo), vale a que
+        mais se aproxima — o valor do XML mostrado já traz os impostos."""
+        xml = nfe_xml().replace(
+            "</vICMS></ICMS00>", "</vICMS><vBCST>12.00</vBCST>"
+            "<vICMSST>0.50</vICMSST><vFCPST>0.20</vFCPST></ICMS00>")
+        itens = [{"COD_ITEM": "P%d" % i, "VL_ITEM": "10,70",
+                  "VL_BC_ICMS_ST": "12,00", "VL_ICMS_ST": "0,50"}
+                 for i in (1, 2, 3)]
+        r = conferencia.conferir_entradas_55(_doc(icms_basico(itens)),
+                                             _nfes(xml))
+        self.assertEqual([d for d in r["divergencias"]
+                          if d.campo == "VL_ITEM"], [])
+        for it in itens:                        # 2 centavos de custo
+            it["VL_ITEM"] = "10,72"
+        r = conferencia.conferir_entradas_55(_doc(icms_basico(itens)),
+                                             _nfes(xml))
+        difs = [d for d in r["divergencias"] if d.campo == "VL_ITEM"]
+        self.assertEqual(len(difs), 3)
+        self.assertEqual(difs[0].valor_xml, 10.7)
+        self.assertIn("ICMS-ST", difs[0].obs)
+        com_desc = nfe_xml(itens=[{"vDesc": "1.00"}, {}, {}]).replace(
+            "<vProd>10.00</vProd></prod>", "<vProd>10.00</vProd>"
+            "<vDesc>1.00</vDesc></prod>", 1)
+        itens = [{"COD_ITEM": "P1", "VL_ITEM": "9,00", "VL_DESC": "1,00"},
+                 {"COD_ITEM": "P2"}, {"COD_ITEM": "P3"}]
+        r = conferencia.conferir_entradas_55(_doc(icms_basico(itens)),
+                                             _nfes(com_desc))
+        self.assertEqual([d for d in r["divergencias"]
+                          if d.campo == "VL_ITEM"], [])
+
+    def test_corrigir_pelo_xml(self):
+        doc = _doc(icms_basico())
+        xml = nfe_xml(itens=[{}, {"vICMS": "2.00"}, {"CST": "60"}],
+                      cfop="5405")
+        r = conferencia.conferir_entradas_55(
+            doc, _nfes(xml), correlacoes_cfop={"5405": ["1403"]})
+        campos = sorted(d.campo for d in r["divergencias"])
+        self.assertIn("VL_ICMS", campos)
+        self.assertIn("CST_ICMS", campos)
+        res = conferencia.corrigir_pelo_xml(doc, r["divergencias"])
+        self.assertEqual(res["campos"], {"VL_ICMS": 1, "CFOP": 3})
+        self.assertEqual(len(res["documentos"]), 1)
+        self.assertTrue(any(d.campo == "CST_ICMS"
+                            for d, _m in res["ignorados"]))
+        i_icms, i_cfop = doc._ix("C170", "VL_ICMS"), doc._ix("C170", "CFOP")
+        c170 = [x for x in doc.registros if x.reg == "C170"]
+        self.assertEqual(c170[1].valor(i_icms), "2,00")
+        self.assertEqual({x.valor(i_cfop) for x in c170}, {"1403"})
+        r = conferencia.conferir_entradas_55(
+            doc, _nfes(xml), correlacoes_cfop={"5405": ["1403"]})
+        self.assertEqual(sorted({d.campo for d in r["divergencias"]
+                                 if d.escopo == "item"}), ["CST_ICMS"])
+
     def test_linhas_do_csv(self):
         xml = nfe_xml(itens=[{}, {"vICMS": "2.00"}, {}])
         r = conferencia.conferir_entradas_55(_doc(icms_basico()), _nfes(xml))

@@ -286,13 +286,35 @@ class MySQL(_BancoSQL):
             raise ErroDeBanco(
                 "O suporte a MySQL precisa do pacote pymysql "
                 "(py -m pip install pymysql).") from exc
-        con = pymysql.connect(
-            host=self.c.host or "localhost", port=int(self.c.porta or 3306),
-            user=self.c.usuario, password=self.c.senha, database=self.c.base,
-            charset=self.c.codificacao or "utf8mb4", connect_timeout=ESPERA,
-            autocommit=False)
-        with con.cursor() as cur:
-            cur.execute("START TRANSACTION READ ONLY")
+        try:
+            con = pymysql.connect(
+                host=self.c.host or "localhost",
+                port=int(self.c.porta or 3306), user=self.c.usuario,
+                password=self.c.senha, database=self.c.base,
+                # `utf8` e não `utf8mb4`: o MySQL 5.1 dos ERPs antigos não
+                # conhece o segundo e recusa a conexão
+                charset=self.c.codificacao or "utf8",
+                connect_timeout=ESPERA, autocommit=False)
+        except RuntimeError as exc:
+            # MySQL 8 com caching_sha2_password: sem canal cifrado, o
+            # PyMySQL precisa do pacote cryptography, que o executável não
+            # leva (o MySQL 5.x dos ERPs usa mysql_native_password)
+            if "cryptography" in str(exc):
+                raise ErroDeBanco(
+                    "O MySQL pede autenticação caching_sha2_password (MySQL "
+                    "8). Crie o usuário de leitura com "
+                    "mysql_native_password: ALTER USER 'leitor'@'%' "
+                    "IDENTIFIED WITH mysql_native_password BY '...'."
+                ) from exc
+            raise
+        # transação somente leitura só existe a partir do MySQL 5.6.5; antes
+        # disso fica a transação comum, que nunca é confirmada
+        try:
+            with con.cursor() as cur:
+                cur.execute("START TRANSACTION READ ONLY")
+        except pymysql.Error:
+            with con.cursor() as cur:
+                cur.execute("START TRANSACTION")
         return con
 
     def _sql_tabelas(self):

@@ -158,7 +158,8 @@ class DialogoConfC190(QDialog):
 
 
 class DialogoConferencia(QDialog):
-    """Mostra o resultado da conferência item XML ↔ C170 e permite exportar."""
+    """Mostra o resultado da conferência item XML ↔ C170, corrige o C170
+    pelo XML e exporta."""
 
     COLS = ["Escopo", "nNF", "nItem", "Campo", "Valor XML", "Valor SPED",
             "Observação"]
@@ -230,6 +231,8 @@ class DialogoConferencia(QDialog):
                     cf._fmt(d.valor_xml), cf._fmt(d.valor_sped), d.obs or ""]
             for j, v in enumerate(vals):
                 it = QTableWidgetItem(str(v))
+                if j == 0:
+                    it.setData(Qt.ItemDataRole.UserRole, i)
                 if j in (4, 5):
                     it.setForeground(QColor(tema.atual().bad))
                 tab.setItem(i, j, it)
@@ -240,6 +243,15 @@ class DialogoConferencia(QDialog):
         lay.addWidget(tab)
 
         botoes = QHBoxLayout()
+        b_corr = QPushButton("Corrigir pelo XML…")
+        b_corr.setToolTip(
+            "Grava no C170 o valor do XML das linhas selecionadas (ou de "
+            "todas, sem seleção): valores, bases, alíquotas, impostos e o "
+            "CFOP de correlação única. CST não é corrigido.")
+        b_corr.clicked.connect(self.corrigir)
+        b_corr.setEnabled(bool(divs) and doc is not None)
+        self._b_corr = b_corr
+        botoes.addWidget(b_corr)
         botoes.addStretch(1)
         b_csv = QPushButton("Exportar CSV…")
         b_csv.clicked.connect(self._exportar)
@@ -251,6 +263,57 @@ class DialogoConferencia(QDialog):
         botoes.addWidget(b_fechar)
         lay.addLayout(botoes)
 
+    def _escolhidas(self):
+        """As divergências das linhas selecionadas; sem seleção, todas."""
+        linhas = sorted({i.row() for i in self._tab.selectedIndexes()})
+        if not linhas:
+            return list(self._divs)
+        # a tabela pode estar ordenada: a linha guarda o índice original
+        out = []
+        for r in linhas:
+            it = self._tab.item(r, 0)
+            k = it.data(Qt.ItemDataRole.UserRole) if it is not None else None
+            if k is not None and 0 <= k < len(self._divs):
+                out.append(self._divs[k])
+        return out
+
+    def corrigir(self):
+        if self.doc is None:
+            return
+        alvo = self._escolhidas()
+        corrigiveis = [d for d in alvo if d.escopo == "item"
+                       and d.sugestao is not None]
+        if not corrigiveis:
+            QMessageBox.information(
+                self, "Corrigir pelo XML",
+                "Nenhuma das divergências escolhidas tem valor do XML para "
+                "gravar (CST e CFOP sem correlação única são decisão da "
+                "escrituração).")
+            return
+        r = QMessageBox.question(
+            self, "Corrigir pelo XML",
+            "Gravar no C170 o valor do XML de %d divergência(s)?\n\n"
+            "C190 e totais do C100 não são refeitos aqui: depois, rode "
+            "Revisar erros (ou Recalcular C190 em massa) e confira."
+            % len(corrigiveis),
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
+        if r != QMessageBox.StandardButton.Yes:
+            return
+        res = cf.corrigir_pelo_xml(self.doc, corrigiveis)
+        jan = self.parent()
+        if res["campos"] and jan is not None:
+            if hasattr(jan, "_marcar_alterado"):
+                jan._marcar_alterado()
+            if hasattr(jan, "_montar_abas"):
+                jan._montar_abas()
+        self._movimento_mudou()
+        QMessageBox.information(
+            self, "Corrigir pelo XML",
+            "Corrigido em %d documento(s):\n%s"
+            % (len(res["documentos"]), "\n".join(
+                "• %s: %d" % (c, n) for c, n in sorted(res["campos"].items()))
+               or "nada"))
+
     def _movimento_mudou(self):
         """Refaz a conferência no movimento escolhido, reusando os XMLs.
 
@@ -259,8 +322,10 @@ class DialogoConferencia(QDialog):
         """
         if self.doc is None:
             return
+        movimento = (self.cb_mov.currentData() if hasattr(self, "cb_mov")
+                     else "entrada")
         self.resultado = cf.conferir_itens_xml(
-            self.doc, self.nfes, movimento=self.cb_mov.currentData(),
+            self.doc, self.nfes, movimento=movimento,
             tributo=self.tributo, correlacoes_cfop=self.correlacoes)
         self._recarregar()
 
@@ -293,6 +358,8 @@ class DialogoConferencia(QDialog):
                     cf._fmt(d.valor_xml), cf._fmt(d.valor_sped), d.obs or ""]
             for j, v in enumerate(vals):
                 it = QTableWidgetItem(str(v))
+                if j == 0:
+                    it.setData(Qt.ItemDataRole.UserRole, i)
                 if j in (4, 5):
                     it.setForeground(vermelho)
                 tab.setItem(i, j, it)
@@ -301,12 +368,15 @@ class DialogoConferencia(QDialog):
         tab.setSortingEnabled(True)
         tab.resizeColumnsToContents()
         self._b_csv.setEnabled(bool(divs))
+        self._b_corr.setEnabled(bool(divs))
 
     def _ir_registro(self, row, _col):
         """Duplo clique: navega ao C170 correspondente à divergência."""
-        if not (0 <= row < len(self._divs)):
+        it = self._tab.item(row, 0)
+        k = it.data(Qt.ItemDataRole.UserRole) if it is not None else None
+        if k is None or not (0 <= k < len(self._divs)):
             return
-        uid = getattr(self._divs[row], "uid", None)
+        uid = getattr(self._divs[k], "uid", None)
         jan = self.parent()
         if uid and jan is not None and hasattr(jan, "ir_para_registro"):
             jan.ir_para_registro(uid)

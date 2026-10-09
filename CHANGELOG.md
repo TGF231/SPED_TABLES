@@ -1,5 +1,37 @@
 # Changelog
 
+## [1.1.0-dev.6] — 2026-10-09
+
+### Adicionado
+- **Corrigir pelo XML** na tela *Conferir itens com XMLs* (antes só havia
+  *Exportar CSV*). Grava no C170 o valor do XML das linhas selecionadas —
+  ou de todas, sem seleção —: VL_ITEM na composição que o documento usa,
+  desconto, bases, alíquotas, impostos, e o CFOP quando a correlação aponta
+  um único CFOP de entrada. O CST não é corrigido (o do XML é o do
+  fornecedor). C190 e totais do C100 não são refeitos ali: num ERP que soma
+  IPI e ST ao item, o total recalculado contaria o imposto duas vezes; a
+  tela diz para rodar a revisão (`conferencia.corrigir_pelo_xml`). Depois
+  de corrigir, a conferência é refeita na hora.
+- **MySQL no executável** (PyMySQL 1.2.3). O adaptador agora fala com o
+  MySQL 5.1 dos ERPs antigos: charset padrão `utf8` (o 5.1 não conhece o
+  `utf8mb4`) e transação comum quando o servidor não tem `START
+  TRANSACTION READ ONLY` (antes do 5.6.5). MySQL 8 com
+  `caching_sha2_password` recebe a explicação de como criar o usuário de
+  leitura.
+
+### Corrigido
+- **Valor do XML na conferência de itens ainda sem os impostos.** A
+  1.1.0-dev.3 reconhecia IPI e ICMS-ST somados ao VL_ITEM só quando o valor
+  batia ao centavo, e sem o **FCP retido por ST** (`vFCPST`, agora lido do
+  XML), que o ERP soma ao custo junto do ST. Sem composição exata, a
+  conferência voltava ao `vProd` puro e acusava todo item. Agora:
+  - o FCP-ST entra junto do ICMS-ST, e o VL_ITEM **líquido do desconto**
+    também é uma composição reconhecida;
+  - vale a composição que explica mais itens e, no empate, a de menor
+    diferença; **sem nenhuma exata, a que mais se aproxima** — o *Valor
+    XML* mostrado já traz os impostos, e a diferença que sobra (centavos de
+    custo, por exemplo) é a de verdade.
+
 ## [1.1.0-dev.5] — 2026-10-09
 
 ### Alterado

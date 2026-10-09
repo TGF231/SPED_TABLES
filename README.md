@@ -165,6 +165,17 @@ por empresa, gravada na pasta de dados (`memoria/<CNPJ>.json`):
 Limites: os textos complementares (C110/C195) não são montados; o saldo
 credor anterior do ICMS vem da memória ou do campo da tela.
 
+### Conferir itens com XMLs e corrigir
+
+*Conferir itens com XMLs* (ICMS/IPI ou PIS/COFINS) compara cada C170 com o
+item da nota pelo número do item. O *Valor XML* do VL_ITEM segue o jeito
+como o ERP escriturou a nota: com ou sem despesas acessórias, IPI, ICMS-ST
+(com o FCP-ST) e desconto — o programa reconhece a composição nota a nota.
+O botão **Corrigir pelo XML** grava no C170 o valor do XML das linhas
+selecionadas (ou de todas): valores, bases, alíquotas, impostos e o CFOP
+quando a correlação aponta um só. CST não é corrigido. Depois, rode
+*Revisar erros* para refazer C190 e totais onde a soma não fechar.
+
 ### Regenerar entradas pelos XMLs
 
 *Gerais → Regenerar entradas pelos XMLs* refaz as notas de entrada do arquivo
