@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.1.0-dev.10] — 2026-10-13
+
+### Corrigido
+- **Regenerar C175 (modelo 65) fechava o programa** com `NameError:
+  pendentes` — regressão da revisão de qualidade da 1.0.0-rc.2, que tirou a
+  contagem e deixou o uso na mensagem. O teste das ações não pegou porque,
+  sem C170 fictícios no arquivo, a ação sai antes de chegar à linha.
+- Dois testes novos: a ação com fictícios presentes, e
+  `test_nenhum_nome_indefinido` em `tests/test_estrutura.py`, que lê a
+  tabela de símbolos do Python em todo arquivo do projeto e reprova nome
+  usado e nunca definido — o erro que só aparece rodando.
+
 ## [1.1.0-dev.9] — 2026-10-13
 
 ### Corrigido

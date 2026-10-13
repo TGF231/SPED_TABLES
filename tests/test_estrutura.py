@@ -32,6 +32,39 @@ def _arvore(caminho):
 
 class TestArmadilhas(unittest.TestCase):
 
+    def test_nenhum_nome_indefinido(self):
+        """Nome usado e nunca definido compila e só estoura rodando
+        (`NameError`). Na 1.1.0 uma simplificação tirou a variável
+        `pendentes` do *Regenerar C175* e deixou o uso: o teste da ação não
+        chegava ao ponto (sem fictícios ela sai antes), e o programa caía na
+        mão do usuário. A tabela de símbolos do próprio Python diz o que é
+        global implícito; o que não está no módulo nem nos builtins é
+        erro."""
+        import builtins
+        import symtable
+        achados = []
+        for caminho in _fontes():
+            with open(caminho, encoding="utf-8") as fh:
+                tabela = symtable.symtable(fh.read(), caminho, "exec")
+            do_modulo = {s.get_name() for s in tabela.get_symbols()
+                         if s.is_assigned() or s.is_imported()
+                         or s.is_namespace()}
+
+            def visitar(t):
+                for s in t.get_symbols():
+                    nome = s.get_name()
+                    if (s.is_global() and not s.is_declared_global()
+                            and nome not in do_modulo
+                            and not hasattr(builtins, nome)
+                            and nome not in ("__file__", "__name__")):
+                        achados.append("%s:%d %s" % (
+                            os.path.relpath(caminho, RAIZ), t.get_lineno(),
+                            nome))
+                for filho in t.get_children():
+                    visitar(filho)
+            visitar(tabela)
+        self.assertEqual(achados, [])
+
     def test_nenhum_codigo_depois_de_return(self):
         """Corpo de método órfão aparece como código depois de um `return`."""
         achados = []

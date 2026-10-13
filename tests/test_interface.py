@@ -272,6 +272,30 @@ class TestJanela(unittest.TestCase):
             em_segundo_plano(None, "t", "x", cancela)
         self.assertEqual(self.erros, [], self._falhas())
 
+    def test_regenerar_c175_com_ficticios(self):
+        """Com C170 em documento modelo 65 a ação monta a prévia e regenera
+        (até a 1.1.0-dev.9 levantava NameError: o teste das ações nunca
+        chegava aqui, porque sem fictícios ela sai antes)."""
+        from PyQt6.QtWidgets import QMessageBox as Caixa
+        with PastaTemporaria() as p:
+            j = self.ed.JanelaPrincipal()
+            self.assertTrue(j.abrir_caminho(contrib_basico().gravar(p)))
+            _esperar()
+            i_mod = j.doc._ix("C100", "COD_MOD")
+            c100 = next(r for r in j.doc.registros if r.reg == "C100")
+            c100.set_valor(i_mod, "65")
+            self.assertEqual(len(j.doc.documentos_65_com_c170()), 1)
+            # clica em "Regenerar" (o primeiro botão da caixa)
+            with mock.patch.object(Caixa, "exec", lambda cx: 0), \
+                    mock.patch.object(Caixa, "clickedButton",
+                                      lambda cx: cx.buttons()[0]):
+                j.regenerar_c175_65()
+            self.assertEqual(j.doc.documentos_65_com_c170(), [])
+            self.assertTrue(any(r.reg == "C175" for r in c100.filhos))
+            j.alterado = False
+            j.close()
+        self.assertEqual(self.erros, [], self._falhas())
+
     def test_corrigir_itens_pelo_xml_na_conferencia(self):
         from tests.fabrica import nfe_xml
         with PastaTemporaria() as p:

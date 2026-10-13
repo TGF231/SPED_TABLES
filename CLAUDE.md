@@ -937,6 +937,11 @@ com import sem uso e método definido duas vezes na mesma classe. Outra
 variante da mesma armadilha, vista na reestruturação: um patch que engole o
 `\` de continuação deixa duas linhas coladas — compila, mas fica ilegível.
 
+**Nome usado e nunca definido** também compila e só estoura rodando: na
+1.1.0-dev.9 o *Regenerar C175* caía com `NameError` porque uma
+simplificação tirou a variável e deixou o uso. `test_nenhum_nome_indefinido`
+confere todo arquivo pela tabela de símbolos do Python.
+
 Duas mais, que a suíte pegou antes do commit na 0.52/0.53: variável local com
 o nome de um módulo importado (`ajustes = ajustes()`, `cadastro =
 cadastro.carregar_empresas()`) vira `UnboundLocalError` na função inteira.

@@ -169,7 +169,8 @@ class ControladorContribuicoes:
         os fictícios, restaurando a estrutura consolidada do modelo 65."""
         if not self.doc or self.doc.layout != "CONTRIB":
             return
-        if not self.doc.documentos_65_com_c170():
+        pendentes = len(self.doc.documentos_65_com_c170())
+        if not pendentes:
             QMessageBox.information(
                 self, "Regenerar C175",
                 "Não há C170 fictícios (modelo 65) para consolidar. Rode antes "
