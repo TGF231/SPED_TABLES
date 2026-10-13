@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.1.0-dev.11] — 2026-10-13
+
+### Corrigido
+- **Gerar SPED pelos XMLs não cadastrava no 0200 os produtos vendidos.**
+  Só os itens das entradas iam para o 0200; os das NF-e e NFC-e emitidas
+  pela empresa ficavam de fora (a NFC-e não leva C170, e o gerador só
+  cadastrava o que passava pelo C170 de entrada). Agora todo produto
+  movimentado entra, nos dois leiautes, com a unidade no 0190: o cadastro
+  que a empresa declarou no SPED entregue (memória) e, para produto que a
+  memória não conhece, o do XML — descrição, código de barras, unidade,
+  NCM e **CEST** (agora lido do XML) e tipo 00, apontados numa linha só na
+  revisão com a lista dos códigos.
+
 ## [1.1.0-dev.10] — 2026-10-13
 
 ### Corrigido

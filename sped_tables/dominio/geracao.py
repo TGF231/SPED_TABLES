@@ -254,6 +254,7 @@ class _Itens:
         self.naturezas = {}          # COD_NAT -> descrição (0400)
         self.contas = set()          # COD_CTA usadas (0500)
         self._atual = {}             # o produto em escrituração agora
+        self.vendidos_novos = []     # produtos próprios fora da memória
 
     def _apontar(self, *args, **k):
         # o mesmo dict em todos os apontamentos do item: a escrituração
@@ -400,22 +401,48 @@ class _Itens:
         return {"CFOP": cfop, "CST_ICMS": cst,
                 "CREDITA_ICMS": "S" if credita else "N"}
 
-    def _cadastro(self, cod, item):
+    def _cadastro(self, cod, item, apontar=True):
         if cod in self.cadastro_usado:
             return self.cadastro_usado[cod]
         cad = self.m["cadastro"].get(cod)
         if cad is None:
-            cad = {"DESCR_ITEM": (item.xprod or "")[:255],
-                   "COD_BARRA": item.cean or "",
-                   "UNID_INV": item.unid or "", "TIPO_ITEM": "00",
-                   "COD_NCM": item.ncm or ""}
-            self._apontar("produto fora do cadastro", "0200", cod,
-                             "cadastro montado do XML (tipo 00 — mercadoria "
-                             "para revenda); confira")
+            cad = _cadastro_do_xml(item)
+            if apontar:
+                self._apontar("produto fora do cadastro", "0200", cod,
+                              "cadastro montado do XML (tipo 00 — mercadoria "
+                              "para revenda); confira")
+            else:
+                self.vendidos_novos.append(cod)
         self.cadastro_usado[cod] = cad
         return cad
 
+    def saida(self, item):
+        """Cadastra no 0200 (e a unidade no 0190) o produto de um documento
+        **emitido pela empresa** — NF-e e NFC-e de venda. O código já é o
+        próprio (`cProd`); o cadastro é o que a empresa declarou no SPED
+        entregue e, para produto que a memória não conhece, o do XML. O
+        0200 precisa listar o que a empresa movimentou, mesmo quando o
+        documento não leva C170 (a NFC-e)."""
+        cod = (item.cprod or "").strip()[:60]
+        if not cod:
+            return
+        cad = self._cadastro(cod, item, apontar=False)
+        unid = cad.get("UNID_INV") or item.unid or ""
+        if unid:
+            self.unidades.setdefault(unid, self.m["unidades"].get(unid, unid))
+
     def registros(self, linhas):
+        if self.vendidos_novos:
+            novos = sorted(set(self.vendidos_novos))
+            self.res.apontar(
+                "produtos vendidos fora do cadastro", "0200",
+                "%d produto(s)" % len(novos),
+                "a memória não tem o cadastro de %d produto(s) vendido(s) "
+                "(%s%s): o 0200 foi montado do XML (tipo 00 — mercadoria "
+                "para revenda); confira" % (
+                    len(novos), ", ".join(novos[:10]),
+                    "…" if len(novos) > 10 else ""))
+            self.vendidos_novos = []
         for unid in sorted(self.unidades):
             linhas.reg("0190", UNID=unid, DESCR=self.unidades[unid] or unid)
         for cod in sorted(self.cadastro_usado):
@@ -425,6 +452,15 @@ class _Itens:
         for nat in sorted(self.naturezas):
             linhas.reg("0400", COD_NAT=nat,
                        DESCR_NAT=self.naturezas[nat] or nat)
+
+
+def _cadastro_do_xml(item):
+    """Os campos do 0200 que o XML do produto diz."""
+    return {"DESCR_ITEM": (item.xprod or "")[:255],
+            "COD_BARRA": item.cean or "",
+            "UNID_INV": item.unid or "", "TIPO_ITEM": "00",
+            "COD_NCM": item.ncm or "",
+            "CEST": getattr(item, "cest", "") or ""}
 
 
 # --------------------------------------------------------------- ICMS/IPI
@@ -494,6 +530,7 @@ def gerar_icms(memoria, lote, periodo, saldo_credor_anterior=None,
                 campos = itens.entrada(n, it)
             else:
                 campos = _item_proprio(it)
+                itens.saida(it)
             c.reg("C170", NUM_ITEM=str(it.nitem or k), **campos)
 
     # ---- bloco D: CT-e
@@ -866,6 +903,8 @@ def gerar_contrib(memoria, lote, periodo, correlacoes=None, excluir=(),
                       **itens.entrada(n, it))
         else:
             xml_nfce[n.chave] = n
+            for it in n.itens:
+                itens.saida(it)
 
     t = _Linhas("CONTRIB", _larguras(memoria, "CONTRIB"))
     t.modelo(modelos["0000"], DT_INI=ini, DT_FIN=fim, TIPO_ESCRIT="0",

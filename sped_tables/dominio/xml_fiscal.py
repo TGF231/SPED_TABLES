@@ -115,6 +115,7 @@ CSTAT_EVENTO_OK = {"135", "136", "155"}
 class ItemNFe:
     __slots__ = ("nitem", "cprod", "xprod", "cfop", "vprod", "vdesc",
                  "voutro", "vfrete", "vseg", "qtd", "unid", "ncm", "cean",
+                 "cest",
                  "pis_cst", "pis_vbc", "pis_aliq", "pis_vpis",
                  "cofins_cst", "cofins_vbc", "cofins_aliq", "cofins_vcofins",
                  "icms_cst", "icms_vbc", "icms_aliq", "icms_vicms",
@@ -246,6 +247,7 @@ def _nfe_de(root, caminho):
             qtd=_num(prod.findtext("qCom")), unid=prod.findtext("uCom"),
             ncm=prod.findtext("NCM"),
             cean=_gtin(prod.findtext("cEAN")),
+            cest=(prod.findtext("CEST") or "").strip(),
             icms_cst=icms_cst,
             icms_vbc=_num(icms.findtext("vBC")) if icms is not None else 0.0,
             # percentual de redução da base (ICMS20/70/51…): é o que sobra

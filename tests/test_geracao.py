@@ -146,6 +146,32 @@ class TestSaidasECancelamento(Base):
         self.assertAlmostEqual(_to_num(e110.valor(
             gerado._ix("E110", "VL_TOT_DEBITOS"))), 3.60)
 
+    def test_0200_dos_produtos_vendidos(self):
+        """A NFC-e não leva C170, mas o produto vendido vai para o 0200: o
+        cadastro que a empresa declarou (P1) ou, produto novo, o do XML —
+        com NCM, código de barras e CEST — apontado uma vez só."""
+        _grava(self.xmls, "nfce.xml", nfe_xml(
+            mod="65", chave=CHAVE_NFCE, nnf="1", cfop="5102",
+            emit=(CNPJ_TESTE, "EMPRESA TESTE LTDA"), dest=None,
+            itens=[{"cProd": "P1"}, {"cProd": "V9", "NCM": "22021000"},
+                   {"cProd": "V9", "NCM": "22021000"}]).replace(
+            "<NCM>22021000</NCM>", "<NCM>22021000</NCM><CEST>0300700</CEST>"))
+        res = self.gerar()
+        gerado = self.reler(res)
+        i = {c: gerado._ix("0200", c) for c in ("COD_ITEM", "DESCR_ITEM",
+                                                 "COD_NCM", "CEST")}
+        cad = {r.valor(i["COD_ITEM"]): r for r in gerado.registros
+               if r.reg == "0200"}
+        self.assertEqual(sorted(cad), ["P1", "P2", "P3", "V9"])
+        self.assertEqual(cad["P1"].valor(i["DESCR_ITEM"]), "PRODUTO P1")
+        self.assertEqual((cad["V9"].valor(i["COD_NCM"]),
+                          cad["V9"].valor(i["CEST"])),
+                         ("22021000", "0300700"))
+        avisos = [r for r in res.revisar
+                  if r["tipo"] == "produtos vendidos fora do cadastro"]
+        self.assertEqual(len(avisos), 1)
+        self.assertIn("V9", avisos[0]["detalhe"])
+
     def test_fora_do_periodo_so_entra_marcado_e_vai_extemporaneo(self):
         """Cupom de julho transmitido em agosto: sem a escolha da pessoa
         fica de fora (e é listado); marcado, entra com COD_SIT 01, a data do
