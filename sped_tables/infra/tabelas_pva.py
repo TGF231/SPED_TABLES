@@ -275,6 +275,31 @@ def naturezas_receita(cst, pasta_contrib=None, data_ref=None):
     return out if achou else None
 
 
+def tabela_natureza_receita(cst, pasta_contrib=None):
+    """`[(código, [prefixos de NCM], ex_ipi)]` das tabelas de natureza da
+    receita do CST (4.3.10 a 4.3.16) — para achar a natureza de um produto
+    pelo NCM. Natureza sem NCM na tabela (a 918 das bebidas frias, por
+    exemplo, que só o texto descreve) vem com a lista vazia."""
+    from sped_tables.infra import tabelas_rfb    # o leitor do formato
+    nomes = TABELAS_NAT_REC.get((cst or "").strip(), ())
+    tabs = listar_tabelas(_pasta_contrib(pasta_contrib))
+    out = []
+    for nome in nomes:
+        alvo = tabs.get("SPEDPISCOFINS_OPER_CONTRIB$SPEDPISCOFINS_" + nome)
+        if not alvo:
+            continue
+        try:
+            tabela = tabelas_rfb.carregar_tabela_produtos(alvo[0])
+        except OSError:
+            continue
+        for reg in tabela["registros"]:
+            if reg["dt_fim"]:
+                continue                  # natureza que já saiu da tabela
+            out.append((reg["codigo"], [n for n in reg["ncm"] if n],
+                        reg.get("ex_ipi", "")))
+    return out
+
+
 def ncms_da_natureza(codigo, pasta_contrib=None):
     """Prefixos de NCM que as tabelas de natureza da receita (4.3.10 a
     4.3.16) associam ao `codigo` — o produto de que a receita é."""

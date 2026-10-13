@@ -925,6 +925,7 @@ def gerar_contrib(memoria, lote, periodo, correlacoes=None, excluir=(),
     _aliquota_do_regime(doc, memoria, res)
     doc.recalcular_bloco_m()
     _codigos_de_receita(doc, modelos)
+    _receitas_sem_contribuicao(doc, list(xml_nfce.values()), memoria, res)
     res.doc = SpedDocument.de_texto(doc.gerar_texto())
     res.contagem = {k: len(v) for k, v in grupos.items()}
     return res
@@ -955,6 +956,102 @@ def _aliquota_do_regime(doc, memoria, res):
                         "as NFC-e vieram com %s/%s; o regime da empresa é "
                         "%s/%s" % (ap, ac, regime["ALIQ_PIS"],
                                    regime["ALIQ_COFINS"]))
+
+
+# CST de saída sem contribuição: a receita vai para o M400/M800, detalhada
+# por natureza no M410/M810 (tabelas 4.3.10 a 4.3.16)
+CST_SEM_CONTRIBUICAO = ("04", "05", "06", "07", "08", "09")
+
+
+def _natureza_pelo_ncm(tabela, ncm, ex_ipi=""):
+    """A natureza cujo prefixo de NCM mais longo casa com o produto."""
+    ncm = so_digitos(ncm)
+    melhor, tam = None, -1
+    for codigo, prefixos, ex in tabela:
+        if ex and ex != (ex_ipi or ""):
+            continue
+        for p in prefixos:
+            if ncm.startswith(p) and len(p) > tam:
+                melhor, tam = codigo, len(p)
+    return melhor
+
+
+def _receitas_sem_contribuicao(doc, saidas, memoria, res):
+    """M400/M410 (PIS) e M800/M810 (COFINS) — filhos obrigatórios do bloco
+    M quando há receita com CST 04 a 09.
+
+    O total de cada CST é a receita que o PVA confere
+    (`receita_por_cst`, o mesmo da `conferir_receitas_isentas`). A
+    natureza vem do NCM de cada item do XML pela tabela do CST (o prefixo
+    mais longo); sem casamento, a natureza que a empresa usou no SPED
+    entregue naquele CST (apontado); sem nenhuma das duas, a linha sai sem
+    natureza e **bloqueia** — o PVA recusaria. O total do CST é repartido
+    entre as naturezas pela proporção dos itens, com o rateio de sempre
+    (`rateio_acessorios`): o M410 fecha com o M400 ao centavo."""
+    m001 = next((r for r in doc.registros if r.reg == "M001"), None)
+    if m001 is None:
+        return
+    vistas = memoria.get("naturezas_receita", {})
+    contas = memoria.get("contas_receita", {})
+    no_0500 = {(r.valor(doc._ix("0500", "COD_CTA")) or "").strip()
+               for r in doc.registros if r.reg == "0500"}
+
+    def conta(chave):
+        c = contas.get(chave, "")
+        return c if c in no_0500 else ""
+
+    for trib, pai, filho, campo, attr in (
+            ("PIS", "M400", "M410", "CST_PIS", "pis_cst"),
+            ("COFINS", "M800", "M810", "CST_COFINS", "cofins_cst")):
+        totais = {cst: round(v, 2)
+                  for cst, v in doc.receita_por_cst(trib).items()
+                  if cst in CST_SEM_CONTRIBUICAO and round(v, 2)}
+        if not totais:
+            continue
+        partes = {}
+        for n in saidas:
+            for it in n.itens:
+                cst = (getattr(it, attr) or "").strip()
+                if cst not in totais:
+                    continue
+                tabela = referencias.atual().tabela_natureza_receita(cst)
+                nat = _natureza_pelo_ncm(tabela, it.ncm)
+                if nat is None:
+                    ja = vistas.get(cst) or {}
+                    nat = max(ja, key=ja.get) if ja else ""
+                    res.apontar(
+                        "natureza da receita pela prática", filho, cst,
+                        "%s (NCM %s, CST %s): %s" % (
+                            it.xprod, it.ncm, cst,
+                            "usei a natureza %s, a que a empresa usa neste "
+                            "CST" % nat if nat else "nenhuma tabela nem a "
+                            "memória dizem a natureza"),
+                        bloqueia=not nat)
+                v = (it.vprod or 0.0) - (it.vdesc or 0.0)
+                partes.setdefault(cst, {})
+                partes[cst][nat] = partes[cst].get(nat, 0.0) + v
+        with doc.lote():
+            for cst in sorted(totais):
+                depois = doc._ancora_antes(m001, pai)
+                reg = doc.novo_registro(pai, pai=m001, depois=depois)
+                doc._preencher(reg, [pai, cst, _fmt_val(totais[cst]),
+                                     conta("%s|%s" % (pai, cst)), ""])
+                nats = sorted(partes.get(cst, {}).items()) or [
+                    (max(vistas.get(cst) or {"": 1},
+                         key=(vistas.get(cst) or {"": 1}).get), 1.0)]
+                if not any(n for n, _v in nats):
+                    res.apontar("natureza da receita desconhecida", filho,
+                                cst, "receita de CST %s sem natureza: "
+                                     "informe no M410/M810" % cst,
+                                bloqueia=True)
+                valores = SpedDocument.rateio_acessorios(
+                    totais[cst], [v for _n, v in nats])
+                ant = reg
+                for (nat, _v), vl in zip(nats, valores):
+                    f = doc.novo_registro(filho, pai=reg, depois=ant)
+                    doc._preencher(f, [filho, nat, _fmt_val(vl), conta(
+                        "%s|%s|%s" % (filho, cst, nat)), ""])
+                    ant = f
 
 
 def _codigos_de_receita(doc, modelos):

@@ -23,6 +23,7 @@ class ReferenciasPVA(Referencias):
         self._alinhadas = {}     # (leiaute, id do descritor) -> alinhada
         self._guias = {}         # leiaute -> guia prático
         self._ncms_natureza = {}  # natureza da receita -> NCM
+        self._tab_natureza = {}   # CST -> tabela da natureza da receita
         self._clf = None
         self._clf_lido = False
 
@@ -61,6 +62,11 @@ class ReferenciasPVA(Referencias):
         if codigo not in self._ncms_natureza:
             self._ncms_natureza[codigo] = tabelas_pva.ncms_da_natureza(codigo)
         return self._ncms_natureza[codigo]
+
+    def tabela_natureza_receita(self, cst):
+        if cst not in self._tab_natureza:
+            self._tab_natureza[cst] = tabelas_pva.tabela_natureza_receita(cst)
+        return self._tab_natureza[cst]
 
     def classificador_ncm(self):
         # montar custa a leitura de três arquivos

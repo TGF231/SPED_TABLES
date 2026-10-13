@@ -111,6 +111,46 @@ class TestContribuicoes(unittest.TestCase):
         r = r or next(x for x in doc.registros if x.reg == reg)
         return r.valor(doc._ix(reg, campo))
 
+    def test_m400_m410_e_m800_m810(self):
+        """Receita com CST 06 gera M400/M410 e M800/M810: total pela
+        receita do CST, natureza pelo NCM na tabela do CST (leite → 121) ou,
+        sem casamento, pela que a empresa usa (bebida fria → 918, apontado);
+        o M410 fecha com o M400 ao centavo."""
+        from unittest import mock
+        from sped_tables.dominio import referencias
+        pc = {"pis": ("06", "0", "0", "0"), "cofins": ("06", "0", "0", "0")}
+        self._grava("nfce.xml", nfe_xml(
+            mod="65", chave=CHAVE_NFCE, nnf="1",
+            emit=(CNPJ_TESTE, "EMPRESA TESTE LTDA"), dest=None,
+            itens=[dict(pc, cProd="P1", NCM="04012010", vProd="10.00"),
+                   dict(pc, cProd="P1", NCM="22021000", vProd="5.01")]))
+        self.memoria["naturezas_receita"] = {"06": {"918": 3}}
+        fonte = referencias.atual()
+        with mock.patch.object(
+                fonte, "tabela_natureza_receita",
+                lambda cst: [("121", ["0401"], "")] if cst == "06" else []):
+            res = geracao.gerar_contrib(self.memoria,
+                                        xf.ler_pasta_fiscal(self.xmls),
+                                        "202608")
+        doc = res.doc
+        for pai, filho in (("M400", "M410"), ("M800", "M810")):
+            (m400,) = [r for r in doc.registros if r.reg == pai]
+            self.assertEqual(m400.campos[1], "06")
+            total = _to_num(self.val(doc, pai, "VL_TOT_REC", m400))
+            self.assertAlmostEqual(total, 15.01)
+            nats = {f.valor(doc._ix(filho, "NAT_REC")):
+                    _to_num(f.valor(doc._ix(filho, "VL_REC")))
+                    for f in m400.filhos}
+            self.assertEqual(nats, {"121": 10.0, "918": 5.01})
+        self.assertIn("natureza da receita pela prática",
+                      {r["tipo"] for r in res.revisar})
+        self.assertEqual(res.bloqueios, [])
+        self.assertEqual(doc.conferir_receitas_isentas(), [])
+        # ordem do leiaute: M400 antes do M500/M600, M800 depois do M600
+        ordem = [r.reg for r in doc.registros if r.reg.startswith("M")]
+        self.assertLess(ordem.index("M400"), ordem.index("M600"))
+        self.assertGreater(ordem.index("M800"), ordem.index("M600"))
+
     def test_extemporaneo_marcado_fica_no_mes(self):
         """No Contribuições o PVA recusa data de outro mês: o cupom
         extemporâneo marcado entra com COD_SIT 01 e o primeiro dia."""

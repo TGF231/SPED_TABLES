@@ -1,5 +1,27 @@
 # Changelog
 
+## [1.1.0-dev.9] — 2026-10-13
+
+### Corrigido
+- **Gerar SPED pelos XMLs (EFD Contribuições) não criava o M400/M410 nem o
+  M800/M810** — obrigatórios quando há receita com CST 04 a 09 (monofásico,
+  ST, alíquota zero, isenção, sem incidência, suspensão). Agora:
+  - um M400/M800 por CST, com o total da receita do CST pelo mesmo
+    somatório que a conferência e o PVA usam (`receita_por_cst`);
+  - a **natureza da receita** (M410/M810) sai do NCM de cada item do XML
+    pela tabela do CST no PVA (4.3.10 a 4.3.16, o prefixo mais longo,
+    respeitando o EX da TIPI); sem casamento — a 918 das bebidas frias, por
+    exemplo, não tem NCM na tabela —, vale a natureza que a empresa usou
+    naquele CST no SPED entregue (aprendida na memória), e é apontada; sem
+    nenhuma das duas, **bloqueia** a gravação;
+  - o total do CST é repartido entre as naturezas pela proporção dos itens,
+    com o rateio de sempre: o M410 fecha com o M400 ao centavo;
+  - a conta contábil (COD_CTA) do M400/M410 é a que a empresa usou, se
+    estiver no 0500 do arquivo gerado.
+- A memória da empresa passa a guardar a natureza de cada CST e as contas
+  do M400/M410 e M800/M810 do SPED entregue: **aprenda de novo** com um
+  SPED do Contribuições para preencher.
+
 ## [1.1.0-dev.8] — 2026-10-13
 
 ### Adicionado

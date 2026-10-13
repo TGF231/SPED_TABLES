@@ -59,6 +59,11 @@ class Referencias:
         se refere, pelas tabelas 4.3.10 a 4.3.16."""
         return set()
 
+    def tabela_natureza_receita(self, cst):
+        """`[(código, [prefixos de NCM], ex_ipi)]` das naturezas da receita
+        do CST (tabelas 4.3.10 a 4.3.16), ou vazio."""
+        return []
+
     def classificador_ncm(self):
         """`ncm.ClassificadorNCM` com as tabelas de alíquota zero e
         monofásico do PVA, ou None."""
