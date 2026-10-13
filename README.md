@@ -165,6 +165,15 @@ por empresa, gravada na pasta de dados (`memoria/<CNPJ>.json`):
 Limites: os textos complementares (C110/C195) não são montados; o saldo
 credor anterior do ICMS vem da memória ou do campo da tela.
 
+### ICMS próprio nas compras com ST
+
+*EFD ICMS/IPI → Zerar ICMS próprio das compras com ST* trata as entradas com
+CFOP 1403/2403 e CST x10/x70 que trazem base, alíquota ou valor de ICMS: o
+ICMS dessa mercadoria já foi retido por substituição tributária, e crédito
+não cabe. A função mostra quantos itens e quanto de crédito; confirmado,
+zera os três campos, refaz o C190 das notas, os totais de ICMS do C100 e o
+crédito do E110.
+
 ### Conferir itens com XMLs e corrigir
 
 *Conferir itens com XMLs* (ICMS/IPI ou PIS/COFINS) compara cada C170 com o

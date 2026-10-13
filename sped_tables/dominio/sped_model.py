@@ -1391,6 +1391,91 @@ class SpedDocument:
             saida.extend(f for f in c.filhos if f.reg == tipo)
         return saida
 
+    # Compra para revenda com ICMS já retido por substituição tributária
+    # (CFOP 1403/2403) e CST de ST com ICMS próprio do fornecedor (x10, x70):
+    # o adquirente não se credita do ICMS próprio — o imposto da cadeia já
+    # foi recolhido por ST. Base, alíquota e valor do ICMS do item ficam zero.
+    CFOP_COMPRA_ST_SEM_CREDITO = ("1403", "2403")
+    CST_ST_COM_ICMS_PROPRIO = ("10", "70")
+
+    def itens_credito_icms_st(self):
+        """C170 de **entrada** com CFOP 1403/2403, CST x10/x70 e algum valor
+        de ICMS próprio (base, alíquota ou valor) — crédito que não cabe."""
+        if self.layout != "ICMS":
+            return []
+        i = {c: self._ix("C170", c) for c in (
+            "CFOP", "CST_ICMS", "VL_BC_ICMS", "ALIQ_ICMS", "VL_ICMS")}
+        i_op = self._ix("C100", "IND_OPER")
+        out = []
+        for r in self.registros:
+            if r.reg != "C170" or r.pai is None or r.pai.reg != "C100":
+                continue
+            if (r.pai.valor(i_op) or "").strip() != "0":
+                continue
+            if (r.valor(i["CFOP"]) or "").strip() not in \
+                    self.CFOP_COMPRA_ST_SEM_CREDITO:
+                continue
+            if (r.valor(i["CST_ICMS"]) or "").strip()[-2:] not in \
+                    self.CST_ST_COM_ICMS_PROPRIO:
+                continue
+            if any(_to_num(r.valor(i[c])) for c in (
+                    "VL_BC_ICMS", "ALIQ_ICMS", "VL_ICMS")):
+                out.append(r)
+        return out
+
+    def previa_credito_icms_st(self):
+        """O que `zerar_credito_icms_st` faria, sem mexer: `{"itens",
+        "documentos", "vl_bc", "vl_icms"}`."""
+        itens = self.itens_credito_icms_st()
+        i_bc, i_v = self._ix("C170", "VL_BC_ICMS"), self._ix("C170", "VL_ICMS")
+        return {"itens": len(itens),
+                "documentos": len({id(r.pai) for r in itens}),
+                "vl_bc": round(sum(_to_num(r.valor(i_bc)) for r in itens), 2),
+                "vl_icms": round(sum(_to_num(r.valor(i_v)) for r in itens),
+                                 2)}
+
+    def zerar_credito_icms_st(self):
+        """Zera base, alíquota e valor do ICMS próprio dos itens de
+        `itens_credito_icms_st`, refaz o C190 dos documentos tocados (o
+        `consolidar_c190` de sempre), põe no C100 a base e o ICMS somados
+        do C190 e tira do `VL_TOT_CREDITOS` do E110 o crédito retirado,
+        recalculando os saldos. Devolve a prévia do que foi feito."""
+        itens = self.itens_credito_icms_st()
+        docs = []
+        for r in itens:
+            if all(r.pai is not d for d in docs):
+                docs.append(r.pai)
+        self._exigir_numeros(itens + docs + [
+            f for d in docs for f in d.filhos if f.reg == "C190"] + [
+            r for r in self.registros if r.reg == "E110"])
+        resumo = self.previa_credito_icms_st()
+        if not itens:
+            return resumo
+        for r in itens:
+            for campo in ("VL_BC_ICMS", "ALIQ_ICMS", "VL_ICMS"):
+                i = self._ix("C170", campo)
+                if i is not None and i < len(r.campos):
+                    r.set_valor(i, "0")
+        i9 = {c: self._ix("C190", c) for c in ("VL_BC_ICMS", "VL_ICMS")}
+        with self.lote():
+            for d in docs:
+                self.consolidar_c190(d)
+        for d in docs:
+            for campo in ("VL_BC_ICMS", "VL_ICMS"):
+                i = self._ix("C100", campo)
+                if i is None:
+                    continue
+                soma = sum(_to_num(f.valor(i9[campo])) for f in d.filhos
+                           if f.reg == "C190")
+                d.set_valor(i, _fmt_val(round(soma, 2)))
+        e110 = next((r for r in self.registros if r.reg == "E110"), None)
+        i_cred = self._ix("E110", "VL_TOT_CREDITOS")
+        if e110 is not None and i_cred is not None and resumo["vl_icms"]:
+            novo = max(_to_num(e110.valor(i_cred)) - resumo["vl_icms"], 0.0)
+            e110.set_valor(i_cred, _fmt_val(round(novo, 2)))
+            self.recalcular_e110()
+        return resumo
+
     def consolidar_c190(self, c100):
         """
         (Apenas EFD ICMS/IPI) Recalcula os registros **C190** (analítico) de um

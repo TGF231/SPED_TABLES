@@ -7,7 +7,8 @@ from PyQt6.QtWidgets import QMessageBox
 from sped_tables.dominio import conferencia as cf
 from sped_tables.dominio import revisao as rev
 from sped_tables.dominio import xml_fiscal as xf
-from sped_tables.interface.comum import (calcular, ler_nfes_da_pasta,
+from sped_tables.interface.comum import (_br, calcular,
+                                         ler_nfes_da_pasta,
                                          ler_pasta_xml,
                                          lista_de_mudancas)
 from sped_tables.interface.dialogos.conferencia import DialogoConfC190
@@ -21,6 +22,43 @@ class ControladorIcms:
     Mixin da `JanelaPrincipal`: usa `self.doc`, `self.statusBar()` e os
     demais membros da janela.
     """
+
+    def zerar_credito_icms_st(self):
+        """Compra para revenda com ST retido (1403/2403) e CST x10/x70 não
+        dá crédito do ICMS próprio: zera base, alíquota e valor do item e
+        refaz C190, C100 e E110 (`SpedDocument.zerar_credito_icms_st`)."""
+        if not self.doc or self.doc.layout != "ICMS":
+            return
+        titulo = "ICMS próprio nas compras com ST"
+        p = self.doc.previa_credito_icms_st()
+        if not p["itens"]:
+            QMessageBox.information(
+                self, titulo, "Nenhum item de entrada com CFOP 1403/2403, "
+                "CST x10/x70 e ICMS próprio preenchido.")
+            return
+        r = QMessageBox.question(
+            self, titulo,
+            "%d item(ns) em %d nota(s) de compra com ST (CFOP 1403/2403, "
+            "CST x10/x70) trazem ICMS próprio:\n\n"
+            "• base: %s\n• ICMS (crédito): %s\n\n"
+            "O ICMS da mercadoria já foi recolhido por substituição "
+            "tributária; não há crédito a apurar. Zerar base, alíquota e "
+            "valor desses itens, refazer o C190 e os totais do C100 e "
+            "retirar o crédito do E110?"
+            % (p["itens"], p["documentos"], _br(p["vl_bc"]),
+               _br(p["vl_icms"])),
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
+        if r != QMessageBox.StandardButton.Yes:
+            return
+        ok, res = calcular(self, titulo, self.doc.zerar_credito_icms_st)
+        if not ok:
+            return
+        self._marcar_alterado()
+        self._montar_abas()
+        self.statusBar().showMessage(
+            "ICMS próprio zerado em %d item(ns) de %d nota(s); crédito "
+            "retirado: %s." % (res["itens"], res["documentos"],
+                               _br(res["vl_icms"])), 15000)
 
     def recalcular_icms(self):
         """Recalcula o ICMS dos itens, no escopo do Modo Relatório.

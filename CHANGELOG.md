@@ -1,5 +1,23 @@
 # Changelog
 
+## [1.1.0-dev.8] — 2026-10-13
+
+### Adicionado
+- **EFD ICMS/IPI → Zerar ICMS próprio das compras com ST (1403/2403, CST
+  x10/x70).** Na compra para revenda com ICMS retido por substituição
+  tributária, o imposto da cadeia já foi recolhido: não há crédito do ICMS
+  próprio a apurar. A função acha os C170 de **entrada** com CFOP 1403 ou
+  2403, CST terminado em 10 ou 70 e base, alíquota ou valor de ICMS
+  preenchidos, mostra quantos itens, notas, base e crédito, e, confirmado:
+  zera base, alíquota e valor do item; refaz o C190 das notas tocadas (o
+  `consolidar_c190` de sempre); põe no C100 a base e o ICMS somados do
+  C190; e tira do `VL_TOT_CREDITOS` do E110 o crédito retirado,
+  recalculando os saldos (`SpedDocument.zerar_credito_icms_st`). CST 60 e
+  saídas não são tocados.
+- Num arquivo real (cliente A): 593 itens em 77 notas com a alíquota
+  preenchida e base e valor zerados — corrigidos sem mudar crédito, com o
+  C190 continuando a fechar com os itens.
+
 ## [1.1.0-dev.7] — 2026-10-13
 
 ### Corrigido

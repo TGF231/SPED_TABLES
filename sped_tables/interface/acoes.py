@@ -60,6 +60,9 @@ ACOES = (
          alternavel=True, separador=True),
 
     # ---- EFD ICMS/IPI
+    Acao("act_credito_st", "Zerar ICMS próprio das compras com ST "
+         "(1403/2403, CST x10/x70)…", "zerar_credito_icms_st", ICMS,
+         MENU_ICMS),
     Acao("act_recalc_icms", "Recalcular ICMS dos itens…", "recalcular_icms",
          ICMS, MENU_ICMS),
     Acao("act_conferir_itens_icms", "Conferir itens com XMLs (ICMS/IPI)…",
