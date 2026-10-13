@@ -709,6 +709,12 @@ de entrada conforme o produto: não há regra geral, a decisão é por produto.
   preenchido.
 - **Comparar com o entregue** (`comparacao_sped`) confere PIS/COFINS só no
   Contribuições: no ICMS/IPI esses campos são informativos e ficam vazios.
+- **Fora do período não se descarta nem se inclui sozinho.** O cupom em
+  contingência transmitido no mês seguinte é extemporâneo; a tela lista os
+  de outro mês desmarcados e só entra o que a pessoa marcar
+  (`classificar(..., incluir=)`, `Resultado.extemporaneos`): COD_SIT 01/07,
+  data do XML no ICMS/IPI (primeiro dia no Contribuições) e ICMS da saída no
+  `DEB_ESP` + E116, igual ao `recalcular_e110`.
 - CT-e sai pelo CNPJ: emitente = frete prestado, tomador = D100 de entrada.
   **Ainda sem mês real com CT-e** — só testes sintéticos.
 

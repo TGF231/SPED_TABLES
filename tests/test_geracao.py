@@ -146,6 +146,39 @@ class TestSaidasECancelamento(Base):
         self.assertAlmostEqual(_to_num(e110.valor(
             gerado._ix("E110", "VL_TOT_DEBITOS"))), 3.60)
 
+    def test_fora_do_periodo_so_entra_marcado_e_vai_extemporaneo(self):
+        """Cupom de julho transmitido em agosto: sem a escolha da pessoa
+        fica de fora (e é listado); marcado, entra com COD_SIT 01, a data do
+        XML, e o ICMS dele vai para o DEB_ESP — não para os débitos."""
+        _grava(self.xmls, "nfce.xml", nfe_xml(
+            mod="65", chave=CHAVE_NFCE, nnf="1", cfop="5102",
+            emit=(CNPJ_TESTE, "EMPRESA TESTE LTDA"), dest=None,
+            dhemi="2026-07-31T23:50:00-03:00",
+            itens=[{"cProd": "P1", "vProd": "20.00", "vBC": "20.00",
+                    "vICMS": "3.60"}]))
+        res = self.gerar()
+        self.assertEqual(res.fora_periodo, [(CHAVE_NFCE, "31072026")])
+        self.assertFalse(any(r.reg == "C100" and r.valor(
+            res.doc._ix("C100", "COD_MOD")) == "65"
+            for r in res.doc.registros))
+        res = self.gerar(incluir={CHAVE_NFCE})
+        self.assertEqual(res.fora_periodo, [])
+        self.assertEqual(res.extemporaneos, {CHAVE_NFCE})
+        gerado = self.reler(res)
+        ic = {c: gerado._ix("C100", c) for c in ("COD_MOD", "COD_SIT",
+                                                  "DT_DOC")}
+        nfce = next(r for r in gerado.registros if r.reg == "C100"
+                    and r.valor(ic["COD_MOD"]) == "65")
+        self.assertEqual((nfce.valor(ic["COD_SIT"]), nfce.valor(ic["DT_DOC"])),
+                         ("01", "31072026"))
+        e110 = next(r for r in gerado.registros if r.reg == "E110")
+        ie = {c: gerado._ix("E110", c) for c in ("VL_TOT_DEBITOS",
+                                                 "DEB_ESP")}
+        self.assertAlmostEqual(_to_num(e110.valor(ie["VL_TOT_DEBITOS"])), 0)
+        self.assertAlmostEqual(_to_num(e110.valor(ie["DEB_ESP"])), 3.60)
+        # o que o recálculo do botão espera é o que a geração gravou
+        self.assertEqual(gerado.recalcular_e110(), {})
+
     def test_cancelada_so_com_a_chave(self):
         _grava(self.xmls, "canc.xml",
                evento_cancelamento_xml(CHAVE_ENTRADA))

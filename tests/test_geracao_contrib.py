@@ -111,6 +111,26 @@ class TestContribuicoes(unittest.TestCase):
         r = r or next(x for x in doc.registros if x.reg == reg)
         return r.valor(doc._ix(reg, campo))
 
+    def test_extemporaneo_marcado_fica_no_mes(self):
+        """No Contribuições o PVA recusa data de outro mês: o cupom
+        extemporâneo marcado entra com COD_SIT 01 e o primeiro dia."""
+        self._grava("nfce.xml", nfe_xml(
+            mod="65", chave=CHAVE_NFCE, nnf="1",
+            emit=(CNPJ_TESTE, "EMPRESA TESTE LTDA"), dest=None,
+            dhemi="2026-07-31T23:50:00-03:00",
+            itens=[{"cProd": "P1", "vProd": "200.00"}]))
+        lote = xf.ler_pasta_fiscal(self.xmls)
+        res = geracao.gerar_contrib(self.memoria, lote, "202608")
+        self.assertEqual(res.fora_periodo, [(CHAVE_NFCE, "31072026")])
+        res = geracao.gerar_contrib(self.memoria, lote, "202608",
+                                    incluir={CHAVE_NFCE})
+        doc = res.doc
+        nfce = next(r for r in doc.registros if r.reg == "C100"
+                    and self.val(doc, "C100", "COD_MOD", r) == "65")
+        self.assertEqual((self.val(doc, "C100", "COD_SIT", nfce),
+                          self.val(doc, "C100", "DT_DOC", nfce)),
+                         ("01", "01082026"))
+
     def test_nfce_com_a_aliquota_do_regime(self):
         res, doc = self.gerar()
         self.assertIn("alíquota do XML trocada",

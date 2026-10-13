@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.1.0-dev.7] — 2026-10-13
+
+### Corrigido
+- **Gerar SPED pelos XMLs descartava sozinho o que tinha data de outro
+  mês.** Cupom em contingência transmitido no mês seguinte é documento
+  extemporâneo e precisa entrar — mas só a pessoa sabe quais são. Agora os
+  documentos fora do período aparecem na aba *Documentos*, **desmarcados** e
+  destacados ("fora do período: marque se extemporâneo"). Marcado, entra:
+  - com **COD_SIT 01** (07 no complementar);
+  - no ICMS/IPI, com a data real do XML, e o ICMS da saída vai para o
+    **DEB_ESP** do E110 (não para os débitos do período) e para o E116 — o
+    mesmo que o *Recalcular apuração do ICMS* calcula;
+  - no EFD Contribuições, com o primeiro dia do período (o PVA de lá recusa
+    data de outro mês mesmo com COD_SIT 01).
+  Sem marcar, continua de fora e listado em *Fora do período e ignorados*.
+
 ## [1.1.0-dev.6] — 2026-10-09
 
 ### Corrigido (geração do executável)

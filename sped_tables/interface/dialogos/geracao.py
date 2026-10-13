@@ -170,6 +170,7 @@ class DialogoGerarDeXml(QDialog):
         self.geracao = None
         self.pasta_lida = None
         self.excluir = set()
+        self.incluir = set()
         self.revisao = []            # [(leiaute, apontamento)]
         self.abrir_depois = None     # caminho que a janela abre ao fechar
         lay = QVBoxLayout(self)
@@ -286,6 +287,7 @@ class DialogoGerarDeXml(QDialog):
         self.geracao = GeracaoXml(cnpj) if len(cnpj) == 14 else None
         self.pasta_lida = None
         self.excluir = set()
+        self.incluir = set()
         self.b_aprender.setEnabled(self.geracao is not None)
         self._mostrar_memoria()
         self._limpar()
@@ -398,12 +400,14 @@ class DialogoGerarDeXml(QDialog):
                 return
             self.pasta_lida = pasta
             self.excluir = set()
+            self.incluir = set()
         QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
         try:
             grupos, previa = self.geracao.documentos(periodo)
             self.geracao.gerar(periodo, leiautes, excluir=self.excluir,
                                saldo_credor_anterior=saldo,
-                               correlacoes=self.correlacoes)
+                               correlacoes=self.correlacoes,
+                               incluir=self.incluir)
         except Exception as exc:  # noqa: BLE001
             QApplication.restoreOverrideCursor()
             QMessageBox.warning(self, "Gerar", str(exc))
@@ -423,7 +427,33 @@ class DialogoGerarDeXml(QDialog):
         # documentos: todos os do período, os desmarcados também (a
         # classificação não recebe o `excluir`), para poder voltar atrás
         self.t_doc.blockSignals(True)
-        linhas, chaves = [], []
+        linhas, chaves, fora = [], [], set()
+        # fora do período: listados aqui, **desmarcados**. Só entram se a
+        # pessoa marcar — é o cupom em contingência transmitido no mês
+        # seguinte (extemporâneo), e quem sabe disso é ela
+        lote = self.geracao.lote
+        por_chave = {d.chave: d for d in lote.nfes + lote.ctes}
+        cnpj = self.geracao.cnpj
+        for chave, data in previa.fora_periodo:
+            d = por_chave.get(chave)
+            if d is None:
+                continue
+            cte = hasattr(d, "nct")
+            saida = ((d.emit.documento if d.emit else "") == cnpj)
+            outro = d.dest if saida else (d.toma if cte else d.emit)
+            linhas.append(["", "%s — fora do período (%s/%s/%s): marque se "
+                               "extemporâneo" % ("Saída" if saida
+                                                 else "Entrada",
+                                                 data[:2], data[2:4],
+                                                 data[4:]),
+                           d.mod or "", "%s/%s" % (d.serie,
+                                                   d.nct if cte else d.nnf),
+                           _data_iso(d.dhemi),
+                           (outro.nome if outro else "") or "",
+                           _br(d.vtprest if cte else d.vnf),
+                           d.situacao, d.chave])
+            chaves.append(d.chave)
+            fora.add(d.chave)
         for grupo, docs in grupos.items():
             for d in docs:
                 cte = hasattr(d, "nct")
@@ -441,9 +471,18 @@ class DialogoGerarDeXml(QDialog):
         for i, chave in enumerate(chaves):
             it = self.t_doc.item(i, 0)
             it.setFlags(it.flags() | Qt.ItemFlag.ItemIsUserCheckable)
-            it.setCheckState(Qt.CheckState.Unchecked if chave in self.excluir
-                             else Qt.CheckState.Checked)
+            if chave in fora:
+                marcado = chave in self.incluir
+                for j in range(1, self.t_doc.columnCount()):
+                    c = self.t_doc.item(i, j)
+                    if c is not None:
+                        c.setForeground(QColor(pal.warn))
+            else:
+                marcado = chave not in self.excluir
+            it.setCheckState(Qt.CheckState.Checked if marcado
+                             else Qt.CheckState.Unchecked)
             it.setData(Qt.ItemDataRole.UserRole, chave)
+            it.setData(Qt.ItemDataRole.UserRole + 1, chave in fora)
         self.t_doc.blockSignals(False)
 
         # revisão: bloqueios primeiro
@@ -459,8 +498,11 @@ class DialogoGerarDeXml(QDialog):
 
         # fora do período, ignorados e o que não foi lido
         lote = self.geracao.lote
-        fora = ([[c, "fora do período (%s)" % ("%s/%s/%s" % (
-            d[:2], d[2:4], d[4:]) if d else "sem data")]
+        fora = ([[c, "fora do período (%s) — %s" % (
+            "%s/%s/%s" % (d[:2], d[2:4], d[4:]) if d else "sem data",
+            "incluído como extemporâneo" if c in self.incluir
+            else "não incluído: marque na aba Documentos se for "
+                 "extemporâneo")]
             for c, d in previa.fora_periodo]
             + [[c, m] for c, m in previa.ignorados]
             + [[os.path.basename(a), m] for a, m in lote.erros]
@@ -497,7 +539,11 @@ class DialogoGerarDeXml(QDialog):
         if item.column() != 0:
             return
         chave = item.data(Qt.ItemDataRole.UserRole)
-        if item.checkState() == Qt.CheckState.Checked:
+        marcado = item.checkState() == Qt.CheckState.Checked
+        if item.data(Qt.ItemDataRole.UserRole + 1):
+            # fora do período: marcar = incluir como extemporâneo
+            (self.incluir.add if marcado else self.incluir.discard)(chave)
+        elif marcado:
             self.excluir.discard(chave)
         else:
             self.excluir.add(chave)

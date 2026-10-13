@@ -47,6 +47,9 @@ class Resultado:
         self.ignorados = []      # [(chave, motivo)]
         self.participantes_novos = {}   # documento -> código atribuído
         self.contagem = {}
+        # chaves fora do período que a pessoa mandou incluir: documentos
+        # extemporâneos (COD_SIT 01/07; o ICMS da saída vai para o DEB_ESP)
+        self.extemporaneos = set()
 
     def apontar(self, tipo, documento, item, detalhe, bloqueia=False,
                 dados=None):
@@ -128,9 +131,16 @@ class _Linhas:
 
 
 # ---------------------------------------------------------- classificação
-def classificar(lote, cnpj, periodo, res, regra_data=None, excluir=()):
+def classificar(lote, cnpj, periodo, res, regra_data=None, excluir=(),
+                incluir=()):
     """Separa o que é da empresa no período: `{"entradas", "saidas",
-    "fretes_entrada", "fretes_saida"}` — e diz o que ficou de fora."""
+    "fretes_entrada", "fretes_saida"}` — e diz o que ficou de fora.
+
+    Documento com data de outro mês vai para `res.fora_periodo` — **a não
+    ser** que a chave esteja em `incluir`: aí é a pessoa dizendo que é
+    extemporâneo (o cupom em contingência transmitido no mês seguinte), e
+    ele entra, anotado em `res.extemporaneos`. Nunca se decide isso
+    sozinho."""
     cnpj = so_digitos(cnpj)
     data_entrada = regra_data or "saida"
     grupos = {"entradas": [], "saidas": [], "fretes_entrada": [],
@@ -158,8 +168,10 @@ def classificar(lote, cnpj, periodo, res, regra_data=None, excluir=()):
         if n.situacao == "cancelada":
             data = _data(n.dhemi)
         if not no_periodo(data):
-            res.fora_periodo.append((n.chave, data))
-            continue
+            if n.chave not in incluir:
+                res.fora_periodo.append((n.chave, data))
+                continue
+            res.extemporaneos.add(n.chave)
         grupos[grupo].append(n)
     for c in lote.ctes:
         if c.chave in excluir:
@@ -177,20 +189,23 @@ def classificar(lote, cnpj, periodo, res, regra_data=None, excluir=()):
             continue
         data = _data(c.dhemi)
         if not no_periodo(data):
-            res.fora_periodo.append((c.chave, data))
-            continue
+            if c.chave not in incluir:
+                res.fora_periodo.append((c.chave, data))
+                continue
+            res.extemporaneos.add(c.chave)
         grupos[grupo].append(c)
     return grupos
 
 
-def _cod_sit(doc):
+def _cod_sit(doc, extemporaneos=()):
     if doc.situacao == "cancelada":
         return "02"
     if doc.situacao == "denegada":
         return "04"
-    if getattr(doc, "fin", None) == "2":
-        return "06"                                # complementar
-    return "00"
+    complementar = getattr(doc, "fin", None) == "2"
+    if doc.chave in extemporaneos:
+        return "07" if complementar else "01"
+    return "06" if complementar else "00"
 
 
 # ------------------------------------------------------------ participante
@@ -414,7 +429,7 @@ class _Itens:
 
 # --------------------------------------------------------------- ICMS/IPI
 def gerar_icms(memoria, lote, periodo, saldo_credor_anterior=None,
-               correlacoes=None, excluir=()):
+               correlacoes=None, excluir=(), incluir=()):
     """O EFD ICMS/IPI do período (`AAAAMM`). Devolve `Resultado`.
 
     `saldo_credor_anterior` é o do E110 do mês anterior; sem ele, vale o que
@@ -429,7 +444,8 @@ def gerar_icms(memoria, lote, periodo, saldo_credor_anterior=None,
     ini, fim = limites(periodo)
     entrada_pad = memoria.get("padroes", {}).get("entrada", {})
     grupos = classificar(lote, memoria["cnpj"], periodo, res,
-                         entrada_pad.get("DT_E_S"), set(excluir or ()))
+                         entrada_pad.get("DT_E_S"), set(excluir or ()),
+                         set(incluir or ()))
     uf = _modelo_valor(modelos["0000"], "UF", "ICMS")
     part = _Participantes(memoria, res)
     itens = _Itens(memoria, res, correlacoes, uf)
@@ -444,7 +460,7 @@ def gerar_icms(memoria, lote, periodo, saldo_credor_anterior=None,
     for n in docs:
         entrada = n in grupos["entradas"]
         oper = "0" if entrada else "1"
-        sit = _cod_sit(n)
+        sit = _cod_sit(n, res.extemporaneos)
         base = dict(IND_OPER=oper, IND_EMIT="1" if entrada else "0",
                     COD_MOD=n.mod, COD_SIT=sit, SER=n.serie or "",
                     NUM_DOC=n.nnf, CHV_NFE=n.chave)
@@ -452,6 +468,7 @@ def gerar_icms(memoria, lote, periodo, saldo_credor_anterior=None,
             c.reg("C100", **base)
             continue
         pad = padroes.get("%s|%s" % (n.mod, oper), {})
+        # no ICMS/IPI o extemporâneo vai com a data real do XML
         data_doc = _data(n.dhemi)
         if entrada:
             data_es = (data_doc if entrada_pad.get("DT_E_S") == "emissao"
@@ -484,6 +501,12 @@ def gerar_icms(memoria, lote, periodo, saldo_credor_anterior=None,
     for ct in sorted(grupos["fretes_entrada"] + grupos["fretes_saida"],
                      key=lambda x: (_data(x.dhemi), int(x.nct or 0))):
         _cte_icms(d, ct, ct in grupos["fretes_entrada"], part, res, uf)
+    if res.extemporaneos:
+        res.apontar("documento extemporâneo", "C100", "",
+                    "%d documento(s) de outro mês incluído(s) por escolha, "
+                    "com COD_SIT 01 (07 no complementar); o ICMS das saídas "
+                    "vai para o DEB_ESP do E110 e para o E116"
+                    % len(res.extemporaneos))
 
     # ---- o documento, montado e calculado pelo código de sempre
     t = _Linhas("ICMS", _larguras(memoria, "ICMS"))
@@ -612,7 +635,7 @@ def _calcular_c(doc):
 def _cte_icms(d, ct, entrada, part, res, uf):
     """D100 + D190 de um CT-e."""
     onde = "CT-e %s/%s" % (ct.serie, ct.nct)
-    sit = _cod_sit(ct)
+    sit = _cod_sit(ct, res.extemporaneos)
     base = dict(IND_OPER="0" if entrada else "1",
                 IND_EMIT="1" if entrada else "0", COD_MOD="57",
                 COD_SIT=sit, SER=ct.serie or "", NUM_DOC=ct.nct,
@@ -656,15 +679,21 @@ def _apuracao_icms(doc, memoria, modelos, periodo, ini, fim,
     """Bloco E: ICMS próprio pela soma dos analíticos; ST e DIFAL sem
     movimento (do modelo); IPI pelos itens de entrada."""
     e = _Linhas("ICMS", _larguras(memoria, "ICMS"))
-    debitos = creditos = 0.0
+    debitos = creditos = deb_esp = 0.0
     for reg in ("C190", "D190"):
         i = doc._ix(reg, "VL_ICMS")
         io = doc._ix(reg[0] + "100", "IND_OPER")
+        isit = doc._ix(reg[0] + "100", "COD_SIT")
         for r in doc.registros:
             if r.reg == reg and r.pai is not None:
                 v = _to_num(r.valor(i))
                 if (r.pai.valor(io) or "") == "1":
-                    debitos += v
+                    # saída extemporânea: não é débito do período, é débito
+                    # especial (o PVA confere em MSG_DEB_ESP_E110)
+                    if (r.pai.valor(isit) or "") in ("01", "07"):
+                        deb_esp += v
+                    else:
+                        debitos += v
                 else:
                     creditos += v
     if saldo_credor_anterior is None:
@@ -691,12 +720,14 @@ def _apuracao_icms(doc, memoria, modelos, periodo, ini, fim,
           VL_SLD_APURADO=_fmt_val(recolher), VL_TOT_DED="0",
           VL_ICMS_RECOLHER=_fmt_val(recolher),
           VL_SLD_CREDOR_TRANSPORTAR=_fmt_val(_positivo(-apurado)),
-          DEB_ESP="0")
-    if recolher and "E116" in modelos:
-        e.modelo(modelos["E116"], VL_OR=_fmt_val(recolher),
+          DEB_ESP=_fmt_val(round(deb_esp, 2)))
+    # o E116 soma o ICMS a recolher e o débito especial
+    a_pagar = round(recolher + deb_esp, 2)
+    if a_pagar and "E116" in modelos:
+        e.modelo(modelos["E116"], VL_OR=_fmt_val(a_pagar),
                  DT_VCTO=_vencimento(modelos["E116"], periodo),
                  MES_REF=periodo[4:] + periodo[:4])
-    elif recolher:
+    elif a_pagar:
         res.apontar("E116", "E110", "", "há ICMS a recolher e a memória não "
                     "tem o modelo do E116 (código de receita, vencimento)")
     for reg, filho in (("E200", "E210"), ("E300", "E310")):
@@ -760,7 +791,8 @@ def _positivo(v):
 
 
 # ---------------------------------------------------------- Contribuições
-def gerar_contrib(memoria, lote, periodo, correlacoes=None, excluir=()):
+def gerar_contrib(memoria, lote, periodo, correlacoes=None, excluir=(),
+                  incluir=()):
     """O EFD Contribuições do período (`AAAAMM`). Devolve `Resultado`.
 
     Entradas com C170 (PIS/COFINS e conta pela memória); NFC-e com C175
@@ -777,7 +809,8 @@ def gerar_contrib(memoria, lote, periodo, correlacoes=None, excluir=()):
     ini, fim = limites(periodo)
     entrada_pad = memoria.get("padroes", {}).get("entrada", {})
     grupos = classificar(lote, memoria["cnpj"], periodo, res,
-                         entrada_pad.get("DT_E_S"), set(excluir or ()))
+                         entrada_pad.get("DT_E_S"), set(excluir or ()),
+                         set(incluir or ()))
     uf = _modelo_valor(memoria.get("modelos", {}).get("ICMS", {}).get(
         "0000", ["0000"]), "UF", "ICMS") if "ICMS" in memoria.get(
         "modelos", {}) else ""
@@ -794,7 +827,7 @@ def gerar_contrib(memoria, lote, periodo, correlacoes=None, excluir=()):
     for n in docs:
         entrada = n in grupos["entradas"]
         oper = "0" if entrada else "1"
-        sit = _cod_sit(n)
+        sit = _cod_sit(n, res.extemporaneos)
         base = dict(IND_OPER=oper, IND_EMIT="1" if entrada else "0",
                     COD_MOD=n.mod, COD_SIT=sit, SER=n.serie or "",
                     NUM_DOC=n.nnf, CHV_NFE=n.chave)
@@ -810,6 +843,11 @@ def gerar_contrib(memoria, lote, periodo, correlacoes=None, excluir=()):
         else:
             data_es = data_doc
             frete = n.vfrete
+        if n.chave in res.extemporaneos:
+            # no EFD Contribuições o documento fica no mês: o PVA de lá
+            # recusa data de outro mês mesmo com COD_SIT 01
+            # (MSG_PERIODO_INCOMPATIVEL_SAIDA); vai o primeiro dia
+            data_doc = data_es = ini
         zeros = {k: "0" for k in (
             "VL_ABAT_NT", "VL_BC_ICMS_ST", "VL_ICMS_ST", "VL_IPI",
             "VL_PIS_ST", "VL_COFINS_ST")}
