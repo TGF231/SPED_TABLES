@@ -9,6 +9,7 @@ from PyQt6.QtWidgets import QLabel, QScrollArea, QVBoxLayout, QWidget
 
 from sped_tables.version import APP_NAME
 from sped_tables.version import __version__
+from sped_tables.interface import tema
 from sped_tables.interface.comum import _br, _data_br
 
 
@@ -51,26 +52,31 @@ class ResumoWidget(QWidget):
                 "%d/%m/%Y %H:%M:%S")
         nome_arq = os.path.basename(caminho) if caminho else "(não salvo)"
 
+        # cor do HTML também sai do tema: literal some no tema escuro
+        pal = tema.atual()
+        rot = "color:%s" % pal.ink_2
         cab = QLabel(
-            "<div style='font-size:20px;font-weight:bold;color:#1565c0'>%s</div>"
-            "<div style='color:#555;margin-bottom:8px'>%s &nbsp;•&nbsp; %s</div>"
-            "<table cellspacing='6'>"
-            "<tr><td style='color:#888'>CNPJ</td><td><b>%s</b></td>"
-            "<td style='color:#888;padding-left:24px'>IE</td><td><b>%s</b></td>"
-            "<td style='color:#888;padding-left:24px'>UF</td>"
-            "<td><b>%s</b></td></tr>"
-            "<tr><td style='color:#888'>Período</td><td><b>%s</b></td>"
-            "<td style='color:#888;padding-left:24px'>Layout</td>"
-            "<td colspan='3'><b>%s</b></td></tr></table>"
+            ("<div style='font-size:20px;font-weight:bold;color:{info}'>%s</div>"
+             "<div style='{rot};margin-bottom:8px'>%s &nbsp;•&nbsp; %s</div>"
+             "<table cellspacing='6'>"
+             "<tr><td style='{rot}'>CNPJ</td><td><b>%s</b></td>"
+             "<td style='{rot};padding-left:24px'>IE</td><td><b>%s</b></td>"
+             "<td style='{rot};padding-left:24px'>UF</td>"
+             "<td><b>%s</b></td></tr>"
+             "<tr><td style='{rot}'>Período</td><td><b>%s</b></td>"
+             "<td style='{rot};padding-left:24px'>Layout</td>"
+             "<td colspan='3'><b>%s</b></td></tr></table>"
+             ).format(info=pal.info, rot=rot)
             % (nome, tipo, "%s v%s" % (APP_NAME, __version__),
                cnpj_fmt, v("IE") or "—", v("UF") or "—", periodo, doc.layout))
         cab.setTextFormat(Qt.TextFormat.RichText)
         lay.addWidget(cab)
 
         meta = QLabel(
-            "<span style='color:#888'>Arquivo:</span> %s &nbsp;&nbsp;"
-            "<span style='color:#888'>Modificado em:</span> %s &nbsp;&nbsp;"
-            "<span style='color:#888'>Total de registros:</span> <b>%d</b>"
+            ("<span style='{0}'>Arquivo:</span> %s &nbsp;&nbsp;"
+             "<span style='{0}'>Modificado em:</span> %s &nbsp;&nbsp;"
+             "<span style='{0}'>Total de registros:</span> <b>%d</b>"
+             ).format(rot)
             % (nome_arq, mod, len(doc.registros)))
         meta.setTextFormat(Qt.TextFormat.RichText)
         meta.setWordWrap(True)
@@ -101,8 +107,8 @@ class ResumoWidget(QWidget):
             rot = nomes_bloco.get(b, "")
             linhas_html.append(
                 "<div style='margin:3px 0'><b>Bloco %s</b>"
-                "<span style='color:#888'> — %s:</span> %s</div>"
-                % (b, rot, ", ".join(por_bloco[b])))
+                "<span style='color:%s'> — %s:</span> %s</div>"
+                % (b, tema.atual().ink_2, rot, ", ".join(por_bloco[b])))
         lst = QLabel("<div style='font-weight:bold;margin-bottom:4px'>"
                      "Registros</div>" + "".join(linhas_html))
         lst.setTextFormat(Qt.TextFormat.RichText)
@@ -114,8 +120,9 @@ class ResumoWidget(QWidget):
     @staticmethod
     def _tabela_html(titulo, colunas, linhas, total=None, aligns=None):
         aligns = aligns or (["left"] + ["right"] * (len(colunas) - 1))
+        borda = tema.atual().border_2
         th = "".join("<th style='text-align:%s;padding:2px 10px;"
-                     "border-bottom:1px solid #ccc'>%s</th>" % (a, c)
+                     "border-bottom:1px solid %s'>%s</th>" % (a, borda, c)
                      for a, c in zip(aligns, colunas))
         trs = []
         for ln in linhas:
@@ -125,8 +132,8 @@ class ResumoWidget(QWidget):
         tot_html = ""
         if total is not None:
             tds = "".join("<td style='text-align:%s;padding:3px 10px;"
-                          "border-top:1px solid #ccc;font-weight:bold'>%s</td>"
-                          % (a, x) for a, x in zip(aligns, total))
+                          "border-top:1px solid %s;font-weight:bold'>%s</td>"
+                          % (a, borda, x) for a, x in zip(aligns, total))
             tot_html = "<tr>%s</tr>" % tds
         return ("<div style='font-weight:bold;margin:10px 0 2px'>%s</div>"
                 "<table cellspacing='0' style='font-size:12px'>"

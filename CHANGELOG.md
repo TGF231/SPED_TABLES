@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.1.0-dev.14] — 2026-10-14
+
+### Alterado
+- **Nova assinatura visual.** O acento passa do cobre ao **vinho**
+  (`#7D0E0E`) da família de ferramentas, com as regras de contraste dela:
+  borda de foco de 2 px em campos, botões, abas e grades (antes o foco do
+  teclado mal aparecia); célula e item selecionados com linha de acento
+  além do fundo suave; limite de campo num cinza que passa 3:1; dicas em
+  texto secundário legível (antes no tom restrito a desabilitado); dica de
+  ferramenta em fundo invertido. Fonte por densidade em px.
+- O resumo do arquivo e a prévia do inventário tinham **cores fixas no
+  HTML** (azul, cinzas, laranja) que sumiam no tema escuro; saem agora da
+  paleta. `tests/test_tema.py` reprova cor literal fora de `tema.py`.
+- `comum.definir_papel` e `comum.marcar_erro` substituem o
+  `setProperty` + unpolish/polish repetido nos diálogos.
+
 ## [1.1.0-dev.13] — 2026-10-14
 
 ### Corrigido

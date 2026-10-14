@@ -18,6 +18,38 @@ from sped_tables.infra import exportacao
 from sped_tables.version import APP_NAME
 
 
+def definir_papel(widget, papel):
+    """Troca o papel visual (`role`, ver tema.py) e repinta o widget.
+
+    Mudar uma propriedade usada em seletor de QSS **não** repinta sozinho: o
+    Qt já resolveu o estilo daquele widget. Sem o unpolish/polish o rótulo
+    continua com a cor antiga e parece que a folha de estilo está errada."""
+    widget.setProperty("role", papel)
+    estilo = widget.style()
+    estilo.unpolish(widget)
+    estilo.polish(widget)
+    widget.update()
+    return widget
+
+
+def marcar_erro(campo, mensagem=None, rotulo_msg=None):
+    """Marca (ou, com `mensagem=None`, desmarca) um campo com erro: borda e
+    fundo de erro **e** a mensagem com "⚠" no `rotulo_msg` — cor nunca é o
+    único sinal. A mensagem vira também a descrição acessível do campo,
+    para o leitor de tela anunciar o erro."""
+    erro = bool(mensagem)
+    campo.setProperty("erro", "true" if erro else "false")
+    estilo = campo.style()
+    estilo.unpolish(campo)
+    estilo.polish(campo)
+    campo.setAccessibleDescription(mensagem or "")
+    if rotulo_msg is not None:
+        rotulo_msg.setText("⚠ %s" % mensagem if erro else "")
+        rotulo_msg.setVisible(erro)
+        definir_papel(rotulo_msg, "erro")
+    return erro
+
+
 def calcular(parent, titulo, funcao, *args, **kwargs):
     """Roda um cálculo que grava no arquivo. Devolve `(True, resultado)`,
     ou `(False, None)` quando ele recusou por campo numérico inválido — e

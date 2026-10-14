@@ -27,7 +27,8 @@ from sped_tables.interface import tema
 from sped_tables.infra.paralelo import Cancelado
 from sped_tables.interface.comum import (_br, _num_celula,
                                          em_segundo_plano)
-from sped_tables.interface.comum import abrir_janela, informar
+from sped_tables.interface.comum import (abrir_janela, definir_papel,
+                                         informar)
 
 NOMES = {"ICMS": "EFD ICMS/IPI", "CONTRIB": "EFD Contribuições"}
 MOVIMENTO = {"entradas": "Entrada", "saidas": "Saída",
@@ -312,8 +313,7 @@ class DialogoGerarDeXml(QDialog):
                             % (r["produtos"], r["cadastro"],
                                r["participantes"], per))
                 lbl.setProperty("role", "ok")
-        lbl.style().unpolish(lbl)
-        lbl.style().polish(lbl)
+        definir_papel(lbl, lbl.property("role"))
         sabe = self.geracao.leiautes_aprendidos() if self.geracao else ()
         for lay_, c in self.chk.items():
             c.setEnabled(lay_ in sabe)
@@ -531,9 +531,7 @@ class DialogoGerarDeXml(QDialog):
             if lay_ not in self.geracao.resultados:
                 b.setEnabled(False)
         self.lbl_estado.setText(" · ".join(partes))
-        self.lbl_estado.setProperty("role", "erro" if bloqueado else "ok")
-        self.lbl_estado.style().unpolish(self.lbl_estado)
-        self.lbl_estado.style().polish(self.lbl_estado)
+        definir_papel(self.lbl_estado, "erro" if bloqueado else "ok")
         self._habilitar()
 
     def _marcar(self, item):
@@ -550,9 +548,7 @@ class DialogoGerarDeXml(QDialog):
             self.excluir.add(chave)
         self.lbl_estado.setText("Documentos alterados — clique em Gerar "
                                 "para refazer.")
-        self.lbl_estado.setProperty("role", "aviso")
-        self.lbl_estado.style().unpolish(self.lbl_estado)
-        self.lbl_estado.style().polish(self.lbl_estado)
+        definir_papel(self.lbl_estado, "aviso")
         for b in self.b_salvar.values():
             b.setEnabled(False)
 

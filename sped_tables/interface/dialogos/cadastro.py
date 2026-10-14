@@ -16,7 +16,7 @@ from sped_tables.dominio import empresas as emp_mod
 from sped_tables.dominio import rotinas
 from sped_tables.infra import tabelas_rfb as trfb
 from sped_tables.interface import tema
-from sped_tables.interface.comum import informar
+from sped_tables.interface.comum import definir_papel, informar
 
 
 class DialogoItensNaoUsados(QDialog):
@@ -526,9 +526,7 @@ class DialogoEmpresa(QDialog):
         self._rotina_atual = r
         self._preencher(ocorrencias)
         self.lbl_res.setText("%d ocorrência(s)." % len(ocorrencias))
-        self.lbl_res.setProperty("role", "ok" if not ocorrencias else "erro")
-        self.lbl_res.style().unpolish(self.lbl_res)
-        self.lbl_res.style().polish(self.lbl_res)
+        definir_papel(self.lbl_res, "ok" if not ocorrencias else "erro")
         self.b_corrigir.setEnabled(bool(ocorrencias) and r.corrigir is not None)
         if r.corrigir is not None:
             self.b_corrigir.setText("Corrigir %d…" % len(ocorrencias))

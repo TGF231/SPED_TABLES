@@ -1245,12 +1245,15 @@ da barra de ferramentas alterna entre os dois — o rótulo anuncia o destino
 (*Tema escuro* quando você está no claro) — e a escolha é **gravada entre
 sessões**, por máquina.
 
-O acento é o **cobre**, o mesmo do Backup Maximus: os dois aplicativos são da
-mesma família de ferramentas. As cores de significado são separadas do acento —
+O acento é o **vinho** (`#7D0E0E`) da assinatura visual compartilhada pelas
+ferramentas da família. As cores de significado são separadas do acento —
 verde para "confere", âmbar para "atenção", vermelho para "divergência", azul
 para a coluna **REG** (a chave estrutural) —, de modo que a cor de ação nunca se
-confunde com a cor de estado. No tema escuro elas não são invertidas
-automaticamente: sobem de saturação para continuar legíveis sobre fundo escuro.
+confunde com a cor de estado; o erro vem sempre com texto, nunca só pela cor.
+O foco do teclado tem borda própria de 2 px em todo campo, botão e grade, e a
+célula selecionada ganha uma linha de acento além do fundo suave. No tema
+escuro as cores não são invertidas automaticamente: sobem de saturação para
+continuar legíveis sobre fundo escuro.
 
 A paleta e a folha de estilo ficam em **`sped_tables/interface/tema.py`**; os ícones do "✓" e da seta
 dos combos são desenhados em tempo de execução na cor da paleta ativa

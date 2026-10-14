@@ -17,7 +17,7 @@ from sped_tables.infra import arquivos as arq_mod
 from sped_tables.infra import dados
 from sped_tables.interface import tema
 from sped_tables.version import APP_NAME
-from sped_tables.interface.comum import informar
+from sped_tables.interface.comum import definir_papel, informar
 
 
 # ---------------------------------------------------------------------------
@@ -202,14 +202,12 @@ class TelaInicial(QWidget):
                 "arquivo aberto aqui." % (nome or emp_mod.formatar_cnpj(cnpj)))
         if partes:
             self.lbl_pend.setText("<br>".join(partes))
-            self.lbl_pend.setProperty("role", "aviso")
+            definir_papel(self.lbl_pend, "aviso")
         else:
             self.lbl_pend.setText("Nada pendente: todas as empresas com "
                                   "arquivo estão cadastradas.")
-            self.lbl_pend.setProperty("role", "ok")
+            definir_papel(self.lbl_pend, "ok")
         self.lbl_pend.setTextFormat(Qt.TextFormat.RichText)
-        self.lbl_pend.style().unpolish(self.lbl_pend)
-        self.lbl_pend.style().polish(self.lbl_pend)
 
     # ------------------------------------------------------------ ações
     def _continuar(self):

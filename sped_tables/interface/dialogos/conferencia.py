@@ -13,7 +13,7 @@ from sped_tables.infra import cadastro
 from sped_tables.dominio import conferencia as cf
 from sped_tables.interface import tema
 from sped_tables.interface.comum import _br
-from sped_tables.interface.comum import informar
+from sped_tables.interface.comum import definir_papel, informar
 
 
 class DialogoDiscrepanciasC175(QDialog):
@@ -355,10 +355,7 @@ class DialogoConferencia(QDialog):
             % (r["xml_55"], r["docs_casados"], r["itens_conferidos"],
                r["divergencias"], r["itens_sem_c170"], r["itens_sem_xml"],
                r["docs_sem_c100"]))
-        self._lbl.setProperty("role",
-                              "ok" if r["divergencias"] == 0 else "erro")
-        self._lbl.style().unpolish(self._lbl)
-        self._lbl.style().polish(self._lbl)
+        definir_papel(self._lbl, "ok" if r["divergencias"] == 0 else "erro")
 
         divs = self.resultado["divergencias"]
         self._divs = divs

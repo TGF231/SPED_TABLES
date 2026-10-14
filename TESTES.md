@@ -42,6 +42,7 @@ cadastro de verdade e o registro do Windows não são tocados.
 | `test_arquitetura` | **Regra de dependência entre as camadas**; a porta das tabelas oficiais com fonte inventada (regras testadas sem PVA); sessão e envio ao PVA sem tela; canal da versão. |
 | `test_estrutura` | Armadilhas: código depois de `return`, import sem uso, nome da biblioteca padrão, método duplicado. |
 | `test_interface` | A janela nasce; **toda ação do menu roda** nos dois leiautes; a tabela de ações é coerente; o formulário de empresa; `main()` inteiro pelo `sped_editor.py`. |
+| `test_tema` | Nenhuma cor literal na interface fora de `tema.py`; folha de estilo completa nos dois temas e nas duas densidades. |
 | `test_falhas` | Fallback de exceções: registro, cópia de emergência, aviso sem empilhar, e — em subprocesso — o processo sobrevive à exceção num slot (e morre sem o gancho). |
 | `test_pva` | Cancelamento de cada espera da automação e classificação das telas do PVA, **sem abrir o PVA**. |
 | `test_reais` | Arquivos reais, fora do repositório (ver 1.2). |

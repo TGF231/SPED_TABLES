@@ -506,28 +506,29 @@ class DialogoImportarInventario(QDialog):
             return
         c = self.doc.conferir_itens_inventario(linhas)
         div = c["divergentes"]
+        pal = tema.atual()
         texto = ("<b>%d</b> item(ns) na planilha · <b>%d</b> já cadastrados no "
                  "0200 · <b>%d</b> serão criados."
                  % (len(linhas), len(c["existentes"]), len(c["novos"])))
         if c["duplicados"]:
-            texto += ("<br><span style='color:#b60'>%d código(s) repetido(s) na "
+            texto += ("<br><span style='color:%s'>%d código(s) repetido(s) na "
                       "planilha — só a primeira ocorrência será usada.</span>"
-                      % len(c["duplicados"]))
+                      % (pal.warn, len(c["duplicados"])))
         if c.get("sem_qtd") or c.get("sem_valor"):
-            texto += ("<br><span style='color:#b60'>%d item(ns) com quantidade "
+            texto += ("<br><span style='color:%s'>%d item(ns) com quantidade "
                       "zero e %d sem valor — serão escriturados como estão."
-                      "</span>" % (c.get("sem_qtd", 0), c.get("sem_valor", 0)))
+                      "</span>" % (pal.warn, c.get("sem_qtd", 0), c.get("sem_valor", 0)))
         if c.get("ncm_truncado"):
-            texto += ("<br><span style='color:#b60'>%d item(ns) com NCM de 7 "
+            texto += ("<br><span style='color:%s'>%d item(ns) com NCM de 7 "
                       "dígitos no <b>0200 deste arquivo</b> (zero à esquerda "
                       "perdido) — o NCM da planilha confere; corrija o cadastro."
-                      "</span>" % len(c["ncm_truncado"]))
+                      "</span>" % (pal.warn, len(c["ncm_truncado"])))
         if div:
             amostra = "; ".join("%s: %s (0200) ≠ %s (planilha)"
                                 % (d[0], d[2][:24], d[3][:24]) for d in div[:3])
-            texto += ("<br><span style='color:#b00'>%d divergência(s) com o "
+            texto += ("<br><span style='color:%s'>%d divergência(s) com o "
                       "cadastro 0200 — o cadastro atual é mantido. %s%s</span>"
-                      % (len(div), amostra, " …" if len(div) > 3 else ""))
+                      % (pal.bad, len(div), amostra, " …" if len(div) > 3 else ""))
         self.lbl.setText(texto)
 
     def _comparar(self):

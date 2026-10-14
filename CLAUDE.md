@@ -211,11 +211,21 @@ Quatro lugares faziam isso e não fazem mais:
 
 ### Ao mexer em cores ou estilo
 
-Cor **nunca** entra literal na interface: use os tokens de
-`tema.atual()` (`ok`, `warn`, `bad`, `info`, `produto`, `somente_leitura`…) ou
-a propriedade dinâmica `role` (`QLabel[role="ok"]`, `"erro"`, `"aviso"`,
-`"dica"`, `"info"`, `"produto"`). Literal quebra o tema escuro. Só existe um
-`setStyleSheet` no projeto — o global, em `main()`.
+Cor **nunca** entra literal na interface — nem no HTML de um `QLabel`: use
+os tokens de `tema.atual()` (`ok`, `warn`, `bad`, `info`, `produto`,
+`somente_leitura`…) ou a propriedade dinâmica `role` (`QLabel[role="ok"]`,
+`"erro"`, `"aviso"`, `"dica"`, `"info"`, `"produto"`). Literal quebra o tema
+escuro, e `tests/test_tema.py` reprova. Só existe um `setStyleSheet` no
+projeto — o global, em `main()`.
+
+A paleta é a da assinatura visual compartilhada (kit `minha-ui`, acento
+`#7D0E0E`) e o uso de cada token é contrato de contraste, descrito no topo
+de `tema.py`: `ink_3` só para desabilitado/placeholder (dica que se lê é
+`ink_2`), limite de campo é `field_border` (não `border_2`), foco é `focus`
+com 2 px, seleção = `accent_soft` **mais** linha de acento, erro sempre com
+texto. Papel trocado depois de o widget aparecer passa por
+`comum.definir_papel` (sem unpolish/polish o rótulo fica com a cor antiga);
+campo com erro, por `comum.marcar_erro`.
 
 Cores gravadas em `QTableWidgetItem` (coluna REG, célula somente-leitura,
 divergências) não seguem a folha de estilo: são decididas em Python e por isso
