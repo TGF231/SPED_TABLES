@@ -13,6 +13,9 @@
 - O resumo do arquivo e a prévia do inventário tinham **cores fixas no
   HTML** (azul, cinzas, laranja) que sumiam no tema escuro; saem agora da
   paleta. `tests/test_tema.py` reprova cor literal fora de `tema.py`.
+- **Botão dentro de tabela** (as correções do *Diagnóstico* e da revisão)
+  usava o padding de um botão comum e transbordava a linha; agora é
+  compacto, com folga em volta da célula.
 - `comum.definir_papel` e `comum.marcar_erro` substituem o
   `setProperty` + unpolish/polish repetido nos diálogos.
 

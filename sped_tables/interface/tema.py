@@ -372,6 +372,13 @@ QPushButton[role="accent"]:disabled {
 }
 QPushButton[role="perigo"] { background: transparent; color: $bad; border: 1px solid $bad; }
 QPushButton[role="perigo"]:hover { background: $bad; color: $on_bad; }
+/* botão dentro de célula (setCellWidget): cabe na altura da linha, com
+   folga em volta, em vez de ocupar a célula inteira com o padding normal */
+QAbstractItemView QPushButton {
+    padding: 0 10px; margin: 2px 4px; min-height: 0;
+    border-radius: 3px; font-size: ${fonte_celula}px;
+}
+QAbstractItemView QPushButton:focus { padding: 0 9px; }
 
 /* ------------------------------------------------------------- campos
    Limite de campo = field_border (>= 3:1). Campo com erro: propriedade
@@ -485,6 +492,7 @@ def valores(paleta=None, densidade_nome=None):
     v.update(icones.caminhos(p))
     v.update(
         font_ui=FONT_UI, font_mono=FONT_MONO, fonte=d["fonte"], raio=4,
+        fonte_celula=d["fonte"] - 1,
         pad_celula=_pad(d["celula"]), pad_aba=_pad(d["aba"]),
         pad_cabecalho=_pad(d["cabecalho"]),
         pad_botao=_pad(d["botao"]), pad_botao_foco=_pad(d["botao"], 1),
