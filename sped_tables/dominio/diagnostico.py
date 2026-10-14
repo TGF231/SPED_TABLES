@@ -59,13 +59,13 @@ MODULOS = {
                        "linha sem o | final: lida inteira, e o | é "
                        "acrescentado ao salvar — confira o último campo"),
     "item_orfao": ("Itens do 0200 sem referência",
-                   "Ferramentas → Gerais → Itens do 0200 sem referência"),
+                   "Ferramentas → Conferir → Itens do 0200 sem referência"),
     "ref_ausente": ("Correção manual na grade",
                     "o código citado não existe no cadastro correspondente"),
     "cod_cta": ("Preencher conta contábil (COD_CTA)",
-                "Ferramentas → Gerais → Preencher conta contábil"),
+                "Ferramentas → Corrigir → Preencher conta contábil"),
     "cod_gen": ("Preencher COD_GEN pelo NCM",
-                "Ferramentas → EFD ICMS/IPI → Preencher COD_GEN pelo NCM"),
+                "Ferramentas → Corrigir → Preencher COD_GEN pelo NCM"),
     "municipio": ("Cadastro do participante no ERP",
                   "corrija a cidade no cadastro do participante no ERP "
                   "(o município do CNPJ está na consulta pública do "
@@ -80,7 +80,7 @@ MODULOS = {
     "data_periodo": regras_guia.ALTERAR_DATAS,
     "bloco": ("Correção manual na grade", "bloco aberto sem encerramento"),
     "cst_aliq_02": ("Empresa e rotinas",
-                    "Ferramentas → Gerais → Empresa e rotinas → CSOSN do "
+                    "Ferramentas → Corrigir → Empresa e rotinas → CSOSN do "
                     "Simples no CST do ICMS (a conversão é configurada no "
                     "cadastro da empresa)"),
     # x02 que a rotina do CSOSN não toca: saída, ou combustível de verdade
@@ -88,25 +88,25 @@ MODULOS = {
                            "CST x02 (monofásico de combustível) sem "
                            "alíquota: informe a alíquota ou corrija o CST"),
     "nat_rec": ("Empresa e rotinas",
-                "Ferramentas → Gerais → Empresa e rotinas → Natureza da "
+                "Ferramentas → Corrigir → Empresa e rotinas → Natureza da "
                 "receita fora da tabela do CST (bebida fria do varejista → "
                 "918; o resto, conferir o CST no ERP/PDV)"),
     "data_es": ("Datas e extemporâneos pelos XMLs",
-                "Ferramentas → Gerais → Datas e extemporâneos pelos XMLs "
+                "Ferramentas → Corrigir → Datas e extemporâneos pelos XMLs "
                 "(ou Alterar datas)"),
     "credito_ncm": ("Empresa e rotinas",
-                    "Ferramentas → Gerais → Empresa e rotinas → CST "
+                    "Ferramentas → Corrigir → Empresa e rotinas → CST "
                     "incoerente com o NCM (retira o crédito das entradas)"),
     "apuracao_icms": regras_guia.RECALCULAR_E110,
     "ind_emit": ("Correção manual na grade",
                  "saída escriturada como documento de terceiro"),
     "cfop_credito": ("Empresa e rotinas",
-                     "Ferramentas → Gerais → Empresa e rotinas → Crédito em "
+                     "Ferramentas → Corrigir → Empresa e rotinas → Crédito em "
                      "CFOP que não dá direito"),
     "apuracao_m": ("Recalcular bloco M (apuração PIS/COFINS)",
-                   "Ferramentas → EFD Contribuições → Recalcular bloco M"),
+                   "Ferramentas → Recalcular → Bloco M"),
     "credito_m": ("Recalcular bloco M (apuração PIS/COFINS)",
-                  "Ferramentas → EFD Contribuições → Recalcular bloco M"),
+                  "Ferramentas → Recalcular → Bloco M"),
     "m400": ("Correção manual na grade",
              "M400/M800 sem receita correspondente nos documentos"),
     "reg_0900": ("Correção manual na grade",

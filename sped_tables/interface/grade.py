@@ -14,6 +14,7 @@ from sped_tables.dominio import ajuda
 from sped_tables.interface import tema
 from sped_tables.interface.comum import _br, _num_celula, calcular
 from sped_tables.interface.dialogos.ajuda import DialogoAjuda, dica_html
+from sped_tables.interface.comum import abrir_janela, informar
 
 
 # ---------------------------------------------------------------------------
@@ -446,9 +447,8 @@ class MasterDetailWidget(QWidget):
         """F1: a ajuda do registro desta grade, rolada até a coluna atual."""
         col = self.tabela.currentColumn()
         campo = self._colunas[col] if 0 <= col < len(self._colunas) else None
-        self._dlg_ajuda = DialogoAjuda(self.doc.layout, self.tipo, campo,
-                                       self)
-        self._dlg_ajuda.show()
+        self._dlg_ajuda = abrir_janela(self, DialogoAjuda(
+            self.doc.layout, self.tipo, campo, self))
 
     def _filtro_mudou(self, _idx):
         self._filtro = self.combo_filtro.currentData() or "TODOS"
@@ -868,8 +868,8 @@ class MasterDetailWidget(QWidget):
         linha = self.tabela.currentRow()
         r = self._registro_da_linha(linha)
         if r is None:
-            QMessageBox.information(self, "Remover",
-                                    "Selecione uma linha para remover.")
+            informar(self, "Remover",
+                     "Selecione uma linha para remover.")
             return
         n_filhos = len(r.filhos)
         msg = "Remover o registro %s" % r.reg
@@ -904,7 +904,7 @@ class MasterDetailWidget(QWidget):
                 self.recarregar()
                 if self.on_change:
                     self.on_change()
-                QMessageBox.information(
+                informar(
                     self, "Recalcular totais",
                     "Totais recalculados em %d documento(s) C100." % n)
             return
@@ -920,7 +920,7 @@ class MasterDetailWidget(QWidget):
         self.recarregar()
         if self.on_change:
             self.on_change()
-        QMessageBox.information(
+        informar(
             self, "Recalcular totais",
             "Totais do C100 recalculados a partir dos itens C170:\n\n"
             "• Mercadorias (VL_MERC): %s\n"
@@ -941,7 +941,7 @@ class MasterDetailWidget(QWidget):
         if not ok:
             return
         if res is None:
-            QMessageBox.information(
+            informar(
                 self, "Recalcular C190",
                 "O recálculo automático do C190 só se aplica ao bloco C do "
                 "EFD ICMS/IPI.")
@@ -954,7 +954,7 @@ class MasterDetailWidget(QWidget):
         self.recarregar()
         if self.on_change:
             self.on_change()
-        QMessageBox.information(
+        informar(
             self, "Recalcular C190",
             "C190 recalculado a partir dos itens C170:\n\n"
             "• %d registro(s) C190 gerado(s), agrupados por "

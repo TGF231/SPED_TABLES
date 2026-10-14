@@ -17,6 +17,7 @@ from sped_tables.aplicacao import envio_pva
 from sped_tables.dominio.sped_model import LinhasInvalidas
 from sped_tables.version import APP_NAME
 from sped_tables.version import __version__
+from sped_tables.interface.comum import informar
 
 
 class ControladorArquivo:
@@ -331,7 +332,7 @@ class ControladorArquivo:
         forma, msg = envio_pva.desfecho(resultado)
         self.statusBar().showMessage(msg, 15000)
         if forma == envio_pva.INFORMAR:
-            QMessageBox.information(self, "Abrir no PVA", msg)
+            informar(self, "Abrir no PVA", msg)
         elif forma == envio_pva.ALERTAR:
             QMessageBox.warning(self, "Abrir no PVA", msg)
 

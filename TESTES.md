@@ -266,7 +266,7 @@ Na tela, que o autoteste não vê:
 
 A lógica é coberta pela suíte; a leitura dos XMLs de cada emissor, não.
 
-- [ ] Conferir entradas (NF-e 55): documentos casam por modelo+série+número
+- [ ] Conferir itens com XMLs (NF-e 55): documentos casam por modelo+série+número
 - [ ] Conferir C190 com XMLs: grupos reconstruídos pela classificação do C170
 - [ ] Validar C175 (NFC-e 65): C170 fictícios criados e removidos, contagem
       final igual à inicial

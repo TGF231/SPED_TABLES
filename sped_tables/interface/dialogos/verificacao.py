@@ -11,6 +11,7 @@ from PyQt6.QtWidgets import (
 from sped_tables.dominio import diagnostico
 from sped_tables.dominio import validacao
 from sped_tables.interface import tema
+from sped_tables.interface.comum import abrir_janela, informar
 
 
 class DialogoValidacao(QDialog):
@@ -193,13 +194,13 @@ class DialogoValidacao(QDialog):
         self.achados = validacao.validar(self.doc, dominios_pva=dom)
         self._montar_combo_campos()
         self._repovoar()
-        QMessageBox.information(
+        informar(
             self, "Normalizar campos",
             "%d campo(s) corrigido(s).\n\n%s"
             % (res["campos"],
                "\n".join("• %s: %d" % (c, n)
                          for c, n in sorted(res["por_campo"].items(),
-                                            key=lambda x: -x[1]))))
+                             key=lambda x: -x[1]))))
 
     def _ir(self, row, _col):
         it = self.tab.item(row, 0)
@@ -226,7 +227,8 @@ class DialogoDiagnostico(QDialog):
     COLS = ["", "O que corrige", "Problemas", "Onde fica"]
     DET = ["Registro", "Campo", "Problema", "Quantidade"]
 
-    def __init__(self, achados, info, acoes, ir_callback, parent=None):
+    def __init__(self, achados, info, acoes, ir_callback, parent=None,
+                 ao_revisar=None):
         super().__init__(parent)
         self.achados = achados
         self.acoes = acoes or {}
@@ -310,6 +312,14 @@ class DialogoDiagnostico(QDialog):
             lay.addWidget(nota)
 
         rod = QHBoxLayout()
+        if ao_revisar is not None:
+            # a lista ocorrência a ocorrência, para a correção manual; era
+            # o item de menu *Revisar erros*, ao lado deste
+            b_rev = QPushButton("Revisar ocorrências…")
+            b_rev.setToolTip("Cada verificação com a lista das ocorrências "
+                             "— para corrigir à mão, na grade.")
+            b_rev.clicked.connect(lambda _=False: ao_revisar())
+            rod.addWidget(b_rev)
         rod.addStretch(1)
         b = QPushButton("Fechar")
         b.clicked.connect(self.close)
@@ -478,9 +488,8 @@ class DialogoRevisao(QDialog):
 
     def _ver(self, titulo, problemas):
         if not problemas:
-            QMessageBox.information(self, titulo,
-                                    "Sem ocorrências para listar.")
+            informar(self, titulo,
+                     "Sem ocorrências para listar.")
             return
-        self._dlg = DialogoOcorrencias(titulo, problemas, self.ir_callback,
-                                       self)
-        self._dlg.show()
+        self._dlg = abrir_janela(self, DialogoOcorrencias(
+            titulo, problemas, self.ir_callback, self))

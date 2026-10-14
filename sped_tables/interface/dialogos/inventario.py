@@ -13,6 +13,7 @@ from PyQt6.QtWidgets import (
 from sped_tables.interface.comum import exportar_csv
 from sped_tables.interface import tema
 from sped_tables.interface.comum import _br, calcular
+from sped_tables.interface.comum import abrir_janela, informar
 
 
 # ---------------------------------------------------------------------------
@@ -384,8 +385,8 @@ class DialogoImportarInventario(QDialog):
         if linhas is None:
             return
         if not linhas:
-            QMessageBox.information(self, titulo, "O ERP não devolveu "
-                                    "nenhum item de estoque.")
+            informar(self, titulo, "O ERP não devolveu "
+                     "nenhum item de estoque.")
             return
         chaves = [c for c, _r, _o, _k in self.CAMPOS]
         self.cabecalho = chaves
@@ -536,7 +537,7 @@ class DialogoImportarInventario(QDialog):
             return
         res = self.doc.comparar_inventario_h010(linhas)
         if res["sem_h010"]:
-            QMessageBox.information(
+            informar(
                 self, "Comparar inventário",
                 "O arquivo ainda não tem inventário escriturado (nenhum H010) "
                 "para comparar. Use \"Importar inventário\" para gerá-lo.")
@@ -549,7 +550,7 @@ class DialogoImportarInventario(QDialog):
             "<b>%d</b> só na planilha."
             % (res["iguais"], len(res["divergentes"]), len(res["so_sped"]),
                len(res["so_planilha"])))
-        DialogoComparaInventario(res, self).exec()
+        abrir_janela(self, DialogoComparaInventario(res, self))
         if n == 0:
             self.lbl.setText(self.lbl.text() + "  ✔ Tudo confere.")
 
@@ -573,21 +574,22 @@ class DialogoImportarInventario(QDialog):
                 return
         # correção do cadastro existente: mostra a prévia e deixa escolher
         # campo a campo antes de gravar qualquer coisa
-        atualizar = set()
         if self.chk_atualizar.isChecked():
             previa = self.doc.previa_atualizacao_0200(linhas)
             if not previa:
-                QMessageBox.information(
+                informar(
                     self, "Atualizar o cadastro 0200",
                     "O cadastro dos itens já existentes está igual à "
                     "planilha — nada a corrigir.")
             else:
                 avisos = self.doc.avisos_previa_0200(linhas, previa)
                 dlg = DialogoAtualizar0200(previa, avisos, self)
-                if dlg.exec() != QDialog.DialogCode.Accepted:
-                    return
-                atualizar = dlg.escolhidos()
+                abrir_janela(self, dlg, ao_aceitar=lambda: self._gravar(
+                    linhas, dt, dlg.escolhidos()))
+                return
+        self._gravar(linhas, dt, set())
 
+    def _gravar(self, linhas, dt, atualizar):
         ok, res = calcular(
             self, "Importar inventário", self.doc.importar_inventario_h010,
             linhas, dt_inv=dt,
@@ -616,7 +618,7 @@ class DialogoImportarInventario(QDialog):
         if res["ignorados"]:
             extra += ("\n• %d código(s) repetido(s) ignorado(s)"
                       % len(res["ignorados"]))
-        QMessageBox.information(
+        informar(
             self, "Importar inventário",
             "Inventário gerado:\n\n"
             "• %d registro(s) H010\n"

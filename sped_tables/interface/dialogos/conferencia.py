@@ -13,6 +13,7 @@ from sped_tables.infra import cadastro
 from sped_tables.dominio import conferencia as cf
 from sped_tables.interface import tema
 from sped_tables.interface.comum import _br
+from sped_tables.interface.comum import informar
 
 
 class DialogoDiscrepanciasC175(QDialog):
@@ -32,7 +33,7 @@ class DialogoDiscrepanciasC175(QDialog):
             "Foram criados <b>%d</b> itens C170 fictícios em <b>%d</b> "
             "documento(s) modelo 65, a partir dos XMLs. Edite-os no <b>Modo "
             "Relatório</b> (fonte C170) se precisar corrigir algum item e, ao "
-            "final, use <b>Ferramentas → Regenerar C175 (modelo 65)</b> para "
+            "final, use <b>Ferramentas → Gerar → Regenerar C175 (modelo 65)</b> para "
             "consolidar o C175 correto e remover os fictícios.<br>"
             "As linhas abaixo mostram onde a soma dos itens diverge do C175 "
             "atualmente escriturado." % (resumo.get("itens", 0),
@@ -155,6 +156,19 @@ class DialogoConfC190(QDialog):
                        _br(d.valor_xml), _br(d.valor_sped),
                        _br((d.valor_xml or 0) - (d.valor_sped or 0))]
                       for d in self.resultado["divergencias"]))
+
+
+def _proximos(jan, doc):
+    """O que vem depois de gravar valores no C170: refazer o analítico (no
+    ICMS/IPI) e conferir tudo no Diagnóstico."""
+    if jan is None or doc is None:
+        return ()
+    passos = []
+    if doc.layout == "ICMS" and hasattr(jan, "recalcular_c190_massa"):
+        passos.append(("Recalcular C190…", jan.recalcular_c190_massa))
+    if hasattr(jan, "diagnosticar"):
+        passos.append(("Diagnóstico", jan.diagnosticar))
+    return passos
 
 
 class DialogoConferencia(QDialog):
@@ -284,7 +298,7 @@ class DialogoConferencia(QDialog):
         corrigiveis = [d for d in alvo if d.escopo == "item"
                        and d.sugestao is not None]
         if not corrigiveis:
-            QMessageBox.information(
+            informar(
                 self, "Corrigir pelo XML",
                 "Nenhuma das divergências escolhidas tem valor do XML para "
                 "gravar (CST e CFOP sem correlação única são decisão da "
@@ -293,8 +307,8 @@ class DialogoConferencia(QDialog):
         r = QMessageBox.question(
             self, "Corrigir pelo XML",
             "Gravar no C170 o valor do XML de %d divergência(s)?\n\n"
-            "C190 e totais do C100 não são refeitos aqui: depois, rode "
-            "Revisar erros (ou Recalcular C190 em massa) e confira."
+            "C190 e totais do C100 não são refeitos aqui: o aviso do "
+            "resultado traz o atalho para o recálculo e o Diagnóstico."
             % len(corrigiveis),
             QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
         if r != QMessageBox.StandardButton.Yes:
@@ -307,12 +321,12 @@ class DialogoConferencia(QDialog):
             if hasattr(jan, "_montar_abas"):
                 jan._montar_abas()
         self._movimento_mudou()
-        QMessageBox.information(
+        informar(
             self, "Corrigir pelo XML",
             "Corrigido em %d documento(s):\n%s"
             % (len(res["documentos"]), "\n".join(
                 "• %s: %d" % (c, n) for c, n in sorted(res["campos"].items()))
-               or "nada"))
+               or "nada"), proximos=_proximos(jan, self.doc))
 
     def _movimento_mudou(self):
         """Refaz a conferência no movimento escolhido, reusando os XMLs.
@@ -492,7 +506,7 @@ class DialogoCorrelacoesCFOP(QDialog):
                                  "Não foi possível gravar:\n%s" % exc)
             return
         self.on_salvar(mapa)
-        QMessageBox.information(
+        informar(
             self, "Correlações de CFOP",
             "Correlações salvas (%d CFOP de saída)." % len(mapa))
         self.accept()

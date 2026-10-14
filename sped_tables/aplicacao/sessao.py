@@ -9,7 +9,10 @@ A regra que atravessa as três fica aqui, testável sem tela:
   cheio: a falha do acervo vira um aviso, não um erro;
 * **salvar só limpa o "alterado" se gravou.** Falha na gravação propaga
   (a mensagem do `salvar` diz a linha e o caractere) e o estado não muda;
-* **fechar esquece tudo** — documento, caminho e alteração.
+* **fechar esquece tudo** — documento, caminho, alteração e os XMLs;
+* **os XMLs do período são lidos uma vez por arquivo.** Toda conferência e
+  correção pelos XMLs usa o mesmo lote (`xmls`, de `origem_xmls`); pedir a
+  pasta de novo a cada função era a maior fonte de ida e volta da tela.
 """
 
 import os
@@ -39,6 +42,14 @@ class Sessao:
         self.doc = None
         self.caminho = ""
         self.alterado = False
+        self.esquecer_xmls()
+
+    def esquecer_xmls(self):
+        self.xmls = None              # xml_fiscal.Lote do período
+        self.origem_xmls = ""         # "pasta …" ou "ERP …", para a tela
+
+    def guardar_xmls(self, lote, origem):
+        self.xmls, self.origem_xmls = lote, origem
 
     @property
     def aberta(self):
@@ -50,6 +61,7 @@ class Sessao:
         (o arquivo não abriu); erro do acervo vira aviso."""
         doc = SpedDocument.carregar(caminho)
         self.doc, self.caminho, self.alterado = doc, caminho, False
+        self.esquecer_xmls()
         entrada, aviso = self._arquivar("abertura", caminho)
         if entrada is None and not aviso:
             aviso = "Arquivo sem CNPJ no 0000: não foi arquivado no histórico."
@@ -82,6 +94,7 @@ class Sessao:
         self.doc = None
         self.caminho = ""
         self.alterado = False
+        self.esquecer_xmls()
 
     def marcar_alterado(self):
         self.alterado = True

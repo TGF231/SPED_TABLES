@@ -27,6 +27,7 @@ from sped_tables.dominio import erp
 from sped_tables.dominio.empresas import dados_do_arquivo
 from sped_tables.infra.paralelo import Cancelado
 from sped_tables.interface.comum import em_segundo_plano
+from sped_tables.interface.comum import abrir_janela, informar
 
 NAO_USAR = "(não usar)"
 CODIFICACOES = ["", "WIN1252", "ISO8859_1", "UTF8", "NONE", "cp850",
@@ -55,10 +56,10 @@ def escolher_conexao(pai, doc, entidade, titulo):
     cfg = caso.carregar()
     candidatas = caso.conexoes_da_empresa(cfg, cnpj, entidade)
     if not candidatas:
-        QMessageBox.information(
+        informar(
             pai, titulo,
             "Nenhuma conexão de ERP vinculada a esta empresa (CNPJ %s) traz "
-            "%s.\n\nCadastre em Gerais → Sistemas ERP: a conexão do banco, "
+            "%s.\n\nCadastre em Ferramentas → Configurações → Sistemas ERP: a conexão do banco, "
             "o CNPJ vinculado e, no sistema, a tabela e as colunas de \"%s\"."
             % (cnpj or "?", erp.ENTIDADES[entidade].rotulo.lower(),
                erp.ENTIDADES[entidade].rotulo))
@@ -275,8 +276,8 @@ class EditorEntidade(QWidget):
 
     def sugerir(self):
         if not self._colunas:
-            QMessageBox.information(self, TITULO,
-                                    "Leia as colunas da tabela primeiro.")
+            informar(self, TITULO,
+                     "Leia as colunas da tabela primeiro.")
             return
         for chave, col in erp.sugerir(self.entidade, self._colunas).items():
             if not self._coluna(self.combos[chave]):
@@ -298,7 +299,7 @@ class EditorEntidade(QWidget):
                           lambda: caso.previa(sistema, conexao,
                                               self.entidade))
         if linhas is not None:
-            DialogoPrevia(self.entidade, linhas, self).exec()
+            abrir_janela(self, DialogoPrevia(self.entidade, linhas, self))
 
 
 # ======================================================== o diálogo
@@ -495,7 +496,7 @@ class DialogoSistemasERP(QDialog):
 
     def nova_conexao(self):
         if not self.cfg.sistemas:
-            QMessageBox.information(
+            informar(
                 self, TITULO, "Cadastre primeiro o sistema (o perfil do "
                 "ERP), na aba ao lado.")
             self.abas.setCurrentIndex(1)
@@ -539,8 +540,8 @@ class DialogoSistemasERP(QDialog):
         versao = no_banco(self, TITULO, "Conectando…",
                           lambda: caso.testar(*par))
         if versao is not None:
-            QMessageBox.information(self, TITULO,
-                                    "Conectou: %s" % versao)
+            informar(self, TITULO,
+                     "Conectou: %s" % versao)
 
     # ------------------------------------------------------- sistemas
     def _montar_sistemas(self):
@@ -677,7 +678,7 @@ class DialogoSistemasERP(QDialog):
         ident = self.s_con.currentData()
         c = next((x for x in self.cfg.conexoes if x.ident == ident), None)
         if s is None or c is None:
-            QMessageBox.information(
+            informar(
                 self, TITULO, "Cadastre uma conexão deste sistema (aba "
                 "Conexões) para ler a estrutura do banco.")
             return None

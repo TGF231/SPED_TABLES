@@ -1,5 +1,37 @@
 # Changelog
 
+## [1.1.0-dev.12] — 2026-10-14
+
+### Alterado
+- **Menu por etapa do trabalho, sem funções repetidas.** O botão
+  *Ferramentas* deixou de ter um submenu por leiaute (*EFD ICMS/IPI*, *EFD
+  Contribuições*, *Gerais*) e passou a ter **Conferir**, **Corrigir**,
+  **Recalcular**, **Gerar** e **Configurações**; a função que não vale para
+  o leiaute aberto some do menu, em vez de ficar cinza. Saíram as
+  duplicatas: *Conferir itens com XMLs* existia uma vez por tributo (agora
+  pega o do leiaute), *Conferir entradas (NF-e 55)* era a mesma conferência
+  sem o botão de corrigir, e *Revisar erros* repetia o *Diagnóstico* —
+  que agora fica na barra e abre a revisão pelo botão *Revisar
+  ocorrências…*. *Abrir no PVA* também foi para a barra.
+- **Todas as janelas são soltas.** Conferências, prévias (regenerar
+  entradas, cadastro pelo ERP, inventário), diagnóstico, rotinas, trocar
+  alíquotas, alterar datas, a geração pelos XMLs e a decisão de produto
+  abrem sem bloquear o programa: a janela principal e as outras ferramentas
+  continuam clicáveis, e cada uma tem minimizar e maximizar. Os avisos de
+  resultado não esperam o OK. Só as perguntas que precisam de resposta na
+  hora continuam esperando.
+- **XMLs lidos uma vez por arquivo.** A primeira função que usa XMLs
+  pergunta de onde vêm (pasta ou banco do ERP); as seguintes reaproveitam o
+  mesmo lote, sem pedir a pasta de novo. *Ferramentas → XMLs do período*
+  troca a origem ou relê. Todas as funções passaram a ler as subpastas e a
+  contar uma vez o XML repetido.
+- **O aviso de resultado traz a etapa seguinte**: *Recalcular bloco M*
+  depois de trocar alíquotas; *Recalcular C190* e *Diagnóstico* depois de
+  corrigir pelo XML; a apuração depois de regenerar as entradas; *Remover
+  C170 fictícios* e *Recalcular E110* depois do C190 em massa.
+- Gerar pelos XMLs: *Abrir no editor* abre o arquivo na hora, com a janela
+  da geração ainda aberta ao lado (antes só abria depois de fechá-la).
+
 ## [1.1.0-dev.11] — 2026-10-13
 
 ### Corrigido

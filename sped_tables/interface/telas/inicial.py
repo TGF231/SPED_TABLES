@@ -7,7 +7,7 @@ from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QColor
 from PyQt6.QtWidgets import (
     QAbstractItemView, QGroupBox, QHBoxLayout, QHeaderView, QLabel,
-    QMessageBox, QPushButton, QTableWidget, QTableWidgetItem, QVBoxLayout,
+    QPushButton, QTableWidget, QTableWidgetItem, QVBoxLayout,
     QWidget,
 )
 
@@ -17,6 +17,7 @@ from sped_tables.infra import arquivos as arq_mod
 from sped_tables.infra import dados
 from sped_tables.interface import tema
 from sped_tables.version import APP_NAME
+from sped_tables.interface.comum import informar
 
 
 # ---------------------------------------------------------------------------
@@ -226,7 +227,7 @@ class TelaInicial(QWidget):
             if h["periodo"] == periodo and h.get("existe"):
                 self.janela.abrir_caminho(h["caminho"])
                 return
-        QMessageBox.information(
+        informar(
             self, "Período não arquivado",
             "Não há cópia de %s para %s neste sistema.\n\nIsso não significa "
             "que o arquivo não foi entregue — apenas que ele nunca foi aberto "

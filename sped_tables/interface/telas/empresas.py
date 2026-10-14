@@ -15,6 +15,7 @@ from sped_tables.dominio import empresas as emp_mod
 from sped_tables.infra import arquivos as arq_mod
 from sped_tables.interface import tema
 from sped_tables.interface.comum import ajustes
+from sped_tables.interface.comum import informar
 
 
 class PainelEmpresas(QWidget):
@@ -173,8 +174,8 @@ class PainelEmpresas(QWidget):
                                 "O CNPJ deve ter 14 dígitos.")
             return
         if cnpj in self.mapa:
-            QMessageBox.information(self, "Nova empresa",
-                                    "Esta empresa já está cadastrada.")
+            informar(self, "Nova empresa",
+                     "Esta empresa já está cadastrada.")
         else:
             self.mapa[cnpj] = emp_mod.Empresa(cnpj=cnpj)
             cadastro.salvar_empresas(self.mapa)
@@ -195,7 +196,7 @@ class PainelEmpresas(QWidget):
             QMessageBox.critical(self, "Empresas", str(exc))
             return
         self._carregar_lista(selecionar=cnpj)
-        QMessageBox.information(self, "Empresas", "Cadastro gravado.")
+        informar(self, "Empresas", "Cadastro gravado.")
 
     def _remover(self):
         cnpj = self._cnpj_selecionado()

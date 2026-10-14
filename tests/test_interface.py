@@ -232,7 +232,9 @@ class TestJanela(unittest.TestCase):
     def test_leitura_de_xmls_em_segundo_plano(self):
         """A ação que lê uma pasta de XMLs passa pela barra de andamento
         (leitura fora da thread da interface) e chega ao resultado; erro e
-        cancelamento do trabalho voltam para a thread da interface."""
+        cancelamento do trabalho voltam para a thread da interface. Os XMLs
+        ficam na sessão: a segunda função não pergunta a pasta de novo, e
+        *XMLs do período* pergunta."""
         from sped_tables.infra.paralelo import Cancelado
         from sped_tables.interface.comum import em_segundo_plano
         from tests.fabrica import nfe_xml
@@ -246,13 +248,26 @@ class TestJanela(unittest.TestCase):
             self.assertTrue(j.abrir_caminho(icms_basico().gravar(p)))
             _esperar()
             with mock.patch.object(QFileDialog, "getExistingDirectory",
-                                   staticmethod(lambda *a, **k: pasta)), \
-                    mock.patch("sped_tables.interface.controladores.gerais."
-                               "DialogoConferencia") as dlg:
-                j.conferir_entradas_55()
-            resultado = dlg.call_args[0][0]
+                                   staticmethod(lambda *a, **k: pasta)):
+                j.conferir_itens_xml()
+            resultado = j._dlg_conferencia.resultado
             self.assertEqual(resultado["resumo"]["itens_conferidos"], 3)
+            self.assertIn(pasta, j.sessao.origem_xmls)
+            # a segunda não pergunta (o diálogo de pasta devolveria "")
+            perguntas = []
+            with mock.patch.object(
+                    QFileDialog, "getExistingDirectory",
+                    staticmethod(lambda *a, **k: perguntas.append(1) or "")):
+                j.conferir_itens_xml()
+                self.assertEqual(perguntas, [])
+                self.assertEqual(j._dlg_conferencia.resultado["resumo"]
+                                 ["itens_conferidos"], 3)
+                j.escolher_xmls()
+                self.assertEqual(perguntas, [1])
+            # fechar o arquivo esquece os XMLs
             j.alterado = False
+            j.fechar_arquivo()
+            self.assertIsNone(j.sessao.xmls)
             j.close()
 
         def andando(progresso, cancelar):
@@ -270,6 +285,46 @@ class TestJanela(unittest.TestCase):
             raise Cancelado()
         with self.assertRaises(Cancelado):
             em_segundo_plano(None, "t", "x", cancela)
+        self.assertEqual(self.erros, [], self._falhas())
+
+    def test_janelas_soltas_nao_bloqueiam(self):
+        """Ferramentas abertas ao mesmo tempo, nenhuma modal: a janela
+        principal continua clicável. Reabrir substitui a anterior, e o aviso
+        de resultado leva à etapa seguinte pelo botão."""
+        from PyQt6.QtWidgets import QMessageBox as Caixa
+        from sped_tables.interface.comum import informar
+        with PastaTemporaria() as p:
+            j = self.ed.JanelaPrincipal()
+            self.assertTrue(j.abrir_caminho(icms_basico().gravar(p)))
+            _esperar()
+            j.diagnosticar()
+            j.configurar_empresa()
+            j.alterar_datas()
+            abertas = dict(j._janelas)
+            self.assertGreaterEqual(len(abertas), 3)
+            for dlg in abertas.values():
+                self.assertFalse(dlg.isModal(), type(dlg).__name__)
+                self.assertTrue(dlg.isVisible(), type(dlg).__name__)
+            self.assertIsNone(QApplication.activeModalWidget())
+            self.assertTrue(j.isEnabled())
+            # reabrir fecha a anterior em vez de empilhar duas
+            antigo = j._janelas["DialogoDiagnostico"]
+            j.diagnosticar()
+            self.assertIsNot(j._janelas["DialogoDiagnostico"], antigo)
+            self.assertFalse(antigo.isVisible())
+            # o botão da etapa seguinte no aviso
+            chamou = []
+            caixa = informar(j, "Feito", "ok",
+                             proximos=(("Seguir", lambda: chamou.append(1)),))
+            botao = next(b for b in caixa.buttons()
+                         if caixa.buttonRole(b)
+                         == Caixa.ButtonRole.ActionRole)
+            botao.click()
+            self.assertEqual(chamou, [1])
+            for dlg in list(j._janelas.values()):
+                dlg.close()
+            j.alterado = False
+            j.close()
         self.assertEqual(self.erros, [], self._falhas())
 
     def test_regenerar_c175_com_ficticios(self):
@@ -337,6 +392,9 @@ class TestJanela(unittest.TestCase):
             with mock.patch.object(QFileDialog, "getExistingDirectory",
                                    staticmethod(lambda *a, **k: pasta)):
                 j.regenerar_entradas()
+            # a prévia é janela solta: nada muda até a pessoa confirmar
+            self.assertFalse(j.alterado)
+            j._janelas["DialogoRegenerarEntradas"].accept()
             i = j.doc._ix("C170", "VL_ITEM")
             valores = [r.valor(i) for r in j.doc.registros
                        if r.reg == "C170"]
@@ -380,25 +438,29 @@ class TestJanela(unittest.TestCase):
                 return r.valor(doc._ix(reg, campo))
 
             j.atualizar_0200_erp()
+            j._janelas["erp:0200"].accept()
             self.assertEqual(valor("0200", "P1", "COD_NCM"), "04012010")
             self.assertEqual(valor("0200", "P1", "CEST"), "0200400")
             j.atualizar_0150_erp()
+            j._janelas["erp:0150"].accept()
             self.assertEqual(valor("0150", "F1", "NOME"), "FORNECEDOR ERP")
             self.assertTrue(j.alterado)
 
             # as conferências leem os XMLs do banco, no período do arquivo
             with mock.patch.object(comum, "escolher_origem_xml",
-                                   lambda *a: cfg.conexoes[0]), \
-                    mock.patch("sped_tables.interface.controladores.gerais."
-                               "DialogoConferencia") as conf:
-                j.conferir_entradas_55()
-            self.assertEqual(
-                conf.call_args[0][0]["resumo"]["itens_conferidos"], 3)
+                                   lambda *a: cfg.conexoes[0]):
+                j.conferir_itens_xml()
+            self.assertEqual(j._dlg_conferencia.resultado["resumo"]
+                             ["itens_conferidos"], 3)
+            self.assertIn("ERP", j.sessao.origem_xmls)
 
             inv = DialogoImportarInventario(doc, "31082026", j)
             inv._do_erp()
             self.assertEqual(len(inv.linhas_brutas), 2)
             inv._importar()
+            previa = getattr(inv, "_janelas", {}).get("DialogoAtualizar0200")
+            if previa is not None:
+                previa.accept()
             self.assertEqual(sum(1 for r in doc.registros
                                  if r.reg == "H010"), 2)
 
@@ -411,9 +473,8 @@ class TestJanela(unittest.TestCase):
             ed.ler_colunas()
             self.assertIn("CLASFISCAL", ed._colunas)
             self.assertIn("ex.:", ed.exemplos["cod_ncm"].text())
-            with mock.patch.object(dlg_erp.DialogoPrevia, "exec") as prev:
-                ed.previsualizar()
-            prev.assert_called_once()
+            ed.previsualizar()
+            self.assertIn("DialogoPrevia", ed._janelas)
             d.novo_sistema()
             self.assertEqual(d.lst_sis.count(), 2)
             self.assertTrue(d.salvar())
@@ -477,8 +538,7 @@ class TestTabelaDeAcoes(unittest.TestCase):
 
     def test_toda_acao_visivel_esta_num_menu_ou_na_barra(self):
         alcancaveis = set()
-        for menu in (self.janela.menu_icms, self.janela.menu_contrib,
-                     self.janela.menu_gerais):
+        for menu in self.janela._menus.values():
             alcancaveis |= set(menu.actions())
         alcancaveis |= set(self.janela.toolbar.actions())
         for a in self.acoes.ACOES:

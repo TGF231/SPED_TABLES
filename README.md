@@ -57,9 +57,33 @@ python sped_editor.py  caminho/para/SPED_ICMS_IPI_xxxx.txt
 ```
 
 Depois, use o botão **Abrir** da barra de ferramentas (ou **Ctrl+O**) para
-escolher o `.txt` do SPED. O programa não tem barra de menus: as ações ficam na
-barra de ferramentas e as rotinas de correção/conferência no botão
-**Ferramentas**.
+escolher o `.txt` do SPED. O programa não tem barra de menus: a barra de
+ferramentas segue o caminho do arquivo — **Abrir**, **Salvar**, **Empresas**,
+**Diagnóstico**, **Ferramentas** e **Abrir no PVA** — e o botão **Ferramentas**
+agrupa as rotinas pela etapa do trabalho:
+
+| Submenu | O que tem |
+|---|---|
+| *XMLs do período* | escolhe (ou relê) a pasta ou o banco do ERP com os XMLs do mês |
+| **Conferir** | itens e C190 com os XMLs, C175 da NFC-e, CST por NCM, itens do 0200 sem referência |
+| **Corrigir** | rotinas da empresa, datas, redução de base, ICMS próprio nas compras com ST, alíquotas, COD_GEN/COD_CTA, cadastro pelo ERP, inventário |
+| **Recalcular** | ICMS dos itens, C190 em massa, E110, bloco M |
+| **Gerar** | SPED a partir dos XMLs, regenerar entradas, C170 fictícios e C175 da NFC-e |
+| **Configurações** | correlações de CFOP, sistemas ERP, pasta dos PVAs |
+
+A função que não vale para o leiaute aberto **some** do menu, em vez de ficar
+cinza. Os **XMLs são lidos uma vez por arquivo**: a primeira função que precisa
+deles pergunta de onde vêm, e as seguintes reaproveitam o mesmo lote — para
+trocar de pasta, *Ferramentas → XMLs do período*.
+
+**Todas as janelas são soltas.** Conferências, prévias, diagnóstico, rotinas e
+avisos de resultado abrem sem bloquear o resto: dá para clicar na grade, abrir
+outra ferramenta ou consultar um registro com a janela aberta ao lado, e cada
+uma tem minimizar e maximizar. Só as perguntas que precisam de resposta na
+hora (salvar antes de fechar, confirmar uma gravação) esperam o clique. O aviso
+de resultado traz o botão da **etapa seguinte** — *Recalcular bloco M* depois de
+trocar alíquotas, *Recalcular C190* depois de corrigir pelo XML —, sem ir ao
+menu.
 
 ## 3. Como usar
 
@@ -139,7 +163,7 @@ correspondente.
 > **Em desenvolvimento.** Falta o ensaio no PVA do arquivo gerado pela tela
 > e um mês real com CT-e — ver ROADMAP 4.4.
 
-**Ferramentas → Gerais → Gerar SPED a partir dos XMLs…** gera o **EFD
+**Ferramentas → Gerar → SPED a partir dos XMLs…** gera o **EFD
 ICMS/IPI** e o **EFD Contribuições** de um período só com os XMLs de
 entradas e saídas (NF-e 55, NFC-e 65, CT-e 57 e eventos de cancelamento).
 Funciona sem arquivo aberto.
@@ -167,7 +191,7 @@ credor anterior do ICMS vem da memória ou do campo da tela.
 
 ### ICMS próprio nas compras com ST
 
-*EFD ICMS/IPI → Zerar ICMS próprio das compras com ST* trata as entradas com
+*Ferramentas → Corrigir → Zerar ICMS próprio das compras com ST* trata as entradas com
 CFOP 1403/2403 e CST x10/x70 que trazem base, alíquota ou valor de ICMS: o
 ICMS dessa mercadoria já foi retido por substituição tributária, e crédito
 não cabe. A função mostra quantos itens e quanto de crédito; confirmado,
@@ -182,12 +206,13 @@ como o ERP escriturou a nota: com ou sem despesas acessórias, IPI, ICMS-ST
 (com o FCP-ST) e desconto — o programa reconhece a composição nota a nota.
 O botão **Corrigir pelo XML** grava no C170 o valor do XML das linhas
 selecionadas (ou de todas): valores, bases, alíquotas, impostos e o CFOP
-quando a correlação aponta um só. CST não é corrigido. Depois, rode
-*Revisar erros* para refazer C190 e totais onde a soma não fechar.
+quando a correlação aponta um só. CST não é corrigido. O aviso do
+resultado traz os botões *Recalcular C190…* e *Diagnóstico*, para refazer
+o analítico e conferir o que a soma não fechar.
 
 ### Regenerar entradas pelos XMLs
 
-*Gerais → Regenerar entradas pelos XMLs* refaz as notas de entrada do arquivo
+*Ferramentas → Gerar → Regenerar entradas pelos XMLs* refaz as notas de entrada do arquivo
 aberto (C100, C170 e C190) a partir dos XMLs, de uma pasta ou do banco do
 ERP. Quantidades, valores e impostos vêm do XML; **como** a empresa
 escritura cada produto (código próprio, CFOP de entrada, CST, crédito,
@@ -205,7 +230,7 @@ Depois, recalcule a apuração (*Recalcular apuração do ICMS (E110)* ou
 
 ### Integração com o ERP (Firebird, SQL Server, MySQL, DBF)
 
-*Gerais → Sistemas ERP* liga o SPED Tables ao banco do sistema de gestão
+*Ferramentas → Configurações → Sistemas ERP* liga o SPED Tables ao banco do sistema de gestão
 da empresa, **só para leitura**. A configuração tem duas partes:
 
 1. **Sistema (perfil do ERP):** escolha o tipo de banco e, em cada aba
@@ -224,7 +249,7 @@ da empresa, **só para leitura**. A configuração tem duas partes:
 
 Com a conexão pronta:
 
-- *Gerais → Atualizar 0200 (produtos) pelo ERP* e *Atualizar 0150
+- *Ferramentas → Corrigir → Atualizar 0200 (produtos) pelo ERP* e *Atualizar 0150
   (participantes) pelo ERP* mostram o que mudaria, campo a campo, antes de
   gravar;
 - *Importar inventário* ganha o botão *Ler do ERP…* (estoque na data);
@@ -250,7 +275,7 @@ use `"trabalhadores": N` no `configuracao.json` da pasta de dados.
 > pelo PVA (faltam os XMLs de um mês real), então ela não entra numa versão de
 > release até isso acontecer — ver ROADMAP.
 
-**Ferramentas → EFD Contribuições → Importar XMLs → consolidar C175…** lê uma pasta de XMLs de
+**Ferramentas → Gerar → C175 consolidado pelos XMLs…** lê uma pasta de XMLs de
 NFC-e (modelo 65) e gera os registros **C175** dos documentos correspondentes:
 
 - **Vínculo** XML ↔ C100 pelas tags **mod + série + nNF** (lidas de dentro de
@@ -269,7 +294,7 @@ do fornecedor e a entrada do comprador, mas a ordem do item se mantém).
 
 ### Trocar alíquotas de PIS/COFINS
 
-**Ferramentas → EFD Contribuições → Trocar alíquotas PIS/COFINS…** substitui as
+**Ferramentas → Corrigir → Trocar alíquotas PIS/COFINS…** substitui as
 alíquotas de PIS e/ou COFINS e recalcula **VL_PIS** e **VL_COFINS** (base ×
 alíquota ÷ 100), atualizando os totais dos **C100**. Um seletor de **escopo**
 define onde aplicar:
@@ -287,7 +312,7 @@ são corrigidos, deixando os demais intactos.
 
 ### Datas e extemporâneos pelos XMLs
 
-**Ferramentas → Gerais → Datas e extemporâneos pelos XMLs…** confere a
+**Ferramentas → Corrigir → Datas e extemporâneos pelos XMLs…** confere a
 `DT_DOC` (e, na saída, a `DT_E_S`) de cada C100 com o XML de mesma chave —
 a pasta escolhida entra com as subpastas. A NFC-e emitida em contingência e
 autorizada no mês seguinte é o caso típico: o ERP a escritura no mês da
@@ -308,7 +333,7 @@ que é apuração e o que é extra-apuração — confira o E116.
 
 ### Alterar datas de emissão/saída (C100)
 
-**Ferramentas → Gerais → Alterar datas emissão/saída (C100)…** seleciona documentos por
+**Ferramentas → Corrigir → Alterar datas emissão/saída (C100)…** seleciona documentos por
 um **intervalo de datas** (avaliado sobre a data de entrada/saída *DT_E_S* ou a
 de emissão *DT_DOC*), podendo restringir por **tipo de movimento** (entrada/saída)
 e por **modelo** (campo *Somente modelos*, ex.: `55, 65`; em branco, todos). Nos
@@ -316,9 +341,9 @@ documentos filtrados, altera a **DT_DOC**, a **DT_E_S** ou **ambas**, para uma
 **data específica** (DDMMAAAA) ou **deslocando N dias** (aceita negativos, ex.:
 `-3`). As datas seguem o formato do arquivo (DDMMAAAA).
 
-### Conferir entradas (NF-e modelo 55) com os XMLs
+### Conferir itens (NF-e modelo 55) com os XMLs
 
-**Ferramentas → Gerais → Conferir entradas (NF-e 55) com XMLs…** compara cada item dos
+**Ferramentas → Conferir → Itens com XMLs…** compara cada item dos
 XMLs de compra com o **C170** correspondente do SPED, usando o mesmo motor de
 vínculo (`xml_fiscal.vincular`) — aqui no nível de item, pela chave
 **mod + série + nNF + nItem**.
@@ -357,7 +382,7 @@ compra lançado como **1102** é apontado, indicando que o correto seria **1401*
 ou **1403**.
 
 A lista de correlações válidas é **editável na interface** em **Ferramentas →
-Gerais → Correlações de CFOP (entradas)…**: uma tabela *CFOP de saída → CFOPs de entrada
+Configurações → Correlações de CFOP (entradas)…**: uma tabela *CFOP de saída → CFOPs de entrada
 válidos* (separados por vírgula), com botões para adicionar, remover, restaurar o
 padrão e salvar. As correlações ficam em **`correlacoes_cfop.json`**, na pasta
 de dados (ver 3A); o aplicativo já vem com um conjunto inicial que cobre os casos mais
@@ -365,7 +390,7 @@ comuns e pode ser ajustado à realidade da empresa.
 
 ### Conferir C190 (ICMS) com os XMLs
 
-**Ferramentas → EFD ICMS/IPI → Conferir C190 (ICMS) com XMLs…** compara o
+**Ferramentas → Conferir → C190 (ICMS) com XMLs…** compara o
 analítico **C190** com os XMLs, tanto nas entradas quanto nas saídas.
 
 O ponto delicado é o agrupamento: numa compra, o CFOP do XML é o de **saída do
@@ -395,7 +420,7 @@ documentos com itens.
 
 ### Recalcular ICMS dos itens (C170)
 
-**Ferramentas → EFD ICMS/IPI → Recalcular ICMS dos itens…** fecha o fluxo de
+**Ferramentas → Recalcular → ICMS dos itens…** fecha o fluxo de
 correção pelo **Modo Relatório**: você corrige alíquota, base ou CST direto na
 grade — que já grava no registro — e pede o recálculo para os campos derivados
 voltarem a bater.
@@ -482,7 +507,7 @@ documento; nas demais (ex.: **0200**, **H010**) pesquisa em **todas as colunas**
 útil para localizar um item, um produto ou um saldo entre milhares de linhas.
 
 ### Revisão de erros
-**Ferramentas → Gerais → Revisar erros…** abre um **painel de resumo**: uma linha por
+O botão **Revisar ocorrências…** do Diagnóstico abre um **painel de resumo**: uma linha por
 verificação, com quantos erros ela achou e o **atalho para a função que
 corrige**. Verificação sem correção automática traz *Ver ocorrências*, que
 abre a lista item a item para corrigir na grade.
@@ -557,7 +582,7 @@ não for encontrada, o programa avisa — sem ela, produtos como o sabonete
 
 ### Corrigir CST de entrada pelo NCM (EFD Contribuições)
 
-No diálogo **Ferramentas → EFD Contribuições → Verificar CST por NCM (tabelas
+No diálogo **Ferramentas → Conferir → CST por NCM (tabelas
 RFB)…**, o botão **Corrigir entradas sem crédito** retira o crédito dos itens
 de **entrada** cujo NCM não o admite — monofásicos e alíquota zero não geram
 crédito na revenda.
@@ -577,7 +602,7 @@ de rotinas por regime, com a mesma implementação.
 
 ### Recalcular C190 com redução de base zerada (em massa)
 
-**Ferramentas → EFD ICMS/IPI → Recalcular C190 (analítico) em massa…**
+**Ferramentas → Recalcular → C190 (analítico) em massa…**
 refaz o analítico dos documentos em que algum C190 tem CST terminado em **20**
 ou **70** e o `VL_RED_BC` em branco — erro que o PVA acusa. Só esses documentos
 são tocados: refazer o analítico que já está certo seria substituir registro
@@ -590,15 +615,15 @@ tem **base de PIS/COFINS**, ela é usada no lugar para achar a parcela reduzida
 das duas bases, a redução fica em zero e o caso é apontado para conferência
 manual, em vez de chutado.
 
-O mesmo conserto é oferecido como botão dentro de **Revisar erros**, junto da
-lista que o apontou.
+O mesmo conserto é oferecido como botão dentro do **Diagnóstico**, junto do
+grupo que o apontou.
 
 ### Redução de base do C190 pelos XMLs de compra
 
 Na **entrada com CST 070** o ICMS veio por substituição e a empresa não
 escritura base própria: a redução de base não sai do arquivo, e o
 recálculo em massa a deixa zerada (o PVA acusa `MSG_CST_ICMS_RED_BC`).
-**Ferramentas → EFD ICMS/IPI → Redução de base do C190 pelos XMLs de
+**Ferramentas → Corrigir → Redução de base do C190 pelos XMLs de
 compra…** lê os XMLs das compras, casa cada C170 com o item do XML pelo
 número (conferindo o valor) e grava no C190 o que não foi tributado: a
 operação menos a **base reduzida** do XML ou, quando a base vem zerada, a
@@ -613,8 +638,8 @@ quando um único C100 serve.
 > ensaio no PVA — ver ROADMAP.
 
 A NFC-e não tem C170 no EFD ICMS/IPI, e sem itens o recálculo em massa não
-tinha de onde refazer o analítico. O fluxo, em **Ferramentas → EFD
-ICMS/IPI**, tem três passos:
+tinha de onde refazer o analítico. O fluxo, em **Ferramentas → Gerar** e **Recalcular**, tem três passos
+(o aviso de cada um traz o botão do seguinte):
 
 1. **Gerar C170 fictícios da NFC-e (65) com XMLs…** — escolha a pasta com os
    XMLs das NFC-e (só ela, sem subpastas). Cada NFC-e do arquivo casada com o
@@ -633,7 +658,7 @@ antes de gravar.
 
 ### Itens do 0200 sem referência
 
-**Ferramentas → Gerais → Itens do 0200 sem referência…** aplica a regra do Guia
+**Ferramentas → Conferir → Itens do 0200 sem referência…** aplica a regra do Guia
 Prático: *"Não informar item, se não referenciado em pelo menos um dos demais
 blocos."* Varre o arquivo inteiro atrás de cada código do cadastro, lista os que
 ninguém cita e remove sob confirmação.
@@ -656,7 +681,7 @@ errar, feche o arquivo sem salvar.
 
 ### Preencher conta contábil (COD_CTA)
 
-**Ferramentas → Gerais → Preencher conta contábil (COD_CTA)…** resolve o erro
+**Ferramentas → Corrigir → Preencher conta contábil (COD_CTA)…** resolve o erro
 *"O campo é obrigatório para EFD ICMS/IPI com Perfil igual a 'A' ou 'B'"* no
 **H010** — e em qualquer outro registro que tenha o campo.
 
@@ -676,7 +701,7 @@ aparecem num seletor.
 
 ### Recalcular o bloco M (EFD Contribuições)
 
-**Ferramentas → EFD Contribuições → Recalcular bloco M (apuração)…** refaz a
+**Ferramentas → Recalcular → Bloco M (apuração PIS/COFINS)…** refaz a
 apuração a partir dos documentos: as contribuições (M200/M210 e
 M600/M610) pelas receitas tributadas de saída, e os **créditos** (M100/M105 e
 M500/M505) pelas entradas — um grupo por alíquota, com a natureza da base
@@ -702,7 +727,7 @@ não são usados nem criados; no **não-cumulativo** vai para os campos *NC*
 Ao salvar, a janela de confirmação oferece **Abrir no PVA e importar**: o
 programa abre o PVA do leiaute (ou traz para a frente o que já estiver
 aberto), manda o Ctrl+I que abre a importação e cola ali o caminho do arquivo
-recém-salvo. Também está em **Ferramentas → Gerais → Abrir no PVA**.
+recém-salvo. Também está no botão **Abrir no PVA** da barra.
 
 O PVA não recebe arquivo por linha de comando — o caminho usado é o acelerador
 que ele mesmo declara no menu. Se alguma coisa sair do lugar (o PVA demorando
@@ -778,8 +803,8 @@ Correção manual na grade                 26   campo obrigatório em branco
 
 Abaixo, o detalhe por registro e campo; duplo-clique leva ao registro. Se o
 arquivo estiver limpo, o painel não aparece — só uma mensagem na barra de
-status. Também dá para chamá-lo a qualquer momento em **Ferramentas → Gerais
-→ Diagnóstico do arquivo**.
+status. Também dá para chamá-lo a qualquer momento no botão **Diagnóstico** da
+barra.
 
 **O que ele verifica com fidelidade:** tudo o que o PVA declara no descritor —
 quantidade de campos do registro, obrigatoriedade de campo, tipo, tamanho,
@@ -927,7 +952,7 @@ informação fiscal, não formatação.
 
 ### Preencher COD_GEN pelo NCM (0200)
 
-**Ferramentas → EFD ICMS/IPI → Preencher COD_GEN pelo NCM (0200)…** preenche o
+**Ferramentas → Corrigir → Preencher COD_GEN pelo NCM (0200)…** preenche o
 gênero do item a partir do próprio NCM — são os **dois primeiros dígitos**
 (Tabela 4.2.1). Como é derivável, não depende de a planilha trazer a coluna, e
 não erra o zero à esquerda: o NCM é normalizado antes do corte.
@@ -985,7 +1010,7 @@ confrontado com a saída do mesmo relatório no banco.
 
 Como as NFC-e (modelo 65) são escrituradas de forma **consolidada** em C175 (sem
 itens), validar valor a valor exige um artifício. O fluxo, em **Ferramentas**
-(EFD Contribuições), tem três passos:
+(EFD Contribuições: *Conferir* e *Gerar*), tem três passos:
 
 1. **Validar C175 (modelo 65) com XMLs** — importa os XMLs das NFC-e e cria, em
    cada C100 modelo 65, registros **C170 fictícios** (um por item do XML), com
@@ -1001,7 +1026,7 @@ itens), validar valor a valor exige um artifício. O fluxo, em **Ferramentas**
 
 ### Importar inventário (bloco H) de planilha
 
-**Ferramentas → EFD ICMS/IPI → Importar inventário (bloco H) de planilha…** lê
+**Ferramentas → Corrigir → Importar inventário (bloco H) de planilha ou ERP…** lê
 uma planilha **XLSX** ou **CSV** com o inventário e gera os registros do bloco H:
 **H001** (com movimento), **H005** (data, motivo e valor total), um **H010** por
 item — com unidade, quantidade, valor unitário, valor total, indicador de
@@ -1052,7 +1077,7 @@ descrição, unidade, tipo e NCM da planilha) e os existentes **não são
 duplicados**; unidades ainda não declaradas geram registros **0190**.
 
 ### Verificar CST por NCM (tabelas da RFB)
-**Ferramentas → EFD Contribuições → Verificar CST por NCM (tabelas RFB)…**
+**Ferramentas → Conferir → CST por NCM (tabelas RFB)…**
 classifica cada item **C170** pelo NCM e aponta CST de PIS/COFINS incoerentes,
 separando entradas e saídas. A classificação usa as tabelas oficiais do
 EFD-Contribuições: **produtos de alíquota zero** (CST 06) e **monofásicos**.
@@ -1135,7 +1160,7 @@ clientes.
 
 ### Configuração por empresa e rotinas de correção
 
-**Ferramentas → Gerais → Empresa e rotinas…** abre o cadastro da empresa do
+**Ferramentas → Corrigir → Empresa e rotinas…** abre o cadastro da empresa do
 arquivo (identificada pelo **CNPJ do registro 0000**) e as rotinas que
 dependem dele — nos dois leiautes.
 
@@ -1238,7 +1263,7 @@ crédito por CFOP, prazo do 0900, descritor do PVA) e o **Abrir no PVA**
 precisam saber onde os PVAs estão instalados. O programa procura sozinho na
 pasta padrão da Receita (`C:\Arquivos de Programas RFB\Programas SPED`) e
 nas de *Arquivos de Programas*. Se a instalação estiver noutro lugar, aponte
-em **Ferramentas → Gerais → Pasta dos PVAs…** — a pasta certa é a que contém
+em **Ferramentas → Configurações → Pasta dos PVAs…** — a pasta certa é a que contém
 `Fiscal` e/ou `EFD-Contribuicoes`. A escolha fica gravada; para voltar à
 detecção automática, escolha a pasta padrão de novo.
 

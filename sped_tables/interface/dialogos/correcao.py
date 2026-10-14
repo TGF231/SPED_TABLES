@@ -19,6 +19,7 @@ from sped_tables.dominio import rotinas
 from sped_tables.dominio import ncm
 from sped_tables.infra import tabelas_rfb as trfb
 from sped_tables.interface.comum import _br, calcular
+from sped_tables.interface.comum import informar
 
 
 # ---------------------------------------------------------------------------
@@ -334,7 +335,7 @@ class DialogoVerificarCST(QDialog):
                 jan._marcar_alterado()
             if hasattr(jan, "_montar_abas"):
                 jan._montar_abas()
-        QMessageBox.information(
+        informar(
             self, "Corrigir entradas sem direito a crédito",
             "%d lançamento(s) de PIS/COFINS corrigidos.\n\n"
             "Itens que já estavam num CST sem crédito não foram tocados: ali "
@@ -368,7 +369,7 @@ class DialogoVerificarCST(QDialog):
 
     def _exportar(self):
         if self.tab.rowCount() == 0:
-            QMessageBox.information(self, "Exportar", "Nada para exportar.")
+            informar(self, "Exportar", "Nada para exportar.")
             return
         exportar_csv(self, "Exportar verificação", "verificacao_cst.csv",
                      self.COLS, linhas_da_tabela(self.tab))
@@ -620,7 +621,7 @@ class DialogoRecalcularICMS(QDialog):
                 jan._montar_abas()
 
         sit = res.get("por_situacao", {})
-        QMessageBox.information(
+        informar(
             self, "Recalcular ICMS",
             "Itens percorridos: <b>%d</b><br>"
             "Alterados: <b>%d</b> (valor %d, base %d, zerados %d)<br>"

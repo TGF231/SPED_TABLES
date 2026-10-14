@@ -27,6 +27,7 @@ from sped_tables.interface import tema
 from sped_tables.infra.paralelo import Cancelado
 from sped_tables.interface.comum import (_br, _num_celula,
                                          em_segundo_plano)
+from sped_tables.interface.comum import abrir_janela, informar
 
 NOMES = {"ICMS": "EFD ICMS/IPI", "CONTRIB": "EFD Contribuições"}
 MOVIMENTO = {"entradas": "Entrada", "saidas": "Saída",
@@ -145,7 +146,7 @@ class DialogoDecisao(QDialog):
             QMessageBox.warning(self, "Decidir", str(exc))
             return
         if not self.valores:
-            QMessageBox.information(self, "Decidir", "Nada foi informado.")
+            informar(self, "Decidir", "Nada foi informado.")
             return
         self.accept()
 
@@ -343,7 +344,7 @@ class DialogoGerarDeXml(QDialog):
             QMessageBox.warning(self, "Aprender", str(exc))
             return
         self._mostrar_memoria()
-        QMessageBox.information(
+        informar(
             self, "Aprender",
             "Itens casados com o XML: %d\nItens sem XML: %d\nNotas de "
             "entrada sem XML na pasta: %d\n\nA memória tem %d produto(s)."
@@ -585,14 +586,16 @@ class DialogoGerarDeXml(QDialog):
             atual["COD_ITEM"] = cod
         dlg = DialogoDecisao(r, "CONTRIB" in self.geracao.resultados, atual,
                              self)
-        if dlg.exec() != QDialog.DialogCode.Accepted:
-            return
-        try:
-            self.geracao.decidir(r, **dlg.valores)
-        except ValueError as exc:
-            QMessageBox.warning(self, "Decidir", str(exc))
-            return
-        self._gerar()
+
+        def aplicar():
+            try:
+                self.geracao.decidir(r, **dlg.valores)
+            except ValueError as exc:
+                QMessageBox.warning(self, "Decidir", str(exc))
+                return
+            self._gerar()
+        # sem bloquear: a pessoa consulta a grade e o XML enquanto decide
+        abrir_janela(self, dlg, ao_aceitar=aplicar)
 
     # ------------------------------------------------------------- salvar
     def _salvar(self, layout):
@@ -624,5 +627,14 @@ class DialogoGerarDeXml(QDialog):
         caixa.addButton("Continuar aqui", QMessageBox.ButtonRole.RejectRole)
         caixa.exec()
         if caixa.clickedButton() is abrir:
-            self.abrir_depois = caminho
+            # abre já, na janela principal: esta continua aberta ao lado
+            # para gerar o outro leiaute (até a 1.1.0-dev.11 o arquivo só
+            # abria depois de fechar a geração)
+            jan = self.parent()
+            if jan is not None and hasattr(jan, "abrir_caminho"):
+                jan.abrir_caminho(caminho)
+                jan.raise_()
+                jan.activateWindow()
+            else:
+                self.abrir_depois = caminho
             self.accept()

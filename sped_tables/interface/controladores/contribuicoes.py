@@ -2,12 +2,12 @@
 """Ações do menu: ferramentas do efd contribuições"""
 
 from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import QDialog, QMessageBox
+from PyQt6.QtWidgets import QMessageBox
 
 from sped_tables.dominio import xml_fiscal as xf
 from sped_tables.infra import config
-from sped_tables.interface.comum import (_br, calcular,
-                                         ler_nfes_da_pasta)
+from sped_tables.interface.comum import (_br, abrir_janela, calcular,
+                                         informar, ler_nfes_da_pasta)
 from sped_tables.interface.dialogos.cadastro import DialogoEmpresa
 from sped_tables.interface.dialogos.conferencia import DialogoDiscrepanciasC175
 from sped_tables.interface.dialogos.correcao import (
@@ -26,7 +26,7 @@ class ControladorContribuicoes:
         """Importa XMLs de NFC-e (modelo 65) de uma pasta e consolida os C175
         dos C100 correspondentes (vínculo por mod + série + nNF)."""
         if not self.doc or self.doc.layout != "CONTRIB":
-            QMessageBox.information(
+            informar(
                 self, "Importar XMLs",
                 "A consolidação de C175 a partir de XMLs aplica-se ao "
                 "EFD Contribuições.")
@@ -86,13 +86,13 @@ class ControladorContribuicoes:
         self.statusBar().showMessage(
             "Importação de XMLs: %d C100 consolidados, %d C175 gerados."
             % (n_doc, n_c175))
-        QMessageBox.information(self, "Importar XMLs", msg)
+        informar(self, "Importar XMLs", msg)
 
     def recalcular_bloco_m(self):
         """Recalcula a apuração do bloco M (M200/M210 e M600/M610) conforme o
         regime declarado no registro 0110."""
         if not self.doc or self.doc.layout != "CONTRIB":
-            QMessageBox.information(
+            informar(
                 self, "Bloco M",
                 "A apuração do bloco M aplica-se ao EFD Contribuições.")
             return
@@ -137,13 +137,13 @@ class ControladorContribuicoes:
                   linha("COFINS", res.get("COFINS", "—")), obs))
         self.statusBar().showMessage("Bloco M recalculado (regime %s)."
                                      % res.get("regime", "?"))
-        QMessageBox.information(self, "Bloco M", msg)
+        informar(self, "Bloco M", msg)
 
     def validar_c175_65(self):
         """Importa XMLs de NFC-e (modelo 65), gera C170 fictícios por item e
         mostra as discrepâncias com o C175 escriturado."""
         if not self.doc or self.doc.layout != "CONTRIB":
-            QMessageBox.information(
+            informar(
                 self, "Validar C175 (modelo 65)",
                 "Disponível apenas no EFD Contribuições.")
             return
@@ -162,7 +162,7 @@ class ControladorContribuicoes:
         div = self.doc.discrepancias_c175_65()
         self._marcar_alterado()
         self._montar_abas()
-        DialogoDiscrepanciasC175(res, div, self).exec()
+        abrir_janela(self, DialogoDiscrepanciasC175(res, div, self))
 
     def regenerar_c175_65(self):
         """Regenera o C175 a partir dos C170 fictícios (já corrigidos) e remove
@@ -171,7 +171,7 @@ class ControladorContribuicoes:
             return
         pendentes = len(self.doc.documentos_65_com_c170())
         if not pendentes:
-            QMessageBox.information(
+            informar(
                 self, "Regenerar C175",
                 "Não há C170 fictícios (modelo 65) para consolidar. Rode antes "
                 "\"Validar C175 (modelo 65) com XMLs\".")
@@ -231,7 +231,7 @@ class ControladorContribuicoes:
             return
         self._marcar_alterado()
         self._montar_abas()
-        QMessageBox.information(
+        informar(
             self, "Regenerar C175",
             "C175 regenerado em %d documento(s); %d registro(s) C175 gerado(s). "
             "Os C170 fictícios foram removidos." % (r["docs"], r["c175"]))
@@ -259,69 +259,72 @@ class ControladorContribuicoes:
         """Verifica o CST de PIS/COFINS dos itens C170 por NCM, usando as
         tabelas oficiais da RFB (alíquota zero e monofásicos)."""
         if not self.doc or self.doc.layout != "CONTRIB":
-            QMessageBox.information(
+            informar(
                 self, "Verificar CST",
                 "Esta verificação aplica-se ao EFD Contribuições (CST de "
                 "PIS/COFINS por NCM).")
             return
-        self._dlg_cst = DialogoVerificarCST(
+        self._dlg_cst = abrir_janela(self, DialogoVerificarCST(
             self.doc, self.cfg_tabelas, self._data_fin_doc(),
-            self._salvar_cfg_tabelas, self)
-        self._dlg_cst.show()
+            self._salvar_cfg_tabelas, self))
 
     def trocar_aliquotas(self):
         """Troca alíquotas de PIS/COFINS (saídas C175 / entradas C170) e
         recalcula os valores."""
         if not self.doc or self.doc.layout != "CONTRIB":
-            QMessageBox.information(
+            informar(
                 self, "Trocar alíquotas",
                 "Esta ferramenta aplica-se ao EFD Contribuições (registros "
                 "C175 de saída e C170 de entrada).")
             return
         dlg = DialogoTrocarAliquotas(self.doc, self)
-        if dlg.exec() != QDialog.DialogCode.Accepted:
-            return
-        aliq_pis, aliq_cofins, apenas_trib, escopo, de_pis, de_cof = \
-            dlg.valores()
-        if aliq_pis is None and aliq_cofins is None:
-            return
-        ok, res = calcular(
-            self, "Trocar alíquotas", self.doc.trocar_aliquotas_pis_cofins,
-            aliq_pis=aliq_pis, aliq_cofins=aliq_cofins,
-            apenas_tributados=apenas_trib, escopo=escopo,
-            de_pis=de_pis, de_cofins=de_cof)
-        if not ok:
-            return
-        if res.get("sem_alvo"):
-            alvo = "C175/C170 de saída" if escopo == "saidas" else \
-                ("C170 de entrada" if escopo == "entradas" else "C170/C175")
-            QMessageBox.information(
+        doc = self.doc
+
+        def aplicar():
+            if self.doc is not doc:
+                return
+            aliq_pis, aliq_cofins, apenas_trib, escopo, de_pis, de_cof = \
+                dlg.valores()
+            if aliq_pis is None and aliq_cofins is None:
+                return
+            ok, res = calcular(
+                self, "Trocar alíquotas", doc.trocar_aliquotas_pis_cofins,
+                aliq_pis=aliq_pis, aliq_cofins=aliq_cofins,
+                apenas_tributados=apenas_trib, escopo=escopo,
+                de_pis=de_pis, de_cofins=de_cof)
+            if not ok:
+                return
+            if res.get("sem_alvo"):
+                alvo = "C175/C170 de saída" if escopo == "saidas" else \
+                    ("C170 de entrada" if escopo == "entradas" else "C170/C175")
+                informar(
+                    self, "Trocar alíquotas",
+                    "Nenhum registro %s foi encontrado neste arquivo." % alvo)
+                return
+            self._marcar_alterado()
+            self._montar_abas()
+            rot_escopo = {"saidas": "saídas (C175 + C170)",
+                          "entradas": "entradas (C170)",
+                          "todos": "todos os itens (C170 e C175)"}[escopo]
+            partes = []
+            if aliq_pis is not None:
+                partes.append("PIS → %s%%" % ("%.4f" % aliq_pis).rstrip("0")
+                              .rstrip("."))
+            if aliq_cofins is not None:
+                partes.append("COFINS → %s%%" % ("%.4f" % aliq_cofins)
+                              .rstrip("0").rstrip("."))
+            self.statusBar().showMessage(
+                "Alíquotas atualizadas em %s (%s): %d registros, %d C100."
+                % (rot_escopo, ", ".join(partes), res["itens"], res["c100"]))
+            informar(
                 self, "Trocar alíquotas",
-                "Nenhum registro %s foi encontrado neste arquivo." % alvo)
-            return
-        self._marcar_alterado()
-        self._montar_abas()
-        rot_escopo = {"saidas": "saídas (C175 + C170)",
-                      "entradas": "entradas (C170)",
-                      "todos": "todos os itens (C170 e C175)"}[escopo]
-        partes = []
-        if aliq_pis is not None:
-            partes.append("PIS → %s%%" % ("%.4f" % aliq_pis).rstrip("0")
-                          .rstrip("."))
-        if aliq_cofins is not None:
-            partes.append("COFINS → %s%%" % ("%.4f" % aliq_cofins).rstrip("0")
-                          .rstrip("."))
-        self.statusBar().showMessage(
-            "Alíquotas atualizadas em %s (%s): %d registros, %d C100."
-            % (rot_escopo, ", ".join(partes), res["itens"], res["c100"]))
-        QMessageBox.information(
-            self, "Trocar alíquotas",
-            "Escopo: %s\n%s\n\n%d registro(s) recalculado(s) em %d "
-            "documento(s) C100.\nNovos totais no escopo: VL_PIS = %s, "
-            "VL_COFINS = %s\n\nSe necessário, rode 'Recalcular bloco M' para "
-            "refletir a apuração."
-            % (rot_escopo, ", ".join(partes), res["itens"], res["c100"],
-               _br(res["vl_pis"]), _br(res["vl_cofins"])))
+                "Escopo: %s\n%s\n\n%d registro(s) recalculado(s) em %d "
+                "documento(s) C100.\nNovos totais no escopo: VL_PIS = %s, "
+                "VL_COFINS = %s\n\nA apuração (bloco M) ainda é a de antes."
+                % (rot_escopo, ", ".join(partes), res["itens"], res["c100"],
+                   _br(res["vl_pis"]), _br(res["vl_cofins"])),
+                proximos=(("Recalcular bloco M…", self.recalcular_bloco_m),))
+        abrir_janela(self, dlg, ao_aceitar=aplicar)
 
     def configurar_empresa(self):
         """Cadastro da empresa e rotinas de conferência/correção.
@@ -332,6 +335,5 @@ class ControladorContribuicoes:
         """
         if self.doc is None:
             return
-        self._dlg_empresa = DialogoEmpresa(
-            self.doc, self, cfg_rfb=getattr(self, "cfg_tabelas", None))
-        self._dlg_empresa.show()
+        self._dlg_empresa = abrir_janela(self, DialogoEmpresa(
+            self.doc, self, cfg_rfb=getattr(self, "cfg_tabelas", None)))

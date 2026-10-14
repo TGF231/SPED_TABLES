@@ -104,55 +104,144 @@ def escolher_origem_xml(pai, titulo, conexoes):
     return botoes.get(caixa.clickedButton())
 
 
-def _ler_xmls(pai, titulo, pergunta, ler, do_lote):
-    """Lê os XMLs com a barra de andamento: de uma pasta (`ler(pasta,
-    progresso, cancelar)`) ou, quando a empresa do arquivo tem conexão de
-    ERP com XMLs, do banco — no período do arquivo, convertido por
-    `do_lote(lote)`. None se a pessoa desistiu ou a leitura falhou — o erro
-    já foi mostrado."""
+def ler_pasta_xml(pai, titulo, pergunta, reler=False):
+    """O lote (`xml_fiscal.Lote`) dos XMLs do período, ou None se a pessoa
+    desistiu ou a leitura falhou — o erro já foi mostrado.
+
+    **Lido uma vez por arquivo aberto.** A primeira função que precisa dos
+    XMLs pergunta de onde vêm — uma pasta (as subpastas entram) ou, quando a
+    empresa do arquivo tem conexão de ERP com XMLs, o banco, no período do
+    arquivo — e o lote fica na sessão; as seguintes o reaproveitam sem
+    perguntar nada. `reler=True` (a ação *XMLs do período…*) troca a origem.
+    """
+    sessao = getattr(pai, "sessao", None)
+    if sessao is not None and sessao.xmls is not None and not reler:
+        _status(pai, "XMLs do período: %s (já lidos)." % sessao.origem_xmls)
+        return sessao.xmls
     doc = getattr(pai, "doc", None)
     cfg = caso_erp.carregar() if doc is not None else None
     conexoes = (caso_erp.conexoes_da_empresa(cfg, caso_erp.cnpj(doc), "xmls")
                 if cfg is not None else [])
-    origem = escolher_origem_xml(pai, titulo, conexoes) if conexoes \
-        else "pasta"
+    origem = (escolher_origem_xml(pai, titulo, conexoes) if conexoes
+              else "pasta")
     if origem is None:
         return None
     if origem == "pasta":
         pasta = QFileDialog.getExistingDirectory(pai, pergunta)
         if not pasta:
             return None
+        descricao = "pasta %s" % pasta
 
         def trabalho(prog, canc):
-            return ler(pasta, prog, canc)
+            return leitura_xml.ler_pasta_fiscal(pasta, prog, canc)
     else:
         dt_ini, dt_fin = caso_erp.periodo(doc)
+        descricao = "banco do ERP (%s)" % origem.nome
 
         def trabalho(prog, canc):
-            return do_lote(caso_erp.xmls(cfg, origem, dt_ini, dt_fin, prog,
-                                         canc))
+            return caso_erp.xmls(cfg, origem, dt_ini, dt_fin, prog, canc)
     try:
-        return em_segundo_plano(pai, titulo, "Lendo os XMLs…", trabalho)
+        lote = em_segundo_plano(pai, titulo, "Lendo os XMLs…", trabalho)
     except Cancelado:
         return None
     except Exception as e:                                  # noqa: BLE001
         QMessageBox.critical(pai, titulo, "Erro ao ler os XMLs:\n%s" % e)
         return None
+    n = len(lote.nfes) + len(lote.sem_chave) + len(lote.ctes)
+    descricao += " — %s documento(s)" % _milhar(n)
+    # lote vazio não fica guardado: foi a pasta errada, e a próxima função
+    # tem de poder perguntar de novo
+    if sessao is not None and n:
+        sessao.guardar_xmls(lote, descricao)
+    _status(pai, "XMLs do período: %s." % descricao)
+    return lote
 
 
-def ler_pasta_xml(pai, titulo, pergunta):
-    """Lê os XMLs de uma pasta (as subpastas entram) ou do banco do ERP, em
-    paralelo e com andamento. Devolve o lote (`xml_fiscal.Lote`), ou None."""
-    return _ler_xmls(pai, titulo, pergunta, leitura_xml.ler_pasta_fiscal,
-                     lambda lote: lote)
+def _status(pai, texto):
+    barra = getattr(pai, "statusBar", None)
+    if callable(barra):
+        barra().showMessage(texto, 10000)
+
+
+def nfes_do_lote(lote):
+    """As NF-e/NFC-e numeradas do lote, inclusive as sem chave (a entrada
+    que o ERP exporta), na ordem."""
+    return [n for n in lote.nfes + lote.sem_chave if n.nnf]
 
 
 def ler_nfes_da_pasta(pai, titulo, pergunta):
-    """Lê as NF-e/NFC-e de uma pasta (sem subpastas) ou do banco do ERP, em
-    paralelo e com andamento. Devolve `(nfes, erros)`, ou None."""
-    return _ler_xmls(pai, titulo, pergunta, leitura_xml.ler_pasta,
-                     lambda lote: ([n for n in lote.nfes + lote.sem_chave
-                                    if n.nnf], lote.erros))
+    """`(nfes, erros)` dos XMLs do período (`ler_pasta_xml`), ou None."""
+    lote = ler_pasta_xml(pai, titulo, pergunta)
+    if lote is None:
+        return None
+    return nfes_do_lote(lote), lote.erros
+
+
+# janelas soltas que nasceram sem pai (os testes chamam assim): sem esta
+# referência o coletor de lixo as fecharia no mesmo instante
+_SEM_PAI = []
+
+
+def abrir_janela(pai, dlg, ao_aceitar=None, chave=None):
+    """Mostra `dlg` como janela própria, **sem bloquear as outras**: a
+    principal e as demais ferramentas continuam clicáveis enquanto ela está
+    aberta, e cada uma tem minimizar e maximizar.
+
+    `ao_aceitar()` roda quando a pessoa confirma (o `accepted` do diálogo) —
+    é o lugar do que vinha depois de `if dlg.exec() == Accepted`. Há uma
+    janela por `chave` (o nome da classe, por padrão): abrir de novo fecha a
+    anterior, que mostraria um resultado velho. A referência fica guardada na
+    janela principal; sem ela o diálogo seria coletado (CLAUDE.md, "Ao
+    adicionar ações")."""
+    dlg.setModal(False)
+    dlg.setWindowModality(Qt.WindowModality.NonModal)
+    dlg.setWindowFlags(Qt.WindowType.Window
+                       | Qt.WindowType.WindowTitleHint
+                       | Qt.WindowType.WindowSystemMenuHint
+                       | Qt.WindowType.WindowMinMaxButtonsHint
+                       | Qt.WindowType.WindowCloseButtonHint)
+    chave = chave or type(dlg).__name__
+    if pai is not None:
+        abertas = getattr(pai, "_janelas", None)
+        if abertas is None:
+            abertas = {}
+            setattr(pai, "_janelas", abertas)
+        anterior = abertas.get(chave)
+        if anterior is not None and anterior is not dlg:
+            anterior.close()
+        abertas[chave] = dlg
+
+        def esquecer(_codigo=0):
+            if abertas.get(chave) is dlg:
+                del abertas[chave]
+        dlg.finished.connect(esquecer)
+    else:
+        _SEM_PAI.append(dlg)
+        dlg.finished.connect(lambda _c=0: _SEM_PAI.remove(dlg)
+                             if dlg in _SEM_PAI else None)
+    if ao_aceitar is not None:
+        dlg.accepted.connect(ao_aceitar)
+    dlg.show()
+    dlg.raise_()
+    dlg.activateWindow()
+    return dlg
+
+
+def informar(pai, titulo, texto, proximos=()):
+    """Aviso de resultado que **não espera o OK**: a caixa fica aberta ao
+    lado do trabalho, e a pessoa segue usando o programa. Pergunta que
+    precisa de resposta continua modal — esta é só para o "feito".
+
+    `proximos` são `(rótulo, função)` da etapa seguinte — "Recalcular bloco
+    M" depois de trocar alíquotas, por exemplo: um botão no próprio aviso,
+    em vez de mandar a pessoa procurar a função no menu."""
+    caixa = QMessageBox(QMessageBox.Icon.Information, titulo, texto,
+                        QMessageBox.StandardButton.Ok, pai)
+    caixa.setAttribute(Qt.WidgetAttribute.WA_DeleteOnClose)
+    for rotulo, funcao in proximos:
+        b = caixa.addButton(rotulo, QMessageBox.ButtonRole.ActionRole)
+        b.clicked.connect(lambda _=False, f=funcao: f())
+    return abrir_janela(pai, caixa, chave="informar:" + titulo)
 
 
 def lista_de_mudancas(mudou):
@@ -230,8 +319,8 @@ def exportar_csv(pai, titulo, nome_sugerido, cabecalho, linhas):
         QMessageBox.critical(pai, titulo, "Não foi possível gravar:\n%s"
                              % exc)
         return None
-    QMessageBox.information(pai, titulo, "%d linha(s) exportada(s) para:\n%s"
-                            % (n, caminho))
+    informar(pai, titulo, "%d linha(s) exportada(s) para:\n%s"
+             % (n, caminho))
     return caminho
 
 

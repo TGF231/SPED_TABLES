@@ -177,6 +177,10 @@ class TestTela(_ComPasta):
                                      "question")]
         self._caixas.append(mock.patch.object(QDialog, "exec",
                                               lambda self: 0))
+        # o aviso de resultado não espera o OK (`comum.informar`)
+        self._caixas.append(mock.patch(
+            "sped_tables.interface.dialogos.geracao.informar",
+            lambda *a, **k: self.mensagens.append(a[1:3])))
         for c in self._caixas:
             c.start()
 
@@ -210,13 +214,12 @@ class TestTela(_ComPasta):
         dlg.t_rev.selectRow(0)
         self.assertTrue(dlg.b_decidir.isEnabled())
 
-        def decidir(janela):
-            janela.edits["CFOP"].setText("1949")
-            janela.edits["COD_ITEM"].setText("P9")
-            janela._conferir()
-            return QDialog.DialogCode.Accepted
-        with mock.patch.object(tela.DialogoDecisao, "exec", decidir):
-            dlg._decidir()
+        # a decisão é janela solta: a geração continua clicável ao lado
+        dlg._decidir()
+        janela = dlg._janelas["DialogoDecisao"]
+        janela.edits["CFOP"].setText("1949")
+        janela.edits["COD_ITEM"].setText("P9")
+        janela._conferir()
         self.assertTrue(dlg.b_salvar["ICMS"].isEnabled())
 
         destino = os.path.join(self.pasta, "gerado.txt")

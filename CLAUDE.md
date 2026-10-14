@@ -233,11 +233,50 @@ ser empacotados no executável.
 
 Uma ação é **uma linha** de `interface/acoes.py`: atributo, rótulo, método da
 janela, quando fica habilitada (`SEMPRE`, `ARQUIVO`, `ICMS`, `CONTRIB`,
-`COM_PVA`), onde aparece (`BARRA`, `MENU_ICMS`, `MENU_CONTRIB`,
-`MENU_GERAIS`) e se está `pronta`. A janela cria, conecta, põe no menu e
-habilita tudo a partir dela (`_montar_acoes`, `_montar_barra_ferramentas`,
-`_habilitar_acoes`). O método vai no controlador da área
-(`interface/controladores/`).
+`COM_PVA`), onde aparece (`BARRA`, `MENU_RAIZ`, `MENU_CONFERIR`,
+`MENU_CORRIGIR`, `MENU_RECALCULAR`, `MENU_GERAR`, `MENU_CONFIG`) e se está
+`pronta`. A janela cria, conecta, põe no menu e habilita tudo a partir dela
+(`_montar_acoes`, `_montar_barra_ferramentas`, `_habilitar_acoes`). O
+método vai no controlador da área (`interface/controladores/`).
+
+**Os submenus são as etapas do trabalho, não os leiautes** (1.1.0-dev.12).
+A ação de um leiaute **some** quando o arquivo aberto é do outro
+(`acoes.aparece`); submenu sem ação visível some junto. Antes de criar uma
+ação, procure a que já faz quase o mesmo: havia *Conferir itens* duas vezes
+(uma por tributo), *Conferir entradas (NF-e 55)* — a mesma conferência sem
+o botão de corrigir — e *Revisar erros* ao lado do *Diagnóstico*, que já
+cobria todas as verificações dela. Hoje a revisão abre de dentro do
+Diagnóstico (*Revisar ocorrências…*) e a conferência pega o tributo do
+leiaute.
+
+### Janelas soltas, XMLs uma vez só
+
+O que a pessoa pediu: nenhuma janela pode impedir o clique na anterior ou
+na seguinte, e nada de ida e volta entre telas. Três peças em
+`interface/comum.py` fazem isso — use-as, não `exec()`/`show()` direto:
+
+- **`abrir_janela(pai, dlg, ao_aceitar=None, chave=None)`** mostra o
+  diálogo **não-modal**, como janela própria (minimizar/maximizar), guarda
+  a referência em `pai._janelas` (uma por `chave`; reabrir fecha a
+  anterior) e liga `ao_aceitar` ao `accepted`. O que vinha depois de
+  `if dlg.exec() == Accepted:` vira a função `aplicar` — e ela confere
+  `self.doc is doc`, porque com a janela solta o arquivo pode ter sido
+  fechado ou trocado no meio-tempo.
+- **`informar(pai, titulo, texto, proximos=())`** é o aviso de resultado:
+  não espera o OK, e `proximos` põe no aviso o botão da etapa seguinte
+  (*Recalcular bloco M* depois de trocar alíquotas). `QMessageBox.
+  information` não é mais usado na interface. Pergunta que precisa de
+  resposta na hora (salvar antes de fechar, confirmar gravação) continua
+  modal.
+- **`ler_pasta_xml` / `ler_nfes_da_pasta`** guardam o lote na sessão
+  (`Sessao.xmls`, `origem_xmls`): a primeira função pergunta a origem
+  (pasta ou ERP), as seguintes reaproveitam; `reler=True` (*XMLs do
+  período…*) troca. Abrir e fechar arquivo esquecem os XMLs. Lote vazio
+  não é guardado — foi a pasta errada.
+
+Nos testes, a janela solta é aceita por `j._janelas["NomeDaClasse"].accept()`
+(`QDialog.exec` patchado não dispara nada), e quem quer ver o aviso de
+resultado patcha o `informar` do módulo.
 
 Até a 0.52.0 cada ação existia em quatro lugares e a janela nascia por dois
 caminhos (o `.ui` do Qt Designer e um fallback); esquecer um ponto derrubou
@@ -510,8 +549,8 @@ curto). Para o diagnóstico, o mapa equivalente fica em
 
 Uma linha em `acoes.ACOES` + o método num controlador. Função que ainda não
 cumpre o critério de aceite do `ROADMAP.md` entra com `pronta=False`.
-Diálogos não-modais (`show()`) precisam de referência guardada
-(`self._dlg_x`) para não serem coletados.
+Diálogo abre por `comum.abrir_janela`, que guarda a referência (sem
+ela, o coletor de lixo leva a janela) — ver "Janelas soltas".
 
 **Exceção num slot do Qt encerra o processo** quando o `sys.excepthook` é o
 padrão. O `main()` instala `infra/falhas.py`, que troca isso por registro em

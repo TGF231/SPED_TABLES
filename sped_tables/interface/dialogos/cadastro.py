@@ -16,6 +16,7 @@ from sped_tables.dominio import empresas as emp_mod
 from sped_tables.dominio import rotinas
 from sped_tables.infra import tabelas_rfb as trfb
 from sped_tables.interface import tema
+from sped_tables.interface.comum import informar
 
 
 class DialogoItensNaoUsados(QDialog):
@@ -145,7 +146,7 @@ class DialogoItensNaoUsados(QDialog):
                 jan._marcar_alterado()
             if hasattr(jan, "_montar_abas"):
                 jan._montar_abas()
-        QMessageBox.information(
+        informar(
             self, "Remover itens sem referência",
             "%d item(ns) removido(s) do 0200 — %d registro(s) ao todo, "
             "contando os filhos." % (res["itens"], res["registros"]))
@@ -322,7 +323,7 @@ class DialogoCodCta(QDialog):
                 jan._marcar_alterado()
             if hasattr(jan, "_montar_abas"):
                 jan._montar_abas()
-        QMessageBox.information(
+        informar(
             self, "Conta contábil",
             "%d registro(s) %s preenchidos com a conta %s.%s"
             % (res["registros"], res["tipo"], res["cod_cta"],
@@ -423,7 +424,7 @@ class DialogoEmpresa(QDialog):
         self.lbl_divergencia.setText(divergencia or "")
         self.lbl_divergencia.setVisible(bool(divergencia))
         self._listar_rotinas()
-        QMessageBox.information(self, "Cadastro", "Gravado em:\n%s" % caminho)
+        informar(self, "Cadastro", "Gravado em:\n%s" % caminho)
 
     # ------------------------------------------------------------- rotinas
     def _montar_rotinas(self):
@@ -496,7 +497,7 @@ class DialogoEmpresa(QDialog):
         texto = r.descricao
         if r.requer == "tabelas_rfb":
             texto += ("  Requer as tabelas da RFB configuradas em "
-                      "Ferramentas → Verificar CST por NCM.")
+                      "Ferramentas → Conferir → CST por NCM.")
         if r.corrigir is None:
             texto += "  (sem correção automática)"
         self.lbl_desc.setText(texto)
@@ -541,7 +542,7 @@ class DialogoEmpresa(QDialog):
             QMessageBox.warning(
                 self, "Tabelas da RFB",
                 "Não foi possível carregar as tabelas da RFB:\n%s\n\n"
-                "Configure em Ferramentas → Verificar CST por NCM." % exc)
+                "Configure em Ferramentas → Conferir → CST por NCM." % exc)
             return None
 
     def _preencher(self, ocorrencias):
@@ -580,7 +581,7 @@ class DialogoEmpresa(QDialog):
         janela = self.parent()
         if janela is not None and hasattr(janela, "_marcar_alterado"):
             janela._marcar_alterado()
-        QMessageBox.information(
+        informar(
             self, r.nome,
             "%d registro(s) alterado(s).\n\nO arquivo ainda NÃO foi salvo — "
             "revise e use Salvar como." % n)

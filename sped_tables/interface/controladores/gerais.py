@@ -5,7 +5,7 @@ import os
 from collections import Counter
 
 from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import QDialog, QFileDialog, QMessageBox
+from PyQt6.QtWidgets import QFileDialog, QMessageBox
 
 from sped_tables.dominio import conferencia as cf
 from sped_tables.dominio import diagnostico
@@ -17,7 +17,8 @@ from sped_tables.dominio import xml_fiscal as xf
 from sped_tables.dominio.empresas import dados_do_arquivo
 from sped_tables.infra import cadastro, config
 from sped_tables.infra import memoria as memoria_infra
-from sped_tables.interface.comum import (calcular, em_segundo_plano,
+from sped_tables.interface.comum import (abrir_janela, calcular,
+                                         em_segundo_plano, informar,
                                          ler_nfes_da_pasta,
                                          lista_de_mudancas,
                                          ler_pasta_xml)
@@ -49,9 +50,12 @@ class ControladorGerais:
         abri-lo aqui para conferir e mandar ao PVA."""
         dlg = DialogoGerarDeXml(self, empresas=cadastro.carregar_empresas(),
                                 correlacoes=self.correlacoes_cfop)
-        dlg.exec()
-        if dlg.abrir_depois:
-            self.abrir_caminho(dlg.abrir_depois)
+
+        def ao_fechar(_codigo=0):
+            if dlg.abrir_depois:
+                self.abrir_caminho(dlg.abrir_depois)
+        dlg.finished.connect(ao_fechar)
+        abrir_janela(self, dlg)
 
     def regenerar_entradas(self):
         """Refaz as notas de entrada (C100/C170/C190) pelos XMLs, com a
@@ -75,59 +79,55 @@ class ControladorGerais:
             QMessageBox.warning(self, titulo, str(exc))
             return
         if plano.vazio and not plano.bloqueados:
-            QMessageBox.information(
+            informar(
                 self, titulo, "Nenhuma nota de entrada da pasta é deste "
                 "arquivo (CNPJ de destinatário e período).")
             return
-        if DialogoRegenerarEntradas(doc, plano, self).exec() != \
-                QDialog.DialogCode.Accepted:
-            return
-        res = regeneracao.aplicar(doc, plano)
-        self._marcar_alterado()
-        self._montar_abas()
-        proximo = ("Recalcular apuração do ICMS (E110)"
-                   if doc.layout == "ICMS" else "Recalcular bloco M")
-        QMessageBox.information(
-            self, titulo,
-            "Entradas regeneradas: %d substituída(s), %d incluída(s), %d "
-            "cadastro(s) novo(s).\n\nA apuração ainda é a de antes: rode "
-            "\"%s\" e confira com o Diagnóstico."
-            % (res["substituidos"], res["incluidos"], res["cadastro"],
-               proximo))
 
-    def conferir_entradas_55(self):
-        """Confere os itens das NF-e modelo 55 (entradas) de uma pasta de XMLs
-        contra os C170 do SPED, vinculando por mod + série + nNF + nItem."""
+        def aplicar():
+            if self.doc is not doc:         # o arquivo mudou nesse meio-tempo
+                return
+            res = regeneracao.aplicar(doc, plano)
+            self._marcar_alterado()
+            self._montar_abas()
+            if doc.layout == "ICMS":
+                proximo = ("Recalcular E110", self.recalcular_apuracao_icms)
+            else:
+                proximo = ("Recalcular bloco M…", self.recalcular_bloco_m)
+            informar(
+                self, titulo,
+                "Entradas regeneradas: %d substituída(s), %d incluída(s), %d "
+                "cadastro(s) novo(s).\n\nA apuração ainda é a de antes: "
+                "recalcule e confira com o Diagnóstico."
+                % (res["substituidos"], res["incluidos"], res["cadastro"]),
+                proximos=(proximo, ("Diagnóstico", self.diagnosticar)))
+        abrir_janela(self, DialogoRegenerarEntradas(doc, plano, self),
+                     ao_aceitar=aplicar)
+
+    def escolher_xmls(self):
+        """Escolhe (ou relê) os XMLs do período. As funções que usam XMLs
+        pegam o lote guardado na sessão; esta é a única que pergunta de novo
+        — para trocar de pasta ou ler o que chegou depois."""
         if not self.doc:
             return
-        lidos = ler_nfes_da_pasta(
-            self, "Conferir entradas",
-            "Selecione a pasta com os XMLs das NF-e (modelo 55)")
-        if lidos is None:
-            return
-        nfes, _erros = lidos
-        if not any(xf.norm(n.mod) == "55" for n in nfes):
-            QMessageBox.warning(
-                self, "Conferir entradas",
-                "Nenhum XML de NF-e modelo 55 foi encontrado na pasta.")
-            return
-        resultado = cf.conferir_entradas_55(
-            self.doc, nfes, correlacoes_cfop=self.correlacoes_cfop)
-        self.statusBar().showMessage(
-            "Conferência: %d itens, %d divergência(s)."
-            % (resultado["resumo"]["itens_conferidos"],
-               resultado["resumo"]["divergencias"]))
-        DialogoConferencia(resultado, self).exec()
+        ler_pasta_xml(self, "XMLs do período",
+                      "Pasta dos XMLs do período (as subpastas entram)",
+                      reler=True)
 
-    def conferir_itens_xml(self, tributo):
-        """Confere os itens dos XMLs contra os C170, por tributo.
+    def conferir_itens_xml(self, tributo=None):
+        """Confere os itens dos XMLs contra os C170 — no tributo do leiaute
+        aberto (ICMS/IPI ou PIS/COFINS), salvo `tributo` explícito.
 
         O movimento (entradas/saídas) é escolhido dentro do diálogo, que
         refaz a comparação sem pedir a pasta de novo — reler dezenas de XMLs a
-        cada troca seria desperdício.
+        cada troca seria desperdício. Até a 1.1.0-dev.11 havia também
+        *Conferir entradas (NF-e 55)*: a mesma conferência, só de entradas e
+        sem o botão de corrigir.
         """
         if not self.doc:
             return
+        tributo = tributo or ("ICMS" if self.doc.layout == "ICMS"
+                              else "PIS_COFINS")
         lidos = ler_nfes_da_pasta(
             self, "Conferir itens",
             "Selecione a pasta com os XMLs das NF-e (modelo 55)")
@@ -139,10 +139,9 @@ class ControladorGerais:
                 self, "Conferir itens",
                 "Nenhum XML de NF-e modelo 55 foi encontrado na pasta.")
             return
-        self._dlg_conferencia = DialogoConferencia(
+        self._dlg_conferencia = abrir_janela(self, DialogoConferencia(
             None, self, doc=self.doc, nfes=nfes, tributo=tributo,
-            correlacoes=self.correlacoes_cfop)
-        self._dlg_conferencia.show()
+            correlacoes=self.correlacoes_cfop))
 
     def escolher_pasta_pva(self):
         """Aponta onde os PVAs estão instalados (`config.definir_raiz_pva`).
@@ -179,8 +178,8 @@ class ControladorGerais:
             self.statusBar().showMessage(
                 "Correlações de CFOP atualizadas (%d CFOP de saída)."
                 % len(novo_mapa))
-        DialogoCorrelacoesCFOP(
-            self.correlacoes_cfop, self._caminho_correl, aplicar, self).exec()
+        abrir_janela(self, DialogoCorrelacoesCFOP(
+            self.correlacoes_cfop, self._caminho_correl, aplicar, self))
 
     def datas_pelo_xml(self):
         """Acerta as datas do C100 pelo XML e passa à situação extemporânea
@@ -196,9 +195,8 @@ class ControladorGerais:
             return
         achados = cf.datas_pelo_xml(self.doc, lote.nfes)
         if not achados:
-            QMessageBox.information(
-                self, titulo, "As datas de todos os %d documento(s) com XML "
-                "conferem." % len(lote.nfes))
+            informar(self, titulo, "As datas de todos os %d documento(s) com "
+                     "XML conferem." % len(lote.nfes))
             return
         por_campo = Counter(a["campo"] for a in achados)
         docs = len({id(a["c100"]) for a in achados})
@@ -234,31 +232,33 @@ class ControladorGerais:
                 msg += "\n\nApuração (E110):\n" + lista_de_mudancas(mudou)
         self._marcar_alterado()
         self._montar_abas()
-        QMessageBox.information(self, titulo, msg)
+        informar(self, titulo, msg)
 
     def alterar_datas(self):
         """Altera datas de emissão/saída dos C100 conforme filtro de data."""
         if not self.doc:
             return
-        dlg = DialogoAlterarDatas(self.doc, self)
-        if dlg.exec() != QDialog.DialogCode.Accepted:
-            return
-        p = dlg.valores()
-        if p is None:
-            return
-        res = self.doc.alterar_datas_c100(**p)
-        self._marcar_alterado()
-        self._montar_abas()
-        campos = " e ".join(p["campos_alterar"])
-        self.statusBar().showMessage(
-            "Datas alteradas em %d documento(s) C100 (%s)."
-            % (res["c100"], campos))
-        QMessageBox.information(
-            self, "Alterar datas",
-            "%d documento(s) no filtro; %d alterado(s) (%s).%s"
-            % (res["no_filtro"], res["c100"], campos,
-               ("\n%d sem data válida no campo de filtro." % res["sem_data"])
-               if res["sem_data"] else ""))
+        doc = self.doc
+        dlg = DialogoAlterarDatas(doc, self)
+
+        def aplicar():
+            p = dlg.valores()
+            if p is None or self.doc is not doc:
+                return
+            res = doc.alterar_datas_c100(**p)
+            self._marcar_alterado()
+            self._montar_abas()
+            campos = " e ".join(p["campos_alterar"])
+            self.statusBar().showMessage(
+                "Datas alteradas em %d documento(s) C100 (%s)."
+                % (res["c100"], campos))
+            informar(
+                self, "Alterar datas",
+                "%d documento(s) no filtro; %d alterado(s) (%s).%s"
+                % (res["no_filtro"], res["c100"], campos,
+                   ("\n%d sem data válida no campo de filtro."
+                    % res["sem_data"]) if res["sem_data"] else ""))
+        abrir_janela(self, dlg, ao_aceitar=aplicar)
 
     def _acoes_dos_modulos(self):
         """Módulo de correção (o rótulo de `diagnostico.MODULOS` e de
@@ -280,8 +280,11 @@ class ControladorGerais:
         }
 
     def revisar_erros(self):
-        """Executa as regras de revisão e abre o relatório (não-modal, para
-        permitir navegar até os registros enquanto a lista fica aberta)."""
+        """As verificações uma a uma, com a lista de ocorrências de cada —
+        para a correção manual. Abre pelo botão *Revisar ocorrências* do
+        Diagnóstico, que já mostra todas estas verificações agrupadas pelo
+        módulo que corrige (até a 1.1.0-dev.11 era um item de menu à parte,
+        ao lado do Diagnóstico)."""
         if not self.doc:
             return
         por_regra = rev.revisar_por_regra(self.doc)
@@ -326,9 +329,8 @@ class ControladorGerais:
             fn = modulos.get(regra.modulo)
             if fn is not None:
                 acoes.setdefault(regra.rotulo, (regra.modulo + "…", fn))
-        self._dlg_revisao = DialogoRevisao(
-            por_regra, self.ir_para_registro, self, acoes=acoes)
-        self._dlg_revisao.show()
+        self._dlg_revisao = abrir_janela(self, DialogoRevisao(
+            por_regra, self.ir_para_registro, self, acoes=acoes))
         total = sum(len(ps) for _r, ps in por_regra)
         self.statusBar().showMessage("Revisão: %d ocorrência(s)." % total)
 
@@ -341,14 +343,12 @@ class ControladorGerais:
         refs = self.doc.referencias_de_itens()
         nao_usados = self.doc.itens_0200_nao_utilizados(refs)
         if not nao_usados:
-            QMessageBox.information(
-                self, "Itens do 0200 sem referência",
-                "Todos os %d item(ns) do cadastro são referenciados em algum "
-                "registro do arquivo." % len(refs["codigos"]))
+            informar(self, "Itens do 0200 sem referência",
+                     "Todos os %d item(ns) do cadastro são referenciados em "
+                     "algum registro do arquivo." % len(refs["codigos"]))
             return
-        self._dlg_itens = DialogoItensNaoUsados(
-            self.doc, refs, nao_usados, self.ir_para_registro, self)
-        self._dlg_itens.show()
+        self._dlg_itens = abrir_janela(self, DialogoItensNaoUsados(
+            self.doc, refs, nao_usados, self.ir_para_registro, self))
         self.statusBar().showMessage(
             "%d de %d item(ns) do 0200 sem referência no arquivo."
             % (len(nao_usados), len(refs["codigos"])), 8000)
@@ -361,13 +361,11 @@ class ControladorGerais:
             return
         faltantes = self.doc.registros_sem_cod_cta()
         if not faltantes:
-            QMessageBox.information(
-                self, "Conta contábil",
-                "Todos os registros que têm o campo COD_CTA já estão "
-                "preenchidos.")
+            informar(self, "Conta contábil",
+                     "Todos os registros que têm o campo COD_CTA já estão "
+                     "preenchidos.")
             return
-        self._dlg_cod_cta = DialogoCodCta(self.doc, self)
-        self._dlg_cod_cta.show()
+        self._dlg_cod_cta = abrir_janela(self, DialogoCodCta(self.doc, self))
         resumo = ", ".join("%s (%d)" % (t, len(v))
                            for t, v in sorted(faltantes.items(),
                                               key=lambda x: -len(x[1])))
@@ -392,10 +390,9 @@ class ControladorGerais:
                 "Diagnóstico: nenhum problema nas verificações automáticas.",
                 8000)
             return
-        self._dlg_diag = DialogoDiagnostico(
+        self._dlg_diag = abrir_janela(self, DialogoDiagnostico(
             achados, info, self._acoes_dos_modulos(), self.ir_para_registro,
-            self)
-        self._dlg_diag.show()
+            self, ao_revisar=self.revisar_erros))
         self.statusBar().showMessage(
             "Diagnóstico: %d problema(s) em %d verificação(ões)."
             % (total, len(achados)), 10000)
@@ -411,15 +408,14 @@ class ControladorGerais:
         dominios, info = validacao.dominios_do_documento(self.doc)
         achados = validacao.validar(self.doc, dominios_pva=dominios)
         if not achados:
-            QMessageBox.information(
-                self, "Validar campos pelo leiaute",
-                "Nenhum campo preenchido está fora do domínio do leiaute.\n\n"
-                "%s" % self._resumo_tabelas_pva(dominios, info))
+            informar(self, "Validar campos pelo leiaute",
+                     "Nenhum campo preenchido está fora do domínio do "
+                     "leiaute.\n\n%s" % self._resumo_tabelas_pva(dominios,
+                                                  info))
             return
-        self._dlg_validacao = DialogoValidacao(
+        self._dlg_validacao = abrir_janela(self, DialogoValidacao(
             self.doc, achados, self.ir_para_registro, self,
-            info_tabelas=self._resumo_tabelas_pva(dominios, info))
-        self._dlg_validacao.show()
+            info_tabelas=self._resumo_tabelas_pva(dominios, info)))
         auto = sum(1 for o in achados if o.sugestao is not None)
         self.statusBar().showMessage(
             "Validação: %d campo(s) fora do domínio, %d com conserto "
