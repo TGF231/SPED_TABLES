@@ -196,11 +196,10 @@ Sem data; entram pelo canal dev e seguem a seção 1.
 - Redução de base por produto no recálculo de ICMS.
 - Catálogo de filhos permitidos por registro (criar o primeiro C170 de um
   C100 que só tem C190).
-- **Mais regras do PVA** (`COBERTURA.md`): só nos registros que aparecem
-  nos arquivos reais faltam ~200 validadores no ICMS/IPI. Primeiro os que
-  têm consulta SQL legível (combinação CST × campos do C170/C190, E210,
-  E310/E316, ajustes do C197 no E110, duplicidade do C100/D100), depois os
-  de classe.
+- **Mais regras do PVA**: plano próprio em `ROADMAP_REGRAS_PVA.md` —
+  ferramental (inventário, comparador contra o banco do PVA, gabarito
+  sintético), depois as regras com SQL legível, as famílias
+  parametrizáveis e as classes específicas por impacto.
 - **Descritor da versão do arquivo** (`COD_VER`), não só o mais recente:
   o `.jar` traz um por ato (ato019 = 2025, ato020 = 2026); hoje vale o
   último para qualquer arquivo.
