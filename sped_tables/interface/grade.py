@@ -937,7 +937,7 @@ class MasterDetailWidget(QWidget):
         if self.pai is None:
             return
         ok, res = calcular(self, "Recalcular C190",
-                           self.doc.consolidar_c190, self.pai)
+                           self.doc.refazer_c190, self.pai)
         if not ok:
             return
         if res is None:
@@ -946,12 +946,23 @@ class MasterDetailWidget(QWidget):
                 "O recálculo automático do C190 só se aplica ao bloco C do "
                 "EFD ICMS/IPI.")
             return
-        if res.get("sem_c170"):
+        if res.get("sem_c170") and not (res["fundidos"] or res["c100"]):
             QMessageBox.warning(
                 self, "Recalcular C190",
-                "Este documento (C100) não possui itens C170 para consolidar.")
+                "Este documento (C100) não possui itens C170 para consolidar "
+                "nem C190 repetido para fundir.")
             return
         self.recarregar()
+        if self.on_change:
+            self.on_change()
+        c100 = "".join("\n• %s: %s → %s" % (c, a or "(vazio)", d)
+                       for c, (a, d) in res["c100"].items())
+        if res.get("sem_c170"):
+            informar(self, "Recalcular C190",
+                     "Sem C170: %d C190 de mesma chave fundido(s).%s"
+                     % (res["fundidos"], ("\n\nC100 acertado pelo C190:"
+                                          + c100) if c100 else ""))
+            return
         if self.on_change:
             self.on_change()
         informar(
@@ -963,8 +974,9 @@ class MasterDetailWidget(QWidget):
             "Os valores de imposto (VL_BC_ICMS, VL_ICMS, VL_ICMS_ST, VL_IPI) "
             "são a soma exata dos itens. O VL_OPR inclui o rateio de frete, "
             "seguro e outras despesas do C100.\n\n"
-            "Os totais C990 e 9900 foram atualizados."
-            % (res["criados"], res["removidos"]))
+            "Os totais C990 e 9900 foram atualizados.%s"
+            % (res["criados"], res["removidos"],
+               ("\n\nC100 acertado pelo C190:" + c100) if c100 else ""))
 
 
 # ---------------------------------------------------------------------------

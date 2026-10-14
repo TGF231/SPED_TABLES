@@ -1456,18 +1456,9 @@ class SpedDocument:
                 i = self._ix("C170", campo)
                 if i is not None and i < len(r.campos):
                     r.set_valor(i, "0")
-        i9 = {c: self._ix("C190", c) for c in ("VL_BC_ICMS", "VL_ICMS")}
         with self.lote():
             for d in docs:
-                self.consolidar_c190(d)
-        for d in docs:
-            for campo in ("VL_BC_ICMS", "VL_ICMS"):
-                i = self._ix("C100", campo)
-                if i is None:
-                    continue
-                soma = sum(_to_num(f.valor(i9[campo])) for f in d.filhos
-                           if f.reg == "C190")
-                d.set_valor(i, _fmt_val(round(soma, 2)))
+                self.refazer_c190(d)
         e110 = next((r for r in self.registros if r.reg == "E110"), None)
         i_cred = self._ix("E110", "VL_TOT_CREDITOS")
         if e110 is not None and i_cred is not None and resumo["vl_icms"]:
@@ -1594,6 +1585,77 @@ class SpedDocument:
         return {"grupos": len(chaves), "removidos": n_rem, "criados": n_cri,
                 "base_pis_cofins": usou_pc, "sem_base": sem_base}
 
+    # campo do C100 <- soma do mesmo campo nos C190 do documento. É o que o
+    # PVA confere entre os dois (o VL_DOC não: ele é o valor do documento, e
+    # o VL_OPR do C190 é que sai dele)
+    TOTAIS_C100_PELO_C190 = ("VL_BC_ICMS", "VL_ICMS", "VL_BC_ICMS_ST",
+                             "VL_ICMS_ST", "VL_IPI")
+
+    def totais_c100_pelo_c190(self, c100):
+        """Põe no C100 a base e os impostos somados dos seus C190. Campo
+        vazio com soma zero **continua vazio**: a NFC-e deixa ST e IPI em
+        branco no C100, e zero ali dá `MSG_NFE_CONSUMIDOR`. Devolve `{campo:
+        (antes, depois)}` do que mudou."""
+        c190 = [f for f in c100.filhos if f.reg == "C190"]
+        mudou = {}
+        if not c190:
+            return mudou
+        for campo in self.TOTAIS_C100_PELO_C190:
+            i100, i190 = self._ix("C100", campo), self._ix("C190", campo)
+            if i100 is None or i190 is None:
+                continue
+            soma = round(sum(_to_num(f.valor(i190)) for f in c190), 2)
+            antes = (c100.valor(i100) or "").strip()
+            if not antes and not soma:
+                continue
+            if antes and round(_to_num(antes), 2) == soma:
+                continue
+            c100.set_valor(i100, _fmt_val(soma))
+            mudou[campo] = (antes, _fmt_val(soma))
+        return mudou
+
+    def fundir_c190_duplicados(self, c100):
+        """Funde os C190 de mesma chave (CST + CFOP + alíquota) do documento
+        num só, somando os valores — o conserto para quem **não tem C170**
+        de onde refazer o analítico (a NFC-e). Devolve quantos C190 saíram."""
+        c190 = [f for f in c100.filhos if f.reg == "C190"]
+        self._exigir_numeros(c190)
+        valores = [self._ix("C190", c) for c in (
+            "VL_OPR", "VL_BC_ICMS", "VL_ICMS", "VL_BC_ICMS_ST", "VL_ICMS_ST",
+            "VL_RED_BC", "VL_IPI")]
+        valores = [i for i in valores if i is not None]
+        primeiro = {}
+        sobra = []
+        for f in c190:
+            k = self.chave_c190(f)
+            alvo = primeiro.get(k)
+            if alvo is None:
+                primeiro[k] = f
+                continue
+            for i in valores:
+                soma = _to_num(alvo.valor(i)) + _to_num(f.valor(i))
+                alvo.set_valor(i, _fmt_val(round(soma, 2)))
+            sobra.append(f)
+        for f in sobra:
+            self.remover_registro(f)
+        if sobra and self._lote is None:
+            self.atualizar_bloco9_inplace()
+        return len(sobra)
+
+    def refazer_c190(self, c100):
+        """O *Recalcular C190* de um documento: o analítico refeito pelos
+        itens (`consolidar_c190`) — ou, sem C170, os C190 de mesma chave
+        fundidos — e o C100 acertado pelo C190 (`totais_c100_pelo_c190`).
+        Devolve o resumo do `consolidar_c190` com `fundidos` e `c100` (o que
+        mudou no C100)."""
+        res = self.consolidar_c190(c100)
+        if res is None:
+            return None
+        if res.get("sem_c170"):
+            res["fundidos"] = self.fundir_c190_duplicados(c100)
+        res["c100"] = self.totais_c100_pelo_c190(c100)
+        return res
+
     def chave_c190(self, r):
         """`(CST_ICMS, CFOP, alíquota)` de um C170 ou C190 — a chave do
         analítico. Sem espaços e com a alíquota como número: "18" e "18,00"
@@ -1695,10 +1757,11 @@ class SpedDocument:
                           for c in docs]
         # confere todos antes do primeiro: parar no meio deixaria metade dos
         # documentos refeitos
-        self._exigir_numeros(self._com_itens(documentos))
+        self._exigir_numeros(self._com_itens(documentos) + [
+            f for c in documentos for f in c.filhos if f.reg == "C190"])
         tot = {"documentos": 0, "corrigidos": 0, "grupos": 0, "removidos": 0,
                "criados": 0, "base_pis_cofins": 0, "sem_base": 0,
-               "sem_c170": 0}
+               "sem_c170": 0, "fundidos": 0, "c100": 0}
         i_red = self._ix("C190", "VL_RED_BC")
 
         def red_do_doc(c100):
@@ -1708,11 +1771,16 @@ class SpedDocument:
         with self.lote():
             for c100 in documentos:
                 antes = red_do_doc(c100)
-                res = self.consolidar_c190(c100)
+                res = self.refazer_c190(c100)
                 if not res:
                     continue
+                if res["c100"]:
+                    tot["c100"] += 1
                 if res.get("sem_c170"):
+                    # sem itens não há de onde refazer: os duplicados são
+                    # fundidos (a NFC-e consolidada)
                     tot["sem_c170"] += 1
+                    tot["fundidos"] += res["fundidos"]
                     continue
                 tot["documentos"] += 1
                 # documento em que a redução realmente mudou — sem isso, rodar

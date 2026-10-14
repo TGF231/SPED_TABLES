@@ -157,7 +157,9 @@ class ControladorIcms:
         caixa.setText(
             texto
             + "O analítico desses documentos será <b>refeito a partir dos "
-            "itens (C170)</b>, o que recompõe o VL_RED_BC.<br><br>"
+            "itens (C170)</b>, o que recompõe o VL_RED_BC; sem C170 (NFC-e), "
+            "os C190 de mesma chave são <b>fundidos</b>. Base e impostos do "
+            "<b>C100</b> passam a ser a soma do C190.<br><br>"
             "Nos CST terminados em <b>70</b> o ICMS foi cobrado por "
             "substituição e não há base própria; quando o item tiver base de "
             "PIS/COFINS, ela é usada para achar a diferença.<br><br>"
@@ -180,9 +182,13 @@ class ControladorIcms:
         msg = ("%d documento(s) recalculados, %d grupo(s) C190 refeitos.\n\n"
                "• %d documento(s) tiveram a redução de base corrigida\n"
                "• %d grupo(s) usaram a base de PIS/COFINS (CST x70)\n"
-               "• %d grupo(s) continuam sem base de onde tirar a redução"
+               "• %d grupo(s) continuam sem base de onde tirar a redução\n"
+               "• %d C190 de mesma chave fundido(s) em documento(s) sem "
+               "C170\n"
+               "• %d C100 com base/impostos acertados pelo C190"
                % (res["documentos"], res["criados"], res["corrigidos"],
-                  res["base_pis_cofins"], res["sem_base"]))
+                  res["base_pis_cofins"], res["sem_base"], res["fundidos"],
+                  res["c100"]))
         if restantes:
             msg += ("\n\nAinda há %d C190 com redução zerada: são itens sem "
                     "base de ICMS e sem base de PIS/COFINS, que precisam de "

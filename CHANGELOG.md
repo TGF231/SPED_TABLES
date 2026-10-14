@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.1.0-dev.13] — 2026-10-14
+
+### Corrigido
+- **Recalcular C190 não tirava a chave duplicada da NFC-e.** O recálculo
+  refaz o analítico pelos C170, e o documento sem C170 (a NFC-e
+  consolidada) era pulado — num arquivo real ficavam os 10 documentos com
+  C190 repetido que o PVA recusa. Agora, sem C170, os C190 de mesma chave
+  (CST + CFOP + alíquota) são **fundidos**, somando os valores.
+- **O C100 acompanha o C190 refeito.** Base e impostos do C100
+  (`VL_BC_ICMS`, `VL_ICMS`, `VL_BC_ICMS_ST`, `VL_ICMS_ST`, `VL_IPI`)
+  passam a ser a soma dos C190 do documento, no recálculo em massa e no
+  botão do documento na grade; campo vazio com soma zero continua vazio
+  (a NFC-e deixa ST e IPI em branco). *Zerar ICMS próprio das compras com
+  ST* usa o mesmo cálculo.
+
 ## [1.1.0-dev.12] — 2026-10-14
 
 ### Alterado

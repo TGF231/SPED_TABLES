@@ -157,6 +157,57 @@ class TestC190EmMassa(Base):
         self.assertEqual(c190.valor(doc._ix("C190", "VL_RED_BC")), "4,00")
         self.assertBemFormado(doc)
 
+    def test_duplicado_sem_c170_e_fundido_e_c100_acerta(self):
+        """A NFC-e não tem C170: até a 1.1.0-dev.12 o recálculo pulava o
+        documento, e os C190 de mesma chave ficavam (10 num arquivo real).
+        Agora são fundidos, e o C100 passa a ter a base e o ICMS do C190 —
+        com ST e IPI vazios continuando vazios (`MSG_NFE_CONSUMIDOR`)."""
+        m = icms_basico()
+        m.linhas[:] = [c for c in m.linhas if c[0] != "C170"]
+        i = next(n for n, c in enumerate(m.linhas) if c[0] == "C190")
+        m.linhas.insert(i + 1, list(m.linhas[i]))
+        _alterar(m, "C100", VL_ICMS="999,00", VL_BC_ICMS_ST="",
+                 VL_ICMS_ST="")
+        doc = _doc(m)
+        c190 = [r for r in doc.registros if r.reg == "C190"]
+        self.assertEqual(len(c190), 2)
+        n = doc._ix("C190", "VL_ICMS")
+        icms = sum(float(r.valor(n).replace(",", ".")) for r in c190)
+        opr = c190[0].valor(doc._ix("C190", "VL_OPR"))
+        self.assertEqual(len(doc.documentos_c190_duplicados()), 1)
+
+        res = doc.consolidar_c190_em_massa()
+        self.assertEqual((res["fundidos"], res["c100"]), (1, 1))
+        self.assertEqual(doc.documentos_c190_duplicados(), [])
+        c190 = [r for r in doc.registros if r.reg == "C190"]
+        self.assertEqual(len(c190), 1)
+        self.assertEqual(
+            float(c190[0].valor(doc._ix("C190", "VL_OPR")).replace(",", ".")),
+            2 * float(opr.replace(",", ".")))
+        c100 = next(r for r in doc.registros if r.reg == "C100")
+        self.assertEqual(c100.valor(doc._ix("C100", "VL_ICMS")),
+                         ("%.2f" % icms).replace(".", ","))
+        self.assertEqual(c100.valor(doc._ix("C100", "VL_ICMS_ST")), "")
+        self.assertBemFormado(doc)
+        # a segunda passada não acha mais nada
+        antes = doc.gerar_texto()
+        doc.consolidar_c190_em_massa()
+        self.assertEqual(doc.gerar_texto(), antes)
+
+    def test_com_c170_o_c100_segue_o_c190_refeito(self):
+        m = icms_basico()
+        _alterar(m, "C100", VL_ICMS="999,00")
+        i = next(n for n, c in enumerate(m.linhas) if c[0] == "C190")
+        m.linhas.insert(i + 1, list(m.linhas[i]))
+        doc = _doc(m)
+        doc.consolidar_c190_em_massa()
+        self.assertEqual(doc.documentos_c190_duplicados(), [])
+        c100 = next(r for r in doc.registros if r.reg == "C100")
+        c190 = next(r for r in doc.registros if r.reg == "C190")
+        self.assertEqual(c100.valor(doc._ix("C100", "VL_ICMS")),
+                         c190.valor(doc._ix("C190", "VL_ICMS")))
+        self.assertBemFormado(doc)
+
 
 class TestAlterarDatas(Base):
 
