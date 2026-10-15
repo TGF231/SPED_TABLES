@@ -652,7 +652,7 @@ a mais recente) — o comportamento não muda.
 - Modify: `sped_tables/dominio/referencias.py`
 - Modify: `sped_tables/dominio/diagnostico.py:221-225`
 - Modify: `sped_tables/dominio/validacao.py:422`
-- Modify: `sped_tables/dominio/revisao.py:193`
+- Modify: `sped_tables/dominio/sped_model.py` (`chaves_repetidas`, ~1668)
 - Modify: `sped_tables/dominio/regras_guia.py:140`
 - Modify: `sped_tables/dominio/sped_model.py:2420`
 - Modify: `sped_tables/dominio/ajuda.py:23-31,57-60`
@@ -825,9 +825,10 @@ Chamadas que passam a versão do arquivo (troque exatamente a linha citada):
     estrutura, info_desc = fonte.estrutura(
         doc.layout, referencias.versao_do_leiaute(doc))
 
-# revisao.py:193
-        estrutura, _i = referencias.atual().estrutura(
-            doc.layout, referencias.versao_do_leiaute(doc))
+# sped_model.py, em chaves_repetidas (~1668) — a detecção de chave
+# repetida da revisão e a fusão passam por aqui
+            estrutura, _i = referencias.atual().estrutura(
+                self.layout, referencias.versao_do_leiaute(self))
 
 # regras_guia.py:140
     est, _info = referencias.atual().estrutura(
@@ -3421,11 +3422,11 @@ git commit -m "Executável leva a base de referência compilada; autoteste confe
 ### Task 10: Documentação e versão
 
 **Files:**
-- Modify: `sped_tables/version.py` (`1.1.0-dev.14` → `1.1.0-dev.15`)
+- Modify: `sped_tables/version.py` (`1.1.0-dev.15` → `1.1.0-dev.16`)
 - Modify: `CHANGELOG.md`, `README.md`, `TESTES.md`, `CLAUDE.md`,
   `ARQUITETURA.md`, `ROADMAP_REGRAS_PVA.md`
 
-- [ ] **Step 1: CHANGELOG** — entrada `## [1.1.0-dev.15] - 2026-10-15`:
+- [ ] **Step 1: CHANGELOG** — entrada `## [1.1.0-dev.16] - 2026-10-15`:
 
 ```markdown
 ### Adicionado
@@ -3500,5 +3501,5 @@ Run: `grep -rn "tabelas_pva\|tabelas_rfb\|descritor_pva\|referencias_pva\|extrai
 
 ```bash
 git add -A sped_tables/version.py CHANGELOG.md README.md TESTES.md CLAUDE.md ARQUITETURA.md ROADMAP_REGRAS_PVA.md
-git commit -m "Versão 1.1.0-dev.15 — base de referência" -m "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+git commit -m "Versão 1.1.0-dev.16 — base de referência" -m "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 ```

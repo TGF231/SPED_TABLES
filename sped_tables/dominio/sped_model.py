@@ -401,6 +401,32 @@ class LinhasInvalidas(ValueError):
                "\n… e mais %d." % mais if mais > 0 else ""))
 
 
+# Registro de totais (C175, C181, C190, D190…): fora da chave só há valores
+# e quantidades, que a fusão de repetidos soma, e estes textos, que viajam
+# junto quando não se contradizem. Registro com outro campo fora da chave
+# (o C170, cujo NUM_ITEM repetido é item mal numerado) não se funde.
+SOMAVEIS = ("VL_", "QUANT_", "QTD")
+COMPLEMENTARES = ("COD_OBS", "INFO_COMPL", "COD_CTA")
+
+
+class GrupoRepetido:
+    """Irmãos do mesmo tipo e do mesmo pai com a mesma chave do leiaute.
+    `chave` = `[(campo, valor do primeiro)]`; `motivo` é None quando a
+    fusão pode somá-los num só, ou diz por que não pode."""
+
+    __slots__ = ("reg", "pai", "registros", "chave", "motivo", "_somar",
+                 "_completar")
+
+    def __init__(self, reg, pai, registros, chave, motivo, somar, completar):
+        self.reg = reg
+        self.pai = pai
+        self.registros = registros
+        self.chave = chave
+        self.motivo = motivo
+        self._somar = somar            # [(índice, nome)] dos valores
+        self._completar = completar    # índices de texto, iguais ou vazios
+
+
 class SpedDocument:
     """Documento SPED completo: lista ordenada + floresta hierárquica."""
 
@@ -1356,7 +1382,7 @@ class SpedDocument:
     # -------------------------------------------------------------------
     # Números que os cálculos leem
     # -------------------------------------------------------------------
-    def numeros_invalidos(self, registros):
+    def numeros_invalidos(self, registros, prefixos=PREFIXOS_NUMERICOS):
         """`[(registro, campo, valor)]` dos campos numéricos (pelo nome, como
         na validação de leiaute) preenchidos com o que não é número do SPED.
         Vazio não entra: é zero legítimo."""
@@ -1367,7 +1393,7 @@ class SpedDocument:
             if ixs is None:
                 nomes = campos(r.reg, self.layout, len(r.campos))
                 ixs = [(i, n) for i, n in enumerate(nomes)
-                       if i and n.startswith(PREFIXOS_NUMERICOS)]
+                       if i and n.startswith(prefixos)]
                 plano[chave] = ixs
             for i, nome in ixs:
                 if i < len(r.campos):
@@ -1376,9 +1402,9 @@ class SpedDocument:
                         saida.append((r, nome, v))
         return saida
 
-    def _exigir_numeros(self, registros):
+    def _exigir_numeros(self, registros, prefixos=PREFIXOS_NUMERICOS):
         """Levanta `CamposInvalidos` antes de qualquer alteração."""
-        ruins = self.numeros_invalidos(registros)
+        ruins = self.numeros_invalidos(registros, prefixos)
         if ruins:
             raise CamposInvalidos(ruins)
 
@@ -1617,30 +1643,142 @@ class SpedDocument:
     def fundir_c190_duplicados(self, c100):
         """Funde os C190 de mesma chave (CST + CFOP + alíquota) do documento
         num só, somando os valores — o conserto para quem **não tem C170**
-        de onde refazer o analítico (a NFC-e). Devolve quantos C190 saíram."""
-        c190 = [f for f in c100.filhos if f.reg == "C190"]
-        self._exigir_numeros(c190)
-        valores = [self._ix("C190", c) for c in (
-            "VL_OPR", "VL_BC_ICMS", "VL_ICMS", "VL_BC_ICMS_ST", "VL_ICMS_ST",
-            "VL_RED_BC", "VL_IPI")]
-        valores = [i for i in valores if i is not None]
-        primeiro = {}
-        sobra = []
-        for f in c190:
-            k = self.chave_c190(f)
-            alvo = primeiro.get(k)
-            if alvo is None:
-                primeiro[k] = f
+        de onde refazer o analítico (a NFC-e), e para a troca de CST que
+        juntou dois grupos. A chave é a do `chave_c190`, então funciona sem
+        leiaute de referência. Devolve quantos C190 saíram."""
+        chave = ("CST_ICMS", "CFOP", "ALIQ_ICMS")
+        grupos = self._grupos_repetidos(
+            [f for f in c100.filhos if f.reg == "C190"],
+            {"C190": (campos("C190", self.layout, 0), chave, set())},
+            self.chave_c190)
+        return self.fundir_chaves_repetidas(grupos)
+
+    def chaves_repetidas(self):
+        """Irmãos (mesmo pai, mesmo tipo) com a mesma **chave** que o leiaute
+        de referência declara — o PVA recusa com
+        `MSG_CHAVE_EXISTE_NO_REGISTRO_ITEM` (154 registros têm chave no
+        ICMS/IPI, 145 no Contribuições). Só os registros de totais (C175,
+        C181, C190, D190…) podem ser fundidos; o `motivo` de cada
+        `GrupoRepetido` diz quando não. **Não altera nada.**
+
+        Campo numérico da chave é comparado como número: `1,65` e `1,6500`
+        são a mesma alíquota, como no `chave_c190`. Sem leiaute de
+        referência, nada é acusado."""
+        try:
+            estrutura, _i = referencias.atual().estrutura(self.layout)
+        except Exception:                                   # noqa: BLE001
+            return []
+        planos = {}
+        for reg, d in (estrutura or {}).items():
+            chave = [c.strip() for c in (d.get("chave") or "").split(",")
+                     if c.strip()]
+            if chave:
+                cs = d.get("campos") or {}
+                planos[reg] = (list(cs), chave,
+                               {n for n, c in cs.items()
+                                if c.get("tipo") == "N"})
+        return self._grupos_repetidos(self.registros, planos)
+
+    @staticmethod
+    def _valor_de_chave(v, numerico):
+        v = (v or "").strip()
+        if numerico and (not v or RE_NUM_SPED.match(v)):
+            return round(_to_num(v), 6)
+        return v
+
+    def _grupos_repetidos(self, registros, planos, chave_de=None):
+        """`[GrupoRepetido]` dos `registros` que repetem, entre irmãos, a
+        chave do tipo deles. `planos` = `{registro: (nomes dos campos,
+        campos da chave, campos numéricos)}`; `chave_de(r)`, quando dada,
+        substitui a chave montada pelos campos."""
+        ixs, por = {}, {}
+        for r in registros:
+            plano = planos.get(r.reg)
+            if plano is None:
                 continue
-            for i in valores:
-                soma = _to_num(alvo.valor(i)) + _to_num(f.valor(i))
-                alvo.set_valor(i, _fmt_val(round(soma, 2)))
-            sobra.append(f)
-        for f in sobra:
-            self.remover_registro(f)
-        if sobra and self._lote is None:
-            self.atualizar_bloco9_inplace()
-        return len(sobra)
+            if r.reg not in ixs:
+                ixs[r.reg] = [(i, c in plano[2]) for i, c in (
+                    (self._ix(r.reg, c), c) for c in plano[1])
+                    if i is not None]
+            if not ixs[r.reg]:
+                continue
+            k = (chave_de(r) if chave_de is not None else
+                 tuple(self._valor_de_chave(r.valor(i), num)
+                       for i, num in ixs[r.reg]))
+            pai = r.pai.uid if r.pai is not None else None
+            por.setdefault((pai, r.reg, k), []).append(r)
+        return [self._grupo(regs, planos[regs[0].reg])
+                for regs in por.values() if len(regs) > 1]
+
+    def _grupo(self, regs, plano):
+        nomes, chave, _numericos = plano
+        reg = regs[0].reg
+        somar, completar, alheios = [], [], []
+        for i, nome in enumerate(nomes):
+            if i == 0 or nome in chave:
+                continue
+            if nome.startswith(SOMAVEIS):
+                somar.append((i, nome))
+            else:
+                completar.append(i)
+                if nome not in COMPLEMENTARES:
+                    alheios.append(nome)
+        # campos além do leiaute (versão mais nova): iguais ou vazios
+        completar += range(len(nomes), max(len(r.campos) for r in regs))
+        motivo = None
+        if alheios:
+            motivo = ("não é registro de totais (%s%s fora da chave): "
+                      "corrija na grade" % (", ".join(alheios[:3]),
+                                            "…" if len(alheios) > 3 else ""))
+        elif any(r.filhos for r in regs):
+            motivo = "tem registros filhos, que não há como reatribuir"
+        else:
+            for i in completar:
+                distintos = {(r.valor(i) or "").strip() for r in regs} - {""}
+                if len(distintos) > 1:
+                    motivo = "%s diferente entre os repetidos" % (
+                        nomes[i] if i < len(nomes) else "campo %d" % (i + 1))
+                    break
+        valores = [(c, (regs[0].valor(self._ix(reg, c)) or "").strip())
+                   for c in chave]
+        return GrupoRepetido(reg, regs[0].pai, regs, valores, motivo, somar,
+                             completar)
+
+    def fundir_chaves_repetidas(self, grupos=None):
+        """Funde cada grupo de `chaves_repetidas()` — ou os `grupos` dados —
+        que pode ser fundido: o primeiro registro fica, com a soma dos
+        valores e das quantidades e o texto complementar que só um deles
+        trazia; os outros saem. Os totais do documento e da apuração não
+        mudam, porque a soma é a mesma. Devolve quantos registros saíram.
+
+        Valor a somar que não é número do SPED recusa tudo antes de mexer
+        (`CamposInvalidos`); valor vazio em todos continua vazio."""
+        if grupos is None:
+            grupos = self.chaves_repetidas()
+        grupos = [g for g in grupos if g.motivo is None]
+        if not grupos:
+            return 0
+        self._exigir_numeros([r for g in grupos for r in g.registros],
+                             PREFIXOS_NUMERICOS + ("QUANT_",))
+        with self.lote():
+            for g in grupos:
+                alvo, outros = g.registros[0], g.registros[1:]
+                for i, nome in g._somar:
+                    vals = [(r.valor(i) or "").strip() for r in g.registros]
+                    if any(vals):
+                        soma = sum(_to_num(v) for v in vals)
+                        alvo.set_valor(i, _fmt_val(round(soma, 2))
+                                       if nome.startswith("VL_")
+                                       else _fmt_qtd(soma))
+                for i in g._completar:
+                    if not (alvo.valor(i) or "").strip():
+                        v = next((r.valor(i) for r in outros
+                                  if (r.valor(i) or "").strip()), "")
+                        if v:
+                            alvo.set_valor(i, v)
+                for r in outros:
+                    self.remover_registro(r)
+        return sum(len(g.registros) - 1 for g in grupos)
 
     def refazer_c190(self, c100):
         """O *Recalcular C190* de um documento: o analítico refeito pelos

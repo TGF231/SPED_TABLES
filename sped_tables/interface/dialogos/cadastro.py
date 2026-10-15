@@ -16,7 +16,8 @@ from sped_tables.dominio import empresas as emp_mod
 from sped_tables.dominio import rotinas
 from sped_tables.infra import tabelas_rfb as trfb
 from sped_tables.interface import tema
-from sped_tables.interface.comum import definir_papel, informar
+from sped_tables.interface.comum import (calcular, definir_papel,
+                                         informar)
 
 
 class DialogoItensNaoUsados(QDialog):
@@ -575,7 +576,10 @@ class DialogoEmpresa(QDialog):
             QMessageBox.StandardButton.No)
         if resp != QMessageBox.StandardButton.Yes:
             return
-        n = r.corrigir(self.doc, self.empresa, self._ocorrencias)
+        ok, n = calcular(self, r.nome, r.corrigir, self.doc,
+                         self.empresa, self._ocorrencias)
+        if not ok:
+            return
         janela = self.parent()
         if janela is not None and hasattr(janela, "_marcar_alterado"):
             janela._marcar_alterado()

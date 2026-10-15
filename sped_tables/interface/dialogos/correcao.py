@@ -19,7 +19,7 @@ from sped_tables.dominio import rotinas
 from sped_tables.dominio import ncm
 from sped_tables.infra import tabelas_rfb as trfb
 from sped_tables.interface.comum import _br, calcular
-from sped_tables.interface.comum import informar
+from sped_tables.interface.comum import definir_papel, informar
 
 
 # ---------------------------------------------------------------------------
@@ -635,3 +635,82 @@ class DialogoRecalcularICMS(QDialog):
                "<br>C190 e totais refeitos em %d documento(s)." % docs
                if docs else ""))
         self.accept()
+
+
+# ---------------------------------------------------------------------------
+# Diálogo: registros de totais com a chave repetida
+# ---------------------------------------------------------------------------
+class DialogoChavesRepetidas(QDialog):
+    """Prévia da fusão (`SpedDocument.chaves_repetidas`): um grupo por linha,
+    com o que acontece com ele. Duplo-clique leva ao primeiro repetido;
+    *Fundir* aceita, e quem grava é o controlador."""
+
+    COLS = ["Registro", "Documento", "Chave", "Repetidos", "Situação"]
+
+    def __init__(self, doc, grupos, ir_callback, parent=None):
+        super().__init__(parent)
+        self.ir_callback = ir_callback
+        self.setWindowTitle("Fundir registros de chave repetida")
+        self.resize(900, 520)
+        lay = QVBoxLayout(self)
+        info = QLabel(
+            "Registros com a mesma chave no mesmo documento — o PVA recusa. "
+            "Nos registros de totais (C175, C181, C190, D190…) a fusão deixa "
+            "o primeiro com a soma dos valores e das quantidades e remove os "
+            "outros: os totais do documento e da apuração não mudam. Os "
+            "grupos que não podem ser fundidos dizem por quê. Duplo-clique "
+            "leva ao registro.")
+        info.setWordWrap(True)
+        lay.addWidget(info)
+
+        self.tab = QTableWidget(len(grupos), len(self.COLS))
+        self.tab.setHorizontalHeaderLabels(self.COLS)
+        self.tab.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
+        self.tab.setSelectionBehavior(
+            QAbstractItemView.SelectionBehavior.SelectRows)
+        self.tab.setAlternatingRowColors(True)
+        self.tab.verticalHeader().setVisible(False)
+        self.tab.horizontalHeader().setStretchLastSection(True)
+        for i, g in enumerate(grupos):
+            pai = g.pai
+            num = pai.valor(doc._ix(pai.reg, "NUM_DOC")) if pai else ""
+            documento = ("%s nº %s" % (pai.reg, num) if num else
+                         pai.reg if pai else "—")
+            valores = (
+                g.reg, documento,
+                " · ".join("%s %s" % (c, v or "(vazio)") for c, v in g.chave),
+                str(len(g.registros)),
+                "será fundido" if g.motivo is None else g.motivo)
+            for j, v in enumerate(valores):
+                it = QTableWidgetItem(v)
+                if j == 0:
+                    it.setData(Qt.ItemDataRole.UserRole,
+                               g.registros[1].uid)
+                self.tab.setItem(i, j, it)
+        self.tab.resizeColumnsToContents()
+        self.tab.cellDoubleClicked.connect(self._ir)
+        lay.addWidget(self.tab, 1)
+
+        fundiveis = [g for g in grupos if g.motivo is None]
+        manuais = len(grupos) - len(fundiveis)
+        resumo = QLabel(
+            "%d grupo(s) serão fundidos (%d registro(s) saem); %d precisam "
+            "de correção manual na grade."
+            % (len(fundiveis), sum(len(g.registros) - 1 for g in fundiveis),
+               manuais))
+        definir_papel(resumo, "aviso" if manuais else "info")
+        rod = QHBoxLayout()
+        rod.addWidget(resumo, 1)
+        self.b_fundir = QPushButton("Fundir")
+        self.b_fundir.setEnabled(bool(fundiveis))
+        self.b_fundir.clicked.connect(self.accept)
+        b_fechar = QPushButton("Fechar")
+        b_fechar.clicked.connect(self.reject)
+        rod.addWidget(self.b_fundir)
+        rod.addWidget(b_fechar)
+        lay.addLayout(rod)
+
+    def _ir(self, row, _col):
+        it = self.tab.item(row, 0)
+        if it is not None and self.ir_callback is not None:
+            self.ir_callback(it.data(Qt.ItemDataRole.UserRole))

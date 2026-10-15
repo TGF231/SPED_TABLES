@@ -1,5 +1,32 @@
 # Changelog
 
+## [1.1.0-dev.15] — 2026-10-15
+
+### Adicionado
+- **Fundir registros de chave repetida** (*Ferramentas → Corrigir*). Até
+  aqui só o C190 tinha conserto para a chave repetida no mesmo documento
+  (`MSG_CHAVE_EXISTE_NO_REGISTRO_ITEM`); o C175 da NFC-e no EFD
+  Contribuições, o C181/C185, o D190 e os demais registros de totais ficavam
+  para a grade. A fusão vale para todo registro cuja chave o leiaute declara
+  e que só tem valores fora dela: o primeiro fica com a soma dos valores e
+  das quantidades, os outros saem, e os totais do documento e da apuração
+  não mudam. A prévia mostra cada grupo; o que não pode ser fundido diz por
+  quê — registro que não é de totais (dois C170 com o mesmo `NUM_ITEM` são
+  itens mal numerados), registro com filhos (M210) ou texto complementar
+  diferente entre os repetidos (`INFO_COMPL`). O *Diagnóstico* e a revisão
+  apontam para ela.
+
+### Alterado
+- **A chave compara número como número** também fora do C190: `1,65` e
+  `1,6500` na alíquota do C175 são a mesma chave, como o PVA trata.
+  Detecção, fusão e o *Recalcular C190* passam pelo mesmo agrupamento
+  (`SpedDocument.chaves_repetidas`); a fusão de C190 da rotina do CSOSN,
+  que era uma cópia à parte, saiu.
+- **Fusão que encontra valor que não é número recusa antes de mexer**, como
+  os demais cálculos que gravam — inclusive a rotina do CSOSN, que trocava o
+  CST e depois somava lixo como zero. Campo de valor vazio em todos os
+  repetidos continua vazio (antes virava `0,00`).
+
 ## [1.1.0-dev.14] — 2026-10-14
 
 ### Alterado

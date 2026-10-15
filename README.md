@@ -66,7 +66,7 @@ agrupa as rotinas pela etapa do trabalho:
 |---|---|
 | *XMLs do período* | escolhe (ou relê) a pasta ou o banco do ERP com os XMLs do mês |
 | **Conferir** | itens e C190 com os XMLs, C175 da NFC-e, CST por NCM, itens do 0200 sem referência |
-| **Corrigir** | rotinas da empresa, datas, redução de base, ICMS próprio nas compras com ST, alíquotas, COD_GEN/COD_CTA, cadastro pelo ERP, inventário |
+| **Corrigir** | rotinas da empresa, datas, redução de base, ICMS próprio nas compras com ST, alíquotas, COD_GEN/COD_CTA, registros de chave repetida, cadastro pelo ERP, inventário |
 | **Recalcular** | ICMS dos itens, C190 em massa, E110, bloco M |
 | **Gerar** | SPED a partir dos XMLs, regenerar entradas, C170 fictícios e C175 da NFC-e |
 | **Configurações** | correlações de CFOP, sistemas ERP, pasta dos PVAs |
@@ -461,6 +461,22 @@ correta dentro do C100 (entre os itens e os C195).
 
 Assim, depois de alterar qualquer C170, basta um clique para deixar o C190
 coerente, sem somar grupo por grupo na mão.
+
+### Fundir registros de chave repetida (C175, C181, C190, D190…)
+
+Dois registros de totais com a mesma chave no mesmo documento — dois C175
+da mesma NFC-e com o mesmo CFOP, CST e alíquotas, por exemplo — o PVA
+recusa. **Ferramentas → Corrigir → Fundir registros de chave repetida…**
+mostra cada grupo e funde os que podem ser fundidos: o primeiro fica com a
+soma dos valores e das quantidades, os outros saem, e os totais do
+documento e da apuração não mudam. A chave é a que o leiaute declara para
+cada registro; alíquota escrita de outro jeito (`1,65` e `1,6500`) conta
+como a mesma.
+
+Não é fundido, e a prévia diz por quê: registro que não é de totais (dois
+C170 com o mesmo `NUM_ITEM` são itens mal numerados — corrija na grade),
+registro com filhos e repetidos com texto complementar diferente
+(`INFO_COMPL`). O *Diagnóstico* aponta para esta função.
 
 ### Contagens / totais (C990, 9900, 9990, 9999)
 

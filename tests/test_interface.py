@@ -378,6 +378,31 @@ class TestJanela(unittest.TestCase):
             j.close()
         self.assertEqual(self.erros, [], self._falhas())
 
+    def test_fundir_chaves_repetidas_pela_acao(self):
+        """C175 repetido na NFC-e: a ação mostra a prévia e, aceita, funde."""
+        from sped_tables.dominio import referencias
+        from tests.test_correcoes import FonteComChaves, _nfce_com_c175
+        antes = referencias.definir(FonteComChaves())
+        try:
+            with PastaTemporaria() as p:
+                j = self.ed.JanelaPrincipal()
+                self.assertTrue(j.abrir_caminho(
+                    _nfce_com_c175({}, {}).gravar(p)))
+                _esperar()
+                j.act_fundir_chaves.trigger()
+                dlg = j._janelas["DialogoChavesRepetidas"]
+                self.assertEqual(dlg.tab.rowCount(), 1)
+                self.assertTrue(dlg.b_fundir.isEnabled())
+                dlg.accept()
+                self.assertEqual(len([r for r in j.doc.registros
+                                      if r.reg == "C175"]), 1)
+                self.assertTrue(j.alterado)
+                j.alterado = False
+                j.close()
+        finally:
+            referencias.definir(antes)
+        self.assertEqual(self.erros, [], self._falhas())
+
     def test_regenerar_entradas_pela_tela(self):
         from tests.fabrica import nfe_xml
         with PastaTemporaria() as p:

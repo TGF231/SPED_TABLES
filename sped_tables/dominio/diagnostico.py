@@ -41,6 +41,12 @@ from sped_tables.dominio import validacao
 log = logging.getLogger("sped_tables")
 
 
+# registros de totais (C175, C181, D190…) com a chave repetida: somados
+# num só pela fusão (`SpedDocument.fundir_chaves_repetidas`)
+FUNDIR_CHAVES = ("Fundir registros de chave repetida",
+                 "Ferramentas → Corrigir → Fundir registros de chave "
+                 "repetida")
+
 # Achado -> módulo que corrige. O texto é o nome do item de menu, para a
 # pessoa saber exatamente onde clicar.
 MODULOS = {
@@ -76,7 +82,9 @@ MODULOS = {
     "num_campos": ("Correção manual na grade",
                    "o registro tem mais ou menos campos que o leiaute"),
     "chave_c190": regras_guia.RECALCULAR_C190,
-    "chave": ("Correção manual na grade", "chave repetida no mesmo nível"),
+    "chave": FUNDIR_CHAVES,
+    "chave_manual": ("Correção manual na grade",
+                     "chave repetida no mesmo nível"),
     "data_periodo": regras_guia.ALTERAR_DATAS,
     "bloco": ("Correção manual na grade", "bloco aberto sem encerramento"),
     "cst_aliq_02": ("Empresa e rotinas",
@@ -437,13 +445,20 @@ def _achados_proprios(doc):
             achados.append(Achado(
                 tipo, reg or ps[0].reg, campo, texto, len(ps), ps[0].uid,
                 grav or getattr(ps[0], "gravidade", "erro")))
-    # chave repetida: o C190 vai para o recálculo, o resto é manual
-    dup = tentar(revisao.verificar_chave_duplicada)
-    for reg, n in Counter(x.reg for x in dup).items():
-        achados.append(Achado(
-            "chave_c190" if reg == "C190" else "chave", reg, "",
-            "chave repetida no mesmo registro-pai", n,
-            next(x.uid for x in dup if x.reg == reg)))
+    # chave repetida: o C190 vai para o recálculo (refaz pelos itens ou
+    # funde), o registro de totais para a fusão, o resto é manual
+    repetidos = {}
+    for g in tentar(type(doc).chaves_repetidas):
+        tipo = ("chave_c190" if g.reg == "C190" else
+                "chave" if g.motivo is None else "chave_manual")
+        texto = "chave repetida no mesmo registro-pai"
+        if tipo == "chave_manual":
+            texto += " (não dá para fundir: %s)" % g.motivo
+        n, uid, _t = repetidos.get((tipo, g.reg),
+                                   (0, g.registros[1].uid, texto))
+        repetidos[(tipo, g.reg)] = (n + len(g.registros) - 1, uid, texto)
+    for (tipo, reg), (n, uid, texto) in repetidos.items():
+        achados.append(Achado(tipo, reg, "", texto, n, uid))
     # gênero diferente do NCM é erro; vazio, só aviso — o PVA não o cobra
     # (num arquivo real, 1.355 vazios e nenhuma mensagem)
     gen = tentar(revisao.verificar_cod_gen_0200)

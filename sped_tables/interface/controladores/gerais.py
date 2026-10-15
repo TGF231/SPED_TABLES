@@ -9,6 +9,7 @@ from PyQt6.QtWidgets import QFileDialog, QMessageBox
 
 from sped_tables.dominio import conferencia as cf
 from sped_tables.dominio import diagnostico
+from sped_tables.dominio import referencias
 from sped_tables.dominio import regeneracao
 from sped_tables.dominio import regras_guia
 from sped_tables.dominio import revisao as rev
@@ -28,7 +29,8 @@ from sped_tables.interface.dialogos.cadastro import (
 from sped_tables.interface.dialogos.conferencia import (
     DialogoConferencia, DialogoCorrelacoesCFOP,
 )
-from sped_tables.interface.dialogos.correcao import DialogoAlterarDatas
+from sped_tables.interface.dialogos.correcao import (
+    DialogoAlterarDatas, DialogoChavesRepetidas)
 from sped_tables.interface.dialogos.regeneracao import (
     DialogoRegenerarEntradas)
 from sped_tables.interface.dialogos.geracao import DialogoGerarDeXml
@@ -271,6 +273,7 @@ class ControladorGerais:
             "Preencher conta contábil (COD_CTA)": self.preencher_cod_cta,
             "Preencher COD_GEN pelo NCM": self.preencher_cod_gen,
             regras_guia.RECALCULAR_C190[0]: self.recalcular_c190_massa,
+            diagnostico.FUNDIR_CHAVES[0]: self.fundir_chaves_repetidas,
             regras_guia.ALTERAR_DATAS[0]: self.alterar_datas,
             "Datas e extemporâneos pelos XMLs": self.datas_pelo_xml,
             "Recalcular bloco M (apuração PIS/COFINS)":
@@ -294,7 +297,7 @@ class ControladorGerais:
             "C190 CST x20/x70 com VL_RED_BC zerado":
                 ("Recalcular C190…", self._corrigir_c190_da_revisao),
             "Chave duplicada no mesmo registro-pai":
-                ("Recalcular C190…", self._corrigir_c190_da_revisao),
+                ("Fundir repetidos…", self.fundir_chaves_repetidas),
             "Data de saída fora do período":
                 ("Alterar datas…", self.alterar_datas),
             "COD_GEN incoerente com o NCM (0200)":
@@ -352,6 +355,46 @@ class ControladorGerais:
         self.statusBar().showMessage(
             "%d de %d item(ns) do 0200 sem referência no arquivo."
             % (len(nao_usados), len(refs["codigos"])), 8000)
+
+    def fundir_chaves_repetidas(self):
+        """Registros com a mesma chave no mesmo documento: mostra cada grupo
+        e o que acontece com ele, e funde os de totais (C175, C181, C190,
+        D190…). O que não é registro de totais fica para a grade, com o
+        motivo na prévia."""
+        if not self.doc:
+            return
+        titulo = "Fundir registros de chave repetida"
+        grupos = self.doc.chaves_repetidas()
+        if not grupos:
+            estrutura, _i = referencias.atual().estrutura(self.doc.layout)
+            informar(self, titulo,
+                     "Nenhum registro com a chave repetida no mesmo "
+                     "documento." if estrutura else
+                     "Sem o leiaute de referência a chave de cada registro "
+                     "não é conhecida: nada foi verificado.")
+            return
+        doc = self.doc
+
+        def aplicar():
+            # a janela é solta: o arquivo pode ter mudado no meio-tempo, e
+            # a fusão refaz os grupos na hora
+            if self.doc is not doc:
+                return
+            ok, n = calcular(self, titulo, doc.fundir_chaves_repetidas)
+            if not ok:
+                return
+            if n:
+                self._marcar_alterado()
+                self._montar_abas()
+            restam = sum(len(g.registros) - 1 for g in doc.chaves_repetidas())
+            texto = "%d registro(s) somado(s) ao primeiro da mesma chave." % n
+            if restam:
+                texto += ("\n\n%d continuam repetidos: precisam de correção "
+                          "manual na grade." % restam)
+            informar(self, titulo, texto)
+
+        self._dlg_chaves = abrir_janela(self, DialogoChavesRepetidas(
+            doc, grupos, self.ir_para_registro, self), ao_aceitar=aplicar)
 
     def preencher_cod_cta(self):
         """Conta contábil dos registros que estão sem ela. Obrigatória nos

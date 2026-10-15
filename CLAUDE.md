@@ -1086,6 +1086,15 @@ Obter sempre por nome (`doc._ix(tipo, nome)`), nunca por número fixo. Referênc
   `carregar_tudo` funde as duas e a versão exibida vira `40+37`.
 - **Só o CST 01 tem alíquota conferível:** 02 é "alíquota diferenciada" e 03 é
   por quantidade. Cobrar deles a alíquota nominal gera falso positivo.
+- **Chave repetida tem um agrupamento só:** `SpedDocument.chaves_repetidas`
+  (chave do leiaute de referência, número da chave comparado como número).
+  Detecção (`revisao.verificar_chave_duplicada`), diagnóstico e fusão
+  (`fundir_chaves_repetidas`; `fundir_c190_duplicados` só troca a chave pelo
+  `chave_c190`, para valer sem leiaute) usam ele. **Só registro de totais se
+  funde** — fora da chave, apenas `SOMAVEIS` e `COMPLEMENTARES`: dois C170
+  com o mesmo `NUM_ITEM` são itens mal numerados, e somá-los seria inventar.
+  Registro com filhos e texto complementar divergente também não; o
+  `motivo` do grupo diz por quê.
 
 ## Arquivos reais usados na validação
 

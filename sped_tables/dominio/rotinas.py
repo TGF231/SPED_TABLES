@@ -517,6 +517,13 @@ def corrigir_csosn_no_cst(doc, empresa, ocorrencias):
     """
     por_uid = {r.uid: r for r in doc.registros}
     i_cst = {reg: doc._ix(reg, "CST_ICMS") for reg in ("C170", "C190")}
+    # a fusão dos C190 soma valores: o que não for número recusa antes de
+    # qualquer CST trocado
+    pais_c190 = {r.pai.uid: r.pai
+                 for r in (por_uid.get(o.uid) for o in ocorrencias)
+                 if r is not None and r.reg == "C190" and r.pai is not None}
+    doc._exigir_numeros([f for c in pais_c190.values() for f in c.filhos
+                         if f.reg == "C190"])
     mudou = 0
     pais = []
     for o in ocorrencias:
@@ -530,30 +537,10 @@ def corrigir_csosn_no_cst(doc, empresa, ocorrencias):
         if r.reg == "C190" and r.pai is not None and r.pai not in pais:
             pais.append(r.pai)
     for c100 in pais:
-        _fundir_c190(doc, c100)
+        doc.fundir_c190_duplicados(c100)
     if mudou:
         doc.atualizar_bloco9_inplace()
     return mudou
-
-
-C190_SOMAS = ("VL_OPR", "VL_BC_ICMS", "VL_ICMS", "VL_BC_ICMS_ST",
-              "VL_ICMS_ST", "VL_RED_BC", "VL_IPI")
-
-
-def _fundir_c190(doc, c100):
-    soma_ix = [doc._ix("C190", c) for c in C190_SOMAS]
-    vistos = {}
-    for f in [x for x in c100.filhos if x.reg == "C190"]:
-        k = doc.chave_c190(f)
-        if k not in vistos:
-            vistos[k] = f
-            continue
-        alvo = vistos[k]
-        for i in soma_ix:
-            if i is not None:
-                alvo.set_valor(i, _fmt_val(_to_num(alvo.valor(i))
-                                           + _to_num(f.valor(i))))
-        doc.remover_registro(f)
 
 
 # ================================================================ rotina 8

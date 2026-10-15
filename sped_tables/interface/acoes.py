@@ -111,6 +111,8 @@ ACOES = (
          "preencher_cod_gen", ICMS, MENU_CORRIGIR, separador=True),
     Acao("act_cod_cta", "Preencher conta contábil (COD_CTA)…",
          "preencher_cod_cta", ARQUIVO, MENU_CORRIGIR),
+    Acao("act_fundir_chaves", "Fundir registros de chave repetida…",
+         "fundir_chaves_repetidas", ARQUIVO, MENU_CORRIGIR, separador=True),
     # ERP: só leitura do banco
     Acao("act_0200_erp", "Atualizar 0200 (produtos) pelo ERP…",
          "atualizar_0200_erp", ARQUIVO, MENU_CORRIGIR, separador=True,

@@ -178,7 +178,8 @@ def verificar_cod_gen_0200(doc):
 
 
 def verificar_chave_duplicada(doc):
-    """Registros irmãos com a mesma **chave** declarada no descritor do PVA.
+    """Registros irmãos com a mesma **chave** declarada no leiaute de
+    referência (`SpedDocument.chaves_repetidas`).
 
     A chave é por registro (`C190` = CST_ICMS+CFOP+ALIQ_ICMS, `C170` =
     NUM_ITEM) e vale **entre irmãos do mesmo pai** — dois C190 iguais em
@@ -187,46 +188,23 @@ def verificar_chave_duplicada(doc):
     130 ocorrências, todas no C190.
 
     A regra é genérica porque a chave vem do descritor: vale para os 154
-    registros que a declaram no EFD ICMS/IPI e os 145 no Contribuições.
+    registros que a declaram no EFD ICMS/IPI e os 145 no Contribuições. O
+    agrupamento é o mesmo da fusão (`fundir_chaves_repetidas`): o que se
+    acusa aqui é o que o botão conserta, e o que ele não conserta diz por
+    quê.
     """
-    try:
-        estrutura, _i = referencias.atual().estrutura(doc.layout)
-    except Exception:                                       # noqa: BLE001
-        return []
-    if not estrutura:
-        return []
-    chaves = {}
-    for reg, d in estrutura.items():
-        campos = [c.strip() for c in (d.get("chave") or "").split(",")
-                  if c.strip()]
-        if campos:
-            chaves[reg] = campos
-
     problemas = []
-    vistos_por_pai = {}
-    idx = {}
-    for r in doc.registros:
-        campos = chaves.get(r.reg)
-        if not campos:
-            continue
-        if r.reg not in idx:
-            i = [doc._ix(r.reg, c) for c in campos]
-            idx[r.reg] = [x for x in i if x is not None]
-        indices = idx[r.reg]
-        if not indices:
-            continue
-        pai = r.pai.uid if r.pai is not None else None
-        chave = tuple((r.valor(i) or "").strip() for i in indices)
-        marca = (pai, r.reg, chave)
-        if marca in vistos_por_pai:
+    for g in doc.chaves_repetidas():
+        campos = "+".join(c for c, _v in g.chave)
+        valores = "|".join(v for _c, v in g.chave)
+        nao = "" if g.motivo is None else " — não dá para fundir: " + g.motivo
+        for r in g.registros[1:]:
             problemas.append(Problema(
                 uid=r.uid, reg=r.reg, bloco=r.bloco,
                 regra="Chave duplicada",
-                descricao="%s repetido no mesmo %s: %s = %s"
-                          % (r.reg, r.pai.reg if r.pai else "nível",
-                             "+".join(campos), "|".join(chave))))
-        else:
-            vistos_por_pai[marca] = r.uid
+                descricao="%s repetido no mesmo %s: %s = %s%s"
+                          % (r.reg, g.pai.reg if g.pai else "nível",
+                             campos, valores, nao)))
     return problemas
 
 
