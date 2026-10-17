@@ -10,7 +10,7 @@ from PyQt6.QtWidgets import (
     QTableWidgetItem, QVBoxLayout, QWidget,
 )
 
-from sped_tables.dominio import ajuda
+from sped_tables.dominio import ajuda, referencias
 from sped_tables.interface import tema
 from sped_tables.interface.comum import _br, _num_celula, calcular
 from sped_tables.interface.dialogos.ajuda import DialogoAjuda, dica_html
@@ -440,7 +440,8 @@ class MasterDetailWidget(QWidget):
             dica = self._dicas.get((j, nome))
             if dica is None:
                 dica = self._dicas[(j, nome)] = dica_html(ajuda.do_campo(
-                    self.doc.layout, self.tipo, j + 1, nome))
+                    self.doc.layout, self.tipo, j + 1, nome,
+                    versao=referencias.versao_do_leiaute(self.doc)))
             item.setToolTip(dica)
 
     def abrir_ajuda(self):
@@ -448,7 +449,8 @@ class MasterDetailWidget(QWidget):
         col = self.tabela.currentColumn()
         campo = self._colunas[col] if 0 <= col < len(self._colunas) else None
         self._dlg_ajuda = abrir_janela(self, DialogoAjuda(
-            self.doc.layout, self.tipo, campo, self))
+            self.doc.layout, self.tipo, campo, self,
+            versao=referencias.versao_do_leiaute(self.doc)))
 
     def _filtro_mudou(self, _idx):
         self._filtro = self.combo_filtro.currentData() or "TODOS"

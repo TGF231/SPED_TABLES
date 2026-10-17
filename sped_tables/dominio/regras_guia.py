@@ -137,7 +137,8 @@ def _nfe_propria(doc, c100):
 def registros_com_validador(doc, ids, padrao=()):
     """Registros em que o descritor do PVA declara algum dos validadores
     `ids` — a regra vale onde o PVA a aplica. Sem descritor, `padrao`."""
-    est, _info = referencias.atual().estrutura(doc.layout)
+    est, _info = referencias.atual().estrutura(
+        doc.layout, referencias.versao_do_leiaute(doc))
     if not est:
         return tuple(padrao)
     ids = set(ids)

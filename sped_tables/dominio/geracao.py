@@ -546,7 +546,7 @@ def gerar_icms(memoria, lote, periodo, saldo_credor_anterior=None,
                     % len(res.extemporaneos))
 
     # ---- o documento, montado e calculado pelo código de sempre
-    t = _Linhas("ICMS", _larguras(memoria, "ICMS"))
+    t = _Linhas("ICMS", _larguras(memoria, "ICMS", fim))
     t.modelo(modelos["0000"], DT_INI=ini, DT_FIN=fim, COD_FIN="0")
     t.reg("0001", IND_MOV="0")
     for tipo in ("0002", "0005", "0100"):
@@ -584,13 +584,15 @@ def gerar_icms(memoria, lote, periodo, saldo_credor_anterior=None,
     return res
 
 
-def _larguras(memoria, layout):
+def _larguras(memoria, layout, fim):
     """Largura de cada registro: a do SPED que a empresa entregou, limitada
-    pela do descritor do PVA instalado quando ele existe — vale a menor, que
-    é o que o PVA aceita (o 0200 do EFD Contribuições tem 12 campos lá e 13
-    no leiaute do programa)."""
+    pela do descritor da versão vigente no fim do período (`fim`,
+    DDMMAAAA) — vale a menor, que é o que o PVA aceita (o 0200 do EFD
+    Contribuições tem 12 campos lá e 13 no leiaute do programa)."""
     larguras = dict(memoria.get("larguras", {}).get(layout) or {})
-    estrutura, _info = referencias.atual().estrutura(layout)
+    fonte = referencias.atual()
+    estrutura, _info = fonte.estrutura(layout,
+                                       fonte.versao_vigente(layout, fim))
     if estrutura:
         for reg, n in diagnostico._num_campos_descritor(estrutura).items():
             larguras[reg] = min(larguras.get(reg, n), n)
@@ -715,7 +717,7 @@ def _apuracao_icms(doc, memoria, modelos, periodo, ini, fim,
                    saldo_credor_anterior, res):
     """Bloco E: ICMS próprio pela soma dos analíticos; ST e DIFAL sem
     movimento (do modelo); IPI pelos itens de entrada."""
-    e = _Linhas("ICMS", _larguras(memoria, "ICMS"))
+    e = _Linhas("ICMS", _larguras(memoria, "ICMS", fim))
     debitos = creditos = deb_esp = 0.0
     for reg in ("C190", "D190"):
         i = doc._ix(reg, "VL_ICMS")
@@ -906,7 +908,7 @@ def gerar_contrib(memoria, lote, periodo, correlacoes=None, excluir=(),
             for it in n.itens:
                 itens.saida(it)
 
-    t = _Linhas("CONTRIB", _larguras(memoria, "CONTRIB"))
+    t = _Linhas("CONTRIB", _larguras(memoria, "CONTRIB", fim))
     t.modelo(modelos["0000"], DT_INI=ini, DT_FIN=fim, TIPO_ESCRIT="0",
              IND_SIT_ESP="", NUM_REC_ANTERIOR="")
     t.reg("0001", IND_MOV="0")

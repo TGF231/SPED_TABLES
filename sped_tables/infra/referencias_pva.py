@@ -40,8 +40,10 @@ class ReferenciasPVA(Referencias):
             self._tabs, self._pastas_lidas = tabs, pastas
         return self._tabs
 
-    def estrutura(self, layout):
-        # o descritor é lido uma vez por .jar (cache do descritor_pva); o
+    def estrutura(self, layout, versao=None):
+        # só o descritor mais recente: a versão do arquivo passa a contar
+        # com a base de referência (este adaptador sai na mesma série).
+        # O descritor é lido uma vez por .jar (cache do descritor_pva); o
         # alinhamento aos nomes do leiaute, uma vez por leitura
         bruta, info = descritor_pva.carregar(layout)
         chave = (layout, id(bruta))

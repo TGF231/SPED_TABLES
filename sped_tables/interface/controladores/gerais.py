@@ -366,7 +366,8 @@ class ControladorGerais:
         titulo = "Fundir registros de chave repetida"
         grupos = self.doc.chaves_repetidas()
         if not grupos:
-            estrutura, _i = referencias.atual().estrutura(self.doc.layout)
+            estrutura, _i = referencias.atual().estrutura(
+                self.doc.layout, referencias.versao_do_leiaute(self.doc))
             informar(self, titulo,
                      "Nenhum registro com a chave repetida no mesmo "
                      "documento." if estrutura else

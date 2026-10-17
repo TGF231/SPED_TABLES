@@ -257,7 +257,7 @@ class TestLeiauteContraPVA(unittest.TestCase):
 
 class FonteComGuia(referencias.Referencias):
 
-    def estrutura(self, layout):
+    def estrutura(self, layout, versao=None):
         return {"C190": {"campos": {
             "REG": {"tipo": "C", "tamanho": "[4]", "obrigatorio": "1"},
             "CST_ICMS": {"tipo": "N", "tamanho": "[3]", "obrigatorio": "1",

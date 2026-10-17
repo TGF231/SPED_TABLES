@@ -299,7 +299,7 @@ def _icms_nfce_extemporanea():
     """Setembro, com uma NFC-e emitida em agosto e o ERP pondo a data de
     setembro: ICMS 1,80 que tem de sair do débito do período."""
     m = Montador("ICMS")
-    m.reg("0000", COD_VER="019", COD_FIN="0", DT_INI="01092026",
+    m.reg("0000", COD_VER="020", COD_FIN="0", DT_INI="01092026",
           DT_FIN="30092026", NOME="EMPRESA TESTE LTDA", CNPJ=CNPJ_TESTE,
           UF="MG", IE="0012345670012", COD_MUN="3106200", IND_PERFIL="A",
           IND_ATIV="1")

@@ -2,14 +2,17 @@
 """Porta: o que o domínio precisa das **tabelas oficiais**.
 
 Parte das regras fiscais depende de dados que não são do arquivo nem do
-programa — são do PVA instalado na máquina: o descritor de validação de
-cada versão de leiaute, as tabelas de códigos válidos com vigência, a tabela
-de CFOP com direito a crédito, o prazo de entrega de cada período.
+programa: a estrutura declarada de cada versão de leiaute, as tabelas de
+códigos válidos com vigência, a tabela de CFOP com direito a crédito, o
+prazo de entrega de cada período.
 
-O domínio não sabe **onde** isso está nem **como** se lê: pede a esta porta.
-Quem liga a porta a uma implementação é a montagem da aplicação
+O domínio não sabe **onde** isso está nem **como** se lê: pede a esta porta,
+e a versão do leiaute que pede é a do arquivo (`versao_do_leiaute`). Quem
+liga a porta a uma implementação é a montagem da aplicação
 (`sped_tables.aplicacao.montagem`), no início do programa; a implementação
-de verdade, que lê a instalação do PVA, é `sped_tables.infra.referencias_pva`.
+de verdade é a base de referência (`sped_tables.infra.referencias_base`;
+enquanto ela não entra, `sped_tables.infra.referencias_pva`). A porta em si
+não lê instalação nenhuma.
 
 Sem nada ligado vale `Referencias` desta página, que não tem tabela
 nenhuma: cada regra que depende dela se abstém, como já fazia quando o PVA
@@ -23,10 +26,25 @@ class Referencias:
 
     nome = "nenhuma"
 
-    def estrutura(self, layout):
-        """Descritor do leiaute: `(estrutura, info)`; ver `descritor_pva`."""
+    def estrutura(self, layout, versao=None):
+        """Estrutura do leiaute: `(estrutura, info)`.
+
+        `versao` é a versão que o arquivo declara (`versao_do_leiaute`);
+        `None` pede a mais recente da fonte — é o que vale para arquivo sem
+        COD_VER legível. Versão que a fonte não guarda devolve estrutura
+        vazia e `info["fora_da_base"]`: nada se cobra por estrutura de
+        outra versão."""
         return {}, {"descritor": None,
-                    "erro": "nenhuma fonte de tabelas oficiais configurada"}
+                    "erro": "nenhuma base de referência ligada"}
+
+    def versao_vigente(self, layout, data):
+        """COD_VER vigente na data (DDMMAAAA), entre as versões que a fonte
+        guarda; None quando nenhuma cobre a data."""
+        return None
+
+    def descricao(self):
+        """De onde vêm as referências, numa linha, para as telas."""
+        return "nenhuma base de referência"
 
     def dominios_por_datasource(self, estrutura, layout, uf=None,
                                 data_ref=None):
@@ -97,6 +115,20 @@ def texto_do_campo(guia, reg, n, nome=""):
     if nome and nome_guia and nome_guia != nome:
         return {}
     return c
+
+
+def versao_do_leiaute(doc):
+    """A versão do leiaute que o arquivo declara (COD_VER do 0000, ex.:
+    "020"), ou None quando falta ou não tem três dígitos — aí vale a mais
+    recente da fonte, como antes de a versão contar."""
+    i = doc._ix("0000", "COD_VER")
+    if i is None:
+        return None
+    for r in doc.registros:
+        if r.reg == "0000":
+            v = (r.valor(i) or "").strip()
+            return v if len(v) == 3 and v.isdigit() else None
+    return None
 
 
 _atual = [Referencias()]

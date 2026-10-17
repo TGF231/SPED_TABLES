@@ -419,7 +419,8 @@ def dominios_do_documento(doc):
             dt = (r.valor(i_fin) or "").strip() if i_fin is not None else ""
             break
 
-    estrutura, info_desc = fonte.estrutura(doc.layout)
+    estrutura, info_desc = fonte.estrutura(
+        doc.layout, referencias.versao_do_leiaute(doc))
     if not estrutura:
         return {}, {"descritor": None, "erro": info_desc.get("erro"),
                     "por_tabela": 0, "por_enum": 0, "por_formato": 0,

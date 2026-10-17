@@ -226,11 +226,15 @@ def verificar(doc):
     `achados` é uma lista de `Achado` já **agregada por tipo/registro/campo**:
     o objetivo é dizer o que fazer, não repetir a mesma frase mil vezes.
     """
-    estrutura, info_desc = referencias.atual().estrutura(doc.layout)
+    estrutura, info_desc = referencias.atual().estrutura(
+        doc.layout, referencias.versao_do_leiaute(doc))
     achados = []
     info = {"descritor": info_desc.get("descritor"),
             "registros_descritor": info_desc.get("registros", 0),
-            "sem_pva": not estrutura}
+            "versao": info_desc.get("versao"),
+            "fora_da_base": (info_desc.get("versao")
+                             if info_desc.get("fora_da_base") else None),
+            "sem_base": not estrutura}
 
     # ---- o que a leitura não conseguiu ler como registro ------------------
     # vem antes de tudo e não depende do PVA: é o arquivo que está quebrado

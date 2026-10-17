@@ -38,7 +38,7 @@ class TestVerificar(unittest.TestCase):
             with self.subTest(layout=m.layout):
                 achados, info = diagnostico.verificar(_doc(m))
                 self.assertIsInstance(achados, list)
-                self.assertIn("sem_pva", info)
+                self.assertIn("sem_base", info)
 
     def test_null_aparece_como_nulo(self):
         m = icms_basico()
@@ -58,7 +58,7 @@ class TestVerificar(unittest.TestCase):
         linha[m.tabela["0150"].index("COD_MUN")] = "0000000"
         doc = _doc(m)
         achados, info = diagnostico.verificar(doc)
-        if info.get("sem_pva"):
+        if info.get("sem_base"):
             self.skipTest("o domínio do município vem da tabela do PVA")
         mun = [a for a in achados if a.reg == "0150" and a.campo == "COD_MUN"]
         self.assertEqual([a.tipo for a in mun], ["municipio"])
@@ -82,7 +82,7 @@ class TestVerificar(unittest.TestCase):
                 c100[i] = ""
         c100[nomes.index("COD_SIT")] = "02"
         achados, info = diagnostico.verificar(_doc(m))
-        if info.get("sem_pva"):
+        if info.get("sem_base"):
             self.skipTest("obrigatoriedade vem do descritor do PVA")
         obr = {(a.reg, a.campo) for a in achados if a.tipo == "obrigatorio"}
         self.assertFalse({x for x in obr if x[0] == "C100"}, obr)

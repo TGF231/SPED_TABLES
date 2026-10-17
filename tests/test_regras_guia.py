@@ -288,16 +288,16 @@ class TestRevisaoDeCodigo(unittest.TestCase):
         self.assertEqual(diagnostico._num_campos_descritor(est),
                          {"0220": 4})
 
-    def test_diagnostico_sem_pva_roda_as_regras_do_guia(self):
+    def test_diagnostico_sem_base_roda_as_regras_do_guia(self):
         from sped_tables.dominio import referencias
-        antes = referencias.definir(None)          # fonte vazia: sem PVA
+        antes = referencias.definir(None)          # fonte vazia: sem base
         try:
             m = icms_basico()
             m.alterar("C190", VL_ICMS="6,00")
             achados, info = diagnostico.verificar(_doc(m))
         finally:
             referencias.definir(antes)
-        self.assertTrue(info["sem_pva"])
+        self.assertTrue(info["sem_base"])
         self.assertIn("guia_c190_soma", {a.tipo for a in achados})
 
     def test_saida_depois_do_periodo_conta_uma_vez(self):

@@ -114,12 +114,12 @@ class DialogoAjuda(QDialog):
     """Ajuda de um registro, rolada até o campo pedido. Não modal: a pessoa
     lê e continua editando a grade."""
 
-    def __init__(self, layout, reg, campo=None, parent=None):
+    def __init__(self, layout, reg, campo=None, parent=None, versao=None):
         super().__init__(parent)
         self.setWindowTitle("Ajuda do registro %s" % reg)
         self.resize(760, 640)
         lay = QVBoxLayout(self)
-        r = ajuda.do_registro(layout, reg)
+        r = ajuda.do_registro(layout, reg, versao)
         if not r["titulo"] and not any(c["preenchimento"] or c["validacao"]
                                        for c in r["campos"]):
             aviso = QLabel("O guia prático não está disponível para este "

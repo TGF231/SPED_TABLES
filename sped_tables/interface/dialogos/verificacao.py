@@ -245,14 +245,25 @@ class DialogoDiagnostico(QDialog):
         cab.setProperty("role", "erro" if total else "ok")
         lay.addWidget(cab)
 
-        origem = QLabel(
-            "Verificado com o descritor do PVA (%s registros) — o mesmo que o "
-            "validador usa: tipo, tamanho, obrigatoriedade, enumerações, "
-            "tabelas e referências entre registros."
-            % info.get("registros_descritor", "?")
-            if not info.get("sem_pva") else
-            "PVA não encontrado nesta máquina: valeram apenas as regras "
-            "embutidas no programa, que cobrem menos que o validador oficial.")
+        if info.get("fora_da_base"):
+            texto_origem = (
+                "A versão %s do leiaute deste arquivo não está na base de "
+                "referência (ela guarda os últimos 5 anos): valeram apenas "
+                "as regras embutidas, que cobrem menos que o validador "
+                "oficial." % info["fora_da_base"])
+        elif info.get("sem_base"):
+            texto_origem = (
+                "Base de referência indisponível: valeram apenas as regras "
+                "embutidas no programa, que cobrem menos que o validador "
+                "oficial.")
+        else:
+            texto_origem = (
+                "Verificado com o leiaute da versão %s (%s registros) — o "
+                "que o validador declara: tipo, tamanho, obrigatoriedade, "
+                "enumerações, tabelas e referências entre registros."
+                % (info.get("versao") or "?",
+                   info.get("registros_descritor", "?")))
+        origem = QLabel(texto_origem)
         origem.setWordWrap(True)
         origem.setProperty("role", "info")
         lay.addWidget(origem)

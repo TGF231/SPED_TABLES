@@ -1665,7 +1665,8 @@ class SpedDocument:
         são a mesma alíquota, como no `chave_c190`. Sem leiaute de
         referência, nada é acusado."""
         try:
-            estrutura, _i = referencias.atual().estrutura(self.layout)
+            estrutura, _i = referencias.atual().estrutura(
+                self.layout, referencias.versao_do_leiaute(self))
         except Exception:                                   # noqa: BLE001
             return []
         planos = {}
@@ -2555,7 +2556,8 @@ class SpedDocument:
         # supor que o campo se chama sempre COD_ITEM
         campos_ref = {}
         try:
-            est, _i = referencias.atual().estrutura(self.layout)
+            est, _i = referencias.atual().estrutura(
+                self.layout, referencias.versao_do_leiaute(self))
             for (reg, campo), (alvo, campo_alvo) in \
                     referencias.do_descritor(est).items():
                 if alvo == "0200" and campo_alvo == "COD_ITEM":
