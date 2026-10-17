@@ -5,7 +5,6 @@ from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QMessageBox
 
 from sped_tables.dominio import xml_fiscal as xf
-from sped_tables.infra import config
 from sped_tables.interface.comum import (_br, abrir_janela, calcular,
                                          informar, ler_nfes_da_pasta)
 from sped_tables.interface.dialogos.cadastro import DialogoEmpresa
@@ -236,15 +235,6 @@ class ControladorContribuicoes:
             "C175 regenerado em %d documento(s); %d registro(s) C175 gerado(s). "
             "Os C170 fictícios foram removidos." % (r["docs"], r["c175"]))
 
-    def _salvar_cfg_tabelas(self, cfg):
-        self.cfg_tabelas = cfg
-        try:
-            config.gravar_tabelas_rfb(cfg)
-        except OSError as exc:
-            self.statusBar().showMessage(
-                "Não foi possível guardar a configuração das tabelas: %s"
-                % exc, 10000)
-
     def _data_fin_doc(self):
         """DT_FIN do registro 0000 (DDMMAAAA), para referência de vigência."""
         if not self.doc:
@@ -265,8 +255,7 @@ class ControladorContribuicoes:
                 "PIS/COFINS por NCM).")
             return
         self._dlg_cst = abrir_janela(self, DialogoVerificarCST(
-            self.doc, self.cfg_tabelas, self._data_fin_doc(),
-            self._salvar_cfg_tabelas, self))
+            self.doc, self._data_fin_doc(), self))
 
     def trocar_aliquotas(self):
         """Troca alíquotas de PIS/COFINS (saídas C175 / entradas C170) e
@@ -335,5 +324,4 @@ class ControladorContribuicoes:
         """
         if self.doc is None:
             return
-        self._dlg_empresa = abrir_janela(self, DialogoEmpresa(
-            self.doc, self, cfg_rfb=getattr(self, "cfg_tabelas", None)))
+        self._dlg_empresa = abrir_janela(self, DialogoEmpresa(self.doc, self))

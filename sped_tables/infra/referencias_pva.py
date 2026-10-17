@@ -74,7 +74,7 @@ class ReferenciasPVA(Referencias):
             self._clf_lido = True
             try:
                 from sped_tables.infra import tabelas_rfb
-                self._clf = tabelas_rfb.classificador()[0]
+                self._clf = tabelas_rfb.carregar_tudo()[0]
             except Exception:                               # noqa: BLE001
                 self._clf = None
         return self._clf

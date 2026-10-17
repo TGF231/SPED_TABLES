@@ -403,6 +403,32 @@ class TestJanela(unittest.TestCase):
             referencias.definir(antes)
         self.assertEqual(self.erros, [], self._falhas())
 
+    def test_cst_por_ncm_usa_a_fonte_de_referencias(self):
+        """O diálogo não pede mais pasta nem arquivos: o classificador vem
+        da porta, a mesma fonte das outras regras."""
+        from sped_tables.dominio import referencias
+        from sped_tables.dominio.ncm import ClassificadorNCM
+
+        class Fonte(referencias.Referencias):
+            def classificador_ncm(self):
+                return ClassificadorNCM()
+
+        antes = referencias.definir(Fonte())
+        try:
+            with PastaTemporaria() as p:
+                j = self.ed.JanelaPrincipal()
+                self.assertTrue(j.abrir_caminho(contrib_basico().gravar(p)))
+                _esperar()
+                j.verificar_cst_ncm()
+                dlg = j._janelas["DialogoVerificarCST"]
+                self.assertFalse(hasattr(dlg, "ed_pasta"))
+                dlg._verificar()
+                self.assertEqual(dlg.tab.rowCount(), 0)
+                j.close()
+        finally:
+            referencias.definir(antes)
+        self.assertEqual(self.erros, [], self._falhas())
+
     def test_regenerar_entradas_pela_tela(self):
         from tests.fabrica import nfe_xml
         with PastaTemporaria() as p:

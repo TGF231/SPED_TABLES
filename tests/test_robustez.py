@@ -8,7 +8,6 @@ from unittest import mock
 from sped_tables.infra import cadastro
 from sped_tables.infra import arquivos
 from sped_tables.infra import config
-from sped_tables.infra import dados
 from sped_tables.infra import descritor_pva
 from sped_tables.dominio import empresas as emp_mod
 from sped_tables.dominio.sped_model import SpedDocument
@@ -167,15 +166,6 @@ class TestConfiguracao(unittest.TestCase):
             config.esquecer()
             self.assertEqual(config.raiz_pva(), p)
             self.assertEqual(config.ler()["raiz_pva"], p)
-
-    def test_tabelas_rfb_migram_do_arquivo_antigo(self):
-        with open(dados.caminho(config.ARQUIVO_ANTIGO_RFB), "w",
-                  encoding="utf-8") as fh:
-            fh.write('{"zero": "C:/tabelas/zero.txt"}')
-        self.assertEqual(config.tabelas_rfb()["zero"], "C:/tabelas/zero.txt")
-        config.gravar_tabelas_rfb({"mono": "C:/m.txt"})
-        self.assertEqual(config.tabelas_rfb()["mono"], "C:/m.txt")
-        self.assertEqual(config.tabelas_rfb()["zero"], "")
 
     def test_descritor_e_lido_uma_vez(self):
         if not descritor_pva.disponivel():

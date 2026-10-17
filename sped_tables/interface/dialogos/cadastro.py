@@ -13,8 +13,8 @@ from sped_tables.interface.formulario_empresa import FormularioEmpresa
 from sped_tables.interface.comum import exportar_csv
 from sped_tables.infra import cadastro
 from sped_tables.dominio import empresas as emp_mod
+from sped_tables.dominio import referencias
 from sped_tables.dominio import rotinas
-from sped_tables.infra import tabelas_rfb as trfb
 from sped_tables.interface import tema
 from sped_tables.interface.comum import (calcular, definir_papel,
                                          informar)
@@ -355,10 +355,9 @@ class DialogoEmpresa(QDialog):
     COLS = ["Escopo", "Doc.", "Item", "Tributo", "Campo", "Atual",
             "Esperado", "Detalhe"]
 
-    def __init__(self, doc, parent=None, cfg_rfb=None):
+    def __init__(self, doc, parent=None):
         super().__init__(parent)
         self.doc = doc
-        self.cfg_rfb = cfg_rfb or {}
         self.setWindowTitle("Configuração da empresa e rotinas")
         self.resize(980, 700)
         self._ocorrencias = []
@@ -496,9 +495,6 @@ class DialogoEmpresa(QDialog):
         if r is None:
             return
         texto = r.descricao
-        if r.requer == "tabelas_rfb":
-            texto += ("  Requer as tabelas da RFB configuradas em "
-                      "Ferramentas → Conferir → CST por NCM.")
         if r.corrigir is None:
             texto += "  (sem correção automática)"
         self.lbl_desc.setText(texto)
@@ -533,16 +529,15 @@ class DialogoEmpresa(QDialog):
             self.b_corrigir.setText("Corrigir %d…" % len(ocorrencias))
 
     def _classificador(self):
-        """Monta o classificador de NCM com a mesma API do diálogo de CST."""
-        try:
-            clf, _achados = trfb.classificador(self.cfg_rfb or None)
-            return clf
-        except Exception as exc:  # noqa: BLE001
+        """O classificador de NCM da base de referência (a mesma fonte das
+        outras regras), ou None com o aviso."""
+        clf = referencias.atual().classificador_ncm()
+        if clf is None:
             QMessageBox.warning(
-                self, "Tabelas da RFB",
-                "Não foi possível carregar as tabelas da RFB:\n%s\n\n"
-                "Configure em Ferramentas → Conferir → CST por NCM." % exc)
-            return None
+                self, "Tabelas de NCM",
+                "A base de referência não tem as tabelas de alíquota zero e "
+                "de monofásicos: esta rotina não pode rodar.")
+        return clf
 
     def _preencher(self, ocorrencias):
         # a ordenação só é ligada depois de preencher (ver CLAUDE.md)

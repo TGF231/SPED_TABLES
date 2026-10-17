@@ -2,8 +2,8 @@
 """Ponto único de configuração: onde estão os PVAs e as tabelas deles.
 
 Até a 0.51.0 o caminho `C:\\Arquivos de Programas RFB\\Programas SPED`
-estava escrito em quatro módulos (`pva`, `tabelas_pva`, `descritor_pva`,
-`tabelas_rfb`). PVA instalado noutro disco, ou noutra pasta, desligava em
+estava escrito em quatro módulos (`pva`, `tabelas_pva`, `descritor_pva`
+e as tabelas de NCM). PVA instalado noutro disco, ou noutra pasta, desligava em
 silêncio metade das verificações — e trocar exigia editar quatro arquivos.
 
 Agora todo caminho do PVA sai daqui, decidido nesta ordem:
@@ -21,7 +21,6 @@ O leiaute de cada PVA dentro da raiz (pasta, tabelas, `.jar` do descritor)
 também mora aqui, uma vez só.
 """
 
-import json
 import os
 
 from sped_tables.infra import dados
@@ -151,37 +150,3 @@ def pasta_tabelas_rfb():
     """As tabelas de NCM da RFB (alíquota zero, monofásico) vêm com o PVA
     do EFD Contribuições."""
     return pasta_tabelas("CONTRIB")
-
-
-# ----------------------------------------------------- tabelas da RFB
-# Caminhos que o usuário escolheu no diálogo de CST por NCM. Moravam num
-# `config_tabelas_rfb.json` próprio — que, rodando do código-fonte, era um
-# arquivo versionado sendo regravado pelo programa. Agora ficam no
-# `configuracao.json`; o arquivo antigo ainda é lido, uma vez, para não
-# perder o que já estava escolhido.
-CHAVES_TABELAS_RFB = ("pasta", "zero", "mono", "mono_difer", "genero", "ncm")
-ARQUIVO_ANTIGO_RFB = "config_tabelas_rfb.json"
-
-
-def tabelas_rfb():
-    """`{pasta, zero, mono, mono_difer, genero, ncm}` escolhidos (ou vazios)."""
-    atual = ler().get("tabelas_rfb")
-    if not isinstance(atual, dict):
-        try:
-            with open(dados.caminho(ARQUIVO_ANTIGO_RFB),
-                      encoding="utf-8") as fh:
-                atual = json.load(fh)
-        except (OSError, ValueError):
-            atual = {}
-    atual = atual if isinstance(atual, dict) else {}
-    return {k: str(atual.get(k) or "") for k in CHAVES_TABELAS_RFB}
-
-
-def gravar_tabelas_rfb(cfg):
-    limpo = {k: str((cfg or {}).get(k) or "") for k in CHAVES_TABELAS_RFB}
-    # a pasta padrão não precisa ser lembrada: é o que `config` já detecta
-    if os.path.normcase(limpo["pasta"]) == os.path.normcase(
-            pasta_tabelas_rfb() or ""):
-        limpo["pasta"] = ""
-    gravar(tabelas_rfb=limpo if any(limpo.values()) else None)
-    return limpo

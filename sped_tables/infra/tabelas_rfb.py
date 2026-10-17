@@ -183,20 +183,3 @@ def carregar_tudo(pasta=None, caminho_zero=None, caminho_mono=None,
     return ClassificadorNCM(tab_zero, tab_mono, genero, ncm_vig), {
         "zero": czero, "mono": cmono, "mono_difer": cdifer, "genero": cgen,
         "ncm": caminho_ncm}
-
-
-def classificador(cfg=None):
-    """O classificador a partir da configuração escolhida pelo usuário
-    (`config.tabelas_rfb()`). Um caminho só para os dois diálogos que o
-    montavam — e o do cadastro de empresas esquecia a tabela 4.3.10.
-
-    Devolve `(classificador, caminhos_usados)`.
-    """
-    cfg = cfg if cfg is not None else config.tabelas_rfb()
-    return carregar_tudo(
-        pasta=cfg.get("pasta") or None,
-        caminho_zero=cfg.get("zero") or None,
-        caminho_mono=cfg.get("mono") or None,
-        caminho_mono_difer=cfg.get("mono_difer") or None,
-        caminho_genero=cfg.get("genero") or None,
-        caminho_ncm=cfg.get("ncm") or None)

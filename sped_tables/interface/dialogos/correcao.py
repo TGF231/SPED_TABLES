@@ -6,7 +6,7 @@ import datetime
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import (
     QAbstractItemView, QCheckBox, QComboBox, QDialog, QDoubleSpinBox,
-    QFileDialog, QFormLayout, QGridLayout, QGroupBox, QHBoxLayout, QLabel,
+    QFormLayout, QGridLayout, QGroupBox, QHBoxLayout, QLabel,
     QLineEdit, QMessageBox, QPushButton, QTableWidget, QTableWidgetItem,
     QVBoxLayout,
 )
@@ -17,7 +17,7 @@ from sped_tables.infra import cadastro
 from sped_tables.dominio import empresas as emp_mod
 from sped_tables.dominio import rotinas
 from sped_tables.dominio import ncm
-from sped_tables.infra import tabelas_rfb as trfb
+from sped_tables.dominio import referencias
 from sped_tables.interface.comum import _br, calcular
 from sped_tables.interface.comum import definir_papel, informar
 
@@ -135,60 +135,32 @@ class DialogoTrocarAliquotas(QDialog):
 # Diálogo: verificar CST de PIS/COFINS por NCM (tabelas RFB)
 # ---------------------------------------------------------------------------
 class DialogoVerificarCST(QDialog):
-    """Configura as tabelas da RFB (alíquota zero, monofásicos, gênero e, opc.,
-    NCM vigente) e verifica o CST de PIS/COFINS dos itens C170 por NCM."""
+    """Verifica o CST de PIS/COFINS dos itens C170 por NCM, com as tabelas de
+    alíquota zero e de monofásicos que vêm da base de referência."""
 
-    def __init__(self, doc, cfg, data_ref, on_cfg, parent=None):
+    def __init__(self, doc, data_ref, parent=None):
         super().__init__(parent)
         self.doc = doc
-        self.cfg = dict(cfg or {})
-        self.on_cfg = on_cfg
         self.setWindowTitle("Verificar CST de PIS/COFINS por NCM")
         self.resize(880, 620)
         lay = QVBoxLayout(self)
 
         info = QLabel(
             "Classifica cada item (C170) pelo NCM usando as tabelas oficiais da "
-            "RFB e aponta CST de PIS/COFINS incoerentes (ex.: entrada de produto "
-            "monofásico com crédito, ou produto de alíquota zero tributado). O "
-            "C175 (NFC-e consolidada) não é verificável por NCM.")
+            "RFB (alíquota zero e monofásicos, da base de referência) e aponta "
+            "CST de PIS/COFINS incoerentes (ex.: entrada de produto monofásico "
+            "com crédito, ou produto de alíquota zero tributado). O C175 "
+            "(NFC-e consolidada) não é verificável por NCM.")
         info.setWordWrap(True)
         lay.addWidget(info)
 
-        cfgbox = QGroupBox("Tabelas (pasta do PVA ou caminhos diretos)")
+        cfgbox = QGroupBox("Vigência")
         gl = QGridLayout(cfgbox)
-
-        def linha_arquivo(rot, chave, lin, pasta=False):
-            gl.addWidget(QLabel(rot), lin, 0)
-            ed = QLineEdit(self.cfg.get(chave, ""))
-            gl.addWidget(ed, lin, 1)
-            b = QPushButton("…")
-            b.setMaximumWidth(32)
-            if pasta:
-                b.clicked.connect(lambda: self._pasta(ed))
-            else:
-                b.clicked.connect(lambda: self._arquivo(ed))
-            gl.addWidget(b, lin, 2)
-            return ed
-
-        self.ed_pasta = linha_arquivo("Pasta das tabelas:", "pasta", 0, True)
-        if not self.ed_pasta.text():
-            self.ed_pasta.setText(trfb.pasta_padrao())
-        self.ed_zero = linha_arquivo("Alíquota zero (opcional):", "zero", 1)
-        self.ed_mono = linha_arquivo(
-            "Monofásicos por unidade (opc.):", "mono", 2)
-        # a tabela 4.3.10 é a que traz perfumaria, higiene pessoal e
-        # medicamentos (Lei 10.147/2000): sem ela o sabonete 34011190 passava
-        self.ed_mono_dif = linha_arquivo(
-            "Monofásicos alíq. difer. (opc.):", "mono_difer", 3)
-        self.ed_genero = linha_arquivo("Gênero (opcional):", "genero", 4)
-        self.ed_ncm = linha_arquivo("NCM vigente XLSX (opc.):", "ncm", 5)
-
-        gl.addWidget(QLabel("Data de referência:"), 6, 0)
+        gl.addWidget(QLabel("Data de referência:"), 0, 0)
         self.ed_data = QLineEdit(data_ref or "")
         self.ed_data.setPlaceholderText("DDMMAAAA")
         self.ed_data.setMaximumWidth(120)
-        gl.addWidget(self.ed_data, 6, 1)
+        gl.addWidget(self.ed_data, 0, 1)
         lay.addWidget(cfgbox)
 
         acoes = QHBoxLayout()
@@ -222,52 +194,14 @@ class DialogoVerificarCST(QDialog):
         lay.addWidget(self.tab, 1)
         self._uids = []
 
-    def _pasta(self, ed):
-        d = QFileDialog.getExistingDirectory(self, "Pasta das tabelas",
-                                             ed.text() or "")
-        if d:
-            ed.setText(d)
-
-    def _arquivo(self, ed):
-        f, _ = QFileDialog.getOpenFileName(self, "Selecionar arquivo",
-                                           ed.text() or "")
-        if f:
-            ed.setText(f)
-
-    def _coletar_cfg(self):
-        return {"pasta": self.ed_pasta.text().strip(),
-                "zero": self.ed_zero.text().strip(),
-                "mono": self.ed_mono.text().strip(),
-                "mono_difer": self.ed_mono_dif.text().strip(),
-                "genero": self.ed_genero.text().strip(),
-                "ncm": self.ed_ncm.text().strip()}
-
     def _verificar(self):
-        cfg = self._coletar_cfg()
-        try:
-            clf, achados = trfb.classificador(cfg)
-        except Exception as exc:  # noqa: BLE001
-            QMessageBox.critical(self, "Tabelas",
-                                 "Falha ao carregar as tabelas:\n%s" % exc)
-            return
-        if not (achados.get("zero") or achados.get("mono")
-                or achados.get("mono_difer")):
+        clf = referencias.atual().classificador_ncm()
+        if clf is None:
             QMessageBox.warning(
                 self, "Tabelas",
-                "Não encontrei as tabelas de alíquota zero/monofásicos na pasta "
-                "informada. Verifique o caminho ou informe os arquivos "
-                "diretamente.")
+                "A base de referência não tem as tabelas de alíquota zero e "
+                "de monofásicos: a verificação não tem com o que comparar.")
             return
-        if not achados.get("mono_difer"):
-            QMessageBox.warning(
-                self, "Tabelas",
-                "A tabela de monofásicos por <b>alíquotas diferenciadas</b> "
-                "(PROD_MONO_ALIQ_DIFER) não foi encontrada.<br><br>"
-                "É ela que traz perfumaria, higiene pessoal, medicamentos, "
-                "veículos e autopeças. Sem ela, produtos como o sabonete "
-                "(NCM 34011190) passam despercebidos — o PVA os acusa e o "
-                "programa não.")
-        self.on_cfg(cfg)
         probs = ncm.verificar_cst_pis_cofins(
             self.doc, clf, data_ref=self.ed_data.text().strip() or None)
         self._preencher(probs)

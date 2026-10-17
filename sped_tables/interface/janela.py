@@ -13,7 +13,6 @@ from PyQt6.QtWidgets import (
 from sped_tables.aplicacao.sessao import Sessao
 from sped_tables.infra import cadastro
 from sped_tables.dominio.sped_model import SpedDocument
-from sped_tables.infra import config
 from sped_tables.infra import dados
 from sped_tables.infra import pva
 from sped_tables.interface import acoes
@@ -62,9 +61,6 @@ class JanelaPrincipal(ControladorArquivo, ControladorIcms,
         # correlações de CFOP (saída -> entradas válidas), persistidas em JSON
         self._caminho_correl = cadastro.caminho_correlacoes()
         self.correlacoes_cfop = cadastro.carregar_correlacoes()
-
-        # configuração das tabelas da RFB (verificação de CST por NCM)
-        self.cfg_tabelas = config.tabelas_rfb()
 
         # Um caminho só para montar a janela. Até a 0.52.0 eram dois — o
         # `sped_editor.ui` do Qt Designer e um fallback em código —, e só o
