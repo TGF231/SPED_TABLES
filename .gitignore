@@ -240,3 +240,7 @@ logs/
 recuperacao/
 sistemas_erp.json
 .venv-exe/
+
+# esboços do brainstorm (companheiro visual)
+.superpowers/
+.claude/worktrees/
