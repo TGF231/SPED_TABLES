@@ -87,6 +87,47 @@ class TestCompilacao(unittest.TestCase):
                              B.impressao_digital(dois))
 
 
+class TestUri(unittest.TestCase):
+    """A URI com que o SQLite abre a base. Nada de `Path.resolve()`: ele
+    troca a unidade de rede mapeada pelo caminho UNC (`Z:\\` vira
+    `\\\\SERVIDOR\\...`) e a URI `file://SERVIDOR/...` o SQLite recusa
+    ("invalid uri authority"), deixando a base importada sempre ilegível."""
+
+    def test_unidade_local(self):
+        self.assertEqual(B._uri("C:/Dados/base referência.db"),
+                         "file:///C:/Dados/base%20refer%C3%AAncia.db?mode=ro")
+
+    def test_unc_leva_quatro_barras(self):
+        """Autoridade vazia (`file://`) e o caminho começando em `//`."""
+        self.assertEqual(
+            B._uri("//servidor/compartilhado$/100% base.db"),
+            "file:////servidor/compartilhado%24/100%25%20base.db?mode=ro")
+
+    def test_posix(self):
+        self.assertEqual(B._uri("/home/ana/base.db"),
+                         "file:///home/ana/base.db?mode=ro")
+
+    def test_cerquilha_e_interrogacao_do_nome_nao_viram_URI(self):
+        self.assertEqual(B._uri("C:/a#b/c?d.db"),
+                         "file:///C:/a%23b/c%3Fd.db?mode=ro")
+
+    def test_do_caminho_do_sistema(self):
+        """O caminho do sistema (relativo, com `\\` no Windows) passa pelo
+        mesmo molde."""
+        uri = B._uri_somente_leitura(os.path.join("pasta", "a b.db"))
+        self.assertTrue(uri.startswith("file://"))
+        self.assertTrue(uri.endswith("/pasta/a%20b.db?mode=ro"))
+        self.assertNotIn("\\", uri)
+
+    def test_abre_pasta_com_espaco_percentual_cifrao_cerquilha_e_acento(self):
+        with PastaTemporaria() as p:
+            pasta = os.path.join(p, "a b %20 c$d #e ação")
+            os.makedirs(pasta)
+            caminho = base_teste.compilada(pasta)
+            self.assertEqual(B.Base(caminho).manifesto()["versao"],
+                             "2026.10.1")
+
+
 class TestBaseIlegivel(unittest.TestCase):
 
     def _banco(self, pasta, n, manifesto):
@@ -150,8 +191,12 @@ class TestEmUso(unittest.TestCase):
         """Vazia, lixo ou truncada: aviso, vale a embutida, nada é apagado."""
         self._base(self.embutida, "2026.10.1")
         completa = ler(base_teste.compilada(self.tmp, versao="2026.11.1"))
+        # truncada em páginas inteiras, pela metade e, o caso traiçoeiro,
+        # em menos de uma página (o SQLite abre e só falha na leitura)
         for lixo in (b"", b"isto nao e sqlite",
-                     completa[:len(completa) // 2]):
+                     completa[:len(completa) // 2],
+                     completa[:-4096], completa[:-4095], completa[:-100],
+                     completa[:-1]):
             with open(self.importada, "wb") as fh:
                 fh.write(lixo)
             self.avisos.clear()
@@ -267,12 +312,48 @@ class TestImportacao(unittest.TestCase):
         with open(lixo, "wb") as fh:
             fh.write(b"nao e zip")
         casos["não é zip"] = lixo
+        casos["deflate corrompido"] = self._corromper_deflate(
+            ok, os.path.join(self.tmp, "f.zip"), [0])
         for nome, caminho in casos.items():
             with self.assertRaises(B.BaseRecusada, msg=nome):
                 B.importar(caminho)
         self.assertFalse(os.path.exists(self.importada))
         self.assertEqual(self._sobras(), [])
         self.assertEqual(B.em_uso()[1], "embutida")
+
+    def _fluxo_deflate(self, zip_ok):
+        """`(início, tamanho)` do fluxo deflate do banco dentro do pacote."""
+        with zipfile.ZipFile(zip_ok) as z:
+            info = z.getinfo(B.ARQUIVO)
+        # cabeçalho local: 30 bytes fixos, o nome e o campo extra
+        inicio = info.header_offset + 30 + len(info.filename) + len(info.extra)
+        return inicio, info.compress_size
+
+    def _corromper_deflate(self, zip_ok, destino, deslocamentos):
+        """Cópia de `zip_ok` com bytes do fluxo deflate do banco trocados
+        (`deslocamentos` conta a partir do início do fluxo). O `zipfile` não
+        repara nada: sai `zlib.error`, `BadZipFile`, `EOFError`... conforme
+        o golpe — o 1º byte em 0xFF é um tipo de bloco inválido."""
+        bruto = bytearray(ler(zip_ok))
+        inicio, _tamanho = self._fluxo_deflate(zip_ok)
+        for d in deslocamentos:
+            bruto[inicio + d] = 0xFF if d == 0 else bruto[inicio + d] ^ 0xFF
+        with open(destino, "wb") as fh:
+            fh.write(bytes(bruto))
+        return destino
+
+    def test_fluxo_deflate_corrompido_so_levanta_base_recusada(self):
+        """Qualquer estrago no banco compactado é recusa de pacote, nunca
+        `zlib.error` (a janela de importação só trata `BaseRecusada`)."""
+        ok = self._pacote("2026.11.1")
+        _inicio, tamanho = self._fluxo_deflate(ok)
+        destino = os.path.join(self.tmp, "h.zip")
+        for d in range(0, tamanho, max(1, tamanho // 60)):
+            self._corromper_deflate(ok, destino, [d])
+            with self.assertRaises(B.BaseRecusada, msg="byte %d" % d):
+                B.importar(destino)
+        self.assertFalse(os.path.exists(self.importada))
+        self.assertEqual(self._sobras(), [])
 
     def test_membro_grande_demais(self):
         with mock.patch.object(B, "LIMITE_PACOTE", 10):

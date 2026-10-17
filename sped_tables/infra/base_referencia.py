@@ -27,8 +27,8 @@ import contextlib
 import hashlib
 import json
 import os
-import pathlib
 import sqlite3
+import urllib.parse
 import zipfile
 import zlib
 
@@ -162,6 +162,26 @@ def compilar(fontes, destino):
 
 
 # ------------------------------------------------------------------- ler
+def _uri(caminho):
+    """URI `file:` somente leitura de um caminho absoluto já com `/`.
+
+    Unidade local (`C:/x`) vira `file:///C:/x`; compartilhamento de rede
+    (`//servidor/pasta`) vira `file:////servidor/pasta` — autoridade vazia
+    e o caminho começando em `//`, o único jeito que o SQLite aceita. Tudo
+    o que não é seguro numa URI (espaço, `%`, `$`, `#`, `?`, acento) sai
+    em `%XX`."""
+    if not caminho.startswith("/"):
+        caminho = "/" + caminho
+    return "file://" + urllib.parse.quote(caminho, safe="/:") + "?mode=ro"
+
+
+def _uri_somente_leitura(caminho):
+    """A URI de `caminho`, sem `Path.resolve()`: ele troca a unidade de rede
+    mapeada (`Z:\\`) pelo UNC (`\\\\SERVIDOR\\...`), e quem usa a pasta de
+    dados num disco de rede ficava com a base sempre ilegível."""
+    return _uri(os.path.abspath(caminho).replace(os.sep, "/"))
+
+
 class Base:
     """Um banco compilado. Cada consulta abre e fecha a conexão (o `sqlite3`
     não divide conexão entre threads) e o que é lido fica em memória: a base
@@ -175,11 +195,22 @@ class Base:
         try:
             with self._conectar() as con:
                 esquema = con.execute("PRAGMA user_version").fetchone()[0]
+                paginas = con.execute("PRAGMA page_count").fetchone()[0]
+                tamanho_pagina = con.execute("PRAGMA page_size").fetchone()[0]
                 (texto,) = con.execute(
                     "SELECT conteudo FROM manifesto").fetchone()
             manifesto = json.loads(texto)
         except (sqlite3.Error, TypeError, ValueError) as exc:
             raise BaseInvalida(str(exc))
+        # o cabeçalho diz quantas páginas o banco tem; o compilado (depois
+        # do VACUUM) ocupa exatamente isso. Truncado em menos de uma página
+        # o SQLite abre sem reclamar e só falha, com "disk I/O error", na
+        # primeira leitura de uma tabela
+        esperado, tamanho = paginas * tamanho_pagina, os.path.getsize(caminho)
+        if tamanho != esperado:
+            raise BaseInvalida("o arquivo tem %d bytes e o cabeçalho espera "
+                               "%d: está truncado ou alterado"
+                               % (tamanho, esperado))
         if esquema > ESQUEMA:
             raise EsquemaNovo("esquema %d; este programa entende até o %d"
                               % (esquema, ESQUEMA))
@@ -189,8 +220,8 @@ class Base:
         self._manifesto = manifesto
 
     def _conectar(self):
-        uri = pathlib.Path(self.caminho).resolve().as_uri() + "?mode=ro"
-        return contextlib.closing(sqlite3.connect(uri, uri=True))
+        return contextlib.closing(sqlite3.connect(
+            _uri_somente_leitura(self.caminho), uri=True))
 
     def _uma_vez(self, chave, ler):
         if chave not in self._cache:
@@ -334,9 +365,16 @@ def inspecionar(caminho_zip):
                                    "base de referência.")
             banco = z.read(ARQUIVO)
             manifesto = json.loads(z.read("manifesto.json").decode("utf-8"))
-    except (zipfile.BadZipFile, OSError, ValueError, KeyError) as exc:
+    except BaseRecusada:
+        raise
+    except Exception as exc:                               # noqa: BLE001
+        # toda falha de leitura é pacote ruim, e quem importa só trata
+        # `BaseRecusada`: o zip lança BadZipFile, mas um fluxo deflate
+        # estragado sai `zlib.error`, e há ainda EOFError, RuntimeError
+        # (membro cifrado), NotImplementedError (compressão desconhecida)
+        # e MemoryError
         raise BaseRecusada("O arquivo não é um pacote de base de referência "
-                           "legível (%s)." % exc)
+                           "legível (%s)." % (str(exc) or type(exc).__name__))
     if not isinstance(manifesto, dict):
         raise BaseRecusada("O manifesto do pacote está ilegível.")
     digital = hashlib.sha256(banco).hexdigest()
