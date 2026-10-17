@@ -140,7 +140,9 @@ def ao_avisar(funcao):
         funcao(_avisos.pop(0))
 
 
-def _avisar(texto):
+def avisar(texto):
+    """Registra o aviso e o entrega a quem os mostra (ou o guarda até alguém
+    ligar `ao_avisar`)."""
     logging.getLogger("sped_tables").warning(texto)
     if _ao_avisar[0] is not None:
         _ao_avisar[0](texto)
@@ -163,12 +165,12 @@ def preservar_corrompido(caminho_arquivo, motivo):
         os.replace(caminho_arquivo, destino)
     except OSError:
         destino = None
-    _avisar("O arquivo %s está ilegível (%s). %s O programa segue sem ele."
-            % (os.path.basename(caminho_arquivo), motivo,
-               "Ele foi guardado como %s, sem nada apagado."
-               % os.path.basename(destino) if destino
-               else "Não foi possível guardá-lo à parte: não salve nada "
-                    "desse tipo antes de recuperá-lo."))
+    avisar("O arquivo %s está ilegível (%s). %s O programa segue sem ele."
+           % (os.path.basename(caminho_arquivo), motivo,
+              "Ele foi guardado como %s, sem nada apagado."
+              % os.path.basename(destino) if destino
+              else "Não foi possível guardá-lo à parte: não salve nada "
+                   "desse tipo antes de recuperá-lo."))
     return destino
 
 
