@@ -429,6 +429,35 @@ class TestJanela(unittest.TestCase):
             referencias.definir(antes)
         self.assertEqual(self.erros, [], self._falhas())
 
+    def test_cst_por_ncm_sem_tabelas_avisa_e_nao_acusa(self):
+        """Fonte sem classificador (`None`): o diálogo recusa com o aviso em
+        vez de comparar com uma tabela vazia, que tributaria todo NCM."""
+        from sped_tables.dominio import referencias
+
+        class FonteSemTabelas(referencias.Referencias):
+            def classificador_ncm(self):
+                return None
+
+        antes = referencias.definir(FonteSemTabelas())
+        try:
+            with PastaTemporaria() as p:
+                j = self.ed.JanelaPrincipal()
+                self.assertTrue(j.abrir_caminho(contrib_basico().gravar(p)))
+                _esperar()
+                j.verificar_cst_ncm()
+                dlg = j._janelas["DialogoVerificarCST"]
+                with mock.patch.object(QMessageBox, "warning") as aviso:
+                    dlg._verificar()
+                self.assertEqual(aviso.call_count, 1)
+                self.assertIn("base de referência", aviso.call_args[0][2])
+                self.assertEqual(dlg.tab.rowCount(), 0)
+                self.assertFalse(dlg.b_corrigir.isEnabled())
+                self.assertEqual(dlg.lbl.text(), "—")
+                j.close()
+        finally:
+            referencias.definir(antes)
+        self.assertEqual(self.erros, [], self._falhas())
+
     def test_regenerar_entradas_pela_tela(self):
         from tests.fabrica import nfe_xml
         with PastaTemporaria() as p:

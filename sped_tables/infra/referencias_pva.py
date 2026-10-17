@@ -74,7 +74,12 @@ class ReferenciasPVA(Referencias):
             self._clf_lido = True
             try:
                 from sped_tables.infra import tabelas_rfb
-                self._clf = tabelas_rfb.carregar_tudo()[0]
+                clf, achados = tabelas_rfb.carregar_tudo()
+                # sem nenhuma das três tabelas o classificador sai vazio, e
+                # vazio trata todo NCM como tributado: a porta promete
+                # `ClassificadorNCM` ou `None`, e quem recebe `None` se abstém
+                if any(achados.get(k) for k in ("zero", "mono", "mono_difer")):
+                    self._clf = clf
             except Exception:                               # noqa: BLE001
                 self._clf = None
         return self._clf

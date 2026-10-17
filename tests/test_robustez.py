@@ -9,7 +9,9 @@ from sped_tables.infra import cadastro
 from sped_tables.infra import arquivos
 from sped_tables.infra import config
 from sped_tables.infra import descritor_pva
+from sped_tables.infra.referencias_pva import ReferenciasPVA
 from sped_tables.dominio import empresas as emp_mod
+from sped_tables.dominio.ncm import ClassificadorNCM
 from sped_tables.dominio.sped_model import SpedDocument
 from tests.fabrica import (CNPJ_TESTE, PastaTemporaria, contrib_basico,
                            icms_basico)
@@ -173,6 +175,37 @@ class TestConfiguracao(unittest.TestCase):
         a = descritor_pva.carregar("ICMS")
         b = descritor_pva.carregar("ICMS")
         self.assertIs(a, b)
+
+    def test_classificador_ncm_sem_tabelas_e_none(self):
+        """A porta promete `ClassificadorNCM` ou `None`. Sem as tabelas de
+        alíquota zero e de monofásicos o classificador sairia **vazio** — e
+        vazio trata todo NCM como tributado, acusando divergência que não
+        existe (saída em CST 04/06 com sugestão 01)."""
+        with PastaTemporaria() as p:
+            os.environ[config.VARIAVEL] = self._pva_falso(p)
+            config.esquecer()
+            self.assertIsNone(ReferenciasPVA().classificador_ncm())
+
+    def test_classificador_ncm_com_uma_tabela_ja_serve(self):
+        """Basta uma das três tabelas (zero, mono, mono_difer) para existir
+        o que comparar."""
+        clf = ClassificadorNCM()
+        for achado in ("zero", "mono", "mono_difer"):
+            achados = {"zero": None, "mono": None, "mono_difer": None,
+                       "genero": "g.txt", "ncm": None}
+            achados[achado] = "tabela.txt"
+            with mock.patch("sped_tables.infra.tabelas_rfb.carregar_tudo",
+                            return_value=(clf, achados)):
+                self.assertIs(ReferenciasPVA().classificador_ncm(), clf,
+                              achado)
+
+    def test_classificador_ncm_so_com_genero_e_none(self):
+        """O gênero e o NCM vigente não classificam ninguém sozinhos."""
+        achados = {"zero": None, "mono": None, "mono_difer": None,
+                   "genero": "g.txt", "ncm": "n.xlsx"}
+        with mock.patch("sped_tables.infra.tabelas_rfb.carregar_tudo",
+                        return_value=(ClassificadorNCM(), achados)):
+            self.assertIsNone(ReferenciasPVA().classificador_ncm())
 
 
 class TestIndiceDoAcervo(unittest.TestCase):
