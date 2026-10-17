@@ -9,6 +9,7 @@ from sped_tables.infra import cadastro
 from sped_tables.infra import arquivos
 from sped_tables.infra import config
 from sped_tables.infra import descritor_pva
+from sped_tables.infra import tabelas_ncm
 from sped_tables.infra.referencias_pva import ReferenciasPVA
 from sped_tables.dominio import empresas as emp_mod
 from sped_tables.dominio.ncm import ClassificadorNCM
@@ -189,22 +190,20 @@ class TestConfiguracao(unittest.TestCase):
     def test_classificador_ncm_com_uma_tabela_ja_serve(self):
         """Basta uma das três tabelas (zero, mono, mono_difer) para existir
         o que comparar."""
-        clf = ClassificadorNCM()
-        for achado in ("zero", "mono", "mono_difer"):
-            achados = {"zero": None, "mono": None, "mono_difer": None,
-                       "genero": "g.txt", "ncm": None}
-            achados[achado] = "tabela.txt"
-            with mock.patch("sped_tables.infra.tabelas_rfb.carregar_tudo",
-                            return_value=(clf, achados)):
-                self.assertIs(ReferenciasPVA().classificador_ncm(), clf,
-                              achado)
+        genero = (tabelas_ncm.CHAVE_GENERO, ("versão=1 COD, DESC\n", 1))
+        for chave in (tabelas_ncm.CHAVE_ALIQ_ZERO, tabelas_ncm.CHAVE_MONO,
+                      tabelas_ncm.CHAVE_MONO_DIFER):
+            tabs = dict([genero, (chave, ("versão=1 COD, DESC\n", 1))])
+            with mock.patch.object(ReferenciasPVA, "_tabelas",
+                                   return_value=tabs):
+                self.assertIsInstance(ReferenciasPVA().classificador_ncm(),
+                                      ClassificadorNCM, chave)
 
     def test_classificador_ncm_so_com_genero_e_none(self):
         """O gênero e o NCM vigente não classificam ninguém sozinhos."""
-        achados = {"zero": None, "mono": None, "mono_difer": None,
-                   "genero": "g.txt", "ncm": "n.xlsx"}
-        with mock.patch("sped_tables.infra.tabelas_rfb.carregar_tudo",
-                        return_value=(ClassificadorNCM(), achados)):
+        tabs = {tabelas_ncm.CHAVE_GENERO: ("versão=1 COD, DESC\n", 1)}
+        with mock.patch.object(ReferenciasPVA, "_tabelas",
+                               return_value=tabs):
             self.assertIsNone(ReferenciasPVA().classificador_ncm())
 
 

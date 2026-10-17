@@ -510,7 +510,7 @@ class DialogoEmpresa(QDialog):
         if self._coletar() is None:
             return
         extra = {}
-        if r.requer == "tabelas_rfb":
+        if r.requer == "tabelas_ncm":
             clf = self._classificador()
             if clf is None:
                 return

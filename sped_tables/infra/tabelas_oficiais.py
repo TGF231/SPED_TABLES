@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
 """
-tabelas_pva.py
---------------
-Domínios de campo lidos das **tabelas dos próprios PVAs** — EFD ICMS/IPI
-(`Fiscal/recursos/TabelasExternas`) e EFD Contribuições
-(`EFD-Contribuicoes/recursos/tabelas`).
+tabelas_oficiais.py
+-------------------
+Domínios de campo e consultas sobre as **tabelas oficiais** (as que os PVAs
+publicam), lidas de **texto**: quem entrega o conjunto
+`{chave: (texto, versao)}` é a base de referência (ou, no consolidador, a
+pasta do PVA). Aqui só se interpreta o formato.
 
 A motivação é direta: enquanto a lista de códigos válidos mora no código, ela
 envelhece e diverge do validador oficial. Um caso real: o NCM `34011190` era
 monofásico numa tabela que o programa não lia, e o PVA acusava algo que aqui
-passava limpo. Lendo as tabelas do PVA, a verificação passa a ser a **mesma**
-que o fisco aplica, e acompanha as atualizações do programa sem mexer no
-código.
+passava limpo. Lendo as tabelas oficiais, a verificação passa a ser a **mesma**
+que o fisco aplica, e acompanha as atualizações sem mexer no código.
 
 Formato das tabelas (idêntico nos dois PVAs, `latin-1`):
 
@@ -34,21 +34,10 @@ Três cuidados que o código incorpora:
   estado; a UF vem do 0000 do arquivo.
 """
 
-import io
 import os
 import re
-import glob
 
-from sped_tables.infra import config
-
-
-def _pasta_fiscal(pasta=None):
-    """Tabelas externas do PVA Fiscal — de `config`, salvo quando passadas."""
-    return pasta or config.pasta_tabelas("ICMS")
-
-
-def _pasta_contrib(pasta=None):
-    return pasta or config.pasta_tabelas("CONTRIB")
+from sped_tables.infra import tabelas_ncm
 
 
 # Tabela **única** do CST do ICMS publicada pelo PVA Fiscal (140 códigos com
@@ -144,52 +133,50 @@ def tabela_do_datasource(ds, layout):
     return None
 
 
-def _chave_sem_versao(nome):
-    """`GRUPO$TABELA$12$34` -> (`GRUPO$TABELA`, 12)."""
-    m = re.match(r"^(.*?)\$(\d+)\$\d+$", nome)
-    if m:
-        return m.group(1), int(m.group(2))
-    return nome, 0
+# nome de arquivo de tabela do PVA: GRUPO$TABELA$versao$id
+RE_ARQUIVO = re.compile(r"^(.*?)\$(\d+)\$\d+$")
 
 
-def listar_tabelas(pasta):
-    """Tabelas da pasta, já resolvidas para a **maior versão** de cada uma.
-    Devolve `{chave: (caminho, versao)}`."""
+def tabelas_da_pasta(pasta, encoding="latin-1"):
+    """`{chave: (texto, versao)}` das tabelas de uma pasta do PVA, cada uma
+    na **maior versão**. Arquivo fora do padrão `GRUPO$TABELA$versao$id`
+    (o `metadados`, binário) fica de fora."""
     out = {}
     if not pasta or not os.path.isdir(pasta):
         return out
-    for caminho in glob.glob(os.path.join(pasta, "*")):
-        if os.path.isdir(caminho):
+    for nome in sorted(os.listdir(pasta)):
+        m = RE_ARQUIVO.match(nome)
+        caminho = os.path.join(pasta, nome)
+        if not m or not os.path.isfile(caminho):
             continue
-        chave, versao = _chave_sem_versao(os.path.basename(caminho))
-        if chave not in out or versao > out[chave][1]:
-            out[chave] = (caminho, versao)
+        chave, versao = m.group(1), int(m.group(2))
+        if chave in out and out[chave][1] >= versao:
+            continue
+        with open(caminho, encoding=encoding) as fh:
+            out[chave] = (fh.read(), versao)
     return out
 
 
-def _chave_data(s):
+def chave_data(ddmmaaaa):
     """DDMMAAAA -> AAAAMMDD, para comparar como texto."""
-    d = "".join(c for c in (s or "") if c.isdigit())
+    d = "".join(c for c in (ddmmaaaa or "") if c.isdigit())
     return d[4:8] + d[2:4] + d[0:2] if len(d) == 8 else ""
 
 
-def carregar_codigos(caminho, data_ref=None, encoding="latin-1"):
-    """Lê uma tabela de códigos do PVA. Devolve `{"versao", "codigos"}`,
-    com `codigos` = `{codigo: descricao}` **vigentes** em `data_ref`.
+def carregar_codigos(texto, data_ref=None):
+    """Lê uma tabela de códigos no formato do PVA. Devolve `{"versao",
+    "codigos"}`, com `codigos` = `{codigo: descricao}` **vigentes** em
+    `data_ref`.
 
     Sem `data_ref`, entra tudo — útil para inspeção, não para validar.
     """
     codigos = {}
     versao = None
-    try:
-        with open(caminho, encoding=encoding) as fh:
-            linhas = fh.read().splitlines()
-    except OSError:
-        return {"versao": None, "codigos": {}}
+    linhas = (texto or "").splitlines()
     if linhas:
         m = re.search(r"vers[\u00e3a]o=(\S+)", linhas[0])
         versao = m.group(1) if m else None
-    alvo = _chave_data(data_ref)
+    alvo = chave_data(data_ref)
     for l in linhas[1:]:
         if not l.strip():
             continue
@@ -198,8 +185,8 @@ def carregar_codigos(caminho, data_ref=None, encoding="latin-1"):
         if not cod:
             continue
         if alvo and len(p) >= 4:
-            ini = _chave_data(p[2]) or "00000000"
-            fim = _chave_data(p[3]) or "99999999"
+            ini = chave_data(p[2]) or "00000000"
+            fim = chave_data(p[3]) or "99999999"
             if not (ini <= alvo <= fim):
                 continue
         # a mesma tabela pode trazer o código mais de uma vez (redações
@@ -231,7 +218,7 @@ def dominio_cst_icms(tabs, data_ref=None):
     return None, None, None
 
 
-def cfops_com_credito(pasta_contrib=None, data_ref=None):
+def cfops_com_credito(tabs, data_ref=None):
     """CFOP que admitem crédito de PIS/COFINS, pela tabela do PVA.
 
     `SPEDPISCOFINS_CFOP_CREDITO` (4.3.7) lista os 89 CFOP de entrada que geram
@@ -242,7 +229,6 @@ def cfops_com_credito(pasta_contrib=None, data_ref=None):
     Devolve `(codigos, versao)`; `(None, None)` se a tabela não estiver
     instalada — sem ela a verificação não roda, em vez de aprovar no escuro.
     """
-    tabs = listar_tabelas(_pasta_contrib(pasta_contrib))
     return codigos_de("SPEDPISCOFINS_OPER_CREDITO$SPEDPISCOFINS_CFOP_CREDITO",
                       tabs, None, data_ref)
 
@@ -258,13 +244,12 @@ TABELAS_NAT_REC = {
 }
 
 
-def naturezas_receita(cst, pasta_contrib=None, data_ref=None):
+def naturezas_receita(tabs, cst, data_ref=None):
     """Códigos de natureza da receita válidos para o CST do M400/M800, ou
     None quando o CST não tem tabela (ou ela não está instalada)."""
     nomes = TABELAS_NAT_REC.get((cst or "").strip())
     if not nomes:
         return None
-    tabs = listar_tabelas(_pasta_contrib(pasta_contrib))
     out = set()
     achou = False
     for nome in nomes:
@@ -275,23 +260,18 @@ def naturezas_receita(cst, pasta_contrib=None, data_ref=None):
     return out if achou else None
 
 
-def tabela_natureza_receita(cst, pasta_contrib=None):
+def tabela_natureza_receita(tabs, cst):
     """`[(código, [prefixos de NCM], ex_ipi)]` das tabelas de natureza da
     receita do CST (4.3.10 a 4.3.16) — para achar a natureza de um produto
     pelo NCM. Natureza sem NCM na tabela (a 918 das bebidas frias, por
     exemplo, que só o texto descreve) vem com a lista vazia."""
-    from sped_tables.infra import tabelas_rfb    # o leitor do formato
     nomes = TABELAS_NAT_REC.get((cst or "").strip(), ())
-    tabs = listar_tabelas(_pasta_contrib(pasta_contrib))
     out = []
     for nome in nomes:
         alvo = tabs.get("SPEDPISCOFINS_OPER_CONTRIB$SPEDPISCOFINS_" + nome)
         if not alvo:
             continue
-        try:
-            tabela = tabelas_rfb.carregar_tabela_produtos(alvo[0])
-        except OSError:
-            continue
+        tabela = tabelas_ncm.carregar_tabela_produtos(alvo[0])
         for reg in tabela["registros"]:
             if reg["dt_fim"]:
                 continue                  # natureza que já saiu da tabela
@@ -300,21 +280,16 @@ def tabela_natureza_receita(cst, pasta_contrib=None):
     return out
 
 
-def ncms_da_natureza(codigo, pasta_contrib=None):
+def ncms_da_natureza(tabs, codigo):
     """Prefixos de NCM que as tabelas de natureza da receita (4.3.10 a
     4.3.16) associam ao `codigo` — o produto de que a receita é."""
-    from sped_tables.infra import tabelas_rfb    # o leitor do formato
-    tabs = listar_tabelas(_pasta_contrib(pasta_contrib))
     out = set()
     for nomes in TABELAS_NAT_REC.values():
         for nome in nomes:
             alvo = tabs.get("SPEDPISCOFINS_OPER_CONTRIB$SPEDPISCOFINS_" + nome)
             if not alvo:
                 continue
-            try:
-                tabela = tabelas_rfb.carregar_tabela_produtos(alvo[0])
-            except OSError:
-                continue
+            tabela = tabelas_ncm.carregar_tabela_produtos(alvo[0])
             for reg in tabela["registros"]:
                 if reg["codigo"] == codigo:
                     out.update(reg["ncm"])
@@ -322,7 +297,7 @@ def ncms_da_natureza(codigo, pasta_contrib=None):
     return out
 
 
-def naturezas_cfop_credito(pasta_contrib=None, data_ref=None):
+def naturezas_cfop_credito(tabs, data_ref=None):
     """`{cfop: NAT_BC_CRED}` — a natureza da base do crédito por CFOP.
 
     A quinta coluna de `SPEDPISCOFINS_CFOP_CREDITO` traz `NAT_BC_CRE`: é ela
@@ -334,37 +309,31 @@ def naturezas_cfop_credito(pasta_contrib=None, data_ref=None):
     Devolve `{}` quando a tabela não está instalada: sem ela não dá para
     refazer o crédito, e chutar a natureza seria pior que não mexer.
     """
-    tabs = listar_tabelas(_pasta_contrib(pasta_contrib))
     alvo = tabs.get("SPEDPISCOFINS_OPER_CREDITO$SPEDPISCOFINS_CFOP_CREDITO")
     if not alvo:
         return {}
-    fim = _chave_data(data_ref)
+    fim = chave_data(data_ref)
     out = {}
-    try:
-        with io.open(alvo[0], encoding="latin-1") as fh:
-            linhas = fh.read().splitlines()
-    except OSError:
-        return {}
+    linhas = alvo[0].splitlines()
     for l in linhas[1:]:
         p = l.split("|")
         if len(p) < 5 or not p[0].strip():
             continue
         if fim:
-            ini = _chave_data(p[2]) or "00000000"
-            f = _chave_data(p[3]) or "99999999"
+            ini = chave_data(p[2]) or "00000000"
+            f = chave_data(p[3]) or "99999999"
             if not (ini <= fim <= f):
                 continue
         out.setdefault(p[0].strip(), p[4].strip())
     return out
 
 
-def prazo_entrega(mes_ano, pasta_contrib=None):
+def prazo_entrega(tabs, mes_ano):
     """Data limite de entrega da EFD Contribuições do período `MMAAAA`.
 
     Vem de `SPEDPISCOFINS_DATA_LIMITE_ENTREGA`, a mesma tabela que o PVA cita
     ao pedir o registro 0900. Devolve `DDMMAAAA` ou `""`.
     """
-    tabs = listar_tabelas(_pasta_contrib(pasta_contrib))
     alvo = tabs.get("SPEDPISCOFINS_GLOBAL$SPEDPISCOFINS_DATA_LIMITE_ENTREGA")
     if not alvo:
         return ""
@@ -372,13 +341,12 @@ def prazo_entrega(mes_ano, pasta_contrib=None):
     return t["codigos"].get(mes_ano, "")
 
 
-def codigos_receita_icms(uf, data_ref=None, pasta_fiscal=None):
+def codigos_receita_icms(tabs, uf, data_ref=None):
     """`{código: descrição}` da tabela de receitas da UF
     (`SPEDFISCAL_{UF}$REC_REF_OBRIGACAO`, o datasource do COD_REC do E116),
     só os vigentes em `data_ref`."""
     if not uf:
         return {}
-    tabs = listar_tabelas(_pasta_fiscal(pasta_fiscal))
     alvo = tabs.get("SPEDFISCAL_%s$REC_REF_OBRIGACAO" % uf.upper())
     if alvo is None:
         return {}
@@ -398,8 +366,7 @@ def codigos_de(chave, tabs, uf=None, data_ref=None):
     return (set(t["codigos"]) or None), t["versao"]
 
 
-def dominios_por_datasource(estrutura, layout, pasta_fiscal=None,
-                            pasta_contrib=None, uf=None, data_ref=None):
+def dominios_por_datasource(tabs, estrutura, layout, uf=None, data_ref=None):
     """Domínios de tabela externa, **na granularidade do descritor**:
     `{(registro, campo): {...}}`.
 
@@ -407,8 +374,6 @@ def dominios_por_datasource(estrutura, layout, pasta_fiscal=None,
     `CST_PIS` tem tabela diferente no C175, no C181 e no C191. Validar por
     nome de campo, como antes, achatava essas diferenças.
     """
-    tabs = listar_tabelas(_pasta_fiscal(pasta_fiscal))
-    tabs.update(listar_tabelas(_pasta_contrib(pasta_contrib)))
     cache = {}
     out = {}
     faltando = set()

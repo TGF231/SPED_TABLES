@@ -743,7 +743,7 @@ ROTINAS = [
         corrigir=corrigir_cst_ncm,
         rotulo_correcao="Retirar o crédito das entradas (troca o CST e zera "
                         "base/alíquota/valor)",
-        requer="tabelas_rfb",
+        requer="tabelas_ncm",
     ),
     Rotina(
         id="cfop_credito",
@@ -757,7 +757,7 @@ ROTINAS = [
         corrigir=corrigir_credito_indevido,
         rotulo_correcao="Retirar o crédito (zera base/alíquota/valor e troca "
                         "o CST)",
-        requer="tabelas_pva",
+        requer="tabelas_oficiais",
     ),
     Rotina(
         id="csosn_cst",
