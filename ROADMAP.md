@@ -200,15 +200,17 @@ Sem data; entram pelo canal dev e seguem a seção 1.
   ferramental (inventário, comparador contra o banco do PVA, gabarito
   sintético), depois as regras com SQL legível, as famílias
   parametrizáveis e as classes específicas por impacto.
-- **Descritor da versão do arquivo** (`COD_VER`), não só o mais recente:
-  o `.jar` traz um por ato (ato019 = 2025, ato020 = 2026); hoje vale o
-  último para qualquer arquivo.
+- ~~**Descritor da versão do arquivo** (`COD_VER`), não só o mais
+  recente.~~ **Feito na 1.1.0-dev.16**, com a base de referência: cada
+  arquivo é conferido com a estrutura do `COD_VER` que declara (ver
+  `ROADMAP_REGRAS_PVA.md`, projeto 1).
 - **Obrigatoriedade por perfil** (seção 2 do guia do ICMS/IPI: registro
   obrigatório, facultativo ou vedado para o perfil A, B e C).
 - **Inscrição estadual por UF** (dígito verificador de cada estado), que o
   PVA confere no 0000 e no 0150.
 - Leiaute 2027 do ICMS/IPI (guia 3.2.4: `IND_BENEFICIO` no E111, C197,
-  D197…, `COD_PROD` no C180) quando o PVA trouxer o descritor.
+  D197…, `COD_PROD` no C180) quando o PVA trouxer o descritor — e o
+  consolidador o extrair para a base de referência.
 
 ---
 

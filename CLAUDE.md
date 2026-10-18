@@ -15,8 +15,9 @@ py -m unittest discover -s tests -t .
 
 O PyQt6 está no interpretador do `py` (`pythoncore-3.14-64`), não no
 `python` do PATH. Dependências em `requirements.txt` (PyQt6; `openpyxl` para
-planilhas XLSX). A suíte (~190 testes, ~11 s) roda **antes de todo commit**;
-ver `TESTES.md`.
+planilhas XLSX). A suíte (~450 testes, ~35 s) roda **antes de todo commit**,
+**sem PVA**: a pasta do PVA aponta para um diretório vazio e tudo vem da base
+de referência; ver `TESTES.md`.
 
 ## Arquitetura
 
@@ -32,9 +33,16 @@ interface ──► aplicacao ──► dominio ◄── infra
 | Camada | Pode importar | Módulos |
 |---|---|---|
 | `sped_tables/dominio/` | só o domínio (nem Qt) | `sped_model` (`SpedDocument`, todos os cálculos), `sped_layouts` (leiaute completo: 270 registros no ICMS/IPI, 203 no Contribuições), `validacao`, `revisao` (lista `REGRAS`), `rotinas` (lista `ROTINAS`), `diagnostico`, `conferencia`, `ncm` (classificação do NCM e CST esperado), `empresas` (a entidade), `xml_fiscal`, `memoria_itens` e `geracao` (SPED a partir dos XMLs), `comparacao_sped`, **`referencias` (a porta)** |
-| `sped_tables/infra/` | domínio | `config` (**ponto único de configuração**), `dados` (pasta de dados, gravação atômica, recursos), `descritor_pva`, `tabelas_pva`, `tabelas_rfb` (leitura), `referencias_pva` (**o adaptador**), `cadastro` (empresas e correlações em JSON), `arquivos` (acervo), `exportacao` (CSV), `pva` (automação Win32), `falhas` (registro e ganchos), `memoria` (memória de cada empresa em JSON), `paralelo` (trabalho repartido entre processos), `bancos` (adaptadores dos bancos de ERP), `dbf`, `segredos` (DPAPI), `sistemas_erp` |
+| `sped_tables/infra/` | domínio | `config` (**ponto único de configuração**), `dados` (pasta de dados, gravação atômica, recursos), `base_referencia` (compilar, ler, escolher e importar a base), `referencias_base` (**o adaptador**), `tabelas_oficiais` (as tabelas oficiais, lidas de texto), `tabelas_ncm` (NCM → `ClassificadorNCM`), `cadastro` (empresas e correlações em JSON), `arquivos` (acervo), `exportacao` (CSV), `pva` (automação Win32), `falhas` (registro e ganchos), `memoria` (memória de cada empresa em JSON), `paralelo` (trabalho repartido entre processos), `bancos` (adaptadores dos bancos de ERP), `dbf`, `segredos` (DPAPI), `sistemas_erp` |
 | `sped_tables/aplicacao/` | domínio, infra | `sessao` (arquivo aberto: abrir/salvar/fechar + acervo), `envio_pva` (pré-checagem, envio, desfecho), `geracao_xml` (gerar pelos XMLs: aprender, gerar, decidir, salvar), `leitura_xml` (toda leitura de pasta de XMLs, em paralelo), `erp` (casos de uso do banco do ERP), `montagem` (**raiz de composição**) |
 | `sped_tables/interface/` | todos | `app` (`main`), `janela`, **`acoes` (tabela única de ações)**, `controladores/` (mixins da janela por área do menu), `grade`, `telas/`, `dialogos/`, `formulario_empresa`, `comum`, `tema`, `icones`, `barra_titulo`, `janela_custom`, `autoteste` (`--autoteste`: o roteiro 2.2 de dentro do executável) |
+
+Fora do `sped_tables/`, na raiz, o pacote **`consolidador/`** (`descritor`,
+`instalacao`, `extracao`, `guias`, `banco_pva`; linha de comando `py -m
+consolidador extrair|guia|compilar|publicar`) é o único que lê a instalação do
+PVA para extrair a base — na máquina de **quem compila**, nunca na de quem usa.
+Ele pode importar o `sped_tables`; **o `sped_tables` nunca importa o
+`consolidador`** (`tests/test_arquitetura.py` confere as duas coisas).
 
 `sped_editor.py` na raiz é só o lançador. `sped_tables/version.py` tem
 `__version__`, `APP_NAME` e `canal()`.
@@ -43,15 +51,82 @@ Regras gerais:
 
 - **Lógica fiscal no domínio, nunca na interface.** A interface chama o
   domínio (ou um caso de uso) e apresenta o resultado.
-- **Nada do domínio lê a instalação do PVA.** O que precisa de tabela
-  oficial pergunta a `referencias.atual()`; `montagem.configurar()` liga o
-  adaptador do PVA no início do programa e da suíte. Sem fonte ligada, a
-  fonte é vazia e as regras se abstêm. Teste liga fonte inventada com
+- **Nada do programa lê a instalação do PVA**, salvo o *Abrir no PVA*
+  (`infra/pva.py`, `aplicacao/envio_pva.py` e o *Pasta dos PVAs…* da
+  interface): leiaute, tabelas e guias vêm de `referencias.atual()`, ligada à
+  **base de referência** (ver a seção própria, abaixo). `montagem.configurar()`
+  liga o adaptador (`ReferenciasBase`) no início do programa e da suíte e
+  de novo depois de importar uma base. Sem base legível a fonte é vazia, as
+  regras se abstêm e a pessoa é avisada. Teste liga fonte inventada com
   `referencias.definir(...)` e restaura.
 - **Todo caminho sai de `config` (PVA) ou `dados` (pasta do usuário).**
   Nunca `__file__` para achar dado; recurso empacotado é `dados.recurso()`.
 - **A janela não guarda o estado do arquivo:** `doc`, `caminho` e `alterado`
   são propriedades que leem `self.sessao`.
+
+## A base de referência
+
+Tudo o que o programa sabe do SPED **fora do próprio código** — a estrutura
+do leiaute de cada versão, as tabelas oficiais, os guias práticos e o NCM
+vigente — vem de uma base montada na compilação, nunca da instalação do PVA
+da máquina (`docs/adr/0001-base-de-referencia-compilada.md`; vocabulário em
+`CONTEXT.md`). Até a 1.1.0-dev.15 o programa lia o descritor e as tabelas do
+PVA de quem o usava: com PVA antigo a pré-validação discordava do PVA
+vigente, e sem PVA as regras se abstinham. O projeto é o primeiro de quatro
+(`ROADMAP_REGRAS_PVA.md`).
+
+- **Fontes em texto, em `base/`**, versionadas e revisáveis por diff:
+  `manifesto.json`, `leiaute/<LEIAUTE>/<COD_VER>.json`,
+  `tabelas/<GRUPO>@<TABELA>.txt` (o `$` da chave vira `@` no nome do arquivo,
+  que atrapalha o terminal), `guias/<LEIAUTE>.json` e `ncm/vigente.txt`
+  (opcional). Só **fatos** — campos, tipos, tamanhos, códigos de tabela
+  pública —: nada de SQL, Java nem texto de mensagem do PVA. Fontes em
+  UTF-8 (o SPED continua latin-1). Quem as regrava é o consolidador, na
+  máquina de quem compila; a revisão é o `git diff base/`.
+- **Compilação reproduzível.** `infra/base_referencia.py` compila `base/`
+  num SQLite (`recursos/base_referencia.db`, ~1,8 MB, fora do git) com ordem
+  fixa e **sem data de compilação**: mesmas fontes, mesmo banco, byte a byte,
+  com o SHA-256 em `.sha256` ao lado. O fim de linha das fontes é
+  normalizado antes — o git troca CRLF e LF no checkout, e sem isso a
+  impressão digital mudaria de máquina para máquina. Rodando do código-fonte,
+  `em_uso()` recompila sozinha quando o banco falta ou `base/` é mais nova; o
+  executável não tem `base/`: `ferramentas/gerar_executavel.py` compila antes
+  do PyInstaller.
+- **Versão `AAAA.MM.n`** (`manifesto["versao"]`; `n` sobe no mesmo mês),
+  esquema 1. **Qual base vale:** a mais nova entre a embutida no executável
+  e a importada (*Configurações → Base de referência…*, guardada na pasta de
+  dados). Base ilegível é **ignorada, nunca apagada**, e avisada se sobrar uma
+  legível; não sobrando nenhuma, `em_uso()` devolve o motivo e a `montagem`
+  dá a **única** mensagem e liga a fonte vazia (antes eram dois modais
+  seguidos). A importação confere impressão digital, esquema e versão
+  **antes** de tocar na base em uso, e toda falha — pacote ruim, disco
+  cheio, pasta de rede — é `BaseRecusada`, nunca exceção que escapa do
+  diálogo (num slot do Qt ela derrubaria o processo).
+- **O leiaute vale pela versão do arquivo.** O helper do domínio
+  `referencias.versao_do_leiaute(doc)` tira o `COD_VER` do 0000, e quem tem o
+  documento em mãos pede `referencias.atual().estrutura(layout, versao)`;
+  `versao=None` é "a mais recente" e só serve à geração de um período novo. Versão que a base não
+  guarda volta `fora_da_base`, e o programa **avisa e se abstém**: cobrar a
+  estrutura de outra versão acusaria campo que o arquivo nem tem. Quem
+  consome essa resposta tem de dizer que não conferiu — o Diagnóstico sem a
+  base, ou com a versão fora dela, não escreve "nenhum problema" (aprovaria
+  o que não rodou).
+- **Retenção:** as versões com vigência nos últimos **5 anos** mais a atual
+  (e as futuras que já tenham descritor) — hoje ICMS/IPI 015 a 020. **O
+  Contribuições só tem a 006**, vigente desde 01/01/2020 e sem data final: é
+  a única que o descritor dele publica dentro da janela.
+- **`tests/fabrica.py` declara `COD_VER` `020` (ICMS/IPI) e `006`
+  (Contribuições) de propósito:** são versões que a base guarda e é a
+  estrutura delas que o arquivo sintético precisa ter. Trocar por versão
+  fora da base faria toda verificação por leiaute se abster; e quando a 020
+  sair da janela de retenção a fábrica sobe junto.
+- **A suíte roda como o programa na máquina de quem não tem PVA:**
+  `tests/__init__.py` aponta `SPED_TABLES_PVA` para um diretório vazio e
+  liga a base compilada de `base/`. A instalação de verdade fica em
+  `tests.PVA_REAL`, e só `tests/test_equivalencia_base.py` a usa: a base
+  compilada tem de responder à porta igual ao PVA instalado. **Falhou?** A
+  base ficou para trás do PVA — `py -m consolidador extrair`, revisar o
+  `git diff base/`, commitar.
 
 ## Convenções obrigatórias
 
@@ -326,7 +401,9 @@ Ali está, campo a campo, `tipo` (C/N/D), `tamanho` (`[3]` fixo, `60` máximo),
 `casasdecimais`, `obrigatorio`, a enumeração
 (`<valores-validos valores="0=Entrada;1=Saída"/>`), a tabela externa
 (`datasource`) e a referência a outro registro
-(`referenciaPesquisa="0200;COD_ITEM"`).
+(`referenciaPesquisa="0200;COD_ITEM"`). Quem abre o `.jar` é o consolidador
+(`consolidador/descritor.py`), que grava esses fatos em `base/leiaute/`; o
+programa só lê a base.
 
 Três consequências que o código incorpora:
 
@@ -354,12 +431,18 @@ Os `<validador id="REGRA_..."/>` são regras compostas implementadas em Java
 mas não as reimplementa: adivinhar o conteúdo produziria divergência
 silenciosa com o validador oficial.
 
-### Domínios que vêm dos PVAs, não do código
+### Domínios que vêm da base, não do código
 
-`tabelas_pva.py` lê as tabelas instaladas com os dois PVAs e monta os domínios
-de campo. É a fonte preferida: a lista de códigos válidos acompanha a
-atualização do validador oficial sem ninguém mexer no código. Quando o PVA não
-está instalado, valem os domínios embutidos de `validacao.py`.
+`tabelas_oficiais.py` interpreta as tabelas que a **base de referência**
+guarda — extraídas das pastas de tabelas dos dois PVAs, pelo consolidador,
+depois do *Atualizar Tabelas* — e monta os domínios de campo. É a fonte
+preferida: a lista de códigos válidos acompanha a atualização do validador
+oficial ao se importar uma base nova, sem ninguém mexer no código nem a
+pessoa precisar ter PVA. Quando a base não está legível, valem os domínios
+embutidos de `validacao.py`. O formato das tabelas (cabeçalho `versão=N` com
+as colunas, depois uma linha por código, separada por `|`) é o do PVA, e as
+funções que o interpretam recebem o **texto** (`{chave: (texto, versão)}`),
+não uma pasta: o mesmo código serve à base e ao consolidador.
 
 Quatro coisas que a implementação **precisa** respeitar:
 
@@ -392,12 +475,12 @@ Três decisões que evitam estrago:
   nunca sugeridos. O erro mais comum ali nem é lixo: é o **CSOSN do fornecedor
   do Simples copiado sem o dígito de origem** (`101`, `201`), e o diagnóstico
   diz isso com todas as letras. Isso vale também para o domínio que vem das
-  **tabelas do PVA** (`CAMPOS_DE_DECISAO`, `dominio_de_tabela`): até a 0.53.0
+  **tabelas da base** (`CAMPOS_DE_DECISAO`, `dominio_de_tabela`): até a 0.53.0
   o `CST_ICMS` = `0` recebia a sugestão "esvaziar" por ser "só zeros", e a
   normalização em lote apagava o CST de itens do C170/C190.
 - **`normalizar()` sem lista usa os mesmos domínios do diagnóstico**
   (`dominios_do_documento`). Com os embutidos, o que o diagnóstico acusava
-  pelas tabelas do PVA ficava sem conserto.
+  pelas tabelas da base ficava sem conserto.
 
 ### Navegação mestre-detalhe
 
@@ -417,7 +500,8 @@ encerramento (`C001`, `H001`, `H990`), de um campo só.
 Cada escrituração validada vira um banco em `mysql/data/bd<AAAAMMDDhhmmss>`,
 com uma tabela `inconsistencia`: `ID_MENSAGEM`, `ID_CAMPO`, `VALOR_CAMPO`,
 `VALOR_ESPERADO_CAMPO`, `NOME_REGISTRO`, `CONTEUDO_LINHA`, `NUMERO_LINHA`. O
-`.MYD` (MyISAM) é legível sem subir o servidor.
+`.MYD` (MyISAM) é legível sem subir o servidor — quem o lê é
+`consolidador/banco_pva.py`, que também serve ao `ferramentas/validar_no_pva.py`.
 
 Ele **não** guarda as regras — essas continuam no código Java. Mas guarda o
 que elas produziram, e isso serve para duas coisas:
@@ -496,7 +580,7 @@ Quatro decisões que a implementação carrega:
   exclusivamente não-cumulativa (a divisão da base entre os regimes não sai
   dos documentos), ajustes de crédito (M110/M115/M510/M515, que são filhos do
   M100 e não há como reatribuir), crédito fora do bloco C (D101, F100…) ou
-  tabela do PVA ausente.
+  tabela da base ausente.
 
 Ao criar os registros, `depois=` empilha meios (x+0,5; x+1,0; x+1,5…) e, com
 grupos demais, a ordem inventada alcança a do registro seguinte — o M500
@@ -576,11 +660,13 @@ mesmo sintoma da barra de título e dos tradutores. Na suíte, use `_app()` de
 ## Os guias práticos e as regras do guia
 
 Os dois guias (EFD ICMS/IPI 3.2.4, EFD Contribuições 1.35) estão extraídos
-em `recursos/guia_*.json` por `ferramentas/extrair_guias.py`, que roda o
-`pdftotext -layout` (vem com o Git para Windows). O domínio os pede à porta:
+em `base/guias/<LEIAUTE>.json` por `py -m consolidador guia ICMS|CONTRIB
+arquivo.pdf` (`consolidador/guias.py`), que roda o `pdftotext -layout` (vem
+com o Git para Windows) — e viajam na base compilada, não mais soltos em
+`recursos/`. O domínio os pede à porta:
 `referencias.atual().guia(layout)`; `referencias.texto_do_campo` devolve o
 texto de um campo **só se o nome bater** (o guia 3.2.4 já descreve campos de
-leiaute mais novo que o do PVA instalado, como o `IND_BENEFICIO` do E111).
+leiaute mais novo que o da base, como o `IND_BENEFICIO` do E111).
 Usos: a ajuda F1 e a dica de cabeçalho da grade (`dominio/ajuda.py`,
 `interface/dialogos/ajuda.py`).
 
@@ -615,19 +701,28 @@ Python e cite de onde veio.
 
 ### O descritor: comentários, posições e nomes
 
+O descritor é lido pelo consolidador (`consolidador/descritor.py`) e vai
+para `base/leiaute/<LEIAUTE>/<COD_VER>.json`; o que segue vale para esse
+parser e para quem consome o JSON.
+
 - **Campo dentro de `<!-- -->` não existe.** O PVA guarda ali campos
   excluídos (o `IND_ST` do 1010, com o mesmo `n` do campo seguinte); lidos
-  como reais, viravam obrigatórios fantasmas. `descritor_pva` remove os
-  comentários antes de ler.
+  como reais, viravam obrigatórios fantasmas. O parser remove os comentários
+  antes de ler.
 - **A posição é a ordem dos `<campo>`, não o atributo `n`** — que tem
-  `n="17'"` (D750) e `n` repetido (0220, C890).
+  `n="17'"` (D750) e `n` repetido (0220, C890). **E a ordem dos campos no
+  JSON do leiaute é a posição: não ordene** (nem `sort_keys`, nem
+  reordenação "para o diff ficar bonito") — o manifesto e as tabelas saem
+  ordenados, o leiaute não. Ordenar embaralha o registro em silêncio: o
+  arquivo compila, e a validação passa a cobrar o campo errado.
 - **Os nomes do descritor nem sempre são os do guia** (`ENDERECO`/`END`,
   `VL_OPER`/`VL_OPR`, `ALIQ_PIS_PERC`/`ALIQ_PIS`, `VL_COFIS`). O adaptador
   entrega a estrutura **alinhada ao leiaute por posição**
   (`referencias.alinhar_ao_leiaute`, nome do PVA em `id_pva`); sem isso
   quem procurava o campo pelo nome do descritor recebia `None` e pulava.
-- **O leiaute do programa tem a estrutura do descritor instalado** —
-  `tests/test_guias.py` confere largura e posição, registro a registro. Até
+- **O leiaute do programa tem a estrutura do descritor da base** —
+  `tests/test_guias.py` confere largura e posição, registro a registro (sem
+  PVA, contra a base). Até
   a 1.0.0-rc.1 o C870 tinha CST e CFOP trocados e uma dezena de registros
   (C181, C330, E310…) estava desatualizada, com cabeçalho errado na grade.
   Exceção declarada: o 0200 do Contribuições (CEST).
@@ -907,6 +1002,16 @@ preenchido.
 do PyInstaller — o `uv pip sync` remove o que não está na lista),
 PyInstaller e `--autoteste`. **Não gere do Python do sistema**: o
 PyInstaller arrasta o que estiver instalado lá (64 MB contra 24 MB).
+
+**O gerador compila a base de referência de `base/` antes do PyInstaller**
+(`compilar_base()`): a que vai dentro é sempre a de agora, nunca a que
+estiver por acaso em `recursos/`. O `.spec` a embute como
+`recursos/base_referencia.db` (`dados.recurso`) — os guias já não viajam
+soltos. Sem ela no pacote o programa abre, mas as verificações por leiaute e
+tabelas ficam desligadas: o item *base de referência* do autoteste (versão,
+origem, registros e guia de cada leiaute) é quem pega isso, e só no
+executável. A base nova (`py -m consolidador extrair`) chega a quem usa por
+executável novo ou pelo pacote de `py -m consolidador publicar`.
 
 O `.spec` tira DLLs e plugins que o programa não carrega
 (`_desnecessario`, `_EXCLUIR`). **Dependência nova que use Qt ou Python

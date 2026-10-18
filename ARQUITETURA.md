@@ -30,8 +30,9 @@ de desktop precisa. Ela se resume em uma regra:
                          ▼                       ▼
                  ┌───────────────┐       ┌───────────────────┐
                  │  aplicacao    │──────►│  infra            │
-                 │ (casos de uso)│       │ (PVA, disco,      │
-                 └───────┬───────┘       │  Win32, registro) │
+                 │ (casos de uso)│       │ (base de          │
+                 └───────┬───────┘       │  referência, disco│
+                         │               │  Win32, PVA)      │
                          │               └─────────┬─────────┘
                          ▼                         │
                  ┌──────────────────────────────┐  │
@@ -42,6 +43,23 @@ de desktop precisa. Ela se resume em uma regra:
 
 Tudo mora no pacote `sped_tables/`; o `sped_editor.py` da raiz é só o
 lançador (`python sped_editor.py [arquivo.txt]`).
+
+**Fora do `sped_tables/`**, na raiz do repositório, mora o `consolidador/`: a
+ferramenta de quem **compila** o programa, que lê as instalações dos PVAs e os
+guias e regrava as fontes da base de referência (`base/`). Ele pode importar o
+`sped_tables` (reaproveita o leitor das tabelas e o compilador da base); o
+`sped_tables` **nunca** importa o `consolidador`:
+
+```
+ consolidador/ ──(lê PVAs, guias, planilha de NCM)──► base/ (fontes em texto)
+      │                                                  │
+      │ pode importar                                    │ compilar
+      ▼                                                  ▼
+ sped_tables/  ◄── infra/referencias_base.py ◄── recursos/base_referencia.db
+ (nunca importa o consolidador)                  (no executável, ou importada)
+```
+
+`tests/test_arquitetura.py` confere as duas direções.
 
 ---
 
@@ -76,11 +94,12 @@ Tudo que depende da máquina: onde as coisas estão e como se leem.
 
 | Módulo | Conteúdo |
 |---|---|
-| `config.py` | **Ponto único de configuração**: raiz dos PVAs e a estrutura interna de cada um. |
+| `config.py` | **Ponto único de configuração**: onde estão os PVAs (só o *Abrir no PVA* os usa). |
 | `dados.py` | Pasta de dados do usuário (projeto × `%APPDATA%`), gravação atômica, recursos empacotados. |
-| `descritor_pva.py`, `tabelas_pva.py` | Leitura do descritor (`.jar`) e das tabelas externas do PVA. |
-| `tabelas_rfb.py` | Leitura das tabelas de NCM da RFB (entrega um `ClassificadorNCM` do domínio). |
-| `referencias_pva.py` | **O adaptador**: implementa a porta `dominio.referencias` com o PVA instalado. |
+| `base_referencia.py` | A **base de referência**: compila `base/` num SQLite reproduzível, lê, escolhe a que vale (embutida × importada) e importa um pacote mais novo. |
+| `referencias_base.py` | **O adaptador**: implementa a porta `dominio.referencias` sobre a base de referência. |
+| `tabelas_oficiais.py` | Interpretação das tabelas oficiais a partir de texto (vigência, domínios por `datasource`, CFOP com crédito, naturezas…). |
+| `tabelas_ncm.py` | Tabelas de alíquota zero e monofásicos → um `ClassificadorNCM` do domínio. |
 | `cadastro.py` | Empresas e correlações de CFOP em JSON. |
 | `arquivos.py` | O acervo (uma cópia por empresa/período) e o índice. |
 | `exportacao.py` | CSV para o Excel brasileiro. |
@@ -153,25 +172,40 @@ continuam usando `janela.doc`; quem muda o estado é a `Sessao`.
 
 Parte das regras depende de dados que não são do arquivo nem do programa:
 o descritor de validação de cada versão de leiaute, as tabelas de códigos
-com vigência, a tabela de CFOP com crédito (4.3.7), o prazo de entrega.
-Estão na instalação do PVA — e a instalação é assunto de infraestrutura.
+com vigência, a tabela de CFOP com crédito (4.3.7), o prazo de entrega, os
+guias práticos. Eles nascem nos PVAs e nos guias da Receita — mas o programa
+**não os lê de lá**: quem os extrai é o consolidador, na máquina de quem
+compila, e eles viajam na **base de referência**. Com PVA antigo na máquina de
+quem usa, a pré-validação seria outra; com a base, é a mesma.
 
 A solução é uma **porta**: `dominio/referencias.py` define *o que* o
-domínio pergunta (`estrutura(layout)`, `naturezas_cfop_credito(data)`,
-`prazo_entrega(mes_ano)`…); `infra/referencias_pva.py` responde lendo o
-PVA; `aplicacao/montagem.py` liga um ao outro no início do programa.
+domínio pergunta (`estrutura(layout, versao)`, `naturezas_cfop_credito(data)`,
+`prazo_entrega(mes_ano)`…); `infra/referencias_base.py` responde lendo a base
+de referência; `aplicacao/montagem.py` liga um ao outro no início do programa
+(e de novo depois de importar uma base mais nova).
 
 ```
 revisao.verificar_0900_ausente(doc)
         │  pergunta:  referencias.atual().prazo_entrega("082026")
         ▼
-dominio.referencias ──(ligada por montagem.configurar())──► infra.referencias_pva
-                                                              └─ tabelas_pva → config → pasta do PVA
+dominio.referencias ──(ligada por montagem.configurar())──► infra.referencias_base
+                                                              └─ base_referencia → recursos/base_referencia.db
 ```
 
+A base é compilada de `base/` (fontes em texto, versionadas) e vale a mais
+nova entre a embutida no executável e a importada em *Configurações → Base de
+referência…*.
+
+**A porta pede a versão do leiaute do arquivo.** `estrutura(layout, versao)`
+devolve a estrutura do `COD_VER` que o arquivo declara
+(`referencias.versao_do_leiaute(doc)` o tira do 0000); `versao=None` é "a mais
+recente", que só a geração de um período novo usa. Versão que a base não guarda
+volta como `fora_da_base`: o programa avisa e se abstém, em vez de cobrar a
+estrutura de outra versão.
+
 Sem nada ligado vale a fonte **vazia**: cada regra que precisa de tabela se
-abstém, que é exatamente o comportamento de antes quando o PVA não estava
-instalado. E um teste pode ligar uma fonte inventada:
+abstém, que é o que acontece quando nenhuma base é legível (e a pessoa é
+avisada). E um teste pode ligar uma fonte inventada:
 
 ```python
 class FonteDeTeste(referencias.Referencias):
@@ -183,7 +217,11 @@ revisao.verificar_0900_ausente(doc, hoje="20261001")   # acusa
 ```
 
 É assim que `tests/test_arquitetura.py` testa as regras de crédito por
-CFOP e do 0900 numa máquina **sem PVA**.
+CFOP e do 0900 sem depender da base. O adaptador, por sua vez, lê qualquer
+origem com a interface da `Base` (`manifesto`, `versoes`, `estrutura`,
+`tabelas`, `guia`, `ncm_vigente`): a instalação do PVA, no consolidador,
+tem essa interface — e é assim que `tests/test_equivalencia_base.py` põe o
+mesmo adaptador para ler a base e o PVA e conferir que respondem igual.
 
 ---
 
@@ -215,7 +253,8 @@ informação ou um alerta.
 | Uma regra de revisão | `dominio/revisao.py`, na lista `REGRAS`. Se tem correção, o atalho no mapa `acoes` de `ControladorGerais.revisar_erros` (a chave é o rótulo da lista `REGRAS`). |
 | Um achado de diagnóstico | `dominio/diagnostico.py` + o módulo que corrige em `MODULOS`; o atalho no mapa `acoes` de `ControladorGerais.diagnosticar`. |
 | Um cálculo que grava no arquivo | Método de `SpedDocument` (ou módulo do domínio), com teste em `tests/test_correcoes.py`. |
-| Algo que precisa de tabela do PVA | Método novo na porta (`dominio/referencias.py`, com resposta vazia) e no adaptador (`infra/referencias_pva.py`). |
+| Algo que precisa de tabela oficial | Método novo na porta (`dominio/referencias.py`, com resposta vazia) e no adaptador (`infra/referencias_base.py`). |
+| Uma tabela, versão de leiaute ou guia novo | **Não vai no código nem em `base/` à mão:** `py -m consolidador extrair` (ou `guia`) regrava `base/`, e a revisão é o `git diff base/`. |
 | Um caminho, pasta ou opção da máquina | `infra/config.py`. Nunca `__file__`, nunca caminho escrito no módulo. |
 | Ler ou gravar um arquivo do usuário | `infra/` (JSON: `dados.gravar_json`, que é atômico). |
 | Um fluxo que junta várias peças | `aplicacao/`. |
@@ -230,9 +269,15 @@ nas versões de desenvolvimento e some de uma release.
 
 ## 6. O que os testes garantem
 
-- `test_arquitetura` — a regra de dependência entre as camadas; a porta
-  com fonte inventada; a sessão e o envio ao PVA sem tela; o canal da
-  versão.
+- `test_arquitetura` — a regra de dependência entre as camadas (o
+  `sped_tables` não importa o `consolidador`; só o *Abrir no PVA* cita a pasta
+  do PVA); a porta com fonte inventada, e a fonte vazia quando não há base; a
+  sessão e o envio ao PVA sem tela; o canal da versão.
+- `test_base_referencia`, `test_referencias_base`, `test_consolidador`,
+  `test_versao_leiaute` — a compilação reproduzível, a importação que recusa
+  o que não serve, o adaptador, a extração e a versão do leiaute pelo
+  arquivo. `test_equivalencia_base` (só com PVA instalado) confere que a base
+  responde igual ao PVA de onde saiu.
 - `test_estrutura` — código depois de `return` (o `def` apagado por
   edição), import sem uso, módulo com nome da biblioteca padrão, método
   definido duas vezes.
@@ -251,7 +296,7 @@ Ver [TESTES.md](TESTES.md).
   ganho proporcional.
 - **Injeção de dependência generalizada.** Só existe uma porta —
   referências oficiais —, porque é a única dependência externa que varia
-  de máquina para máquina *e* que o domínio precisa. Disco e acervo são
-  usados pela aplicação, não pelo domínio, e dispensam porta.
+  (de uma versão da base para outra) *e* que o domínio precisa. Disco e
+  acervo são usados pela aplicação, não pelo domínio, e dispensam porta.
 - **Undo/redo.** Pediria que cada edição fosse um comando do domínio;
   está no roadmap pós-1.0.

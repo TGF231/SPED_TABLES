@@ -17,12 +17,20 @@ py -m unittest discover -s tests -t .
 ```
 
 Os testes são `unittest` puro; com o pytest instalado, `py -m pytest tests`
-também roda. A suíte leva cerca de 8 segundos.
+também roda. A suíte tem cerca de 450 testes e leva cerca de 35 segundos.
 
 A interface roda **sem tela** (`QT_QPA_PLATFORM=offscreen`, definido em
 `tests/__init__.py`). Cadastro de empresas, acervo, registros e preferências
 que os testes gravam vão para uma pasta temporária (`SPED_TABLES_DADOS`). O
 cadastro de verdade e o registro do Windows não são tocados.
+
+**A suíte roda sem PVA**, como o programa na máquina de quem não o tem:
+`tests/__init__.py` aponta `SPED_TABLES_PVA` para um diretório vazio e liga a
+**base de referência** (`montagem.configurar()`), que o próprio programa
+compila de `base/` quando ela falta ou quando `base/` mudou
+(`recursos/base_referencia.db`, fora do git). A instalação de verdade do PVA,
+se existir nesta máquina, fica guardada em `tests.PVA_REAL` — só o teste de
+equivalência a usa. Nenhum outro teste pula por falta de PVA.
 
 ### O que cada arquivo cobre
 
@@ -39,7 +47,13 @@ cadastro de verdade e o registro do Windows não são tocados.
 | `test_empresas_rotinas` | Alíquota normalizada, cadastro corrompido, rotinas por regime, `executar` sem propagar exceção. |
 | `test_arquivos` | Acervo: cópia por período, índice, abrir do histórico sem truncar, remover. |
 | `test_robustez` | Um teste por achado da revisão de código; configuração (`config`); JSON atômico; CSV com `;` e travessão. |
-| `test_arquitetura` | **Regra de dependência entre as camadas**; a porta das tabelas oficiais com fonte inventada (regras testadas sem PVA); sessão e envio ao PVA sem tela; canal da versão. |
+| `test_arquitetura` | **Regra de dependência entre as camadas** — inclusive que o `sped_tables` não importa o `consolidador` e que só o *Abrir no PVA* cita a pasta do PVA; a porta das tabelas oficiais com fonte inventada (regras testadas sem PVA); sem base, a montagem liga a fonte vazia; sessão e envio ao PVA sem tela; canal da versão. |
+| `test_base_referencia` | A base: compilação reproduzível (mesmas fontes, mesmo SHA-256), leitura, escolha entre a embutida e a importada, e a importação que recusa pacote adulterado, igual ou mais antigo, de esquema novo, truncado ou ilegível — e a falha de gravação. |
+| `test_referencias_base` | O adaptador da porta sobre a base: estrutura pela versão do arquivo, "fora da base", vigência, tabelas, classificador de NCM. |
+| `test_tabelas_oficiais` | As tabelas oficiais lidas de texto (formato do PVA, com vigência), independente de onde o texto veio. |
+| `test_versao_leiaute` | Quem tem o documento pede a estrutura do `COD_VER` dele, nunca "a mais recente" (diagnóstico, validação, regras do guia, geração). |
+| `test_consolidador` | `py -m consolidador` sobre uma instalação de PVA **inventada**: extrai, compila, publica, e recusa — sem deixar `base/` quebrada — o que não serve. |
+| `test_equivalencia_base` | **O teste central da migração:** a base compilada de `base/` responde igual ao PVA instalado nesta máquina. Pula sem PVA (ver 1.2.1). |
 | `test_estrutura` | Armadilhas: código depois de `return`, import sem uso, nome da biblioteca padrão, método duplicado. |
 | `test_interface` | A janela nasce; **toda ação do menu roda** nos dois leiautes; a tabela de ações é coerente; o formulário de empresa; `main()` inteiro pelo `sped_editor.py`. |
 | `test_tema` | Nenhuma cor literal na interface fora de `tema.py`; folha de estilo completa nos dois temas e nas duas densidades. |
@@ -90,29 +104,44 @@ Em todo `.txt` que começa com `|0000|`, confere:
 
 É o "validar contra arquivos reais com números exatos" do projeto, sem pôr
 dado de cliente no git. Mudança que altera o gabarito tem de ser explicada no
-CHANGELOG.
+CHANGELOG. Os arquivos reais rodam **sem PVA** (a suíte aponta a pasta do PVA
+para um diretório vazio): o que eles medem vem da base de referência.
 
 **Regra nova do guia (`dominio/regras_guia.py`) passa antes nos arquivos
 reais que o PVA validou**: ela não pode acusar nada que o PVA aceite. O
-banco de cada validação do PVA de ensaio (`banco_pva.inconsistencias`)
-diz o que o PVA acusou; o que a regra acusa a mais é falso positivo — quase
+banco de cada validação do PVA de ensaio (`banco_pva.inconsistencias`, no
+`consolidador/`) diz o que o PVA acusou; o que a regra acusa a mais é falso positivo — quase
 sempre condição ou tolerância que o guia não escreve e o PVA aplica (ver
 CLAUDE.md, "Os guias práticos e as regras do guia").
 
-### 1.2.1 Leiaute contra o PVA instalado
+### 1.2.1 Leiaute e tabelas contra o PVA instalado
 
-`tests/test_guias.py` confere, com o PVA instalado, que o leiaute do
-programa tem a **estrutura** do descritor (largura e posição de cada campo,
-registro a registro) e que, onde o guia nomeia o campo, o nome bate com o do
-leiaute na mesma posição. Atualizou o PVA ou saiu guia novo: rode a suíte
-antes de qualquer outra coisa — a divergência aparece aqui, não na grade do
-usuário. Para refazer os JSON dos guias:
+Dois testes cuidam de a base não ficar para trás do PVA — e nenhum deles é
+juiz do que o programa acusa, só de a **fonte** estar certa:
+
+- `tests/test_guias.py` confere, **sem PVA**, que o leiaute do programa tem a
+  **estrutura** do descritor guardado na base (largura e posição de cada
+  campo, registro a registro) e que, onde o guia nomeia o campo, o nome bate
+  com o do leiaute na mesma posição. Saiu guia novo: rode a suíte antes de
+  qualquer outra coisa — a divergência aparece aqui, não na grade do usuário.
+- `tests/test_equivalencia_base.py` roda **só com PVA instalado**
+  (`tests.PVA_REAL`): a base compilada de `base/` tem de responder igual à
+  instalação — versões do leiaute, estrutura, tabelas e cada método da
+  porta. **Falhou** (o PVA foi atualizado e a base ficou para trás)? Rode
+  `py -m consolidador extrair`, **revise o `git diff base/`** (o que mudou
+  é exatamente o que o PVA novo trouxe: versão de leiaute, campo, código de
+  tabela), rode a suíte de novo e faça o commit da base.
+
+Para refazer os JSON dos guias e o `COBERTURA.md`:
 
 ```bash
-py ferramentas/extrair_guias.py ICMS "Guia Prático EFD - Versão X.pdf"
-py ferramentas/extrair_guias.py CONTRIB "Guia_Pratico_EFD_Contribuicoes_X.pdf"
+py -m consolidador guia ICMS "Guia Prático EFD - Versão X.pdf"
+py -m consolidador guia CONTRIB "Guia_Pratico_EFD_Contribuicoes_X.pdf"
 py ferramentas/cobertura_guias.py
 ```
+
+`base/` é regravada pelo consolidador, nunca à mão. O `.db` compilado é
+reproduzível: duas compilações das mesmas fontes dão o mesmo SHA-256.
 
 ### 1.3 Ao escrever um teste
 
@@ -125,7 +154,7 @@ py ferramentas/cobertura_guias.py
   e afins por falsos (`unittest.mock`).
 - **Nome de arquivo com prefixo** (`test_`): um `select.py` na pasta sombreia
   a biblioteca padrão (há um teste que confere).
-- Regra que precisa de tabela do PVA: ligue uma fonte inventada com
+- Regra que precisa de tabela oficial: ligue uma fonte inventada com
   `referencias.definir(...)` e restaure no `tearDown` (ver
   `test_arquitetura.FonteDeTeste`).
 
@@ -158,7 +187,7 @@ py ferramentas/validar_no_pva.py relatorio --saida D:\saida
   está dentro da pasta de ensaio.
 - `validar --manual`: sem automação — a ferramenta põe o caminho na área de
   transferência, você importa e valida, e ela só lê o resultado do banco do
-  PVA (`infra/banco_pva.py`).
+  PVA (`consolidador/banco_pva.py`).
 - A saída fica **fora do repositório** (a ferramenta recusa o contrário).
 - Retoma de onde parou: o que já foi validado não é refeito. `gerar
   --fluxos x` refaz só esses e mantém o resto do manifesto.
@@ -218,8 +247,9 @@ py ferramentas/gerar_executavel.py
 ```
 
 O primeiro comando monta o ambiente mínimo do uv (`.venv-exe`, com
-`requirements-executavel.txt`), gera o executável e já roda o autoteste
-sobre um SPED sintético. `build/manifesto_executavel.txt` lista o que foi
+`requirements-executavel.txt`), **compila a base de referência de `base/`**
+(`recursos/base_referencia.db`, a que vai dentro do executável), gera o
+executável e já roda o autoteste sobre um SPED sintético. `build/manifesto_executavel.txt` lista o que foi
 no pacote e o que o `.spec` tirou. O executável leva só o plugin de tela do
 Windows: com `QT_QPA_PLATFORM=offscreen` no ambiente ele não abre.
 
@@ -232,7 +262,9 @@ de quem usa o programa. Cobre:
 - ícone e correlações de CFOP empacotados; `openpyxl`;
 - instalação da pasta de dados, e a segunda instalação não copia nada por
   cima;
-- tabelas do PVA encontradas;
+- **base de referência** embutida: carrega, e cada leiaute traz a estrutura
+  da versão mais recente e o guia prático (o relatório mostra a versão da
+  base e de onde ela veio);
 - drivers dos bancos de ERP no pacote (`firebirdsql`, `pyodbc`; o
   `pymysql` é opcional);
 - leitura paralela de XMLs: 300 XMLs lidos por processos — o processo
@@ -253,6 +285,12 @@ Na tela, que o autoteste não vê:
 - [ ] Primeira execução: cria `%APPDATA%\SPED Tables`, oferece o atalho
       (a pergunta em português, "Sim"/"Não")
 - [ ] Ícone na janela, na barra própria e na barra de tarefas
+- [ ] *Configurações → Base de referência…* mostra a versão e a impressão
+      digital; importar um pacote de `py -m consolidador publicar` com versão
+      mais nova é aceito (e vale no próximo diagnóstico), e o mesmo pacote
+      de novo é recusado como "não é mais nova que a em uso" — com
+      `SPED_TABLES_DADOS` numa pasta de teste, para não deixar a base
+      importada na pasta de uso
 
 ### 2.3 Na janela, no Windows
 

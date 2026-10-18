@@ -1,5 +1,120 @@
 # Changelog
 
+## [1.1.0-dev.16] — 2026-10-18
+
+### Adicionado
+- **Base de referência.** O leiaute de cada versão, as tabelas oficiais
+  (CST, CFOP, códigos de ajuste e de receita por UF, naturezas da receita,
+  monofásicos e alíquota zero…), os guias práticos e, quando o consolidador
+  o recebeu, o NCM vigente passam a vir de uma base compilada na geração do
+  programa (`base/` →
+  `recursos/base_referencia.db`, 1,8 MB), e não mais da instalação do PVA na
+  máquina de quem usa. Com PVA antigo ou sem PVA nenhum, a pré-validação é
+  a mesma — o que antes dependia da versão que a pessoa tinha instalado, e
+  desligava metade das verificações quando não havia nenhuma. O PVA da
+  máquina só serve ao *Abrir no PVA*. Fontes em texto em `base/`,
+  revisáveis por diff; a compilação é reproduzível (mesmas fontes, mesmo
+  banco, byte a byte); a versão é `AAAA.MM.n` (esta, `2026.10.1`).
+- **Leiaute pela versão do arquivo.** Cada arquivo é conferido com a
+  estrutura do `COD_VER` que declara no 0000 (ICMS/IPI 015 a 020,
+  Contribuições 006), e não com a mais recente: um campo que só existe na
+  versão nova não é cobrado de arquivo da antiga. Guardam-se as versões com
+  vigência nos últimos 5 anos mais a atual (e as futuras que já tenham
+  descritor). Versão fora da base é **avisada** e nada é acusado por
+  estrutura de outra; a geração do SPED pelos XMLs usa a versão do período
+  que gera. A porta `dominio.referencias` ganhou `estrutura(layout,
+  versao=None)`, `versao_vigente` e `descricao`, e o helper
+  `referencias.versao_do_leiaute(doc)` tira o `COD_VER` do 0000.
+- **Configurações → Base de referência…** mostra a base em uso (versão,
+  data, origem, leiautes e impressão digital SHA-256) e importa um pacote
+  mais novo (`base_referencia-AAAA.MM.n.zip`) sem trocar de programa. A
+  impressão digital é mostrada antes de aceitar, para comparar com a
+  publicada; o pacote adulterado, igual ou mais antigo que a base em uso ou
+  feito para um programa mais novo é recusado, dizendo o motivo. Vale a
+  mais nova entre a embutida no executável e a importada (guardada na pasta
+  de dados); a ilegível é ignorada, nunca apagada.
+- **Consolidador** (`py -m consolidador extrair|guia|compilar|publicar`),
+  pacote novo na raiz que roda na máquina de **quem compila**: `extrair`
+  lê os PVAs instalados e o NCM vigente e regrava `base/` (a revisão é o
+  `git diff base/`); `guia` extrai o guia prático de um PDF; `compilar`
+  gera o banco; `publicar` gera o pacote para importação. Recusa
+  extrair sem PVA e nunca grava base parcial. O `sped_tables` não o
+  importa — `tests/test_arquitetura.py` confere.
+- **Teste de equivalência** (`tests/test_equivalencia_base.py`): na máquina
+  com PVA, a base compilada responde igual à instalação — versões,
+  estrutura, tabelas e cada método da porta. Falhou depois de o PVA ser
+  atualizado: a base ficou para trás, rode `py -m consolidador extrair`.
+- **Autoteste do executável** (`--autoteste`): o item *base de referência*
+  confere que a base embutida carrega e mostra versão, origem, registros e
+  guia de cada leiaute; substitui *tabelas do PVA* e *guias práticos*. O
+  `ferramentas/gerar_executavel.py` compila a base de `base/` antes do
+  PyInstaller (nunca a que estiver por acaso em `recursos/`).
+
+### Alterado
+- **Nada do programa lê a instalação do PVA para validar, diagnosticar ou
+  corrigir.** Saíram `infra/referencias_pva.py`, `infra/descritor_pva.py` e
+  `infra/guias.py`; `tabelas_pva` virou `tabelas_oficiais` e `tabelas_rfb`
+  virou `tabelas_ncm` (a interpretação passou a receber o texto das
+  tabelas, não uma pasta); o parser do descritor
+  e o `banco_pva` moveram-se para o `consolidador`; o extrator de guias
+  saiu de `ferramentas/` para `consolidador/guias.py`, e os guias, de
+  `recursos/guia_*.json` para `base/guias/`. `config` perdeu as funções de
+  tabelas e descritor e guarda só onde está o PVA para o *Abrir no PVA*;
+  `SPED_TABLES_PVA`, quando definida, é a raiz mesmo sem PVA dentro.
+- **A suíte roda com a pasta do PVA apontada para um diretório vazio**,
+  como o programa na máquina de quem não tem PVA, e compila a base de
+  `base/` uma vez por execução. Os testes de `test_guias` e `test_regras_guia`
+  leem a base e deixaram de pular sem PVA; só o de equivalência precisa da
+  instalação (`tests.PVA_REAL`).
+- **Diagnóstico sem a base não aprova.** O cabeçalho do diálogo e a barra de
+  status do diagnóstico automático diziam "nenhum problema nas verificações"
+  também quando a base faltava ou a versão do arquivo estava fora dela — ou
+  seja, aprovavam o que não foi conferido. Agora dizem o que rodou e o que
+  faltou ("nenhum problema nas regras embutidas; a versão XXX do leiaute
+  não está na base de referência"), e o cabeçalho do diálogo sai como aviso,
+  não em verde.
+- **Base ilegível dá um aviso só, com a causa** (arquivo truncado, esquema
+  mais novo, manifesto ruim): sobrando uma base legível, a ilegível é
+  avisada e ignorada; sobrando nenhuma, a montagem dá a única mensagem, em
+  vez de dois modais seguidos. O título dos avisos de dados deixou de ser
+  "Arquivo de dados ilegível" (servia só para JSON do usuário) e virou
+  "Aviso".
+- **Pasta dos PVAs (para o Abrir no PVA)…** diz no rótulo que só serve ao
+  *Abrir no PVA*.
+
+### Removido
+- A configuração *Tabelas da RFB* (pasta e arquivos do CST por NCM): as
+  tabelas de alíquota zero e de monofásicos vêm da base, e o diálogo *CST
+  por NCM* deixou de pedir caminho. A Tabela NCM Vigente do Siscomex passa a
+  ser entregue ao consolidador (`extrair --ncm planilha.xlsx`), não ao
+  programa.
+
+### Corrigido
+- **Importar uma base não vira exceção quando a gravação falha.** Disco
+  cheio, antivírus ou pasta de rede ao gravar o temporário ou trocá-lo pelo
+  destino são recusados com "Não foi possível gravar a base na pasta de
+  dados (…). A base em uso continua valendo."; a limpeza do arquivo
+  temporário não mascara mais o motivo.
+- **Pacote de base ruim é recusa, não queda.** Fluxo `deflate` estragado,
+  membro cifrado, compressão desconhecida e banco truncado em menos de uma
+  página (o SQLite abria sem reclamar e só falhava na primeira leitura) são
+  detectados antes de a base entrar em uso. A base numa unidade de rede
+  mapeada abre (a URI não passa mais por `Path.resolve()`, que a trocava
+  pelo caminho de rede).
+
+### Notas
+- **O que foi medido:** a suíte passa com a pasta do PVA vazia, e os
+  arquivos reais passaram nos invariantes de `tests/test_reais.py` (gravar e
+  reabrir, correções em lote idempotentes, nenhuma verificação levanta
+  exceção) sem nenhum PVA. A conferência dos números exatos pelo
+  `gabarito.json` é da máquina que o tem; o teste de equivalência garante
+  que a base dá ao programa as mesmas respostas que o PVA de onde saiu.
+- O `COBERTURA.md` foi regenerado a partir da base (guias e descritor): os
+  números não mudaram.
+- `tests/fabrica.py` declara `COD_VER` `020` (ICMS/IPI) e `006`
+  (Contribuições) **de propósito**: são versões que a base guarda, e é
+  contra elas que os arquivos sintéticos são conferidos.
+
 ## [1.1.0-dev.15] — 2026-10-15
 
 ### Adicionado

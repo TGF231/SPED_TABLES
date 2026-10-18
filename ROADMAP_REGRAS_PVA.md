@@ -1,4 +1,4 @@
-# Roadmap — regras compostas do PVA
+# Roadmap — regras do PVA e base de referência
 
 Hoje o programa reproduz **todas as validações declarativas** do descritor
 (tipo, tamanho, obrigatoriedade, domínio, referência entre registros) e
@@ -7,9 +7,59 @@ extenso e o PVA deixa legíveis (`dominio/regras_guia.py`, `COBERTURA.md`).
 O resto o diagnóstico só **conta** ("o PVA aplica ainda N regras que este
 programa não reproduz").
 
-Este documento é o plano para reproduzir as compostas que importam, sem
-quebrar a regra que tornou as 92 confiáveis: **acusação onde o PVA aceita é
-regressão, não rigor.**
+O objetivo maior é o SPED Tables ser um **pré-validador consistente com o
+PVA** e absorver rápido as atualizações das regras e das tabelas. Este
+documento é o plano, sem quebrar a regra que tornou as 92 confiáveis:
+**acusação onde o PVA aceita é regressão, não rigor.**
+
+## 0. Os quatro projetos
+
+O trabalho foi dividido em quatro projetos, nesta ordem. Cada um tem o seu
+desenho em `docs/superpowers/specs/`; as decisões de fundo estão em
+`docs/adr/` e o vocabulário, em `CONTEXT.md`.
+
+| # | Projeto | O que entrega | Estado |
+|---|---|---|---|
+| 1 | **Base de referência** | O leiaute de cada versão, as tabelas oficiais, os guias e o NCM vigente numa base compilada e atualizável por importação; o programa deixa de ler o PVA da máquina; o consolidador (`py -m consolidador`) regrava `base/` | **feito na 1.1.0-dev.16** |
+| 2 | **Motor de regras** | Cada regra é uma consulta SQL nossa sobre o arquivo montado como banco (ADR 0002); ocorrência 1:1 com o PVA (registro, linha, mensagem); a **causa** da ocorrência, dita com os valores do arquivo | pendente |
+| 3 | **Consolidador completo** | A diferença entre versões do PVA (regra nova, removida, alterada), a confirmação das regras no PVA de ensaio e as notas técnicas | pendente |
+| 4 | **Migração e cobertura** | As regras de hoje passam para o motor e a cobertura cresce — as fases da seção 3 | pendente |
+
+### Projeto 1 — o que ficou pronto
+
+- **O programa não lê nada da instalação do PVA** para validar, diagnosticar
+  ou corrigir; só o *Abrir no PVA* a usa. O resultado não mudou: a suíte roda
+  com a pasta do PVA vazia, e os arquivos reais passaram nos invariantes sem
+  PVA.
+- **A estrutura do leiaute vale pela versão do arquivo** (`COD_VER` do 0000):
+  ICMS/IPI 015 a 020 e Contribuições 006 (a retenção é de 5 anos mais a
+  atual). Versão fora da base é avisada, e nada é acusado por estrutura de
+  outra.
+- **A base atualiza sem programa novo**: *Configurações → Base de
+  referência…* importa o pacote `base_referencia-AAAA.MM.n.zip` conferindo a
+  impressão digital.
+- **A base é reproduzível e sai do executável**: `base/` em texto →
+  `recursos/base_referencia.db`, mesmas fontes, mesmo banco, byte a byte.
+- Ficou para o projeto 3 o que o consolidador **ainda não faz**: hoje ele só
+  extrai (`extrair`, `guia`, `compilar`, `publicar`); comparar duas versões do
+  PVA e confirmar regras no PVA de ensaio vêm depois.
+
+### Projetos 2 a 4 — o que cada um é
+
+- **Motor de regras (2).** Regra em SQL sobre o arquivo montado como banco
+  SQLite em memória — uma tabela por registro, com o vínculo ao pai —, o
+  mesmo modelo do PVA. O programa dá uma biblioteca fixa de funções (número
+  e data do SPED, dígitos verificadores, inscrição estadual por UF); regra que
+  dependa de função mais nova que o programa se abstém e avisa. O SQL vem de
+  arquivo importável, então roda isolado: banco só de leitura, `ATTACH`,
+  gravação e `PRAGMA` recusados, sem extensões, com tempo-limite.
+- **Consolidador completo (3).** Lê o que os PVAs e as notas técnicas
+  publicam, detecta o que mudou e propõe as mudanças na base. Regra tirada
+  de nota técnica antes de existir PVA que a aplique é **antecipada**: acusa
+  como aviso até ser **confirmada** no PVA de ensaio.
+- **Migração e cobertura (4).** Passar as regras de `dominio/regras_guia.py`
+  e as verificações do diagnóstico para o motor, com a mesma saída, e ampliar
+  a cobertura segundo as fases abaixo.
 
 ## 1. Onde estamos (levantamento de 14/10/2026)
 
@@ -64,8 +114,17 @@ uma implementação parametrizada.
 6. **Verificação e correção são o mesmo cálculo.** Onde já existe função
    que conserta (C190, E110, bloco M, C175), a regra chama o mesmo código
    que a correção usa.
+7. **A base guarda fatos e regras nossas, nunca código do PVA** (ADR 0001):
+   campos, tipos, tamanhos, códigos de tabela pública, nomes de regra. O SQL e
+   o texto das mensagens do PVA servem de indício na máquina de quem compila e
+   não são copiados nem distribuídos.
 
-## 3. Fases
+## 3. Fases (projeto 4, sobre o motor e o consolidador)
+
+As fases são o plano do projeto 4: reproduzir as regras compostas que
+importam. Elas se apoiam no motor de regras (projeto 2) e no consolidador
+(projeto 3); enquanto o motor não existe, a regra entra como mostra a seção
+4.
 
 ### Fase 0 — Ferramental (pré-requisito de tudo)
 
@@ -135,14 +194,17 @@ não reproduzida** — e continua contada no diagnóstico.
 
 Itens já no `ROADMAP.md` que mudam *quais* regras valem para o arquivo:
 
-- descritor da **versão do arquivo** (`COD_VER`), não só o mais recente;
+- ~~descritor da **versão do arquivo** (`COD_VER`), não só o mais recente~~ —
+  **feito no projeto 1** (1.1.0-dev.16): a estrutura vem da versão que o
+  arquivo declara, e versão fora da base é avisada;
 - **obrigatoriedade por perfil** (A, B, C) no ICMS/IPI;
-- **inscrição estadual por UF** (dígito verificador de cada estado).
+- **inscrição estadual por UF** (dígito verificador de cada estado) — é uma
+  das funções fixas que o motor de regras (projeto 2) oferece.
 
 ## 4. Como cada regra entra no programa
 
-Uma `Regra` em `dominio/regras_guia.py` (ou verificação própria do
-diagnóstico) com:
+Hoje, e até o motor de regras (projeto 2) existir, uma `Regra` em
+`dominio/regras_guia.py` (ou verificação própria do diagnóstico) com:
 
 - `pva=` listando os validadores que reproduz — é o que tira a regra da
   contagem de "não reproduzidas";
@@ -159,7 +221,17 @@ CHANGELOG.
 
 - **Mudança de versão do PVA.** As regras mudam com o validador: o
   inventário registra a versão do `.jar` e acusa regra nova, removida ou
-  com SQL alterado ao rodar contra outra instalação.
+  com SQL alterado ao rodar contra outra instalação. Para o leiaute e as
+  tabelas já vale o projeto 1: `py -m consolidador extrair` regrava `base/`, o
+  `git diff base/` mostra o que mudou e o teste de equivalência acusa a base
+  que ficou para trás do PVA.
+- **Base desatualizada no executável distribuído.** É para isso a importação
+  (*Configurações → Base de referência…*): quem usa recebe o pacote sem
+  trocar de programa, e a data da base aparece na mesma tela.
+- **Versão do leiaute fora da base.** A retenção é de 5 anos e o
+  Contribuições só tem a 006: arquivo de versão mais antiga é avisado como
+  "fora da base" e as verificações por estrutura se abstêm, em vez de cobrar
+  a de outra versão.
 - **Tempo de PVA.** O gabarito sintético exige a cópia de ensaio e a
   automação; por isso é gerado uma vez e guardado, não a cada teste.
 - **Condição só parcialmente observável.** Melhor deixar a regra fora
@@ -170,6 +242,7 @@ CHANGELOG.
 
 | Marco | Entrega | Critério |
 |---|---|---|
+| P1 | Projeto 1, base de referência | **feito (1.1.0-dev.16):** o programa não lê o PVA da máquina, leiaute pela versão do arquivo, base importável e reproduzível |
 | R0 | Fase 0 | inventário + comparador + primeiro gabarito sintético; zero excesso nas 92 atuais |
 | R1 | Fase 1, ICMS/IPI | SQL legível do ICMS/IPI aplicável reproduzido |
 | R2 | Fase 1, Contribuições | idem, com o bloco M conferido pelo mesmo cálculo da correção |
