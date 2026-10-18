@@ -108,7 +108,20 @@ class InstalacaoPVA:
     def _selecionar(self, layout):
         limite = "%04d0101" % (self.data.year - self.anos)
         hoje = self.data.strftime("%Y%m%d")
+        chave = SUBPASTAS[layout]["versoes"]
+        if chave not in self.tabelas():
+            raise ConsolidadorErro(
+                "Falta a tabela de versões do leiaute %s (%s) em %s: sem "
+                "ela não há como saber a vigência de cada versão. PVA "
+                "recém-instalado? Rode o Atualizar Tabelas nele e extraia "
+                "de novo." % (layout, chave, pasta_tabelas(self.raiz,
+                                                           layout)))
         tabela = tabela_de_versoes(self.tabelas(), layout)
+        if not tabela:
+            raise ConsolidadorErro(
+                "A tabela de versões do leiaute %s (%s) não tem nenhuma "
+                "linha legível: sem ela não há como saber a vigência de "
+                "cada versão." % (layout, chave))
         caminhos = descritor.por_versao(jar_descritor(self.raiz, layout),
                                         layout, tabela)
         out = {}

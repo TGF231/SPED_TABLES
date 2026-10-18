@@ -72,6 +72,33 @@ def _pva_falso(raiz, sem_ato=()):
 DATA = datetime.date(2026, 10, 15)
 
 
+def _foto(pasta):
+    """`{caminho relativo: bytes}` de tudo o que há em `pasta`: duas fotos
+    iguais querem dizer que nada mudou, nem um byte."""
+    out = {}
+    for raiz, _d, nomes in os.walk(pasta):
+        for nome in nomes:
+            caminho = os.path.join(raiz, nome)
+            with open(caminho, "rb") as fh:
+                out[os.path.relpath(caminho, pasta)] = fh.read()
+    return out
+
+
+class _SemTabelas(I.InstalacaoPVA):
+    """Versões certas, mas nenhuma tabela de códigos lida."""
+
+    def tabelas(self):
+        return {}
+
+    def versoes(self, layout):
+        return {"ICMS": {"016": ("01012022", "31122022",
+                                 "descritor/escrituracao/ato016/estrutura001"
+                                 "/v1/descritor.xml")},
+                "CONTRIB": {"006": ("01012020", "",
+                                    "descritor/escrituracao/estrutura7007"
+                                    "/v1/descritor.xml")}}[layout]
+
+
 class TestDescritor(unittest.TestCase):
 
     def test_campo_comentado_nao_existe_e_validador_registrado(self):
@@ -167,6 +194,140 @@ class TestExtracao(unittest.TestCase):
             self.assertEqual(extracao.extrair(pva, destino)["versao"],
                              "2026.10.2")
 
+    def _base_pronta(self, p):
+        """Uma extração boa em `p/base`; devolve `(destino, foto)`."""
+        destino = os.path.join(p, "base")
+        pva = I.InstalacaoPVA(_pva_falso(os.path.join(p, "pva")),
+                              data=DATA, fontes=destino)
+        extracao.extrair(pva, destino)
+        return destino, _foto(destino)
+
+    def _recusa_e_deixa_intacta(self, p, destino, foto, pva, mensagem,
+                                **kwargs):
+        """`extrair(pva, destino)` recusa com `mensagem` e o `base/` que
+        existia fica byte a byte como estava — e ainda compila."""
+        with self.assertRaises(I.ConsolidadorErro) as ctx:
+            extracao.extrair(pva, destino, **kwargs)
+        self.assertIn(mensagem, str(ctx.exception))
+        self.assertEqual(_foto(destino), foto)
+        base_referencia.compilar(destino, os.path.join(p, "depois.db"))
+
+    def test_recusa_no_meio_nao_deixa_base_quebrada(self):
+        """Antes, o `leiaute/ICMS` era esvaziado e só depois a versão sem
+        descritor era descoberta: sobrava o manifesto antigo apontando para
+        JSON que não existiam, e o `compilar` caía em `FileNotFoundError`."""
+        with PastaTemporaria() as p:
+            destino, foto = self._base_pronta(p)
+            ruim = I.InstalacaoPVA(
+                _pva_falso(os.path.join(p, "pva2"), sem_ato=("016",)),
+                data=DATA, fontes=destino)
+            self._recusa_e_deixa_intacta(p, destino, foto, ruim,
+                                         "não tem descritor")
+
+    def test_tabela_de_versoes_ausente_recusa_e_deixa_base_intacta(self):
+        with PastaTemporaria() as p:
+            destino, foto = self._base_pronta(p)
+            raiz = _pva_falso(os.path.join(p, "pva2"))
+            os.remove(os.path.join(
+                I.pasta_tabelas(raiz, "ICMS"),
+                "SPEDFISCAL_GLOBAL$VERSOES_LEIAUTE$21$11"))
+            ruim = I.InstalacaoPVA(raiz, data=DATA, fontes=destino)
+            self._recusa_e_deixa_intacta(
+                p, destino, foto, ruim,
+                "Falta a tabela de versões do leiaute ICMS "
+                "(SPEDFISCAL_GLOBAL$VERSOES_LEIAUTE)")
+
+    def test_tabela_de_versoes_sem_linhas_recusa(self):
+        with PastaTemporaria() as p:
+            destino, foto = self._base_pronta(p)
+            raiz = _pva_falso(os.path.join(p, "pva2"))
+            with open(os.path.join(
+                    I.pasta_tabelas(raiz, "ICMS"),
+                    "SPEDFISCAL_GLOBAL$VERSOES_LEIAUTE$21$11"), "w",
+                    encoding="latin-1") as fh:
+                fh.write("versão=21 COD_LEI, VERSAO, DT_INI, DT_FIM\n")
+            ruim = I.InstalacaoPVA(raiz, data=DATA, fontes=destino)
+            self._recusa_e_deixa_intacta(p, destino, foto, ruim,
+                                         "nenhuma linha legível")
+
+    def test_pastas_de_tabelas_vazias_recusam(self):
+        """PVA recém-instalado, antes do *Atualizar Tabelas*: saía uma base
+        sem versão nem tabela, com código 0."""
+        with PastaTemporaria() as p:
+            destino, foto = self._base_pronta(p)
+            raiz = _pva_falso(os.path.join(p, "pva2"))
+            for layout in base_referencia.LEIAUTES:
+                pasta = I.pasta_tabelas(raiz, layout)
+                for nome in os.listdir(pasta):
+                    os.remove(os.path.join(pasta, nome))
+            ruim = I.InstalacaoPVA(raiz, data=DATA, fontes=destino)
+            self._recusa_e_deixa_intacta(p, destino, foto, ruim,
+                                         "Falta a tabela de versões")
+            # e sem base anterior não nasce uma base vazia
+            novo = os.path.join(p, "novo")
+            with self.assertRaises(I.ConsolidadorErro):
+                extracao.extrair(ruim, novo)
+            self.assertFalse(os.path.exists(novo))
+
+    def test_leiaute_sem_nenhuma_versao_recusa(self):
+        with PastaTemporaria() as p:
+            destino, foto = self._base_pronta(p)
+            raiz = _pva_falso(os.path.join(p, "pva2"))
+            with open(os.path.join(
+                    I.pasta_tabelas(raiz, "ICMS"),
+                    "SPEDFISCAL_GLOBAL$VERSOES_LEIAUTE$21$11"), "w",
+                    encoding="latin-1") as fh:
+                # só versão fora da janela de retenção
+                fh.write("versão=21 COD_LEI, VERSAO, DT_INI, DT_FIM\n"
+                         "014|1.13|01012020|31122020\n")
+            ruim = I.InstalacaoPVA(raiz, data=DATA, fontes=destino)
+            self._recusa_e_deixa_intacta(p, destino, foto, ruim,
+                                         "O leiaute ICMS ficou sem nenhuma "
+                                         "versão")
+
+    def test_base_sem_tabelas_recusa(self):
+        with PastaTemporaria() as p:
+            destino, foto = self._base_pronta(p)
+            ruim = _SemTabelas(_pva_falso(os.path.join(p, "pva2")),
+                               data=DATA, fontes=destino)
+            self._recusa_e_deixa_intacta(p, destino, foto, ruim,
+                                         "Nenhuma tabela de códigos")
+
+    def test_planilha_de_ncm_ilegivel_recusa_antes_de_gravar(self):
+        with PastaTemporaria() as p:
+            destino, foto = self._base_pronta(p)
+            pva = I.InstalacaoPVA(_pva_falso(os.path.join(p, "pva2")),
+                                  data=DATA, fontes=destino)
+            self._recusa_e_deixa_intacta(
+                p, destino, foto, pva, "Não consegui ler a planilha de NCM",
+                ncm_xlsx=os.path.join(p, "nao_existe.xlsx"))
+            # planilha que abre mas não traz NCM
+            import openpyxl
+            vazia = os.path.join(p, "vazia.xlsx")
+            wb = openpyxl.Workbook()
+            wb.active.append(["Código", "Descrição"])
+            wb.save(vazia)
+            self._recusa_e_deixa_intacta(
+                p, destino, foto, pva, "não traz nenhum NCM", ncm_xlsx=vazia)
+
+    def test_ncm_da_planilha_entra_na_base(self):
+        import openpyxl
+        with PastaTemporaria() as p:
+            planilha = os.path.join(p, "ncm.xlsx")
+            wb = openpyxl.Workbook()
+            for linha in (["Código", "Descrição"], ["0401.20.10", "x"],
+                          ["04012020", "y"], ["0401", "capítulo"]):
+                wb.active.append(linha)
+            wb.save(planilha)
+            destino = os.path.join(p, "base")
+            pva = I.InstalacaoPVA(_pva_falso(os.path.join(p, "pva")),
+                                  data=DATA, fontes=destino)
+            m = extracao.extrair(pva, destino, ncm_xlsx=planilha)
+            self.assertEqual(m["origem"]["ncm"], "ncm.xlsx")
+            with open(os.path.join(destino, "ncm", "vigente.txt"),
+                      encoding="utf-8") as fh:
+                self.assertEqual(fh.read().split(), ["04012010", "04012020"])
+
     def test_vigencia_gravada_em_ddmmaaaa_e_a_base_acha_a_versao(self):
         """O que `ReferenciasBase.versao_vigente` entende: DDMMAAAA de 8
         dígitos (`dt_fim` vazio = em aberto). Em outro formato a versão
@@ -216,11 +377,15 @@ class TestLinhaDeComando(unittest.TestCase):
         return codigo, saida.getvalue(), erro.getvalue()
 
     def test_extrair_sem_pva_recusa_e_nao_toca_em_base(self):
+        base = base_referencia.pasta_fontes()
+        antes = _foto(base)
+        self.assertIn("manifesto.json", antes)
         with PastaTemporaria() as p:
             codigo, saida, erro = self._rodar("extrair", "--pva", p)
         self.assertEqual(codigo, 1)
         self.assertEqual(saida, "")
         self.assertIn("faltam", erro)
+        self.assertEqual(_foto(base), antes)
 
     def test_compilar_grava_o_banco_e_a_impressao_digital(self):
         with PastaTemporaria() as p:
