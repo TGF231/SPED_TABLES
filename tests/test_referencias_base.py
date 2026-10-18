@@ -56,6 +56,38 @@ class TestReferenciasBase(unittest.TestCase):
         self.assertTrue(info["fora_da_base"])
         self.assertIn("014", info["erro"])
 
+    def test_versao_mais_nova_que_a_base_e_dita(self):
+        """Versão acima da maior guardada leva `mais_nova_que_a_base` (o
+        remédio é importar uma base mais nova); a mais antiga, não — essa
+        saiu da retenção. As duas mantêm `fora_da_base` com a versão."""
+        est, info = self.fonte.estrutura("ICMS", "021")
+        self.assertEqual(est, {})
+        self.assertEqual(info["fora_da_base"], True)
+        self.assertEqual(info["versao"], "021")
+        self.assertTrue(info["mais_nova_que_a_base"])
+        # a versão da base vai junto, para a tela dizer contra o quê
+        self.assertEqual(info["base"], "2026.10.1")
+        _est, antiga = self.fonte.estrutura("ICMS", "014")
+        self.assertEqual(antiga["base"], "2026.10.1")
+        self.assertTrue(antiga["fora_da_base"])
+        self.assertFalse(antiga.get("mais_nova_que_a_base"))
+        # entre as guardadas: vem a estrutura e nenhuma das duas chaves
+        _est, dentro = self.fonte.estrutura("ICMS", "019")
+        self.assertNotIn("fora_da_base", dentro)
+        self.assertNotIn("mais_nova_que_a_base", dentro)
+
+    def test_comparacao_da_versao_e_numerica(self):
+        """"1000" (quatro dígitos) e COD_VER que não é número nunca
+        levantam: a porta só chega aqui com três dígitos, mas o adaptador
+        não depende disso."""
+        _est, info = self.fonte.estrutura("ICMS", "1000")
+        self.assertTrue(info["mais_nova_que_a_base"])
+        for estranha in ("abc", "", "0x1"):
+            with self.subTest(versao=estranha):
+                _est, info = self.fonte.estrutura("ICMS", estranha)
+                self.assertTrue(info["fora_da_base"])
+                self.assertFalse(info.get("mais_nova_que_a_base"))
+
     def test_versao_vigente(self):
         self.assertEqual(self.fonte.versao_vigente("ICMS", "31082026"), "020")
         self.assertEqual(self.fonte.versao_vigente("ICMS", "31082025"), "019")

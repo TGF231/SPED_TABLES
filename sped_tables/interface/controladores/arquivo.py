@@ -292,8 +292,9 @@ class ControladorArquivo:
                                 % (self.doc.layout, envio_pva.onde_procurei()))
             return
 
-        impedem = envio_pva.pre_checagem(self.doc)
-        if impedem and not self._mandar_mesmo_assim(impedem):
+        impedem, aviso = envio_pva.pre_checagem_com_aviso(self.doc)
+        if ((impedem or aviso)
+                and not self._mandar_mesmo_assim(impedem, aviso)):
             return
 
         # com botão de cancelar: a espera pode chegar a 15 minutos quando o
@@ -336,20 +337,31 @@ class ControladorArquivo:
         elif forma == envio_pva.ALERTAR:
             QMessageBox.warning(self, "Abrir no PVA", msg)
 
-    def _mandar_mesmo_assim(self, impedem):
-        """O arquivo tem o que o PVA recusa na importação: pergunta antes."""
-        total = sum(q for _t, q in impedem)
-        detalhe = "\n".join("• %s: %d" % (t, q) for t, q in impedem)
+    def _mandar_mesmo_assim(self, impedem, aviso=""):
+        """O arquivo tem o que o PVA recusa na importação — ou a conferência
+        prévia não rodou (`aviso`: sem o leiaute do arquivo na base): pergunta
+        antes. O aviso sozinho não impede nada, o PVA valida de qualquer
+        jeito; a pergunta só deixa de ser aprovação em silêncio."""
+        partes = []
+        if impedem:
+            total = sum(q for _t, q in impedem)
+            detalhe = "\n".join("• %s: %d" % (t, q) for t, q in impedem)
+            partes.append("Este arquivo tem %d campo(s) que o PVA recusa "
+                          "já na importação:\n\n%s\n\nEle vai responder "
+                          "\"Importação não realizada — erros na estrutura "
+                          "do arquivo\". Corrija antes pelo Diagnóstico."
+                          % (total, detalhe))
+        if aviso:
+            partes.append(aviso + ("" if impedem else
+                                   " O PVA valida o arquivo de qualquer "
+                                   "jeito."))
         cx = QMessageBox(QMessageBox.Icon.Warning, "Abrir no PVA",
-                         "Este arquivo tem %d campo(s) que o PVA recusa "
-                         "já na importação:\n\n%s\n\nEle vai responder "
-                         "\"Importação não realizada — erros na estrutura "
-                         "do arquivo\". Corrija antes pelo Diagnóstico."
-                         % (total, detalhe), parent=self)
+                         "\n\n".join(partes), parent=self)
         b_diag = cx.addButton("Ver diagnóstico",
                               QMessageBox.ButtonRole.AcceptRole)
-        b_ass = cx.addButton("Mandar assim mesmo",
-                             QMessageBox.ButtonRole.DestructiveRole)
+        b_ass = cx.addButton(
+            "Mandar assim mesmo" if impedem else "Abrir o PVA",
+            QMessageBox.ButtonRole.DestructiveRole)
         cx.addButton("Cancelar", QMessageBox.ButtonRole.RejectRole)
         cx.setDefaultButton(b_diag)
         cx.exec()

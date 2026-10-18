@@ -31,8 +31,11 @@ class Referencias:
         `versao` é a versão que o arquivo declara (`versao_do_leiaute`);
         `None` pede a mais recente da fonte — é o que vale para arquivo sem
         COD_VER legível. Versão que a fonte não guarda devolve estrutura
-        vazia e `info["fora_da_base"]`: nada se cobra por estrutura de
-        outra versão."""
+        vazia e `info["fora_da_base"]` (a versão pedida): nada se cobra por
+        estrutura de outra versão. Quando a versão pedida é **maior** que a
+        maior que a fonte guarda, `info["mais_nova_que_a_base"]` também vem
+        `True` — o arquivo é de um leiaute posterior à base, e o remédio é
+        uma base mais nova; sem a chave, a versão saiu da retenção."""
         return {}, {"descritor": None,
                     "erro": "nenhuma base de referência ligada"}
 

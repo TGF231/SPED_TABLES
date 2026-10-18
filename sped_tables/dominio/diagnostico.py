@@ -234,6 +234,11 @@ def verificar(doc):
             "versao": info_desc.get("versao"),
             "fora_da_base": (info_desc.get("versao")
                              if info_desc.get("fora_da_base") else None),
+            # arquivo de leiaute posterior ao da base: a tela manda importar
+            # uma base mais nova, não fala em arquivo velho
+            "mais_nova_que_a_base": bool(
+                info_desc.get("mais_nova_que_a_base")),
+            "base": info_desc.get("base"),
             "sem_base": not estrutura}
 
     # ---- o que a leitura não conseguiu ler como registro ------------------

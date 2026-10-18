@@ -127,6 +127,47 @@ class TestEntrada(Base):
         self.assertFalse(any(r.reg == "C100" for r in res.doc.registros))
 
 
+class TestLeiauteDoPeriodo(Base):
+    """Período que nenhuma versão da base cobre: a geração segue na versão
+    mais recente e **diz** isso, sem bloquear a gravação."""
+
+    TIPO = "leiaute do período fora da base"
+
+    def _apontamentos(self, periodo):
+        res = geracao.gerar_icms(self.memoria,
+                                 xf.ler_pasta_fiscal(self.xmls), periodo,
+                                 saldo_credor_anterior=0)
+        return res, [r for r in res.revisar if r["tipo"] == self.TIPO]
+
+    def test_periodo_coberto_nao_aponta(self):
+        _res, apontados = self._apontamentos("202608")
+        self.assertEqual(apontados, [])
+
+    def test_periodo_fora_da_base_aponta_sem_bloquear(self):
+        # a base entregue vai até o ICMS 020, que vale em 2026
+        res, apontados = self._apontamentos("202708")
+        self.assertEqual(len(apontados), 1)
+        a = apontados[0]
+        self.assertFalse(a["bloqueia"])
+        self.assertEqual(a["documento"], "0000")
+        self.assertIn("08/2027", a["detalhe"])
+        self.assertIn("mais recente", a["detalhe"])
+        self.assertIn("020", a["detalhe"])
+        self.assertIn("Configurações → Base de referência…", a["detalhe"])
+        self.assertEqual(res.bloqueios, [])
+
+    def test_sem_base_nenhuma_nao_aponta(self):
+        """Fonte vazia: não há "versão mais recente" que tenha valido, e a
+        geração sai como sempre saiu."""
+        from sped_tables.dominio import referencias
+        antes = referencias.definir(None)
+        try:
+            _res, apontados = self._apontamentos("202708")
+        finally:
+            referencias.definir(antes)
+        self.assertEqual(apontados, [])
+
+
 class TestSaidasECancelamento(Base):
 
     def test_nfce_sem_c170_com_st_e_ipi_vazios(self):

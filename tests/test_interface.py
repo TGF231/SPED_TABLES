@@ -707,6 +707,73 @@ class TestJanela(unittest.TestCase):
             j.close()
         self.assertEqual(self.erros, [], self._falhas())
 
+    def test_diagnostico_de_arquivo_mais_novo_que_a_base_diz_o_remedio(self):
+        """Arquivo de leiaute posterior ao da base (ex.: COD_VER 021 numa
+        base que vai até a 020): o texto de origem do Diagnóstico não sugere
+        arquivo velho ("últimos 5 anos"), diz a versão do arquivo e a da
+        base e manda importar uma base mais nova. O papel continua `aviso`
+        e nenhum rótulo é `ok`. Com a versão mais antiga, o texto de sempre."""
+        from PyQt6.QtWidgets import QLabel
+        from sped_tables.interface.controladores import gerais
+        nova = {"fora_da_base": "021", "mais_nova_que_a_base": True,
+                "base": "2026.10.1"}
+        antiga = {"fora_da_base": "015", "base": "2026.10.1"}
+        with PastaTemporaria() as p:
+            j = self.ed.JanelaPrincipal()
+            self.assertTrue(j.abrir_caminho(icms_basico().gravar(p)))
+            _esperar()
+            for info in (nova, antiga):
+                with self.subTest(info=info), mock.patch.object(
+                        gerais.diagnostico, "verificar",
+                        lambda doc, info=info: ([], info)):
+                    j.act_diagnostico.trigger()
+                    rotulos = j._janelas["DialogoDiagnostico"].findChildren(
+                        QLabel)
+                    textos = [l.text() for l in rotulos]
+                    origem = [l for l in rotulos if l.wordWrap()]
+                    self.assertEqual(len(origem), 1, textos)
+                    self.assertEqual(origem[0].property("role"), "aviso")
+                    self.assertEqual([l.text() for l in rotulos
+                                      if l.property("role") == "ok"], [])
+                    texto = origem[0].text()
+                    if info is nova:
+                        self.assertIn("021", texto)
+                        self.assertIn("mais nova que a base de referência",
+                                      texto)
+                        self.assertIn("2026.10.1", texto)
+                        self.assertIn("regras embutidas", texto)
+                        self.assertIn(
+                            "Configurações → Base de referência…", texto)
+                        self.assertNotIn("últimos 5 anos", texto)
+                    else:
+                        self.assertIn("últimos 5 anos", texto)
+                        self.assertNotIn("mais nova", texto)
+            j.alterado = False
+            j.close()
+        self.assertEqual(self.erros, [], self._falhas())
+
+    def test_diagnostico_automatico_de_arquivo_mais_novo_que_a_base(self):
+        """A barra de status do Diagnóstico automático, sem achados, também
+        diz que o arquivo é mais novo que a base e o que fazer."""
+        from sped_tables.interface.controladores import gerais
+        info = {"fora_da_base": "021", "mais_nova_que_a_base": True,
+                "base": "2026.10.1"}
+        with PastaTemporaria() as p, mock.patch.object(
+                gerais.diagnostico, "verificar", lambda doc: ([], info)):
+            j = self.ed.JanelaPrincipal()
+            self.assertTrue(j.abrir_caminho(icms_basico().gravar(p)))
+            _esperar()
+            self.assertEqual(
+                j.statusBar().currentMessage(),
+                "Diagnóstico: nenhum problema nas regras embutidas; a "
+                "versão 021 do leiaute é mais nova que a base de "
+                "referência 2026.10.1 — importe uma base mais nova em "
+                "Configurações → Base de referência….")
+            self.assertNotIn("DialogoDiagnostico", getattr(j, "_janelas", {}))
+            j.alterado = False
+            j.close()
+        self.assertEqual(self.erros, [], self._falhas())
+
     def test_diagnostico_automatico_sem_achados_diz_o_que_rodou(self):
         """Ao abrir o arquivo o Diagnóstico roda sozinho e, sem achados, só
         fala pela barra de status. Sem a base (ou com a versão do arquivo
@@ -737,6 +804,75 @@ class TestJanela(unittest.TestCase):
                                  getattr(j, "_janelas", {}))
                 j.alterado = False
                 j.close()
+        self.assertEqual(self.erros, [], self._falhas())
+
+    def _abrir_no_pva(self, j, info, clicar):
+        """Dispara *Abrir no PVA* com o diagnóstico (`info`, sem achados) e a
+        pergunta prévia respondida com o botão de texto `clicar` (None: nenhum
+        clique). Devolve `(caixas, enviadas)`: as perguntas feitas e as vezes
+        que a automação do PVA foi chamada."""
+        from sped_tables.aplicacao import envio_pva
+        caixas, enviadas = [], []
+
+        def executa(cx):
+            caixas.append(cx)
+            return 0
+
+        def clicado(cx):
+            return next((b for b in cx.buttons() if b.text() == clicar), None)
+
+        def enviar(*a, **k):
+            enviadas.append(a)
+            return {"estado": "importado", "mensagem": "Importado."}
+
+        with mock.patch.object(envio_pva, "instalacao",
+                               lambda layout: {"nome": "PVA de teste"}), \
+                mock.patch.object(envio_pva.diagnostico, "verificar",
+                                  lambda doc: ([], info)), \
+                mock.patch.object(envio_pva, "enviar", enviar), \
+                mock.patch.object(QMessageBox, "exec", executa), \
+                mock.patch.object(QMessageBox, "clickedButton", clicado):
+            j.abrir_no_pva(j.caminho)
+        return caixas, enviadas
+
+    def test_abrir_no_pva_avisa_quando_a_conferencia_nao_rodou(self):
+        """Sem a estrutura do leiaute (arquivo mais novo que a base, versão
+        fora dela, base indisponível) a pré-checagem passaria em silêncio: a
+        pergunta que já existe diz que a conferência não rodou — e o envio
+        não é impedido (o PVA valida de qualquer jeito). Com a estrutura, o
+        envio segue direto, sem pergunta."""
+        casos = (
+            ({"fora_da_base": "021", "mais_nova_que_a_base": True,
+              "base": "2026.10.1"}, ("021", "mais nova", "2026.10.1")),
+            ({"fora_da_base": "015", "base": "2026.10.1"}, ("015",)),
+            ({"sem_base": True}, ("indisponível",)),
+        )
+        with PastaTemporaria() as p:
+            j = self.ed.JanelaPrincipal()
+            self.assertTrue(j.abrir_caminho(icms_basico().gravar(p)))
+            _esperar()
+            for info, trechos in casos:
+                with self.subTest(info=info):
+                    caixas, enviadas = self._abrir_no_pva(
+                        j, info, "Abrir o PVA")
+                    self.assertEqual(len(caixas), 1)
+                    texto = caixas[0].text()
+                    self.assertIn("não rodou", texto)
+                    for t in trechos:
+                        self.assertIn(t, texto)
+                    # não impede: a pessoa escolheu abrir e a automação rodou
+                    self.assertEqual(len(enviadas), 1)
+                    # e pode desistir
+                    caixas, enviadas = self._abrir_no_pva(j, info,
+                                                          "Cancelar")
+                    self.assertEqual(len(caixas), 1)
+                    self.assertEqual(enviadas, [])
+            caixas, enviadas = self._abrir_no_pva(
+                j, {"versao": "020", "registros_descritor": 10}, None)
+            self.assertEqual(caixas, [])
+            self.assertEqual(len(enviadas), 1)
+            j.alterado = False
+            j.close()
         self.assertEqual(self.erros, [], self._falhas())
 
     def test_todas_as_acoes_nos_dois_leiautes(self):

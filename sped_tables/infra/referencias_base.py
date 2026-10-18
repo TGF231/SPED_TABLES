@@ -15,6 +15,15 @@ from sped_tables.dominio.referencias import Referencias
 from sped_tables.infra import tabelas_ncm, tabelas_oficiais
 
 
+def _numero(cod_ver):
+    """O COD_VER como número, para comparar versões; -1 quando não é um
+    (nunca levanta: a comparação só decide qual mensagem dar)."""
+    try:
+        return int(cod_ver)
+    except (TypeError, ValueError):
+        return -1
+
+
 class ReferenciasBase(Referencias):
 
     def __init__(self, origem, nome="base de referência"):
@@ -43,11 +52,16 @@ class ReferenciasBase(Referencias):
         if versao is None:
             versao = max(versoes, key=int)
         if versao not in versoes:
-            return {}, {"descritor": None, "versao": versao,
-                        "fora_da_base": True,
-                        "erro": "a versão %s do leiaute não está na base de "
-                                "referência %s"
-                                % (versao, self.manifesto().get("versao"))}
+            base = self.manifesto().get("versao")
+            info = {"descritor": None, "versao": versao,
+                    "fora_da_base": True, "base": base,
+                    "erro": "a versão %s do leiaute não está na base de "
+                            "referência %s" % (versao, base)}
+            # acima da maior guardada o remédio é outro (importar uma base
+            # mais nova) que o da versão velha demais (saiu da retenção)
+            if _numero(versao) > max(_numero(v) for v in versoes):
+                info["mais_nova_que_a_base"] = True
+            return {}, info
         chave = (layout, versao)
         if chave not in self._alinhadas:
             # a origem entrega o dicionário do próprio cache e o alinhamento

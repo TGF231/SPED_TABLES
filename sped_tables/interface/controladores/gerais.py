@@ -442,7 +442,14 @@ class ControladorGerais:
             # sem a base (ou com a versão do arquivo fora dela) só as regras
             # embutidas rodaram: dizer "nenhum problema nas verificações
             # automáticas" seria aprovar o que não foi conferido
-            if info.get("fora_da_base"):
+            if info.get("fora_da_base") and info.get("mais_nova_que_a_base"):
+                texto = ("nenhum problema nas regras embutidas; a versão %s "
+                         "do leiaute é mais nova que a base de referência%s "
+                         "— importe uma base mais nova em Configurações → "
+                         "Base de referência…."
+                         % (info["fora_da_base"],
+                            " %s" % info["base"] if info.get("base") else ""))
+            elif info.get("fora_da_base"):
                 texto = ("nenhum problema nas regras embutidas; a versão %s "
                          "do leiaute não está na base de referência."
                          % info["fora_da_base"])

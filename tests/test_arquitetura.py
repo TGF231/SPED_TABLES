@@ -274,6 +274,37 @@ class TestEnvioPva(unittest.TestCase):
 
     def test_pre_checagem_nunca_levanta(self):
         self.assertEqual(envio_pva.pre_checagem(object()), [])
+        self.assertEqual(envio_pva.pre_checagem_com_aviso(object()), ([], ""))
+
+    def test_pre_checagem_diz_quando_nao_conferiu_pelo_leiaute(self):
+        """Sem a estrutura do leiaute (base ausente ou sem a versão do
+        arquivo) os achados que o PVA recusa nem existem, e a pré-checagem
+        passaria em silêncio: ela devolve também o aviso de que não rodou.
+        Com a estrutura, o aviso é vazio."""
+        from unittest import mock
+        casos = (
+            ({"sem_base": True}, ("base de referência está indisponível",)),
+            ({"fora_da_base": "015", "base": "2026.10.1"},
+             ("015", "não está na base de referência")),
+            ({"fora_da_base": "021", "mais_nova_que_a_base": True,
+              "base": "2026.10.1"},
+             ("021", "mais nova que a base de referência", "2026.10.1",
+              "importe uma base mais nova em Configurações → Base de "
+              "referência…")),
+            ({"versao": "020", "registros_descritor": 10}, ()),
+        )
+        for info, trechos in casos:
+            with self.subTest(info=info), mock.patch.object(
+                    envio_pva.diagnostico, "verificar",
+                    lambda doc, info=info: ([], info)):
+                impedem, aviso = envio_pva.pre_checagem_com_aviso(object())
+                self.assertEqual(impedem, [])
+                if not trechos:
+                    self.assertEqual(aviso, "")
+                for t in trechos:
+                    self.assertIn(t, aviso)
+                if trechos:
+                    self.assertIn("não rodou", aviso)
 
 
 class TestCanal(unittest.TestCase):

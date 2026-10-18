@@ -57,8 +57,10 @@ class DialogoItensNaoUsados(QDialog):
                                 key=lambda x: -x[1]))
         proc = QLabel(
             "Referências encontradas em: %s.<br>Os campos que apontam para o "
-            "0200 vêm do <b>descritor do PVA</b> (28 registros no EFD "
-            "ICMS/IPI, 14 no Contribuições) — não de uma lista escrita à mão."
+            "0200 vêm do <b>leiaute da versão do arquivo</b> na base de "
+            "referência (28 registros no EFD ICMS/IPI, 14 no Contribuições, "
+            "no leiaute atual) — não de uma lista escrita à mão. Sem o "
+            "leiaute da versão, vale a varredura pelo valor do COD_ITEM."
             % (onde or "nenhum"))
         proc.setWordWrap(True)
         proc.setProperty("role", "info")

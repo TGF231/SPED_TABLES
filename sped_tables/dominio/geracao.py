@@ -546,6 +546,7 @@ def gerar_icms(memoria, lote, periodo, saldo_credor_anterior=None,
                     % len(res.extemporaneos))
 
     # ---- o documento, montado e calculado pelo código de sempre
+    _apontar_leiaute_do_periodo(res, "ICMS", fim)
     t = _Linhas("ICMS", _larguras(memoria, "ICMS", fim))
     t.modelo(modelos["0000"], DT_INI=ini, DT_FIN=fim, COD_FIN="0")
     t.reg("0001", IND_MOV="0")
@@ -582,6 +583,28 @@ def gerar_icms(memoria, lote, periodo, saldo_credor_anterior=None,
     res.doc = SpedDocument.de_texto(doc.gerar_texto())
     res.contagem = {k: len(v) for k, v in grupos.items()}
     return res
+
+
+def _apontar_leiaute_do_periodo(res, layout, fim):
+    """Período que nenhuma versão do leiaute da base cobre (`fim`,
+    DDMMAAAA): `_larguras` segue na versão mais recente, como sempre fez, e
+    isto **diz** que foi assim — apontamento que não bloqueia. Sem base
+    ligada não há versão que tenha valido, e nada se aponta."""
+    fonte = referencias.atual()
+    if fonte.versao_vigente(layout, fim) is not None:
+        return
+    estrutura, info = fonte.estrutura(layout, None)
+    if not estrutura:
+        return
+    res.apontar(
+        "leiaute do período fora da base", "0000", "",
+        "O período %s/%s não está coberto por nenhuma versão do leiaute %s "
+        "da base de referência: a largura dos registros veio da versão mais "
+        "recente (%s). Confira o COD_VER do arquivo e, se ele for de um "
+        "leiaute mais novo, importe uma base mais nova em Configurações → "
+        "Base de referência…"
+        % (fim[2:4], fim[4:], "ICMS/IPI" if layout == "ICMS"
+           else "Contribuições", info.get("versao") or "?"))
 
 
 def _larguras(memoria, layout, fim):
@@ -908,6 +931,7 @@ def gerar_contrib(memoria, lote, periodo, correlacoes=None, excluir=(),
             for it in n.itens:
                 itens.saida(it)
 
+    _apontar_leiaute_do_periodo(res, "CONTRIB", fim)
     t = _Linhas("CONTRIB", _larguras(memoria, "CONTRIB", fim))
     t.modelo(modelos["0000"], DT_INI=ini, DT_FIN=fim, TIPO_ESCRIT="0",
              IND_SIT_ESP="", NUM_REC_ANTERIOR="")

@@ -111,6 +111,24 @@ class TestContribuicoes(unittest.TestCase):
         r = r or next(x for x in doc.registros if x.reg == reg)
         return r.valor(doc._ix(reg, campo))
 
+    def test_periodo_fora_da_base_e_apontado_sem_bloquear(self):
+        """A 006 vale desde 2020: um período de 2019 não tem leiaute na
+        base. A geração segue na versão mais recente e aponta, sem
+        bloquear; no período coberto não há apontamento."""
+        tipo = "leiaute do período fora da base"
+        coberto = geracao.gerar_contrib(
+            self.memoria, xf.ler_pasta_fiscal(self.xmls), "202608")
+        self.assertEqual([r for r in coberto.revisar if r["tipo"] == tipo],
+                         [])
+        res = geracao.gerar_contrib(
+            self.memoria, xf.ler_pasta_fiscal(self.xmls), "201908")
+        apontados = [r for r in res.revisar if r["tipo"] == tipo]
+        self.assertEqual(len(apontados), 1)
+        self.assertFalse(apontados[0]["bloqueia"])
+        self.assertIn("08/2019", apontados[0]["detalhe"])
+        self.assertIn("006", apontados[0]["detalhe"])
+        self.assertEqual(res.bloqueios, [])
+
     def test_m400_m410_e_m800_m810(self):
         """Receita com CST 06 gera M400/M410 e M800/M810: total pela
         receita do CST, natureza pelo NCM na tabela do CST (leite → 121) ou,

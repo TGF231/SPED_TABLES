@@ -257,7 +257,16 @@ class DialogoDiagnostico(QDialog):
         cab.setProperty("role", papel_cab)
         lay.addWidget(cab)
 
-        if info.get("fora_da_base"):
+        if info.get("fora_da_base") and info.get("mais_nova_que_a_base"):
+            # o remédio é outro: não é arquivo velho, é base velha
+            texto_origem = (
+                "A versão %s do leiaute deste arquivo é mais nova que a base "
+                "de referência em uso%s: valeram apenas as regras embutidas, "
+                "que cobrem menos que o validador oficial. Importe uma base "
+                "mais nova em Configurações → Base de referência…"
+                % (info["fora_da_base"],
+                   " (%s)" % info["base"] if info.get("base") else ""))
+        elif info.get("fora_da_base"):
             texto_origem = (
                 "A versão %s do leiaute deste arquivo não está na base de "
                 "referência (ela guarda os últimos 5 anos): valeram apenas "
