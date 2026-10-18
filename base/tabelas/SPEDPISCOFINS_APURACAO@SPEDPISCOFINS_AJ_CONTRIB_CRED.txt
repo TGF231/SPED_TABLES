@@ -1,0 +1,14 @@
+versão=4 COD_AJ, DESC_AJ, DT_INI, DT_FIM
+01|Ajuste Oriundo de Ação Judicial|01012011|
+02|Ajuste Oriundo de Processo Administrativo|01012011|
+03|Ajuste Oriundo da Legislação Tributária|01012011|
+04|Ajuste Oriundo Especificamente do RTT|01012011|
+05|Ajuste Oriundo de Outras Situações|01012011|
+06|Estorno|01012011|
+07|Ajuste Oriundo da Legislação Tributária  Adoção do Regime de Caixa  CPRB (Lei nº 12.546/2011, art. 9º, § 12)|01012011|
+08|Ajuste Oriundo da Legislação Tributária  Diferimento de Valores a Recolher no Período  CPRB (Lei nº 12.546/2011, art. 9º, § 12)|01012011|
+09|Ajuste Oriundo da Legislação Tributária  Adição de Valores Diferidos em Período(s) Anterior(es)  CPRB (Lei nº 12.546/2011, art. 9º, § 12)|01012011|
+10|Ajuste referente à redução linear dos incentivos e benefícios de natureza tributária, financeira ou creditícia - isenção (LCP nº 224/2025 e art. 8º da IN RFB nº 2.305/2025)|01042026|
+11|Ajuste referente à redução linear dos incentivos e benefícios de natureza tributária, financeira ou creditícia - alíquota zero (LCP nº 224/2025 e art. 8º da IN RFB nº 2.305/2025)|01042026|
+12|Ajuste referente à redução linear dos incentivos e benefícios de natureza tributária, financeira ou creditícia - concessão de crédito tributário (LCP nº 224/2025 e art. 10º da IN RFB nº 2.305/2025)|01042026|
+25|ICMS destacado em documento fiscal complementar, referente a receitas tributadas em períodos anteriores|01012002|31122018

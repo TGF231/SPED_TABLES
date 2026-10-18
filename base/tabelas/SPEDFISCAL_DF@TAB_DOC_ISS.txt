@@ -1,0 +1,9 @@
+versão=1 COD_MOD, DESC_MOD, DT_INI, DT_FIM
+01|Nota Fiscal (modelo 1/1A)|01012019|
+03|Nota Fiscal de Serviços (modelo 3)|01012019|
+3A|Nota Fiscal de Serviços - Modelo Simplificado (modelo 3-A)|01012019|
+3B|Nota Fiscal de Serviços - Modelo Avulso|01012019|
+04|Nota Fiscal de Produtor (modelo 4)|01012019|
+08|Conhecimento de Transporte Rodoviário de Cargas (modelo 8)|01012019|
+55|Nota Fiscal Eletrônica (modelo 55)|01012019|
+65|Nota Fiscal de Consumidor Eletrônica- NFC-e (modelo 65)|01012019|

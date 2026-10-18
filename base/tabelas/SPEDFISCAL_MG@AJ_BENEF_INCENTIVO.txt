@@ -1,0 +1,196 @@
+versão=35 COD_AJ, DESC_AJ, DT_INI, DT_FIM
+MG02990002|Crédito por entrada; Outras Apurações; Resp.: Informativo; Apur.: Informativo; Mercadoria; Transf. Crédito.|01012009|31122014
+MG10000004|Outros créditos; Op.Própria; Resp.: Própria; Apur.: A apurar; Mercadoria; Antecipação Tributária.|01012009|
+MG10000008|Outros créditos; Op.Própria; Resp.: Própria; Apur.: A apurar; Mercadoria; Ativo permanente.|01012009|31072015
+MG10000009|Outros Créditos; Op.Própria; Resp.: Própria; Apur.: A apurar; Mercadoria; Crédito Presumido|01072013|
+MG10000013|Outros créditos; Op.Própria; Resp.: Própria; Apur.: A apurar; Mercadoria; Rest.ICMS/ST - Creditamento.|01012009|
+MG10000014|Outros créditos; Op.Própria; Resp.: Própria; Apur.: A apurar; Mercadoria; Creditamento ICMS OP - parágrafo 10 do art. 66|01072018|30042024
+MG10000014|Outros créditos; Op.Própria; Resp.: Própria; Apur.: A apurar; Mercadoria; Creditamento ICMS OP - § 15 do art. 31 do RICMS/23|01052024|
+MG10000015|Outros créditos; Op.Própria; Resp.: Própria; Apur.: A apurar; Mercadoria; ICMS/OP - Devolução de venda produto sujeito ao ICMS/ST - documento fiscal escriturado com CST 060 pelo substituto.|01042023|
+MG10000020|Outros Créditos; Op.Própria; Resp.: Própria; Apur.: A apurar; Mercadoria; Mercadoria; Fundo de Erradicação da Miséria - FEM Extemporâneo|01072015|
+MG10000021|Outros créditos; Op.Própria; Resp.: Própria; Apur.: A apurar; Mercadoria; Inventário - alteração da forma de tributação da mercadoria|01072015|
+MG10000022|Outros créditos; Op.Própria; Resp.: Própria; Apur.: A apurar; Mercadoria; Outros Créditos - Regime Especial|01102015|
+MG10000023|Outros créditos; Op.Própria; Resp.: Própria; Apur.: A apurar; Mercadoria; Devolução  RE/TTS  valor proporcional à parcela anteriormente estornada.|01042022|
+MG10000024|Outros créditos; Op.Própria; Resp.: Própria; Apur.: A apurar; Mercadoria; Devolução  RE/Carga Efetiva  valor proporcional à parcela anteriormente estornada.|01042022|
+MG10000025|Outros créditos; Op.Própria; Resp.: Própria; Apur.: A apurar; Mercadoria; crédito outorgado|01072023|
+MG10000503|Outros créditos; Op.Própria; Resp.: Própria; Apur.: A apurar; Mercadoria; ICMS ST de Insumo.|01012009|31102015
+MG10000503|Outros créditos; Op.Própria; Resp.: Própria; Apur.: A apurar; Mercadoria; ICMS ST de Insumo, ou Art.119 do Anexo XV|01112015|30042024
+MG10000503|Outros créditos; Op.Própria; Resp.: Própria; Apur.: A apurar; Mercadoria; ICMS ST de Insumo OU Art. 166 do Anexo VII do RICMS/23|01052024|
+MG10000504|Outros créditos; Op.Própria; Resp.: Própria; Apur.: A apurar; Mercadoria; Uso e consumo.|01012009|31122014
+MG10000504|Outros créditos; Op.Própria; Resp.: Própria; Apur.: A apurar; Mercadoria; Devolução - Diferencial de Alíquota - Uso e consumo.|01012015|30062015
+MG10000504|Outros créditos; Op.Própria; Resp.: Própria; Apur.: A apurar; Mercadoria; Devolução ou pagamento indevido - Diferencial de alíquota|01072015|
+MG10000505|Outros créditos; Op.Própria;	Resp.: Própria; Apur.: A apurar; Mercadoria; ICMS Monofásico de Insumo.|01042023|
+MG10001014|Outros créditos; Op.Própria; Resp.: Própria; Apur.: A apurar; Transporte; ST - Transporte.|01012009|
+MG10011000|Outros créditos; Op.Própria; Resp.: Própria; Apur.: Recolhimento Espontâneo; Transporte; Op. Normal|01102012|
+MG10990002|Outros créditos; Op.Própria; Resp.: Informativo; Apur.: Informativo; Mercadoria; Transf. Crédito.|01012009|31122016
+MG10990002|Outros créditos; Op.Própria; Resp.: Informativo; Apur.: Informativo; Mercadoria; Crédito Recebido em Transferência  Campo 66 da DAPI|01012017|
+MG10990010|Outros créditos; Op.Própria; Resp.: Informativo; Apur.: Informativo; Mercadoria; Lançamento extemporâneo.|01012009|
+MG10990029|Outros créditos; Op.Própria; Resp.: Informativo; Apur.: Informativo; Mercadoria; Alteração no regime de apuração do imposto.|01012018|
+MG10990505|Outros créditos; Op.Própria; Resp.: Informativo; Apur.: Informativo;  Mercadoria;  Simples Nacional, para os lançamentos de créditos devido à aquisição de mercadorias de contribuintes optantes pelo Simples Nacional|01102011|31122016
+MG10990505|Outros créditos; Op.Própria; Resp.: Informativo; Apur.: Informativo;  Mercadoria;  Simples Nacional, para os lançamentos de créditos devido à entrada de mercadorias de contribuintes optantes pelo Simples Nacional|01012017|
+MG11000012|Outros créditos; Op.ST; Resp.: Própria; Apur.: A apurar; Mercadoria; Rest.ICMS/ST - Abatimento.|01012009|
+MG11000015|Outros créditos; Op.ST; Resp.: Própria; Apur.: A apurar; Mercadoria; Rest. ICMS ST - Aspecto quantitativo.|01072018|
+MG11000016|Outros Créditos; Op.ST; Resp. Própria; Apur.: A apurar; Mercadoria; Estorno de Complemento ICMS ST  Aspecto Quantitativo.|01012021|
+MG11000020|Outros Créditos; Op.ST; Resp.: Própria; Apur.: A apurar; Mercadoria; Mercadoria; Fundo de Erradicação da Miséria - FEM Extemporâneo|01072015|
+MG11000021|Outros créditos; Op.ST; Resp.: Própria; Apur.: A apurar; Mercadoria; Inventário - alteração da forma de tributação da mercadoria|01072015|30062016
+MG11000021|Outros créditos; Op.ST; Resp.: Própria; Apur.: A apurar; Mercadoria; Inventário - alteração da forma de tributação da mercadoria / RET|01072016|
+MG11000024|Outros créditos; Op.ST; Resp.: Própria; Apur.: A apurar; Mercadoria; Desfazimento ST CST10 - RE|01072016|
+MG11000025|Outros créditos; Op.ST; Resp.: Própria; Apur.: A apurar; Mercadoria; Desfazimento ST CST60 - RE|01072016|
+MG11000028|Outros créditos; Op.ST; Resp.: Própria; Apur.: A apurar; Mercadoria; Outros créditos - art. 12, parágrafo 33, lei 6763/75|01072017|
+MG11000902|Outros créditos; Op.ST; Resp.: Própria; Apur.: A apurar; Mercadoria; Devolução.|01012014|
+MG11900011|Outros créditos; Op.ST; Resp.: Informativo; Apur.: A apurar; Mercadoria; Rest.ICMS/ST - Ressarcimento.|01012009|
+MG11990002|Outros créditos; Op.ST; Resp.: Informativo; Apur.: Informativo; Mercadoria; Transf. Crédito.|01012009|
+MG13000999|Outros Créditos; Apuração 1; Resp.: Própria; Apur.: A apurar; Mercadoria; Outros Ajustes|01072013|01072013
+MG20000008|Estorno débito; Op.Própria; Resp.: Própria; Apur.: A apurar; Mercadoria; Ativo permanente.|01012009|
+MG20000018|Estorno de débito; Op.Própria; Resp.: Própria; Apur.: A apurar; Mercadoria; Fundo de Erradicação da Miséria - FEM|01082014|31082016
+MG20000018|Estorno de débito; Op.Própria; Resp.: Própria; Apur.: A apurar; Mercadoria; Fundo de Erradicação da Miséria  FEM - adicionado ao ICMS/OP|01092016|31122018
+MG20000018|Estorno de débito; Op.Própria; Resp.: Própria; Apur.: A apurar; Mercadoria; Fundo de Erradicação da Miséria - FEM - adicionado ao ICMS/OP na escrituração|01012019|31052023
+MG20000018|Estorno de débito; Op.Própria; Resp.: Própria; Apur.: A apurar; Mercadoria; Fundo de Erradicação da Miséria - FEM - adicionado ao ICMS/OP na escrituração|01012024|
+MG20000504|Estorno débito; Op.Própria; Resp.: Própria; Apur.: A apurar; Mercadoria; Uso e Consumo.|01012009|
+MG20000999|Estorno de débito; Op.Própria; Resp.: Própria; Apur.: A apurar; Mercadoria; Outros Ajustes|01072013|
+MG20010000|Estorno de débito; Op.Própria; Resp.: Própria; Apur.: Recolhimento Espontâneo; Mercadoria; Op. Normal.|01012009|
+MG20011000|Estorno de débito; Op.Própria; Resp.: Própria; Apur.: Recolhimento Espontâneo; Transporte; Op. Normal|01072013|
+MG20020000|Estorno de débito; Op.Própria; Resp.: Própria; Apur.: Recolhimento por autuação; Mercadoria; Op. Normal.|01012009|
+MG21000018|Estorno de débito; Op.ST; Resp.: Própria; Apur.: A apurar; Mercadoria; Fundo de Erradicação da Miséria - FEM|01082014|31082016
+MG21000018|Estorno de débito; Op.ST; Resp.: Própria; Apur.: A apurar; Mercadoria; Fundo de Erradicação da Miséria  FEM - adicionado ao ICMS/ST|01092016|31122018
+MG21000018|Estorno de débito; Op.ST; Resp.: Própria; Apur.: A apurar; Mercadoria; Fundo de Erradicação da Miséria  FEM - adicionado ao ICMS/ST na escrituração|01012019|28022022
+MG21000018|Estorno de débito; Op.ST; Resp.: Própria; Apur.: A apurar; Mercadoria; Fundo de Erradicação da Miséria  FEM - adicionado ao ICMS/ST na escrituração|01032022|31052023
+MG21000018|Estorno de débito; Op.ST; Resp.: Própria; Apur.: A apurar; Mercadoria; Fundo de Erradicação da Miséria  FEM - adicionado ao ICMS/ST na escrituração|01012024|
+MG21010000|Estorno de débito; Op.ST; Resp.: Própria; Apur.: Recolhimento Espontâneo; Mercadoria; Op. Normal.|01012009|
+MG21020000|Estorno de débito; Op.ST; Resp.: Própria; Apur.: Recolhimento por autuação; Mercadoria; Op. Normal.|01012009|
+MG23000998|Estorno de débito; Apuração 1; Resp.: Própria; Apur.: A apurar; Mercadoria; Outros Ajustes - operações industriais.|01042023|
+MG23000999|Estorno de débito; Apuração 1; Resp.: Própria; Apur.: A apurar; Mercadoria; Outros Ajustes.|01072013|31052023
+MG23000999|Estorno de débito; Apuração 1; Resp.: Própria; Apur.: A apurar; Mercadoria; Outros Ajustes - operações comerciais.|01062023|
+MG24000999|Estorno de débito; Apuração 2; Resp.: Própria; Apur.: A apurar; Mercadoria; Outros Ajustes.|01012014|
+MG25000999|Estorno de débito; Apuração 3; Resp.: Própria; Apur.: A apurar; Mercadoria; Outros Ajustes.|01122018|
+MG26000999|Estorno de débito; Apuração 4; Resp.: Própria; Apur.: A apurar; Mercadoria; Outros Ajustes  operações sem crédito presumido|01012022|
+MG26000998|Estorno de débito; Apuração 4; Resp.: Própria; Apur.: A apurar; Mercadoria; Outros Ajustes  operações sem crédito presumido  fertilizantes  depósito em outra UF|01012022|
+MG26000997|Estorno de débito; Apuração 4; Resp.: Própria; Apur.: A apurar; Mercadoria; Outros Ajustes  operações sem crédito presumido  importação de vinho|01012022|
+MG32990002|Débito por saída; Outras Apurações; Resp.: Informativo; Apur.: Informativo; Mercadoria; Transf. Crédito.|01012009|31122014
+MG40000000|Outros débitos; Op.Própria; Resp.: Própria; Apur.: A apurar; Mercadoria; Op. Normal.|01012009|
+MG40000008|Outros débitos; Op.Própria; Resp.: Própria; Apur.: A apurar; Mercadoria; Ativo permanente.|01012009|
+MG40000029|Outros débitos; Op.Própria; Resp.: Própria; Apur.: A apurar; Mercadoria;  Alteração no regime de apuração do imposto.|01012018|
+MG40000920|Outros débitos; Op.Própria; Resp.: Própria; Apur.: A apurar; Mercadoria; Utilização de crédito acumulado para pagamentos|01012015|
+MG40000999|Outros débitos; Op.Própria; Resp.: Própria; Apur.: A apurar; Mercadoria; Outros Ajustes.|01012009|
+MG40990002|Outros débitos; Op.Própria; Resp.: Informativo; Apur.: Informativo; Mercadoria; Transf. Crédito.|01012009|
+MG41000000|Outros débitos; Op.ST; Resp.: Própria; Apur.: A apurar; Mercadoria; Op. Normal.|01012009|
+MG41000015|Outros débitos; Op.ST; Resp.: Própria; Apur.: A apurar; Mercadoria; Complemento de ICMS ST + FEM  Aspecto quantitativo.|01072018|31052023
+MG41000015|Outros débitos; Op.ST; Resp.: Própria; Apur.: A apurar; Mercadoria; Complemento de ICMS ST.|01062023|30062023
+MG41000015|Outros débitos; Op.ST; Resp.: Própria; Apur.: A apurar; Mercadoria; Complemento de ICMS ST - aspecto quantitativo|01072023|31122023
+MG41000015|Outros débitos; Op.ST; Resp.: Própria; Apur.: A apurar; Mercadoria; Complemento de ICMS ST + FEM  Aspecto quantitativo.|01012024|
+MG41000016|Outros Débitos; Op. ST; Resp. Própria; Apur.: A apurar; Mercadoria; Estorno de Restituição/Ressarcimento ICMS ST + FEM  Aspecto Quantitativo.|01012021|
+MG41000017|Outros débitos; Op.ST; Resp.: Própria; Apur.: A apurar; Mercadoria; Transferência de crédito ICMS/ST|01012024|
+MG41000501|Outros débitos; Op.ST; Resp.: Própria; Apur.: A apurar; Mercadoria; ST Interna - RE|01072015|
+MG43000999|Outros Débitos; Apuração 1; Resp.: Própria; Apur.: A apurar; Mercadoria; Outros Ajustes|01072013|01072013
+MG50000018|Estorno de crédito; Op.Própria; Resp.: Própria; Apur.: A apurar; Mercadoria; Fundo de Erradicação da Miséria - FEM - adicionado ao ICMS/OP - Entrada de mercadoria devolvida|01092016|31122018
+MG50000018|Estorno de crédito; Op.Própria; Resp.: Própria; Apur.: A apurar; Mercadoria; Fundo de Erradicação da Miséria - FEM - adicionado ao ICMS/OP na escrituração - Entrada de mercadoria devolvida|01012019|31052023
+MG50000018|Estorno de crédito; Op.Própria; Resp.: Própria; Apur.: A apurar; Mercadoria; Fundo de Erradicação da Miséria - FEM - adicionado ao ICMS/OP na escrituração - Entrada de mercadoria devolvida|01012024|
+MG50000100|Estorno de crédito; Op.Própria; Resp.: Própria; Apur.: A apurar; Mercadoria; TTD|01012015|28022022
+MG50000100|Estorno de crédito; Op.Própria; Resp.: Própria; Apur.: A apurar; Mercadoria; TTD - estoque|01032022|31052023
+MG50000100|Estorno de crédito; Op.Própria; Resp.: Própria; Apur.: A apurar; Mercadoria; TTS|01062023|
+MG50000200|Estorno de crédito; Op.Própria; Resp.: Própria; Apur.: A apurar; Mercadoria; TTD - devolução|01032022|31052023
+MG50000200|Estorno de crédito; Op.Própria; Resp.: Própria; Apur.: A apurar; Mercadoria; TTS - devolução|01062023|
+MG50000999|Estorno de crédito; Op.Própria; Resp.: Própria; Apur.: A apurar; Mercadoria; Outros Ajustes|01072013|
+MG51000018|Estorno de crédito; Op.ST.; Resp.: Própria; Apur.: A apurar; Mercadoria; Fundo de Erradicação da Miséria - FEM - adicionado ao ICMS/ST - Entrada de mercadoria devolvida|01092016|31122018
+MG51000018|Estorno de crédito; Op.ST.; Resp.: Própria; Apur.: A apurar; Mercadoria; Fundo de Erradicação da Miséria - FEM - adicionado ao ICMS/ST na escrituração - Entrada de mercadoria devolvida|01012019|28022022
+MG51000018|Estorno de crédito; Op.ST.; Resp.: Própria; Apur.: A apurar; Mercadoria; Fundo de Erradicação da Miséria - FEM - adicionado ao ICMS/ST na escrituração - Entrada de mercadoria devolvida|01032022|31052023
+MG51000018|Estorno de crédito; Op.ST.; Resp.: Própria; Apur.: A apurar; Mercadoria; Fundo de Erradicação da Miséria - FEM - adicionado ao ICMS/ST na escrituração - Entrada de mercadoria devolvida|01012024|
+MG53000998|Estorno de crédito; Apuração 1; Resp.: Própria; Apur.: A apurar; Mercadoria;	Outros Ajustes - operações industriais.|01042023|
+MG53000999|Estorno de crédito; Apuração 1; Resp.: Própria; Apur.: A apurar; Mercadoria;	Outros Ajustes|01072013|31052023
+MG53000999|Estorno de crédito; Apuração 1; Resp.: Própria; Apur.: A apurar; Mercadoria;	Outros Ajustes - operações comerciais.|01062023|
+MG54000999|Estorno de crédito; Apuração 2; Resp.: Própria; Apur.: A apurar; Mercadoria; Outros Ajustes.|01012014|
+MG55000999|Estorno de crédito; Apuração 3; Resp.: Própria; Apur.: A apurar; Mercadoria; Outros Ajustes.|01122018|
+MG56000996|Estorno de débito; Apuração 4; Resp.: Própria; Apur.: A apurar; Mercadoria; Outros Ajustes  operações com diferimento parcial|01062025|
+MG56000997|Estorno de débito; Apuração 4; Resp.: Própria; Apur.: A apurar; Mercadoria; Outros Ajustes  operações sem crédito presumido  importação de vinho|01012022|
+MG56000998|Estorno de débito; Apuração 4; Resp.: Própria; Apur.: A apurar; Mercadoria; Outros Ajustes  operações sem crédito presumido  fertilizantes  depósito em outra UF|01012022|
+MG56000999|Estorno de débito; Apuração 4; Resp.: Própria; Apur.: A apurar; Mercadoria; Outros Ajustes  operações sem crédito presumido|01012022|
+MG60990002|Dedução; Op.Própria; Resp.: Informativo; Apur.: Informativo; Mercadoria; Utilização de Crédito Recebido em Transferência de terceiros  Campo 98 da DAPI|01012017|31082025
+MG60990002|Dedução; Op.Própria; Resp.: Informativo; Apur.: Informativo; Mercadoria; Utilização de Crédito Recebido em Transferência limitado a 30% do saldo devedor  Campo 98 da DAPI|01092025|
+MG70000001|Débitos especiais; Op.Própria; Resp.: Própria; Apur.: A apurar; Mercadoria; Dif.Alíquota.|01012009|
+MG70000004|Débitos especiais; Op.Própria; Resp.: Própria; Apur.: A apurar; Mercadoria; Antecipação Tributária.|01012009|
+MG70000018|Débitos especiais; Op.Própria; Resp.: Própria; Apur.: A apurar; Mercadoria; Fundo de Erradicação da Miséria - FEM|01082014|31082016
+MG70000018|Débitos especiais; Op.Própria; Resp.: Própria; Apur.: A apurar; Mercadoria; Fundo de Erradicação da Miséria  FEM  Entrada Uso e Consumo ou Ativo Permanente|01092016|31052023
+MG70000018|Débitos especiais; Op.Própria; Resp.: Própria; Apur.: A apurar; Mercadoria; Fundo de Erradicação da Miséria  FEM  Entrada Uso e Consumo ou Ativo Permanente|01012024|
+MG70000020|Débitos especiais; Op.Própria; Resp.: Própria; Apur.: A apurar; Mercadoria; Fundo de Erradicação da Miséria - FEM Extemporâneo|01072015|31052023
+MG70000020|Débitos especiais; Op.Própria; Resp.: Própria; Apur.: A apurar; Mercadoria; Fundo de Erradicação da Miséria - FEM Extemporâneo|01012024|
+MG70000026|Débitos especiais; Op.Própria; Resp.: Própria; Apur.: A apurar; Mercadoria; Estorno de crédito devido a inventário - RE/TTS|01072016|28022022
+MG70000027|Débitos especiais; Op.Própria; Resp.: Própria; Apur.: A apurar; Mercadoria; Débito Extemporâneo referente ao Estorno de Crédito  Estoque / Inventário|01022017|28022022
+MG70001001|Débitos especiais; Op.Própria; Resp.: Própria; Apur.: A apurar; Transporte; Dif.Alíquota.|01072012|
+MG70010001|Débitos especiais; Op.Própria; Resp.: Própria; Apur.: Recolhimento Espontâneo; Mercadoria; Dif.Alíquota.|01012009|
+MG70010004|Débitos especiais; Op.Própria; Resp.: Própria; Apur.: Recolhimento Espontâneo; Mercadoria; Antecipação Tributária.|01012009|30062015
+MG70010004|Débitos especiais; Op.Própria; Resp.: Própria; Apur.: Recolhimento Espontâneo; Mercadoria; Antecipação Tributária / ICMS pago antecipadamente.|01072015|
+MG70010010|Débitos especiais; Op.Própria; Resp.: Própria; Apur.: Recolhimento Espontâneo; Mercadoria; Lançamento extemporâneo.|01012009|
+MG70010017|Débitos especiais; Op.Própria; Resp.: Própria; Apur.: Recolhimento Espontâneo; Mercadoria; Importação.|01012009|
+MG70010018|Débitos especiais; Op.Própria; Resp.: Própria; Apur.: Recolhimento Espontâneo; Mercadoria; Fundo de Erradicação da Miséria - FEM|01082014|31012017
+MG70010018|Débitos especiais; Op.Própria; Resp.: Própria; Apur.: Recolhimento Espontâneo; Mercadoria; Fundo de Erradicação da Miséria  FEM  Antecipação|01022017|31052023
+MG70010018|Débitos especiais; Op.Própria; Resp.: Própria; Apur.: Recolhimento Espontâneo; Mercadoria; Fundo de Erradicação da Miséria  FEM  Antecipação|01012024|
+MG70010020|Débitos especiais; Op.Própria; Resp.: Própria; Apur.: Recolhimento Espontâneo; Mercadoria; Fundo de Erradicação da Miséria - FEM Extemporâneo|01072015|31052023
+MG70010020|Débitos especiais; Op.Própria; Resp.: Própria; Apur.: Recolhimento Espontâneo; Mercadoria; Fundo de Erradicação da Miséria - FEM Extemporâneo|01012024|
+MG70010502|Débitos especiais; Op.Própria; Resp.: Própria; Apur.: Recolhimento Espontâneo; Mercadoria; Diferimento.|01012009|
+MG70010503|Débitos especiais; Op.Própria; Resp.: Própria; Apur.: Recolhimento Espontâneo; Mercadoria; Inaplicabilidade de isenção antecedente à transferência interestadual - Art. 152 RICMS/23.|01012024|
+MG70011001|Débitos especiais; Op.Própria; Resp.: Própria; Apur.: Recolhimento Espontâneo; Transporte; Dif.Alíquota.|01072012|
+MG70020004|Débitos especiais; Op.Própria; Resp.: Própria; Apur.: Recolhimento por autuação; Mercadoria; Antecipação Tributária.|01012009|
+MG70020010|Débitos especiais; Op.Própria; Resp.: Própria; Apur.: Recolhimento por autuação; Mercadoria; Lançamento extemporâneo.|01012009|
+MG70020017|Débitos especiais; Op.Própria; Resp.: Própria; Apur.: Recolhimento por autuação; Mercadoria; Importação.|01012009|
+MG70020018|Débitos especiais; Op.Própria; Resp.: Própria; Apur.: Recolhimento por autuação; Mercadoria; Fundo de Erradicação da Miséria - FEM|01082014|
+MG70020020|Débitos especiais; Op.Própria; Resp.: Própria; Apur.: Recolhimento por autuação; Mercadoria; Fundo de Erradicação da Miséria - FEM Extemporâneo|01072015|
+MG70020502|Débitos especiais; Op.Própria; Resp.: Própria; Apur.: Recolhimento por autuação; Mercadoria; Diferimento.|01012009|
+MG70090017|Débitos especiais; Outras Apurações; Resp.: Própria; Apur.: Informativo; Mercadoria; Importação.|01012009|31122014
+MG70110000|Débitos especiais; Op.Própria; Resp.: Solidária; Apur.: Recolhimento Espontâneo; Mercadoria; Op. Normal.|01012009|
+MG70120000|Débitos especiais; Op.Própria; Resp.: Solidária; Apur.: Recolhimento por autuação; Mercadoria; Op. Normal.|01012009|
+MG71000018|Débitos especiais; Op.ST; Resp.: Própria; Apur.: A apurar; Mercadoria; Fundo de Erradicação da Miséria - FEM|01082014|31082016
+MG71000020|Débitos especiais; Op.ST; Resp.: Própria; Apur.: A apurar; Mercadoria; Fundo de Erradicação da Miséria - FEM Extemporâneo|01072015|
+MG71000501|Débitos especiais; Op.ST; Resp.: Própria; Apur.: A apurar; Mercadoria; ST interna.|01012009|31072015
+MG71000506|Débitos especiais; Op.ST; Resp.: Própria; Apur.: A apurar; Mercadoria; ST por entrada - Art. 9º - Anexo XV|01012015|30042024
+MG71000506|Débitos especiais; Op.ST; Resp.: Própria; Apur.: A apurar; Mercadoria; ST por entrada - Art. 8º do Anexo VII do RICMS/23|01052024|
+MG71010010|Débitos especiais; Op.ST; Resp.: Própria; Apur.: Recolhimento Espontâneo; Mercadoria; Lançamento extemporâneo.|01012009|
+MG71010011|Débitos especiais; Op.ST; Resp.: Própria; Apur.: Recolhimento Espontâneo; Mercadoria; Complemento de ICMS ST  Aspecto quantitativo  Lançamento Extemporâneo.|01072018|
+MG71010017|Débitos especiais; Op.ST; Resp.: Própria; Apur.: Recolhimento Espontâneo; Mercadoria; Importação|01012012|
+MG71010018|Débitos especiais; Op.ST; Resp.: Própria; Apur.: Recolhimento Espontâneo; Mercadoria; Fundo de Erradicação da Miséria - FEM|01082014|31052023
+MG71010018|Débitos especiais; Op.ST; Resp.: Própria; Apur.: Recolhimento Espontâneo; Mercadoria; Fundo de Erradicação da Miséria - FEM|01012024|
+MG71010019|Débitos especiais; Op.ST; Resp.: Própria; Apur.: Recolhimento Espontâneo; Mercadoria; Antecipação - Fundo de Erradicação da Miséria - FEM|01082014|31052023
+MG71010019|Débitos especiais; Op.ST; Resp.: Própria; Apur.: Recolhimento Espontâneo; Mercadoria; Antecipação - Fundo de Erradicação da Miséria - FEM|01012024|
+MG71010020|Débitos especiais; Op.ST; Resp.: Própria; Apur.: Recolhimento Espontâneo; Mercadoria; Fundo de Erradicação da Miséria - FEM Extemporâneo|01072015|31052023
+MG71010020|Débitos especiais; Op.ST; Resp.: Própria; Apur.: Recolhimento Espontâneo; Mercadoria; Fundo de Erradicação da Miséria - FEM Extemporâneo|01012024|
+MG71010021|Débitos especiais; Op.ST; Resp.: Própria; Apur.: Recolhimento Espontâneo; Mercadoria; Complemento de FEM  Aspecto quantitativo  Lançamento Extemporâneo.|01072018|31052023
+MG71010021|Débitos especiais; Op.ST; Resp.: Própria; Apur.: Recolhimento Espontâneo; Mercadoria; Complemento de FEM  Aspecto quantitativo  Lançamento Extemporâneo.|01012024|
+MG71010501|Débitos especiais; Op.ST; Resp.: Própria; Apur.: Recolhimento Espontâneo; Mercadoria; ST interna.|01012009|
+MG71010506|Débitos especiais; Op.ST; Resp.: Própria; Apur.: Recolhimento Espontâneo; Mercadoria; ST por entrada - Art. 9º - Anexo XV|01102015|30042024
+MG71010506|Débitos especiais; Op.ST; Resp.: Própria; Apur.: Recolhimento Espontâneo; Mercadoria; ST por entrada - Art. 8º do Anexo VII do RICMS/23|01052024|
+MG71020010|Débitos especiais; Op.ST; Resp.: Própria; Apur.: Recolhimento por autuação; Mercadoria; Lançamento extemporâneo.|01012009|
+MG71020011|Débitos especiais; Op.ST; Resp.: Própria; Apur.: Recolhimento por autuação; Mercadoria; Complemento de ICMS ST  Aspecto quantitativo  Lançamento Extemporâneo.|01072018|
+MG71020018|Débitos especiais; Op.ST; Resp.: Própria; Apur.: Recolhimento por autuação; Mercadoria; Fundo de Erradicação da Miséria - FEM|01082014|
+MG71020020|Débitos especiais; Op.ST; Resp.: Própria; Apur.: Recolhimento por autuação; Mercadoria; Fundo de Erradicação da Miséria - FEM Extemporâneo|01072015|
+MG71020021|Débitos especiais; Op.ST; Resp.: Própria; Apur.: Recolhimento por autuação; Mercadoria; Complemento de FEM  Aspecto quantitativo  Lançamento Extemporâneo.|01072018|
+MG71020501|Débitos especiais; Op.ST; Resp.: Própria; Apur.: Recolhimento por autuação; Mercadoria; ST interna.|01012009|
+MG71091014|Débitos especiais; Op.ST; Resp.: Própria; Apur.: Informativo; Transporte; ST - Transporte.|01012009|
+MG71110000|Débitos especiais; Op.ST; Resp.: Solidária; Apur.: Recolhimento Espontâneo; Mercadoria; Op. Normal.|01012009|
+MG71120000|Débitos especiais; Op.ST; Resp.: Solidária; Apur.: Recolhimento por autuação; Mercadoria; Op. Normal.|01012009|
+MG90000018|Informativo; Op.Própria; Resp.: Própria; Apur.: A apurar; Mercadoria; Débitos do período do Fundo de Erradicação da Miséria  FEM - adicionado ao ICMS/OP|01092016|31032019
+MG90000218|Informativo; Op.Própria; Resp.: Própria; Apur.: A apurar; Mercadoria; Créditos do período do Fundo de Erradicação da Miséria - FEM - adicionado ao ICMS/OP|01092016|31032019
+MG90090017|Informativo; Op.Própria; Resp.: Própria; Apur.: Informativo; Mercadoria; Importação.|01012009|
+MG90990001|Informativo; Op.Própria; Resp.: Informativo; Apur.: Informativo; Mercadoria; Dif.Alíquota.|01012009|
+MG90990007|Informativo; Op.Própria; Resp.: Informativo; Apur.: Informativo; Mercadoria; Desconto - ICMS repassado ao destinatário.|01012009|
+MG90990008|Informativo; Op.Própria; Resp.: Informativo; Apur.: Informativo; Mercadoria; Ativo Permanente.|01012009|
+MG90990017|Informativo; Op.Própria; Resp.: Informativo; Apur.: Informativo; Mercadoria; Importação|01012012|
+MG91000018|Informativo; Op.ST; Resp.: Própria; Apur.: A apurar; Mercadoria; Débitos do período do Fundo de Erradicação da Miséria  FEM - adicionado ao ICMS/ST|01092016|31052023
+MG91000018|Informativo; Op.ST; Resp.: Própria; Apur.: A apurar; Mercadoria; Débitos do período do Fundo de Erradicação da Miséria  FEM - adicionado ao ICMS/ST|01012024|
+MG91000218|Informativo; Op.ST; Resp.: Própria; Apur.: A apurar; Mercadoria; Créditos do período do Fundo de Erradicação da Miséria - FEM - adicionado ao ICMS/ST|01092016|31052023
+MG91000218|Informativo; Op.ST; Resp.: Própria; Apur.: A apurar; Mercadoria; Créditos do período do Fundo de Erradicação da Miséria - FEM - adicionado ao ICMS/ST|01012024|
+MG91001014|Informativo; Op.ST; Resp.: Própria; Apur.: A apurar; Transporte; ST - Transporte.|01012009|
+MG91011014|Informativo; Op.ST; Resp.: Própria; Apur.: Recolhimento Espontâneo; Transporte; ST - Transporte.|01012009|
+MG91021014|Informativo; Op.ST; Resp.: Própria; Apur.: Recolhimento por autuação; Transporte; ST - Transporte.|01012009|
+MG91090017|Informativo; Op.ST; Resp.: Própria; Apur: Informativo ; Mercadoria; Importação|01012012|
+MG91090501|Informativo; Op.ST; Resp.: Própria; Apur.: Informativo; Mercadoria; ST interna.|01012009|
+MG91990000|Informativo; Op.ST; Resp.: Informativo; Apur.: Informativo; Mercadoria; Op. Normal.|01012009|
+MG91990005|Informativo; Op.ST; Resp.: Informativo; Apur.: Informativo; Mercadoria; ST - Dif.Aliquota.|01012009|
+MG91990006|Informativo; Op.ST; Resp.: Informativo; Apur.: Informativo; Mercadoria; Reembolso Comercial.|01012009|
+MG91990011|Informativo; Op.ST; Resp.: Informativo; Apur.: Informativo; Mercadoria; Rest.ICMS/ST - Ressarcimento.|01012009|
+MG91990017|Informativo; Op.ST; Resp.: Informativo; Apur.: Informativo; Mercadoria; Importação|01012012|
+MG91990018|Informativo; Op.ST; Resp.: Informativo; Apur.: Informativo; Mercadoria; Fundo de Erradicação da Miséria - FEM|01082014|31052023
+MG91990018|Informativo; Op.ST; Resp.: Informativo; Apur.: Informativo; Mercadoria; Fundo de Erradicação da Miséria - FEM|01012024|
+MG93000027|Informativo; Apuração 1; Resp.: Própria; Apur.: A apurar; Mercadoria; TTS - DIFAL Origem EC87/15|01072016|
+MG93000227|Informativo; Apuração 1; Resp.: Própria; Apur.: A apurar; Mercadoria; TTS - Devolução DIFAL Origem EC87/15|01072016|
+MG99990002|Informativo; Informativo; Resp.: Informativo; Apur.: Informativo; Mercadoria; Transf. Crédito.|01012009|
+MG99990023|Informativo; Informativo; Informativo; Informativo; Mercadoria; IPI - operações sem direito ao crédito|01102015|
+MG99990901|Informativo; Informativo; Informativo; Informativo; Mercadoria; Desfazimento.|01012014|

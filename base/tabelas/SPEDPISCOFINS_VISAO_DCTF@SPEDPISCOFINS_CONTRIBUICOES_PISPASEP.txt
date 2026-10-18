@@ -1,0 +1,39 @@
+versão=4 CODIGO, DESCRICAO, DT_INI, DT_FIM, PERIODICID
+810902|PIS/Pasep - Faturamento - PJ em geral (cumulativo)|01012014||Mensal
+691201|PIS/Pasep - Não cumulativo|01012014||Mensal
+810908|PIS/Pasep - Faturamento - PJ em geral (cumulativo) - SCP|01012014||Mensal
+691208|PIS/Pasep - Não cumulativo - SCP|01012014||Mensal
+067901|PIS/Pasep - Regime Especial de Tributação - Cervejas (art. 32 Lei nº 11.727/2008)|01012014|30042015|Mensal
+067902|PIS/Pasep - Regime Especial de Tributação - Cervejas (art. 32 Lei nº 11.727/2008) - SCP|01012014|30042015|Mensal
+067903|PIS/Pasep - Regime Especial de Tributação - Cervejas|01052015||Mensal
+067904|PIS/Pasep - Regime Especial de Tributação - Cervejas - SCP|01052015||Mensal
+069101|PIS/Pasep - Regime Especial de Tributação - Demais Bebidas (art. 32 Lei nº 11.727/2008)|01012014|30042015|Mensal
+069102|PIS/Pasep - Regime Especial de Tributação - Demais Bebidas (art. 32 Lei nº 11.727/2008) - SCP|01012014|30042015|Mensal
+069103|PIS/Pasep - Regime Especial de Tributação - Demais Bebidas|01052015||Mensal
+069104|PIS/Pasep - Regime Especial de Tributação - Demais Bebidas - SCP|01052015||Mensal
+090601|PIS/Pasep - Regime Especial de Apuração e Pagamento (RECOB) - Álcool|01012014||Mensal
+090602|PIS/Pasep - Regime Especial de Apuração e Pagamento (RECOB) - Álcool - SCP|01012014||Mensal
+192101|PIS/Pasep - Substituição tributária na revenda de produtos sujeitos a alíquotas diferenciadas (art. 64, Lei nº 11.196/2005)|01012014||Mensal
+192102|PIS/Pasep - Substituição tributária na revenda de produtos sujeitos a alíquotas diferenciadas (art. 65, Lei nº 11.196/2005)|01012014||Mensal
+192103|PIS/Pasep - Substituição tributária na revenda de produtos sujeitos a alíquotas diferenciadas (art. 64, Lei nº 11.196/2005) - SCP|01012014||Mensal
+192104|PIS/Pasep - Substituição tributária na revenda de produtos sujeitos a alíquotas diferenciadas (art. 65, Lei nº 11.196/2005) - SCP|01012014||Mensal
+810903|PIS/Pasep - Faturamento - Arts. 21 da IN SRF nº 419/2004 e 25 da IN SRF nº 420/2004|01012014||Diária
+810907|PIS/Pasep - Substituição tributária na comercialização de cigarros|01012014||Mensal
+810909|PIS/Pasep - Substituição tributária na comercialização de cigarros - SCP|01012014||Mensal
+810910|PIS/Pasep - Faturamento - Perda de isenção, suspensão, redução de alíquotas ou não-incidência por não cumprimento das condições exigidas para o benefício|01012014|31122018|Diária
+810911|PIS/Pasep - Faturamento - Perda de isenção, suspensão, redução de alíquotas ou não-incidência por não cumprimento das condições exigidas para o benefício - SCP|01012014|31122018|Diária
+691210|PIS/Pasep - Não Cumulativo - Perda de isenção, suspensão, redução de alíquotas ou não-incidência por não cumprimento das condições exigidas para o benefício|01012014|31122018|Diária
+691211|PIS/Pasep - Não Cumulativo - Perda de isenção, suspensão, redução de alíquotas ou não-incidência por não cumprimento das condições exigidas para o benefício - SCP|01012014|31122018|Diária
+457401|PIS/Pasep - Entidades financeiras e equiparadas (PJ relacionadas no § 1º, art. 22 da Lei nº 8.212/1991)|01012014||Mensal
+682401|PIS/Pasep - Combustíveis|01012014||Mensal
+682408|PIS/Pasep - Combustíveis - SCP|01012014||Mensal
+849601|PIS/Pasep - Substituição tributária na comercialização de veículos|01012014||Mensal
+849608|PIS/Pasep - Substituição tributária na comercialização de veículos - SCP|01012014||Mensal
+779701|PIS/Pasep - Cumulativo - Trans Navios|01012015||Mensal
+779702|PIS/Pasep - Não Cumulativo - Trans Navios|01012015||Mensal
+370301|Pasep - Pessoa jurídica de direito público|01012014||Mensal
+830102|PIS/Pasep - Folha de salários|01012014||Mensal
+810916|PIS/Pasep - Faturamento - Perda de isenção, suspensão, redução de alíquotas ou não-incidência por não cumprimento das condições exigidas para o benefício|01012014||Mensal
+810917|PIS/Pasep - Faturamento - Perda de isenção, suspensão, redução de alíquotas ou não-incidência por não cumprimento das condições exigidas para o benefício - SCP|01012014||Mensal
+691216|PIS/Pasep - Não Cumulativo - Perda de isenção, suspensão, redução de alíquotas ou não-incidência por não cumprimento das condições exigidas para o benefício|01012014||Mensal
+691217|PIS/Pasep - Não Cumulativo - Perda de isenção, suspensão, redução de alíquotas ou não-incidência por não cumprimento das condições exigidas para o benefício - SCP|01012014||Mensal

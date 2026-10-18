@@ -1,0 +1,355 @@
+versão=51 INF_ADIC, DESC_INF, DT_INI, DT_FIM
+GO000001|1. Saídas das Operações Incentivadas|01012009|31122022
+GO000002|2. Total das Saídas|01012009|31122022
+GO000003|3. Percentual das Saídas das Operações Incentivadas [(1/2)x100]|01012009|31122022
+GO000004|4. Créditos por Entradas|01012009|31122022
+GO000005|5. Outros Créditos|01012009|31122022
+GO000006|6. Estorno de Débitos|01012009|31122022
+GO000007|7. Saldo Credor do Período Anterior|01012009|31122022
+GO000008|8. Total dos Créditos do Período (4+5+6+7)|01012009|31122022
+GO000009|9. Crédito para Operações Incentivadas [(3x8)/100]|01012009|31122022
+GO000010|10. Crédito para Operações Não Incentivadas (8-9)|01012009|31122022
+GO000011|11. Débito do ICMS das Operações Incentivadas|01012009|28022017
+GO000011|11. Débito do ICMS das Operações Incentivadas (exceto o débito do item 11.1)|01032017|31122022
+GO000012|12. Outros Débitos das Operações Incentivadas|01012009|31122022
+GO000013|13. Estorno de Créditos das Operações Incentivadas|01012009|31122022
+GO000014|14. Crédito para Operações Incentivadas (9)|01012009|31122022
+GO000015|15. Deduções das Operações Incentivadas (Linha 14 do Quadro da Apuração dos Saldos - LRA)|01012009|31032021
+GO000016|16. Crédito Referente a Saldo Credor do Período das Operações Não Incentivadas (43)|01012009|31122022
+GO000017|17. Saldo Devedor do ICMS das Operações Incentivadas [(11+12+13)-(14+15+16)]|01012009|28022017
+GO000017|17. Saldo Devedor do ICMS das Operações Incentivadas [(11+11.1+12+13)-(14+15+16)]|01032017|31032021
+GO000017|17. Saldo Devedor do ICMS das Operações Incentivadas [(11+11.1+12+13)-(14+16)]|01042021|31122022
+GO000018|18. ICMS por Média|01012009|31122022
+GO000019|19. Deduções/Compensações - ICMS Média|01012009|31122022
+GO000020|20. Saldo do ICMS a Pagar por Média (18-19)|01012009|31122022
+GO000021|21. ICMS Base para Fomentar/Produzir (17-18)|01012009|31122022
+GO000022|22. Percentagem do Financiamento|01012009|31122022
+GO000023|23. ICMS Sujeito a Financiamento [(21x22)/100]|01012009|31122022
+GO000024|24. ICMS Excedente Não Sujeito ao Incentivo|01012009|31122022
+GO000025|25. ICMS Financiado (23-24)|01012009|31122022
+GO000026|26. Saldo do ICMS da Parcela Não Financiada (21-23)|01012009|31122022
+GO000027|27. Deduções/Compensações - parcela não financiada|01012009|31122022
+GO000028|28. Saldo do ICMS a Pagar da Parcela Não Financiada (26-27)|01012009|31122022
+GO000029|29. Saldo Credor do Período - Op. incentivadas [(14+15)-(11+12+13)]|01012009|31032021
+GO000029|29. Saldo Credor do Período  Op. Incentivadas [(14)-(11+12+13)]|01042021|31122022
+GO000030|30. Saldo Credor do Período (Op. Incentivadas) Utilizado nas Operações Não Incentivadas|01012009|31122022
+GO000031|31. Saldo Credor a Transportar para o Período Seguinte - Oper. incentivadas(29-30)|01012009|31122022
+GO000032|32. Débito do ICMS das Operações Não Incentivadas|01012009|31122022
+GO000033|33. Outros Débitos das Operações Não Incentivadas|01012009|31122022
+GO000034|34. Estorno de Créditos das Operações Não Incentivadas|01012009|31122022
+GO000035|35. ICMS Excedente Não Sujeito ao Incentivo|01012009|31122022
+GO000036|36 .Crédito para Operações Não Incentivadas (10)|01012009|31122022
+GO000037|37. Deduções das Operações Não Incentivadas (Linha 14 do Quadro Apuração dos Saldos - LRA)|01012009|31032021
+GO000038|38. Crédito Referente a Saldo Credor do Período das Operações Incentivadas (30)|01012009|31122022
+GO000039|39. Saldo Devedor do ICMS das Operações Não Incentivadas [(32+33+34+35)-(36+37+38)]|01012009|31032021
+GO000039|39. Saldo Devedor do ICMS das Operações Não Incentivadas [(32+33+34+35)-(36+38)]|01042021|31122022
+GO000040|40. Deduções/Compensações - Sd. Devedor do ICMS das Oper. Não Incentivadas|01012009|31122022
+GO000041|41. Saldo do ICMS a Pagar das Operações Não Incentivadas (39-40)|01012009|31122022
+GO000042|42. Saldo Credor do Período - Op. Não Incentivadas [(36+37)-(32+33+34+35)]|01012009|31032021
+GO000042|42. Saldo Credor do Período  Op. Não Incentivadas [(36)-(32+33+34+35)]|01042021|31122022
+GO000043|43. Saldo Credor do Período (Op. Não incentivadas) Utilizado nas Operações Incentivadas|01012009|31122022
+GO000044|44. Saldo Credor a Transp para o Período Seguinte - Oper. Não incentivadas(42-43)|01012009|31122022
+GO000045|73. Total das Mercadorias Importadas|01012009|31122022
+GO000046|74. Outros Acréscimos sobre Importação|01012009|31122022
+GO000047|75. Total das Operações de Importação (73+74)|01012009|31122022
+GO000048|76. Total das Entradas do Período|01012009|31122022
+GO000049|77. Percentual das Operações de Importação [(75/76)x100]|01012009|31122022
+GO000050|78. ICMS sobre Importação|01012009|31122022
+GO000051|79. Mercadorias Importadas Excedentes {[76x(77 - 30%)]/100}|01012009|31122022
+GO000052|80. ICMS sobre Importação Excedente [78x(79/75)]|01012009|31122022
+GO000053|81. ICMS sobre Importação Excedente Não Sujeito a Incentivo [(80x22)/100]|01012009|31122022
+GO000054|82. ICMS sobre Importação Sujeito ao Incentivo (78-80)|01012009|31122022
+GO000055|83. ICMS sobre Importação da Parcela Não Financiada {[78x( 100%- 22)]/100}|01012009|31122022
+GO000056|84. Saldo do ICMS sobre Importação a Pagar (81+83)|01012009|31122022
+GO000057|Saldo Devedor do ICMS no período das vendas a não contribuinte (CENTROPRODUZIR)|01012009|
+GO000058|Saldo Devedor do ICMS no período das vendas a contribuinte (CENTROPRODUZIR)|01012009|
+GO000059|Disponibilidades (Caixa/Bancos) - Inicial|01012009|
+GO000060|Disponibilidades (Caixa/Bancos) - Final|01012009|
+GO000061|Número de Empregados - Inicial|01012009|
+GO000062|Número de Empregados - Final|01012009|
+GO000063|Tipo de Escrita ( 1=contábil, 2=fiscal e 3=ambas)|01012009|
+GO000064|Depósito Judicial|01012009|30092026
+GO000065|Art. 11, XXXV do Anexo IX do RCTE-Cr. Out., p/ o estab. que efetuar op. inter. com produtos derivados do leite, o perc. de 5% aplicado sobre o valor da base de cálculo.|01012009|31082012
+GO000065|Art. 11, XXXV do Anexo IX do RCTE-Cr. Out., p/ o estab. que efetuar op. inter. com produtos derivados do leite, de acordo com o percentual aplicado sobre o valor da base de cálculo.|01092012|31122023
+GO000065|Contribuição ao PROTEGE - Créd. Outorgado para o estabelecimento que efetuar op. interestadual com produtos derivados do leite, no % previsto na norma. Art. 11, XXXV do Anexo IX do RCTE.|01012024|
+GO000066|Art. 11, XXXIV do Anexo IX do RCTE-Cr. Out., p/ o estab. que efetuar as oper, o perc. a seguir especif. aplic s/ o val. da base de cálc. corresp. a) op. interna com leite em estado natural, pasteur. ou esterilizado, 1% ; b) op. inter. com feijão, 9%.|01012009|30112019
+GO000066|Art. 11, XXXIV do Anexo IX do RCTE-Cr. Out., p/ o estab. que efetuar as oper, o perc. a seguir especif. aplic s/ o val. da base de cálc. corresp. a)op.interna com leite em estado natural,pasteur.ou esterilizado (%leg); b) op. inter. com feijão.(%leg)|01122019|31122023
+GO000066|Contribuição ao PROTEGE - Créd. Outorgado para o estabelecimento que efetuar operações com produtos definidos na norma, aplicado sobre o % previsto. Art. 11, XXXIV do Anexo IX do RCTE.|01012024|
+GO000067|Art. 11, XXXII do Anexo IX do RCTE-Cr. Out., p/ o estab. distribuidor de empresa fabricante de aparelho/máq/equip/instrum. médico-hospitalar, produto farmac, na saída inter. com prod de fabricação própria, o equival. 5,6% s/ o val. da bs. de cálc|01012009|31122023
+GO000067|Contribuição ao PROTEGE - Créd. Outorgado para o distribuidor de fabricante de produtos hospitalares, farmacêuticos e outros, na saída interestadual com produtos de fabricação própria no % estabelecido na norma. Art. 11, XXXII do Anexo IX do RCTE.|01012024|
+GO000068|Art. 11, XXXI do Anexo IX do RCTE-Cr. Out., p/ o estab. industrializador de produto agrícola, o equival. à aplic. de até 7% sobre o valor do produto agrícola produzido no Estado de Goiás efetivamente industrializado em estab. seu localizado neste Estado.|01012009|31122023
+GO000068|Contribuição ao PROTEGE - Créd. Outorgado para o industrializador de produto agrícola, no % previsto em legislação sobre o valor do produto agrícola produzido no Estado de Goiás. Art. 11, XXXI do Anexo IX do RCTE.|01012024|
+GO000069|Art. 11, XXVIII do Anexo IX do RCTE-Cr. Out., p/ o estab. remetente, na saída inter. de máquinas e equipamentos rodoviários, relacionados no Apêndice XII do Anexo IX-RCTE, o equival. à aplic. de 5% sobre o valor da base de cálculo.|01012009|31122023
+GO000069|Contribuição ao PROTEGE - Créd. Outorgado para o estabelecimento remetente na saída interestadual de máquinas e equipamentos rodoviários, relacionados na norma. Art. 11, XXVIII do Anexo IX do RCTE.|01012024|
+GO000070|Art. 11, XXV do Anexo IX do RCTE-Cr. Out., p/ industrial e comerciante atacadista na op. de saída de óleo vegetal comestível, em valor equival. a 5% da respectiva base de cálculo.|01012009|31122023
+GO000070|Contribuição ao PROTEGE - Créd. Outorgado para o industrial e comerciante atacadista na operação de saída de óleo vegetal comestível. Art. 11, XXV do Anexo IX do RCTE.|01012024|
+GO000071|Art. 11, XXIII do Anexo IX do RCTE-Cr. Out., p/ o comerciante atacadista de medicamento, equival. à aplic. de 4% sobre o valor da corresp. bs. de cálc na saída inter. com medicamento de uso humano destinado a comerc/produ/industrializ.|01012009|31122023
+GO000071|Contribuição ao PROTEGE - Créd. Outorgado para o comerciante atacadista de medicamento na saída interestadual com medicamento de uso humano destinado a comercialização/produção/industrialização. Art. 11, XXIII do Anexo IX do RCTE.|01012024|
+GO000072|Art. 11, XX do Anexo IX do RCTE-Cr. Out., p/ o estab. prest do serv de transp de passag, o vl. eq. à aplic. dos perc das alín a e b do Art. 11- Anexo IX-RCTE, s/ o vl da respec b. de cálc na prest de serv de transp rodov inter. e intermunicipal de passag.|01012009|31122018
+GO000073|Art. 11, XVIII do Anexo IX do RCTE -Cr. Out., p/ o estab. remetente na op. inter. com arroz, exceto com o em casca, o equival. à aplic. de 9% sobre o valor da base de cálculo.|01012009|30112019
+GO000073|Contribuição ao PROTEGE - Créd. Outorgado para o estabelecimento remetente na op. interestadual com arroz, exceto com o em casca, no % aplicado sobre o valor da base de cálculo. Art. 11, XVIII do Anexo IX do RCTE.|01012024|
+GO000073|Art. 11, XVIII do Anexo IX do RCTE -Cr. Out., p/ o estab. remetente na op. inter. com arroz, exceto com o em casca, o equival. à aplic. de (%leg)  sobre o valor da base de cálculo.|01122019|31122023
+GO000074|Art. 11, IX do Anexo IX do RCTE-Cr. Out., p/ o industrial fabricante de fertilizante, na op. inter. que praticar com esse insumo agropecuário, o valor equival. a 5% da respectiva base de cálculo. (Depende de TARE)|01012009|31122023
+GO000074|Contribuição ao PROTEGE - Créd. Outorgado para o industrial fabricante de fertilizante, na operação interestadual que praticar com esse insumo agropecuário. Art. 11, IX do Anexo IX do RCTE|01012024|
+GO000075|Art. 11, V do Anexo IX do RCTE -Cr. Out., p/ o estab. Frigor. ou abated, na saída p/ comerc. ou industrial., de carnes e miúdo comestível resultantes do abate, em seu próprio estab. de asinino... adq. em op. Interna com red. b. cálc.|01012009|09012012
+GO000075|Contribuição ao PROTEGE - Créd. Outorgado para Frigorífico. ou abatedouro, na saída para comercialização/industrialização nas situações previstas na norma. Art. 11, V do Anexo IX do RCTE.|01012024|
+GO000075|Art. 11, V do Anexo IX do RCTE -Cr. Out., p/ o estab. Frigor. ou abated, na saída p/ comerc. ou industrial., de carnes e miúdo comestível resultantes do abate, em seu próprio estab. de asinino... adq. em op. Interna com isenção.|10012012|31122023
+GO000076|Art. 11, III do Anexo IX do RCTE-Cr. Out., p/ industrial e comerciante atacadista, o equival. ao perc. de 2% e 3%, respect, na saída inter. q destine mercad p/ comerc/produ/ndustrializ, aplic s/ o valor da correspondente op..|01012009|31032019
+GO000076|Art. 11, III do Anexo IX do RCTE-Cr. Out., p/  o comerciante atacadista, no percentual previsto  na legislação sobre o valor da base de cálculo, na saída inter. q destine mercad p/ comerc/produ/ndustrializ.|02042019|31122023
+GO000076|Art. 11, III do Anexo IX do RCTE-Cr. Out., p/  o comerciante atacadista, no percentual previsto  na legislação sobre o valor da base de cálculo, na saída inter. q destine mercad p/ comerc/produ/ndustrializ,|01042019|01042019
+GO000076|Contribuição ao PROTEGE - Créd. Outorgado para o atacadista, no % previsto na legislação sobre o valor da base de cálculo, na saída interestadual que destine mercadoria p/ comercialização/produção/industrialização. Art. Art. 11, III do Anexo IX do RCTE.|01012024|
+GO000077|Art. 8, XXIX do Anexo IX do RCTE-Red. B. Calc. de tal forma que resulte aplic. sobre o valor da op. do perc. equival. a 15%, na saída interna de gasolina de aviação, ficando mantido o crédito.|01012009|31122023
+GO000077|Contribuição ao PROTEGE  Redução da Base de Cálculo para contribuinte que realize saída interna de gasolina de aviação, ficando mantido o Crédito. Art. 8, XXIX do Anexo IX do RCTE|01012024|
+GO000078|Art. 8, XXVII do Anexo IX do RCTE-Red. B. Calc. de tal forma que resulte aplic. sobre o valor da op. o perc. equival. a 7%, na saída interna de máquinas e equipamentos rodoviários, relacionados no Apêndice XII do Anexo IX-RCTE.|01012009|31122023
+GO000078|Contribuição ao PROTEGE - Redução da Base de Cálculo para contribuinte que realize saída interna de máquinas e equipamentos rodoviários, relacionados na norma. Art. 8, XXVII do Anexo IX do RCTE.|01012024|
+GO000079|Art. 8, XXIII do Anexo IX do RCTE-Red. B. Calc na op. interna c/ prod especif, de tal forma q resulte a aplic. do perc. eq. a 17% s/ o vl da op: b)demais prod const do Anexo I-RCTE, p/ o contribuinte q aderir a Programa Estadual, mediante celeb de TARE.|01012009|31122023
+GO000079|Contribuição ao PROTEGE  Redução da Base de Cálculo para contribuintes que realize saída interna com produtos especificados na norma, mediante celebração de TARE. Art. 8, XXIII do Anexo IX do RCTE.|01012024|
+GO000080|Art. 8, XIII do Anexo IX do RCTE-Red. B. Calc na saída interna c/ prod de informática/telecom/automação, de tal forma q resulte a aplic. s/ o vl da op. do eq. a 7%, ficando mantido o cr do imp até o limite de 7%, obs o disp nas alín do mesmo art.|01012009|31122023
+GO000080|Contribuição ao PROTEGE  Redução da Base de Cálculo para contribuinte que realize saída interna com produtos de informática/telecomunicações/automação. Art. 8, XIII do Anexo IX do RCTE.|01012024|
+GO000081|Art. 8, XII do Anexo IX do RCTE-Red. B. Calc. de tal forma que resulte aplic. sobre o valor da op. do equival. ao perc. de 7%, na op. interna de fornecimento de refeição, ficando mantido o crédito.|01012009|30112017
+GO000082|Art. 8, VIII do Anexo IX do RCTE-Red. B. Calc. de tal forma que resulte aplic. s/ o valor da op. do equival. ao perc. de 10%, na saída interna realizada por contribuinte industrial ou comerciante atacadista que destine mercadoria p/ comerc., produção.|01012009|30112019
+GO000082|Contribuição ao PROTEGE  Redução da Base de Cálculo para contribuinte industrial ou atacadista na saída interna que destine mercadoria para comercialização, produção ou industrialização. Art. 8, VIII do Anexo IX do RCTE.|01012024|
+GO000082|Art. 8, VIII do Anexo IX do RCTE-Red. B. Calc. de tal forma que resulte aplic. sobre o valor da op equiv. ao percentual de (%leg) p/ cont. ind ou de (%leg) para o com. atac., na saída int. que destine merc p/ com., prod.ou ind., fic mantido o crédito|01122019|31122023
+GO000083|Art. 6, LXXI do Anexo IX do RCTE-Isenção, op. de import. do exterior, inclusive em doação, dos bens relacionados nas alíneas "a", "b" e "c"-Art. 6º, LXXI-Anexo IX-RCTE, sem similar produzido no País, ou mesmo com similar p/ a entrada decorr. de doação.|01012009|31122018
+GO000084|A - Somatório dos valores de ICMS que seria debitado nas notas fiscais de saída de álcool etílico anidro combustível caso não houvesse o diferimento do imposto.|01012011|30112024
+GO000085|B - Somatório dos valores das operações de saída de álcool etílico anidro combustível acrescido do valor do ICMS que seria debitado (A).|01012011|30112024
+GO000086|C - Valor total das operações de saídas tributadas do período, excluindo-se as exportações e qualquer outra saída não incentivada pelos programas Fomentar/Produzir.|01012011|30112024
+GO000087|D=B/C - Coeficiente de proporcionalidade das saídas de álcool etílico anidro combustível (B) em relação às saídas totais (C).  Ex.: B=50  C=1000  D=50/1000  D=0,05x100  D=5% (Informar 5,00)|01012011|30112024
+GO000088|E - Valor correspondente ao total dos créditos constante no campo 12 (total de créditos) do Livro Registro de Apuração do ICMS deduzido os valores dos créditos outorgados referente às saídas interestaduais previstas no Art. 11, III, do anexo IX do RCTE.|01012011|30112024
+GO000089|F - Valor total da média de ICMS a partir da qual se concedeu o financiamento do Fomentar/Produzir, calculada e corrigida pelo índice defindo.|01012011|30112024
+GO000090|G - Crédito do ICMS a ser deduzido (DxE) e lançado no código 49 como estorno de crédito no Livro Registro de Apuração do ICMS.|01012011|30112024
+GO000091|H - Valor do ICMS médio a ser deduzido do ICMS que seria debitado (A), mediante a multiplicação dos itens D e F.|01012011|30112024
+GO000092|H1 - Percentual do crédito outorgado previsto na legislação para o período.|01012011|30112024
+GO000093|I - Valor do crédito outorgado de ICMS no período pelas saidas de álcool etílico anidro combustível.|01012011|30112024
+GO000094|Valor do crédito outorgado autorizado pela Sefaz/GO por processo.|01012011|
+GO000095|Discriminação do Cheque Moradia - subsídio do Programa Habitacional Morada Nova  recebido pelo estabelecimento fornecedor das mercadorias arroladas no Art. 11, inciso XXVII, anexo IX do RCTE|01012009|
+GO000096|Art. 11, LXIII do Anexo IX do RCTE - Cr. outorg. para o industrial de veículo automotor, beneficiário do Fundo de Participação e Fomento à Industrialização do Estado de Goiás -Fomentar-, que ampliar empreendimento industrial no Estado de Goiás.|01022013|30062015
+GO000097|Valor do ICMS ST devido referente ao estoque de mercadoria submetida ao regime de substituição, nos termos do art. 80, inciso III do Anexo VIII do RCTE.|01012015|
+GO000098|10.1 Outros Créditos Correspondente a Primeira parcela de ICMS FOMENTAR/PRODUZIR- Art. 4° da IN 1208/15-GSF|01032015|30042016
+GO000098|10.1 Outros Créditos  Correspondente a Primeira parcela de ICMS FOMENTAR/PRODUZIR- Art. 4° da IN 1208/15-GSF e similares|01052016|
+GO000099|Art. 11, VI do Anexo IX do RCTE - Cr. outorgado para o estabelecimento frigorífico ou abatedor, na saída para comercialização ou industrialização, de carne fresca, resfriada, congelada, salgada, temperada ou salmourada e miúdo comestível result. do abate.|01052015|31122023
+GO000099|Contribuição ao PROTEGE - Créd. Outorgado para o estabelecimento frigorífico ou abatedor, na saída interna para comercialização ou industrialização, de produtos resultados do abate. Art. 11, VI do Anexo IX do RCTE.|01012024|31102024
+GO000100|Art. 11, VIII do Anexo IX do RCTE - Cr. outorgado nas saídas interna e interestadual de óleo vegetal comestível, exceto o de soja, resultantes da industrialização em Goiás de produto agrícola produzido e adquirido neste Estado.|01052015|31122023
+GO000100|Contribuição ao PROTEGE - Créd. Outorgado nas saídas interna e interestadual de óleo vegetal comestível, exceto o de soja, resultantes da industrialização em Goiás de produto agrícola produzido e adquirido neste Estado. Art. 11, VIII do Anexo IX do RCTE.|01012024|
+GO000101|Art. 11, XII do Anexo IX do RCTE - Cr. outorgado para o titular de projeto agroindustrial de avicultura e suinocultura (conforme percentual) na operação que destine produto comestível decorrente da industrialização de ave e suíno (para algumas regiões).|01052015|31122023
+GO000101|Contribuição ao PROTEGE - Créd. Outorgado para o titular de projeto agroindustrial de avicultura e suinocultura no % estabelecido para operação que destine produto comestível decorrente da industrialização de ave e suíno. Art. 11, XII do Anexo IX do RCTE.|01012024|
+GO000102|Art. 11, XIII do Anexo IX do RCTE - Cr. outorgado para o produtor rural, pessoa natural ou jurídica, o equivalente à aplicação do percentual de 75% sobre o valor do ICMS devido na operação de venda promovida pelo produtor de algodão em pluma.|01052015|31122023
+GO000102|Contribuição ao PROTEGE - Créd. Outorgado para o produtor rural, pessoa natural ou jurídica, equivalente à aplicação de % sobre o valor do ICMS devido na operação de venda promovida pelo produtor de algodão em pluma. Art. 11, XIII do Anexo IX do RCTE.|01012024|
+GO000103|Art. 11, XV do Anexo IX do RCTE - Cr. outorgado para o estabelecimento frigorífico ou abatedor, na saída para com. ou industrialização, de "carnes e miudo" comestível resultantes do abate, em seu próprio estab., de animal silvestre e exótico reproduzido.|01052015|31122023
+GO000103|Contribuição ao PROTEGE - Créd. Outorgado para o estabelecimento frigorífico ou abatedor, na saída para comercialização/industrialização, de "carnes e miúdo" comestível resultantes do abate. Art. 11, XV do Anexo IX do RCTE.|01012024|
+GO000104|Art. 11, XIX do Anexo do RCTE - Cr. outorgado para o estabelecimento remetente na saída interestadual com areia natural, saibro, material britado, dentre este a brita, o pedrisco com pó, o rachão britado e a pedra marroada (conf. perc. s/ o valor da BC).|01052015|31122023
+GO000104|Contribuição ao PROTEGE - Créd. Outorgado para o estabelecimento remetente na saída interestadual com areia natural, saibro, material britado, dentre este a brita, o pedrisco com pó, o rachão britado e a pedra marroada. Art. 11, XIX do Anexo do RCTE.|01012024|
+GO000105|Art. 11, XXVI do Anexo IX do RCTE - Cr. outorgado para o industrial do setor alcooleiro enquadrado nos Programas FOMENTAR ou PRODUZIR, o valor correspondente à aplicação do percentual de 60% sobre o saldo devedor do valor do ICMS.|01052015|30042016
+GO000106|Art. 11, XL do Anexo IX do RCTE - Cr. outorgado para o estabelecimento remetente, na saída interestadual de telha, tijolo, tijoleira e tapa-viga cerâmicos, não esmaltados nem vitrificados, o eq. à aplicação de 5% s/ o valor da respectiva base de cálculo.|01052015|31122023
+GO000106|Contribuição ao PROTEGE - Créd. Outorgado para o estabelecimento remetente, na saída interestadual de telha, tijolo, tijoleira e tapa-viga cerâmicos, no % definido em legislação. Art. 11, XL do Anexo IX do RCTE.|01012024|
+GO000107|Art. 11, XLI do Anexo IX do RCTE - Cr. outorgado o industrial, em 5% sobre o valor de entrada de produto resultante de reciclagem realizada em GO utilizado como matéria-prima no seu processo de industr.; e embalagem e papel usados, sucata e aparas.|01052015|31122023
+GO000107|Contribuição ao PROTEGE - Créd. Outorgado para o industrial, no % aplicado sobre o valor de entrada de produto resultante de reciclagem e demais situações previstas realizadas em Goiás. Art. 11, XLI do Anexo IX do RCTE.|01012024|
+GO000108|Art. 11, LI do Anexo IX do RCTE - Cr. out. ao remetente em 5% da base de cálculo, na saída interestadual com pedra-de-Pirenópolis, vedado o aproveitamento de quaisquer créditos do ICMS relativos à entrada e ao serviço utilizado.|01052015|31122023
+GO000108|Contribuição ao PROTEGE - Créd. Outorgado ao remetente no % estabelecido sobre a saída interestadual com pedra-de-Pirenópolis. Art. 11, LI do Anexo IX do RCTE.|01012024|
+GO000109|Art. 11, LII do Anexo IX do RCTE - Cr. out. p/ ind. fab. de vestuário ou p/ estab. atac. a ele pertencente, o equiv. à aplic. do percent. de 12% sobre o valor da base de cálc. corresp. à op. interest. com prod. de fab. própria destinado à comerc. ou ind.|01052015|31122023
+GO000109|Contribuição ao PROTEGE - Créd. Outorgado para fabricante de vestuário e demais produtos e para atacadista a ele pertencente, no % definido na norma em operação interestadual. Art. 11, LII do Anexo IX do RCTE.|01012024|
+GO000110|Art. 11, LIII do Anexo IX do RCTE - Cr. out. p/ ind. fab. de vestuário ou p/ estab. atac. a ele pertencente, o eq. à aplic. do perc. de 10% sobre o vl. da base de cálc. corresp. à op. de venda interna com prod. de fab. própria destinado à comerc. ou ind.|01052015|31122023
+GO000110|Contribuição ao PROTEGE - Créd. Outorgado para fabricante de vestuário e demais produtos e para atacadista a ele pertencente, no % definido na norma em operação interna de vendas para comercialização/industrialização. Art. 11, LIII do Anexo IX do RCTE.|01012024|
+GO000111|Art. 11, LIV do Anexo IX do RCTE - Cr. out. p/ ind. fab. de vestuário, o equiv. à aplic. do percentual 10% sobre o valor da base de cálc. corresp. à transferência interna de produto de fab. própria destinado à comerc. em estab. varejista a ele pertencente|01052015|31122023
+GO000111|Contribuição ao PROTEGE - Créd. Outorgado para fabricante de vestuário e demais produtos, no % definido na norma em transferência interna para comercialização em varejista a ele pertencente. Art. 11, LIV do Anexo IX do RCTE.|01012024|
+GO000112|Art. 11, LV do Anexo IX do RCTE - Cr. para o estabelecimento remetente, o equiv. à aplic. do perc. de 4% s/ o valor da base de cálculo correspondente à oper. interestadual com veículo automotor caminhão com peso em carga maxima superior a 5 toneladas.|01052015|31122023
+GO000112|Contribuição ao PROTEGE - Créd. Outorgado para o estabelecimento remetente, no % definido na norma em oper. Interestadual com veículo automotor com peso em carga máxima superior a cinco toneladas. Art. 11, LV do Anexo IX do RCTE.|01012024|
+GO000113|Art. 11, LVI do Anexo IX do RCTE - Cr. para o estabelecimento remetente, o equiv. à aplic. do percentual de 4% s/ o valor da base de cálculo correspondente à oper. interestadual com veículo automotor ônibus ou com chassi com motor para ônibus.|01052015|31122023
+GO000113|Contribuição ao PROTEGE - Créd. Outorgado para o estabelecimento remetente no % definido na norma na operação interestadual com veículo automotor ônibus ou com chassi com motor para ônibus. Art. 11, LVI do Anexo IX do RCTE.|01012024|
+GO000114|Art. 11, LVII do Anexo IX do RCTE  Crédito outorgado para o industrial de veículo automotor e para o industrial fabricante de extintores de incêndio, beneficiários do Produzir, que implantar ou ampliar empreendimento industrial no Estado de Goiás.|01052015|31102023
+GO000114|Contribuição ao PROTEGE  Crédito outorgado para o industrial de veículo automotor e para o industrial fabricante de extintores de incêndio, beneficiários do PRODUZIR, que implantar ou ampliar empreendimento industrial no Estado de Goiás. Art. 11, LVII, a, Anexo IX do RCTE.|01112023|
+GO000115|Art. 11, LVIII do Anexo IX do RCTE - Crédito outorgado para o industrial de veículo automotor, beneficiário do Fomentar, que ampliar empreendimento industrial no Estado de Goiás, conforme TARE celebrado com a Secretaria da Fazenda.|01052015|31122023
+GO000115|Contribuição ao PROTEGE - Créd. Outorgado para o industrial de veículo automotor, beneficiário do Fomentar que ampliar empreendimento industrial no Estado de Goiás, conforme TARE. Art. 11, LVIII do Anexo IX do RCTE.|01012024|
+GO000116|Art. 11, LX do Anexo IX do RCTE  Crédito outorgado para a empresa industrial produtora de grupos geradores de energia elétrica, beneficiária do Produzir, o valor equivalente das alíneas "a", "b" e "c" do inciso LX do art. 11.|01052015|31102023
+GO000116|Contribuição ao PROTEGE  Crédito outorgado para a empresa industrial produtora de grupos geradores de energia elétrica, beneficiária do PRODUZIR. Art. 11, LX, a, Anexo IX do RCTE.|01112023|
+GO000117|Art. 11, LXI do Anexo IX do RCTE  Cr. out. para a pessoa jurídica integrante de grupo econômico, relativamente à operação com produto de fabricação própria, o equivalente a aplicação dos percentuais descritos nas alíneas a e b, desse inciso.|01052015|31122023
+GO000117|Contribuição ao PROTEGE - Créd. Outorgado para Pessoa Jurídica integrante de grupo econômico, relativamente à operação com produto de fabricação própria, o equivalente a aplicação de % definido em legislação. Art. 11, LXI do Anexo IX do RCTE.|01012024|
+GO000118|Art. 11, LXIII do Anexo IX do RCTE  Cr. out. para o estabelecimento industrial, na operação interestadual com leite UHT em cuja industrialização tenha sido utilizado leite como matéria-prima.|01022013|31122023
+GO000118|Contribuição ao PROTEGE - Créd. Outorgado para industrial, na operação interestadual com leite UHT em cuja industrialização tenha sido utilizado leite natural como matéria-prima. Art. 11, LXIII do Anexo IX do RCTE.|01012024|
+GO000119|Art. 11, LXV do Anexo IX do RCTE. Cr. outorgado p/ o estabelecimento atacadista o equiv. à aplicação de 5% sobre o valor da respectiva base de cálculo, na saída interest. de produtos de informática, telec. e automação, relac. no Apêndice IV do Anexo IX.|01052015|31122023
+GO000119|Contribuição ao PROTEGE - Créd. Outorgado para atacadista no % definido na legislação, na saída interestadual de produtos de informática, telecomunicação relacionados na norma. Art. 11, LXV do Anexo IX do RCTE.|01012024|
+GO000120|Art. 11, LXVI do Anexo IX do RCTE - Cr. outorgado p/ o estabelecimento atacadista o equiv. à aplicação de 5% sobre o valor da respectiva base de cálculo, na saída interest. de produtos de informática, telec. e automação, relac. no Apêndice IV do Anexo IX.|01052015|30042016
+GO000120|Contribuição ao PROTEGE - Créd. Outorgado para o industrial, no % definido na norma, na saída de produto comestível por ele industrializado, cuja matéria prima derive do abate de animal. Art. 11, LXVI do Anexo IX do RCTE.|01012024|
+GO000120|Art. 11, LXVI do Anexo IX do RCTE - Cr. out. p/ o estabelecimento industrial, o eq. à aplic. de 9% s/ o vlr da respec. b. de calc., na saída de produto comestível por ele indust., cuja mat. p. principal seja prod. res. do abate de animal, realizado em GO.|01052016|31122023
+GO000121|Art. 12, VIII do anexo IX do RCTE - Crédito outorgado para o estabelecimento remetente na operação interestadual com milho destinado à industrialização, o equivalente à aplicação de 9% (nove por cento) sobre o valor da base de cálculo.|01052015|30112019
+GO000121|Art. 12, VIII do anexo IX do RCTE - Crédito outorgado para o estabelecimento remetente na operação interestadual com milho destinado à industrialização, o equivalente à aplicação de (%leg) sobre o valor da base de cálculo.|01122019|31122020
+GO000122|11.1 Débito do ICMS das Saídas a Título de Bonificação ou Semelhante Incentivadas.|01022017|31122022
+GO000123|Valor da primeira parcela prevista nas Instruções Normativas 1.208/15-GSF e 1.269/16-GSF efetivamente paga|01052017|31052017
+GO000124|Valor da primeira parcela prevista nas Instruções Normativas 1.208/15-GSF e 1.269/16-GSF parcelada, de acordo com o art. 5º da IN 1.330/17-GSF|01052017|31052017
+GO000125|Valor da primeira parcela prevista nas Instruções Normativas 1.209/15-GSF e 1.265/16-GSF efetivamente paga|01052017|31052017
+GO000126|Valor da primeira parcela prevista nas Instruções Normativas 1.209/15-GSF e 1.265/16-GSF parcelada, de acordo com o art. 5º da IN 1.331/17-GSF|01052017|31052017
+GO000127|Valor da primeira parcela prevista nas Instruções Normativas 1.213/15-GSF e 1.266/16-GSF efetivamente paga|01052017|31052017
+GO000128|Valor da primeira parcela prevista nas Instruções Normativas 1.213/15-GSF e 1.266/16-GSF parcelada, de acordo com o art. 5º da IN 1.332/17-GSF|01052017|31052017
+GO000129|Valor da primeira parcela prevista nas Instruções Normativas 1.219/15-GSF e 1.267/16-GSF efetivamente paga|01052017|31052017
+GO000130|Valor da primeira parcela prevista nas Instruções Normativas 1.219/15-GSF e 1.267/16-GSF parcelada, de acordo com o art. 5º da IN 1.333/17-GSF|01052017|31052017
+GO000131|Valor da primeira parcela prevista nas Instruções Normativas 1.220/15-GSF e 1.268/16-GSF efetivamente paga|01052017|31052017
+GO000132|Valor da primeira parcela prevista nas Instruções Normativas 1.220/15-GSF e 1.268/16-GSF parcelada, de acordo com o art. 5º da IN 1.334/17-GSF|01052017|31052017
+GO000133|Art. 6, CL do Anexo IX do RCTE-Isenção, relativamente ao diferencial de alíquotas, a aquisição interestadual de reboque e de semi-reboque, classif. na  posição 8716 da NCM, destinados a empresa prestadora de serviços de transporte rodoviário de cargas|01042017|31122019
+GO000134|Art. 11, LXX do Anexo IX do RCTE - Crédito outorgado para o estabelecimento microcervejeiro, na saída interna com cerveja e chope artesanais produzidos pelo próprio estabelecimento.|01042017|31122023
+GO000134|Contribuição ao PROTEGE - Créd. Outorgado para o estabelecimento microcervejeiro, na saída interna com cerveja e chope artesanais de produção própria. Art. 11, LXX do Anexo IX do RCTE.|01012024|
+GO000135|Art. 11, LXXI do Anexo IX do RCTE - Crédito outorgado para o estabelecimento que efetuar saída interestadual com café torrado ou moído industrializado.|01042017|31122023
+GO000135|Contribuição ao PROTEGE - Créd. Outorgado para o estabelecimento que efetuar saída interestadual com café torrado ou moído industrializado. Art. 11, LXXI do Anexo IX do RCTE.|01012024|
+GO000136|Art. 11, LXXII do Anexo IX do RCTE - Crédito outorgado para o estabelecimento que efetuar saída interestadual de peixe produzido no Estado de Goiás.|01042017|31122020
+GO000137|Art. 8, LVI do Anexo IX do RCTE - Redução da base de cálculo na saída interna realizada por pessoa jurídica integrante de grupo econômico que destine mercadoria para comercialização, produção ou industrialização|01122017|28022022
+GO000138|Benefício fiscal relacionado no Anexo I da IN 1.398/18-GSF|01052018|
+GO000139|Benefício fiscal relacionado no Anexo II da IN 1.398/18-GSF|01052018|
+GO000140|Art. 08, XII-A do Anexo IX do RCTE - Redução na base de cálculo de tal forma que resulte aplicação sobre o valor da operação do equivalente ao percentual de 10,2%, na operação interna de fornecimento de refeição, ficando mantido o crédito.|01122017|30112019
+GO000140|Art. 08, XII-A do Anexo IX do RCTE - Redução na base de cálculo de tal forma que resulte aplicação sobre o valor da operação do equivalente ao percentual de (%leg), na operação interna de fornecimento de refeição, ficando mantido o crédito.|01122019|31122023
+GO000140|Contribuição ao PROTEGE  Redução da Base de Cálculo no fornecimento de refeição no % estabelecido na legislação. Art. 8, XII-A do Anexo IX do RCTE.|01012024|
+GO000141|Art. 08, LVI do Anexo IX do RCTE - Redução na base de cálculo que resulte na aplicação sobre o vl da operação do equiv. ao perc. de 10%, na saída int. realizada por pessoa jur integrante de grupo econômico que destine mercadoria para comerc., prod. ou ind|01122011|28022022
+GO000141|Contribuição ao PROTEGE  Redução da Base de Cálculo na saída interna realizada por pessoa jurídica integrante de grupo econômico que destine mercadoria para comercialização/produção/ industrialização. Art. 8, LVI do Anexo IX do RCTE.|01012024|
+GO000141|Art. 8, LVI do Anexo IX do RCTE - Redução na base de cálculo que resulte na aplicação sobre o vl da operação do equiv. ao % estab. na leg., na saída int. realizada por pessoa jur integrante de grupo econômico que destine merc. para comerc., prod. ou ind.|01032022|31122023
+GO000142|Inciso I, art. 3º, Lei nº 20.367, 11/12/2018|01042019|31122023
+GO000142|Contribuição ao PROTEGE  nas situações previstas no Inciso I, art. 3º, Lei nº 20.367 de 11/12/2018.|01012024|
+GO000143|Inciso II, art. 3º, Lei nº 20.367, 11/12/2018|01042019|31122023
+GO000143|Contribuição ao PROTEGE  nas situações previstas no Inciso II, art. 3º, Lei nº 20.367 de 11/12/2018.|01012024|
+GO000144|Inciso IV, art. 3º, Lei nº 20.367, 11/12/2018|01042019|30042019
+GO000145|Valor contribuição PROTEGE GOIÁS (§ 3º, art. 1º, Anexo IX do RCTE ) por utilização do benefício fiscal previsto no Art. 07, LXVIII do Anexo IX do RCTE.|01102019|31122019
+GO000146|Valor contribuição PROTEGE GOIÁS (§ 3º, art. 1º, Anexo IX do RCTE ) por utilização do benefício fiscal previsto no Art. 07, LXX do Anexo IX do RCTE.|01122019|31122019
+GO000147|Valor contribuição PROTEGE por utilização do PROGOIÁS - art. 10, I do Dec. 9.724/10.|01102020|
+GO000148|Contribuição ao PROTEGE - Créd. Outorgado para o industrial, no % previsto na legislação sobre o valor da base de cálculo, na saída interestadual que destine mercadoria p/ comercialização/produção/industrialização. Art. Art. 11, III do Anexo IX do RCTE.|01012024|
+GO000148|Art. 11, III do Anexo IX do RCTE-Cr. Out. p/ o industrial, no percentual previsto na legislação sobre o valor da base de cálculo, na saída inter. q destine mercad p/ comerc/produ/ndustrializ.|01042021|31122023
+GO000149|Valor total do crédito de ICMS referente à utilização extemporânea de incentivo financeiro fiscal do Programa Produzir consignado em Despacho autorizativo,  mediante Parecer.|01052021|
+GO000150|Valor contrib. PROTEGE relativo ao Crédito Out. PROGOIÁS RURAL, no % estabelecido na legislação para o feijão. Art. 4º, I, a do Dec. 9.928/2021.|01092021|
+GO000151|Valor contrib. PROTEGE relativo ao Crédito Out. PROGOIÁS RURAL, no % estabelecido na legislação para o milho. Art. 4º, I, b do Dec. 9.928/2021.|01092021|
+GO000152|Valor contrib. PROTEGE relativo ao Crédito Out. PROGOIÁS RURAL, no % estabelecido na legislação para o peixe. Art. 4º, I, b do Dec. 9.928/2021.|01092021|
+GO000153|Crédito outorgado Projeto Cultural FOMENTAR/PRODUZIR/PROGOIÁS Art. 12, XIX, f, 1.1, Anexo IX.|01122021|31072023
+GO000154|Valor dos investimentos em máquinas, equipamentos, veículos, ou, materiais de construção, nos termos do Dec. 10089/22.|01072022|
+GO000155|Valor da cont. do PROTEGE do Créd. Outorgado do Ind. de grupos geradores e de máq. equipamentos relacionados no apêndice L do Anexo IX, Art. 11, LX-A, "a" do Anexo IX do RCTE.|01022023|
+GO000156|Valor da cont. do PROTEGE do Créd. Outorgado do Ind. de grupos geradores e de máq. equipamentos relacionados no apêndice L do Anexo IX, Art. 11, LX-A, "b" do Anexo IX do RCTE.|01022023|
+GO000157|Valor do PROTEGE do Ind. de soja produzida em Goiás, art. 11, XXXI-A do Anexo IX do RCTE.|01022023|
+GO000158|Restituição do PROTEGE sob a forma de compensação, deduzida de futura contribuição ao PROTEGE sobre benefícios fiscais do Anexo IX do RCTE, com código de recolhimento "4014" - Art. 4º, § 3ºda IN 639/03-GSF c/c Art. 490-A, §1º do RCTE.|01102023|
+GO000159|Restituição do PROTEGE sob a forma de compensação, deduzida de futura contribuição ao PROTEGE sobre a fruição do PRODUZIR/FOMENTAR - Lei 20.367/18, com código de recolhimento "4888" - Art. 4º, § 3ºda IN 639/03-GSF c/c Art. 490-A, §1º do RCTE.|01102023|
+GO000160|Restituição do PROTEGE sob a forma de compensação, deduzida de futura contribuição ao PROTEGE sobre a fruição do PROGOIÁS - Lei 20.787/20, com código de recolhimento "4990" - Art. 4º, § 3ºda IN 639/03-GSF c/c Art. 490-A, §1º do RCTE.|01102023|
+GO000161|Restituição do PROTEGE sob a forma de compensação, deduzida de futura contribuição ao PROTEGE sobre a fruição do PROGOIÁS RURAL - Lei 21.066/21, com código de recolhimento "5017" - Art. 4º, § 3ºda IN 639/03-GSF c/c Art. 490-A, §1º do RCTE.|01102023|
+GO000162|Contribuição ao PROTEGE - Crédito outorgado para a empresa industrial produtora de grupos geradores de energia elétrica, beneficiária do PRODUZIR. Art. 11, LX, b, Anexo IX do RCTE.|01112023|
+GO000163|Contribuição ao PROTEGE - Crédito outorgado para o industrial de veículo automotor e para o industrial fabricante de extintores de incêndio, beneficiários do PRODUZIR, que implantar ou ampliar empreendimento industrial no Estado de Goiás. Art. 11, LVII, b, Anexo IX do RCTE.|01012023|
+GO000164|Contribuição ao PROTEGE  Redução da Base de Cálculo no fornecimento de refeições por restaurantes, bares e estabelecimentos similares. Art. 9º, XXXIX, Anexo IX do RCTE.|01032023|
+GO000165|Valor do complemento do ICMS relativo a crédito outorgado de álcool anidro, quando na apuração dos saldos incorrer em ICMS apropriado a menor. Art. 4º, § 2º, Dec. 10.339/23.|01042023|
+GO000166|Restituição do PROTEGE sob a forma de compensação,deduzida de futura contribuição ao PROTEGE sobre a fruição do FOMENTAR/PRODUZIR - Lei 18.360/13,com código de recolhimento "4402"-Art. 1º,Par. Único, Inciso I da IN 1188/14-GSF c/c Art. 490-A, §1º do RCTE.|01102023|
+GO000167|Crédito FUNDEINFRA - autorizado pela SEINFRA - art. 6º-A da Lei nº 21.670/2022 e art. 1, I, IN 1.591/2024-GSE.|01102024|
+GO000168|Contribuição ao PROTEGE  Crédito outorgado para o estabelecimento industrializador de etanol hidratado. Art. 11, LXXVIII, Anexo IX do RCTE.|01062025|
+GO000169|Contribuição ao PROTEGE - Crédito outorgado para o estabelecimento industrializador de biogás e biometano . Art. 11, LXXIX, Anexo IX do RCTE.|01062025|
+GO000170|Contribuição ao PROTEGE - Crédito Outorgado para o industrial de veículo automotor e para o industrial fabricante de extintores de incêndio. Art. 11 LVII-A, a, do Anexo IX do RCTE.|01042024|
+GO000171|Contribuição ao PROTEGE - Crédito Outorgado para o industrial de veículo automotor e para o industrial fabricante de extintores de incêndio. Art. 11 LVII-A, b, do Anexo IX do RCTE.|01042024|
+GO000172|Depósito Judicial - Valores depositados em juízo referente a apuração do ICMS Próprio (ICMS A RECOLHER - E110).|01062026|
+GO000173|Depósito Judicial - Valores depositados em juízo referente a apuração do ICMS ST (ICMS ST - E210).|01062026|
+GO000174|Depósito Judicial  - Valores depositados em juízo relativos à demandas judiciais não abrangidas pelos códigos específicos.|01062026|
+GO010000|Cana de Açúcar - Contribuição ao FUNDEINFRA - Item 01 do Anexo Único do Dec. 10187/2022.|01122023|
+GO010000|Cana de Açúcar - Contribuição ao FUNDEINFRA - Item 01 do Anexo Único do Dec. 10187/2022.|01012023|30112023
+GO010000|Cana de Açúcar - Contribuição ao FUNDEINFRA - Item 01 do Anexo Único do Dec. 10187/2022.|01122022|31122022
+GO010001|Milho - Contribuição ao FUNDEINFRA - Item 02 do Anexo Único do Dec. 10187/2022.|01122022|
+GO010002|Soja - Contribuição ao FUNDEINFRA - Item 03 do Anexo Único do Dec. 10187/2022.|01122022|
+GO010003|Carne fresca, resfriada, congelada, salgada, temperada ou salmourada, e miúdo comestível resultante do abate de gado bovino ou bufalino - Contribuição ao FUNDEINFRA, Item 04 do Anexo Único do Dec. 10187/2022.|01122022|
+GO010004|Gado bovino e bufalino - Contribuição ao FUNDEINFRA - Item 05 do Anexo Único do Dec. 10187/2022.|01122022|
+GO010005|Amianto; ferroliga; minério de cobre e seus concentrados; ouro. incluído o ouro platinado - Contribuição ao FUNDEINFRA - Item 06 do Anexo Único do Dec. 10187/2022.|01122022|
+GO020001|Quantidade de álcool anidro - Art. 11, XXVI, a, do Anexo IX do RCTE.|01122024|
+GO020002|Saldo devedor do ICMS do álcool anidro -  Art. 11, XXVI, a-1, do Anexo IX do RCTE.|01122024|
+GO020003|Percentual do crédito outorgado de ICMS do álcool anidro - Art. 11, XXVI, caput, do Anexo IX, RCTE.|01122024|
+GO020004|Valor do crédito outorgado de ICMS do álcool anidro no período - Art. 11, XXVI, caput, do Anexo IX do RCTE.|01122024|
+GO020005|Valor do crédito outorgado de ICMS do álcool anidro (Art. 11, XXVI, do Anexo IX do RCTE) apropriado de forma extemporânea, por autorização constante em processo ou em norma com aplicação retroativa.|01122024|
+GO020006|Quantidade de álcool anidro - Art. 11, XXVI-A, a, do Anexo IX do RCTE.|01122024|
+GO020007|Quantidade média de comercialização estabelecida no TARE - Art. 11, XXVI-A, f, 1, do Anexo IX do RCTE.|01122024|
+GO020008|Saldo devedor do ICMS do álcool anidro com crédito outorgado autorizado por TARE, referente à quantidade comercializada que EXCEDA ou NÃO ESTEJA SUJEITA a média de comercialização - Art. 11, XXVI-A, b, do Anexo IX do RCTE.|01122024|
+GO020009|Percentual do crédito outorgado de ICMS do álcool anidro autorizado por TARE, para o saldo devedor referente à quantidade comercializada que EXCEDA ou NÃO ESTEJA SUJEITA a média de comercialização - Art. 11, XXVI-A, caput, do Anexo IX, RCTE.|01122024|
+GO020010|Valor do crédito outorgado de ICMS do álcool anidro no período, autorizado por TARE, referente à quantidade comercializada que EXCEDA ou NÃO ESTEJA SUJEITA a média de comercialização - Art. 11, XXVI-A, caput, do Anexo IX, RCTE.|01122024|
+GO020011|Saldo devedor do ICMS do álcool anidro com crédito outorgado autorizado por TARE, referente à quantidade comercializada que NÃO EXCEDA à média de comercialização estabelecida no TARE - Art. 11, XXVI-A, f, 2, do Anexo IX do RCTE.|01122024|
+GO020012|Percentual do crédito outorgado de ICMS do álcool anidro autorizado por TARE, para o saldo devedor referente à quantidade comercializada que NÃO EXCEDA à média de comercialização estabelecida no TARE - Art. 11, XXVI-A, f, 2, do Anexo IX do RCTE.|01122024|
+GO020013|Valor do crédito outorgado de ICMS do álcool anidro no período, autorizado por TARE, referente à quantidade comercializada que NÃO EXCEDA à média de comercialização estabelecida no TARE - Art. 11, XXVI-A, f, 2, do Anexo IX do RCTE.|01122024|
+GO020014|Valor do crédito outorgado de ICMS do álcool anidro autorizado por TARE (Art. 11, XXVI-A, do Anexo IX do RCTE) apropriado de forma extemporânea, por autorização constante em processo ou em norma com aplicação retroativa.|01122024|
+GO100001|Percentual do Crédito Outorgado PROGOIÁS, previsto na Lei nº 20.787/20|01102020|
+GO100002|Total do ICMS correspondente às saídas incentivadas cujos CFOP estejam relacionados nos Anexo I, da IN 1478/20 -|01102020|
+GO100003|Total do ICMS correspondente às entradas cujos CFOP estejam relacionados nos Anexo I, da IN 1478/20 -|01102020|
+GO100004|Total dos Códigos de Ajustes da Apuração do ICMS  Outros Créditos e Estorno de Débitos|01102020|
+GO100005|Total do Códigos de Ajustes da Apuração do ICMS  Outros Débitos e Estorno de Crédito|01102020|
+GO100006|Média, se o estabelecimento beneficiário estiver sujeito à média do ICMS a recolher prevista no art. 10 da Lei nº 20.787/20|01102020|
+GO100007|Ajuste da base de cálculo do Crédito Outorgado PROGOIÁS período anterior|01102020|
+GO100008|Ajuste da base de cálculo do Crédito Outorgado PROGOIÁS período a transportar para o período seguinte|01102020|
+GO100009|Valor do Crédito Outorgado PROGOIÁS|01102020|
+GO100010|Terrenos|01102020|
+GO100011|Obras Preliminares|01102020|
+GO100012|Obras Civis e Instalações Prediais|01102020|
+GO100013|Máquinas Aparelhos e Equipamentos|01102020|
+GO100014|Equipamentos de Processamento Eletrônico de Dados|01102020|
+GO100015|Sistemas Aplicativos - Software|01102020|
+GO100016|Móveis e Utensílios|01102020|
+GO100017|Veículos|01102020|
+GO100018|Marcas, Patentes, Intangíveis e Demais Investimentos|01102020|
+GO100019|Ajuste da base de cálculo do Crédito Outorgado  art. 11, LVII, LVIII ou LX do Anexo IX do RCTE para o período seguinte.|01072021|01072021
+GO100019|Ajuste da base de cálculo do Crédito Outorgado  art. 11, LVII, LVIII, LX ou LX-A do Anexo IX do RCTE a transportar para o período seguinte.|19012023|
+GO100019|Ajuste da base de cálculo do Crédito Outorgado  art. 11, LVII, LVIII ou LX do Anexo IX do RCTE a transportar para o período seguinte.|02072021|18012023
+GO100020|Ajuste da base de cálculo do Crédito Outorgado  art. 11, LVII, LVIII ou LX do Anexo IX do RCTE transportado para o período anterior.|01072021|01072021
+GO100020|Ajuste da base de cálculo do Crédito Outorgado  art. 11, LVII, LVIII, LX ou LX-A do Anexo IX do RCTE transportado do período anterior.|19012023|
+GO100020|Ajuste da base de cálculo do Crédito Outorgado  art. 11, LVII, LVIII ou LX do Anexo IX do RCTE transportado do período anterior.|02072021|18012023
+GO200001|Débito do ICMS das Operações Incentivadas (Anexo II, exceto o débito do item 2)|01012023|
+GO200002|Débito do ICMS das Saídas a Título de Bonificação ou Semelhante Incentivadas|01012023|
+GO200003|Outros Débitos das Operações Incentivadas (Anexo III)|01012023|
+GO200004|Estorno de Créditos das Operações Incentivadas (Anexo III)|01012023|
+GO200005|Crédito do ICMS para Operações Incentivadas (Anexo I)|01012023|
+GO200006|Outros Créditos para Operações Incentivadas (Anexo III)|01012023|
+GO200007|Estorno de Débitos para Operações Incentivadas (Anexo III)|01012023|
+GO200008|Saldo Credor do Período Anterior das Operações Incentivadas|01012023|
+GO200009|Crédito Referente Saldo Credor do Período das Operações Não Incentivadas (41)|01012023|
+GO200010|Saldo Devedor do ICMS das Operações Incentivadas [(1+2+3+4)-(5+6+7+8+9)]|01012023|
+GO200011|ICMS por Média|01012023|
+GO200012|Deduções (115)|01012023|
+GO200013|Saldo do ICMS a Pagar por Média (11-12)|01012023|
+GO200014|ICMS Base para Fomentar/Produzir (10-11)|01012023|
+GO200015|Percentagem do Financiamento|01012023|
+GO200016|ICMS Sujeito a Financiamento [(14x15)/100]|01012023|
+GO200017|ICMS Excedente Importação Não Sujeito ao Incentivo (51) - Fomentar|01012023|
+GO200018|ICMS Excedente Industrialização Fora do Estado Não Sujeito ao Incentivo- Fomentar|01012023|
+GO200019|ICMS Excedente Importação de Peças e Partes de Veículos Não Sujeito ao IncentivoFomentar|01012023|
+GO200020|ICMS Financiado (16)-(17+18+19)|01012023|
+GO200021|Saldo do ICMS da Parcela Não Financiada (14-16)|01012023|
+GO200022|Deduções (116)|01012023|
+GO200023|Saldo do ICMS a Pagar da Parcela Não Financiada (21-22)|01012023|
+GO200024|Saldo Credor do Período [(5+6+7+8+9)-(1+2+3+4)]|01012023|
+GO200025|Saldo Credor do Período Utilizado nas Operações Não Incentivadas|01012023|
+GO200026|Saldo Credor a Transportar para o Período Seguinte (24-25)|01012023|
+GO200027|Débito do ICMS das Operações Não Incentivadas (Não constam no Anexo II)|01012023|
+GO200028|Outros Débitos das Operações Não Incentivadas (Não constam no Anexo III)|01012023|
+GO200029|Estorno de Créditos das Operações Não Incentivadas (Não constam no Anexo III)|01012023|
+GO200030|ICMS Excedente Industrialização Fora do Estado Não Sujeito ao Incentivo- Fomentar|01012023|
+GO200031|ICMS Excedente Imp. de Peças e Partes de Veículos Não Sujeito ao Incentivo- Fomentar|01012023|
+GO200032|Crédito do ICMS para Operações Não Incentivadas (Não constam no Anexo I)|01012023|
+GO200033|Outros Créditos para Operações Não Incentivadas (Não constam no Anexo III)|01012023|
+GO200034|Estorno de Débitos para Operações Não Incentivadas (Não constam no Anexo III)|01012023|
+GO200035|Saldo Credor do Período Anterior das Operações Não Incentivadas|01012023|
+GO200036|Crédito Referente Saldo Credor do Período das Operações Incentivadas (25)|01012023|
+GO200037|Saldo Devedor do ICMS das Operações Não Incentivadas [(27+28+29+30+31)-(32+33+34+35+36)]|01012023|
+GO200038|Deduções (114)|01012023|
+GO200039|Saldo do ICMS a Pagar das Operações Não Incentivadas (37-38)|01012023|
+GO200040|Saldo Credor do Período [(32+33+34+35+36)-(27+28+29+30+31)]|01012023|
+GO200041|Saldo Credor do Período Utilizado nas Operações Incentivadas|01012023|
+GO200042|Saldo Credor a Transp. para o Período Seguinte (40-41)|01012023|
+GO200043|Total das Mercadorias Importadas|01012023|
+GO200044|Outros Acréscimos sobre Importação|01012023|
+GO200045|Total das Operações de Importação (43+44)|01012023|
+GO200046|Total das Entradas do Período|01012023|
+GO200047|Percentual das Operações de Importação [(45/46)x100]|01012023|
+GO200048|ICMS sobre Importação|01012023|
+GO200049|Mercadorias Importadas Excedentes {[46x(47  30%)]/100}|01012023|
+GO200050|ICMS sobre Importação Excedente [48x(49/45)]|01012023|
+GO200051|ICMS sobre Importação Excedente Não Sujeito a Incentivo [(50x15)/100]|01012023|
+GO200052|ICMS sobre Importação Sujeito ao Incentivo (48-50)|01012023|
+GO200053|ICMS sobre Importação da Parcela Não Financiada {[48x( 100%- 15)]/100}|01012023|
+GO200054|Saldo do ICMS sobre Importação a Pagar (51+53)|01012023|
+GO300001|Terrenos - Informação dos investimentos  art. 11, XXXI-A do Anexo IX do RCTE.|01022023|
+GO300002|Obras Preliminares - Informação dos investimentos  art. 11, XXXI-A do Anexo IX do RCTE.|01022023|
+GO300003|Obras Civis e Instalações Prediais - Informação dos investimentos  art. 11, XXXI-A do Anexo IX do RCTE.|01022023|
+GO300004|Máquinas, Aparelhos e Equipamentos - Informação dos investimentos  art. 11, XXXI-A do Anexo IX do RCTE.|01022023|
+GO300005|Equipamentos de Processamento Eletrônico de Dados - Informação dos investimentos  art. 11, XXXI-A do Anexo IX do RCTE.|01022023|
+GO300006|Sistemas Aplicativos  Software - Informação dos investimentos  art. 11, XXXI-A do Anexo IX do RCTE.|01022023|
+GO300007|Móveis e Utensílios - Informação dos investimentos  art. 11, XXXI-A do Anexo IX do RCTE.|01022023|
+GO300008|Veículos - Informação dos investimentos  art. 11, XXXI-A do Anexo IX do RCTE.|01022023|
+GO300009|Marcas, Patentes, Intangíveis e Demais Investimentos - Informação dos investimentos  art. 11, XXXI-A do Anexo IX do RCTE.|01022023|
+GO300010|Terrenos - Informação dos investimentos  art. 11, LXXVI do Anexo IX do RCTE|01022023|
+GO300011|Obras Preliminares - Informação dos investimentos  art. 11, LXXVI do Anexo IX do RCTE|01022023|
+GO300012|Obras Civis e Instalações Prediais - Informação dos investimentos  art. 11, LXXVI do Anexo IX do RCTE|01022023|
+GO300013|Máquinas, Aparelhos e Equipamentos -Informação dos investimentos  art. 11, LXXVI do Anexo IX do RCTE|01022023|
+GO300014|Equipamentos de Processamento de Dados - Informação dos investimentos  art. 11, LXXVI do Anexo IX do RCTE|01022023|
+GO300015|Sistema Aplicativos - Software - Informação dos investimentos  art. 11, LXXVI do Anexo IX do RCTE|01022023|
+GO300016|Móveis e Utensílios - Informação dos investimentos  art. 11, LXXVI do Anexo IX do RCTE|01022023|
+GO300017|Veículos - Informação dos investimentos  art. 11, LXXVI do Anexo IX do RCTE|01022023|
+GO300018|Marcas, Patentes, Intangíveis e Demais Investimentos - Informação dos investimentos  art. 11, LXXVI do Anexo IX do RCTE|01022023|

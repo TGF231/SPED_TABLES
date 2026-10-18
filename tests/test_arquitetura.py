@@ -67,6 +67,22 @@ class TestRegraDeDependencia(unittest.TestCase):
                                          % (camada, nome, linha, mod))
         self.assertEqual(violacoes, [])
 
+    def test_sped_tables_nunca_importa_o_consolidador(self):
+        """O consolidador roda na máquina de quem compila e pode usar o
+        `sped_tables`; o contrário prenderia o programa a uma ferramenta
+        que ele não leva (nem lê o PVA de quem o usa)."""
+        violacoes = []
+        for raiz, _d, nomes in os.walk(PACOTE):
+            for nome in nomes:
+                if not nome.endswith(".py"):
+                    continue
+                caminho = os.path.join(raiz, nome)
+                for linha, mod in _imports(caminho):
+                    if mod.split(".")[0] == "consolidador":
+                        violacoes.append("%s:%d importa %s" % (
+                            os.path.relpath(caminho, RAIZ), linha, mod))
+        self.assertEqual(violacoes, [])
+
     def test_ninguem_importa_o_lancador(self):
         for raiz, _d, nomes in os.walk(PACOTE):
             for nome in nomes:

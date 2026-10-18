@@ -1,0 +1,132 @@
+versão=37 COD_AJUR, DESC_AJUR, DT_INI, DT_FIM
+ES009999|Outros débitos para ajuste de apuração ICMS para|01012009|08092011
+ES109999|Outros débitos para ajuste de apuração ICMS ST para|01012009|08092011
+ES019999|Estorno de créditos para ajuste de apuração ICMS para|01012009|08092011
+ES119999|Estorno de créditos para ajuste de apuração ICMS ST para|01012009|08092011
+ES029999|Outros créditos para ajuste de apuração ICMS para|01012009|08092011
+ES129999|Outros créditos para ajuste de apuração ICMS ST para|01012009|08092011
+ES039999|Estorno de débitos para ajuste de apuração ICMS para|01012009|08092011
+ES139999|Estorno de débitos para ajuste de apuração ICMS ST para|01012009|08092011
+ES049999|Deduções do imposto apurado na apuração ICMS para|01012009|08092011
+ES149999|Deduções do imposto apurado na apuração ICMS ST para|01012009|08092011
+ES059999|Débito especial de ICMS para|01012009|08092011
+ES159999|Débito especial de ICMS ST para|01012009|08092011
+ES013000|ESTORNO DE CRÉDITOS: Total dos créditos de serviços de transporte de CAFÉ ARÁBICA, não ajustado na nota fiscal, para crédito na apuração em separado indicador '3' (deve constar ainda do campo VL_TOT_AJ_CREDITOS_OA do 1920 sob o código ES023000)|01072011|31122012
+ES014000|ESTORNO DE CRÉDITOS: Total dos créditos de serviços de transporte de CAFÉ CONILON, não ajustado na nota fiscal, para crédito na apuração em separado indicador '4'(deve constar ainda do campo VL_TOT_AJ_CREDITOS_OA do 1920 sob o código ES024000)|01072011|31122012
+ES015000|ESTORNO DE CRÉDITOS: Total dos créditos de serviços de transporte de 'NÃO ESPECIFICADA', não ajustado na nota fiscal, para crédito na apuração em separado indicador '5'(deve constar ainda do campo VL_TOT_AJ_CREDITOS_OA do 1920 sob o código ES025000)|01072011|31122012
+ES013001|APURAÇÃO EM SEPARADO CAFÉ ARÁBICA: ESTORNO DE 51,428% DOS CRÉDITOS relativos às aquisições do café arábica, conforme Art. 290, § 2º do RICMS-ES|01072011|29072013
+ES014001|APURAÇÃO EM SEPARADO CAFÉ CONILON: ESTORNO DE 51,428% DOS CRÉDITOS relativos às aquisições do café conilon, conforme Art. 290, § 2º do RICMS-ES|01072011|29072013
+ES023000|APURAÇÃO EM SEPARADO CAFÉ ARÁBICA: OUTROS CRÉDITOS: Total dos crédito das prestações de serviço de transporte (deve constar ainda do campo VL_ESTORNOS_CRED do E110 sob o código ES013000)|01072011|31122012
+ES024000|APURAÇÃO EM SEPARADO CAFÉ CONILON: OUTROS CRÉDITOS: Total dos crédito das prestações de serviço de transporte (deve constar ainda do campo VL_ESTORNOS_CRED do E110 sob o código ES014000)|01072011|31122012
+ES025000|APURAÇÃO EM SEPARADO 'NÃO ESPECIFICADA': OUTROS CRÉDITOS: Crédito das prestações de serviço de transporte (deve constar ainda do campo VL_ESTORNOS_CRED do E110 sob o código ES015000)|01072011|31122012
+ES009999|OUTROS DÉBITOS: 'NÃO ESPECIFICADO' em outro código (Obrigatório informar descrição complementar)|09092011|31122011
+ES000001|OUTROS DÉBITOS: 'NÃO ESPECIFICADO' em outro código (Obrigatório informar descrição complementar)|01102011|
+ES000002|OUTROS DÉBITOS: Crédito acumulado utilizável apropriado no mês, conforme Artigo 121, inciso I do RICMS-ES (Obrigatório informar Registro 1200)|01102011|17082021
+ES019999|ESTORNO DE CRÉDITOS: 'NÃO ESPECIFICADO' em outro código (Obrigatório informar descrição complementar)|09092011|31122011
+ES010100|ESTORNO DE CRÉDITOS: 'NÃO ESPECIFICADO' em outro código (Obrigatório informar descrição complementar)|01102011|
+ES029999|OUTROS CRÉDITOS: 'NÃO ESPECIFICADO' em outro código (Obrigatório informar descrição complementar)|09092011|31122011
+ES020200|OUTROS CRÉDITOS: 'NÃO ESPECIFICADO' em outro código (Obrigatório informar descrição complementar)|01102011|
+ES020201|OUTROS CRÉDITOS: CIAP - Crédito do Ativo Permanente(valor extraído do campo 09-ICMS_APROP do Registro G110)|01102011|
+ES020202|OUTROS CRÉDITOS: CIAP - Outros Créditos do Ativo Permanente(Valor extraído do campo 10-SOM_ICMS_OC do Registro G110)|01102011|
+ES020203|OUTROS CRÉDITOS: Reincorporação do crédito acumulado utilizável (Obrigatório informar Registro 1200)|01102011|
+ES020204|CONTROLE DE CRÉDITOS FISCAIS EXTRA-APURAÇÃO(Registro 1200): Demonstrativo da C/C do crédito acumulado de estabelecimento exportador e/ou equiparado, nas formas do artigo 112 do RICMS-ES|01102011|31122012
+ES020205|CONTROLE DE CRÉDITOS FISCAIS EXTRA-APURAÇÃO(Registro 1200): Demonstrativo da C/C do crédito acumulado nos demais casos, por estabelecimento industrial, nas formas do artigo 113 do RICMS-ES|01102011|31122012
+ES020206|CONTROLE DE CRÉDITOS FISCAIS EXTRA-APURAÇÃO(Registro 1200): Demonstrativo da C/C do crédito acumulado 'NÃO ESPECIFICADO' em outro código|01102011|31122012
+ES020207|OUTROS CRÉDITOS: No desenquadramento do SN relativo ao crédito cobrado sobre o estoque tributado, nas formas do art. 99-A, §1º, I do RICMS-ES|01102011|
+ES020208|OUTROS CRÉDITOS: No desenquadramento do SN relativo ao crédito de 7% sobre o estoque tributado, nas formas do art. 99-A, §2º do RICMS-ES|01102011|
+ES039999|ESTORNO DE DÉBITOS: 'NÃO ESPECIFICADO' em outro código (Obrigatório informar descrição complementar)|09092011|31122011
+ES030300|ESTORNO DE DÉBITOS: 'NÃO ESPECIFICADO' em outro código (Obrigatório informar descrição complementar)|01102011|
+ES049999|DEDUÇÃO: 'NÃO ESPECIFICADA' em outro código (Obrigatório informar descrição complementar)|09092011|31122011
+ES040400|DEDUÇÃO: 'NÃO ESPECIFICADA' em outro código (Obrigatório informar descrição complementar)|01102011|
+ES059999|DÉBITO ESPECIAL: 'NÃO ESPECIFICADO' em outro código (Obrigatório informar descrição complementar)|09092011|31122011
+ES050500|DÉBITO ESPECIAL: 'NÃO ESPECIFICADO' em outro código (Obrigatório informar descrição complementar)|01102011|
+ES109999|OUTROS DÉBITOS ST: 'NÃO ESPECIFICADO' em outro código (Obrigatório informar descrição complementar)|09092011|31122011
+ES101001|OUTROS DÉBITOS ST: 'NÃO ESPECIFICADO' em outro código (Obrigatório informar descrição complementar)|01102011|
+ES101002|OUTROS DÉBITOS ST: DÉBITO DECORRENTE DE DESCREDENCIAMENTO COMO CONTRIBUINTE SUBSTITUTO: Débito para efeitos do art. 185, § 7.º-B do RICMS/ES somente quando possuir saldo relativo ao § 7º-A do mesmo artigo|01012018|31102021
+ES119999|ESTORNO DE CRÉDITOS ST: 'NÃO ESPECIFICADO' em outro código (Obrigatório informar descrição complementar)|09092011|31122011
+ES111100|ESTORNO DE CRÉDITOS ST: 'NÃO ESPECIFICADO' em outro código (Obrigatório informar descrição complementar)|01102011|
+ES129999|OUTROS CRÉDITOS ST: 'NÃO ESPECIFICADO' em outro código (Obrigatório informar descrição complementar)|09092011|31122011
+ES121200|OUTROS CRÉDITOS ST: 'NÃO ESPECIFICADO' em outro código (Obrigatório informar descrição complementar)|01102011|
+ES121201|OUTROS CRÉDITOS ST: CREDITO DECORRENTE DE CREDENCIAMENTO COMO CONTRIBUINTE SUBSTITUTO: Crédito autorizada pelo art. 185, § 7.º-A, do RICMS/ES|01012018|31102021
+ES139999|ESTORNO DE DÉBITOS ST: 'NÃO ESPECIFICADO' em outro código (Obrigatório informar descrição complementar)|09092011|31122011
+ES131300|ESTORNO DE DÉBITOS ST: 'NÃO ESPECIFICADO' em outro código (Obrigatório informar descrição complementar)|01102011|
+ES149999|DEDUÇÃO ST: 'NÃO ESPECIFICADA' em outro código (Obrigatório informar descrição complementar)|09092011|31122011
+ES141400|DEDUÇÃO ST: 'NÃO ESPECIFICADA' em outro código (Obrigatório informar descrição complementar)|01102011|
+ES159999|DÉBITO ESPECIAL ST: 'NÃO ESPECIFICADO' em outro código (Obrigatório informar descrição complementar)|09092011|31122011
+ES151500|DÉBITO ESPECIAL ST: 'NÃO ESPECIFICADO' em outro código (Obrigatório informar descrição complementar)|01102011|
+ES151501|DÉBITO ESPECIAL ST: DÉBITO DECORRENTE DE DESCREDENCIAMENTO COMO CONTRIBUINTE SUBSTITUTO: Débito para efeitos do art. 185, § 7.º-B, do RICMS/ES|01012018|31102021
+ES010101|ESTORNO DE CRÉDITOS: relativo à dedução proporcional do crédito total registrado (art. 530-L-R-B, § 4.º, I, c, 1)|01012013|31082015
+ES010101|ESTORNO DE CRÉDITOS: relativo à dedução proporcional do crédito total registrado (art. 530-L-R-K, § 4.º, III, a)|01092015|
+ES010102|ESTORNO DE CRÉDITOS: relativo à dedução do crédito da entrada da mercadoria (art. 530-L-R-I, § 2.º, I)|01012013|
+ES010103|ESTORNO DE CRÉDITOS: relativo à dedução proporcional do crédito total registrado (art. 534-Z-Z-A, § 2.º, III, a)|01012013|
+ES020209|OUTROS CRÉDITOS: relativo à utilização do valor proporcional deduzido do crédito total registrado (art. 530-L-R-B, § 4.º, I, c, 2, combinado com o § 2.º)|01012013|31082015
+ES020209|OUTROS CRÉDITOS: relativo à utilização do valor proporcional deduzido do crédito total registrado (art. 530-L-R-K, § 4.º, III, b, combinado com o § 2.º)|01092015|
+ES020210|OUTROS CRÉDITOS: relativo à utilização do valor proporcional deduzido do crédito total registrado (art. 534-Z-Z-A, § 2.º, III, b, combinado com § 1.º)|01012013|
+ES020211|OUTROS CRÉDITOS: crédito presumido de 20% do valor do imposto, para prestadores de serviços de transporte (art.107, III)|01012013|30042016
+ES020212|OUTROS CRÉDITOS: crédito presumido de 8% do valor do imposto, para prestadores de serviços de transporte aéreo (art. 107, IV)|01012013|30042016
+ES020213|OUTROS CRÉDITOS: ajuste para recolher, separadamente, o imposto devido nas operações amparadas pelo Decreto n.º 1152-R, de 2003. Este valor deve constar do campo 15-DEB_ESP do Registro E110|01012013|
+ES020214|OUTROS CRÉDITOS: Ajuste, para o estabelecimento que possui saldo credor, recolher separadamente o imposto devido nas operações referentes ao Art. 530-L-R-K (Este valor deve constar do campo 15-DEB_ESP ref/ ajuste "ES050502")|01092015|
+ES020215|OUTROS CRÉDITOS: CREDITO DECORRENTE DE CREDENCIAMENTO COMO CONTRIBUINTE SUBSTITUTO: Crédito autorizada pelo art. 185, § 7.º-A, do RICMS/ES|01012018|31102021
+ES030302|ESTORNO DE DÉBITOS: adicional (art. 530-L-R-B, § 4.º, II)|01012013|31082015
+ES030302|ESTORNO DE DÉBITOS: Estorno do montante do Débito das saídas interestaduais alcançadas pelo art. 530-L-R-K, de forma que, após utilização dos créditos correspondentes, a carga tributária efetiva resulte nos percentuais estabelecidos no caput e no inciso II, a, b e c|01092015|
+ES030303|ESTORNO DE DÉBITOS: 75% do imposto referente às operações amparadas pelo Decreto n.º 1152-R, de 2003. Informar o número do termo de acordo na descrição complementar|01012013|
+ES050501|DÉBITO ESPECIAL: a recolher ou recolhido extra-apuração, referente a 10% saldo devedor para fomento (art. 530-L-R-B, § 1.º, II)|01012013|31102015
+ES050502|DÉBITO ESPECIAL: Ajuste, para o estabelecimento que possui saldo credor, recolher separadamente o imposto devido nas operações referentes ao Art. 530-L-R-K (Este valor deve constar do campo 08-VL_TOT_AJ_CREDITOS ref/ ajuste "ES020214")|01092015|
+ES050503|DÉBITO ESPECIAL: a recolher ou recolhido extra-apuração, adicional de 10% decorrente do art. 1.212 do RICMS-ES/02|01062017|31052018
+ES090901|CONTROLE DE CRÉDITOS FISCAIS EXTRA-APURAÇÃO (Registro 1200): demonstrativo da conta-corrente do crédito acumulado de estabelecimento exportador ou equiparado (art. 112)|01012013|
+ES090902|CONTROLE DE CRÉDITOS FISCAIS EXTRA-APURAÇÃO (Registro 1200): demonstrativo da conta-corrente do crédito acumulado nos demais casos, por estabelecimento industrial (art. 113)|01012013|04102015
+ES090903|CONTROLE DE CRÉDITOS FISCAIS EXTRA-APURAÇÃO (Registro 1200): demonstrativo da conta-corrente do crédito acumulado 'NÃO ESPECIFICADO' em outro código|01012013|
+ES209999|Outros débitos para ajuste de apuração do ICMS Difal/FCP para a UF do ES|01012016|31122016
+ES219999|Estorno de créditos para ajuste de apuração do ICMS Difal/FCP para a UF do ES|01012016|31122016
+ES229999|Outros créditos para ajuste de apuração do ICMS Difal/FCP para a UF do ES|01012016|31122016
+ES239999|Estorno de débitos para ajuste de apuração do ICMS Difal/FCP para a UF do ES|01012016|31122016
+ES249999|Deduções do imposto apurado na apuração do ICMS Difal/FCP para a UF do ES|01012016|31122016
+ES259999|Débito especial de ICMS Difal/FCP para a UF do ES|01012016|31122016
+ES209999|Outros débitos para ajuste de apuração do ICMS Difal para a UF XX|01012017|02012017
+ES219999|Estorno de créditos para ajuste de apuração do ICMS Difal para a UF XX|01012017|02012017
+ES229999|Outros créditos para ajuste de apuração do ICMS Difal para a UF XX|01012017|02012017
+ES239999|Estorno de débitos para ajuste de apuração do ICMS Difal para a UF XX|01012017|02012017
+ES249999|Deduções do imposto apurado na apuração do ICMS Difal para a UF XX|01012017|02012017
+ES259999|Débito especial de ICMS Difal para a UF XX|01012017|02012017
+ES309999|Outros débitos para ajuste de apuração do ICMS FCP para a UF XX|01012017|02012017
+ES319999|Estorno de créditos para ajuste de apuração do ICMS FCP para a UF XX|01012017|02012017
+ES329999|Outros créditos para ajuste de apuração do ICMS FCP para a UF XX|01012017|02012017
+ES339999|Estorno de débitos para ajuste de apuração do ICMS FCP para a UF XX|01012017|02012017
+ES349999|Deduções do imposto apurado na apuração do ICMS FCP para a UF XX|01012017|02012017
+ES359999|Débito especial de ICMS FCP para a UF XX|01012017|02012017
+ES209999|Outros débitos para ajuste de apuração do ICMS Difal para a UF ES|03012017|
+ES219999|Estorno de créditos para ajuste de apuração do ICMS Difal para a UF ES|03012017|
+ES229999|Outros créditos para ajuste de apuração do ICMS Difal para a UF ES|03012017|
+ES239999|Estorno de débitos para ajuste de apuração do ICMS Difal para a UF ES|03012017|
+ES249999|Deduções do imposto apurado na apuração do ICMS Difal para a UF ES|03012017|
+ES259999|Débito especial de ICMS Difal para a UF ES|03012017|
+ES309999|Outros débitos para ajuste de apuração do ICMS FCP para a UF ES|03012017|
+ES319999|Estorno de créditos para ajuste de apuração do ICMS FCP para a UF ES|03012017|
+ES329999|Outros créditos para ajuste de apuração do ICMS FCP para a UF ES|03012017|
+ES339999|Estorno de débitos para ajuste de apuração do ICMS FCP para a UF ES|03012017|
+ES349999|Deduções do imposto apurado na apuração do ICMS FCP para a UF ES|03012017|
+ES359999|Débito especial de ICMS FCP para a UF ES|03012017|
+ES050504|DÉBITO ESPECIAL: a recolher ou recolhido extra-apuração, adicional de 5% decorrente do art. 4º da Lei 10.630|01062018|31052020
+ES050505|DÉBITO ESPECIAL: a recolher ou recolhido extra-apuração, adicional decorrente do art. 4º da Lei 10.630|01062020|
+ES020216|CRÉDITO DE ICMS  ANTECIPAÇÃO PARCIAL|01062021|
+ES020217|OUTROS CRÉDITOS: crédito presumido do valor do imposto destinado a projetos culturais (art. 107, XLI)|01012022|
+ES020218|OUTROS CRÉDITOS: crédito presumido do valor do imposto destinado a projetos desportivos (art. 107, XLII)|01012022|
+ES010104|Estorno de crédito pelo prestador do serviço em caso de emissão de CT-e substituto referenciando o CT-e emitido com erro - somente créditos extemporâneos (art. 543-V-A)|16052023|
+ES030304|Estorno de débito pelo prestador do serviço em caso de emissão de CT-e substituto referenciando o CT-e emitido com erro - somente débitos extemporâneos (art. 543-V-A)|16052023|
+ES020219|OUTROS CRÉDITOS: crédito presumido de 20% do valor do imposto, para prestadores de serviços de transporte (art.107, XXXVII)|01052023|05062023
+ES020219|OUTROS CRÉDITOS: crédito presumido de 20% do valor do imposto, para prestadores de serviços de transporte (art.107, XXXVII)|06062023|
+ES000003|OUTROS DÉBITOS: Crédito acumulado utilizável apropriado no mês, conforme Artigo 121 do RICMS-ES (Obrigatório informar Registro 1200)|01052023|
+ES000003|OUTROS DÉBITOS: Crédito acumulado utilizável apropriado no mês, conforme Artigo 121 do RICMS-ES (Obrigatório informar Registro 1200)|18082021|30042023
+ES020215|OUTROS CRÉDITOS: CREDITO DECORRENTE DE CREDENCIAMENTO COMO CONTRIBUINTE SUBSTITUTO: Crédito autorizado pelo art. 185-A, VI, §14, g,2 do RICMS/ES|01112021|
+ES010104|Estorno de crédito pelo prestador do serviço em caso de emissão de CT-e substituto referenciando o CT-e emitido com erro - somente créditos extemporâneos (art. 543-V-A)|03042023|15052023
+ES030304|Estorno de débito pelo prestador do serviço em caso de emissão de CT-e substituto referenciando o CT-e emitido com erro - somente débitos extemporâneos (art. 543-V-A)|03042023|15052023
+ES020220|Outros créditos para ajuste de apuração do ICMS FCP pago antecipadamente para a UF ES|01012024|
+ES030305|Estorno de débitos para recuperação ICMS FCP da UF ES em devoluções de venda|01012024|
+ES040500|Deduções do imposto apurado na apuração do ICMS FCP para a UF ES|01012024|
+ES050506|Débito especial de ICMS FCP para UF ES|01012024|
+ES020221|Outros créditos: crédito fiscal permitido mediante apresentação de cópia do comprovante do pagamento do imposto (art. 67 da Lei nº 7.000, de 27 de dezembro de 2001)|28052024|
+ES020222|OUTROS CRÉDITOS: crédito presumido ao estabelecimento atacadista estabelecido no ES (art. 16, Lei nº 12.220/24)|01102024|
+ES000004|OUTROS DÉBITOS: Complementação de ICMS/ST, em razão do valor de saída da mercadoria a consumidor final ser superior ao da BC/ST (Art. 171,inciso V do RICMS/ES)|01012020|
+ES010105|ESTORNO DE CRÉDITOS: Estorno da restituição/ressarcimento do imposto, calculado com base no valor saída inferior ao valor da BC ICMS ST (Art. 171,inciso V do RICMS/ES)|01012020|
+ES020223|OUTROS CRÉDITOS: Restituição de ICMS/ST, em razão do valor de saída da mercadoria final ser inferior ao da BC/ST (Art. 171,inciso V do RICMS/ES)|01012020|
+ES030306|ESTORNO DE DÉBITOS: Estorno do complemento do imposto, calculado com base no valor de saída da mercadoria superior ao valor da BC ICMS ST (Art. 171,inciso V do RICMS/ES)|01012020|

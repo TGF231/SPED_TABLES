@@ -1,0 +1,100 @@
+versão=1 CODIGO, DESCRICAO, DT_INI, DT_FIM, IND_ATIV, IND_AJUSTE, GRUPO, SUBGRUPO, IND_OUTROS
+R0301010|Premios de Seguros Diretos|01012014||02;03;04;06|P|300|R0301|N
+R0301020|Prêmio convênio DPVAT|01012014||02;03;04;06|P|300|R0301|N
+R0301030|Prêmios - Riscos vigentes não emitidos|01012014||02;03;04;06|P|300|R0301|N
+R0301040|Outros Prêmios|01012014||02;03;04;06|P|300|R0301|S
+R0302010|Cosseguros aceitos de congêneres|01012014||02;03;04;06|P|300|R0302|N
+R0302020|Premios aceitos em retrocessões|01012014||02;03;04;06|P|300|R0302|N
+R0303010|Provisão de prêmios não ganhos|01012014||02;03;04;06|P|300|R0303|N
+R0303020|Provisão de insuficiência de prêmio|01012014||02;03;04;06|P|300|R0303|N
+R0303030|Provisão de benefícios a conceder|01012014||02;03;04;06|P|300|R0303|N
+R0303040|Provisão matemática de benefícios a conceder|01012014||02;03;04;06|P|300|R0303|N
+R0303050|Provisão de riscos não expirados|01012014||02;03;04;06|P|300|R0303|N
+R0303060|Provisão de oscilação de riscos|01012014||02;03;04;06|P|300|R0303|N
+R0303070|Variação das despesas de resseguro|01012014||02;03;04;06|P|300|R0303|N
+R0303080|Outras provisões técnicas|01012014||02;03;04;06|P|300|R0303|S
+R0306010|Rendas com taxa de gestão|01012014||02;03;04;06|P|300|R0306|N
+R0306020|Receitas com administração de apólices|01012014||02;03;04;06|P|300|R0306|N
+R0306030|Receitas com correspondentes no país|01012014||02;03;04;06|P|300|R0306|N
+R0306040|Rendas com taxa de saída|01012014||02;03;04;06|P|300|R0306|N
+R0306050|Emissão de apólices|01012014||02;03;04;06|P|300|R0306|N
+R0306060|Receitas com administração dos seguros do sfh|01012014||02;03;04;06|P|300|R0306|N
+R0306070|Outras receitas - consórcio dpvat|01012014||02;03;04;06|P|300|R0306|S
+R0306080|Outras receitas com operações de seguros|01012014||02;03;04;06|P|300|R0306|S
+R0321010|Prêmios de Resseguros|01012014||02;03;04;06|P|300|R0321|N
+R0322010|Prêmios de Retrocessão Aceita Resseguradora Local|01012014||02;03;04;06|P|300|R0322|N
+R0322020|Prêmios de Retrocessão Aceita Resseguradora Admitida|01012014||02;03;04;06|P|300|R0322|N
+R0322030|Prêmios de Retrocessão Aceita Resseguradora Eventual|01012014||02;03;04;06|P|300|R0322|N
+R0323010|prêmios diferidos|01012014||02;03;04;06|P|300|R0323|N
+R0323020|provisão para riscos em curso|01012014||02;03;04;06|P|300|R0323|N
+R0323030|provisão de excedentes técnicos|01012014||02;03;04;06|P|300|R0323|N
+R0323040|provisão matemática de benefícios a conceder|01012014||02;03;04;06|P|300|R0323|N
+R0323050|provisão matemática de benefícios concedidos|01012014||02;03;04;06|P|300|R0323|N
+R0323060|provisão complementar de cobertura|01012014||02;03;04;06|P|300|R0323|N
+R0323070|provisão de oscilação de riscos|01012014||02;03;04;06|P|300|R0323|N
+R0323080|outras provisões técnicas|01012014||02;03;04;06|P|300|R0323|S
+R0324010|Outras receitas com operações de resseguros|01012014||02;03;04;06|P|300|R0324|S
+R0324020|Outras receitas com operações de retrocessões aceitas|01012014||02;03;04;06|P|300|R0324|S
+R0324030|Participação nos lucros com retrocessões|01012014||02;03;04;06|P|300|R0324|N
+R0331010|Arrecadação com títulos de capitalização|01012014||02;03;04;06|P|300|R0331|N
+R0332010|Reversão da provisão para resgate|01012014||02;03;04;06|P|300|R0332|N
+R0332020|Despesa com resgate|01012014||02;03;04;06|P|300|R0332|N
+R0332030|Reversão da provisão para receita diferida|01012014||02;03;04;06|P|300|R0332|N
+R0332040|Variação de provisão para distribuição de bônus|01012014||02;03;04;06|P|300|R0332|N
+R0332050|Variação de outras provisões técnicas|01012014||02;03;04;06|P|300|R0332|N
+R0332060|Reversão da provisão para sorteios|01012014||02;03;04;06|P|300|R0332|N
+R0332070|Reversão da provisão para participação nos lucros|01012014||02;03;04;06|P|300|R0332|N
+R0333010|Receita com resgate de título|01012014||02;03;04;06|P|300|R0333|N
+R0333020|Receita com prescrição de exigibilidades|01012014||02;03;04;06|P|300|R0333|N
+R0333030|Outras receitas com operação de capitalização|01012014||02;03;04;06|P|300|R0333|S
+R0361010|Planos de peculio-repartição simples|01012014||02;03;04;06|P|300|R0361|N
+R0361020|Planos de peculio- capitalização|01012014||02;03;04;06|P|300|R0361|N
+R0361030|Planos de renda - pensão - repartição de capitais de cobertura|01012014||02;03;04;06|P|300|R0361|N
+R0361040|Planos de renda -pensão - capitalização|01012014||02;03;04;06|P|300|R0361|N
+R0361050|Planos de renda - invalidez -repartição de capitais de cobertura|01012014||02;03;04;06|P|300|R0361|N
+R0361060|Planos de renda - invalidez -capitalização|01012014||02;03;04;06|P|300|R0361|N
+R0361070|Planos de renda -aposentadoria - capitalizaçao|01012014||02;03;04;06|P|300|R0361|N
+R0361080|Planos de peculio-repartição simples|01012014||02;03;04;06|P|300|R0361|N
+R0361090|Planos de peculio- capitalização|01012014||02;03;04;06|P|300|R0361|N
+R0361100|Planos de renda - pensão - repartição de capitais de cobertura|01012014||02;03;04;06|P|300|R0361|N
+R0361110|Planos de renda -pensão - capitalização|01012014||02;03;04;06|P|300|R0361|N
+R0361120|Planos de renda - invalidez -repartição de capitais de cobertura|01012014||02;03;04;06|P|300|R0361|N
+R0361130|Planos de renda - invalidez -capitalização|01012014||02;03;04;06|P|300|R0361|N
+R0361140|Planos de renda -aposentadoria - capitalização|01012014||02;03;04;06|P|300|R0361|N
+R0361150|Planos de contribuição variavél|01012014||02;03;04;06|P|300|R0361|N
+R0361160|Planos de peculio-repartição simples|01012014||02;03;04;06|P|300|R0361|N
+R0361170|Planos de peculio- capitalização|01012014||02;03;04;06|P|300|R0361|N
+R0361180|Planos de renda - pensão - repartição de capitais de cobertura|01012014||02;03;04;06|P|300|R0361|N
+R0361190|Planos de renda -pensão - capitalização|01012014||02;03;04;06|P|300|R0361|N
+R0361200|Planos de renda - invalidez -repartição de capitais de cobertura|01012014||02;03;04;06|P|300|R0361|N
+R0361210|Planos de renda - invalidez -capitalização|01012014||02;03;04;06|P|300|R0361|N
+R0361220|Planos de renda -aposentadoria - capitalização|01012014||02;03;04;06|P|300|R0361|N
+R0361230|Planos de contribuição variavél|01012014||02;03;04;06|P|300|R0361|N
+R0362010|Prov matematica de benefícios a conceder|01012014||02;03;04;06|P|300|R0362|N
+R0362020|Prov. de riscos não expirados|01012014||02;03;04;06|P|300|R0362|N
+R0362030|Prov. de oscilação de riscos|01012014||02;03;04;06|P|300|R0362|N
+R0362040|Prov de insuficiencia de contribuição|01012014||02;03;04;06|P|300|R0362|N
+R0362050|Outras provisões técnicas|01012014||02;03;04;06|P|300|R0362|S
+R0362060|Prov matematica de benefícios a conceder|01012014||02;03;04;06|P|300|R0362|N
+R0362070|Prov. de riscos não expirados|01012014||02;03;04;06|P|300|R0362|N
+R0362080|Prov. de oscilação de riscos|01012014||02;03;04;06|P|300|R0362|N
+R0362090|Prov de insuficiencia de contribuição|01012014||02;03;04;06|P|300|R0362|N
+R0362100|Outras provisões técnicas previdencia complementar|01012014||02;03;04;06|P|300|R0362|S
+R0362110|Despesas com benefícios|01012014||02;03;04;06|P|300|R0362|N
+R0362120|Variação da provisão de sinistros ocorridos mas não avisados|01012014||02;03;04;06|P|300|R0362|N
+R0362130|Outras provisões|01012014||02;03;04;06|P|300|R0362|S
+R0363010|Rendas com taxa de gestão|01012014||02;03;04;06|P|300|R0363|N
+R0363020|Receita com administração de apólices|01012014||02;03;04;06|P|300|R0363|N
+R0363030|Receitas com correspondentes no pais|01012014||02;03;04;06|P|300|R0363|N
+R0363040|Taxa de saída|01012014||02;03;04;06|P|300|R0363|N
+R0364010|Deságio na transferência de carteira|01012014||02;03;04;06|P|300|R0364|N
+R0364020|Outras receitas operacionais|01012014||02;03;04;06|P|300|R0364|S
+R0395010|Receitas Financeiras proporcionadas pelos ativos garantidores das provisões técnicas|01012014||02;03;04;06|P|300|R0395|N
+R0395020|Demais Receitas Financeiras|01012014||02;03;04;06|P|300|R0395|N
+R0396010|Receitas com imóveis de renda|01012014||02;03;04;06|P|300|R0396|N
+R0396020|Ajustes positivos de investimentos em controladas e coligadas|01012014||02;03;04;06|P|300|R0396|N
+R0396030|Lucro na alienação de bens do ativo não circulante|01012014||02;03;04;06|P|300|R0396|N
+R0396040|Outros investimentos|01012014||02;03;04;06|P|300|R0396|S
+R0397010|Outras Receitas da atividade|01012014||02;03;04;06|P|300|R0397|S
+R0398010|Ajustes negativos de receitas|01012014||02;03;04;06|N|300|R0398|N
+R0399010|Ajustes positivos de receitas|01012014||02;03;04;06|P|300|R0399|N

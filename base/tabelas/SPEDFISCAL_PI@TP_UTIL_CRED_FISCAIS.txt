@@ -1,0 +1,12 @@
+versão=2 TIPO_UTIL, DESC_TIPO, DT_INI, DT_FIM
+PI01|Dedução|01012022|
+PI11|Ressarcimento|01012022|
+PI21|Compensação|01012022|
+PI41|Transferência|01012022|
+PI61|Restituição|01012022|
+PI62|Restituição de ST mediante NFe para estabelecimento fornecedor que tenha retido originalmente o imposto|01082017|
+PI63|Abatimento da Substituição das Entradas originado de restituição ST|01082017|
+PI64|Abatimento do FECOP Entradas Interestaduais ST originado de restituição ST|01082017|
+PI65|Estorno de crédito ainda não utilizado para baixa decorrente de decisão contrária ao pedido de restituição|01082017|
+PI81|Estorno|01012022|
+PI99|Outros|01012022|

@@ -1,0 +1,36 @@
+versão=1.0
+00|01 registro consolidando os documentos de consumo residencial/pessoa física até R$ 50,00;21;22|01012009|
+01|01 registro consolidando os documentos de consumo residencial/pessoa física de R$ 50,01 a R$ 100,00;21;22|01012009|
+02|01 registro consolidando os documentos de consumo residencial/pessoa física de R$ 100,01 a R$ 200,00;21;22|01012009|
+03|01 registro consolidando os documentos de consumo residencial/pessoa física de R$ 200,01 a R$ 300,00;21;22|01012009|
+04|01 registro consolidando os documentos de consumo residencial/pessoa física de R$ 300,01 a R$ 400,00;21;22|01012009|
+05|01 registro consolidando os documentos de consumo residencial/pessoa física de R$ 400,01 a R$ 500,00;21;22|01012009|
+06|01 registro consolidando os documentos de consumo residencial/pessoa física de R$ 500,01 a R$ 1000,00;21;22|01012009|
+07|01 registro por documento fiscal de consumo residencial/pessoa física acima de R$ 1.000,01;21;22|01012009|
+10|01 registro consolidando os documentos de consumo comercial/industrial até R$ 50,00;21;22|01012009|
+11|01 registro consolidando os documentos de consumo comercial/industrial de R$ 50,01 a R$ 100,00;21;22|01012009|
+12|01 registro consolidando os documentos de consumo comercial/industrial de R$ 100,01 a R$ 200,00;21;22|01012009|
+13|01 registro consolidando os documentos de consumo comercial/industrial de R$ 200,01 a R$ 300,00;21;22|01012009|
+14|01 registro consolidando os documentos de consumo comercial/industrial de R$ 300,01 a R$ 400,00;21;22|01012009|
+15|01 registro consolidando os documentos de consumo comercial/industrial de R$ 400,01 a R$ 500,00;21;22|01012009|
+16|01 registro consolidando os documentos de consumo comercial/industrial de R$ 500,01 a R$ 1.000,00;21;22|01012009|
+17|01 registro por documento fiscal de consumo comercial/industrial acima de R$ 1.000,01;21;22|01012009|
+70|01 registro consolidando os documentos de consumo do poder público até R$ 50,00;22|01012009|
+71|01 registro consolidando os documentos de consumo poder público de R$ 50,01 a R$ 100,00;22|01012009|
+72|01 registro consolidando os documentos de consumo poder público de R$ 100,01 a R$ 200,00;22|01012009|
+73|01 registro consolidando os documentos de consumo poder público de R$ 200,01 a R$ 300,00;22|01012009|
+74|01 registro consolidando os documentos de consumo poder público de R$ 300,01 a R$ 400,00;22|01012009|
+75|01 registro consolidando os documentos de consumo poder público de R$ 400,01 a R$ 500,00;22|01012009|
+76|01 registro consolidando os documentos de consumo poder público de R$ 500,01 a R$ 1.000,00;22|01012009|
+77|01 registro por documento fiscal de consumo poder público acima de R$ 1.000,01;22|01012009|
+78|01 registro por documento fiscal de consumo de órgão público isento do ICMS;22|01012009|
+79|01 registro por documento fiscal de consumo de órgãos semipúblicos;22|01012009|
+90|01 registro consolidando os documentos de outros tipos de consumo até R$ 50,00;21;22|01012009|
+91|01 registro consolidando os documentos de outros tipos de consumo de R$ 50,01 a R$ 100,00;21;22|01012009|
+92|01 registro consolidando os documentos de outros tipos de consumo de R$ 100,01 a R$ 200,00;21;22|01012009|
+93|01 registro consolidando os documentos de outros tipos de consumo de R$ 200,01 a R$ 300,00;21;22|01012009|
+94|01 registro consolidando os documentos de outros tipos de consumo de R$ 300,01 a R$ 400,00;21;22|01012009|
+95|01 registro consolidando os documentos de outros tipos de consumo de R$ 400,01 a R$ 500,00;21;22|01012009|
+96|01 registro consolidando os documentos de outros tipos de consumo de R$ 500,01 a R$ 1.000,00;21;22|01012009|
+97|01 registro por documento fiscal de outros tipos de consumo acima de R$ 1.000,01;21;22|01012009|
+99|01 registro por documento fiscal emitido;21;22|01012009|

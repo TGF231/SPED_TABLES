@@ -1,0 +1,17 @@
+versão=2 CFOP, DESC_CFOP, DT_INI, DT_FIM
+1201|Devolução de venda de produção do estabelecimento|01012009|
+1202|Devolução de venda de mercadoria adquirida ou recebida de terceiros|01012009|
+1215|Devolução de fornecimento de produção do estabelecimento de ato cooperativo|01052019|
+1216|Devolução de fornecimento de mercadoria adquirida ou recebida de terceiros de ato cooperativo|01052019|
+1410|Devolução de venda de produção do estabelecimento em operação com produto sujeito ao regime de substituição tributária|01012009|
+1411|Devolução de venda de mercadoria adquirida ou recebida de terceiros em operação com mercadoria sujeita ao regime de substituição tributária|01012009|
+1553|Devolução de venda de bem do ativo imobilizado|01012009|
+1662|Devolução de venda de combustível ou lubrificante destinados a consumidor ou usuário final|01012009|
+2201|Devolução de venda de produção do estabelecimento|01012009|
+2202|Devolução de venda de mercadoria adquirida ou recebida de terceiros|01012009|
+2215|Devolução de fornecimento de produção do estabelecimento de ato cooperativo|01052019|
+2216|Devolução de fornecimento de mercadoria adquirida ou recebida de terceiros de ato cooperativo|01052019|
+2410|Devolução de venda de produção do estabelecimento em operação com produto sujeito ao regime de substituição tributária|01012009|
+2411|Devolução de venda de mercadoria adquirida ou recebida de terceiros em operação com mercadoria sujeita ao regime de substituição tributária|01012009|
+2553|Devolução de venda de bem do ativo imobilizado|01012009|
+2662|Devolução de venda de combustível ou lubrificante destinados a consumidor ou usuário final|01012009|

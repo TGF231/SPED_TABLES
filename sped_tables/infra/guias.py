@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """Os **guias práticos** da EFD ICMS/IPI e da EFD Contribuições, extraídos
-para `recursos/` por `ferramentas/extrair_guias.py`.
+para `base/guias/` por `py -m consolidador guia`.
 
 São o texto oficial de cada registro e de cada campo — "Preenchimento",
 "Validação", "Valores válidos" —, que o programa mostra como ajuda e cita
@@ -16,11 +16,11 @@ from sped_tables.infra import dados
 
 log = logging.getLogger("sped_tables")
 
-ARQUIVOS = {"ICMS": "guia_icms.json", "CONTRIB": "guia_contrib.json"}
+ARQUIVOS = {"ICMS": "ICMS.json", "CONTRIB": "CONTRIB.json"}
 
 
 def caminho(layout):
-    return dados.recurso(os.path.join("recursos", ARQUIVOS[layout]))
+    return dados.recurso(os.path.join("base", "guias", ARQUIVOS[layout]))
 
 
 def carregar(layout):

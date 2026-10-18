@@ -1,0 +1,68 @@
+versão=14 COD_REC, DESC_COD, DT_INI, DT_FIM
+1001|Arquivo enviado é nulo ou está vazio.|01092023|
+1002|Hash da EFD é nulo ou está vazio.|01092023|
+1003|Efd do período anterior omissa.|01092023|
+1004|Registro 0000 é nulo ou está vazio.|01092023|
+1005|Diferença entre saldo transportado e saldo credo anterior.|01092023|31122023
+1006|Erro sintático.|01092023|
+1007|DIME não entregue no período.|01092023|31122023
+1008|O valor de débitos declarado é diferente do valor declarado na DIME.|01092023|31122023
+1009|O valor de créditos declarado é diferente do valor declarado na DIME.|01092023|31122023
+1010|Registro E111 com código SC020012 sem registros E113.|01092023|31122023
+1011|Valor no registro E111 com código SC020012 é diferente da soma dos valores nos respectivos registros E113.|01092023|31122023
+9999|Erro ao validar. Tente novamente mais tarde ou entre em contato pelo CAF no portal da SEF/SC|01092023|
+1013|Contribuinte pessoa física não é obrigada a enviar EFD em SC.|01092023|31122023
+1014|EFD do período anterior omissa para cálculo da diferença entre saldo transportado e saldo credor anterior.|01092023|31122023
+1005|Contribuinte Pessoa Física não é obrigado a enviar EFD em SC|01012024|
+1007|EFD do período anterior omissa para cálculo da diferença entre saldo transportado e saldo credor anterior|01012024|
+1008|Diferença entre saldo transportado e saldo credo anterior|01012024|
+1009|DIME não entregue no período|01012024|
+1010|O valor de débitos declarado é diferente do valor declarado na DIME|01012024|
+1011|O valor de créditos declarado é diferente do valor declarado na DIME|01012024|
+1012|Registro E111 com código SC020012 sem registros E113|01012024|
+1013|Valor no registro E111 com código SC020012 é diferente da soma dos valores nos respectivos registros E113|01012024|
+1014|O detalhamento do registro E112 é necessário para o ajuste SC000003|01012024|
+1015|O detalhamento do registro E113 é necessário para o ajuste SC000011|01012024|
+1016|O detalhamento do registro E113 é necessário para o ajuste SC000012|01012024|
+1017|O detalhamento do registro E113 é necessário para o ajuste SC010108|01012024|
+1018|O detalhamento do registro E113 é necessário para o ajuste SC010109|01012024|
+1019|O detalhamento do registro E112 é necessário para o ajuste SC020004|01012024|
+1020|O detalhamento do registro E112 é necessário para o ajuste SC020005|01012024|
+1021|O detalhamento do Registro E113 é necessário para o ajuste SC020010|01012024|
+1022|O detalhamento do registro E112 é necessário para o ajuste SC020011|01012024|
+1023|O detalhamento do Registro E113 é necessário para o ajuste SC020012|01012024|
+1024|O detalhamento do Registro E112 é necessário para o ajuste SC020014|01012024|
+1025|O detalhamento do registro E112 é necessário para o ajuste SC020019|01012024|
+1026|O detalhamento do registro E112 é necessário para o ajuste SC020021|01012024|
+1028|O detalhamento dos registro E112 e E113 são necessários para o ajuste SC020057|01012024|
+1029|O detalhamento dos registro E112 e E113 são necessários para o ajuste SC020058|01012024|
+1031|O detalhamento dos registro E112 e E113 são necessários para o ajuste SC020070|01012024|
+1027|O detalhamento do Registro E112 é necessário para o ajuste SC020056|01012024|
+1030|O detalhamento do Registro E112 é necessário para o ajuste SC020061|01012024|
+1500|O código de receita do registro E116 informado na EFD é inválido.|01012024|
+1501|O código de receita do registro E250 informado na EFD é inválido.|01012024|
+1502|O código de receita do registro E316 informado na EFD é inválido.|01012024|
+1048|O detalhamento do Registro E112 é necessário para o ajuste SC020089.|01012024|
+1032|O detalhamento do Registro E112 é necessário para o ajusteSC020071.|01012024|
+1033|O detalhamento do registro E112 é necessário para o ajuste SC020073.|01012024|
+1034|O detalhamento do Registro E112 é necessário para o ajuste SC020074.|01012024|
+1035|O detalhamento do Registro E112 é necessário para o ajuste SC020075.|01012024|
+1036|O detalhamento do Registro E112 é necessário para o ajuste SC020076.|01012024|
+1037|O detalhamento do Registro E112 é necessário para o ajuste SC020077.|01012024|
+1038|O detalhamento do Registro E112 é necessário para o ajuste SC020078.|01012024|
+1039|O detalhamento do Registro E113 é necessário para o ajuste SC020080.|01012024|
+1040|O detalhamento do Registro E112 é necessário para o ajuste SC020082.|01012024|
+1041|O detalhamento do Registro E113 é necessário para o ajuste SC020083, exceto cupom fiscal.|01012024|
+1042|O detalhamento do Registro E113 é necessário para o ajuste SC020084.|01012024|
+1043|O detalhamento do Registro E113 é necessário para o ajuste SC030005.|01012024|
+1044|O detalhamento do Registro E113 é necessário para o ajuste SC030007.|01012024|
+1045|O detalhamento do Registro E113 é necessário para o ajuste SC030011.|01012024|
+1046|O detalhamento do Registro E113 é necessário para o ajuste SC030012.|01012024|
+1047|O detalhamento do Registro E112 é necessário para o ajuste SC050004.|01012024|
+1503|O Número do Acordo/Concessão do TTD é necessário no campo NUM_PROC do E116 para o código de receita 144910448|01012025|
+1504|O Número do Acordo/Concessão do TTD é necessário no campo NUM_PROC do E250 para o código de receita 147310448|01012025|
+1505|A partir da competência 10/2025, utilize o código de receita 144910014. O ajuste de regularidade será aplicado automaticamente pelo sistema.|01102025|
+1506|A partir da competência 10/2025, utilize o código de receita 249610014. O ajuste de regularidade será aplicado automaticamente pelo sistema.|01102025|
+1507|O registro E116 com código de receita 144910537 deve apresentar data de vencimento no mês de fevereiro.|01122025|
+1049|O AUC exigido nos ajustes SC020056 ou SC020061 não foi informado ou é inválido|01042026|
+1050|O PRC exigido nos ajustes SC020075 (E111) ou SC120009 (E220) não foi informado ou é inválido|01042026|

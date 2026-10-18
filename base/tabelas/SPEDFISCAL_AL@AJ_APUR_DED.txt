@@ -1,0 +1,233 @@
+versão=24 COD_AJUR, DESC_AJUR, DT_INI, DT_FIM
+AL000199|Outros Débitos-|01012009|28012009
+AL010200|Estorno de Crédito- Estorno de Crédito Presumido Por Saída Interestadual - Decreto 1.284/03(Atacadista)|01012009|28012009
+AL010201|Estorno de Crédito- Estorno de Crédito Presumido Por Devolução - Decreto 1.284/03(Atacadista)|01012009|28012009
+AL010202|Estorno de Crédito- Estorno de Crédito Presumido Por Saída Interestadual - Decreto 1.284/03(Atacadista)|01012009|28012009
+AL020300|Outros Créditos- Crédito Oriundo da Aquisição de Serviço de Transporte para Mercadoria Destinada a Industrialização e Comercialização|01012009|28012009
+AL020301|Outros Créditos- Crédito Presumido Nos termos do item 1, do Anexo III, do RICMS; (saídas internas e interestaduais para indústrias ceramistas|01012009|28012009
+AL020302|Outros Créditos- Crédito Presumido nas transferências interestaduais de bens do ativo fixo|01012009|28012009
+AL020303|Outros Créditos- Crédito Presumido na saída tributada dos produtos constantes do Convênio ICM 44/75 e alterações|01012009|28012009
+AL020304|Outros Créditos- Crédito Presumido nas saídas de cana-de-açúcar, em substituição ao sistema normal de apuração do imposto|01012009|28012009
+AL020305|Outros Créditos- Crédito Presumido nas operações internas de estabelecimento industrializador da mandioca|01012009|28012009
+AL020306|Outros Créditos- Crédito Presumido nas operações interestaduais de estabelecimento industrializador da mandioca|01012009|28012009
+AL020307|Outros Créditos- Crédito Presumido por direitos autorais, artísticos e conexos;|01012009|28012009
+AL020308|Outros Créditos- Crédito Presumido para estabelecimentos prestadores de serviço de transporte|01012009|28012009
+AL020309|Outros Créditos- Crédito Presumido pela aquisição de Equipamento Emissor de Cupom Fiscal que atenda aos requisitos definidos no Decreto nº 36.953, de 16 de julho de 1996 - ECF|01012009|28012009
+AL020310|Outros Créditos- Crédito Presumido nas operações de saídas dos produtos, sem similar nacional, classificados na posição 9022.13 e 9022.12.00, da Nomenclatura Brasileira de Mercadorias - Sistema Harmonizado - NBM-SH|01012009|28012009
+AL020311|Outros Créditos- Crédito Presumido pela aquisição de Equipamento Emissor de Cupom Fiscal que atenda aos requisitos definidos no Decreto nº 36.953, de 16 de julho de 1996 - ECF|01012009|28012009
+AL020312|Outros Créditos- Crédito Presumido nas aquisições de "solução" para fins de emissão de comprovante de pagamento de operação ou prestação, efetuado com cartão de crédito ou débito automático em conta corrente, vinculada à prévia emissão dos respectivos documentos fiscais;|01012009|28012009
+AL020313|Outros Créditos- Crédito Presumido aos estabelecimentos produtores de ovos, nas saídas de ovos por ele produzidos;|01012009|28012009
+AL020314|Outros Créditos- Crédito Presumido nas saídas de carnes e subprodutos derivados do abate de animais;|01012009|28012009
+AL020315|Outros Créditos- Crédito Presumido às empresas prestadoras de serviços de telecomunicação estabelecidas em Alagoas, nas prestações de serviços de telecomunicação relativas às operações de serviços não medidos definidos como de porta de serviços de dados, ou denominação e|01012009|28012009
+AL020316|Outros Créditos- Crédito presumido nas saídas de produto industrializado, nos termos do art. 21, I, do Dec. n° 38.394/00;|01012009|28012009
+AL020317|Outros Créditos- Crédito presumido nas saídas de produto industrializado, nos termos do art. 21, II, do Dec. n° 38.394/00;|01012009|28012009
+AL020399|Outros Créditos- Outras Hipóteses|01012009|28012009
+AL030499|Estorno de Débito-|01012009|28012009
+AL040599|Deduções-|01012009|28012009
+AL050600|Débitos Especial- Diferencial de Alíquota decorrente da Aquisição Mercadoria ou Serviços por Contribuinte, em outra unidade da Federação, destinadas a uso, consumo ou ativo fixo(RICMS, art 104)|01012009|28012009
+AL050699|Débitos Especial- Outras Hipóteses|01012009|28012009
+AL100100|Outros Débitos - ST-|01012009|28012009
+AL110200|Estorno de Crédito - ST-|01012009|28012009
+AL120300|Outros Créditos - ST-|01012009|28012009
+AL130400|Estorno de Débito - ST-|01012009|28012009
+AL140500|Deduções - ST-|01012009|28012009
+AL150600|Débitos Especial - ST-|01012009|28012009
+AL000000|Outros Débitos - Débito de ICMS calculado nos termos do Art. 5º, do Decreto 3.005/05 (Atacadistas de Medicamentos)|28012009|31122009
+AL000001|Outros Débitos - Débito de ICMS calculado nos termos do Art. 6º, do Decreto 36.538/95 (ST-Medicamentos)|28012009|31122009
+AL000002|Outros Débitos - Saldo do ICMS a ser quitado nos termos da Lei 6.410/03, conf. Autorização do §2º do art. 6º da IN SEF 01/2004 (Precatórios)|28012009|31122009
+AL000003|Outros Débitos - Débito de ICMS nos termos do art. 448 do RICMS (Estabelecimento Panificador)|28012009|31122009
+AL000004|Outros Débitos - Transferência de Crédito do ICMS, nos termos da Instrução Normativa SF nº 25/2002, conf. Art. 4º, III, b.|28012009|31122009
+AL000005|Outros Débitos - Débito do ICMS - Art. 5º, Parágrafo Único, Dec. 1.897/2004.|28012009|31122009
+AL000006|Outros Débitos - Para fins do art. 1º, I, da IN nº 24/06.|28012009|31122009
+AL000007|Outros Débitos - Crédito Presumido Acumulado Apropriado no Período, transferido para estabelecimento do mesmo contribuinte, nos termos do art. 1º, II, da IN nº 24/06.|28012009|31122009
+AL000008|Outros Débitos - Transferência de Saldo Credor do ICMS - Dec. nº 2.237/04 e IN nº 24/06.|28012009|31122009
+AL000009|Outros Débitos - Transferência de Crédito do ICMS, nos termos do art. 4° da IN SF n° 025/2002.|28012009|31122009
+AL000010|Outros Débitos - Débito referente ao saldo credor transferido ao estabelecimento consolidador.|28012009|31122009
+AL000011|Outros Débitos - Débito referente aos saldos devedores recebidos de estabelecimentos consolidados.|28012009|31122009
+AL000012|Outros Débitos - Débito referente ao estoque na inclusão de mercadorias no regime de substituição tributária.|28012009|31122009
+AL000013|Outros Débitos - Ressarcimento do ICMS Substituição Tributária - art. 423-C do RICMS/AL|28012009|31122009
+AL000014|Outros Débitos - Nos termos do art. 448 do RICMS/AL|28012009|31122009
+AL000015|Outros Débitos - ICMS Cana/Produtos destinados ao exterior, nos termos do art. 566 do RICMS/AL|28012009|31122009
+AL000016|Outros Débitos - Remessa para vendas fora do estabelecimento, nos termos do § 5º, do art. 612 do RICMS/AL|28012009|31122009
+AL009999|Outros Débitos - Outros ajustes de débitos|28012009|
+AL010000|Estorno de Crédito- Estorno de Crédito Presumido Por Excesso de Crédito, nos termos do Art. 7º do Decreto 1.284/03 (Atacadista)|28012009|31122009
+AL010001|Estorno de Crédito- Estorno de Crédito Presumido Por Devolução de Compra, nos termos do Art. 7º do Decreto 1.284/03 (Atacadista)|28012009|31122009
+AL010002|Estorno de Crédito - Estorno de Crédito Presumido Por Saída Interestadual, nos termos do Art. 7º do Decreto 1.284/03 (Atacadista)|28012009|31122009
+AL010003|Estorno de Crédito - Estorno do Crédito das Entradas, nos termos do inciso II, do § 1º, do Art. 2º do Decreto 38.631/00  (Centrais de Distribuição)|28012009|31122009
+AL010004|Estorno de Crédito - Estorno de Crédito Presumido nos termos do § 2º, do Art. 22, do Decreto 38.394/00 (PRODESIN)|28012009|31122009
+AL010005|Estorno de Crédito - Estorno de Crédito Presumido nos termos do § 3º, do Art. 22, do Decreto 38.394/00 (PRODESIN)|28012009|31122009
+AL010006|Estorno de Crédito - Estorno do Crédito das Entradas, nos termos do inciso I, do Art. 11, do Decreto 3.005/05 (Atacadistas de Medicamentos)|28012009|31122009
+AL010007|Estorno de Crédito - Estorno parcial do Crédito das Entradas de produtos de informática e automação, nos termos dos § 1º e §2º, do Art. 1º, do Decreto 2.390/05|28012009|31122009
+AL010008|Estorno de Crédito - Estorno do Crédito relativo ao estoque, nos termos do art. 9º, inciso II,do Decreto 2.546/05 (ME Social)|28012009|31122009
+AL010009|Estorno de Crédito - Estorno do saldo credor existente, nos termos do art. 9º, inciso II,do Decreto 2.546/05 (ME Social)|28012009|31122009
+AL010010|Estorno de Crédito - Liquidação do ICMS-ST relativo ao estoque existente, nos termos do Dec. 4.096/2008, Art. 3º, inciso IV, letra "b" (Autopeças)|28012009|31122009
+AL010011|Estorno de Crédito - Liquidação do ICMS-ST relativo ao estoque existente - Substituição Tributária - art. 6º do Decreto nº 2.481, de 2005|28012009|31122009
+AL010012|Estorno de Crédito - Antecipação tributária, nos termos do  art. 5º do Decreto nº 2.928/2005|28012009|31122009
+AL010013|Estorno de Crédito - Nos termos do  § 4° do art. 5º do Decreto nº 2.237/2004|28012009|31122009
+AL010014|Estorno de Crédito - Nos termos do inciso II do art. 6º do Decreto nº 2.237/2004|28012009|31122009
+AL019999|Estorno de Crédito - Outros ajustes de estorno de créditos|28012009|
+AL020000|Outros Créditos- Crédito Oriundo da Aquisição de Serviço de Transporte para Mercadoria Destinada a Industrialização e Comercialização|28012009|31122009
+AL020001|Outros Créditos- Crédito Presumido Nos termos do item 1, do Anexo III, do RICMS; (saídas internas e interestaduais para indústrias ceramistas|28012009|31122009
+AL020002|Outros Créditos- Crédito Presumido nas transferências interestaduais de bens do ativo fixo|28012009|31122009
+AL020003|Outros Créditos- Crédito Presumido na saída tributada dos produtos constantes do Convênio ICM 44/75 e alterações|28012009|31122009
+AL020004|Outros Créditos- Crédito Presumido nas saídas de cana-de-açúcar, em substituição ao sistema normal de apuração do imposto|28012009|31122009
+AL020005|Outros Créditos- Crédito Presumido nas operações internas de estabelecimento industrializador da mandioca|28012009|31122009
+AL020006|Outros Créditos- Crédito Presumido nas operações interestaduais de estabelecimento industrializador da mandioca|28012009|31122009
+AL020007|Outros Créditos- Crédito Presumido por direitos autorais, artísticos e conexos;|28012009|31122009
+AL020008|Outros Créditos- Crédito Presumido para estabelecimentos prestadores de serviço de transporte|28012009|31122009
+AL020009|Outros Créditos- Crédito Presumido pela aquisição de Equipamento Emissor de Cupom Fiscal que atenda aos requisitos definidos no Decreto nº 36.953, de 16 de julho de 1996 - ECF|28012009|31122009
+AL020010|Outros Créditos- Crédito Presumido nas operações de saídas dos produtos, sem similar nacional, classificados na posição 9022.13 e 9022.12.00, da Nomenclatura Brasileira de Mercadorias - Sistema Harmonizado - NBM-SH|28012009|31122009
+AL020011|Outros Créditos- Crédito Presumido pela aquisição de Equipamento Emissor de Cupom Fiscal que atenda aos requisitos definidos no Decreto nº 36.953, de 16 de julho de 1996 - ECF|28012009|31122009
+AL020012|Outros Créditos- Crédito Presumido nas aquisições de ""solução"" para fins de emissão de comprovante de pagto efetuado com cartão de crédito ou débito automático em conta corrente, vinculada à prévia emissão dos respectivos docs fiscais;|28012009|31122009
+AL020013|Outros Créditos- Crédito Presumido aos estabelecimentos produtores de ovos, nas saídas de ovos por ele produzidos;|28012009|31122009
+AL020014|Outros Créditos- Crédito Presumido nas saídas de carnes e subprodutos derivados do abate de animais;|28012009|31122009
+AL020015|Outros Créditos- Crédito Presumido às empresas prestadoras de serviços de telecomunicação estabelecidas em Alagoas, nos serviços de telecomunicação não medidos definidos como de porta de serviços de dados, ou denominação e|28012009|31122009
+AL020016|Outros Créditos- Crédito presumido nas saídas de produto industrializado, nos termos do art. 21, I, do Dec. n° 38.394/00 (PRODESIN)|28012009|31122009
+AL020017|Outros Créditos- Crédito presumido nas saídas de produto industrializado, nos termos do art. 21, II, do Dec. n° 38.394/00 (PRODESIN)|28012009|31122009
+AL020018|Outros Créditos- Crédito presumido nas saídas em transferência, para outros estabelecimentos do mesmo contribuinte, de produto industrializado, nos termos do art. 21, §3º, I, do Dec. n° 38.394/00;|28012009|31122009
+AL020019|Outros Créditos- Crédito presumido nas prestações de serviço de transporte, nos termos do art. 21, §3º, II, do Dec. n° 38.394/00 (PRODESIN)|28012009|31122009
+AL020020|Outros Créditos- Crédito presumido nas saídas de Centrais de Distribuição, nos termos do art. 2º, incisos I, II e III, do Dec. n° 38.631/00 (CD)|28012009|31122009
+AL020021|Outros Créditos- ICMS quitado nos termos da Lei 6.410/03 (Precatórios)|28012009|31122009
+AL020022|Outros Créditos- Créditos certificados pela PGE - Lei 6.410/03 (Precatórios)|28012009|31122009
+AL020023|Outros Créditos - Crédito Presumido nas saídas interestaduais de produtos referidos no anexo único do Dec. 36.538, de 1995, nos termos do Art. 5º-A, do Decreto 3.005/2005 (Atacadistas de Medicamentos)|28012009|31122009
+AL020024|Outros Créditos - Crédito Fiscal do ICMS em Razão de Desenquadramento|28012009|31122009
+AL020025|Outros Créditos - Crédito relativo a 1/48 correspondentes à entrada de bens do Ativo Permanente|28012009|31122009
+AL020026|Outros Créditos - Crédito do ICMS - Instrução Normativa SF nº 25/02, conf. Art. 3º, IV|28012009|31122009
+AL020027|Outros Créditos - Crédito do ICMS - Art. 2º, § 2º, Decreto 1.897/2004|28012009|31122009
+AL020028|Outros Créditos - ICMS Antecipado nos termos da Lei 6.474/2004|28012009|31122009
+AL020029|Outros Créditos - ICMS Importação|28012009|31122009
+AL020030|Outros Créditos - ICMS Específico, nos termos do Art. 5º do Decreto 1.284/03 (Atacadistas)|28012009|31122009
+AL020031|Outros Créditos - Crédito Presumido, nos termos do Art. 6º do Decreto 1.284/03 (Atacadistas)|28012009|31122009
+AL020032|Outros Créditos - Crédito Fiscal decorrente de Exclusão do Simples Nacional, nos termos do art. 748-Q, do RICMS/AL.|28012009|31122009
+AL020033|Outros Créditos - Recebimento de crédito fiscal em transferência.|28012009|31122009
+AL020034|Outros Créditos - Crédito Presumido, nos termos do inciso I do § 3º do art. 4º do Decreto nº 2.237/2004|28012009|31122009
+AL020035|Outros Créditos - Nos termos do inciso III do art. 6º do Decreto nº 2.237/2004|28012009|31122009
+AL020036|Outros Créditos - Recebimento de Crédito Presumido Acumulado, transferido de estabelecimento do mesmo contribuinte, nos termos do art. 1º, II, da IN n° 24/2006.|28012009|31122009
+AL020037|Outros Créditos - Crédito Presumido utilizado nos termos do art. 2º, II, da IN n° 24/2006.|28012009|31122009
+AL020038|Outros Créditos - Recebimento de Saldo Credor do ICMS - Dec. nº 2.237/04 e IN 24/06.|28012009|31122009
+AL020039|Outros Créditos - Crédito do ICMS nos termos do art. 3° da IN SF n° 025/2002.|28012009|31122009
+AL020040|Outros Créditos - Em virtude de erro de fato na escrituração fiscal ou no preparo do documento de arrecadação, nos termos do art. 91, § 4º, do RICMS/AL.|28012009|31122009
+AL020041|Outros Créditos - Percentual do ICMS pago antecipadamente, nos termos do inciso III do art. 101 do RICMS/AL (Transp. Aéreo)|28012009|31122009
+AL020042|Outros Créditos - Percentual do ICMS pago antecipadamente, nos termos do inciso XI do art. 101 do RICMS/AL (Telecomunicação)|28012009|31122009
+AL020043|Outros Créditos - Percentual do ICMS pago antecipadamente, nos termos do inciso XXI do art. 101 do RICMS/AL (Energia)|28012009|31122009
+AL020044|Outros Créditos - Percentual do ICMS pago antecipadamente, nos termos do inciso XXII do art. 101 do RICMS/AL (Petróleo, Gás Natural, refino petróleo,Atacad. Combustiveis)|28012009|31122009
+AL020045|Outros Créditos - Restituição do ICMS Substituição Tributária - art. 423-A do RICMS/AL|28012009|31122009
+AL020046|Outros Créditos - Ressarcimento do ICMS Substituição Tributária - art. 423-C, II, do RICMS/AL|28012009|31122009
+AL020047|Outros Créditos - Ressarcimento do ICMS Substituição Tributária - art. 423-C do RICMS/AL|28012009|31122009
+AL020048|Outros Créditos - Nos termos do art. 450 do RICMS/AL|28012009|31122009
+AL029997|Outros Créditos - Crédito Presumido - Outras Hipóteses|28012009|31122009
+AL029998|Outros Créditos - PRODESIN - Outras Hipóteses|28012009|31122009
+AL029999|Outros Créditos - Outros ajustes de créditos|28012009|
+AL030000|Estorno de Débito - Estorno do Débito Normal das Saídas, nos termos do inciso I, do Art. 11, do Decreto 3.005/05 (Atacadistas de Medicamentos)|28012009|31122009
+AL030001|Estorno de Débito - Saldo a ser quitado no mês seguinte, nos termos da Lei 6.410/03, conf. Autorização do §2º do art. 6º da IN SEF nº 01/2004 (Precatórios)|28012009|31122009
+AL030002|Estorno de Débitos - Nos termos do art. 483 do RICMS/AL|28012009|31122009
+AL030003|Estorno de Débitos - Remessa para vendas fora do estabelecimento, nos termos do § 5º , do art. 612 do RICMS/AL|28012009|31122009
+AL039999|Estorno de Débito - Outros ajustes de estorno de débitos|28012009|
+AL049999|Deduções - Outras deduções do imposto apurado|28012009|
+AL050000|Débito Especial- Diferencial de Alíquota decorrente da Aquisição Mercadoria ou Serviços por Contribuinte, em outra unidade da Federação, destinadas a uso, consumo ou ativo fixo(RICMS, art 104)|28012009|31122009
+AL059999|Débito Especial - Outros débitos especiais|28012009|
+AL100000|Outros Débitos - ST - ICMS-ST sobre valor do frete, nos termos  Art. 3º, § 4º, Dec. 36.476/95.|28012009|31122009
+AL100001|Outros Débitos - ST - ICMS-ST sobre valor do frete, nos termos  Art. 4º, § 1º, Dec. 2.440/2005.|28012009|31122009
+AL100002|Outros Débitos - ST - Substituição Tributária s/ frete e/ou seguro, nos termos do art. 421 do RICMS/AL.|28012009|31122009
+AL109999|Outros Débitos - ST-  Outros ajustes de débitos|28012009|
+AL119999|Estorno de Crédito - ST- Outros ajustes de estorno de créditos|28012009|
+AL120000|Outros Créditos - Ressarcimento do ICMS Substituição Tributária - art. 423-C, I, do RICMS/AL|28012009|31122009
+AL129999|Outros Créditos - ST- Outros ajustes de créditos|28012009|
+AL130000|Estorno de Débitos - Nos termos do art. 424 do RICMS/AL|28012009|31122009
+AL130001|Estorno de Débitos - Nos termos do art. 438 do RICMS/AL|28012009|31122009
+AL139999|Estorno de Débito - ST- Outros ajustes de estorno de débitos|28012009|
+AL149999|Deduções - ST- Outras deduções do imposto apurado|28012009|
+AL159999|Débito Especial - ST- Outros débitos especiais|28012009|
+AL090001|Credito de ICMS Extra-apuração - Lei 6410/2003|01012013|
+AL099999|Outros créditos de ICMS extra-apuracao|01012013|
+AL209999|Outros débitos para ajuste de apuração do ICMS Difal/FCP para a UF de AL|01012016|31122016
+AL219999|Estorno de créditos para ajuste de apuração do ICMS Difal/FCP para a UF de AL|01012016|31122016
+AL229999|Outros créditos para ajuste de apuração do ICMS Difal/FCP para a UF de AL|01012016|31122016
+AL239999|Estorno de débitos para ajuste de apuração do ICMS Difal/FCP para a UF de AL|01012016|31122016
+AL249999|Deduções do imposto apurado na apuração do ICMS Difal/FCP para a UF de AL|01012016|31122016
+AL259999|Débito especial de ICMS Difal/FCP para a UF de AL|01012016|31122016
+AL209999|Outros débitos para ajuste de apuração do ICMS Difal para a UF de AL|01012017|
+AL219999|Estorno de créditos para ajuste de apuração do ICMS Difal para a UF de AL|01012017|
+AL229999|Outros créditos para ajuste de apuração do ICMS Difal para a UF de AL|01012017|
+AL239999|Estorno de débitos para ajuste de apuração do ICMS Difal para a UF de AL|01012017|
+AL249999|Deduções do imposto apurado na apuração do ICMS Difal para a UF de AL|01012017|
+AL259999|Débito especial de ICMS Difal para a UF de AL|01012017|
+AL309999|Outros débitos para ajuste de apuração do ICMS FCP para a UF de AL|01012017|
+AL319999|Estorno de créditos para ajuste de apuração do ICMS FCP para a UF de AL|01012017|
+AL329999|Outros créditos para ajuste de apuração do ICMS FCP para a UF de AL|01012017|
+AL339999|Estorno de débitos para ajuste de apuração do ICMS FCP para a UF de AL|01012017|
+AL349999|Deduções do imposto apurado na apuração do ICMS FCP para a UF de AL|01012017|
+AL359999|Débito especial de ICMS FCP para a UF de AL|01012017|
+AL000030|Outros Débitos - Débitos de ICMS próprio das saídas, devido pelas entradas de mercadorias nos termos do art. 5º, I, do Decreto 72.101/2020|01042021|
+AL000031|Outros Débitos - Débito de ICMS próprio das saídas de mercadorias nos termos do art. 5º, II, do Decreto 72.101/2020|01042021|
+AL000032|Outros Débitos - Débito de FECOEP das saídas de mercadorias, nos termos do Decreto 72.101/2020|01042021|
+AL000033|Outros Débitos - Débito de ICMS próprio das saídas interestaduais de mercadorias, devidos pelas entradas de mercadorias nos termos do art. 6º do Decreto 72.101/2020|01042021|
+AL010030|Estorno de Crédito - Estorno de imposto creditado relativo à entrada de mercadorias submetidas ao tratamento tributário diferenciado previsto no Decreto 72.101/2020|01042021|
+AL030030|Estorno de Débito - Estorno de imposto debitado relativo às saídas de mercadorias submetidas ao tratamento tributário diferenciado previsto no Decreto 72.101/2020|01042021|
+AL030031|Estorno de Débito - Estorno de imposto debitado na saída de mercadoria submetida ao Decreto 72.101/2020, que é devolvida ou retorna ao estabelecimento|01042021|
+AL030032|Estorno de Débito - Estorno de FECOEP debitado na saída de mercadoria submetida ao Decreto 72.101/2020, que é devolvida ou retorna ao estabelecimento|01042021|
+AL100030|Outros Débitos - Débito de ICMS ST das saídas de mercadorias nos termos do art. 7º do Decreto 72.101/2020|01042021|
+AL100032|Outros Débitos - Débito de FECOEP ST das saídas de mercadorias nos termos do art. 7º do Decreto 72.101/2020|01042021|
+AL130030|Estorno de Débito - Estorno de ICMS ST debitado na saída de mercadoria submetida ao Decreto 72.101/20, que é devolvida ou retorna ao estabelecimento|01042021|
+AL130032|Estorno de Débito - Estorno de FECOEP ST debitado na saída de mercadoria submetida ao Decreto 72.101/2020, que é devolvida ou retorna ao estabelecimento|01042021|
+AL020000|Outros Créditos  Relativo ao crédito do ICMS antecipado recolhido referente à Lei nº 6.474/04.|01012022|
+AL020001|Outros Créditos  Relativo ao crédito de FECOEP recolhido referente à Lei nº 6.474/04.|01012022|
+AL040001|Deduções  FECOEP apurado mensalmente, a recolher, deduzido do ICMS próprio, nos termos do art. 6º, §1º da IN nº 6/17.|01012022|
+AL040002|Deduções  FECOEP relativo às deduções para as situações descritas nos incisos XI e XXII do art. 101, do Decreto nº 35.245/91, nos termos do Decreto nº 2.845/05 e IN nº 6/17.|01012022|
+AL050001|Débito Especial  FECOEP apurado mensalmente, a recolher, nos termos do art. 7º da IN nº 6/17.|01012022|
+AL050010|Outros Débitos - Débito Especial relativo ao ICMS antecipado da Lei 6474/2004 (antecipação sem encerramento de fase de tributaçao)|01012022|
+AL050020|Outros Débitos - Débito Especial relativo ao Diferencial de alíquota  (ICMS Difal) incidentente nas entradas interestaduais de bens destinados ao ativo permanente ou para bens de uso e consumo, nos termos do art. 104 do RICMS-AL|01012022|
+AL050011|Outros Débitos - Débito Especial relativo ao FECOEP do ICMS antecipado da Lei 6474/2004 (antecipação sem encerramento de fase de tributaçao)|01012022|
+AL050021|Outros Débitos - Débito Especial relativo ao FECOEP do Diferencial de alíquota  (ICMS Difal) incidentente nas entradas interestaduais de bens destinados ao ativo permanente ou para uso e consumo, nos termos do art. 104 do RICMS-AL|01012022|
+AL150000|Outros Débitos - Débito Especial relativo à antecipação do ICMS COM ENCERRAMENTO DE FASE de tributação|01012022|
+AL150001|Outros Débitos - Débito Especial relativo AO FECOEP da antecipação do ICMS COM ENCERRAMENTO DE FASE de tributação|01012022|
+AL020195|Outros Créditos - Imposto liquidado nos termos do inciso III do § 2º do art. 3º do Decreto nº 1.738/03.|01012024|
+AL050195|Débito Especial - Imposto recolhido por operação correspondente à aplicação da alíquota de 1% sobre a BC do ICMS importação, nos termos do inciso III do § 2º do art. 3º do Decreto nº 1.738/03|01012024|
+AL000195|Outros Débitos - Imposto liquidado nos termos do inciso III do § 2o do art. 3o do Decreto no 1.738/03.|01012024|
+AL011850|Estornos de Crédito referentes às entradas nos termos do Art. 2º do Decreto Nº 38.631/2000 (Centrais de Distribuição)|01032024|
+AL021850|Crédito Fiscal presumido referente às entradas, nos termos do Art.2º do Decreto 38.631/2000 (Central de Distribuição)|01032024|
+AL035750|Estorno de Débito - Relativo à liquidação do ICMS nos termos do inciso IV, do Art. 3º, do Dec. 1738/2003|01062024|
+AL005000|Outros Débitos  Débitos do ICMS próprio do contribuinte excluído retroativamente da sistemática do Simples Nacional, nos termos do Art. 748-O-B do RICMS/AL (Opção pela recomposição da escrituração fiscal)|01012019|
+AL005001|Outros Débitos  Débitos do Fecoep relativo ao ICMS próprio do contribuinte excluído retroativamente da sistemática do Simples Nacional, nos termos do Art. 748-O-B do RICMS/AL (Opção pela recomposição da escrituração fiscal)|01012019|
+AL005010|Outros Débitos  Débitos do ICMS próprio do contribuinte excluído retroativamente da sistemática do Simples Nacional, nos termos do Art. 748-O-C do RICMS/AL (Opção pela carga tributária de 7%)|01012019|
+AL005011|Outros Débitos  Débitos do Fecoep relativo ao ICMS próprio do contribuinte excluído retroativamente da sistemática do Simples Nacional, nos termos do Art. 748-O-C do RICMS/AL (Opção pela carga tributária de 7%)|01012019|
+AL025000|Outros Créditos  Créditos do ICMS próprio consignado no documento fiscal do contribuinte excluído retroativamente da sistemática do Simples Nacional, nos termos do Art. 748-O-B do RICMS/AL (Opção pela recomposição da escrituração fiscal)|01012019|
+AL025010|Outros Créditos  ICMS recolhido pela sistemática do Simples Nacional do contribuinte excluído retroativamente da referida sistemática, nos termos do art. 748-O-C do RICMS/AL|01012019|
+AL025020|Outros Créditos  Crédito fiscal relativo ao estoque existente quando da exclusão retroativa da sistemática do Simples Nacional, nos termos do inciso II do art. 748-Q do RICMS/AL|01012019|
+AL025022|Outros Créditos  Crédito fiscal relativo ao ativo permanente existente quando da exclusão retroativa da sistemática do Simples Nacional, nos termos do inciso III do art. 748-Q do RICMS/AL|01012019|
+AL013350|Estorno de Crédito  Energia Elétrica adquirida - laudo técnico, nos termos da IN 27/24|01062024|
+AL013351|Estorno de Crédito  Energia Elétrica adquirida - opção por 80% do consumo, nos termos da IN 27/24|01062024|
+AL021100|Outros Créditos - Aproveitamento de crédito consignado no documento emitido por contribuinte do SN quando destinado a contribuinte do regime normal de apuração, quando permitido|01062024|
+AL051400|Débito Especial  ICMS relativo a documento fiscal de saída tributada escriturado extemporaneamente, nos termos do art. 205, IV, e § 2º, do RICMS/AL.|01062024|01062024
+AL051401|Débito Especial  Fecoep relativo a documento fiscal de saída tributada escriturado extemporaneamente, nos termos do art. 205, IV, e § 2º, do RICMS/AL.|01062024|01062024
+AL152900|Débito Especial  ICMS-ST relativo a documento fiscal de saída tributada escriturado extemporaneamente, nos termos do art. 205, IV, e § 2º, do RICMS/AL|01062024|01062024
+AL152901|Débito Especial  Fecoep do ICMS-ST relativo a documento fiscal de saída tributada escriturado extemporaneamente, nos termos do art. 205, IV, e § 2º, do RICMS/AL|01062024|01062024
+AL021105|Outros Créditos: Aproveitamento EXTEMPORÂNEO do crédito do ICMS Antecipado, nos termos da Lei nº6.474/04|01062024|
+AL021106|Outros Créditos: Aproveitamento EXTEMPORÂNEO do crédito do Fecoep relativo ao ICMS Antecipado, nos termos da Lei nº6.474/04|01062024|
+AL036000|Estorno de Débito  relativo a documento fiscal emitido em competência posterior ao da efetiva saída do bem ou prestação do serviço, conforme regime especial obtido|01062024|
+AL006000|Outros Débitos - relativo a documento fiscal emitido em competência posterior ao da efetiva saída do bem ou prestação do serviço, conforme regime especial obtido|01062024|
+AL006001|Outros Débitos  Fecoep relativo a documento fiscal emitido em competência posterior ao da efetiva saída do bem ou prestação do serviço, conforme regime especial obtido|01062024|
+AL015030|Estorno de Crédito  Estorno relativo ao saldo credor de ICMS existente em conta gráfica no mês anterior ao do ingresso na sistemática do Simples Nacional, nos termos do art. 748-P do RICMS/AL|01062024|
+AL002900|Outros Débitos  Débito de ICMS decorrente de notificação e regularização espontânea, nos termos do § 2º do art. 85 da Lei nº 6.771/06.|01062025|01062025
+AL002901|Outros Débitos  Débito de Fecoep decorrente de notificação e regularização espontânea, nos termos do § 2º do art. 85 da Lei nº 6.771/06.|01062025|01062025
+AL021250|Outros Créditos  Crédito relativo à apropriação mensal (1/48) de bens do Ativo Permanente conforme CIAP, nos termos do § 6º do art. 34 da Lei 5.900/96|01062025|
+AL026650|Outros Créditos  Crédito relativo à restituição em operações com ICMS ST, pelo motivo de fato gerador presumido não realizado, nos termos do inciso I do art. 26 do Decreto 90.309/23|01062025|
+AL026652|Outros Créditos  Crédito relativo à restituição em operações com ICMS ST, pelo motivo de base de cálculo efetiva inferior à base de cálculo presumida, nos termos do inciso II do art. 26 do Decreto 90.309/23|01062025|
+AL026655|Outros Créditos  Crédito relativo ao ressarcimento em operações com ICMS ST envolvendo GLGNn e GLGNi, nos termos do art. 28 do Decreto 90.309/23|01062025|01062025
+AL031250|Estorno de Débito  ICMS próprio relativo a operações de devolução de ativo permanente e/ou material de uso e consumo, nos termos do art. 720 do RICMS/AL (Decreto 35.245/91)|01062025|
+AL031260|Estorno de Débito  ICMS DIFAL relativo a operações de devolução de ativo permanente e/ou material de uso e consumo, nos termos do § 5º do art. 720 do RICMS/AL (Decreto 35.245/91)|01062025|
+AL031261|Estorno de Débito  FECOEP relativo ao ICMS DIFAL de operações de devolução de ativo permanente e/ou material de uso e consumo, nos termos do § 5º do art. 720 do RICMS/AL (Decreto 35.245/91)|01062025|
+AL036655|Estorno de Débito  Ressarcimento do ICMS próprio recolhido em operação anterior, por substituição tributária, quando ocorra saída interestadual posterior, nos termos do § 1º do art. 35 do Decreto 90.309/23|01062025|
+AL056650|Débito Especial de ICMS relativo à complementação, em operações com ICMS ST, pelo motivo de base de cálculo superior à base de cálculo presumida, nos termos do art. 22 do Decreto 90.309/23|01062025|
+AL056651|Débito Especial de Fecoep relativo à complementação, em operações com ICMS ST, pelo motivo de base de cálculo superior à base de cálculo presumida, nos termos do art. 22 do Decreto 90.309/23|01062025|
+AL136650|Estorno de Débito  ICMS ST relativo a operações de devolução de mercadorias sujeitas à substituição tributária, nos termos do § 2º do art. 35 do Decreto 90.309/23|01062025|
+AL036650|Estorno de Débito - ICMS próprio relativo a operações de devolução de mercadorias sujeitas à substituição tributária, nos termos do §3º do art.720 do RICMS/AL c/c o §2º do art. 35 do Decreto 90.309/23|01062025|
+AL021110|Outros Créditos  Utilização de crédito fiscal deferido em pedido de restituição, nos termos do art. 114 do Decreto 35.245/91|01092025|
+AL026655|Outros Créditos  Crédito relativo ao ressarcimento em operações com ICMS ST, nos termos do art. 28 do Decreto 90.309/23|02062025|
+AL054000|Débito Especial  Relativo ao valor recolhido para o Fundo de Equilíbrio Fiscal do Estado de Alagoas  Fefal, nos termos da Lei 8.235/20.|01042026|
+AL014550|Estorno de Crédito Fiscal, nos termos do item 24, b, do Anexo III do Dec. 35.245/91  RICMS (Leite e Derivados)|01042026|
+AL021120|Outros Créditos - Relativo às aquisições de Gasolina C, Óleo Diesel B, GLP e GLGN utilizados como insumo pelo sujeito passivo do imposto, nos termos do Convênio ICMS 26/2023|01042026|
+AL024550|Crédito Fiscal presumido nos termos do Item 24, a, do Anexo III do Dec. 35.245/91  RICMS (Leite e Derivados)|01042026|
+AL025001|Outros Créditos  Créditos do Fecoep relativo ao ICMS próprio consignado no documento fiscal do contribuinte excluído retroativamente da sistemática do Simples Nacional, nos termos do Art. 748-O-B do RICMS/AL (Opção pela recomposição da escrituração fiscal)|01012019|
+AL054550|Débito Especial - Imposto correspondente à aplicação da alíquota de 6,2% sobre a BC do ICMS importação e recolhido nos termos do inciso II do art. 3º do Decreto nº 92.726/23|01042026|
+AL056660|Acréscimo de ICMS-ST aplicado ao estoque de mercadorias, nas hipóteses previstas no Dec. 90.309/23, art. 23 e seu §2º|01032026|

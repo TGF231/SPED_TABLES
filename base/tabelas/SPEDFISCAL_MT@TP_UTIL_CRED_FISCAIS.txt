@@ -1,0 +1,8 @@
+versão=1 TIPO_UTIL, DESC_TIPO, DT_INI, DT_FIM
+MT01|Dedução|01012009|
+MT11|Ressarcimento|01012022|
+MT21|Compensação|01012009|
+MT41|Transferência|01012009|
+MT61|Restituição|01012009|
+MT81|Estorno|01012009|
+MT99|Outros|01012009|

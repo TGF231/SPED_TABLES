@@ -1,0 +1,2 @@
+versão=1.0 cod|desc|dt_ini|dt_fin - Enquadramento Legal IPI
+999|Outros|01012011|

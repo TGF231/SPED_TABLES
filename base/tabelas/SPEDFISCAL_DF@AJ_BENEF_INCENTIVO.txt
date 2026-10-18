@@ -1,0 +1,109 @@
+versão=19 COD_AJ, DESC_AJ, DT_INI, DT_FIM
+DF10000401|Outro crédito Operação Própria: ICMS - ST pago pela aquisição se serviço de transporte de transportador não inscrito no CFDF.|01012018|28022019
+DF10000403|Outro crédito Operação Própria: ICMS próprio não apropriado pelo declarante/substituído no registro das aquisições de produtos sujeitos à ST, nos casos em que a venda interna presumida pela ST não se efetivou.|01012018|
+DF10000404|Outro crédito Operação Própria: ressarcimento de valor de ICMS -ST pago pelo declarante/substituído/adquirente na aquisição de produtos sujeitos à ST  nos casos em que  a venda interna presumida pela ST não se efetivou.|01012018|
+DF10000409|Outro crédito Operação Própria: valor pago ou a recolher referente ao ICMS antecipado código de receita 1566|01012018|
+DF10000423|Outro crédito Operação Própria: crédito presumido/outorgado - transportadoras e outros|01012018|
+DF10000428|Outro crédito Operação Própria: créditos recebidos em transferência de outro estabelecimento do declarante ou de terceiro|01012018|
+DF10000436|Outro crédito Operação Própria: crédito não apropriado na aquisição de uso/consumo e de ativo cujas mercadorias foram, posteriormente, devolvidas ao fornecedor|01012019|
+DF10000437|Outro crédito Operação Própria: crédito não apropriado na aquisição de mercadorias para comercialização que foram, posteriormente, devolvidas ao fornecedor|01012019|
+DF10000438|Outro crédito Operação Própria: crédito de ICMS (não destacado no campo próprio do documento fiscal)referente a aquisição de fornecedor do SIMPLES NACIONAL|01062019|
+DF10000499|Outros créditos Operação Própria|01012018|
+DF10003001|Outro crédito Operação Própria: crédito de ICMS por aquisição interestadual de energia elétrica por estabelecimento industrial (CFOP 2252)|01072019|
+DF10001401|Outro crédito Operação Própria: ICMS - ST pago pela aquisição de serviço de transporte de transportador não inscrito no CFDF|01012019|
+DF11000700|Outros Créditos de ICMS-ST devido pelas saídas para o DF:  referentes a ressarcimento de ST com autorização do Fisco|01012018|
+DF11000701|Outros Créditos de ICMS-ST devido pelas saídas para o DF:  referentes a recolhimentos antecipados|01012018|
+DF11000703|Outros Créditos de ICMS-ST devido pelas saídas para o DF|01012018|
+DF12090800|Outros Créditos na apuração do DIFAL da EC87/2015 devido na origem (DF)|01012018|28022019
+DF12090810|Outros Créditos na apuração do DIFAL da EC87/2015 devido no destino (DF)|01012018|28022019
+DF12090820|Outros Créditos na apuração do FCP - Operação Própria - devido nas saídas para o DF|01012018|28022019
+DF12090830|Outros Créditos na apuração do FCP - ST - devido nas saídas para o DF|01012018|28022019
+DF12090840|Outros Créditos na apuração do FCP - DIFAL - devido nas aquisições interestaduais do DF de uso/consumo e ativo|01012018|28022019
+DF20000115|Estorno de débito Operação Própria: estorno de débito referente ao valor pago de DIFAL na aquisição de mercadorias por empresa do SIMPLES NACIONAL que foram, posteriormente, devolvidas ao fornecedor|01012019|
+DF20000502|Estorno de débito Operação Própria: destaque indevido de ICMS nas saídas internas do declarante/substituído com produtos sujeitos à ST|01012018|
+DF20000520|Estorno de débito Operação Própria: Recuperação do valor pago a título de FCP nos casos de devolução de venda INTERNA.|01062019|
+DF20000520|Estorno de débito Operação Própria: valor adiconal do ICMS referente ao Fundo de Combate à Pobreza lançado como "Outras Obrigações do ICMS".|01012018|31052019
+DF20000521|Estorno de débito Operação Própria:  estorno de débito referente às saídas que se deram pela sistemática da Lei 5.005/2012.|01012018|31052019
+DF20000523|Estorno de débito Operação Própria:  estorno de débito referente ao valor pago de DIFAL na aquisição interestadual de uso/consumo e de ativo cujas mercadorias foram devolvidas ao fornecedor|01012018|
+DF20000566|Estorno de débito Operação Própria: estorno de débito referente ao valor pago de ICMS antecipado na aquisição de mercadorias por empresa do SIMPLES NACIONAL que foram, posteriormente, devolvidas ao fornecedor|01012019|
+DF20000599|Outros estornos de débitos Operação Própria|01012018|
+DF20003001|Estorno de débito Operação Própria: estorno de débito escriturado de NF3e ou Nota Fiscal/Conta de Energia Elétrica substituída de períodos anteriores.|01072023|
+DF20001001|Estorno de débito Operação Própria:  estorno de débito referente a Bilhete de Passagem Eletrônico (BP-e) substituído/cancelado que tenha sido regularmente escriturado com débito do imposto|01072019|
+DF21000520|Estorno de débito ICMS ST: Recuperação do valor pago a título de FCP sobre ICMS-ST nos casos de devolução de venda INTERNA.|01062019|
+DF21000700|Estorno de Débito de ICMS-ST devido pelas saídas para o DF:  Referentes a desfazimento/cancelamento/devolução de vendas cujas mercadorias não transitaram pelo estabelecimento do destinatário/substituído|01012018|
+DF21000701|Outros Estornos de Débitos de ICMS-ST devido pelas saídas para o DF|01012018|
+DF21000730|Estorno de Débito de ICMS-ST devido pelas saídas para o DF:  Parcela do ICMS-ST destacado referente ao FCP|01022018|31122018
+DF21090810|Estorno de Débito na apuração do DIFAL da EC87/2015 devido no destino (DF)|01012018|31122018
+DF22090800|Estorno de Débito na apuração do DIFAL da EC87/2015 devido na origem (DF)|01012018|31122018
+DF22090820|Estorno de Débito na apuração do FCP - Operação Própria - devido nas saídas para o DF|01012018|31122018
+DF22090830|Estorno de Débito na apuração do FCP - ST - devido nas saídas para o DF|01012018|31122018
+DF22090840|Estorno de Débito na apuração do FCP - DIFAL - devido nas aquisições interestaduais do DF de uso/consumo e ativo|01012018|31122018
+DF40000100|Outro débito Operação Própria: DIFAL devido nas aquisições interestaduais de material de uso/consumo e de ativo.|01012018|
+DF40000101|Outro débito Operação Própria: transferência de crédito de ICMS (saldo credor do estabelecimento declarante) para outro estabelecimento da empresa declarante ou para terceiros|01012018|
+DF40000115|Outro débito Operação Própria: diferença entre a alíquota interna e interestadual nas aquisições interestaduais de mercadorias para comercialização ou industrialização por optantes do SIMPLES NACIONAL|01012018|
+DF40000116|Outro débito Operação Própria: diferença de imposto destacado a menor no documento fiscal|01072019|
+DF40000199|Outros débitos Operação Própria|01012018|
+DF40001100|Outro débito Operação Própria: DIFAL referente ao frete devido nas aquisições interestaduais de material de uso/consumo e de ativo|01062019|
+DF41000700|Outros Débitos de ICMS-ST devido pelas saídas para o DF|01012018|
+DF42090800|Outros Débitos na apuração do DIFAL da EC87/2015 devido na origem (DF)|01012018|31122018
+DF42090810|Outros Débitos na apuração do DIFAL da EC87/2015 devido no destino (DF)|01012018|31122018
+DF42090820|Outros Débitos na apuração do FCP - Operação Própria - devido nas saídas para o DF|01012018|31122018
+DF42090830|Outros Débitos na apuração do FCP - ST - devido nas saídas para o DF|01012018|31122018
+DF42090840|Outros Débitos na apuração do FCP - DIFAL - devido nas aquisições interestaduais do DF de uso/consumo e ativo|01012018|31122018
+DF50000220|Estorno de crédito Operação Própria: referentes a mercadorias cujas saídas  se deram com não-incidência do ICMS|01012018|
+DF50000223|Estorno de crédito Operação Própria: mercadorias deterioradas/roubadas/incineradas/inutilizadas ou outros casos em que as mercadorias não serão mais objeto de saídas que configurem fato gerador do ICMS|01012018|
+DF50000227|Estorno de crédito Operação Própria:  estorno proporcional de crédito referente às mercadorias cujas saídas  se deram com redução da base de cálculo.|01012018|
+DF50000230|Estorno de Crédito Operação Própria: Parcela do ICMS destacado referente ao FCP|01032018|31122018
+DF50000230|Estorno de Crédito Operação Própria: Parcela do ICMS-ST destacado referente ao FCP|01022018|28022018
+DF50000299|Outros estornos de créditos Operação Própria|01012018|
+DF50003001|Estorno de Crédito Operação Própria: estorno de crédito escriturado de NF3e ou Nota Fiscal/Conta de Energia Elétrica substituída de períodos anteriores.|01072023|
+DF51000700|Outros Estornos de Créditos de ICMS-ST devido pelas saídas para o DF|01012018|
+DF51000730|Estorno de Crédito ICMS-ST devido pelas saídas para o DF:  Parcela do ICMS-ST destacado referente ao FCP|01022018|31122018
+DF52090800|Estorno de Crédito na apuração do DIFAL da EC87/2015 devido na origem (DF)|01012018|31122018
+DF52090810|Estorno de Crédito na apuração do DIFAL da EC87/2015 devido no destino (DF)|01012018|31122018
+DF52090820|Estorno de Crédito na apuração do FCP - Operação Própria - devido nas saídas para o DF|01012018|31122018
+DF52090830|Estorno de Crédito na apuração do FCP - ST - devido nas saídas para o DF|01012018|31122018
+DF52090840|Estorno de Crédito na apuração do FCP - DIFAL - devido nas aquisições interestaduais do DF de uso/consumo e ativo|01012018|31122018
+DF60000600|Dedução Operação Própria: programa de incentivo à cultura de que trata a Lei 5.021/2013|01012018|10092026
+DF60000699|Outras deduções Operação Própria|01012018|
+DF61000799|ICMS -ST - Outras deduções|01012018|31122018
+DF70000325|Débito especial de ICMS: ICMS devido nas Importações (Cód. Receita 1325)|01012019|
+DF70000557|Débito especial de ICMS: FCP próprio devido nas operações internas DF (Cód. Receita 1557)|01012019|
+DF70000559|Débito especial de ICMS: FCP devido pelo estoque final - encerramento de atividade (Cód. Receita 1559)|01012019|28022019
+DF70000560|Débito especial de ICMS: FCP sobre o ICMS antecipado (Cód. Receita 1560)|01012019|
+DF70000561|Débito especial de ICMS: FCP sobre o ICMS importação (Cód. Receita 1561)|01012019|
+DF70000563|Débito especial de ICMS: FCP devido ao DF referente ao DIFAL nas aquisições interestaduais  de uso/consumo e ativo (Cód. Receita 1563)|01012019|
+DF70000566|Débito especial de ICMS: ICMS antecipado (Cód. Receita 1566)|01012019|
+DF70000851|Débito especial de ICMS: FITUR/DF - Fundo de fomento à Indústria do Turismo do DF (FITUR - Cód. Receita 7851)|01012019|28022019
+DF70000855|Débito especial de ICMS: Programa de Incentivo Bolsa Universitária (Cód. Receita 7855)|01012019|28022019
+DF70001325|Débito especial de ICMS: ICMS devido nas Importações (Cód. Receita 1325)|01012018|31122018
+DF70001557|Débito especial de ICMS: FCP próprio devido nas operações internas DF (Cód. Receita 1557)|01012018|31122018
+DF70001558|Débito especial de ICMS: FCP ST devido nas operações internas DF (Cód. Receita 1558)|01012018|31122018
+DF70001559|Débito especial de ICMS: FCP devido pelo estoque final - encerramento de atividade (Cód. Receita 1559)|01012018|31122018
+DF70001560|Débito especial de ICMS: FCP sobre o ICMS antecipado (Cód. Receita 1560)|01012018|31122018
+DF70001561|Débito especial de ICMS: FCP sobre o ICMS importação (Cód. Receita 1561)|01012018|31122018
+DF70001563|Débito especial de ICMS: FCP devido ao DF referente ao DIFAL da parte do frete nas aquisições interestaduais de uso/consumo e ativo (Cód. Receita 1563)|01062019|
+DF70001563|Débito especial de ICMS: FCP devido ao DF referente ao DIFAL nas aquisições interestaduais  de uso/consumo e ativo (Código de Receita 1563)|01012018|31122018
+DF70001566|Débito especial de ICMS: ICMS antecipado (Cód. Receita 1566)|01012018|31122018
+DF70001568|Débito especial de ICMS: ICMS-ST devido ao DF nas aquisições de serviço de transporte de transportador não inscrito no CFDF (Cód. Receita 1568)|01012018|31122018
+DF70011568|Débito especial de ICMS: ICMS-ST devido ao DF nas aquisições de serviços de comunicação de prestadores não inscritos no CFDF (Cód. Receita 1568)|01012018|31122018
+DF70021568|Débito especial de ICMS: ICMS-ST devido ao DF nas aquisições interestaduais de produtos sujeitos a ST de Estados não signatários (Cód. Receita 1568)|01012018|31122018
+DF70999999|Débito especial de ICMS: Outras obrigações do ICMS|01012018|31122018
+DF71000558|Débito especial de ICMS: FCP ST devido nas operações internas DF (Cód. Receita 1558)|01012019|30042019
+DF71000558|Débito especial de ICMS-ST: FCP ST devido nas operações internas DF (Cód. Receita 1558)|01052019|
+DF71000568|Débito Especial ICMS-ST devido ao DF nas aquisições oriundas de Estados não signatários de protocolo ou convênio (Cód. Receita 1568)|01012019|
+DF71000571|Débito especial de ICMS: ICMS-ST devido nas operações antecedentes - Caderno II do Anexo IV do Decreto 18.955/1997(Cód. Receita 1568)|01012019|
+DF71000799|Débito especial de ICMS-ST|01012018|31122018
+DF71001568|Débito Especial ICMS-ST devido ao DF nas aquisições de serviços de transporte de transportador não inscrito no CFDF (Cód. Receita 1568)|01012019|
+DF71001569|Débito Especial ICMS-ST  - SUBCONTRATAÇÃO  de serviços de transporte  Item 3 do Caderno IV do Anexo IV do Decreto 18.955/1997 (Cód. Receita 1568)|01012019|
+DF72090901|Outras obrigações do ICMS: ICMS da substituição tributária pelas aquisições de produtos sujeitos a ST de Estados não signatários|01012018|28022018
+DF72090904|Outras obrigações do ICMS: ICMS importação  Cod. Receita 1325|01012018|28022018
+DF72090905|Outras obrigações do ICMS: ICMS antecipado - Cod. Receita 1566|01012018|28022018
+DF72090906|Outras obrigações do ICMS: FCP Operação Própria - valor resultante da alíquota adicional do ICMS Próprio referente ao Fundo de Combate à Pobreza|01012018|28022018
+DF72090907|Outras obrigações do ICMS: FCP ST - valor resultante da alíquota adicional do ICMS ST referente ao Fundo de Combate à Pobreza|01012018|28022018
+DF72090908|Outras obrigações do ICMS: FCP DIFAL - valor resultante da alíquota adicional do DIFAL (aquisição interestadual de uso/cosumo e ativo) referente ao Fundo de Combate à Pobreza|01012018|28022018
+DF72090925|Outras obrigações do ICMS: ICMS retido pela aquisição de serviço de transporte iniciado no DF cujo transportador não é inscrito no DF.|01012018|28022018
+DF72090930|Outras obrigações do ICMS: ICMS retido pela aquisição de serviço de comunicação prestado no DF cujo prestador não é inscrito no DF.|01012018|28022018
+DF72090990|Outras obrigações do ICMS|01012018|28022018
+DF20002001|Estorno de débito Operação Própria: estorno de débito escriturado de NFCom ou Nota Fiscal de Serviço de Comunicação/Telecomunicação substituída de períodos anteriores.|01072025|
+DF50002001|Estorno de Crédito Operação Própria: estorno de crédito escriturado de NFCom ou Nota Fiscal de Serviço de Comunicação/Telecomunicação substituída de períodos anteriores|01072025|

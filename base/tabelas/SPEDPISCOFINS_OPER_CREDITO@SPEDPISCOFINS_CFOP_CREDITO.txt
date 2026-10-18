@@ -1,0 +1,90 @@
+versão=9 CFOP, DESC_CFOP, DT_INI, DT_FIM, NAT_BC_CRE
+1102|Compra para comercialização|01012011||01
+1113|Compra para comercialização, de mercadoria recebida anteriormente em consignação mercantil|01012011||01
+1117|Compra para comercialização originada de encomenda para recebimento futuro|01012011||01
+1118|Compra de mercadoria para comercialização pelo adquirente originário, entregue pelo vendedor remetente ao destinatário, em venda à ordem|01012011||01
+1121|Compra para comercialização, em venda à ordem, já recebida do vendedor remetente|01012011||01
+1251|Compra de energia elétrica para distribuição ou comercialização|01012011||01
+1403|Compra para comercialização em operação com mercadoria sujeita ao regime de substituição tributária (bares, restaurantes etc.)|01012011||01
+1652|Compra de combustível ou lubrificante para comercialização|01012011||01
+2102|Compra para comercialização|01012011||01
+2113|Compra para comercialização, de mercadoria recebida anteriormente em consignação mercantil|01012011||01
+2117|Compra para comercialização originada de encomenda para recebimento futuro|01012011||01
+2118|Compra de mercadoria para comercialização pelo adquirente originário, entregue pelo vendedor remetente ao destinatário, em venda à ordem|01012011||01
+2121|Compra para comercialização, em venda à ordem, já recebida do vendedor remetente|01012011||01
+2251|Compra de energia elétrica para distribuição ou comercialização|01012011||01
+2403|Compra para comercialização em operação com mercadoria sujeita ao regime de substituição tributária (bares, restaurantes etc.)|01012011||01
+2652|Compra de combustível ou lubrificante para comercialização|01012011||01
+3102|Compra para comercialização (Importação)|01012011||01
+3251|Compra de energia elétrica para distribuição ou comercialização (Importação)|01012011||01
+3652|Compra de combustível ou lubrificante para comercialização (Importação)|01012011||01
+1101|Compra para industrialização ou Produção Rural|01012011||02
+1111|Compra para industrialização, de mercadoria recebida anteriormente em consignação industrial|01012011||02
+1116|Compra para industrialização originada de encomenda para recebimento futuro|01012011||02
+1120|Compra para industrialização, em venda à ordem, já recebida do vendedor remetente|01012011||02
+1122|Compra para industrialização em que a mercadoria foi remetida pelo fornecedor ao industrializador sem transitar pelo estabelecimento adquirente|01012011||02
+1126|Compra para utilização na prestação de serviço sujeito ao ICMS|01012011||02
+1128|Compra para utilização na prestação de serviço sujeito ao ISSQN|01012011||02
+1401|Compra para industrialização em operação com mercadoria sujeita ao regime de substituição tributária|01012011||02
+1407|Compra de mercadoria para uso ou consumo cuja mercadoria está sujeita ao regime de substituição tributária (do ICMS)|01012011||02
+1556|Compra de material para uso ou consumo|01012011||02
+1651|Compra de combustível ou lubrificante para industrialização subseqüente|01012011||02
+1653|Compra de combustível ou lubrificante por consumidor ou usuário final|01012011||02
+2101|Compra para industrialização ou Produção Rural|01012011||02
+2111|Compra para industrialização, de mercadoria recebida anteriormente em consignação industrial|01012011||02
+2116|Compra para industrialização originada de encomenda para recebimento futuro|01012011||02
+2120|Compra para industrialização, em venda à ordem, já recebida do vendedor remetente|01012011||02
+2122|Compra para industrialização em que a mercadoria foi remetida pelo fornecedor ao industrializador sem transitar pelo estabelecimento adquirente|01012011||02
+2126|Compra para utilização na prestação de serviço|01012011||02
+2128|Compra para utilização na prestação de serviço sujeita ao ISSQN|01012011||02
+2401|Compra para industrialização em operação com mercadoria sujeita ao regime de substituição tributária|01012011||02
+2407|Compra de mercadoria para uso ou consumo cuja mercadoria está sujeita ao regime de substituição tributária (do ICMS)|01012011||02
+2556|Compra de material para uso ou consumo|01012011||02
+2651|Compra de combustível ou lubrificante para industrialização subseqüente|01012011||02
+2653|Compra de combustível ou lubrificante por consumidor ou usuário final|01012011||02
+3101|Compra para industrialização ou Produção Rural  (Importação)|01012011||02
+3126|Compra para utilização na prestação de serviço  (Importação)|01012011||02
+3128|Compra para utilização na prestação de serviço sujeita ao ISSQN (Importação)|01012011||02
+3556|Compra de material para uso ou consumo (Importação)|01012011||02
+3651|Compra de combustível ou lubrificante para industrialização subseqüente  (Importação)|01012011||02
+3653|Compra de combustível ou lubrificante por consumidor ou usuário final  (Importação)|01012011||02
+1124|Industrialização efetuada por outra empresa|01012011||03
+1125|Industrialização efetuada por outra empresa quando a mercadoria remetida para utilização no processo de industrialização não transitou pelo estabelecimento adquirente da mercadoria|01012011||03
+1933|Aquisição de serviço tributado pelo Imposto sobre Serviços de Qualquer Natureza|01012011||03
+2124|Industrialização efetuada por outra empresa|01012011||03
+2125|Industrialização efetuada por outra empresa quando a mercadoria remetida para utilização no processo de industrialização não transitou pelo estabelecimento adquirente da mercadoria|01012011||03
+2933|Aquisição de serviço tributado pelo Imposto Sobre Serviços de Qualquer Natureza|01012011||03
+1201|Devolução de venda de produção do estabelecimento|01012011||12
+1202|Devolução de venda de mercadoria adquirida ou recebida de terceiros|01012011||12
+1203|Devolução de venda de produção do estabelecimento, destinada à Zona Franca de Manaus ou Áreas de Livre Comércio|01012011||12
+1204|Devolução de venda de mercadoria adquirida ou recebida de terceiros, destinada à Zona Franca de Manaus ou Áreas de Livre Comércio|01012011||12
+1410|Devolução de venda de produção do estabelecimento em operação com produto sujeito ao regime de substituição tributária|01012011||12
+1411|Devolução de venda de mercadoria adquirida ou recebida de terceiros em operação com mercadoria sujeita ao regime de substituição tributária|01012011||12
+1660|Devolução de venda de combustível ou lubrificante destinado à industrialização subseqüente|01012011||12
+1661|Devolução de venda de combustível ou lubrificante destinado à comercialização|01012011||12
+1662|Devolução de venda de combustível ou lubrificante destinado a consumidor ou usuário final|01012011||12
+2201|Devolução de venda de produção do estabelecimento|01012011||12
+2202|Devolução de venda de mercadoria adquirida ou recebida de terceiros|01012011||12
+2410|Devolução de venda de produção do estabelecimento em operação com produto sujeito ao regime de substituição tributária|01012011||12
+2411|Devolução de venda de mercadoria adquirida ou recebida de terceiros em operação com mercadoria sujeita ao regime de substituição tributária (do ICMS)|01012011||12
+2660|Devolução de venda de combustível ou lubrificante destinado à industrialização subseqüente|01012011||12
+2661|Devolução de venda de combustível ou lubrificante destinado à comercialização|01012011||12
+2662|Devolução de venda de combustível ou lubrificante destinado a consumidor ou usuário final|01012011||12
+1922|Lançamento efetuado a título de simples faturamento decorrente de compra para recebimento futuro|01012011||13
+2922|Lançamento efetuado a título de simples faturamento decorrente de compra para recebimento futuro|01012011||13
+1206|Anulação de valor relativo à prestação de serviço de transporte|01012011||12
+2206|Anulação de valor relativo à prestação de serviço de transporte|01012011||12
+1207|Anulação de valor relativo à venda de energia elétrica|01012011||12
+2207|Anulação de valor relativo à venda de energia elétrica|01012011||12
+1135|Fixação de preço de produção do estabelecimento produtor, inclusive quando remetidas anteriormente com previsão de posterior ajuste ou fixação de preço, em ato cooperativo, para industrialização|01012018||02
+2135|Fixação de preço de produção do estabelecimento produtor, inclusive quando remetidas anteriormente com previsão de posterior ajuste ou fixação de preço, em ato cooperativo, para industrialização|01012018||02
+1132|Fixação de preço de produção do estabelecimento produtor, inclusive quando remetidas anteriormente com previsão de posterior ajuste ou fixação de preço, em ato cooperativo, para comercialização|01012018||02
+2132|Fixação de preço de produção do estabelecimento produtor, inclusive quando remetidas anteriormente com previsão de posterior ajuste ou fixação de preço, em ato cooperativo, para comercialização.|01012018||02
+1215|Devolução de fornecimento de produção do estabelecimento de ato cooperativo|01052019||12
+1216|Devolução de fornecimento de mercadoria adquirida ou recebida de terceiros de ato cooperativo|01052019||12
+2215|Devolução de fornecimento de produção do estabelecimento de ato cooperativo|01052019||12
+2216|Devolução de fornecimento de mercadoria adquirida ou recebida de terceiros de ato cooperativo|01052019||12
+1159|Entrada decorrente do fornecimento de produto ou mercadoria de ato cooperativo|01092018||01
+2159|Entrada decorrente do fornecimento de produto ou mercadoria de ato cooperativo|01092018||01
+1456|Entrada referente a remuneração do produtor no Sistema de Integração e Parceria Rural|01032020||02
+2456|Entrada referente a remuneração do produtor no Sistema de Integração e Parceria Rural|01032020||02

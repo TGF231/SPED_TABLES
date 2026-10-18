@@ -1,0 +1,26 @@
+versão=2.0 cod|desc|dt_ini|dt_fin - Tabela de Faixa de Consumo de Energia Elétrica
+00|01 registro consolidando o consumo residencial até 100 kWh|01012009|31122009
+01|01 registro consolidando o consumo residencial de 101 a 300 kWh|01012009|31122009
+02|01 registro consolidando o consumo residencial de 301 a 500 kWh|01012009|31122009
+03|01 registro consolidando o consumo residencial de 501 a 1000 kWh|01012009|31122009
+04|01 registro consolidando o consumo residencial acima de 1000 kWh|01012009|31122009
+20|01 registro consolidando o consumo industrial até 20.000 kWh|01012009|
+21|01 registro por documento fiscal emitido para consumo industrial acima de 20.000 kWh|01012009|
+40|01 registro consolidando o consumo de comércio e/ou serviços até 2.000 kWh|01012009|
+41|01 registro por documento fiscal emitido para consumo de comércio e/ou serviços acima de 2.000 kWh|01012009|
+60|01 registro consolidando o consumo rural até 2.000 kWh|01012009|
+61|01 registro por documento fiscal emitido para consumo rural acima de 2.000 kWh|01012009|
+70|01 registro consolidando todo o consumo do poder público|01012009|
+71|01 registro consolidando todo o consumo de iluminação pública|01012009|
+72|01 registro consolidando todo o consumo do serviço público|01012009|
+80|01 registro consolidando todo o consumo próprio|01012009|
+90|01 registro por documento fiscal emitido para outras unidades da federação|01012009|
+99|01 registro por documento fiscal emitido|01012009|
+01|Comercial|01012010|
+02|Consumo Próprio|01012010|
+03|Iluminação Pública|01012010|
+04|Industrial|01012010|
+05|Poder Público|01012010|
+06|Residencial|01012010|
+07|Rural|01012010|
+08|Serviço Público|01012010|

@@ -1,0 +1,360 @@
+versão=55 COD_AJUR, DESC_AJUR, DT_INI, DT_FIM
+SC000001|Débito referente ao saldo credor transferido ao estabelecimento consolidador|01012009|
+SC000002|Débito referente aos saldos devedores recebidos de estabelecimentos consolidados|01012009|
+SC000003|Débitos por reserva de créditos acumulados para transferência a outros contribuintes|01012009|
+SC000004|Débito sobre o valor das entradas na apuração especial para bares, restaurantes e similares.|01012009|30062021
+SC000005|Débito sobre a diferença entre o valor das entradas e saídas na apuração especial para bares, restaurantes e similares.|01012009|30062021
+SC000006|ICMS devido na importação de máquinas / equipamentos para o ativo permanente|01012009|
+SC000007|ICMS diferencial de alíquota - aquisição de máquinas, aparelhos ou equipamentos destinados ao ativo permanente.|01012009|
+SC000008|Débito ICMS sobre o estoque na inclusão de mercadorias no regime de substituição tributária|01012009|31102024
+SC000009|ICMS sobre diferencial de alíquotas de fretes iniciados em outras unidades da federação|01012010|31122019
+SC000010|Débito referente ao saldo devedor recebido da apuração do ICMS DIFAL/FCP (EC 87/15) do remetente de SC|01012016|30062021
+SC000011|Débito do ICMS referente saída efetiva ou início da prestação ocorrida em período posterior ao da emissão.|01012020|
+SC003999|SA Etanol Hidratado OD  Outros Débitos|01012020|31122022
+SC004001|SA Crédito Presumido OD  Consolidador  Débito do saldo devedor recebido dos consolidados|01012020|
+SC004002|SA Crédito Presumido OD  Consolidados  Débito do saldo credor transferido ao consolidador|01012020|31052020
+SC004003|SA Crédito Presumido OD  Débito do imposto transferido da apuração de operações não amparadas por documento fiscal passível de ajuste.|01062020|
+SC009999|Outros ajustes débitos|01012009|
+SC010001|Estorno de crédito relativo à saída de mercadorias isentas ou não-tributadas, extraviadas, furtadas, etc.|01012009|
+SC010002|Estorno de crédito de mercadorias utilizadas na prestação de serviços sujeitas ao ISSQN ou na prestação de serviços de transportes iniciados em outras UF|01012009|
+SC010003|Estorno do valor do crédito registrado nas entradas pelos optantes do regime de apuração especial para bares, restaurantes e similares.|01012009|30062021
+SC010004|Estorno do crédito efetivo quando o contribuinte optar pelo crédito presumido|01012009|31122022
+SC010005|Estorno de crédito da parcela não tributada nas hipóteses em que o crédito é proporcional às saídas tributadas|01012020|
+SC010006|Sub-apuração  Débito pela transferência à sub-apuração, do crédito presumido apropriado|01012020|
+SC010007|Sub-apuração  Débito pela transferência à sub-apuração, do ICMS apropriado relativo aos pagamentos antecipados|01012020|
+SC019999|Estorno de outros créditos|01012009|
+SC020001|ICMS recolhido por antecipação nas operações com combustíveis|01012009|30042023
+SC020002|1ª parcela de ICMS recolhido por antecipação por estabelecimento distribuidor de energia elétrica ou prestador de serviço de telecomunicação.|01012009|30062021
+SC020003|2ª parcela de ICMS recolhido por antecipação por estabelecimento distribuidor de energia elétrica ou prestador de serviço de telecomunicação.|01012009|30062021
+SC020004|Crédito recuperado por decisão judicial|01012009|31122019
+SC020005|Crédito autorizado em decisão do Conselho Estadual de Contribuintes|01012009|31122019
+SC020006|Crédito de serviço de comunicação proporcional à exportação|01012009|
+SC020007|Crédito decorrente de COMPEX|01012009|31122019
+SC020008|Crédito do estoque no desenquadramento do simples nacional|01012009|
+SC020009|Crédito do estoque na exclusão de mercadoria do regime de substituição tributária|01012009|
+SC020010|Crédito do ICMS de mercadoria sujeita à substituição tributária|01012009|31052024
+SC020011|Crédito do imposto pago indevidamente por erro no registro dos documentos ou preenchimento do documento de arrecadação.|01012009|
+SC020012|Crédito extemporâneo não apropriado no momento do registro do documento fiscal.|01012009|30042024
+SC020013|Crédito do saldo credor na saída do regime de estimativa fiscal.|01012009|31122019
+SC020014|Crédito ICMS recolhido na importação|01012009|
+SC020015|Crédito pela saída tributada de mercadoria recebida para ativo permanente|01012009|31122019
+SC020016|Crédito pela saída tributada de mercadoria recebida para uso ou consumo|01012009|31122019
+SC020017|Crédito na transferência de propriedade do estabelecimento.|01012009|31122019
+SC020018|Crédito nas operações tributadas posteriores às saídas de produtos agropecuários isentos ou não tributados - RICMS, Art. 41.|01012009|31122019
+SC020019|Crédito relativo ao ICMS pago, por ocasião do desembaraço aduaneiro, a título de antecipação do devido na subseqüente operação de saída|01012009|
+SC020020|Crédito de ICMS nos casos de furto, roubo, extravio ou deterioração das mercadorias sujeita à substituição tributária.|01012009|
+SC020021|Crédito referente descontos incondicionais, autorizado em regime especial.|01012009|
+SC020022|Crédito não apropriado na entrada da mercadoria, autorizado por regime especial.|01012009|31122019
+SC020023|Crédito pela utilização de saldo de AUC (Decreto nº 4.994/06, art. 2º).|01012009|31122019
+SC020024|Crédito por aplicação ao FUNDESPORTE|01012009|31122019
+SC020025|Crédito por aplicação no FUNCULTURAL|01012009|31122019
+SC020026|Crédito por aplicação no FUNTURISMO|01012009|31122019
+SC020027|Crédito presumido à CELESC para execução do programa Luz para Todos.|01012009|30042022
+SC020028|Crédito presumido às empresas pela execução do programa Luz para Todos.|01012009|31122019
+SC020029|Crédito presumido ao estabelecimento abatedor na saída de produtos resultantes do abate de gado bovino.|01012009|31122019
+SC020030|Crédito presumido ao abatedor nas saídas interestaduais de produtos do abate de aves domésticas.|01012009|31122019
+SC020031|Crédito presumido ao abatedor nas saídas interestaduais de produtos do abate de suínos.|01012009|31122019
+SC020032|Crédito presumido ao estabelecimento que efetuar a primeira operação tributável com maçã.|01012009|31122019
+SC020033|Crédito presumido ao fabricante de açúcar; café torrado; manteiga; óleo de soja e milho; margarina; creme vegetal; vinagre; sal.|01012009|31122019
+SC020034|Crédito presumido ao fabricante de óleo vegetal, margarina, creme e gordura vegetal e farelo de soja.|01012009|31122019
+SC020035|Crédito presumido ao fabricante na saída tributada de produtos derivados de leite.|01012009|31122019
+SC020036|Crédito presumido na saída de leite pasteurizado ou esterilizado com destino a outra UF.|01012009|31122019
+SC020037|Crédito presumido ao fabricante nas saídas de artigos de cristal de chumbo.|01012009|31122019
+SC020038|Crédito presumido ao fabricante nas saídas louça e outros produtos, de porcelana e copos de cristal de chumbo.|01012009|31122019
+SC020039|Crédito presumido ao fabricante ou distribuidor automobilístico, farmacêutico e fornecedores de energia elétrica e serviço de comunicação.|01012009|31122019
+SC020040|Crédito presumido ao industrializador nas saídas de produtos resultantes da industrialização da mandioca.|01012009|31122019
+SC020041|Crédito presumido às empresas produtoras de discos fonográficos.|01012009|31052022
+SC020042|Crédito presumido na saída de farinha de trigo|01012009|31122019
+SC020043|Crédito presumido na saída de obra de arte recebida com a isenção.|01012009|31122019
+SC020044|Crédito presumido no incremento no valor da folha de pessoal. - An2, Art. 92|01012009|31122019
+SC020045|Crédito presumido para aquisição de equipamento emissor de cupom fiscal - ECF.|01012009|31122019
+SC020046|Crédito presumido para aquisição do conjunto de software e hardware destinado à implantação de TEF.|01012009|31122019
+SC020047|Crédito presumido para bares, restaurantes e estabelecimentos similares.|01012009|
+SC020048|Crédito presumido para indústria vinícola e produtora de derivados de uva e vinho|01012009|31122019
+SC020049|Crédito presumido para liquidação de débitos de serviços de telecomunicações tomados pelo Estado.|01012009|31052022
+SC020050|Crédito presumido ao prestador de serviço de transporte de cargas (PRO-CARGAS).|01012009|31122019
+SC020051|Crédito presumido ao prestador de serviço de transporte.|01012009|31122019
+SC020051|Crédito presumido ao prestador de serviço de transporte.|01062020|
+SC020052|Crédito presumido na prestação interna de serviço de transporte aéreo.|01012009|
+SC020053|Crédito proporcional à saída tributada de mercadoria cuja entrada se destinava às atividades sujeitas ao ISS|01012009|31122019
+SC020054|Crédito referente ao saldo devedor transferido ao Estabelecimento consolidador|01012009|
+SC020055|Crédito referente aos saldos credores recebidos de estabelecimentos consolidados|01012009|
+SC020056|Créditos recebidos em transferência de outros contribuintes ou utilizados na compensação com "saldos devedores próprios"|01012009|
+SC020057|ICMS recolhido na entrada, no Estado, de carnes bovina, bufalina e suas miudezas comestíveis|01012009|
+SC020058|ICMS recolhido na entrada, no Estado, de feijão|01012009|
+SC020059|ICMS recolhido na entrada, no Estado, de ladrilhos e placas para pavimentação ou revestimento|01012009|31122019
+SC020060|ICMS recolhido na entrada, no Estado, de produtos farmacêuticos de uso humano, não sujeitos à substituição tributária|01012009|31122019
+SC020061|Restituição e ressarcimento de ICMS|01012009|
+SC020062|Utilização de saldo de AUC de integralização de capital|01012009|31122019
+SC020063|Crédito autorizado em processo administrativo regular da SEF, exceto de restituição de ICMS-ST|01012009|31122019
+SC020064|Crédito proporcional à saída tributada de mercadoria inicialmente prevista para ocorrer sem débito|01012009|31122019
+SC020065|Crédito originado de operação de entrada de mercadoria destinada ao ativo permanente  CIAP|01012010|
+SC020066|Crédito por aplicação no SEITEC|01012010|31102020
+SC020067|Crédito do ICMS relativo à diferença entre alíquotas internas e interestaduais em operações destinadas a comercialização ou industrialização|01012013|31122019
+SC020068|Crédito referente ao saldo credor recebido da apuração do ICMS DIFAL/FCP (EC 87/15) do remetente de SC|01012016|30042023
+SC020069|Crédito sobre o estoque das mercadorias ou serviços quando   deixar   de   utilizar   o   crédito presumido em substituição aos créditos|01012020|
+SC020070|Crédito do imposto recolhido por responsabilidade tributária|01012020|
+SC020071|Crédito pelo Pagamento de Defesa Prévia e Notificação Fiscal do ICMS Devido na Importação e de Mercadoria Recebida ou mantida em Estoque Desacobertada de documento fiscal.|01012020|
+SC020072|Crédito Presumido na  Exclusão do Regime de Apuração do Simples Nacional|01012020|
+SC020073|Crédito do ICMS recolhido em DAS, na exclusão ou desenquadramento retroativo do Simples Nacional|01012020|
+SC020074|Crédito Relativo ao Pagamento do ICMS Apurado por Operação e Recolhido a cada Saída Exigido em Ato Declaratório|01012020|31032021
+SC020075|Restituição do ICMS por meio de crédito em conta gráfica com base em Processo de Reconhecimento de Crédito|01012020|
+SC020076|Crédito pelo destinatário do saldo do imposto retido pelo remetente - apuração compartilhada entre empresas interdependentes|01012020|31082023
+SC020077|Crédito do ICMS autorizado por decisão Judicial ou Administrativa, exceto restituição do imposto com PRC (Protocolo de Reconhecimento de Crédito)|01012020|30112024
+SC020078|Crédito Presumido - Prestador de Serviço. Na prestação de serviços de telecomunicação cujo documento Fiscal seja emitido em via única|01012020|
+SC020079|Crédito extemporâneo decorrente do seu não registro, exceto os oriundos de documento fiscal, ou de erro na escrita fiscal|01012020|31052024
+SC020080|Crédito proporcional da complementação de ST em virtude de devolução de saída em período diverso para o qual foi apurado|01012020|
+SC020081|Crédito do imposto próprio (ICMS) referente às mercadorias em estoque, na hipótese de mudança da situação de substituído para substituto|01012020|
+SC020082|Crédito de Imposto Relativo ao Pagamento Antecipado por ocasião da saída da mercadoria ou prestação de serviço|01062020|
+SC020083|Crédito presumido na saída de artigos têxteis, de vestuário, artefatos de couro e seus acessórios promovidas por estabelecimento varejista de propriedade do industrial detentor do benefício.|01062020|31072024
+SC023001|SA Etanol Hidratado  Crédito de ICMS sobre os estoques|01012020|31122022
+SC023999|SA Etanol Hidratado - Outros Créditos|01012020|31122022
+SC024001|SA Crédito Presumido OC  Consolidador  Crédito do saldo credor recebido dos estabelecimentos consolidados|01012020|31052020
+SC024002|SA - Crédito Presumido OC  Consolidados  Crédito do saldo devedor transferido ao estabelecimento consolidador|01012020|
+SC024999|SA Crédito Presumido OC - Outros Créditos|01012020|
+SC029999|Outros ajustes de créditos|01012009|31122022
+SC030001|Estorno do valor do débito registrado nas saídas pelos optantes do regime de apuração especial para bares, restaurantes e similares.|01012009|31122019
+SC030002|Estorno de débito de mesmo valor do ICMS informado no Ajuste de débito especial com o código SC050003.|01042017|31122019
+SC030003|Estorno do débito decorrente de erro na medição e ou cancelamento de nota fiscal fatura de energia elétrica|01012020|
+SC030004|Estorno de débito em decorrência das condições previstas no TTD do benefício 384|01012020|31102020
+SC030005|Estorno de débito correspondente ao desconto concedido nas saídas de mercadorias em operação fora do estabelecimento|01012020|31072025
+SC030007|Estorno de débito do ICMS destacado indevidamente em documento fiscal e lançado no livro fiscal, constatado em período diverso ao do lançamento no livro fiscal|01062020|
+SC030008|Estorno de débito registrado nas saídas pelos beneficiários de crédito presumido.|01062020|
+SC034001|SA - Crédito Presumido ED  Consolidados  Estorno do débito do saldo devedor transferido ao estabelecimento consolidador|01012020|
+SC039999|Estorno de outros débitos|01012009|31122022
+SC040001|Contribuição ao Fundosocial|01012009|28022021
+SC040002|Crédito pela contribuição ao Fundosocial|01012009|31122019
+SC043001|SA - Etanol Hidratado  Pagamentos realizados por ocasião da ocorrência do fato gerador|01012020|31122022
+SC044001|SA - Crédito Presumido - Pagamentos Antecipados|01012020|31052020
+SC049999|Outras deduções do imposto apurado|01012009|31122022
+SC050001|ICMS devido no encerramento da fase do diferimento.|01012009|
+SC050002|ICMS devido na importação, recolhido no desembaraço aduaneiro, cuja nota fiscal de entrada será emitida no mês seguinte|01012010|
+SC050003|ICMS devido pela saída beneficiada por crédito presumido em substituição aos créditos pelas entradas, apurado conforme inciso V do art. 23 do Anexo 2 do RICMS.|01042017|31052020
+SC059999|Outros débitos especiais|01012009|
+SC100001|Débito de ICMS devido pela entrada de mercadorias sujeitas à substituição tributária por apuração (An2, art. 91-B).|01012012|31032015
+SC100002|Débito referente ao saldo credor do ICMS-ST transferido ao estabelecimento consolidador|01012013|
+SC100003|Débito referente aos saldos devedores do ICMS-ST recebidos de estabelecimentos consolidados|01012013|
+SC100004|Débito do ICMS ST nas operações internas referente saída efetiva ou início da prestação ocorrida em período posterior ao da emissão.|01012020|
+SC100005|Débito sobre o estoque na inclusão de mercadorias no regime de substituição tributária|01012020|31032024
+SC109999|Outros ajustes de débitos|01012009|
+SC119999|Outros ajustes de estorno de créditos|01012009|
+SC120001|ICMS-ST recolhido por antecipação nas operações com combustíveis|01012009|30042023
+SC120002|Ressarcimento de ICMS ST decorrente das vendas para empresas do Simples Nacional.|01012012|31032015
+SC120003|Ressarcimento de ICMS ST decorrente das vendas para contribuintes localizados em outras unidades da federação.|01012012|31032015
+SC120004|Crédito presumido relativo às aquisições interestaduais de mercadorias sujeitas à Substituição Tributária.|01012012|31032015
+SC120005|Crédito referente ao saldo devedor do ICMS-ST transferido ao Estabelecimento consolidador|01012013|
+SC120006|Crédito referente aos saldos credores do ICMS-ST recebidos de estabelecimentos consolidados|01012013|
+SC120007|Crédito correspondente ao imposto repassado   pela   Refinaria   às   UFs de   origem   do AEHC e/ou B100|01012020|
+SC120008|Crédito pelo destinatário do imposto nas operações   de   entrada   em   empresa interdependente com apuração compartilhada|01012020|31082023
+SC120009|Crédito do ICMS ST restituído em forma  de crédito em conta gráfica autorizado em Protocolo de Reconhecimento de Crédito (PRC)|01012020|
+SC120010|Crédito por aplicação no SEITEC compensável com imposto retido|01012020|31102020
+SC120011|Crédito do ICMS ST autorizado por decisão Judicial ou Administrativa, exceto restituição do imposto com PRC (Protocolo de Reconhecimento de  Crédito)|01012020|31032025
+SC120012|Crédito do ICMS ST pago indevidamente por erro na escrituração dos livros ou preenchimento de documento de arrecadação.|01012020|
+SC120013|Crédito do imposto retido por substituição tributária referente às mercadorias em estoque, na hipótese de mudança da situação de substituído para substituto|01012020|
+SC120014|Ressarcimento do imposto do valor correspondente à isenção nas saídas de óleo diesel destinada à embarcação pesqueira (Refinaria)|01012020|
+SC120015|Crédito Relativo ao Pagamento do ICMS ST Apurado por Operação e Recolhido a cada Saída, conforme exigido em Ato Declaratório|01012020|31032021
+SC129999|Outros ajustes de créditos|01012009|
+SC139999|Outros ajustes de estorno de débitos|01012009|
+SC140001|Contribuição ao Fundosocial|01012009|28022021
+SC149999|Outros ajustes de deduções do imposto apurado|01012009|
+SC150001|Complemento de ICMS quando fato gerador presumido se realizar por valor superior ao que serviu de base de cálculo para retenção da substituição tributária ICMS|01032018|
+SC150002|Outros Débitos específicos de ICMS ST|01012020|28022025
+SC150003|ICMS ST a recolher por contribuinte substituído relativo a operações com Estado não signatário do Convênio ou Protocolo|01012020|
+SC159999|Outros Débitos especiais|01012009|
+SC200001|Débito referente ao saldo credor do ICMS Difal/FCP transferido para a apuração do ICMS normal do próprio contribuinte|01012016|31122016
+SC200001|Débito referente ao saldo credor do ICMS Difal transferido para a apuração do ICMS normal do próprio contribuinte|01012017|
+SC209999|Outros débitos para ajuste de apuração do ICMS Difal/FCP para a UF de SC|01012016|31122016
+SC209999|Outros débitos para ajuste de apuração do ICMS Difal para a UF de SC|01012017|
+SC219999|Estorno de créditos para ajuste de apuração do ICMS Difal para a UF de SC|01012017|
+SC219999|Estorno de créditos para ajuste de apuração do ICMS Difal/FCP para a UF de SC|01012016|31122016
+SC220001|Crédito referente ao saldo devedor do ICMS Difal/FCP transferido para a apuração do ICMS normal do próprio contribuinte|01012016|31122016
+SC220001|Crédito referente ao saldo devedor do ICMS Difal transferido para a apuração do ICMS normal do próprio contribuinte|01012017|
+SC229999|Outros créditos para ajuste de apuração do ICMS Difal/FCP para a UF de SC|01012016|31122016
+SC229999|Outros créditos para ajuste de apuração do ICMS Difal para a UF de SC|01012017|
+SC239999|Estorno de débitos para ajuste de apuração do ICMS Difal/FCP para a UF de SC|01012016|31122016
+SC239999|Estorno de débitos para ajuste de apuração do ICMS Difal para a UF de SC|01012017|
+SC249999|Deduções do imposto apurado na apuração do ICMS Difal/FCP para a UF de SC|01012016|31122016
+SC249999|Deduções do imposto apurado na apuração do ICMS Difal para a UF de SC|01012017|
+SC259999|Débito especial de ICMS Difal/FCP para a UF de SC|01012016|31122016
+SC259999|Débito especial de ICMS Difal para a UF de SC|01012017|
+SC309999|Outros débitos para ajuste de apuração ICMS FCP para a UF de SC|01012017|
+SC319999|Estorno de créditos para ajuste de apuração ICMS FCP para a UF de SC|01012017|
+SC329999|Outros créditos para ajuste de apuração ICMS FCP para a UF de SC|01012017|
+SC339999|Estorno de débitos para ajuste de apuração ICMS FCP para a UF de SC|01012017|
+SC349999|Deduções do imposto apurado na apuração ICMS FCP para a UF de SC|01012017|
+SC359999|Débito especial de ICMS FCP para a UF de SC|01012017|
+SC000012|Débito do ICMS pela destinação de mercadoria e/ou serviço ao consumo ou ativo permanente em data diversa de sua entrada|01102020|
+SC000013|Débito de outra declaração ou processo|01102020|30062021
+SC010008|Estorno de crédito correspondente à parcela inaproveitável dos créditos presumidos condicionados a outros eventos|01102020|
+SC030009|Estorno de débito pelo cancelamento de Cupom Fiscal utilizado no serviço de transporte de passageiro ou Bilhete de Passagem posterior à geração de outros Cupons ou Bilhetes no ECF|01102020|
+SC004999|SA Crédito Presumido OD  Outros Débitos|01102020|
+SC014001|SA Crédito Presumido EC  Estorno de crédito correspondente à parcela inaproveitável dos créditos presumidos condicionados a outros eventos|01102020|
+SC020074|Crédito Relativo ao Pagamento do ICMS Apurado por Operação e Recolhido a cada Saída Exigido em Termo de Enquadramento de Contumaz ou Ato Declaratório|01042021|
+SC120015|Crédito Relativo ao Pagamento do ICMS ST Apurado por Operação e Recolhido a cada Saída, conforme exigido em Termo de Enquadramento de Contumaz ou Ato Declaratório|01042021|
+SC044001|SA - Crédito Presumido - Pagamentos Antecipados|01062020|
+SC020084|Crédito presumido na saída de artigos têxteis, de vestuário, artefatos de couro e seus acessórios promovidas por estabelecimento varejista de propriedade do industrial detentor do benefício. (Código para uso exclusivo do industrializador detentor do TTD)|01072021|
+SC020085|Crédito presumido, em percentual do imposto próprio, apurado em cada período, decorrente de saídas de mercadorias produzidas pela empresa. TTD 422.|01072021|
+SC050004|Débito de ICMS omitido no período de referência no qual era devido, exceto os débitos de ICMS destacados em Notas Fiscais de Saída lançadas extemporaneamente.|01072021|
+SC030006|Estorno de débito correspondente às saídas de AEH|01012020|31072021
+SC020086|Crédito presumido na saída de produtos fabricados pela indústria de embalagem|01082021|
+SC020087|Crédito presumido na saída de biodiesel produzido pelo próprio estabelecimento beneficiário|01082021|30062023
+SC020088|Crédito presumido na importação de matéria-prima e material secundário e de embalagem por indústria, utilizadas no próprio processo produtivo|01082021|
+SC020089|Crédito presumido de incentivo à cultura, Anexo 6, Art. 414|01112021|30042025
+SC020090|Crédito Presumido - Fabricante. Na saída de Artigos têxteis, de vestuário e de artefatos de couro e seus acessórios|01112021|
+SC000014|Apuração especial do ICMS diferido na saída de Biodiesel do estabelecimento produtor (débito)|01032022|30062023
+SC020091|Apuração especial do ICMS diferido na saída de Biodiesel do estabelecimento produtor (crédito)|01032022|30062023
+SC020092|Apuração especial do credito presumido na saída de Biodiesel produzido pelo próprio estabelecimento beneficiário|01032022|30062023
+SC020027|Exclusivo da CELESC - Aplicação em Programas e Projetos de Ampliação Acesso Energia Elétrica Anexo 2, Art. 15, XV|01052022|
+SC020093|Crédito presumido - fomento à internet Rural (art. 267 do Anexo 2 Do RICMS/SC-01)|01062022|
+SC020094|Crédito presumido - Fornecimento de alimentação em bares, restaurantes e estabelecimentos similares  exige comunicação (art.266-A do Anexo 2 do RICMS/SC-01)|01072022|31082025
+SC020095|Crédito presumido concedido à distribuidora nas saídas internas de Etanol Hidratado Combustível (Medida Provisória nº 256/2022)|01082022|
+SC120016|Crédito presumido concedido à distribuidora sobre a parcela do imposto retido nas saídas de Etanol Hidratado Combustível em operação interna (Medida Provisória nº 256/2022)|01082022|
+SC020096|Crédito presumido do imposto em montante equivalente ao valor total constante na nota fiscal/conta de energia elétrica não paga, referente ao fornecimento de energia elétrica às entidades hospitalares|01092022|30092022
+SC020096|Crédito presumido do imposto em montante equivalente ao valor total constante na nota fiscal/conta de energia elétrica não paga, referente ao fornecimento de energia elétrica às entidades hospitalares|01102022|
+SC010009|Estorno do crédito efetivo quando o contribuinte optar pelo crédito presumido.  (RICMS/SC-01, Anexo 2, Art. 15, X)|01012023|31032023
+SC010010|Estorno do crédito efetivo quando o contribuinte optar pelo crédito presumido.  TTD 154 (RICMS/SC-01, Anexo 2, Art. 15, XVII)|01012023|31032023
+SC010011|Estorno do crédito efetivo quando o contribuinte optar pelo crédito presumido.  (RICMS/SC-01, Anexo 2, Art. 15, XXVI)|01012023|31032023
+SC010012|Estorno do crédito efetivo quando o contribuinte optar pelo crédito presumido.  (RICMS/SC-01, Anexo 2, Art. 15, XXVIII)|01012023|31032023
+SC010013|Estorno do crédito efetivo quando o contribuinte optar pelo crédito presumido.  (RICMS/SC-01, Anexo 2, Art. 15, XXIX)|01012023|31032023
+SC010014|Estorno do crédito efetivo quando o contribuinte optar pelo crédito presumido.  TTD 336 (RICMS/SC-01, Anexo 2, Art. 15, XXXI)|01012023|31032023
+SC010015|Estorno do crédito efetivo quando o contribuinte optar pelo crédito presumido.  TTD 331 (RICMS/SC-01, Anexo 2, Art. 17, III)|01012023|31032023
+SC010016|Estorno do crédito efetivo quando o contribuinte optar pelo crédito presumido.  (RICMS/SC-01, Anexo 2, Art. 21, IV)|01012023|31032023
+SC010017|Estorno do crédito efetivo quando o contribuinte optar pelo crédito presumido.  (RICMS/SC-01, Anexo 2, Art. 21, IV)|01012023|31032023
+SC010018|Estorno do crédito efetivo quando o contribuinte optar pelo crédito presumido.  (RICMS/SC-01, Anexo 2, Art. 21, V)|01012023|31032023
+SC010019|Estorno do crédito efetivo quando o contribuinte optar pelo crédito presumido.  (RICMS/SC-01, Anexo 2, Art. 21, VI, alínea "a")|01012023|31032023
+SC010020|Estorno do crédito efetivo quando o contribuinte optar pelo crédito presumido.  TTD 483 (RICMS/SC-01, Anexo 2, Art. 21, VI, alínea "b")|01012023|31032023
+SC010021|Estorno do crédito efetivo quando o contribuinte optar pelo crédito presumido.  (RICMS/SC-01, Anexo 2, Art. 21, VII)|01012023|31032023
+SC010022|Estorno do crédito efetivo quando o contribuinte optar pelo crédito presumido.  (RICMS/SC-01, Anexo 2, Art. 21, VIII)|01012023|31032023
+SC010023|Estorno do crédito efetivo quando o contribuinte optar pelo crédito presumido.  TTD 47 (RICMS/SC-01, Anexo 2, Art. 21, IX)|01012023|31032023
+SC010025|Estorno do crédito efetivo quando o contribuinte optar pelo crédito presumido.  TTD 105 (RICMS/SC-01, Anexo 2, Art. 21, X)|01012023|31032023
+SC010026|Estorno do crédito efetivo quando o contribuinte optar pelo crédito presumido.  TTD 328 (RICMS/SC-01, Anexo 2, Art. 21, XII)|01012023|31012023
+SC010027|Estorno do crédito efetivo quando o contribuinte optar pelo crédito presumido.  (RICMS/SC-01, Anexo 2, Art. 21, XIII)|01012023|31032023
+SC010028|Estorno do crédito efetivo quando o contribuinte optar pelo crédito presumido.  TTD 350 (RICMS/SC-01, Anexo 2, Art. 21, XIV)|01012023|31032023
+SC010029|Estorno de crédito efetivo por ocasião da saída. Operação interestadual de venda a consumidor realizada por internet ou telemarketing (inciso XV do caput do art. 21 do Anexo 2 do RICMS/SC-01)|01012023|31032023
+SC010030|Estorno do crédito efetivo quando o contribuinte optar pelo crédito presumido.  TTD 479 (RICMS/SC-01, Anexo 2, Art. 21, XVI)|01012023|31032023
+SC010031|Estorno do crédito efetivo quando o contribuinte optar pelo crédito presumido.  (RICMS/SC-01, Anexo 2, Art. 25)|01012023|31032023
+SC010032|Estorno do crédito efetivo quando o contribuinte optar pelo crédito presumido.  (RICMS/SC-01, Anexo 2, Art. 25)|01012023|31032023
+SC010033|Estorno do crédito efetivo quando o contribuinte optar pelo crédito presumido.  (RICMS/SC-01, Anexo 2, Art. 52)|01012023|31032023
+SC010034|Estorno do crédito efetivo quando o contribuinte optar pelo crédito presumido.  TTD 65 (RICMS/SC-01, Anexo 2, Art. 144)|01012023|31032023
+SC010035|Estorno do crédito efetivo quando o contribuinte optar pelo crédito presumido.  TTD 194 (RICMS/SC-01, Anexo 2, Art. 145)|01012023|31032023
+SC010036|Estorno do crédito efetivo quando o contribuinte optar pelo crédito presumido.  TTD 71 (RICMS/SC-01, Anexo 2, Art. 146)|01012023|31032023
+SC010037|Estorno do crédito efetivo quando o contribuinte optar pelo crédito presumido.  TTD 360 (RICMS/SC-01, Anexo 2, Art. 149)|01012023|31032023
+SC010038|Estorno do crédito efetivo quando o contribuinte optar pelo crédito presumido.  TTD 106 (RICMS/SC-01, Anexo 2, Art. 176)|01012023|31032023
+SC010039|Estorno do crédito efetivo quando o contribuinte optar pelo crédito presumido.  TTD 375 (RICMS/SC-01, Anexo 2, Art. 196)|01012023|31032023
+SC010040|Estorno do crédito efetivo quando o contribuinte optar pelo crédito presumido.  TTD 1002 (RICMS/SC-01, Anexo 2, Art. 244)|01012023|31032023
+SC010041|Estorno do crédito efetivo quando o contribuinte optar pelo crédito presumido.  TTD 1003 (RICMS/SC-01, Anexo 2, Art. 245, I)|01012023|31032023
+SC010042|Estorno do crédito efetivo quando o contribuinte optar pelo crédito presumido.  TTD 1070 (RICMS/SC-01, Anexo 2, Art. 245, II)|01012023|31032023
+SC010043|Estorno do crédito efetivo quando o contribuinte optar pelo crédito presumido.  TTD 1005 (RICMS/SC-01, Anexo 2, Art. 245, III)|01012023|31032023
+SC010044|Estorno do crédito efetivo quando o contribuinte optar pelo crédito presumido.  (RICMS/SC-01, Anexo 2, Art. 246)|01012023|31032023
+SC010045|Estorno do crédito efetivo quando o contribuinte optar pelo crédito presumido.  TTD 1006 (RICMS/SC-01, Anexo 2, Art. 247, I)|01012023|31032023
+SC010046|Estorno do crédito efetivo quando o contribuinte optar pelo crédito presumido.  TTD 1009 (RICMS/SC-01, Anexo 2, Art. 248, II)|01012023|31032023
+SC010047|Estorno do crédito efetivo quando o contribuinte optar pelo crédito presumido.  TTD 1012 (RICMS/SC-01, Anexo 2, Art. 249, II)|01012023|31032023
+SC010048|Estorno do crédito efetivo quando o contribuinte optar pelo crédito presumido.  TTD 1017 (RICMS/SC-01, Anexo 2, Art. 254, caput)|01012023|31032023
+SC010049|Estorno do crédito efetivo quando o contribuinte optar pelo crédito presumido.  TTD 1052 (RICMS/SC-01, Anexo 2, Art. 254, § 4º)|01012023|31032023
+SC010050|Estorno do crédito efetivo quando o contribuinte optar pelo crédito presumido.  TTD 1022 (RICMS/SC-01, Anexo 2, Art. 257)|01012023|31032023
+SC010051|Estorno do crédito efetivo quando o contribuinte optar pelo crédito presumido.  TTD 1025 (RICMS/SC-01, Anexo 2, Art. 258, II)|01012023|31032023
+SC010052|Estorno do crédito efetivo quando o contribuinte optar pelo crédito presumido.  TTD 1027 (RICMS/SC-01, Anexo 2, Art. 259, II)|01012023|31032023
+SC010053|Estorno do crédito efetivo quando o contribuinte optar pelo crédito presumido.  (RICMS/SC-01, Anexo 2, Art. 260, II, a)|01012023|31032023
+SC010054|Estorno do crédito efetivo quando o contribuinte optar pelo crédito presumido.  (RICMS/SC-01, Anexo 2, Art. 260, II, b)|01012023|31032023
+SC010055|Estorno do crédito efetivo quando o contribuinte optar pelo crédito presumido.  TTD 1076 (RICMS/SC-01, Anexo 2, Art. 266-A)|01012023|31032023
+SC010056|Estorno do crédito efetivo quando o contribuinte optar pelo crédito presumido.  (RICMS/SC-01, Anexo 4, Art. 14-B)|01012023|31032023
+SC010057|Estorno do crédito efetivo quando o contribuinte optar pelo crédito presumido.  (RICMS/SC-01, Anexo 6, Art. 269)|01012023|31032023
+SC010058|Estorno de crédito da parcela não tributada nas hipóteses em que o crédito é proporcional às saídas tributadas. (RICMS/SC-01, Anexo 2, Art. 7, I)|01012023|31032023
+SC010059|Estorno de crédito da parcela não tributada nas hipóteses em que o crédito é proporcional às saídas tributadas. (RICMS/SC-01, Anexo 2, Art. 7, II)|01012023|31032023
+SC010060|Estorno de crédito da parcela não tributada nas hipóteses em que o crédito é proporcional às saídas tributadas. (RICMS/SC-01, Anexo 2, Art. 7, III)|01012023|31032023
+SC010061|Estorno de crédito da parcela não tributada nas hipóteses em que o crédito é proporcional às saídas tributadas. (RICMS/SC-01, Anexo 2, Art. 7, VI)|01012023|31032023
+SC010062|Estorno de crédito da parcela não tributada nas hipóteses em que o crédito é proporcional às saídas tributadas. (RICMS/SC-01, Anexo 2, Art. 7, IX)|01012023|31032023
+SC010063|Estorno de crédito da parcela não tributada nas hipóteses em que o crédito é proporcional às saídas tributadas. (RICMS/SC-01, Anexo 2, Art. 7, XIII)|01012023|31032023
+SC010064|Estorno de crédito da parcela não tributada nas hipóteses em que o crédito é proporcional às saídas tributadas. (RICMS/SC-01, Anexo 2, Art. 7, XVI)|01012023|31032023
+SC010065|Estorno de crédito da parcela não tributada nas hipóteses em que o crédito é proporcional às saídas tributadas. TTD 494. (RICMS/SC-01, Anexo 2, Art. 7, XVII)|01012023|31032023
+SC010066|Estorno de crédito da parcela não tributada nas hipóteses em que o crédito é proporcional às saídas tributadas. TTD 1031. (RICMS/SC-01, Anexo 2, Art. 7, XVIII)|01012023|31032023
+SC010067|Estorno de crédito da parcela não tributada nas hipóteses em que o crédito é proporcional às saídas tributadas. (RICMS/SC-01, Anexo 2, Art. 7, XIX)|01012023|31032023
+SC010068|Estorno de crédito da parcela não tributada nas hipóteses em que o crédito é proporcional às saídas tributadas. (RICMS/SC-01, Anexo 2, Art. 7, XX)|01012023|31032023
+SC010069|Estorno de crédito da parcela não tributada nas hipóteses em que o crédito é proporcional às saídas tributadas. TTD 1075. (RICMS/SC-01, Anexo 2, Art. 7, XX, c)|01012023|31032023
+SC010070|Estorno de crédito da parcela não tributada nas hipóteses em que o crédito é proporcional às saídas tributadas. (RICMS/SC-01, Anexo 2, Art. 8, I)|01012023|31032023
+SC010071|Estorno de crédito da parcela não tributada nas hipóteses em que o crédito é proporcional às saídas tributadas. (RICMS/SC-01, Anexo 2, Art. 8, II)|01012023|31032023
+SC010072|Estorno de crédito da parcela não tributada nas hipóteses em que o crédito é proporcional às saídas tributadas. (RICMS/SC-01, Anexo 2, Art. 8, III)|01012023|31032023
+SC010073|Estorno de crédito da parcela não tributada nas hipóteses em que o crédito é proporcional às saídas tributadas. (RICMS/SC-01, Anexo 2, Art. 8, VI)|01012023|31032023
+SC010074|Estorno de crédito da parcela não tributada nas hipóteses em que o crédito é proporcional às saídas tributadas. (RICMS/SC-01, Anexo 2, Art. 8, VII)|01012023|31032023
+SC010075|Estorno de crédito da parcela não tributada nas hipóteses em que o crédito é proporcional às saídas tributadas. (RICMS/SC-01, Anexo 2, Art. 8, VIII)|01012023|31032023
+SC010076|Estorno de crédito da parcela não tributada nas hipóteses em que o crédito é proporcional às saídas tributadas. (RICMS/SC-01, Anexo 2, Art. 8, IX)|01012023|31032023
+SC010077|Estorno de crédito da parcela não tributada nas hipóteses em que o crédito é proporcional às saídas tributadas. (RICMS/SC-01, Anexo 2, Art. 8, XII)|01012023|31032023
+SC010078|Estorno de crédito da parcela não tributada nas hipóteses em que o crédito é proporcional às saídas tributadas. (RICMS/SC-01, Anexo 2, Art. 8-B)|01012023|31032023
+SC010079|Estorno de crédito da parcela não tributada nas hipóteses em que o crédito é proporcional às saídas tributadas. (RICMS/SC-01, Anexo 2, Art. 11-A)|01012023|31032023
+SC010080|Estorno de crédito da parcela não tributada nas hipóteses em que o crédito é proporcional às saídas tributadas. (RICMS/SC-01, Anexo 2, Art. 12)|01012023|31032023
+SC010081|Estorno de crédito da parcela não tributada nas hipóteses em que o crédito é proporcional às saídas tributadas. (RICMS/SC-01, Anexo 2, Art. 12-D)|01012023|31032023
+SC010082|Estorno de crédito da parcela não tributada nas hipóteses em que o crédito é proporcional às saídas tributadas. TTD 472. (RICMS/SC-01, Anexo 2, Art. 13, I (§3º))|01012023|31032023
+SC010083|Estorno de crédito da parcela não tributada nas hipóteses em que o crédito é proporcional às saídas tributadas. (RICMS/SC-01, Anexo 2, Art. 13, II)|01012023|31032023
+SC010084|Estorno de crédito da parcela não tributada nas hipóteses em que o crédito é proporcional às saídas tributadas. (RICMS/SC-01, Anexo 2, Art. 13, IV)|01012023|31032023
+SC010085|Estorno de crédito da parcela não tributada nas hipóteses em que o crédito é proporcional às saídas tributadas. (RICMS/SC-01, Anexo 2, Art. 13, V)|01012023|31032023
+SC010086|Estorno de crédito da parcela não tributada nas hipóteses em que o crédito é proporcional às saídas tributadas. TTD 1032. (RICMS/SC-01, Anexo 2, Art. 13, VI)|01012023|31032023
+SC010087|Estorno de crédito da parcela não tributada nas hipóteses em que o crédito é proporcional às saídas tributadas. (RICMS/SC-01, Anexo 2, Art. 30)|01012023|31032023
+SC010088|Estorno de crédito da parcela não tributada nas hipóteses em que o crédito é proporcional às saídas tributadas. (RICMS/SC-01, Anexo 2, Art. 32)|01012023|31032023
+SC010089|Estorno de crédito da parcela não tributada nas hipóteses em que o crédito é proporcional às saídas tributadas. (RICMS/SC-01, Anexo 2, Art. 33, II)|01012023|31032023
+SC010090|Estorno de crédito da parcela não tributada nas hipóteses em que o crédito é proporcional às saídas tributadas. TTD 10. (RICMS/SC-01, Anexo 2, Art. 104, 105 e 106)|01012023|31032023
+SC010091|Estorno de crédito da parcela não tributada nas hipóteses em que o crédito é proporcional às saídas tributadas. TTD 354. (RICMS/SC-01, Anexo 2, Art. 179, I)|01012023|31032023
+SC010092|Estorno de crédito da parcela não tributada nas hipóteses em que o crédito é proporcional às saídas tributadas. TTD 354. (RICMS/SC-01, Anexo 2, Art. 179, II)|01012023|31032023
+SC010093|Estorno de crédito da parcela não tributada nas hipóteses em que o crédito é proporcional às saídas tributadas. TTD 355. (RICMS/SC-01, Anexo 2, Art. 180)|01012023|31032023
+SC010094|Estorno de crédito da parcela não tributada nas hipóteses em que o crédito é proporcional às saídas tributadas. TTD 357. (RICMS/SC-01, Anexo 2, Art. 183)|01012023|31032023
+SC010095|Estorno de crédito da parcela não tributada nas hipóteses em que o crédito é proporcional às saídas tributadas. TTD 359. (RICMS/SC-01, Anexo 2, Art. 184, §2º)|01012023|31032023
+SC010096|Estorno de crédito da parcela não tributada nas hipóteses em que o crédito é proporcional às saídas tributadas. (RICMS/SC-01, Anexo 2, Art. 188-A)|01012023|31032023
+SC010097|Estorno de crédito da parcela não tributada nas hipóteses em que o crédito é proporcional às saídas tributadas. TTD 487. (RICMS/SC-01, Anexo 2, Art. 228, I)|01012023|31032023
+SC010098|Estorno de crédito da parcela não tributada nas hipóteses em que o crédito é proporcional às saídas tributadas. TTD 487. (RICMS/SC-01, Anexo 2, Art. 228, II)|01012023|31032023
+SC010099|Estorno de crédito da parcela não tributada nas hipóteses em que o crédito é proporcional às saídas tributadas. TTD 487. (RICMS/SC-01, Anexo 2, Art. 228, III)|01012023|31032023
+SC010100|Estorno de crédito da parcela não tributada nas hipóteses em que o crédito é proporcional às saídas tributadas. TTD 498. (RICMS/SC-01, Anexo 2, Art. 232-A)|01012023|31032023
+SC010101|Estorno de crédito da parcela não tributada nas hipóteses em que o crédito é proporcional às saídas tributadas. TTD 1007. (RICMS/SC-01, Anexo 2, Art. 247, II)|01012023|31032023
+SC010102|Estorno de crédito da parcela não tributada nas hipóteses em que o crédito é proporcional às saídas tributadas. TTD 1010. (RICMS/SC-01, Anexo 2, Art. 248, III)|01012023|31032023
+SC010103|Estorno de crédito da parcela não tributada nas hipóteses em que o crédito é proporcional às saídas tributadas. TTD 1034. (RICMS/SC-01, Anexo 6, Art. 379-A)|01012023|31032023
+SC010104|Estorno do crédito efetivo quando o contribuinte optar pelo crédito presumido.  RICMS/SC-01, Anexo 2, Art. 21, VI, alínea "b".|01012023|31032023
+SC030010|Estorno de débitos  serviços não medidos de televisão por assinatura via satélite  Convênio ICMS nº 52/2005.|01012023|
+SC010026|Estorno do crédito efetivo quando o contribuinte optar pelo crédito presumido.  TTD 1077 (RICMS/SC-01, Anexo 2, Art. 21, XII)|01022023|31032023
+SC020097|Crédito presumido pela aquisição ou arrendamento mercantil do equipamento Medidor Volumétrico de Combustíveis (MVC). Autorização Legal: RICMS/SC-01, An2, art. 206.|01012023|
+SC010029|Estorno de crédito efetivo por proporção no encerramento do período de apuração na operação interestadual de venda a consumidor realizada por internet ou telemarketing (inciso XV do caput do art. 21 do Anexo 2 do RICMS/SC-01)|01042023|
+SC010105|Estorno proporcional do crédito efetivo quando o contribuinte optar pelo crédito presumido. RICMS/SC-01, Anexo 2, Art. 23, VII.|01042023|
+SC010106|Estorno proporcional de crédito relativo à parcela não tributada nos casos em que a operação ou prestação subseqüente for beneficiada por redução da base de cálculo (RICMS/SC-01, Art. 30)|01042023|
+SC010107|Estorno proporcional do crédito efetivo quando o contribuinte optar pelo crédito presumido por ocasião do ingresso no regime. RICMS/SC-01, Anexo 2, Art. 23, I|01042023|
+SC020098|Crédito presumido à microcervejaria na saída, acorbertada por Cupom Fiscal (ECF), de cerveja e chope artesanais produzidos pelo próprio estabelecimento. RICMS/SC-01, An2, Art. 15, XXXII|01012023|
+SC020099|Crédito presumido pela saídas de vinho, exceto vinho composto, acorbertadas por Cupom Fiscal (ECF), promovidas pelo estabelecimento industrial que o tenha produzido, calculado sobre o valor do imposto devido pela operação própria.  RICMS/SC-01, An2, Art. 21, X|01012023|
+SC010108|Estorno do crédito pelo tomador do serviço em caso de emissão de CT-e substituto referenciando o CT-e emitido com erro.  Somente créditos extemporâneos. (Anexo 11, art. 50 do RICMS/SC-01)|01042023|30092024
+SC030011|Estorno de débito pelo prestador do serviço em caso de emissão de CT-e substituto referenciando o CT-e emitido com erro.  Somente débitos extemporâneos. (Anexo 11, art. 50 do RICMS/SC-01)|01042023|30092024
+SC010109|Estorno de crédito pelo tomador do serviço em caso emissão de NFCom de Substituição referenciando a NFCom com erro.  (Anexo 11, art. 211, II do RICMS/SC-01)|01062023|31102024
+SC030012|Estorno de débito pelo prestador do serviço em caso emissão de NFCom de Substituição referenciando a NFCom com erro. (Anexo 11, art. 211, II do RICMS/SC-01)|01062023|31102024
+SC140002|ICMS monofásico devido a outras unidades federadas.|01052023|
+SC150004|Débito do ICMS monofásico devido à UF de SC - repasse prazo normal.|01052023|
+SC150005|Débito do ICMS monofásico devido à UF de SC - repasse provisão.|01052023|
+SC100006|Débito pela transferência de saldo credor do ICMS-ST para a apuração do ICMS Normal - apuração compartilhada entre empresas interdependentes. (§§ 8º ao 10 do art. 17 do Anexo 3 do RICMS-SC/01).|01092023|10102023
+SC020076|Crédito pelo destinatário do saldo do imposto retido pelo remetente - apuração compartilhada entre empresas interdependentes.  (§§ 8º ao 10 do art. 17 do Anexo 3 do RICMS-SC/01).|01092023|
+SC120008|Crédito pelo destinatário do imposto nas operações   de   entrada   em   empresa interdependente com apuração compartilhada|01092023|31122023
+SC100006|Débito pela transferência de saldo credor da apuração do ICMS-ST para a apuração do ICMS Normal, ambas do destinatário interdependente  somente do saldo credor resultante da apuração compartilhada envolvendo operações entre empresas interdependentes. (§§ 8º ao 10 do art. 17 do Anexo 3 do RICMS-SC/01).|01012024|
+SC030013|Estorno de débito em caso de cancelamento de BP-e sem emissão de bilhete substituto. (Anexo 11, art. 182 do RICMS/SC-01)|01012024|
+SC010110|Estorno de crédito em caso de cancelamento de BP-e sem emissão de bilhete substituto. (Anexo 11, art. 182 do RICMS/SC-01)|01012024|
+SC020100|Crédito presumido limitado até o percentual de 3,5% ao estabelecimento industrial nas saídas de embarcações náuticas - Exige Regime Especial - Pró-Náutica - Anexo 2, Art. 176, §5º.|01012016|
+SC150006|Débito sobre o estoque na inclusão de mercadorias no regime de substituição tributária.|01042024|
+SC000015|Débito por saída nos casos de exclusão retroativa do regime do Simples Nacional.|01042024|
+SC020101|Crédito do ICMS recolhido na hipótese da anuência em regime especial concedido por outro Estado.|01012024|
+SC020012|Crédito extemporâneo de ICMS Normal não apropriado no momento do registro do documento fiscal (art. 29 do RICMS-SC/01).|01052024|
+SC020102|Crédito extemporâneo de combustível sujeito à incidência monofásica não apropriado no momento do registro do documento fiscal.  (Art. 29 c/c  § 5º do art. 112, RICMS-SC/01)|01052024|
+SC120017|Crédito extemporâneo de ICMS ST não apropriado no momento do registro do documento fiscal (art. 29 do RICMS-SC/01).|01052024|31052024
+SC020010|Crédito extemporâneo do ICMS de mercadoria sujeita à substituição tributária.|01062024|
+SC020079|Crédito extemporâneo decorrente do seu não registro ou de erro na escrita fiscal, exceto quando a sua origem for documento fiscal.|01062024|
+SC020083|Crédito presumido concedido ao estabelecimento industrial nas saídas de artigos têxteis, vestuário, artefatos de couro e seus acessórios promovidas por estabelecimento comercial do mesmo titular localizado neste Estado. - Exige Comunicação - Anexo 2, Art. 21, § 10, VI.|01082024|
+SC020103|Crédito presumido extemporâneo ao estabelecimento industrial nas saídas de artigos têxteis, de vestuário e de couro, incluindo a filial varejista, em operações alcançadas pelo TTD 47, não apropriado no momento do registro do documento fiscal.  (Art. 29, RICMS-SC/01 c/c Art. 21, IX e § 10, VI, Anexo 2)|01082024|
+SC020104|Crédito presumido extemporâneo concedido na saída subsequente à importação de mercadorias em operações alcançadas pelos TTDs 409, 410 ou 411, não apropriado no momento do registro do documento fiscal.  (Art. 29, RICMS-SC/01 c/c  art. 246, Anexo 2)|01082024|
+SC020105|Crédito presumido extemporâneo em operações alcançadas pelos demais TTDs, excetuados os TTDs 47, 409, 410 e 411, não apropriado no momento do registro do documento fiscal.  (Art. 29, RICMS-SC/01)|01082024|
+SC010111|Estorno de crédito referente ao principal para operações que envolvam destinatários de Devedores Contumazes sujeitos ao recolhimento por operação, por apropriação indevida de crédito, por ser considerado inidôneo. (Anexo 06, art. 412, §2º, I e III, do RICMS/SC-01)|01012024|
+SC030014|Estorno de débito extemporâneo relativo a saída subsequente de mercadorias em operações alcançadas pelo TTD dos benefícios 409, 410 ou 411. (Anexo 2, art. 246 do RICMS-SC/01).|01082024|
+SC090001|Crédito acumulado compensável reconhecido por decisão judicial transitada em julgado.  (Art. 40 do RICMS-SC/01 c/c art. 25, II do Anexo 03 do RICMS-SC/01)|01102024|28022025
+SC020106|Crédito Presumido concedido mediante regime especial à cooperativa ou concessionária de energia elétrica situada no Estado, equivalente a até, em cada ano, 20% do imposto a recolher no período, a ser apropriado mensalmente, condicionado à aplicação de valor equivalente ao benefício na execução de seus programas e projetos. (An2, Art. 15, XLVI)|01092024|
+SC020077|Crédito de ICMS por determinação judicial ou administrativa, exceto restituição de ICMS com PRC (Protocolo de Reconhecimento de Crédito) e ICMS-ST.|01122024|31032025
+SC010112|Estorno de crédito presumido nas devoluções de vendas de artigos têxteis, de vestuário, artefatos de couro e seus acessórios promovidas por estabelecimento varejista de propriedade do industrial detentor do benefício. Anexo 02, Art. 15, § 37, inciso IV. (Código para uso exclusivo do industrializador detentor do TTD)|01122024|
+SC010113|Estorno de crédito presumido concedido ao estabelecimento industrial nas devoluções de venda de artigos têxteis, vestuário, artefatos de couro e seus acessórios promovidas por estabelecimento comercial do mesmo titular localizado neste Estado. Anexo 2, Art. 21, § 10, VI. (Código para uso exclusivo do industrializador detentor do TTD)|01122024|
+SC020077|Crédito de ICMS por determinação administrativa, exceto restituição de ICMS com PRC (Protocolo de Reconhecimento de Crédito) e ICMS-ST apurado em DRCST.|01042025|
+SC120011|Crédito do ICMS ST autorizado por decisão Administrativa, exceto restituição do ICMS-ST com PRC (Protocolo de Reconhecimento de Crédito) e ICMS-ST apurado em DRCST.|01042025|
+SC020089|Crédito presumido de incentivo à cultura (PIC). Anexo 6, Art. 414.|01052025|
+SC020107|Crédito presumido de incentivo ao esporte (PIE). Anexo 6, Art. 470.|01052025|
+SC020108|Crédito presumido extemporâneo ao estabelecimento industrial na entrada de chapas finas a frio, zincadas e aço inox. Exige Regime Especial. (An 2, Art. 18, §§ 5º e 6º)|01012026|
+SC020109|Crédito presumido extemporâneo  ao estabelecimento industrial na entrada de chapas finas a frio, zincadas e aço inox. Exige Regime Especial. (An 2, Art. 18, §§ 8º a 12)|01012026|
+SC020110|Crédito presumido extemporâneo ao estabelecimento industrial na entrada de chapas finas a frio, zincadas e aço inox. Exige Regime Especial. (An 2, Art. 18, § 2º )|01012026|
+SC010114|Estorno do crédito presumido decorrente de estabelecimento industrial na entrada de chapas finas a frio, zincadas e aço inox. Ajuste semestral. Exige Regime Especial. (An 2, Art. 18, §§ 8º a 10)|01032026|
+SC050005|Débito especial para regularização no desenquadramento retroativo do Regime Simples Nacional para o Regime Normal.  (Anexo 4, Art. 14-B do RICMS-SC)|01042026|
+SC020111|Crédito de ICMS pelo pagamento do débito declarado em DDE relativo a entrada de energia elétrica não declarada na DEVEC|01012026|

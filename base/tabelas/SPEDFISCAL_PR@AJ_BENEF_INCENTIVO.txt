@@ -1,0 +1,26 @@
+versão=8 COD_AJ, DESC_AJ, DT_INI, DT_FIM
+PR20000001|Estorno de débito; Operação própria; Própria; A apurar; Mercadoria; Venda ambulante (CFOPs 5103, 6103, 5104, 6104)|01012009|
+PR20000002|Estorno de débito; Operação própria; Própria; A apurar; Mercadoria; Nota fiscal concomitante com Cupom Fiscal (CFOPs 5929, 6929)|01012009|
+PR20001003|Estorno de débito; Operação própria; Própria; A apurar; Transporte; Imposto recolhido antecipadamente|01032015|
+PR11080001|Outros Créditos;Operação por ST;Própria;Incentivo Fiscal;Mercadoria;Crédito presumido constante no item 7 do Anexo VII do RICMS/2017|01052023|30062023
+PR20001001|Estorno de Débito;Operação Própria;Própria;A apurar;Transporte;Estorno de débito de CT-e substituído|01042023|
+PR23000000|Estorno de Débito;Apuração 1  Bloco 1900;Própria;A apurar;Mercadoria;ICMS monofásico, nas operações de saídas, a ser transportado para o registro 1920|01052023|
+PR53000000|Estorno de Crédito;Apuração 1  Bloco 1900;Própria;A apurar;Mercadoria;ICMS monofásico, nas devoluções, a ser transportado para o registro 1920|01052023|
+PR10000001|Outros Créditos;Operação Própria;Própria;A apurar;Mercadoria;Crédito de aquisições de contribuintes do Simples Nacional, conforme § 16 do art. 26 do RICMS2017|01062026|17072026
+PR10000002|Outros Créditos;Operação Própria;Própria;A apurar;Mercadoria;Crédito decorrente de recuperação do imposto por substituição tributária conforme § 11 do art. 25 do RICMS2017|01062026|17072026
+PR10000003|Outros Créditos;Operação Própria;Própria;A apurar;Mercadoria;Crédito decorrente da entrada de produto sujeito a ST ou monofásico utilizado na prestação de serviço de transporte conforme § 4º do art. 25 do RICMS2017|01062026|17072026
+PR10001001|Outros Créditos;Operação Própria;Própria;A apurar;Transporte;Crédito decorrente da contratação de frete iniciado em outra UF|01062026|17072026
+PR20000003|Estorno de Débito;Operação Própria;Própria;A apurar;Mercadoria;Devolução  restaurante optante pela alíquota de 3,2%|01062026|17072026
+PR20001004|Estorno de Débito;Operação Própria;Própria;A apurar;Transporte;Devolução  Transportador optante pelo crédito presumido|01062026|17072026
+PR10000001|Outros Créditos;Operação Própria;Própria;A apurar;Mercadoria;Crédito de aquisições de contribuintes do Simples Nacional, conforme § 16 do art. 26 do RICMS2017|01052026|31052026
+PR10000002|Outros Créditos;Operação Própria;Própria;A apurar;Mercadoria;Crédito decorrente de recuperação do imposto por substituição tributária conforme § 11 do art. 25 do RICMS2017|01052026|31052026
+PR10000003|Outros Créditos;Operação Própria;Própria;A apurar;Mercadoria;Crédito decorrente da entrada de produto sujeito a ST ou monofásico utilizado na prestação de serviço de transporte conforme § 4º do art. 25 do RICMS2017|01052026|31052026
+PR10001001|Outros Créditos;Operação Própria;Própria;A apurar;Transporte;Crédito decorrente da contratação de frete iniciado em outra UF|01052026|31052026
+PR20000003|Estorno de Débito;Operação Própria;Própria;A apurar;Mercadoria;Devolução  restaurante optante pela alíquota de 3,2%|01052026|31052026
+PR20001004|Estorno de Débito;Operação Própria;Própria;A apurar;Transporte;Devolução  Transportador optante pelo crédito presumido|01052026|31052026
+PR10000001|Outros Créditos;Operação Própria;Própria;A apurar;Mercadoria;Crédito de aquisições de contribuintes do Simples Nacional, conforme § 16 do art. 26 do RICMS2017|18072026|
+PR10000002|Outros Créditos;Operação Própria;Própria;A apurar;Mercadoria;Crédito decorrente de recuperação do imposto por substituição tributária conforme § 11 do art. 25 do RICMS2017|18072026|
+PR10000003|Outros Créditos;Operação Própria;Própria;A apurar;Mercadoria;Crédito decorrente da entrada de produto sujeito a ST ou monofásico utilizado na prestação de serviço de transporte conforme § 4º do art. 25 do RICMS2017|18072026|
+PR10001001|Outros Créditos;Operação Própria;Própria;A apurar;Transporte;Crédito decorrente da contratação de frete iniciado em outra UF|18072026|
+PR20000003|Estorno de Débito;Operação Própria;Própria;A apurar;Mercadoria;Devolução  restaurante optante pela alíquota de 3,2%|18072026|
+PR20001004|Estorno de Débito;Operação Própria;Própria;A apurar;Transporte;Devolução  Transportador optante pelo crédito presumido|18072026|

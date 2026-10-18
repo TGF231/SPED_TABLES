@@ -1,0 +1,45 @@
+versão=1 CODIGO, DESCRICAO, DT_INI, DT_FIM, IND_ATIV, IND_AJUSTE, GRUPO, SUBGRUPO, IND_OUTROS
+D0201010|Cancelamentos de Prêmios Emitidos|01012014||02;06|P|200|D0201|N
+D0201020|Restituição de Prêmios Emitidos|01012014||02;06|P|200|D0201|N
+D0202010|Cancelamentos de Cosseguro Aceito|01012014||02;06|P|200|D0202|N
+D0202020|Restituição de Cosseguro Aceito|01012014||02;06|P|200|D0202|N
+D0203010|Prêmios Cedidos em Cosseguro|01012014||02;06|P|200|D0203|N
+D0204010|Variações das Provisões Técnicas|01012014||02;06|P|200|D0204|N
+D0204020|Variação da Despesa de Resseguro|01012014||02;06|P|200|D0204|N
+D0204030|Outras Provisões Técnicas|01012014||02;06|P|200|D0204|S
+D0205010|Indenizações correspondentes aos sinistros ocorridos, efetivamente pagos - Seguros de ramos elementares|01012014||02;06|P|200|D0205|S
+D0205020|Indenizações correspondentes aos sinistros ocorridos, efetivamente pagos - Seguros de vida sem cláusula de cobertura por sobrevivência|01012014||02;06|P|200|D0205|S
+D0206010|Prêmios de Resseguros|01012014||02;06|P|200|D0206|N
+D0206020|Comissões sobre Prêmio de Resseguros|01012014||02;06|P|200|D0206|N
+D0207010|Prêmios Resseguradora Local|01012014||02;06|P|200|D0207|N
+D0207020|Prêmios Resseguradora Admitida|01012014||02;06|P|200|D0207|N
+D0207030|Prêmios Resseguradora Evetual|01012014||02;06|P|200|D0207|N
+D0208010|Cancelamento de prêmios efetivo|01012014||02;06|P|200|D0208|N
+D0208020|Restituição de prêmios efetivo|01012014||02;06|P|200|D0208|N
+D0208030|Cancelamento de prêmios estimado|01012014||02;06|P|200|D0208|N
+D0208040|Cancelamento de prêmios efetivos retrocessão aceita - resseguradora local|01012014||02;06|P|200|D0208|N
+D0208050|Restituição de prêmios efetivos retrocessao aceita - resseguradora local|01012014||02;06|P|200|D0208|N
+D0208060|Cancelamento de prêmios estimado de retrocessão aceita - resseguradora local|01012014||02;06|P|200|D0208|N
+D0208070|Cancelamento de prêmios efetivos retrocessão aceita - resseguradora admitida|01012014||02;06|P|200|D0208|N
+D0208080|Restituição de prêmios efetivos retrocessao aceita - resseguradora admitida|01012014||02;06|P|200|D0208|N
+D0208090|Cancelamento de prêmios estimado de retrocessão aceita - resseguradora admitida|01012014||02;06|P|200|D0208|N
+D0208100|Cancelamento de prêmios efetivos retrocessão aceita - resseguradora eventual|01012014||02;06|P|200|D0208|N
+D0208110|Restituição de prêmios efetivos retrocessao aceita - resseguradora eventual|01012014||02;06|P|200|D0208|N
+D0208120|Cancelamento de prêmios estimado de retrocessão aceita - resseguradora eventual|01012014||02;06|P|200|D0208|N
+D0209010|Provisão de prêmios não ganhos|01012014||02;06|P|200|D0209|N
+D0209020|Provisão de insuficiência de prêmios|01012014||02;06|P|200|D0209|N
+D0209030|Provisão complementar de cobertura|01012014||02;06|P|200|D0209|N
+D0209040|Provisão matemática de benefícios a conceder|01012014||02;06|P|200|D0209|N
+D0209050|Provisão matemática de benefícios concedidos|01012014||02;06|P|200|D0209|N
+D0209060|Provisão de excedente técnico|01012014||02;06|P|200|D0209|N
+D0209070|Outras provisões|01012014||02;06|P|200|D0209|S
+D0290010|Outras deduções e exclusões de caráter específico|01012014||02;06|P|200|D0290|S
+D0298020|Importâncias recebidas a título de cosseguros - Seguros de ramos elementares (referentes á dedução das indenizações efetivamente pagas - Código D0205010)|01012014||02;06|N|200|D0298|N
+D0298030|Importâncias recebidas a título de resseguros - Seguros de ramos elementares (referentes á dedução das indenizações efetivamente pagas - Código D0205010)|01012014||02;06|N|200|D0298|N
+D0298040|Importâncias recebidas a título de salvados - Seguros de ramos elementares (referentes á dedução das indenizações efetivamente pagas - Código D0205010)|01012014||02;06|N|200|D0298|N
+D0298050|Importâncias recebidas a título de outros ressarcimentos - Seguros de ramos elementares (referentes á dedução das indenizações efetivamente pagas - Código D0205010)|01012014||02;06|N|200|D0298|N
+D0298060|Importâncias recebidas a título de cosseguros - Seguros de vida sem cláusula de cobertura por sobrevivência  (referentes á dedução das indenizações efetivamente pagas - Código D0205020)|01012014||02;06|N|200|D0298|N
+D0298070|Importâncias recebidas a título de resseguros - Seguros de vida sem cláusula de cobertura por sobrevivência  (referentes á dedução das indenizações efetivamente pagas - Código D0205020)|01012014||02;06|N|200|D0298|N
+D0298080|Importâncias recebidas a título de salvados - Seguros de vida sem cláusula de cobertura por sobrevivência  (referentes á dedução das indenizações efetivamente pagas - Código D0205020)|01012014||02;06|N|200|D0298|N
+D0298090|Importâncias recebidas a título outros ressarcimentos - Seguros de vida sem cláusula de cobertura por sobrevivência  (referentes á dedução das indenizações efetivamente pagas - Código D0205020)|01012014||02;06|N|200|D0298|N
+D0299010|Ajustes positivos das deduções de caráter específicos|01012014||02;06|P|200|D0299|N

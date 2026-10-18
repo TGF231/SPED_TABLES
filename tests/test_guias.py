@@ -1,23 +1,19 @@
 # -*- coding: utf-8 -*-
-"""Os guias práticos como fonte: o extrator, os JSON de `recursos/`, o
+"""Os guias práticos como fonte: o extrator, os JSON de `base/guias/`, o
 descritor do PVA alinhado ao leiaute e a ajuda de campo."""
 
 import os
 import shutil
-import sys
 import tempfile
 import unittest
 import zipfile
 
-from sped_tables import RAIZ_PROJETO
+from consolidador import guias as extrair_guias
 from sped_tables.dominio import ajuda
 from sped_tables.dominio import referencias
 from sped_tables.dominio import sped_layouts
 from sped_tables.infra import descritor_pva
 from sped_tables.infra import guias
-
-sys.path.insert(0, os.path.join(RAIZ_PROJETO, "ferramentas"))
-import extrair_guias  # noqa: E402
 
 # trecho no formato do texto que o pdftotext -layout devolve do guia
 TEXTO_GUIA = """Guia Prático EFD-ICMS/IPI – Versão 9.9.9

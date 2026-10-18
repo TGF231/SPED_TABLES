@@ -1,0 +1,541 @@
+versão=26 INF_ADIC, DESC_INF, DT_INI, DT_FIM
+PR800000|Imunidade ou não icidência;Imunidade ou não incidência do imposto reconhecida judicialmente|01082018|02082018
+PR800001|Imunidade ou não icidência;Não incidência de que trata o inciso I do caput do art. 3º do RICMS/2017|01082018|02082018
+PR800002|Imunidade ou não icidência;Não incidência de que trata o inciso II do caput do art. 3º do RICMS/2017|01082018|02082018
+PR800003|Imunidade ou não icidência;Não incidência de que trata o inciso III do caput do art. 3º do RICMS/2017|01082018|02082018
+PR800004|Imunidade ou não icidência;Não incidência de que trata o inciso IV do caput do art. 3º do RICMS/2017|01082018|02082018
+PR800005|Imunidade ou não icidência;Não incidência de que trata o inciso V do caput do art. 3º do RICMS/2017|01082018|02082018
+PR800006|Imunidade ou não icidência;Não incidência de que trata o inciso VI do caput do art. 3º do RICMS/2017|01082018|02082018
+PR800007|Imunidade ou não icidência;Não incidência de que trata o inciso VII do caput do art. 3º do RICMS/2017|01082018|02082018
+PR800008|Imunidade ou não icidência;Não incidência de que trata o inciso VIII do caput do art. 3º do RICMS/2017|01082018|02082018
+PR800009|Imunidade ou não icidência;Não incidência de que trata o inciso IX do caput do art. 3º do RICMS/2017|01082018|02082018
+PR800010|Imunidade ou não icidência;Não incidência de que trata o inciso X do caput do art. 3º do RICMS/2017|01082018|02082018
+PR800011|Imunidade ou não icidência;Não incidência de que trata o inciso XI do caput do art. 3º do RICMS/2017|01082018|02082018
+PR800012|Imunidade ou não icidência;Não incidência de que trata o inciso XIII do caput do art. 3º do RICMS/2017|01082018|02082018
+PR800013|Imunidade ou não icidência;Não incidência de que trata o inciso XVI do caput do art. 3º do RICMS/2017|01082018|02082018
+PR800014|Imunidade ou não icidência;Não incidência de que trata o inciso XV do caput do art. 3º do RICMS/2017|01082018|02082018
+PR800015|Imunidade ou não icidência;Não incidência de que trata o inciso I do parágrafo único do art. 3º do RICMS/2017|01082018|02082018
+PR800016|Imunidade ou não icidência;Não incidência de que trata o inciso II do parágrafo único do art. 3º do RICMS/2017|01082018|02082018
+PR809999|Imunidade ou não icidência;Não Incidência prevista em regime especial e/ou programa de incentivo|01082018|02082018
+PR810000|Isenção;Isenção do pagamento do imposto reconhecida judicialmente|01082018|
+PR810001|Isenção;Isenção prevista no item 1 do Anexo V do RICMS/2017|01082018|
+PR810002|Isenção;Isenção prevista no item 2 do Anexo V do RICMS/2017|01082018|
+PR810003|Isenção;Isenção prevista no item 3 do Anexo V do RICMS/2017|01082018|
+PR810004|Isenção;Isenção prevista no item 4 do Anexo V do RICMS/2017|01082018|
+PR810005|Isenção;Isenção prevista no item 5 do Anexo V do RICMS/2017|01082018|
+PR810006|Isenção;Isenção prevista no item 6 do Anexo V do RICMS/2017|01082018|
+PR810007|Isenção;Isenção prevista no item 7 do Anexo V do RICMS/2017|01082018|
+PR810008|Isenção;Isenção prevista no item 8 do Anexo V do RICMS/2017|01082018|
+PR810009|Isenção;Isenção prevista no item 9 do Anexo V do RICMS/2017|01082018|
+PR810010|Isenção;Isenção prevista no item 10 do Anexo V do RICMS/2017|01082018|
+PR810011|Isenção;Isenção prevista no item 11 do Anexo V do RICMS/2017|01082018|
+PR810012|Isenção;Isenção prevista no item 12 do Anexo V do RICMS/2017|01082018|
+PR810013|Isenção;Isenção prevista no item 13 do Anexo V do RICMS/2017|01082018|
+PR810014|Isenção;Isenção prevista no item 14 do Anexo V do RICMS/2017|01082018|
+PR810015|Isenção;Isenção prevista no item 15 do Anexo V do RICMS/2017|01082018|
+PR810016|Isenção;Isenção prevista no item 16 do Anexo V do RICMS/2017|01082018|
+PR810017|Isenção;Isenção prevista no item 17 do Anexo V do RICMS/2017|01082018|
+PR810018|Isenção;Isenção prevista no item 18 do Anexo V do RICMS/2017|01082018|
+PR810019|Isenção;Isenção prevista no item 19 do Anexo V do RICMS/2017|01082018|
+PR810020|Isenção;Isenção prevista no item 20 do Anexo V do RICMS/2017|01082018|
+PR810021|Isenção;Isenção prevista no item 21 do Anexo V do RICMS/2017|01082018|09092019
+PR810022|Isenção;Isenção prevista no item 22 do Anexo V do RICMS/2017|01082018|
+PR810023|Isenção;Isenção prevista no item 23 do Anexo V do RICMS/2017|01082018|
+PR810024|Isenção;Isenção prevista no item 24 do Anexo V do RICMS/2017|01082018|01052019
+PR810025|Isenção;Isenção prevista no item 25 do Anexo V do RICMS/2017|01082018|01062023
+PR810026|Isenção;Isenção prevista no item 26 do Anexo V do RICMS/2017|01082018|
+PR810027|Isenção;Isenção prevista no item 27 do Anexo V do RICMS/2017|01082018|
+PR810028|Isenção;Isenção prevista no item 28 do Anexo V do RICMS/2017|01082018|
+PR810029|Isenção;Isenção prevista no item 29 do Anexo V do RICMS/2017|01082018|
+PR810030|Isenção;Isenção prevista no item 30 do Anexo V do RICMS/2017|01082018|
+PR810031|Isenção;Isenção prevista no item 31 do Anexo V do RICMS/2017|01082018|
+PR810032|Isenção;Isenção prevista no item 32 do Anexo V do RICMS/2017|01082018|
+PR810033|Isenção;Isenção prevista no item 33 do Anexo V do RICMS/2017|01082018|
+PR810034|Isenção;Isenção prevista no item 34 do Anexo V do RICMS/2017|01082018|
+PR810035|Isenção;Isenção prevista no item 35 do Anexo V do RICMS/2017|01082018|
+PR810036|Isenção;Isenção prevista no item 36 do Anexo V do RICMS/2017|01082018|
+PR810037|Isenção;Isenção prevista no item 37 do Anexo V do RICMS/2017|01082018|09092019
+PR810038|Isenção;Isenção prevista no item 38 do Anexo V do RICMS/2017|01082018|
+PR810039|Isenção;Isenção prevista no item 39 do Anexo V do RICMS/2017|01082018|
+PR810040|Isenção;Isenção prevista no item 40 do Anexo V do RICMS/2017|01082018|
+PR810041|Isenção;Isenção prevista no item 41 do Anexo V do RICMS/2017|01082018|
+PR810042|Isenção;Isenção prevista no item 42 do Anexo V do RICMS/2017|01082018|
+PR810043|Isenção;Isenção prevista no item 43 do Anexo V do RICMS/2017|01082018|
+PR810044|Isenção;Isenção prevista no item 44 do Anexo V do RICMS/2017|01082018|
+PR810045|Isenção;Isenção prevista no item 45 do Anexo V do RICMS/2017|01082018|
+PR810046|Isenção;Isenção prevista no item 46 do Anexo V do RICMS/2017|01082018|
+PR810047|Isenção;Isenção prevista no item 47 do Anexo V do RICMS/2017|01082018|
+PR810048|Isenção;Isenção prevista no item 48 do Anexo V do RICMS/2017|01082018|
+PR810049|Isenção;Isenção prevista no item 49 do Anexo V do RICMS/2017|01082018|
+PR810050|Isenção;Isenção prevista no item 50 do Anexo V do RICMS/2017|01082018|01122019
+PR810051|Isenção;Isenção prevista no item 51 do Anexo V do RICMS/2017|01082018|
+PR810052|Isenção;Isenção prevista no item 52 do Anexo V do RICMS/2017|01082018|
+PR810053|Isenção;Isenção prevista no item 53 do Anexo V do RICMS/2017|01082018|
+PR810054|Isenção;Isenção prevista no item 54 do Anexo V do RICMS/2017|01082018|
+PR810055|Isenção;Isenção prevista no item 55 do Anexo V do RICMS/2017|01082018|
+PR810056|Isenção;Isenção prevista no item 56 do Anexo V do RICMS/2017|01082018|
+PR810057|Isenção;Isenção prevista no item 57 do Anexo V do RICMS/2017|01082018|
+PR810058|Isenção;Isenção prevista no item 58 do Anexo V do RICMS/2017|01082018|09092019
+PR810059|Isenção;Isenção prevista no item 59 do Anexo V do RICMS/2017|01082018|
+PR810060|Isenção;Isenção prevista no item 60 do Anexo V do RICMS/2017|01082018|
+PR810061|Isenção;Isenção prevista no item 61 do Anexo V do RICMS/2017|01082018|
+PR810062|Isenção;Isenção prevista no item 62 do Anexo V do RICMS/2017|01082018|
+PR810063|Isenção;Isenção prevista no item 63 do Anexo V do RICMS/2017|01082018|
+PR810064|Isenção;Isenção prevista no item 64 do Anexo V do RICMS/2017|01082018|
+PR810065|Isenção;Isenção prevista no item 65 do Anexo V do RICMS/2017|01082018|
+PR810066|Isenção;Isenção prevista no item 66 do Anexo V do RICMS/2017|01082018|
+PR810067|Isenção;Isenção prevista no item 67 do Anexo V do RICMS/2017|01082018|
+PR810068|Isenção;Isenção prevista no item 68 do Anexo V do RICMS/2017|01082018|
+PR810069|Isenção;Isenção prevista no item 69 do Anexo V do RICMS/2017|01082018|
+PR810070|Isenção;Isenção prevista no item 70 do Anexo V do RICMS/2017|01082018|
+PR810071|Isenção;Isenção prevista no item 71 do Anexo V do RICMS/2017|01082018|
+PR810072|Isenção;Isenção prevista no item 72 do Anexo V do RICMS/2017|01082018|
+PR810073|Isenção;Isenção prevista no item 73 do Anexo V do RICMS/2017|01082018|
+PR810074|Isenção;Isenção prevista no item 74 do Anexo V do RICMS/2017|01082018|
+PR810075|Isenção;Isenção prevista no item 75 do Anexo V do RICMS/2017|01082018|
+PR810076|Isenção;Isenção prevista no item 76 do Anexo V do RICMS/2017|01082018|
+PR810077|Isenção;Isenção prevista no item 77 do Anexo V do RICMS/2017|01082018|
+PR810078|Isenção;Isenção prevista no item 78 do Anexo V do RICMS/2017|01082018|
+PR810079|Isenção;Isenção prevista no item 79 do Anexo V do RICMS/2017|01082018|
+PR810080|Isenção;Isenção prevista no item 80 do Anexo V do RICMS/2017|01082018|09092019
+PR810081|Isenção;Isenção prevista no item 81 do Anexo V do RICMS/2017|01082018|
+PR810082|Isenção;Isenção prevista no item 82 do Anexo V do RICMS/2017|01082018|
+PR810083|Isenção;Isenção prevista no item 83 do Anexo V do RICMS/2017|01082018|
+PR810084|Isenção;Isenção prevista no item 84 do Anexo V do RICMS/2017|01082018|
+PR810085|Isenção;Isenção prevista no item 85 do Anexo V do RICMS/2017|01082018|
+PR810086|Isenção;Isenção prevista no item 86 do Anexo V do RICMS/2017|01082018|02082018
+PR810087|Isenção;Isenção prevista no item 87 do Anexo V do RICMS/2017|01082018|
+PR810088|Isenção;Isenção prevista no item 88 do Anexo V do RICMS/2017|01082018|
+PR810089|Isenção;Isenção prevista no item 89 do Anexo V do RICMS/2017|01082018|
+PR810090|Isenção;Isenção prevista no item 90 do Anexo V do RICMS/2017|01082018|
+PR810091|Isenção;Isenção prevista no item 91 do Anexo V do RICMS/2017|01082018|
+PR810092|Isenção;Isenção prevista no item 92 do Anexo V do RICMS/2017|01082018|
+PR810093|Isenção;Isenção prevista no item 93 do Anexo V do RICMS/2017|01082018|
+PR810094|Isenção;Isenção prevista no item 94 do Anexo V do RICMS/2017|01082018|
+PR810095|Isenção;Isenção prevista no item 95 do Anexo V do RICMS/2017|01082018|
+PR810096|Isenção;Isenção prevista no item 96 do Anexo V do RICMS/2017|01082018|
+PR810097|Isenção;Isenção prevista no item 97 do Anexo V do RICMS/2017|01082018|
+PR810098|Isenção;Isenção prevista no item 98 do Anexo V do RICMS/2017|01082018|
+PR810099|Isenção;Isenção prevista no item 99 do Anexo V do RICMS/2017|01082018|
+PR810100|Isenção;Isenção prevista no item 100 do Anexo V do RICMS/2017|01082018|
+PR810101|Isenção;Isenção prevista no item 101 do Anexo V do RICMS/2017|01082018|01012024
+PR810102|Isenção;Isenção prevista no item 102 do Anexo V do RICMS/2017|01082018|
+PR810103|Isenção;Isenção prevista no item 103 do Anexo V do RICMS/2017|01082018|
+PR810104|Isenção;Isenção prevista no item 104 do Anexo V do RICMS/2017|01082018|
+PR810105|Isenção;Isenção prevista no item 105 do Anexo V do RICMS/2017|01082018|
+PR810106|Isenção;Isenção prevista no item 106 do Anexo V do RICMS/2017|01082018|
+PR810107|Isenção;Isenção prevista no item 107 do Anexo V do RICMS/2017|01082018|
+PR810108|Isenção;Isenção prevista no item 108 do Anexo V do RICMS/2017|01082018|
+PR810109|Isenção;Isenção prevista no item 109 do Anexo V do RICMS/2017|01082018|
+PR810110|Isenção;Isenção prevista no item 110 do Anexo V do RICMS/2017|01082018|09092019
+PR810111|Isenção;Isenção prevista no item 111 do Anexo V do RICMS/2017|01082018|09092019
+PR810112|Isenção;Isenção prevista no item 112 do Anexo V do RICMS/2017|01082018|
+PR810113|Isenção;Isenção prevista no item 113 do Anexo V do RICMS/2017|01082018|
+PR810114|Isenção;Isenção prevista no item 114 do Anexo V do RICMS/2017|01082018|
+PR810115|Isenção;Isenção prevista no item 115 do Anexo V do RICMS/2017|01082018|
+PR810116|Isenção;Isenção prevista no item 116 do Anexo V do RICMS/2017|01082018|
+PR810117|Isenção;Isenção prevista no item 117 do Anexo V do RICMS/2017|01082018|
+PR810118|Isenção;Isenção prevista no item 118 do Anexo V do RICMS/2017|01082018|
+PR810119|Isenção;Isenção prevista no item 119 do Anexo V do RICMS/2017|01082018|
+PR810120|Isenção;Isenção prevista no item 120 do Anexo V do RICMS/2017|01082018|
+PR810121|Isenção;Isenção prevista no item 121 do Anexo V do RICMS/2017|01082018|
+PR810122|Isenção;Isenção prevista no item 122 do Anexo V do RICMS/2017|01082018|
+PR810123|Isenção;Isenção prevista no item 123 do Anexo V do RICMS/2017|01082018|
+PR810124|Isenção;Isenção prevista no item 124 do Anexo V do RICMS/2017|01082018|
+PR810125|Isenção;Isenção prevista no item 125 do Anexo V do RICMS/2017|01082018|01052023
+PR810126|Isenção;Isenção prevista no item 126 do Anexo V do RICMS/2017|01082018|
+PR810127|Isenção;Isenção prevista no item 127 do Anexo V do RICMS/2017|01082018|
+PR810128|Isenção;Isenção prevista no item 128 do Anexo V do RICMS/2017|01082018|
+PR810129|Isenção;Isenção prevista no item 129 do Anexo V do RICMS/2017|01082018|
+PR810130|Isenção;Isenção prevista no item 130 do Anexo V do RICMS/2017|01082018|
+PR810131|Isenção;Isenção prevista no item 131 do Anexo V do RICMS/2017|01082018|
+PR810132|Isenção;Isenção prevista no item 132 do Anexo V do RICMS/2017|01082018|
+PR810133|Isenção;Isenção prevista no item 133 do Anexo V do RICMS/2017|01082018|
+PR810134|Isenção;Isenção prevista no item 134 do Anexo V do RICMS/2017|01082018|
+PR810135|Isenção;Isenção prevista no item 135 do Anexo V do RICMS/2017|01082018|01012019
+PR810136|Isenção;Isenção prevista no item 136 do Anexo V do RICMS/2017|01082018|
+PR810137|Isenção;Isenção prevista no item 137 do Anexo V do RICMS/2017|01082018|
+PR810138|Isenção;Isenção prevista no item 138 do Anexo V do RICMS/2017|01082018|01012021
+PR810139|Isenção;Isenção prevista no item 139 do Anexo V do RICMS/2017|01082018|
+PR810140|Isenção;Isenção prevista no item 140 do Anexo V do RICMS/2017|01082018|
+PR810141|Isenção;Isenção prevista no item 141 do Anexo V do RICMS/2017|01082018|
+PR810142|Isenção;Isenção prevista no item 142 do Anexo V do RICMS/2017|01082018|
+PR810143|Isenção;Isenção prevista no item 143 do Anexo V do RICMS/2017|01082018|
+PR810144|Isenção;Isenção prevista no item 144 do Anexo V do RICMS/2017|01082018|
+PR810145|Isenção;Isenção prevista no item 145 do Anexo V do RICMS/2017|01082018|01012021
+PR810146|Isenção;Isenção prevista no item 146 do Anexo V do RICMS/2017|01082018|
+PR810147|Isenção;Isenção prevista no item 147 do Anexo V do RICMS/2017|01082018|
+PR810148|Isenção;Isenção prevista no item 148 do Anexo V do RICMS/2017|01082018|
+PR810149|Isenção;Isenção prevista no item 149 do Anexo V do RICMS/2017|01082018|
+PR810150|Isenção;Isenção prevista no item 150 do Anexo V do RICMS/2017|01082018|
+PR810151|Isenção;Isenção prevista no item 151 do Anexo V do RICMS/2017|01082018|
+PR810152|Isenção;Isenção prevista no item 152 do Anexo V do RICMS/2017|01082018|
+PR810153|Isenção;Isenção prevista no item 153 do Anexo V do RICMS/2017|01082018|
+PR810154|Isenção;Isenção prevista no item 154 do Anexo V do RICMS/2017|01082018|
+PR810155|Isenção;Isenção prevista no item 155 do Anexo V do RICMS/2017|01082018|
+PR810156|Isenção;Isenção prevista no item 156 do Anexo V do RICMS/2017|01082018|
+PR810157|Isenção;Isenção prevista no item 157 do Anexo V do RICMS/2017|01082018|
+PR810158|Isenção;Isenção prevista no item 158 do Anexo V do RICMS/2017|01082018|
+PR810159|Isenção;Isenção prevista no item 159 do Anexo V do RICMS/2017|01082018|
+PR810160|Isenção;Isenção prevista no item 160 do Anexo V do RICMS/2017|01082018|
+PR810161|Isenção;Isenção prevista no item 161 do Anexo V do RICMS/2017|01082018|
+PR819999|Isenção;Isenção prevista em regime especial e/ou programa de incentivo|01082018|
+PR820000|Redução de base de cálculo;Redução de base de cálculo do imposto reconhecida judicialmente|01082018|
+PR820001|Redução de base de cálculo;Redução de base de cálculo prevista no item 1 do Anexo VI do RICMS/2017|01082018|
+PR820002|Redução de base de cálculo;Redução de base de cálculo prevista no item 2 do Anexo VI do RICMS/2017|01082018|01072022
+PR820003|Redução de base de cálculo;Redução de base de cálculo prevista no item 3 do Anexo VI do RICMS/2017|01082018|
+PR820004|Redução de base de cálculo;Redução de base de cálculo prevista no item 4 do Anexo VI do RICMS/2017|01082018|
+PR820005|Redução de base de cálculo;Redução de base de cálculo prevista no item 5 do Anexo VI do RICMS/2017|01082018|
+PR820006|Redução de base de cálculo;Redução de base de cálculo prevista no item 6 do Anexo VI do RICMS/2017|01082018|
+PR820007|Redução de base de cálculo;Redução de base de cálculo prevista no item 7 do Anexo VI do RICMS/2017|01082018|09092019
+PR820008|Redução de base de cálculo;Redução de base de cálculo prevista no item 8 do Anexo VI do RICMS/2017|01082018|
+PR820009|Redução de base de cálculo;Redução de base de cálculo prevista no item 9 do Anexo VI do RICMS/2017|01082018|
+PR820010|Redução de base de cálculo;Redução de base de cálculo prevista no item 10 do Anexo VI do RICMS/2017|01082018|
+PR820011|Redução de base de cálculo;Redução de base de cálculo prevista no item 11 do Anexo VI do RICMS/2017|01082018|
+PR820012|Redução de base de cálculo;Redução de base de cálculo prevista no item 12 do Anexo VI do RICMS/2017|01082018|
+PR820013|Redução de base de cálculo;Redução de base de cálculo prevista no item 13 do Anexo VI do RICMS/2017|01082018|
+PR820014|Redução de base de cálculo;Redução de base de cálculo prevista no item 14 do Anexo VI do RICMS/2017|01082018|
+PR820015|Redução de base de cálculo;Redução de base de cálculo prevista no item 15 do Anexo VI do RICMS/2017|01082018|
+PR820016|Redução de base de cálculo;Redução de base de cálculo prevista no item 16 do Anexo VI do RICMS/2017|01082018|
+PR820017|Redução de base de cálculo;Redução de base de cálculo prevista no item 17 do Anexo VI do RICMS/2017|01082018|
+PR820018|Redução de base de cálculo;Redução de base de cálculo prevista no item 18 do Anexo VI do RICMS/2017|01082018|09092019
+PR820019|Redução de base de cálculo;Redução de base de cálculo prevista no item 19 do Anexo VI do RICMS/2017|01082018|
+PR820020|Redução de base de cálculo;Redução de base de cálculo prevista no item 20 do Anexo VI do RICMS/2017|01082018|
+PR820021|Redução de base de cálculo;Redução de base de cálculo prevista no item 21 do Anexo VI do RICMS/2017|01082018|
+PR820022|Redução de base de cálculo;Redução de base de cálculo prevista no item 22 do Anexo VI do RICMS/2017|01082018|
+PR820023|Redução de base de cálculo;Redução de base de cálculo prevista no item 23 do Anexo VI do RICMS/2017|01082018|
+PR820024|Redução de base de cálculo;Redução de base de cálculo prevista no item 24 do Anexo VI do RICMS/2017|01082018|
+PR820025|Redução de base de cálculo;Redução de base de cálculo prevista no item 25 do Anexo VI do RICMS/2017|01082018|
+PR820026|Redução de base de cálculo;Redução de base de cálculo prevista no item 26 do Anexo VI do RICMS/2017|01082018|
+PR820027|Redução de base de cálculo;Redução de base de cálculo prevista no item 27 do Anexo VI do RICMS/2017|01082018|
+PR820028|Redução de base de cálculo;Redução de base de cálculo prevista no item 28 do Anexo VI do RICMS/2017|01082018|
+PR820029|Redução de base de cálculo;Redução de base de cálculo prevista no item 29 do Anexo VI do RICMS/2017|01082018|
+PR820030|Redução de base de cálculo;Redução de base de cálculo prevista no item 30 do Anexo VI do RICMS/2017|01082018|
+PR820031|Redução de base de cálculo;Redução de base de cálculo prevista no item 31 do Anexo VI do RICMS/2017|01082018|
+PR820032|Redução de base de cálculo;Redução de base de cálculo prevista no item 32 do Anexo VI do RICMS/2017|01082018|
+PR820033|Redução de base de cálculo;Redução de base de cálculo prevista no item 33 do Anexo VI do RICMS/2017|01082018|
+PR820034|Redução de base de cálculo;Redução de base de cálculo prevista no item 34 do Anexo VI do RICMS/2017|01082018|
+PR820035|Redução de base de cálculo;Redução de base de cálculo prevista no item 35 do Anexo VI do RICMS/2017|01082018|
+PR820036|Redução de base de cálculo;Redução de base de cálculo prevista no item 36 do Anexo VI do RICMS/2017|01082018|
+PR820037|Redução de base de cálculo;Redução de base de cálculo prevista no item 37 do Anexo VI do RICMS/2017|01082018|
+PR820038|Redução de base de cálculo;Redução de base de cálculo prevista no item 38 do Anexo VI do RICMS/2017|01082018|
+PR820039|Redução de base de cálculo;Redução de base de cálculo prevista no item 39 do Anexo VI do RICMS/2017|01082018|
+PR820040|Redução de base de cálculo;Redução de base de cálculo prevista no item 40 do Anexo VI do RICMS/2017|01082018|
+PR820041|Redução de base de cálculo;Redução de base de cálculo prevista no item 41 do Anexo VI do RICMS/2017|01082018|01112021
+PR820042|Redução de base de cálculo;Redução de base de cálculo prevista no item 8-A do Anexo VI do RICMS/2017|01082018|
+PR820043|Redução de base de cálculo;Redução de base de cálculo prevista no item 36-A do Anexo VI do RICMS/2017|01082018|02082018
+PR829999|Redução de base de cálculo;Redução de base de cálculo prevista em regime especial e/ou programa de incentivo|01082018|
+PR830000|Diferimento;Diferimento do pagamento do imposto reconhecido judicialmente|01082018|
+PR830001|Diferimento;Diferimento previsto no inciso I do caput do art. 28 do Anexo VIII do RICMS/2017|01082018|
+PR830002|Diferimento;Diferimento previsto no inciso II do caput do art. 28 do Anexo VIII do RICMS/2017|01082018|
+PR830003|Diferimento;Diferimento previsto no inciso III do caput do art. 28 do Anexo VIII do RICMS/2017|01082018|13032023
+PR830004|Diferimento;Diferimento previsto no inciso IV do caput do art. 28 do Anexo VIII do RICMS/2017|01082018|13032023
+PR830005|Diferimento;Diferimento previsto no item 1 do caput do art. 31 do Anexo VIII do RICMS/2017|01082018|
+PR830006|Diferimento;Diferimento previsto no item 2 do caput do art. 31 do Anexo VIII do RICMS/2017|01082018|
+PR830007|Diferimento;Diferimento previsto no item 3 do caput do art. 31 do Anexo VIII do RICMS/2017|01082018|
+PR830008|Diferimento;Diferimento previsto no subitem 4.1 do caput do art. 31 do Anexo VIII do RICMS/2017|01082018|
+PR830009|Diferimento;Diferimento previsto no subitem 4.2 do caput do art. 31 do Anexo VIII do RICMS/2017|01082018|
+PR830010|Diferimento;Diferimento previsto no item 5 do caput do art. 31 do Anexo VIII do RICMS/2017|01082018|
+PR830011|Diferimento;Diferimento previsto no item 6 do caput do art. 31 do Anexo VIII do RICMS/2017|01082018|
+PR830012|Diferimento;Diferimento previsto no item 7 do caput do art. 31 do Anexo VIII do RICMS/2017|01082018|
+PR830013|Diferimento;Diferimento previsto no item 8 do caput do art. 31 do Anexo VIII do RICMS/2017|01082018|
+PR830014|Diferimento;Diferimento previsto no item 9 do caput do art. 31 do Anexo VIII do RICMS/2017|01082018|
+PR830015|Diferimento;Diferimento previsto no item 10 do caput do art. 31 do Anexo VIII do RICMS/2017|01082018|
+PR830016|Diferimento;Diferimento previsto no item 11 do caput do art. 31 do Anexo VIII do RICMS/2017|01082018|
+PR830017|Diferimento;Diferimento previsto no item 12 do caput do art. 31 do Anexo VIII do RICMS/2017|01082018|
+PR830018|Diferimento;Diferimento previsto no item 13 do caput do art. 31 do Anexo VIII do RICMS/2017|01082018|
+PR830019|Diferimento;Diferimento previsto no item 14 do caput do art. 31 do Anexo VIII do RICMS/2017|01082018|
+PR830020|Diferimento;Diferimento previsto no item 15 do caput do art. 31 do Anexo VIII do RICMS/2017|01082018|
+PR830021|Diferimento;Diferimento previsto no item 16 do caput do art. 31 do Anexo VIII do RICMS/2017|01082018|
+PR830022|Diferimento;Diferimento previsto no item 17 do caput do art. 31 do Anexo VIII do RICMS/2017|01082018|
+PR830023|Diferimento;Diferimento previsto no item 18 do caput do art. 31 do Anexo VIII do RICMS/2017|01082018|
+PR830024|Diferimento;Diferimento previsto no item 19 do caput do art. 31 do Anexo VIII do RICMS/2017|01082018|
+PR830025|Diferimento;Diferimento previsto no item 20 do caput do art. 31 do Anexo VIII do RICMS/2017|01082018|
+PR830026|Diferimento;Diferimento previsto no item 21 do caput do art. 31 do Anexo VIII do RICMS/2017|01082018|
+PR830027|Diferimento;Diferimento previsto no item 22 do caput do art. 31 do Anexo VIII do RICMS/2017|01082018|09092019
+PR830028|Diferimento;Diferimento previsto no item 23 do caput do art. 31 do Anexo VIII do RICMS/2017|01082018|
+PR830029|Diferimento;Diferimento previsto no item 24 do caput do art. 31 do Anexo VIII do RICMS/2017|01082018|
+PR830030|Diferimento;Diferimento previsto no item 25 do caput do art. 31 do Anexo VIII do RICMS/2017|01082018|
+PR830031|Diferimento;Diferimento previsto no item 26 do caput do art. 31 do Anexo VIII do RICMS/2017|01082018|
+PR830032|Diferimento;Diferimento previsto no subitem 27.1 do caput do art. 31 do Anexo VIII do RICMS/2017|01082018|
+PR830033|Diferimento;Diferimento previsto no subitem 27.2 do caput do art. 31 do Anexo VIII do RICMS/2017|01082018|
+PR830034|Diferimento;Diferimento previsto no subitem 27.3 do caput do art. 31 do Anexo VIII do RICMS/2017|01082018|
+PR830035|Diferimento;Diferimento previsto no item 28 do caput do art. 31 do Anexo VIII do RICMS/2017|01082018|
+PR830036|Diferimento;Diferimento previsto no item 29 do caput do art. 31 do Anexo VIII do RICMS/2017|01082018|
+PR830037|Diferimento;Diferimento previsto no item 30 do caput do art. 31 do Anexo VIII do RICMS/2017|01082018|
+PR830038|Diferimento;Diferimento previsto no item 31 do caput do art. 31 do Anexo VIII do RICMS/2017|01082018|
+PR830039|Diferimento;Diferimento previsto no item 32 do caput do art. 31 do Anexo VIII do RICMS/2017|01082018|
+PR830040|Diferimento;Diferimento previsto no item 33 do caput do art. 31 do Anexo VIII do RICMS/2017|01082018|
+PR830041|Diferimento;Diferimento previsto no item 34 do caput do art. 31 do Anexo VIII do RICMS/2017|01082018|
+PR830042|Diferimento;Diferimento previsto no item 35 do caput do art. 31 do Anexo VIII do RICMS/2017|01082018|
+PR830043|Diferimento;Diferimento previsto no item 36 do caput do art. 31 do Anexo VIII do RICMS/2017|01082018|09092019
+PR830044|Diferimento;Diferimento previsto no item 37 do caput do art. 31 do Anexo VIII do RICMS/2017|01082018|
+PR830045|Diferimento;Diferimento previsto no item 38 do caput do art. 31 do Anexo VIII do RICMS/2017|01082018|
+PR830046|Diferimento;Diferimento previsto no item 39 do caput do art. 31 do Anexo VIII do RICMS/2017|01082018|
+PR830047|Diferimento;Diferimento previsto no item 40 do caput do art. 31 do Anexo VIII do RICMS/2017|01082018|
+PR830048|Diferimento;Diferimento previsto no item 41 do caput do art. 31 do Anexo VIII do RICMS/2017|01082018|
+PR830049|Diferimento;Diferimento previsto no item 42 do caput do art. 31 do Anexo VIII do RICMS/2017|01082018|
+PR830050|Diferimento;Diferimento previsto no item 43 do caput do art. 31 do Anexo VIII do RICMS/2017|01082018|
+PR830051|Diferimento;Diferimento previsto no item 44 do caput do art. 31 do Anexo VIII do RICMS/2017|01082018|
+PR830052|Diferimento;Diferimento previsto no item 45 do caput do art. 31 do Anexo VIII do RICMS/2017|01082018|
+PR830053|Diferimento;Diferimento previsto no item 46 do caput do art. 31 do Anexo VIII do RICMS/2017|01082018|
+PR830054|Diferimento;Diferimento previsto no item 47 do caput do art. 31 do Anexo VIII do RICMS/2017|01082018|
+PR830055|Diferimento;Diferimento previsto no item 48 do caput do art. 31 do Anexo VIII do RICMS/2017|01082018|
+PR830056|Diferimento;Diferimento previsto no item 49 do caput do art. 31 do Anexo VIII do RICMS/2017|01082018|
+PR830057|Diferimento;Diferimento previsto no item 50 do caput do art. 31 do Anexo VIII do RICMS/2017|01082018|
+PR830058|Diferimento;Diferimento previsto no item 51 do caput do art. 31 do Anexo VIII do RICMS/2017|01082018|
+PR830059|Diferimento;Diferimento previsto no item 52 do caput do art. 31 do Anexo VIII do RICMS/2017|01082018|
+PR830060|Diferimento;Diferimento previsto no item 53 do caput do art. 31 do Anexo VIII do RICMS/2017|01082018|
+PR830061|Diferimento;Diferimento previsto no item 54 do caput do art. 31 do Anexo VIII do RICMS/2017|01082018|
+PR830062|Diferimento;Diferimento previsto no item 55 do caput do art. 31 do Anexo VIII do RICMS/2017|01082018|
+PR830063|Diferimento;Diferimento previsto no item 56 do caput do art. 31 do Anexo VIII do RICMS/2017|01082018|
+PR830064|Diferimento;Diferimento previsto no item 57 do caput do art. 31 do Anexo VIII do RICMS/2017|01082018|
+PR830065|Diferimento;Diferimento previsto no item 58 do caput do art. 31 do Anexo VIII do RICMS/2017|01082018|
+PR830066|Diferimento;Diferimento previsto no item 59 do caput do art. 31 do Anexo VIII do RICMS/2017|01082018|
+PR830067|Diferimento;Diferimento previsto no item 60 do caput do art. 31 do Anexo VIII do RICMS/2017|01082018|
+PR830068|Diferimento;Diferimento previsto no item 61 do caput do art. 31 do Anexo VIII do RICMS/2017|01082018|
+PR830069|Diferimento;Diferimento previsto no item 62 do caput do art. 31 do Anexo VIII do RICMS/2017|01082018|
+PR830070|Diferimento;Diferimento previsto no item 63 do caput do art. 31 do Anexo VIII do RICMS/2017|01082018|
+PR830071|Diferimento;Diferimento previsto no item 64 do caput do art. 31 do Anexo VIII do RICMS/2017|01082018|
+PR830072|Diferimento;Diferimento previsto no item 65 do caput do art. 31 do Anexo VIII do RICMS/2017|01082018|
+PR830073|Diferimento;Diferimento previsto no item 66 do caput do art. 31 do Anexo VIII do RICMS/2017|01082018|
+PR830074|Diferimento;Diferimento previsto no item 67 do caput do art. 31 do Anexo VIII do RICMS/2017|01082018|
+PR830075|Diferimento;Diferimento previsto no item 68 do caput do art. 31 do Anexo VIII do RICMS/2017|01082018|
+PR830076|Diferimento;Diferimento previsto no item 69 do caput do art. 31 do Anexo VIII do RICMS/2017|01082018|
+PR830077|Diferimento;Diferimento previsto no item 70 do caput do art. 31 do Anexo VIII do RICMS/2017|01082018|
+PR830078|Diferimento;Diferimento previsto no item 71 do caput do art. 31 do Anexo VIII do RICMS/2017|01082018|
+PR830079|Diferimento;Diferimento previsto no item 72 do caput do art. 31 do Anexo VIII do RICMS/2017|01082018|
+PR830080|Diferimento;Diferimento previsto no item 73 do caput do art. 31 do Anexo VIII do RICMS/2017|01082018|
+PR830081|Diferimento;Diferimento previsto no item 74 do caput do art. 31 do Anexo VIII do RICMS/2017|01082018|
+PR830082|Diferimento;Diferimento previsto no item 75 do caput do art. 31 do Anexo VIII do RICMS/2017|01082018|
+PR830083|Diferimento;Diferimento previsto no item 76 do caput do art. 31 do Anexo VIII do RICMS/2017|01082018|
+PR830084|Diferimento;Diferimento previsto no item 77 do caput do art. 31 do Anexo VIII do RICMS/2017|01082018|
+PR830085|Diferimento;Diferimento previsto no item 78 do caput do art. 31 do Anexo VIII do RICMS/2017|01082018|
+PR830086|Diferimento;Diferimento previsto no item 79 do caput do art. 31 do Anexo VIII do RICMS/2017|01082018|
+PR830087|Diferimento;Diferimento previsto no item 80 do caput do art. 31 do Anexo VIII do RICMS/2017|01082018|
+PR830088|Diferimento;Diferimento previsto no item 81 do caput do art. 31 do Anexo VIII do RICMS/2017|01082018|
+PR830089|Diferimento;Diferimento previsto no item 82 do caput do art. 31 do Anexo VIII do RICMS/2017|01082018|27122022
+PR830090|Diferimento;Diferimento previsto no item 83 do caput do art. 31 do Anexo VIII do RICMS/2017|01082018|
+PR830091|Diferimento;Diferimento previsto no item 84 do caput do art. 31 do Anexo VIII do RICMS/2017|01082018|
+PR830092|Diferimento;Diferimento previsto no item 85 do caput do art. 31 do Anexo VIII do RICMS/2017|01082018|
+PR830093|Diferimento;Diferimento previsto no item 86 do caput do art. 31 do Anexo VIII do RICMS/2017|01082018|
+PR830094|Diferimento;Diferimento previsto no § 1º do art. 31 do Anexo VIII do RICMS/2017|01082018|
+PR830095|Diferimento;Diferimento previsto no § 11 do art. 31 do Anexo VIII do RICMS/2017|01082018|
+PR830096|Diferimento;Diferimento previsto no § 17 do art. 31 do Anexo VIII do RICMS/2017|01082018|
+PR830097|Diferimento;Diferimento previsto no § 19 do art. 31 do Anexo VIII do RICMS/2017|01082018|27032019
+PR830098|Diferimento;Diferimento previsto no art. 32 do Anexo VIII do RICMS/2017|01082018|
+PR830099|Diferimento;Diferimento previsto no art. 39 do Anexo VIII do RICMS/2017|01082018|
+PR830100|Diferimento;Diferimento previsto no art. 41 do Anexo VIII do RICMS/2017|01082018|
+PR830101|Diferimento;Diferimento previsto no inciso I do caput do art. 42 do Anexo VIII do RICMS/2017|01082018|
+PR830102|Diferimento;Diferimento previsto no inciso II do caput do art. 42 do Anexo VIII do RICMS/2017|01082018|
+PR830103|Diferimento;Diferimento previsto no inciso III do caput do art. 42 do Anexo VIII do RICMS/2017|01082018|
+PR830104|Diferimento;Diferimento previsto no inciso IV do caput do art. 42 do Anexo VIII do RICMS/2017|01082018|
+PR830105|Diferimento;Diferimento previsto no inciso V do caput do art. 42 do Anexo VIII do RICMS/2017|01082018|
+PR830106|Diferimento;Diferimento previsto na alínea a do inc. VI do caput do art. 42 do Anexo VIII do RICMS/2017|01082018|
+PR830107|Diferimento;Diferimento previsto na alínea a do inc. VI do caput do art. 42 do Anexo VIII do RICMS/2017|01082018|09092019
+PR830108|Diferimento;Diferimento previsto no inciso VII do caput do art. 42 do Anexo VIII do RICMS/2017|01082018|
+PR830109|Diferimento;Diferimento previsto no inciso VIII do caput do art. 42 do Anexo VIII do RICMS/2017|01082018|
+PR830110|Diferimento;Diferimento previsto no inciso IX do caput do art. 42 do Anexo VIII do RICMS/2017|01082018|
+PR830111|Diferimento;Diferimento previsto no inciso X do caput do art. 42 do Anexo VIII do RICMS/2017|01082018|
+PR830112|Diferimento;Diferimento previsto no inciso I do caput do art. 44 do Anexo VIII do RICMS/2017|01082018|
+PR830113|Diferimento;Diferimento previsto no inciso II do caput do art. 44 do Anexo VIII do RICMS/2017|01082018|
+PR830114|Diferimento;Diferimento previsto no inciso III do caput do art. 44 do Anexo VIII do RICMS/2017|01082018|
+PR830115|Diferimento;Diferimento previsto no inciso IV do caput do art. 44 do Anexo VIII do RICMS/2017|01082018|
+PR830116|Diferimento;Diferimento previsto no inciso V do caput do art. 44 do Anexo VIII do RICMS/2017|01082018|
+PR830117|Diferimento;Diferimento previsto no inciso VI do caput do art. 44 do Anexo VIII do RICMS/2017|01082018|
+PR830118|Diferimento;Diferimento previsto no inciso VII do caput do art. 44 do Anexo VIII do RICMS/2017|01082018|
+PR830119|Diferimento;Diferimento previsto no inciso VIII do caput do art. 44 do Anexo VIII do RICMS/2017|01082018|
+PR830120|Diferimento;Diferimento previsto no inciso IX do caput do art. 44 do Anexo VIII do RICMS/2017|01082018|
+PR830121|Diferimento;Diferimento previsto no inciso X do caput do art. 44 do Anexo VIII do RICMS/2017|01082018|
+PR830122|Diferimento;Diferimento previsto no inciso XI do caput do art. 44 do Anexo VIII do RICMS/2017|01082018|
+PR830123|Diferimento;Diferimento previsto no inciso XII do caput do art. 44 do Anexo VIII do RICMS/2017|01082018|
+PR830124|Diferimento;Diferimento previsto no inciso XIII do caput do art. 44 do Anexo VIII do RICMS/2017|01082018|
+PR830125|Diferimento;Diferimento previsto no inciso XIV do caput do art. 44 do Anexo VIII do RICMS/2017|01082018|
+PR830126|Diferimento;Diferimento previsto na alínea a do inciso I do caput do art. 46 do Anexo VIII do RICMS/2017|01082018|
+PR830127|Diferimento;Diferimento previsto na alínea a do inciso I do caput do art. 46 do Anexo VIII do RICMS/2017|01082018|26072019
+PR830128|Diferimento;Diferimento previsto na alínea a do inciso II do caput do art. 46 do Anexo VIII do RICMS/2017|01082018|
+PR830129|Diferimento;Diferimento previsto na alínea b do inciso II do caput do art. 46 do Anexo VIII do RICMS/2017|01082018|
+PR839999|Diferimento;Diferimento previsto em regime especial e/ou programa de incentivo|01082018|
+PR840000|Suspensão;Suspensão do pagamento do imposto reconhecida judicialmente|01082018|
+PR840001|Suspensão;Suspensão prevista no inciso I do caput do art. 1º do Anexo VIII do RICMS/2017|01082018|
+PR840002|Suspensão;Suspensão prevista no inciso II do caput do art. 1º do Anexo VIII do RICMS/2017|01082018|
+PR840003|Suspensão;Suspensão prevista no inciso III do caput do art. 1º do Anexo VIII do RICMS/2017|01082018|
+PR840004|Suspensão;Suspensão prevista no inciso IV do caput do art. 1º do Anexo VIII do RICMS/2017|01082018|
+PR840005|Suspensão;Suspensão prevista no inciso V do caput do art. 1º do Anexo VIII do RICMS/2017|01082018|
+PR840006|Suspensão;Suspensão prevista no inciso VI do caput do art. 1º do Anexo VIII do RICMS/2017|01082018|31012024
+PR840007|Suspensão;Suspensão prevista no inciso VII do caput do art. 1º do Anexo VIII do RICMS/2017|01082018|
+PR840008|Suspensão;Suspensão prevista no inciso VIII do caput do art. 1º do Anexo VIII do RICMS/2017|01082018|
+PR840009|Suspensão;Suspensão prevista no inciso IX do caput do art. 1º do Anexo VIII do RICMS/2017|01082018|
+PR840010|Suspensão;Suspensão prevista no inciso X do caput do art. 1º do Anexo VIII do RICMS/2017|01082018|
+PR840011|Suspensão;Suspensão prevista no inciso XI do caput do art. 1º do Anexo VIII do RICMS/2017|01082018|
+PR840012|Suspensão;Suspensão prevista no inciso XII do caput do art. 1º do Anexo VIII do RICMS/2017|01082018|
+PR840013|Suspensão;Suspensão prevista no inciso XIII do caput do art. 1º do Anexo VIII do RICMS/2017|01082018|
+PR849999|Suspensão;Suspensão prevista em regime especial e/ou programa de incentivo|01082018|
+PR800000|Imunidade ou não incidência;Imunidade ou não incidência do imposto reconhecida judicialmente|03082018|
+PR800001|Imunidade ou não incidência;Não incidência de que trata o inciso I do caput do art. 3º do RICMS/2017|03082018|
+PR800002|Imunidade ou não incidência;Não incidência de que trata o inciso II do caput do art. 3º do RICMS/2017|03082018|
+PR800003|Imunidade ou não incidência;Não incidência de que trata o inciso III do caput do art. 3º do RICMS/2017|03082018|
+PR800004|Imunidade ou não incidência;Não incidência de que trata o inciso IV do caput do art. 3º do RICMS/2017|03082018|
+PR800005|Imunidade ou não incidência;Não incidência de que trata o inciso V do caput do art. 3º do RICMS/2017|03082018|
+PR800006|Imunidade ou não incidência;Não incidência de que trata o inciso VI do caput do art. 3º do RICMS/2017|03082018|
+PR800007|Imunidade ou não incidência;Não incidência de que trata o inciso VII do caput do art. 3º do RICMS/2017|03082018|
+PR800008|Imunidade ou não incidência;Não incidência de que trata o inciso VIII do caput do art. 3º do RICMS/2017|03082018|
+PR800009|Imunidade ou não incidência;Não incidência de que trata o inciso IX do caput do art. 3º do RICMS/2017|03082018|
+PR800010|Imunidade ou não incidência;Não incidência de que trata o inciso X do caput do art. 3º do RICMS/2017|03082018|
+PR800011|Imunidade ou não incidência;Não incidência de que trata o inciso XI do caput do art. 3º do RICMS/2017|03082018|
+PR800012|Imunidade ou não incidência;Não incidência de que trata o inciso XIII do caput do art. 3º do RICMS/2017|03082018|
+PR800013|Imunidade ou não incidência;Não incidência de que trata o inciso XIV do caput do art. 3º do RICMS/2017|03082018|
+PR800014|Imunidade ou não incidência;Não incidência de que trata o inciso XV do caput do art. 3º do RICMS/2017|03082018|
+PR800015|Imunidade ou não incidência;Não incidência de que trata o inciso I do parágrafo único do art. 3º do RICMS/2017|03082018|
+PR800016|Imunidade ou não incidência;Não incidência de que trata o inciso II do parágrafo único do art. 3º do RICMS/2017|03082018|
+PR800017|Imunidade ou não incidência;Não incidência de que trata o inciso XII do caput do art. 3º do RICMS/2017|01082018|
+PR809999|Imunidade ou não incidência;Não Incidência prevista em regime especial e/ou programa de incentivo|03082018|
+PR810162|Isenção;Isenção prevista no item 162 do Anexo V do RICMS/2017|01082018|
+PR810163|Isenção;Isenção prevista no item 163 do Anexo V do RICMS/2017|01082018|
+PR810164|Isenção;Isenção prevista no item 164 do Anexo V do RICMS/2017|01082018|
+PR810165|Isenção;Isenção prevista no item 165 do Anexo V do RICMS/2017|01082018|
+PR810166|Isenção;Isenção prevista no item 166 do Anexo V do RICMS/2017|01082018|
+PR810167|Isenção;Isenção prevista no item 167 do Anexo V do RICMS/2017|01082018|
+PR810168|Isenção;Isenção prevista no item 168 do Anexo V do RICMS/2017|01082018|
+PR810169|Isenção;Isenção prevista no item 169 do Anexo V do RICMS/2017|01082018|
+PR810170|Isenção;Isenção prevista no item 170 do Anexo V do RICMS/2017|01082018|
+PR810171|Isenção;Isenção prevista no item 171 do Anexo V do RICMS/2017|01082018|
+PR810172|Isenção;Isenção prevista no item 172 do Anexo V do RICMS/2017|01082018|
+PR810173|Isenção;Isenção prevista no item 173 do Anexo V do RICMS/2017|01082018|
+PR810174|Isenção;Isenção prevista no item 174 do Anexo V do RICMS/2017|01082018|
+PR810175|Isenção;Isenção prevista no item 175 do Anexo V do RICMS/2017|01082018|
+PR840014|Suspensão;Suspensão prevista no caput do art. 2º do Anexo VIII do RICMS/2017|01082018|30092019
+PR820044|Redução de base de cálculo;Redução de base de cálculo do imposto prevista no inciso II, do art. 5º da Lei 13.212/2001|01112018|17022025
+PR820045|Redução de base de cálculo;Redução de base de cálculo do imposto prevista no inciso IV, do art. 5º da Lei 13.212/2001|01112018|17022025
+PR830130|Diferimento;Diferimento previsto no art. 6º da Lei 13.212/2001|01112018|
+PR840015|Suspensão;Suspensão prevista no art. 12-A, da Subseção II, do Anexo VIII do RICMS/2017|01112018|01122019
+PR810176|Isenção;Isenção prevista no item 58-A do Anexo V do RICMS/2017|01122018|
+PR810177|Isenção;Isenção prevista no item 104-A do Anexo V do RICMS/2017|01092018|09092019
+PR810178|Isenção;Isenção prevista no item 108-A do Anexo V do RICMS/2017|01022018|
+PR810179|Isenção;Isenção prevista no item 125-A do Anexo V do RICMS/2017|01122018|
+PR810180|Isenção;Isenção prevista no item 143-A do Anexo V do RICMS/2017|02022018|
+PR810181|Isenção;Isenção prevista no item 143-B do Anexo V do RICMS/2017|02022018|
+PR810182|Isenção;Isenção prevista no item 143-C do Anexo V do RICMS/2017|02022018|
+PR810183|Isenção;Isenção prevista no item 144-A do Anexo V do RICMS/2017|01092018|
+PR820046|Redução de base de cálculo;Redução de base de cálculo prevista no item 32-A do Anexo VI do RICMS/2017|02022018|
+PR830127|Diferimento;Diferimento previsto na alínea b do inciso I do caput do art. 46 do Anexo VIII do RICMS/2017|27072019|
+PR820047|Redução de base de cálculo;Redução de base de cálculo prevista no inciso VI, do art. 3º da Lei 13.214/2001|01012019|
+PR800018|Não tributado;Sem destaque do ICMS conforme art. 140 do RICMS/2017|09092019|
+PR800019|Não tributado;Sem destaque do ICMS conforme  inciso II do § 3º do art. 237 e art. 13 do Anexo VIII do RICMS/2017|09092019|
+PR800020|Não tributado;Sem destaque do ICMS conforme § 5º do art. 237  do RICMS/2017|09092019|
+PR800021|Não tributado;Sem destaque do ICMS conforme alínea 'b' do inciso I do § 11 do art. 237  do RICMS/2017|09092019|
+PR800022|Não tributado;Sem destaque do ICMS conforme § 2º do art. 395  do RICMS/2017|09092019|
+PR800023|Não tributado;Sem destaque do ICMS conforme  inciso I do art. 397  do RICMS/2017|09092019|
+PR800024|Não tributado;Sem destaque do ICMS conforme  § 1º do art. 411  do RICMS/2017|09092019|
+PR800025|Não tributado;Sem destaque do ICMS conforme  inciso II do § 2º do art. 411  do RICMS/2017|09092019|
+PR800026|Não tributado;Sem destaque do ICMS conforme inciso II do art. 415 do RICMS/2017|09092019|
+PR800027|Não tributado;Sem destaque do ICMS conforme inciso II do art. 416 do RICMS/2017|09092019|
+PR800028|Não tributado;Sem destaque do ICMS conforme art. 419 do RICMS/2017|09092019|
+PR800029|Não tributado;Sem destaque do ICMS conforme  alínea 'b' do inciso I do art. 425  do RICMS/2017|09092019|
+PR800030|Não tributado;Sem destaque do ICMS conforme  inciso II do art. 425  do RICMS/2017|09092019|
+PR800031|Não tributado;Sem destaque do ICMS conforme  alínea 'a' do inciso I do art. 430  do RICMS/2017|09092019|
+PR800032|Não tributado;Sem destaque do ICMS conforme inciso II do art. 430  do RICMS/2017|09092019|
+PR800033|Não tributado;Sem destaque do ICMS conforme  art. 439  do RICMS/2017|09092019|
+PR800034|Não tributado;Sem destaque do ICMS conforme  § 3º do art. 440  do RICMS/2017|09092019|
+PR800035|Não tributado;Sem destaque do ICMS conforme art. 472 do RICMS/2017|09092019|
+PR800036|Não tributado;Sem destaque do ICMS conforme inciso I do art. 497 e alínea 'a' do inciso II do art. 499 do RICMS/2017|09092019|
+PR800037|Não tributado;Sem destaque do ICMS conforme alínea 'a' do inciso I do § 1º  art. 497 e alínea 'c' do inciso II do art. 499 do RICMS/2017|09092019|
+PR800038|Não tributado;Sem destaque do ICMS conforme alínea 'b' do inciso II do art. 499 e  inciso II do art. 499-A do RICMS/2017|09092019|
+PR800039|Não tributado;Sem destaque do ICMS conforme art. 518 do RICMS/2017|09092019|
+PR800040|Não tributado;Sem destaque do ICMS conforme inciso I do art. 518 do RICMS/2017|09092019|
+PR800041|Não tributado;Sem destaque do ICMS conforme arts. 538 e 539 do RICMS/2017|09092019|
+PR800042|Não tributado;Sem destaque do ICMS conforme art. 578, 'caput' do RICMS/2017|09092019|
+PR800043|Não tributado;Sem destaque do ICMS conforme art. 578, § 4º, inciso II, item 2, do RICMS/2017|09092019|
+PR800044|Não tributado;Sem destaque do ICMS conforme Anexo VIII, arts. 8º, inciso I, alínea 'c', e 9º, inciso I, do RICMS/2017|09092019|
+PR800045|Não tributado;Sem destaque do ICMS conforme Anexo IV, Subanexo II, arts. 31 e 33,do RICMS/2017|09092019|
+PR800046|Não tributado;Sem destaque do ICMS conforme Anexo IV, Subanexo I, art.14, do RICMS/2017|09092019|
+PR809998|Não tributado;Operação ou prestação não tributada sem código específico|09092019|
+PR810021|Isenção;Isenção prevista no item 21 do Anexo V do RICMS/2017 e no art. 1º da Lei nº 14.978/2005|10092019|
+PR810037|Isenção;Isenção prevista no item 37 do Anexo V do RICMS/2017 e no art. 1º da Lei nº 14.773/2005|10092019|
+PR810058|Isenção;Isenção prevista no item 58 do Anexo V do RICMS/2017 e no art. 1º da Lei nº 14.959/2005|10092019|11092019
+PR810080|Isenção;Isenção prevista no item 80 do Anexo V do RICMS/2017 e no art. 1º da Lei nº 14.586/2004|10092019|
+PR810110|Isenção;Isenção prevista no item 110 do Anexo V do RICMS/2017 e no art. 1º da Lei nº 15.457/2007|10092019|
+PR810111|Isenção;Isenção prevista no item 111 do Anexo V do RICMS/2017 e no art. 1º da Lei nº 17.557/2013|10092019|30092019
+PR810177|Isenção;Isenção prevista no item 104-A do Anexo V do RICMS/2017 e no art. 1º da Lei nº 19.595/2018|10092019|
+PR819998|Isenção;Isenção sem código específico|09092019|
+PR820007|Redução de base de cálculo;Redução de base de cálculo prevista no item 7 do Anexo VI do RICMS/2017 e no art. 1º da Lei nº 15.182/2006|10092019|
+PR820018|Redução de base de cálculo;Redução de base de cálculo prevista no item 18 do Anexo VI do RICMS/2017 e no inciso V do art. 5º da Lei nº 13.212/2001|10092019|
+PR820048|Redução de base de cálculo;Redução de base de cálculo prevista no inciso I do art. 5º da Lei 13.212/2001|09092019|
+PR820049|Redução de base de cálculo;Redução de base de cálculo prevista no inciso II do art. 5º da Lei 13.212/2001|09092019|
+PR820050|Redução de base de cálculo;Redução de base de cálculo prevista no inciso IV do art. 5º da Lei 13.212/2001|09092019|
+PR820051|Redução de base de cálculo;Redução de base de cálculo prevista no inciso III do art. 3º da Lei 13.214/2001|09092019|
+PR820052|Redução de base de cálculo;Redução de base de cálculo prevista no inciso V do art. 3º da Lei 13.214/2001|09092019|
+PR820053|Redução de base de cálculo;Redução de base de cálculo prevista no inciso VI do art. 3º da Lei 13.214/2001|09092019|
+PR820054|Redução de base de cálculo;Redução de base de cálculo prevista na alínea 'c' do art. 4º da Lei 13.214/2001|09092019|
+PR820055|Redução de base de cálculo;Redução de base de cálculo prevista no art. 3º da Lei 13.332/2001|09092019|
+PR820056|Redução de base de cálculo;Redução de base de cálculo prevista no art. 3º da Lei 14.747/2005|09092019|
+PR820057|Redução de base de cálculo;Redução da base de cálculo prevista no art. 37 do RICMS/2017|09092019|
+PR829998|Redução de base de cálculo;Redução da base de cálculo sem código específico|09092019|
+PR830027|Diferimento;Diferimento previsto no item 22 do caput do art. 31 do Anexo VIII do RICMS/2017 e no inciso I do art. 1º da Lei nº 14.895/2005|10092019|
+PR830043|Diferimento;Diferimento previsto no item 36 do caput do art. 31 do Anexo VIII do RICMS/2017 e no art. 3º da Lei nº 13.212/2001|10092019|
+PR830107|Diferimento;Diferimento previsto na alínea b do inc. VI do caput do art. 42 do Anexo VIII do RICMS/2017|10092019|
+PR830131|Diferimento;Diferimento previsto no art. 459 do RICMS/2017|09092019|
+PR830132|Diferimento;Diferimento previsto nos arts. 524 e 530 do RICMS/2017|09092019|
+PR830133|Diferimento;Diferimento previsto no art. 60 do Anexo IX do RICMS/2017|09092019|
+PR830134|Diferimento;Diferimento previsto no inciso III do art. 3º da Lei 13.212/2001|09092019|
+PR839998|Diferimento;Diferimento sem código específico|09092019|
+PR840016|Suspensão;Suspensão prevista no  § 6º do art. 448  do RICMS/2017|09092019|
+PR840017|Suspensão;Suspensão prevista no  art. 458  do RICMS/2017|09092019|
+PR840018|Suspensão;Suspensão prevista no  art. 460  do RICMS/2017|09092019|
+PR840019|Suspensão;Suspensão prevista no  art. 468  do RICMS/2017|09092019|
+PR840020|Suspensão;Suspensão prevista na  alínea 'b' do inciso I do § 1º do art. 497 e alínea 'c' do inciso II do art. 499 do RICMS/2017|09092019|
+PR840021|Suspensão;Suspensão prevista no inciso I do 'caput', na alínea 'a'  do inciso IV e no  inciso V do § 1º, nas alíneas 'a' e 'b' do inciso I e no inciso II do § 3º do art. 499-C do RICMS/2017|09092019|
+PR840022|Suspensão;Suspensão prevista  nos arts. 525 e 529 do RICMS/2017|09092019|
+PR840023|Suspensão;Suspensão prevista  nos art. 532 do RICMS/2017|09092019|
+PR840024|Suspensão;Sem destaque do ICMS conforme art. 554 do RICMS/2017|09092019|
+PR840025|Suspensão;Suspensão prevista nos arts. 572, 573, § 2º, inciso I, e 576, inciso II, alínea 'a', item 2, do RICMS/2017|09092019|
+PR840026|Suspensão;Suspensão prevista na Subseção II do Tíítulo I do Anexo VIII do RICMS/2017|09092019|30112019
+PR840027|Suspensão;Suspensão prevista no art. 60 do Anexo IX do RICMS/2017|09092019|
+PR849998|Suspensão;Suspensão sem código específico|09092019|
+PR820058|Redução de base de cálculo;Redução da base de cálculo prevista no item 26-A do Anexo VI do RICMS/2017|01102019|18052023
+PR800047|Não tributado;Imunidade por se tratar de operação equiparada a exportação, descrita no item 50 do Anexo V do RICMS/2017, conforme Consulta nº 052/2018 do Setor Consultivo da REPR|01122019|
+PR809997|Não tributado;Não incidência reconhecida em solução de consulta do Setor Consultivo da REPR/IGT|01122019|07102024
+PR810184|Isenção;Isenção prevista no §3º do art. 549 do RICMS/2017|01122019|
+PR840026|Suspensão;Suspensão prevista na Subseção II da Seção II, do Capítulo I do Anexo VIII do RICMS/2017|01122019|
+PR830135|Diferimento;Diferimento previsto no art. 10 do Decreto 6.434/2017|01052021|
+PR830136|Diferimento;Diferimento previsto no art. 3º do Decreto 1.107/2011|01052021|
+PR830137|Diferimento;Diferimento do ICMS conforme Anexo IV, Subanexo I, art.14, do RICMS/2017|01072022|
+PR820059|Redução de base de cálculo;Redução da base de cálculo prevista no item 36-B do Anexo VI do RICMS/2017|01012022|
+PR820060|Redução de base de cálculo;Redução da base de cálculo prevista no item 16-A do Anexo VI do RICMS/2017|01012022|
+PR840028|Suspensão;Suspensão prevista no art. 15 do Anexo VIII do RICMS/2017|01012022|
+PR830089|Diferimento;Diferimento previsto no item 82 do caput do art. 31 do Anexo VIII do RICMS/2017|28122022|01012023
+PR810185|Isenção;Isenção prevista no item 1-A do Anexo V do RICMS/2017|01112022|
+PR810186|Isenção;Isenção prevista no item 5-A do Anexo V do RICMS/2017|01022023|
+PR810187|Isenção;Isenção prevista no item 23-A do Anexo V do RICMS/2017|26032020|
+PR810188|Isenção;Isenção prevista no item 84-A do Anexo V do RICMS/2017|03052021|
+PR810189|Isenção;Isenção prevista no item 138-A do Anexo V do RICMS/2017|01012023|
+PR810190|Isenção;Isenção prevista no item 151-A do Anexo V do RICMS/2017|02102019|
+PR810191|Isenção;Isenção prevista no item 164-A do Anexo V do RICMS/2017|26102022|
+PR810192|Isenção;Isenção prevista no item 167-A do Anexo V do RICMS/2017|30062022|
+PR810193|Isenção;Isenção prevista no item 174-A do Anexo V do RICMS/2017|16112020|
+PR810194|Isenção;Isenção prevista no item 174-B do Anexo V do RICMS/2017|01072022|
+PR810195|Isenção;Isenção prevista no item 174-C do Anexo V do RICMS/2017|01072022|
+PR810196|Isenção;Isenção prevista no item 174-D do Anexo V do RICMS/2017|01072022|
+PR810197|Isenção;Isenção prevista no item 174-E do Anexo V do RICMS/2017|01072022|
+PR830138|Diferimento;Diferimento em atenção ao art. 145-B do RICMS/2017|01052023|
+PR840029|Suspensão;Suspensão prevista no Protocolo ICMS n. 019/2023|01082023|
+PR820061|Redução de base de cálculo;Redução da base de cálculo prevista no item 11-A do Anexo VI do RICMS/2017|01042024|
+PR820062|Redução de base de cálculo;Redução da base de cálculo prevista no item 15-A do Anexo VI do RICMS/2017|01012022|
+PR820063|Redução de base de cálculo;Redução da base de cálculo prevista no item 36-C do Anexo VI do RICMS/2017|26102022|
+PR809997|Não tributado;Não incidência reconhecida pelo STF em decisão com efeito vinculante|08102024|
+PR810198|Isenção;Isenção prevista no item 5-B do Anexo V do RICMS/2017|14082024|
+PR810199|Isenção;Isenção prevista no item 19-A do Anexo V do RICMS/2017|25072024|
+PR810200|Isenção;Isenção prevista no item 79-A do Anexo V do RICMS/2017|01012024|
+PR810201|Isenção;Isenção prevista no item 154-A do Anexo V do RICMS/2020|30092024|01102024
+PR810201|Isenção;Isenção prevista no item 154-A do Anexo V do RICMS/2017|02102024|
+PR820064|Redução de base de cálculo;Redução da base de cálculo prevista no item 32-B do Anexo VI do RICMS/2017|16082023|
+PR820065|Redução de base de cálculo;Redução da base de cálculo prevista no item 2-A do Anexo VI do RICMS/2017|01072022|
+PR830139|Diferimento;Diferimento previsto no item 87 do caput do art. 31 do Anexo VIII do RICMS/2017|01082024|
+PR830140|Diferimento;Diferimento previsto no item 88 do caput do art. 31 do Anexo VIII do RICMS/2017|07082024|
+PR840030|Suspensão;Suspensão prevista no art. 12-G do Anexo VIII do RICMS/2017|01072018|
+PR840031|Suspensão;Suspensão prevista no art. 13 do Anexo VIII do RICMS/2017|29092017|
+PR820066|Redução de base de cálculo;Redução da base de cálculo prevista no item 5-A do Anexo VI do RICMS/2017|01012024|
+PR830141|Diferimento;Diferimento previsto no item 89 do caput do art. 31 do Anexo VIII do RICMS/2017|20022025|
+PR810202|Isenção;Isenção prevista no item 13-A do Anexo V do RICMS/2017|10042025|
+PR810203|Isenção prevista no item 58-B do Anexo V do RICMS/2017|06102025|
+PR800048|Imunidade ou não incidência;Não incidência de que trata o inciso XVI do "caput" do art. 3º do RICMS/2017|01072022|

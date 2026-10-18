@@ -1,0 +1,8 @@
+versão=3 COD_IPM, DESC_COD, DT_INI, DT_FIM
+Cooperativas|Cooperativas|01012015|
+Geracao_de_Energia_Eletrica|Geração de Energia Elétrica|01012015|
+Outras_Entradas_a_Detalhar_por_Municipio|Outras Entradas a Detalhar por município|01012015|
+Prestacao_de_Servico_de_Transporte_Rodoviario|Prestação de Serviço de Transporte Rodoviário|01012015|
+Produtos_Agropecuarios|Produtos Agropecuários/Hortifrutigranjeiros|01012015|
+Transporte_Tomado|Transporte Tomado|01012015|
+Mudanca_de_Municipio|Mudança de Município|01012015|31052020

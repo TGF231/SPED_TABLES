@@ -1,0 +1,7 @@
+versão=1 TIPO_UTIL, DESC_TIPO, DT_INI, DT_FIM
+PE00|Pagamento de débito próprio|01092018|
+PE10|Pagamento de débito de terceiros|01092018|
+PE20|Compensação de débito: Débito de responsabilidade direta|01092018|
+PE21|Compensação de débito: Débito de responsabilidade indireta|01092018|
+PE30|Imputação de crédito (transferência para estabelecimento do mesmo titular no Estado)|01092018|
+PE40|Transferência de crédito para terceiros|01092018|

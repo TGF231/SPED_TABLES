@@ -1,0 +1,225 @@
+versão=48 COD_AJUR, DESC_AJUR, DT_INI, DT_FIM
+MS000001|Recebimento, por transferência, de saldo devedor de ICMS de outro estabelecimento da mesma empresa|01092010|
+MS000002|Transferência de saldo credor de ICMS para estab. Centralizador, destinado à compensação de saldo devedor de ICMS|01092010|
+MS000003|Diferencial de Alíquota - Serviço - Autor. Espec.|01012009|
+MS000004|Débito ICMS DIFCON (EC nº87/15)|01012016|31122018
+MS000005|ICMS Operação de Importação Decreto n° 14720 de 2017|01042017|
+MS000006|Complemento do ICMS por diferença de base de cálculo|01012018|
+MS000007|ICMS antes diferido - Resolução/SEFAZ nº 3.356/2023|01012024|
+MS009999|Outros débitos para ajuste de apuração ICMS.|01012009|
+MS010001|Estorno de crédito insumos adquiridos de outro Estado|01092010|
+MS010002|Estorno de crédito referente Venda do Ativo Permanente|01092010|
+MS010003|Estorno de crédito Proporcional Saída com Redução da Base de Cálculo|01092010|
+MS010004|Estorno de crédito decorrente de perda, roubo ou deterioração|01092010|
+MS010005|Estorno de crédito ref. aquisições (internas)|01012009|
+MS010006|Estorno de crédito ref. aquisições (interestadual)|01012009|
+MS010007|ICMS Operação de Importação Decreto n° 14720 de 2017|01042017|
+MS010008|Estorno de crédito relacionado à saída com crédito presumido-Mensal|01012018|
+MS010009|Estornos de crédito referentes a substituições de Documentos Fiscais Eletrônicos|01072023|
+MS010010|Estorno de crédito por ordem judicial ou pedido administrativo|01102024|
+MS010011|Estorno de crédito - Produtos Agrícolas - crédito presumido/outorgado - Operações interestaduais - Lei n. 2.783/03 e Autorização SEFAZ|01082025|
+MS010012|Estorno de crédito - Laranja - Crédito Presumido - Anexo I do RICMS - Art. 76-C|01082025|
+MS010013|Estorno de crédito - Hortifrutigranjeiros  Crédito Presumido - Subanexo XIII ao Anexo I do RICMS/MS  Art. 7º e 8º|01082025|31012026
+MS010014|Estorno de Crédito - Prove Pantanal - crédito outorgado/aquisição de UFPA - Decreto n. 10.310/01|01072026|
+MS010017|Estorno de crédito - Areia, cascalho, saibro e seixos - crédito presumido - Anexo VI do RICMS - art. 2º, inciso I|01082025|
+MS010018|Estorno de crédito - Pedras (extração por processo britagem) - crédito presumido - Anexo VI do RICMS - art. 2º, inciso II|01082025|
+MS010020|Estorno de crédito - Fornecimento refeições - crédito presumido - Anexo I do RICMS - Art. 77-A|01082025|
+MS010022|Estorno de crédito - Álcool - crédito presumido - LC 93/2001 e TA/CDI|01082025|
+MS010023|Estorno de crédito - Álcool - decreto - crédito presumido - Decreto n. 13.275/11 - art. 17, § 2º|01082025|31012026
+MS010024|Estorno de crédito - Biodiesel (B-100) - crédito presumido - saídas interestaduais - Decreto n. 12.691/08 - art. 13-A|01082025|
+MS010025|Estorno de crédito - Biodiesel (B-100) - crédito presumido - saídas internas - Decreto n. 12.691/08 - art. 13-F|01082025|
+MS010026|Estorno de crédito - Biodiesel (B-100) - crédito presumido - saídas interestaduais - Decreto n. 12.691/08 - art. 13-C|01082025|30062026
+MS010028|Estorno de crédito - Biodiesel (B-100) - crédito presumido - aquisições internas - Decreto n. 12.691/08 - art. 13-C|01082025|30062026
+MS010029|Estorno de crédito - Bovino e bufalino - carne - crédito presumido - Decreto n. 12.056/06|01082025|
+MS010030|Estorno de crédito - Couro - crédito presumido - Decreto n. 11.796/05|01082025|
+MS010031|Estorno de crédito - Couro - adicional crédito presumido - Lei 5.479/2019|01082025|
+MS010032|Estorno de crédito - Erva-mate - crédito presumido - Anexo I do RICMS - Art. 71|01082025|
+MS010033|Estorno de crédito - Laticínios - crédito presumido - Decreto n. 6.996/93 e Decreto 15.314/2019|01082025|
+MS010034|Estorno de crédito - Leite fluido - crédito presumido - op. interestaduais - Decreto n. 6.996/93|01082025|30062026
+MS010035|Estorno de crédito - Mármore e granitos - crédito presumido - Anexo VI do RICMS, Art. 2º, inciso III|01082025|
+MS010036|Estorno de crédito - Óleo de soja - crédito presumido - Decreto n. 9.113/98|01082025|
+MS010037|Estorno de crédito - Produtos cerâmicos - crédito presumido - Anexo I do RICMS - Art. 77|01082025|
+MS010038|Estorno de crédito - Vestuário - crédito presumido  Decretos 13.715/2013 e 12.774/2009 - Decreto n. 13.715/13|01082025|
+MS010039|Estorno de crédito - Biogás/Biometano - crédito outorgado - Anexo I do RICMS - Art. 79-D|01072026|
+MS010280|Estorno de crédito - Industrialização própria - Crédito presumido art. 31 LC 93/01 - Incentivo TA/CDI - LC 93/2001, art. 31 e TA|01082025|30062026
+MS010280|Estorno de crédito - Prestacional/Outros Cred. presumido art. 31 LC 93/01 - incentivo TA/CDI - LC 93/2001, art. 31 e TA|01072026|
+MS010120|Estorno de crédito - Industrialização própria - saídas tributadas - crédito presumido - LC 93/2001 e TA/CDI|01082025|
+MS010122|Estorno de crédito - Industrialização própria - ICMS destacado - crédito presumido - LC 93/2001 e TA/CDI|01082025|
+MS010160|Estorno de crédito - Comercial  saídas tributadas  crédito presumido - LC 93/2001 e TA|01082025|
+MS010162|Estorno de Crédito - Importados - saídas tributadas - crédito presumido - LC 93/2001 e TA|01072026|
+MS010164|Estorno de crédito - Comercial - ICMS destacado - crédito presumido - LC 93/2001 e TA|01082025|
+MS010165|Estorno de Crédito - Importados - ICMS destacado - crédito presumido - LC 93/2001 e TA|01072026|
+MS010166|Estorno de Crédito - Importados - ICMS destacado - crédito presumido - Fomentar Fronteiras - LC 93/2001 e TA|01072026|
+MS010220|Estorno de crédito - Industrialização própria - Saídas tributadas - Crédito presumido art. 31 LC 93/01 - LC 93/2001, art. 31 e TA|01082025|
+MS010221|Estorno de crédito - Industrialização própria - Crédito presumido art. 31 LC 93/01 - Incentivo TA/CDI - LC 93/2001, art. 31 e TA|01082025|
+MS010222|Estorno de Benefício Fiscal por Devolução/Retorno - Industrialização própria - saídas tributadas - Cred. presumido art. 31 LC 93/01 - LC 93/2001, art. 31 e TA|01052026|
+MS011000|Estorno de crédito - Serviço transporte - Crédito presumido - Anexo I do RICMS - Art. 78|01082025|30062026
+MS011001|Estorno de Benefício Fiscal por Anulação da Prestação - Serviço transporte - crédito presumido - Anexo I do RICMS - Art. 78|01052026|
+MS011120|Estorno de créditos - Apuração Especial - Crédito Outorgado  Outros|01082025|
+MS011121|Estorno de crédito  Apuração Especial - Crédito Presumido  Outros|01082025|
+MS012000|Estorno de crédito - Serviço comunicações - Crédito presumido - Anexo I do RICMS - Art. 77-B|01082025|30062026
+MS012001|Estorno de Benefício Fiscal por Anulação da Prestação - Serviço comunicações - crédito presumido - Anexo I do RICMS - Art. 77-B|01052026|30062026
+MS019101|Estorno de Benefício Fiscal por Anulação da Prestação - Prestacional/Outros - saídas tributadas - crédito presumido - LC 93/2001 e TA|01052026|
+MS019103|Estorno de Benefício Fiscal por Anulação da Prestação - Prestacional/Outros - saídas tributadas - crédito outorgado - LC 93/2001 e TA|01052026|
+MS019104|Estorno de Benefício Fiscal por Anulação da Prestação - Prestacional/Outros - ICMS destacado - crédito presumido - LC 93/2001 e TA|01052026|
+MS019190|Estorno de crédito - Benefício Fiscal - Outros - Créditos (especificar) - LC 93/2001 e TA|01082025|
+MS019191|Estorno de crédito - Benefício Fiscal Outros - Deduções (especificar) - LC 93/2001, art. 31 e TA|01052026|30062026
+MS019191|Estorno de crédito - Benefício Fiscal Outros - Deduções (especificar) - LC 93/2001 e TA|01072026|
+MS019192|Estorno de Benefício Fiscal por Devolução/Retorno- Benefício Fiscal Outros - Créditos (especificar) - LC 93/2001 e TA|01052026|
+MS019193|Estorno de Benefício Fiscal por Devolução/Retorno - Benefício Fiscal Outros - Deduções (especificar) - LC 93/2001, art. 31 e TA|01052026|30062026
+MS019193|Estorno de Benefício Fiscal por Devolução/Retorno - Benefício Fiscal Outros - Deduções (especificar) - LC 93/2001 e TA|01072026|
+MS019290|Estorno de crédito - Investimentos - TA/CDI - Crédito presumido art. 31 LC 93/2001 - LC 93/2001, art. 31 e TA|01082025|
+MS019100|Estorno de crédito - Prestacional/Outros - Saídas tributadas - Crédito presumido - LC 93/2001 e TA|01082025|
+MS019102|Estorno de crédito - Prestacional/Outros - ICMS destacado - Crédito presumido - LC 93/2001 e TA|01082025|
+MS019999|Estorno de créditos para ajuste de apuração ICMS.|01012009|31032009
+MS019999|Outros estornos de crédito para ajuste de apuração ICMS.|01042009|
+MS020001|Aquisição de ativos (exceto ECF).|01012009|31082010
+MS020001|Aquisição de Ativo Permanente (CIAP).|01092010|
+MS020002|Crédito Outorgado.|01012009|30062026
+MS020003|Crédito Presumido - por aquisição de ECF.|01012009|
+MS020004|Crédito Presumido - Operações Interestaduais.|01012009|30062026
+MS020005|Crédito Presumido - Operações Internas.|01012009|30062026
+MS020006|Crédito Presumido - Serviço de Transporte.|01012009|30062026
+MS020007|Entrada ICMS autorizado.|01012009|
+MS020008|Homologados através do CECRE (Cert. de Créd.).|01012009|
+MS020009|PDAGRO.|01012009|
+MS020010|Programa de Incentivo - 1º Emprego.|01012009|
+MS020011|Programa de Incentivo - Leitão Vida.|01012009|
+MS020012|Programa de Incentivo - Novilho Precoce.|01012009|
+MS020013|Incentivo - Outros.|01012009|30062026
+MS020014|Outros créditos - Exceto estimativa.|01012009|
+MS020024|Frete Transportador Autônomo|01122014|
+MS020030|Outros créditos - Determinados por ato administrativo ou judicial|01012009|31032009
+MS020030|Crédito reconhecido por ato administrativo ou judicial|01042009|
+MS020015|Crédito pela entrada de energia elétrica para consumo no processo de industrialização|01012009|31082010
+MS020016|Crédito pela entrada de energia elétrica destinada a operação de saída subseqüente|01012009|31082010
+MS020017|Crédito pela entrada de energia elétrica cujo consumo resultar em operação de saída ou prestação para o exterior|01012009|31082010
+MS020018|Crédito pelo serviço de comunicação utilizado na prestação de serviço da mesma natureza.|01012009|31082010
+MS020019|Crédito pelo serviço de comunicação utilizado do qual resultar operação de saída para o exterior|01012009|31082010
+MS020020|Ressarcimento / Restituição de ICMS|01012009|
+MS020021|Transferência de crédito de ICMS|01012009|31082010
+MS020021|Recebimento de Saldo credor por transferência|01092010|
+MS020022|Recebimento, por transferência, de saldo credor de ICMS de outro estabelecimento da mesma empresa, para compensação de saldo devedor de ICMS|01092010|31072011
+MS020022|Recebimento, por transferência, de saldo credor de ICMS de outro estabelecimento|01082011|
+MS020023|Transferência de saldo devedor de ICMS de outro estabelecimento da mesma empresa|01092010|31072011
+MS020023|Transferência de saldo devedor de ICMS para outro estabelecimento|01082011|
+MS020027|Subprograma de Incentivo - PROAPE-PEIXE VIDA|01022026|
+MS020031|Valores creditado pela Usina quando a operação for CIF - ICMS/ST  Transporte|01092010|
+MS020040|Ressarcimento / Restituição de ICMS ST|01012009|
+MS020041|Crédito Outorgado - Por aquisição de ECF com requisitos do Convênio 09/09|01052016|
+MS020042|Crédito do ICMS antes diferido - Resolução/SEFAZ nº 3.356/2023)|01012024|
+MS020043|Crédito Presumido - Saídas internas de combustíveis destinados à Administração Pública Estadual  Decreto 16.494/2024|01072026|
+MS021000|Serviço transporte - Crédito presumido - Anexo I do RICMS - Art. 78|01082025|
+MS022000|Serviço comunicações - Crédito presumido - Anexo I do RICMS - Art. 77-B|01082025|
+MS029100|Prestacional/Outros - Saídas tributadas - Crédito presumido - LC 93/2001 e TA|01082025|
+MS029101|Prestacional/Outros - Saídas tributadas - Crédito outorgado - LC 93/2001 e TA|01082025|
+MS029102|Prestacional/Outros - ICMS destacado - Crédito presumido - LC 93/2001 e TA|01082025|
+MS029190|Benefício Fiscal - Outros - Créditos (especificar) - LC 93/2001 e TA|01082025|
+MS029999|Outros créditos para ajuste de apuração do ICMS|01012009|
+MS030001|Estorno de débitos - Determinados por ato administrativo ou judicial|01012009|
+MS030002|Estorno de débito ref. devolução|01012009|
+MS030003|Estorno de débitos - Simples Nacional.|01012014|
+MS030006|Estornos de débito referentes a substituições de Documentos Fiscais Eletrônicos|01072023|
+MS039999|Estorno de débitos para ajuste de apuração ICMS.|01012009|31032009
+MS039999|Outros estornos de débito para ajuste de apuração ICMS.|01042009|
+MS040001|Utilização de crédito transferido|01012009|31082010
+MS040020|Calçados - crédito outorgado  saldo devedor  Decreto nº 10.065/2000|01072026|
+MS040051|ICMS Mínimo|01012009|31082010
+MS040052|Incentivo Pró-Indústria CDI|01012009|30062026
+MS040053|Programa de Incentivo a Cultura|01012009|30042017
+MS040053|Fundo de Investimentos Culturais (FIC/MS)|01052017|
+MS040054|Programa de Incentivo ao Desporto|01012009|31082010
+MS040055|FIS|01012009|
+MS040056|Outras Deduções (Exceto Estimativa)|01012009|
+MS040057|ICMS Garantido|01012009|
+MS040058|ICMS recol. com base nas entr.|01012009|
+MS040059|Saldo cred. resultante da apur. da est. do sem.|01012009|31082010
+MS040059|Saldo credor Apuração da Estimativa do Semestre|01092010|
+MS040060|Programa Estadual de Segurança Alimentar|01012009|
+MS040061|Fundo de Investimentos Esportivos (FIE/MS)|01012009|
+MS040062|ICMS Adicional|01012009|
+MS040020|Crédito Outorgado - Calçados|01082025|30062026
+MS040120|Industrialização Própria - Saldo devedor - Incentivo TA/CDI - LC 93/2001 e TA/CDI|01082025|
+MS049190|Benefício Fiscal - Investimentos - TA - LC 93/2001 e TA|01082025|
+MS049191|Benefício Fiscal - Outros - Deduções (especificar) - LC 93/2001, art. 31 e TA|01082025|30062026
+MS049191|Benefício Fiscal Outros - Deduções (especificar) - LC 93/2001 e TA|01072026|
+MS040220|Industrialização Própria - Saídas tributadas - Crédito presumido art. 31 LC 93/01 - LC 93/2001, art. 31 e TA|01082025|
+MS040221|Industrialização Própria - Crédito presumido art. 31 LC 93/01 - Incentivo TA/CDI - LC 93/2001, art. 31 e TA|01082025|
+MS049290|Investimentos - TA/CDI - Crédito presumido art. 31 LC 93/2001 - LC 93/2001, art. 31 e TA|01082025|
+MS040160|Comercial - Saldo devedor - Incentivo TA - LC 93/2001 e TA|01082025|
+MS040100|Prestacional/Outros - Saldo devedor - Incentivo fiscal - LC 93/2001 e TA|01082025|
+MS040280|Prestacional/Outros - Crédito presumido art. 31 LC 93/01 - Incentivo TA/CDI - LC 93/2001, art. 31 e TA|01082025|
+MS049999|Deduções do imposto apurado na apuração ICMS.|01012009|31032009
+MS049999|Outras deduções do imposto apurado na apuração ICMS.|01042009|
+MS050001|Diferencial de Alíquota do ICMS|01012009|
+MS050002|Débito ICMS Adicional (FECOMP)|01012009|
+MS050003|Débito ICMS Importação|01012009|
+MS050004|Diferencial de Alíquota - Serviço|01012009|
+MS050005|Débito ICMS Garantido|01012009|
+MS050006|Fundo de Investimentos Esportivos (FIE/MS)|01012014|
+MS050007|Fundo de Investimentos Culturais (FIC/MS)|01012014|
+MS050008|Contribuição ao PRÓ-DESENVOLVE - LC 93/2001|01022026|
+MS050009|Contribuição Adicional ao PRÓ-DESENVOLVE - LC 93/2001|01022026|
+MS059999|Outros débitos especiais do ICMS|01012009|
+MS100001|Débitos para ajuste de apuração do ICMS Monofásico|01052023|
+MS100002|Repasse de ICMS ST (Combustível)|01012009|
+MS100003|Complemento de ICMS ST (Combustível)|01012009|
+MS100004|Outros débitos - ICMS ST  Operações/ Prestações Incentivadas  Resolução/SEFAZ nº 3.497, de 6 de março de 2026|01082025|
+MS109999|Outros débitos para ajuste de apuração ICMS ST|01012009|
+MS119999|Estorno de créditos para ajuste de apuração ICMS ST|01012009|
+MS120001|Créditos para ajuste de apuração do  ICMS Monofásico|01052023|
+MS129999|Outros créditos para ajuste de apuração do ICMS ST|01012009|
+MS120020|Ressarcimento / Restituição de ICMS ST|01012009|
+MS139999|Estorno de débitos para ajuste de apuração ICMS ST|01012009|
+MS140001|Pagamento antecipado de ICMS-ST|01012009|
+MS140002|Pagamento antecipado de complemento do ICMS-ST (SCANC)|01012009|
+MS140003|Deduções do imposto apurado na apuração do ICMS Monofásico|01052023|
+MS140060|Apuração Especial  Credito Outorgado Medicamentos|01082025|
+MS141120|Apuração Especial - Crédito Outorgado  Outros|01082025|
+MS141121|Apuração Especial - Crédito Presumido  Outros|01082025|
+MS149999|Deduções do imposto apurado na apuração ICMS ST|01012009|
+MS150001|Diferencial de Alíquota do ICMS ST|01012009|
+MS150002|Repasse de ICMS ST (Combustível)|01092010|31102010
+MS150003|Complemento de ICMS ST (Combustível)|01092010|31102010
+MS150004|Valor pago pela empresa por ICMS/ST  Transporte - operação CIF|01012009|
+MS150005|Valor pago pela empresa por ICMS/ST  Transporte - operação FOB|01012009|
+MS150007|Débitos especiais do ICMS Monofásico|01052023|
+MS159999|Outros débitos especiais do ICMS ST.|01012009|
+MS209999|Outros débitos para ajuste de apuração ICMS Difal/FCP para MS|01012016|31122016
+MS209999|Outros débitos para ajuste de apuração ICMS Difal para MS|01012017|
+MS219999|Estorno de créditos para ajuste de apuração ICMS Difal/FCP para MS|01012016|31122016
+MS219999|Estorno de créditos para ajuste de apuração ICMS Difal para MS|01012017|
+MS229999|Outros créditos para ajuste de apuração do ICMS Difal/FCP para MS|01012016|31122016
+MS229999|Outros créditos para ajuste de apuração do ICMS Difal para MS|01012017|
+MS239999|Estorno de débitos para ajuste de apuração do ICMS Difal/FCP para MS|01012016|31122016
+MS239999|Estorno de débitos para ajuste de apuração do ICMS Difal para MS|01012017|
+MS249999|Deduções do imposto apurado na apuração do ICMS Difal para MS|01012017|
+MS249999|Deduções do imposto apurado na apuração do ICMS Difal/FCP para MS|01012016|31122016
+MS259999|Débito especial de ICMS Difal/FCP para MS|01012016|31122016
+MS259999|Débito especial de ICMS Difal para MS|01012017|
+MS309999|Outros débitos para ajuste de apuração ICMS FCP para MS|01012017|
+MS319999|Estorno de créditos para ajuste de apuração ICMS FCP para MS|01012017|
+MS329999|Outros créditos para ajuste de apuração do ICMS FCP para MS|01012017|
+MS339999|Estorno de débitos para ajuste de apuração do ICMS FCP para MS|01012017|
+MS349999|Deduções do imposto apurado na apuração do ICMS FCP para MS|01012017|
+MS359999|Débito especial de ICMS FCP para MS|01012017|
+MS020032|Crédito (Art. 70-A do Anexo I do RCIMS)|01012017|
+MS040063|ICMS Operação de Importação Decreto n° 14720 de 2017|01042017|
+MS030004|ICMS Operação de Importação Decreto n° 14720 de 2017|01042017|
+MS030005|Estorno de débito relacionado à saída com crédito presumido-Mensal|01012018|
+MS020033|Crédito Presumido  Sub-apuração|01012018|
+MS020034|Crédito de ICMS por transporte prestado por transportador autônomo|01012013|
+MS040064|ICMS Transporte retido pelo remetente|01092018|
+MS040065|Restituição por processo administrativo/judicial|01012020|
+MS090001|Apropriação de crédito outorgado com o fim de abatimento de débitos|01072019|
+MS090002|Apropriação de valores originados de devoluções de FUNDERSUL/FUNDEMS|01102020|
+MS090003|Registro dos depósitos de valores de acordo com o Decreto N° 9.542/99.|01032022|
+MS090004|Apropriação de crédito recebido em transferência (art. 68 RICMS).|01032022|
+MS090005|Crédito a ser lançado pelo produtor detentor de Termo de acordo com operações de B100.|01012022|
+MS090006|Crédito Fiscal Segregado por Ordem Judicial|01102024|
+MS150006|ICMS ST FCP|01072020|
+MS020035|Restituição/Ressarcimento de ICMS sujeito a Homologação Posterior|01032022|
+MS020070|Ajuste de apuração por NFe/CTe complementar de gás natural (cláusula 3ª do Ajuste SINIEF 22/21)|01112022|
+MS020025|Programa de Incentivo-PROAPE Frango Vida/MS|01032023|
+MS020026|Programa de Incentivo - PROAPE LEITE VIDA|01042025|01042025
+MS020026|Programa de Incentivo - PROAPE EXTRA LEITE|02042025|

@@ -1,0 +1,140 @@
+versão=20 COD_AJ, DESC_AJ, DT_INI, DT_FIM
+MS00000001|Cred. Compra Simples Nacional|01012010|
+MS10000008|Outros créditos - Ativo permanente|01012009|
+MS10000009|Crédito presumido|01012009|30062026
+MS10000013|Outros créditos - Restituição de ICMS/ST - creditamento|01012009|
+MS10000999|Crédito outorgado|01012009|30062026
+MS10001014|Outros Créditos - Transporte|01012009|
+MS10080000|Produtos Agrícolas - Crédito presumido/outorgado - Operações interestaduais - Lei n. 2.783/03 e Autorização SEFAZ|01082025|
+MS10080001|Suínos - Crédito Outorgado - Anexo I do RICMS - Art. 79-C|01082025|
+MS10080002|Laranja - Crédito Presumido - Anexo I do RICMS - Art. 76-C|01082025|
+MS10080003|Prove Pantanal - Crédito outorgado/aquisição de UFPA - Decreto n. 10.310/01|01082025|
+MS10080004|Hortifrutigranjeiros  Crédito Presumido - Subanexo XIII ao Anexo I do RICMS/MS  Art. 7º e 8º|01082025|31012026
+MS10080010|Areia, cascalho, saibro e seixos - Crédito presumido - Anexo VI do RICMS - Art. 2º, inciso I|01082025|
+MS10080011|Pedras (extração por processo britagem) - Crédito presumido - Anexo VI do RICMS - Art. 2º, inciso II|01082025|
+MS10080020|Fornecimento refeições - Crédito presumido - Anexo I do RICMS - Art. 77-A|01082025|
+MS10080021|Açúcar - Crédito outorgado - Decreto n. 9.745/99|01082025|
+MS10080022|Álcool - Crédito presumido - LC 93/2001 e TA/CDI|01082025|
+MS10080023|Álcool - Decreto - Crédito presumido - Decreto n. 13.275/11 - Art. 17, § 2º|01082025|31012026
+MS10080023|Álcool - Crédito presumido entradas - Decreto n. 13.275/11|01022026|
+MS10080024|Biodiesel (B-100) - Crédito presumido - Saída interestaduais - Decreto n. 12.691/08 - Art. 13-A|01082025|
+MS10080025|Biodiesel (B-100) - Crédito presumido - Saídas internas - Decreto n. 12.691/08 - Art. 13-F|01082025|
+MS10080027|Betume de Petróleo e Mistura Betuminosa para Asfalto - Crédito outorgado - Decreto n. 12.871/09|01082025|
+MS10080029|Bovino e bufalino - Carne - Crédito presumido - Decreto n. 12.056/06|01082025|
+MS10080030|Couro - Crédito presumido - Decreto n. 11.796/05|01082025|
+MS10080031|Couro - Adicional crédito presumido - Lei 5.479/2019|01082025|
+MS10080032|Erva-mate - Crédito presumido - Anexo I do RICMS - Art. 71|01082025|31012026
+MS10080033|Laticínios - Crédito presumido - Decreto n. 6.996/93 e Decreto 15.314/2019|01082025|
+MS10080034|Leite fluido - Crédito presumido - Op. Interestaduais - Decreto n. 6.996/93|01082025|30062026
+MS10080035|Mármore e granitos - Crédito presumido - Anexo VI do RICMS, Art. 2º, inciso III|01082025|
+MS10080036|Óleo de soja - Crédito presumido - Decreto n. 9.113/98|01082025|
+MS10080037|Produtos cerâmicos - Crédito presumido - Anexo I do RICMS - Art. 77|01082025|31012026
+MS10080038|Vestuário - Crédito presumido  Decretos 13.715/2013 e 12.774/2009 - Decreto n. 13.715/13|01082025|
+MS10080039|Biogás/Biometano - crédito outorgado - Anexo I do RICMS - Art. 79-D|01072026|
+MS10080060|Atacadistas - Crédito outorgado - Decreto 15.368/2020|01082025|
+MS10080120|Industrialização própria - Saídas tributadas - Crédito presumido - LC 93/2001 e TA/CDI|01082025|
+MS10080121|Industrialização própria - Saídas tributadas - Crédito outorgado - LC 93/2001 e TA/CDI|01082025|
+MS10080122|Industrialização própria - ICMS destacado - Crédito presumido - LC 93/2001 e TA/CDI|01082025|
+MS10080160|Comercial  Saídas tributadas  Crédito presumido - LC 93/2001 e TA|01082025|
+MS10080161|Comercial  Saídas tributadas  Crédito outorgado - LC 93/2001 e TA|01082025|
+MS10080162|Importados - Saídas tributadas - Crédito presumido - LC 93/2001 e TA|01082025|
+MS10080163|Importados - Saídas tributadas - Crédito outorgado - LC 93/2001 e TA|01082025|
+MS10080164|Comercial - ICMS destacado - Crédito presumido - LC 93/2001 e TA|01082025|
+MS10080165|Importados - ICMS destacado - Crédito presumido - LC 93/2001 e TA|01082025|
+MS10080166|Importados - ICMS destacado - Crédito presumido - Fomentar Fronteiras - LC 93/2001 e TA|01082025|
+MS10080182|Importados - Entradas não Tributadas - Crédito Presumido - LC 93/2001 e TA|01082025|
+MS10990002|Transferência para operação própria|01012009|
+MS11000012|Outros créditos - Restituição de ICMS/ST - Abatimento|01012009|
+MS11000013|Apropriação de crédito ICMS/ST|01012009|
+MS11000014|Crédito ICMS/ST ref. devolução|01012009|
+MS11900011|Outros créditos - Restituição de ICMS/ST - Ressarcimento|01012009|
+MS11990002|Transferência para ST|01012009|
+MS20010000|Recolhimento Antecipado do ICMS (Recolhimento Espontâneo)|01012009|
+MS20020000|Recolhimento Antecipado do ICMS (Recolhimento por autuação)|01012009|
+MS21010000|Recolhimento Antecipado do ICMS ST (Recolhimento Espontâneo)|01012009|
+MS21020000|Recolhimento Antecipado do ICMS ST (Recolhimento por autuação)|01012009|
+MS32990002|Dedução mês anterior - Crédito Próprio|01012009|
+MS40000000|Estorno de crédito|01012009|02012009
+MS40000999|Estorno de crédito de exportação|01012009|02012009
+MS40990002|Crédito acumulado transferido|01012009|
+MS40000001|Diferencial de Alíquota - Autorização Específica|01012009|
+MS41000000|Convênio 51/00|01012009|
+MS41000001|Débito entrada ICMS/ST|01012009|
+MS50000000|Estorno de crédito|03012009|
+MS50000999|Estorno de crédito de exportação|03012009|
+MS50080000|Estorno de Benefício Fiscal por Devolução/Retorno-  Produtos Agrícolas - crédito presumido/outorgado - Operações interestaduais - Lei n. 2.783/03 e Autorização SEFAZ|01052026|
+MS50080001|Estorno de Benefício Fiscal por Devolução/Retorno- 1104 - Suínos - Crédito Outorgado - Anexo I do RICMS - Art. 79-C|01052026|
+MS50080002|Estorno de Benefício Fiscal por Devolução/Retorno-  Laranja - Crédito Presumido - Anexo I do RICMS - Art. 76-C|01052026|
+MS50080003|Estorno de Benefício Fiscal por Devolução/Retorno-  Prove Pantanal - crédito outorgado/aquisição de UFPA - Decreto n. 10.310/01|01052026|
+MS50080004|Estorno de Benefício Fiscal por Devolução/Retorno-  Hortifrutigranjeiros  Crédito Presumido - Subanexo XIII ao Anexo I do RICMS/MS  art. 7º e 8º|01052026|
+MS50080010|Estorno de Benefício Fiscal por Devolução/Retorno-  Areia, cascalho, saibro e seixos - crédito presumido - Anexo VI do RICMS - Art. 2º, inciso I|01052026|
+MS50080011|Estorno de Benefício Fiscal por Devolução/Retorno-  Pedras (extração por processo britagem) - crédito presumido - Anexo VI do RICMS - art. 2º, inciso II|01052026|
+MS50080020|Estorno de Benefício Fiscal por Devolução/Retorno-  Fornecimento refeições - crédito presumido - Anexo I do RICMS - art. 77-A|01052026|
+MS50080021|Estorno de Benefício Fiscal por Devolução/Retorno-  Açúcar - crédito outorgado - Decreto n. 9.745/99|01052026|
+MS50080022|Estorno de Benefício Fiscal por Devolução/Retorno-  Álcool - crédito presumido - LC 93/2001 e TA/CDI|01052026|
+MS50080023|Estorno de Benefício Fiscal por Devolução/Retorno-  Álcool - decreto - crédito presumido - Decreto n. 13.275/11 - art. 17, § 2º|01052026|30062026
+MS50080023|Estorno de Benefício Fiscal por Devolução/Retorno - Álcool - crédito presumido entradas - Decreto n. 13.275/11|01072026|
+MS50080024|Estorno de Benefício Fiscal por Devolução/Retorno-  Biodiesel (B-100) - crédito presumido - saída interestaduais - Decreto n. 12.691/08 - art. 13-A|01052026|
+MS50080025|Estorno de Benefício Fiscal por Devolução/Retorno-  Biodiesel (B-100) - crédito presumido - saídas internas - Decreto n. 12.691/08 - art. 13-F|01052026|
+MS50080027|Estorno de Benefício Fiscal por Devolução/Retorno-  Betume de Petróleo e Mistura Betuminosa para Asfalto - crédito outorgado - Decreto n. 12.871/09|01052026|
+MS50080029|Estorno de Benefício Fiscal por Devolução/Retorno-  Bovino e bufalino - carne - crédito presumido - Decreto n. 12.056/06|01052026|
+MS50080030|Estorno de Benefício Fiscal por Devolução/Retorno-  Couro - crédito presumido - Decreto n. 11.796/05|01052026|
+MS50080031|Estorno de Benefício Fiscal por Devolução/Retorno-  Couro - adicional crédito presumido - Lei 5.479/2019|01052026|
+MS50080032|Estorno de Benefício Fiscal por Devolução/Retorno-  Erva-mate - crédito presumido - Anexo I do RICMS - Art. 71|01052026|
+MS50080033|Estorno de Benefício Fiscal por Devolução/Retorno-  Laticínios - crédito presumido - Decreto n. 6.996/93 e Decreto 15.314/2019|01052026|
+MS50080034|Estorno de Benefício Fiscal por Devolução/Retorno-  Leite fluido - crédito presumido - op. Interestaduais - Decreto n. 6.996/93|01052026|30062026
+MS50080035|Estorno de Benefício Fiscal por Devolução/Retorno-  Mármore e granitos - crédito presumido - Anexo VI do RICMS, art. 2º, inciso III|01052026|
+MS50080036|Estorno de Benefício Fiscal por Devolução/Retorno-  Óleo de soja - crédito presumido - Decreto n. 9.113/98|01052026|
+MS50080037|Estorno de Benefício Fiscal por Devolução/Retorno-  Produtos cerâmicos - crédito presumido - Anexo I do RICMS - Art. 77|01052026|
+MS50080038|Estorno de Benefício Fiscal por Devolução/Retorno-  Vestuário - crédito presumido  Decretos 13.715/2013 e 12.774/2009 - Decreto n. 13.715/13|01052026|
+MS50080039|Estorno de Benefício Fiscal por Devolução/Retorno-  Biogás/Biometano - crédito outorgado - Anexo I do RICMS - Art. 79-D|01072026|
+MS50080060|Estorno de Benefício Fiscal por Devolução/Retorno-  Atacadistas - crédito outorgado  - Decreto 15.368/2020|01052026|
+MS50080120|Estorno de Benefício Fiscal por Devolução/Retorno-  Industrialização própria - saídas tributadas - crédito presumido - LC 93/2001 e TA/CDI|01052026|
+MS50080121|Estorno de Benefício Fiscal por Devolução/Retorno-  Industrialização própria - saídas tributadas - crédito outorgado - LC 93/2001 e TA/CDI|01052026|
+MS50080122|Estorno de Benefício Fiscal por Devolução/Retorno-  Industrialização própria - ICMS destacado - crédito presumido - LC 93/2001 e TA/CDI|01052026|
+MS50080160|Estorno de Benefício Fiscal por Devolução/Retorno-  Comercial  saídas tributadas  crédito presumido - LC 93/2001 e TA|01052026|
+MS50080161|Estorno de Benefício Fiscal por Devolução/Retorno-  Comercial  saídas tributadas  crédito outorgado - LC 93/2001 e TA|01052026|
+MS50080162|Estorno de Benefício Fiscal por Devolução/Retorno-  Importados - saídas tributadas - crédito presumido - LC 93/2001 e TA|01052026|
+MS50080163|Estorno de Benefício Fiscal por Devolução/Retorno-  Importados - saídas tributadas - crédito outorgado - LC 93/2001 e TA|01052026|
+MS50080164|Estorno de Benefício Fiscal por Devolução/Retorno-  Comercial - ICMS destacado - crédito presumido - LC 93/2001 e TA|01052026|
+MS50080165|Estorno de Benefício Fiscal por Devolução/Retorno-  Importados - ICMS destacado - crédito presumido - LC 93/2001 e TA|01052026|
+MS50080166|Estorno de Benefício Fiscal por Devolução/Retorno-  Importados - ICMS destacado - crédito presumido - Fomentar Fronteiras - LC 93/2001 e TA|01052026|
+MS50080182|Estorno de Benefício Fiscal por Devolução/Retorno-  Importados - Entradas não Tributadas - Crédito Presumido - LC 93/2001 e TA|01052026|
+MS50080200|Estorno do Benefício Crédito Presumido Laticínios  Varejistas - nos termos do Art. 1º-A, § 3º, II, do Decreto 6.996/1993 (saídas isentas e outras hipóteses de estorno)|01072026|
+MS50080201|Estorno do Benefício Crédito Presumido Hortifrutigranjeiros  nos termos do Art. 7º, § 3º, do Subanexo XIII ao Anexo I do RICMS (saídas isentas e outras hipóteses de estorno)|01072026|
+MS50080202|Estorno do Benefício Crédito Presumido Importados - Entradas não Tributadas  por ocasião das hipóteses previstas no Termo de Acordo (saídas isentas e outras hipóteses de estorno)|01072026|
+MS60000000|Deduções|01012009|30062026
+MS60000009|Deduções - ref. ICMS pago na saída|01012009|
+MS60000010|Deduções - ref. ICMS pago na entrada|01012009|
+MS60000011|Dedução ICMS Adicional (FECOMP)|01012009|
+MS60080004|Hortifrutigranjeiros  Crédito Presumido - Subanexo XIII ao Anexo I do RICMS/MS  art. 7º e 8º|01022026|
+MS60080032|Erva-mate - crédito presumido - Anexo I do RICMS - Art. 71|01022026|
+MS60080037|Produtos cerâmicos - crédito presumido - Anexo I do RICMS - Art. 77|01022026|
+MS70000001|Diferencial de alíquota|01012009|
+MS70000004|ICMS pago na entrada|01012009|
+MS70010010|Débito extemporâneo do ICMS|01012009|31102010
+MS70010017|Importação|01012009|
+MS70010999|Outros Ajustes|01012009|
+MS70020000|ICMS pago na saída (Recolhimento por autuação)|01012009|
+MS70020004|ICMS pago na entrada (Antecipação Tributária)|01012009|31072011
+MS70020010|Débito extemporâneo do ICMS|01012009|31102010
+MS70020999|Encerramento do diferimento|01012009|
+MS71010004|ICMS/ST pago na entrada|01012009|
+MS71020004|ICMS/ST pago na entrada (Recolhimento por autuação)|01012009|
+MS71010005|Diferencial de alíquota ST|01012009|
+MS71010010|Débito extemporâneo do ICMS ST|01012009|31102010
+MS71020005|Diferencial de alíquota ST (Recolhimento por autuação)|01012009|
+MS71020010|Débito extemporâneo do ICMS ST|01012009|31102010
+MS90090017|Importação - Pagamento mês anterior|01012009|
+MS70010004|ICMS pago na entrada (Recolhimento Espontâneo)|01012009|31072011
+MS70020017|Importação|01012009|31072011
+MS70110000|ICMS pago na entrada - Solidário (Recolhimento Espontâneo)|01012009|31072011
+MS70120000|ICMS pago na entrada - Solidário (Recolhimento por autuação)|01012009|31072011
+MS21000000|Estorno de Débito ICMS/ST|01072014|
+MS10001010|Frete Transportador Autônomo|01012014|
+MS00000002|Apropriação de crédito/ST/Industrialização|01012017|
+MS23000001|Transferência de débito para sub-apuração  Crédito Presumido|01012018|
+MS70000002|Contribuição destinada ao FUNDERSUL|01032019|
+MS70000003|Contribuição destinada ao FUNDEMS|01032019|
+MS20000001|Estorno de crédito de NF3e Substituída|31082022|
+MS70000005|Diferença de débito extemporâneo|31082022|

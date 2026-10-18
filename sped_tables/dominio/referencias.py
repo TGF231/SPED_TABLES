@@ -94,7 +94,7 @@ class Referencias:
 
     def guia(self, layout):
         """O **guia prático** do leiaute, já extraído (ver
-        `ferramentas/extrair_guias.py`): `{"guia", "versao", "atualizacao",
+        `consolidador/guias.py`): `{"guia", "versao", "atualizacao",
         "registros": {reg: {"titulo", "objetivo", "validacao_registro",
         "observacoes", "nivel", "ocorrencia", "campos": {"n": {"nome",
         "valores", "preenchimento", "validacao"}}}}}`. Vazio quando não há."""

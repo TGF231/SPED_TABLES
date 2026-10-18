@@ -1,0 +1,165 @@
+versão=34 COD_AJ, DESC_AJ, DT_INI, DT_FIM
+MT00000008|Crédito do ICMS, cobrado no regime monofásico, em relação às aquisições de Gasolina C, Óleo Diesel B, GLP e GLGN utilizados como insumo, nos termos do Convênio ICMS 26/2023.|01022026|
+MT10000001|Crédito do ICMS pago via TAD - Ação Fiscal, nas prestações/operações de saída (apenas o imposto).|01102025|
+MT10000002|Crédito do ICMS devido nas saídas interestaduais de mercadorias em que o ICMS foi pago antecipadamente na entrada nos termos da Res. 007/2008.|01102025|31052026
+MT10000003|Crédito do ICMS referente a entrada que ocorreu sem o aproveitamento, total ou parcial, do crédito do imposto destacado no documento fiscal de entrada. Art. 26, §3º da Lei 7098/98.|01112025|
+MT10000004|Crédito por aquisição de mercadorias de empresa do Simples Nacional. Art. 23, §1º da LC 123/06. Art. 17 Anexo VI - RICMS/MT.|01122025|
+MT10000005|Crédito apropriado via transferência de estabelecimento da mesma empresa referente à produção de EAC. Art. 21-D, § 1°, II, Decreto n° 288/2019.|01042026|
+MT10000006|Crédito apropriado via transferência de estabelecimento de terceiros indústria produtora de EAC. Art. 21-D, § 1°, III e IV, Decreto n° 288/2019.|01042026|
+MT10000007|Crédito do ICMS pago antecipadamente na entrada nos termos da Res. 007/2008 (Art. 4º-A).|01052026|
+MT10001001|Crédito do ICMS pelo tomador do serviço de transporte, realizado com cláusula FOB, com recolhimento antecipado para a UF de início da prestação, promovido por transportador não inscrito no Estado.|01022026|
+MT10001002|Crédito do ICMS pelo remetente na prestação de serviço de transporte, realizado com cláusula CIF, promovido por transportador não inscrito no Estado.|01022026|
+MT10001003|Crédito presumido de 20% do valor do ICMS devido na prestação interestadual, ao prestador de serviço de transporte inscrito em MT.  Art. 18, Anexo VI - RICMS/MT.|01022026|
+MT20000001|Estorno de Débito: Remessa dos produtos arrolados nos incisos do caput artigo 22-A, para armazenamento em estabelecimento localizado em outra unidade federada - II, § 3°-A, Art. 22-A, Anexo VII RICMS|01062022|31122026
+MT20000002|Estorno de Débito do ICMS, para apuração como débito especial, em virtude do enquadramento em medida administrativa cautelar e/ou devedor contumaz, conforme disposto nos arts. 916 e 916-C, RICMS/MT.|01102025|
+MT20000003|Estorno de débito do ICMS em virtude da saída efetiva ou início da prestação em mês posterior ao da emissão do documento fiscal.|01112025|
+MT20000004|Estorno de débito do ICMS relativo à devolução de mercadoria cuja entrada ocorreu sem o aproveitamento, total ou parcial, do crédito do imposto destacado no documento fiscal (ex.: uso/consumo, ativo imobilizado/permanente).|01122025|
+MT20000006|Estorno de débito do ICMS, para apuração como débito especial, em virtude da emissão de NF-e Complementar em período de referência posterior ao da emissão da NF-e original, para regularização de preço ou quantidade ou correção do valor do imposto.|01122025|
+MT20000007|Estorno de débito do ICMS, para apuração como débito especial, quando forem apuradas diferenças entre a quantidade remetida para exportação e a efetivamente averbada, em que o prazo legal para exportação foi finalizado. Art. 3º, §1º da Portaria 163/2024.|01122025|
+MT20000008|Estorno de débito do ICMS, para apuração como débito especial, em virtude do recolhimento ter sido efetuado por operação/prestação.|01022026|
+MT20000009|Estorno de débito do ICMS relativo à devolução de mercadoria adquirida no regime de substituição tributária.|01022026|
+MT20000010|Estorno de débito do ICMS relativo à devolução de mercadoria quando o crédito pela entrada foi estornado em decorrência de fruição de benefício fiscal.|01022026|
+MT20001001|Estorno de Débito: Recolhimento pelo remetente como Substituto Tributário na prestação de serviço de transporte. II, § 7°, art. 132, RICMS-MT|01082022|
+MT20001002|Estorno de Débito: Estorno de débito pelo prestador do serviço do CT-e substituído, conforme Cláusula décima sétima, Ajuste Sinief 09/2007|01042023|
+MT20001003|Estorno de débito do ICMS pelo prestador de serviço de transporte, pois o recolhimento foi feito pela CONAB. Ofício nº 031/2017 - SARP/SEFAZ-MT. Eprocess 5318006/2017. Art.448, V, alínea "a" e §1º, RICMS/MT.|01022026|
+MT20003001|Estorno de Débito: estorno do débito correspondente ao valor destacado na NF3e substituída|01062022|
+MT21000002|Estorno de Débito do ICMS ST, para apuração como débito especial, em virtude do enquadramento em medida administrativa cautelar e/ou devedor contumaz, conforme disposto nos arts. 916 e 916-C, RICMS/MT.|01102025|
+MT21000003|Estorno de débito do ICMS ST em virtude da saída efetiva ou início da prestação em mês posterior ao da emissão do documento fiscal.|01112025|
+MT21000006|Estorno de débito do ICMS ST, para apuração como débito especial, em virtude da emissão de NF-e Complementar em período de referência posterior ao da emissão da NF-e original, para regularização de preço ou quantidade ou correção do valor do imposto.|01122025|
+MT23000230|SUB-APURAÇÃO 1: DÉBITO TRANSPORTE: Estorno de Débito da Apuração própria para Débito na Apuração em separado indicador é '3'(filho D195)|01022018|
+MT40000001|Outros Débitos: Recomposição do ICMS sem aplicação da redução de base de cálculo considerada no documento fiscal, restabelecendo a tributação pelo seu valor integral. Arts. 47-A e 47-B, III do Decreto 288/2019.|01112025|
+MT40000002|Outros Débitos (Entrada Uso ou Consumo): Estabelecimentos industriais produtores de Etanol Anidro Combustível  EAC. Art. 21-D, § 1°, I, do Decreto n° 288/2019|01082026|
+MT40000003|Outros Débitos (Entrada Ativo Permanente): Estabelecimentos industriais produtores de Etanol Anidro Combustível  EAC. Art. 21-D, § 1°, I, do Decreto n° 288/2019|01082026|
+MT41110401|OUTROS DÉBITOS: Recolhimento do ICMS/ST nas aquisições de Etanol Hidratado - AEHC|01082016|
+MT41001003|ICMS ST devido por responsabilidade tributária na contratação de frete com transportador autônomo ou transportadora de outra UF não inscrita em MT. Recolhimento mensal|01022026|
+MT50001002|Estorno de Crédito: Estorno de crédito pelo tomador do serviço do CT-e substituído, conforme Cláusula décima sétima, Ajuste Sinief 09/2007|01042023|
+MT50003001|Estorno de Crédito: estorno do crédito correspondente ao valor destacado na NF3e substituída|01062022|
+MT50000001|Estorno de crédito do ICMS pago antecipadamente na entrada nos termos da Res. 007/2008 (Art. 5º, I).|01102025|31052026
+MT50000002|Estorno de crédito do ICMS relativo à mercadoria adquirida para integrar o produto ou para ser consumida no processo de industrialização em virtude de saída ou prestação de serviço não tributada ou isenta, exceto exportação. Art. 116, I, RICMS/MT.|01112025|
+MT50000003|Estorno de crédito do ICMS relativo à mercadoria adquirida para comercialização em virtude de saída ou prestação de serviço não tributada ou isenta, exceto exportação. Art. 116, II, RICMS/MT.|01112025|
+MT50000004|Estorno de crédito do ICMS relativo à mercadoria adquirida para uso ou consumo. Art. 116, III, RICMS/MT.|01112025|
+MT50000005|Estorno de crédito do ICMS em virtude da saída ou prestação de serviço beneficiadas com redução de base de cálculo, proporcionalmente à parcela correspondente à redução. Art. 116, IV, RICMS/MT.|01112025|
+MT50000006|Estorno de crédito do ICMS nas situações em que o ICMS exceder o montante devido, por erro ou inobservância da correta base de cálculo ou alíquota cabível. Art. 116, V, RICMS/MT.|01112025|
+MT50000007|Estorno de crédito do ICMS relativo à mercadoria entrada ou adquirida pelo estabelecimento para o ativo permanente/imobilizado. Cálculo da parcela mensal (1/48) feito no Bloco G - CIAP.|01122025|
+MT50000008|Estorno de crédito do ICMS relativo à devolução de Gasolina C, Óleo Diesel B, GLP e GLGN adquiridos como insumo, nos termos do Convênio ICMS 26/2023.|01022026|
+MT50000009|Estorno de crédito do ICMS quando a fruição do benefício fiscal estiver condicionada à renúncia ao aproveitamento de quaisquer créditos.|01022026|
+MT53000530|SUB-APURAÇÃO 1: CRÉDITO TRANSPORTE: Estorno de Crédito da Apuração própria para Crédito na Apuração em separado indicador '3'(filho D195)|01022018|
+MT70000001|Diferencial de Alíquota - Entrada Ativo Permanente|01122025|
+MT70000002|Diferencial de Alíquota - Entrada Uso ou Consumo|01112021|
+MT70000003|Diferencial de Alíquota - Utilização de Serviço|01032022|
+MT70000004|Débito Especial: ICMS apurado e devido a cada operação ou prestação, em virtude do enquadramento em medida administrativa cautelar e/ou devedor contumaz - arts. 916 e 916-C, RICMS/MT.|01102025|
+MT70000005|Diferencial de Alíquota - Destinação de mercadoria e/ou serviço ao uso e consumo ou ativo permanente/imobilizado em data diversa de sua entrada.|01122025|
+MT70000006|Débito especial do ICMS em virtude da emissão de NF-e Complementar em período de referência posterior ao da emissão da NF-e original, para regularização de preço ou quantidade ou correção do valor do imposto.|01122025|
+MT70000007|Débito Especial - ICMS apurado referente a diferença entre a quantidade remetida para exportação e a efetivamente averbada, em que o prazo legal para exportação foi finalizado. Art. 3º, §1º da Portaria 163/2024.|01122025|
+MT70000010|DÉBITOS ESPECIAIS: Regularização fiscal com benefício da espontaneidade, nos termos do Art. 47-M da Lei 7098/98, da inconsistência falta de evento de averbação na NFe de exportação|01112021|31122025
+MT70000011|Débito Especial: ICMS apurado e devido a cada operação/prestação.|01022026|
+MT71110001|DÉBITOS ESPECIAIS: ICMS ST - Solidariedade do Destinatário|01072022|
+MT71110002|DÉBITOS ESPECIAIS: FECEP ST - Solidariedade do Destinatário|01072022|
+MT71000004|Débito Especial: ICMS ST devido a cada operação ou prestação, em virtude do enquadramento em medida administrativa cautelar e/ou devedor contumaz - arts. 916 e 916-C, RICMS/MT.|01102025|
+MT71000006|Débito especial do ICMS ST em virtude da emissão de NF-e Complementar em período de referência posterior ao da emissão da NF-e original, para regularização de preço ou quantidade ou correção do valor do imposto.|01122025|
+MT71001003|Débito Especial: ICMS ST devido por responsabilidade tributária na contratação de frete com transportador autônomo ou transportadora de outra UF não inscrita em MT. Recolhimento por prestação|01022026|
+MT73000730|SUB-APURAÇÃO 1: DÉBITO ESPECIAL TRANSPORTE: ICMS recolhido ou a recolher Extra-Apuração devido na Apuração em separado indicador '3'(filho D195)|01022018|
+MT90000001|Informativo - Diferimento do ICMS Diferencial de alíquotas na aquisição de bens para o ativo permanente/imobilizado, vinculados aos Programas de Desenvolvimento do Estado. Decreto 288/2019.|01122025|
+MT90000002|Informativo - Isenção do ICMS Diferencial de alíquotas.|01122025|
+MT90000003|Informativo - Diferimento parcial do ICMS Diferencial de alíquotas na aquisição de bens para o ativo permanente/imobilizado. Art. 41, Anexo VII, RICMS/MT.|01122025|
+MT91110001|ICMS ST declaração de recolhimento antecipado - Anexo X RICMS/MT|01012020|
+MT10000004|Crédito por aquisição de mercadorias de empresa do Simples Nacional. Art.23, §1º da LC 123/06. Art. 17 Anexo VI - RICMS/MT.|01112025|30112025
+MT10009104|PRODER - Crédito outorgado nas operações próprias de saída interestadual de Gado Bovino para Abate, com idade a partir de 24 meses, Resolução 63/2021-CONDEPRODEMAT.|01102025|01102025
+MT10009105|PRODER - Crédito outorgado nas operações próprias de saída interestadual de Gado Bovino para Abate, com idade a partir de 24 meses, produzido nos municípios Aripuanã, Colniza e Rondolândia, Resolução 80/2021-CONDEPRODEMAT.|01102025|01102025
+MT10009106|PRODER - Crédito outorgado nas operações próprias de saída interestadual de Suínos em Pé, Resolução 81/2021-CONDEPRODEMAT.|01102025|01102025
+MT10009107|PRODER - Crédito outorgado nas operações próprias de saída interestadual de feijões, Resolução 76/2021-CONDEPRODEMAT.|01102025|01102025
+MT10009108|PRODER - Crédito outorgado nas operações próprias de saída interestadual de Gergelim, Resolução 77/2021-CONDEPRODEMAT.|01102025|01102025
+MT10009109|PRODER - Crédito outorgado nas operações próprias de saída interestadual de Girassol, Resolução 78/2021-CONDEPRODEMAT.|01102025|01102025
+MT10009110|PRODER - Crédito outorgado nas operações próprias de saída interestadual de Lentilha, Resolução 69/2021-CONDEPRODEMAT.|01102025|01102025
+MT10009112|PRODER - Crédito outorgado nas operações próprias de saída interestadual de Ervilha, Resolução 70/2021-CONDEPRODEMAT.|01102025|01102025
+MT10009113|PRODER - Crédito outorgado nas operações próprias de saída interestadual de Grão-de-bico, Resolução 71/2021-CONDEPRODEMAT.|01102025|01102025
+MT10009114|PRODER - Crédito outorgado nas operações próprias de saída interestadual de Fava, Resolução 72/2021-CONDEPRODEMAT.|01102025|01102025
+MT10009115|PRODER - Crédito outorgado nas operações próprias de saída interestadual de Trigo, Resolução 73/2021-CONDEPRODEMAT.|01102025|01102025
+MT10009116|PRODER - Crédito outorgado nas operações próprias de saída interestadual de Amendoim, Resolução 74/2021-CONDEPRODEMAT.|01102025|01102025
+MT10009117|PRODER - Crédito outorgado nas operações próprias de saída interestadual de Peixe, Resolução 79/2021-CONDEPRODEMAT.|01102025|01102025
+MT10009119|PRODER - Crédito outorgado nas operações próprias de saída interestadual de Chia, Resolução 139/2023-CONDEPRODEMAT.|01102025|01102025
+MT10009120|PRODER - Crédito outorgado nas operações próprias de saída interestadual de Milheto, Resolução 140/2023-CONDEPRODEMAT.|01102025|01102025
+MT10009121|PRODER - Crédito outorgado nas operações próprias de saída interestadual de Níger, Resolução 141/2023-CONDEPRODEMAT.|01102025|01102025
+MT10009122|PRODER - Crédito outorgado nas operações próprias de saída interestadual de Painço, Resolução 143/2023-CONDEPRODEMAT.|01102025|01102025
+MT10009123|PRODER - Crédito outorgado nas operações próprias de saída interestadual de Sorgo, Resolução 145/2023-CONDEPRODEMAT.|01102025|01102025
+MT10009124|PRODER - Crédito outorgado nas operações próprias de saída interestadual de Linhaça, Resolução 142/2023-CONDEPRODEMAT.|01102025|01102025
+MT10009125|PRODER - Crédito outorgado nas operações próprias de saída interestadual de Quinoa, Resolução 144/2023-CONDEPRODEMAT.|01102025|01102025
+MT12080001|PRODEIC - Crédito Red. B. Cálculo - Lei 7958/2003|01012018|31122019
+MT12080101|PRODEIC - Crédito Presumido - Lei 7958/2003|01012018|31122019
+MT12080112|PRODECIT - Crédito Presumido - Lei 7958/2003|01012018|30062023
+MT12080201|PRODEIC - Diferimento - Lei 7958/2003|01012018|31122019
+MT12080002|PROALMAT - Crédito Red. B. Cálculo - Lei 6883/1997|01012018|31122019
+MT12080010|PROPEIXE - Crédito Red. B. Cálculo - Lei 7754/2002|01012018|31122019
+MT12080102|PROALMAT - Crédito Presumido - Lei 6883/1997|01012018|31122019
+MT12080103|PROCOURO - Crédito Presumido -  Lei 7216/1999|01012018|31122019
+MT12080104|PROMADEIRA - Crédito Presumido -Lei 7200/1999|01012018|31122019
+MT12080105|PROARROZ- Crédito Presumido - Lei 7607/2001|01012018|31122019
+MT12080106|PROMINERAÇÃO - Crédito Presumido -  Lei 7606/2001|01012018|31122019
+MT12080107|PROMAMONA - Crédito Presumido -  Lei 7732/2002|01012018|31122019
+MT12080108|PRO-INFORMÁTICA - Crédito Presumido - Lei 7612/2001|01012018|31122019
+MT12080109|PROLEITE - Crédito Presumido -  Lei 7608/2001|01012018|31122019
+MT12080110|PROPEIXE - Crédito Presumido -  Lei 7754/2002|01012018|31122019
+MT12080011|PRODER - Crédito Red. B. Cálculo - Lei 7958/2003|01012018|31122019
+MT12080111|PRODER - Crédito Presumido - Lei 7958/2003|01012018|31122019
+MT12080211|PRODER - Diferimento - Lei 7958/2003|01012018|31122019
+MT12080012|PRODECIT - Crédito Red. B. Cálculo - Lei 7958/2003|01012018|31122019
+MT12080212|PRODECIT - Diferimento - Lei 7958/2003|01012018|31122019
+MT12080013|PRODETUR - Crédito Red. B. Cálculo - Lei 7958/2003|01012018|31122019
+MT12080113|PRODETUR - Crédito Presumido - Lei 7958/2003|01012018|31122019
+MT12080213|PRODETUR - Diferimento - Lei 7958/2003|01012018|31122019
+MT12080014|PRODEA - Crédito Red. B. Cálculo - Lei 7958/2003|01012018|31122019
+MT12080114|PRODEA - Crédito Presumido - Lei 7958/2003|01012018|31122019
+MT12080214|PRODEA - Diferimento - Lei 7958/2003|01012018|31122019
+MT12080015|VOE MT - Valor Isenção - Lei 10395/2016|01012018|31122019
+MT12080115|VOE MT - Red. Base de Cálculo - Lei 10395/2016|01012018|31122019
+MT12080999|Outros créditos para ajuste de apuração ICMS em Operação com Incentivo Fiscal|01012018|31122019
+MT22080001|PRODEIC - Estorno de Débito - Crédito Red. B. Cálculo - Lei 7958/2003|01012018|31122019
+MT22080101|PRODEIC - Estorno de Débito - Crédito Presumido - Lei 7958/2003|01012018|31122019
+MT22080002|PROALMAT - Estorno de Débito - Crédito Red. B. Crédito - Lei 6883/1997|01012018|31122019
+MT22080102|PROALMAT - Estorno de Débito - Crédito Presumido - Lei 6883/1997|01012018|31122019
+MT22080103|PROCOURO - Estorno de Débito - Crédito Presumido - Lei 7216/1999|01012018|31122019
+MT22080104|PROMADEIRA - Estorno de Débito - Crédito Presumido -Lei 7200/1999|01012018|31122019
+MT22080105|PROARROZ - Estorno de Débito - Crédito Presumido - Lei 7607/2001|01012018|31122019
+MT22080106|PROMINERAÇÃO - Estorno de Débito - Crédito Presumido - Lei 7606/2001|01012018|31122019
+MT22080107|PROMAMONA - Estorno de Débito - Crédito Presumido - Lei 7732/2002|01012018|31122019
+MT22080108|PRO-INFORMÁTICA - Estorno de Débito - Crédito Presumido - Lei 7612/2001|01012018|31122019
+MT22080109|PROLEITE - Estorno de Débito - Crédito Presumido - Lei 7608/2001|01012018|31122019
+MT22080010|PROPEIXE - Estorno de Débito - Crédito Red. B. Cálculo - Lei 7754/2002|01012018|31122019
+MT22080110|PROPEIXE - Estorno de Débito - Crédito Presumido - Lei 7754/2002|01012018|31122019
+MT22080011|PRODER - Estorno de Débito - Crédito Red. B. Cálculo - Lei 7958/2003|01012018|31122019
+MT22080111|PRODER - Estorno de Débito - Crédito Presumido - Lei 7958/2003|01012018|31122019
+MT22080012|PRODECIT - Estorno de Débito - Crédito Red. B. Cálculo - Lei 7958/2003|01012018|31122019
+MT22080112|PRODECIT - Estorno de Débito - Crédito Presumido - Lei 7958/2003|01012018|31122019
+MT22080013|PRODETUR - Estorno de Débito - Crédito Red. B. Cálculo - Lei 7958/2003|01012018|31122019
+MT22080113|PRODETUR - Estorno de Débito - Crédito Presumido - Lei 7958/2003|01012018|31122019
+MT22080114|PRODEA - Estorno de Débito - Crédito Presumido - Lei 7958/2003|01012018|31122019
+MT22080014|PRODEA - Estorno de Débito - Crédito Red. B. Cálculo - Lei 7958/2003|01012018|31122019
+MT22080015|VOE MT - Ajuste a Débito devido a Isenção - Lei 10395/2016|01012018|31122019
+MT22080115|VOE MT - Ajuste a Débito devido a Red. Base de Cálculo - Lei 10395/2016|01012018|31122019
+MT22080999|Estorno de débitos para ajuste de apuração ICMS em Operação com Incentivo Fiscal|01012018|31122019
+MT40010402|OUTROS DÉBITOS: Recolhimento  do ICMS nas aquisições de produtos e mercadorias destinados a construção civil conforme artigo 50 do Anexo V  RICMS-MT|01122016|31122019
+MT40010404|OUTROS DÉBITOS: Diferencial de alíquotas devido por aquisição de Bens ou mercadorias  em operação interestadual|01012017|31122019
+MT40010404|OUTROS DÉBITOS: Diferencial de alíquotas devido por aquisição de Bens ou mercadorias  em operação interestadual|01012020|31102021
+MT40010405|ICMS devido nas aquisições interestaduais de mercadorias para revenda efetuadas por atacadistas e distribuidores de produtos alimentícios e mercadorias em geral, conforme artigo 9o. do Anexo V RICMS-MT|01012017|31122019
+MT40010406|ICMS devido nas aquisições interestaduais de mercadorias sujeitas ao regime de estimativa simplificado conforme artigo 157 do RICMS-MT|01092018|31122019
+MT41110403|OUTROS DÉBITOS: Recolhimento  do ICMS-ST nas aquisições de produtos e mercadorias destinados a construção civil conforme artigo 50 do Anexo V  RICMS-MT|01012016|31122019
+MT42080999|Outros débitos para ajuste de apuração ICMS em Operação com Incentivo Fiscal|01012018|31122019
+MT52080001|PRODEIC - Estorno de Crédito - Lei 7958/2003|01012018|31122019
+MT52080002|PROALMAT - Estorno de Crédito - Lei 6883/1997|01012018|31122019
+MT52080003|PROCOURO - Estorno de Crédito -  Lei 7216/1999|01012018|31122019
+MT52080004|PROMADEIRA - Estorno de Crédito -Lei 7200/1999|01012018|31122019
+MT52080005|PROARROZ - Estorno de Crédito - Lei 7607/2001|01012018|31122019
+MT52080006|PROMINERAÇÃO - Estorno de Crédito - Lei 7606/2001|01012018|31122019
+MT52080007|PROMAMONA - Estorno de Crédito - Lei 7732/2002|01012018|31122019
+MT52080008|PRO-INFORMÁTICA - Estorno de Crédito - Lei 7612/2001|01012018|31122019
+MT52080009|PROLEITE - Estorno de Crédito - Lei 7608/2001|01012018|31122019
+MT52080010|PROPEIXE - Estorno de Crédito - Lei 7754/2002|01012018|31122019
+MT52080011|PRODER - Estorno de Crédito - Lei 7958/2003|01012018|31122019
+MT52080012|PRODECIT - Estorno de Crédito - Lei 7958/2003|01012018|30062023
+MT52080013|PRODETUR - Estorno de Crédito - Lei 7958/2003|01012018|31122019
+MT52080014|PRODEA - Estorno de Crédito - Lei 7958/2003|01012018|31122019
+MT52080999|Estorno de créditos para ajuste de apuração ICMS em Operação com Incentivo Fiscal|01012018|31122019
+MT62080999|Deduções do imposto apurado na apuração ICMS em Operação com Incentivo Fiscal|01012018|31122019
+MT70000001|Diferencial de Alíquota - Entrada Ativo Permamente|01112021|30112025
+MT72080999|Débito especial de ICMS em Operação com Incentivo Fiscal|01012018|31122019
+MT90000001|INFORMATIVO - ICMS DIFAL pelas entradas Diferido|01112021|30112025

@@ -1,0 +1,111 @@
+versão=35 COD_AJUR, DESC_AJUR, DT_INI, DT_FIM
+PA000001|Outros Débitos -Saldo devedor recebido em transferência para recolhimento único do mesmo grupo (Art. 95, 97 e 98, do RICMS-PA)|01052022|
+PA000002|Outros Débitos - ICMS relativo à perda de EHC em sistema dutoviário (Art. 598-ZG, RICMS)|01052022|
+PA000003|Outros Débitos - Estoque de Álcool Etílico Hidratado Combustível - AEHC, relativamente às operações subseqüentes (Art. 680 do RICMS-PA)|01052022|
+PA000004|Outros Débitos - Estoque de álcool para fins não-combustíveis, relativamente às operações subseqüentes (art. 689-G do RICMS-PA)|01052022|
+PA000005|Outros Déditos - Operação com palmito (Art 197. § 4º, RICMS-PA)|01052022|
+PA000006|Outros Déditos - Diferença de imposto devido (Art. 502, § 3º)|01062022|
+PA000007|Outros Débitos - Produtor de Biodiesel (B100) optante pelo tratamento diferenciado (Art. 598-ZZH, I, a).|01062022|
+PA000008|Outros Débitos - Para recolhimento de ICMS relativo a nota fiscal a ser emitida no mês seguinte, nos termos do Ajuste Sinief 22/21|01012024|
+PA009999|Outros Débitos|01012009|30062022
+PA009999|Outros Débitos|01072022|30092022
+PA010001|Estorno de Crédito - Estoque (art. 131, inciso III, do Anexo I do RICMS-PA)|01052022|
+PA010002|Estorno de Credito -  Certificado homologação de crédito fiscal (Art. 79, §3º, I, RICMS-PA)|01052022|
+PA010003|Estorno de Crédito - Insumos empregados no processo de industrialização de  mercadorias destinadas ao exterior (Art. 601, §4º, RICMS)|01052022|
+PA010004|Estorno de Crédito - Simples Nacional|01062022|
+PA010005|Estorno de Crédito - Decorrente de operação de saída de mercadoria efetuada com diferimento do imposto.|01062022|
+PA010006|Estorno de Crédito - Crédito a ser adjudicado em competências posteriores, relativo ao estoque de mercadorias existentes quando da exclusão da sistemática da substituição ou antecipação tributária (Art.6º, inciso II, item "b", IN 15/2024)|01062024|
+PA010007|Estorno de Crédito - Programa Sua Casa - Estorno de crédito por transferência (Art 7º da IN 16/24)|01052024|31032025
+PA010007|Estorno de Crédito - Programa Sua Casa - Estorno de crédito por transferência (Art 7º, II da IN 03/25)|01042025|
+PA010008|Estorno de Crédito - Programa Sua Casa - Estorno de crédito para compensação de crédito tributário (Art. 7º da IN 16/24)|01052024|31032025
+PA010008|Estorno de Crédito - Programa Sua Casa - Estorno de crédito para compensação de crédito tributário (Art. 7º, II da IN 03/25)|01042025|
+PA010009|Estorno de Crédito - Nota fiscal emitida no mês seguinte ao fornecimento, nos termos do Ajuste Sinief 22/21|01012024|
+PA010010|Estorno de Crédito - Energia elétrica não utilizada no processo produtivo (Art. 51, § 2º, II, b, RICMS)|01012025|
+PA019999|Outros Estornos de Créditos|01012009|30062022
+PA019999|Outros Estornos de Créditos|01072022|30092022
+PA020001|Crédito Presumido - Incentivo Fiscal|01012009|01112011
+PA020001|Crédito Presumido|02112011|30062022
+PA020002|Crédito do Ativo Imobilizado - Registrar 1/48|01012009|30042022
+PA020002|Outros créditos - Crédito do ativo imobilizado - Registrar 1/48 (Art. 82, III, RICMS)|01052022|
+PA020003|Crédito Homologado por Antecipação na Saída|01012009|
+PA020004|Crédito pelo Recolhimento do ICMS Antecipado Glosa Crédito|01012009|01012022
+PA020005|Crédito Cheque Moradia - Crédito Outorgado de ICMS relativo ao Programa Nossa Casa (Baixa)|01012009|31032025
+PA020005|Outros Créditos - Programa Sua Casa - Crédito Outorgado de ICMS (Art. 7º, II da IN 03/25)|01042025|
+PA020006|Restituição de indébito|01012009|30062022
+PA020006|Restituição de indébito (Lei 6.182/98, Art. 66)|01072022|
+PA020007|Saldo Credor do Período Anterior|01012009|
+PA020008|Outros Créditos - Antecipação especial do imposto (art. 114-E, Anexo I, RICMS-PA)|01052022|
+PA020009|Outros Créditos - Recebimento de crédito acumulado do ICMS. Autorização dada por Certificado de Crédito  (Art. 74, VI,b, RICMS)|01052022|
+PA020010|Outros Créditos - Decorrente de  imposto recolhido indevidamente (art. 59, I, RICMS)-|01052022|01052022
+PA020010|Outros Créditos - Estornos de débitos, inclusive, decorrente de  imposto recolhido indevidamente (art. 59, I, RICMS)|02052022|
+PA020011|Outros créditos - Recuperação de ICMS (art. 59, II, RICMS-PA)|01052022|
+PA020012|Outros créditos - Saldo credor recebido em transferência para recolhimento único do mesmo grupo (Art. 95, 97 e 98, do RICMS)|01052022|
+PA020013|Outros Créditos - Cesta básica fornecido a órgãos da administração pública estadual direta, indireta e fundacional 70% (art. 129,§ 2º, II,  Anexo I, RICMS-PA)|01052022|
+PA020014|Outros Créditos - Simples Nacional|01062022|
+PA020015|Outros Créditos - Crédito de aquisição de combustível para prestação de serviço de transporte (Art. 350).|01062022|
+PA020016|Crédito Presumido - Decorrente de resolução|01062022|
+PA020017|Outros créditos - ICMS retido em operações de substituição tributária (Art. 664, RICMS)|01052022|
+PA020018|Outros Créditos - Restituição de ICMS ST - Substituído (RICMS, Art. 665-A a 665-G)|01072022|
+PA020019|Outros Créditos - Restituição de ICMS ST - Substituído (RICMS, Art. 665)|01072022|
+PA020020|Outros Créditos - Utilização de Crédito proporcinal|01072022|01072022
+PA020020|Outros Créditos - Utilização de Crédito Proporcional|02072022|
+PA020021|Outros Créditos - Crédito Extemporâneo (Art. 54, RICMS-PA)|01072022|
+PA020022|Crédito Presumido - Comércio atacadista mediante regime especial (Art. 363, I, Anexo I, RICMS)|01012024|
+PA020023|Outros Créditos - Crédito a ser adjudicado em competências posteriores, relativo ao estoque de mercadorias existentes quando da exclusão da sistemática da substituição ou antecipação tributária (Art.6º, inciso II, item "a", IN 15/2024)|01062024|02062024
+PA020023|Outros Créditos - Crédito a ser adjudicado na competência atual, relativo ao estoque de mercadorias existentes quando da exclusão da sistemática da substituição ou antecipação tributária (Art.6º, inciso II, item "a", IN 15/2024)|03062024|
+PA020024|Outros Créditos - Programa Sua Casa - Crédito recebido em transferência (Art. 7º da IN 16/24)|01052024|31032025
+PA020024|Outros Créditos - Programa Sua Casa - Crédito recebido em transferência (Art. 7º, II da IN 03/25)|01042025|
+PA020025|Outros Créditos - Nota fiscal a ser emitida no mês seguinte ao fornecimento, nos termos do Ajuste Sinief 22/21|01012024|
+PA020056|Crédito Outorgado aos Projetos Estaduais  (Art. 11-C, §2º, Anexo IV do RICMS-PA)|02072019|11062025
+PA020057|Outros Créditos de Energia Elétrica. Tusd, Tust ou encargos setoriais.|01012025|
+PA029999|Outros Créditos|01012009|30062022
+PA029999|Outros Créditos|01072022|30092022
+PA030001|Estorno de Débito -  Certificado homologação de crédito fiscal (Art. 79, §3º, II, RICMS-PA)|01052022|
+PA030002|Estorno de Débito -  Na prestação de serviços de telecomunicações não medidos (Art. 566, RICMS)|01052022|
+PA030003|Estorno de Débito - Na prestação de Serviço de Transporte|01072022|
+PA030004|Estorno de Débito - Nota fiscal emitida no mês seguinte ao fornecimento, nos termos do Ajuste Sinief 22/21|01012024|
+PA039999|Estorno de Débitos|01012009|30062022
+PA039999|Estorno de Débitos|01072022|30092022
+PA040001|Deduções - Lei Semear|01012009|31122023
+PA040002|Deduções - FICOP|01012009|31122025
+PA040003|Deduções  Lei 6.489/2002|30092010|
+PA040004|Deduções do imposto apurado - Ressarcimento de Produtor de Biodiesel (B100) optante pelo tratamento diferenciado (Art. 598-ZZH, § 2º).|01062022|
+PA049999|Outras Deduções|01012009|30062022
+PA049999|Outras Deduções|01072022|30092022
+PA059999|Débito especial de ICMS|01012009|30092022
+PA090007|Saldo Credor do Período Anterior|01012013|
+PA090008|Controle do ICMS extra-apuração - Produtor de Biodiesel (B100) optante pelo tratamento diferenciado (Art. 598-ZZH, I, b).|01062022|
+PA090009|Controle de crédito do ICMS a ser apropriado em parcelas relativo ao estoque de mercadorias existentes quando da exclusão da sistemática da substituição ou antecipação tributária (alínea a do inciso II do caput do art.6º da IN 15/2024)|01062024|
+PA109999|Outros débitos para ajuste de apuração ICMS ST|01012009|
+PA110001|Estorno de Crédito - Programa Sua Casa - Estorno de crédito para compensação de crédito tributário (Art. 7º da IN 16/24)|01052024|31032025
+PA110001|Estorno de Crédito - Programa Sua Casa - Estorno de crédito para compensação de crédito tributário (Art. 7º, III da IN 03/25)|01042025|
+PA119999|Estorno de créditos para ajuste de apuração ICMS ST|01012009|
+PA120001|Outros Créditos - Restituição de ICMS ST (RICMS, Art. 665-A a 665-G)|01072022|
+PA120002|Outros Créditos - Programa Sua Casa - Crédito recebido em transferência (Art. 7º da IN 16/24)|01052024|31032025
+PA120002|Outros Créditos - Programa Sua Casa - Crédito recebido em transferência (Art. 7º, III da IN 03/25)|01042025|
+PA120003|Estorno de débito - Recolhimento Espontâneo ST (Art. 11-A da Lei 6.182/98)|01092025|
+PA129999|Outros créditos para ajuste de apuração ICMS ST|01012009|
+PA139999|Estorno de débitos para ajuste de apuração ICMS ST|01012009|
+PA149999|Deduções do imposto apurado na apuração ICMS ST|01012009|
+PA150001|Débito Especial - Recolhimento Espontâneo ST (Art. 11-A da Lei 6.182/98)|01092025|
+PA150002|Débito Especial  Recolhimento de antecipado pelo remetente (Art. 107, §5°, RICMS-PA)|01072026|
+PA159999|Débito especial de ICMS ST|01012009|
+PA209999|Outros débitos para ajuste de apuração ICMS Difal para a UF PA|01012017|
+PA209999|Outros débitos para ajuste de apuração ICMS Difal/FCP para a UF PA|01012016|31122016
+PA219999|Estorno de créditos para ajuste de apuração ICMS Difal para a UF PA|01012017|
+PA219999|Estorno de créditos para ajuste de apuração ICMS Difal/FCP para a UF PA|01012016|31122016
+PA229999|Outros créditos para ajuste de apuração ICMS Difal para a UF PA|01012017|
+PA229999|Outros créditos para ajuste de apuração ICMS Difal/FCP para a UF PA|01012016|31122016
+PA239999|Estorno de débitos para ajuste de apuração ICMS Difal para a UF PA|01012017|
+PA239999|Estorno de débitos para ajuste de apuração ICMS Difal/FCP para a UF PA|01012016|31122016
+PA249999|Deduções do imposto apurado na apuração ICMS Difal para a UF PA|01012017|
+PA249999|Deduções do imposto apurado na apuração ICMS Difal/FCP para a UF PA|01012016|31122016
+PA250001|Débito Especial - Recolhimento Espontâneo DIFAL (Art. 11-A da Lei 6.182/98)|01022025|
+PA259999|Débito especial de ICMS Difal para a UF PA|01012017|
+PA259999|Débito especial de ICMS Difal/FCP para a UF PA|01012016|31122016
+PA309999|Outros débitos para ajuste de apuração ICMS FCP para a UF PA|01012017|30062022
+PA319999|Estorno de créditos para ajuste de apuração ICMS FCP para a UF PA|01012017|30062022
+PA329999|Outros créditos para ajuste de apuração ICMS FCP para a UF PA|01012017|30062022
+PA339999|Estorno de débitos para ajuste de apuração ICMS FCP para a UF PA|01012017|30062022
+PA349999|Deduções do imposto apurado na apuração ICMS FCP para a UF PA|01012017|30062022
+PA359999|Débito especial de ICMS FCP para a UF PA|01012017|30062022

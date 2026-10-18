@@ -1,0 +1,201 @@
+versão=22 COD_IPM, DESC_COD, DT_INI, DT_FIM
+RJREC00001|Receita bruta anual do estabelecimento|01052023|
+RJREC00002|Receita bruta anual da empresa|01072025|
+RJVAF20001|Valor adicionado por operações e prestações não escrituradas, denunciadas espontaneamente ou apuradas em ação fiscal|01012019|31122021
+RJVAF20002|Valor adicionado por aquisições de produtos agrícolas, pastoris, extrativos minerais, pescados ou outros produtos extrativos ou agropecuários sem nota fiscal de produtor|01012019|31012025
+RJVAF20003|Valor adicionado pela prestação de serviço de transporte intermunicipal e interestadual|01012019|31012025
+RJVAF20004|Valor adicionado pelo fornecimento de energia elétrica por geradora hidrelétrica|01012019|31122021
+RJVAF00005|Prestação de serviço de comunicação ou telecomunicação oneroso para consumidor final - Valor das entradas|01012019|
+RJVAF10005|Prestação de serviço de comunicação ou telecomunicação oneroso para consumidor final - Valor das saídas|01012019|
+RJVAF00006|Inscrição estadual centralizada - Valor das entradas|01012019|
+RJVAF10006|Inscrição estadual centralizada - Valor das saídas|01012019|
+RJVAF00007|Fornecimento de energia elétrica por distribuidora - Valor das entradas|01012019|
+RJVAF10007|Fornecimento de energia elétrica por distribuidora - Valor das saídas|01012019|
+RJVAF00008|Fornecimento de água natural canalizada - Valor das entradas|01012019|31122019
+RJVAF10008|Fornecimento de água natural canalizada - Valor das saídas|01012019|31122019
+RJVAF00009|Fornecimento de gás natural canalizado - Valor das entradas|01012019|
+RJVAF10009|Fornecimento de gás natural canalizado - Valor das saídas|01012019|
+RJVAR00010|Fornecimento por geradora de energia elétrica gerada em modalidade distinta da hidrelétrica - Valor das entradas|01012019|19032024
+RJVAF00010|Fornecimento por geradora de energia elétrica gerada em modalidade distinta da hidrelétrica - Valor das entradas|20032024|28022025
+RJVAR10010|Fornecimento por geradora de energia elétrica gerada em modalidade distinta da hidrelétrica - Valor das saídas|01012019|31122021
+RJVAF10010|Fornecimento por geradora de energia elétrica gerada em modalidade distinta da hidrelétrica - Valor das saídas|01012022|28022025
+RJVAF00011|Atividades de extração e produção de petróleo e gás - BLOCO DE EXPLORAÇÃO - Valor das entradas|01012019|31012025
+RJVAF10011|Atividades de extração e produção de petróleo e gás - BLOCO DE EXPLORAÇÃO - Valor das saídas|01012019|31012025
+RJVAF00112|Atividades de extração e produção de petróleo e gás - ALBACORA - Valor das entradas|01012019|
+RJVAF10112|Atividades de extração e produção de petróleo e gás - ALBACORA - Valor das saídas|01012019|
+RJVAF00212|Atividades de extração e produção de petróleo e gás - ALBACORA LESTE - Valor das entradas|01012019|
+RJVAF10212|Atividades de extração e produção de petróleo e gás - ALBACORA LESTE - Valor das saídas|01012019|
+RJVAF00312|Atividades de extração e produção de petróleo e gás - ANEQUIM - Valor das entradas|01012019|
+RJVAF10312|Atividades de extração e produção de petróleo e gás - ANEQUIM - Valor das saídas|01012019|
+RJVAF05812|Atividades de extração e produção de petróleo e gás - ATAPU - Valor das entradas|01102021|
+RJVAF15812|Atividades de extração e produção de petróleo e gás - ATAPU - Valor das saídas|01102021|
+RJVAF00412|Atividades de extração e produção de petróleo e gás - ATLANTA - Valor das entradas|01012019|
+RJVAF10412|Atividades de extração e produção de petróleo e gás - ATLANTA - Valor das saídas|01012019|
+RJVAF00512|Atividades de extração e produção de petróleo e gás - BADEJO - Valor das entradas|01012019|
+RJVAF10512|Atividades de extração e produção de petróleo e gás - BADEJO - Valor das saídas|01012019|
+RJVAF00612|Atividades de extração e produção de petróleo e gás - BAGRE - Valor das entradas|01012019|
+RJVAF10612|Atividades de extração e produção de petróleo e gás - BAGRE - Valor das saídas|01012019|
+RJVAF00712|Atividades de extração e produção de petróleo e gás - BARRACUDA - Valor das entradas|01012019|
+RJVAF10712|Atividades de extração e produção de petróleo e gás - BARRACUDA - Valor das saídas|01012019|
+RJVAF00812|Atividades de extração e produção de petróleo e gás - BERBIGÃO - Valor das entradas|01012019|
+RJVAF10812|Atividades de extração e produção de petróleo e gás - BERBIGÃO - Valor das saídas|01012019|
+RJVAF00912|Atividades de extração e produção de petróleo e gás - BICUDO - Valor das entradas|01012019|
+RJVAF10912|Atividades de extração e produção de petróleo e gás - BICUDO - Valor das saídas|01012019|
+RJVAF01012|Atividades de extração e produção de petróleo e gás - BIJUPIRÁ - Valor das entradas|01012019|
+RJVAF11012|Atividades de extração e produção de petróleo e gás - BIJUPIRÁ - Valor das saídas|01012019|
+RJVAF01112|Atividades de extração e produção de petróleo e gás - BONITO - Valor das entradas|01012019|
+RJVAF11112|Atividades de extração e produção de petróleo e gás - BONITO - Valor das saídas|01012019|
+RJVAF01212|Atividades de extração e produção de petróleo e gás - BÚZIOS - Valor das entradas|01012019|
+RJVAF11212|Atividades de extração e produção de petróleo e gás - BÚZIOS - Valor das saídas|01012019|
+RJVAF01312|Atividades de extração e produção de petróleo e gás - CARAPEBA - Valor das entradas|01012019|
+RJVAF11312|Atividades de extração e produção de petróleo e gás - CARAPEBA - Valor das saídas|01012019|
+RJVAF01412|Atividades de extração e produção de petróleo e gás - CARATINGA - Valor das entradas|01012019|
+RJVAF11412|Atividades de extração e produção de petróleo e gás - CARATINGA - Valor das saídas|01012019|
+RJVAF01512|Atividades de extração e produção de petróleo e gás - CHERNE - Valor das entradas|01012019|
+RJVAF11512|Atividades de extração e produção de petróleo e gás - CHERNE - Valor das saídas|01012019|
+RJVAF01612|Atividades de extração e produção de petróleo e gás - CONGRO - Valor das entradas|01012019|
+RJVAF11612|Atividades de extração e produção de petróleo e gás - CONGRO - Valor das saídas|01012019|
+RJVAF01712|Atividades de extração e produção de petróleo e gás - CORVINA - Valor das entradas|01012019|
+RJVAF11712|Atividades de extração e produção de petróleo e gás - CORVINA - Valor das saídas|01012019|
+RJVAF01812|Atividades de extração e produção de petróleo e gás - ENCHOVA - Valor das entradas|01012019|
+RJVAF11812|Atividades de extração e produção de petróleo e gás - ENCHOVA - Valor das saídas|01012019|
+RJVAF01912|Atividades de extração e produção de petróleo e gás - ENCHOVA OESTE - Valor das entradas|01012019|
+RJVAF11912|Atividades de extração e produção de petróleo e gás - ENCHOVA OESTE - Valor das saídas|01012019|
+RJVAF02012|Atividades de extração e produção de petróleo e gás - ESPADARTE - Valor das entradas|01012019|
+RJVAF12012|Atividades de extração e produção de petróleo e gás - ESPADARTE - Valor das saídas|01012019|
+RJVAF02112|Atividades de extração e produção de petróleo e gás - FRADE - Valor das entradas|01012019|
+RJVAF12112|Atividades de extração e produção de petróleo e gás - FRADE - Valor das saídas|01012019|
+RJVAF02212|Atividades de extração e produção de petróleo e gás - GAROUPA - Valor das entradas|01012019|
+RJVAF12212|Atividades de extração e produção de petróleo e gás - GAROUPA - Valor das saídas|01012019|
+RJVAF02312|Atividades de extração e produção de petróleo e gás - GAROUPINHA - Valor das entradas|01012019|
+RJVAF12312|Atividades de extração e produção de petróleo e gás - GAROUPINHA - Valor das saídas|01012019|
+RJVAF02412|Atividades de extração e produção de petróleo e gás - ITAPU - Valor das entradas|01012019|
+RJVAF12412|Atividades de extração e produção de petróleo e gás - ITAPU - Valor das saídas|01012019|
+RJVAF02512|Atividades de extração e produção de petróleo e gás - LINGUADO - Valor das entradas|01012019|
+RJVAF12512|Atividades de extração e produção de petróleo e gás - LINGUADO - Valor das saídas|01012019|
+RJVAF02612|Atividades de extração e produção de petróleo e gás - LULA - Valor das entradas|01012019|30092021
+RJVAF12612|Atividades de extração e produção de petróleo e gás - LULA - Valor das saídas|01012019|30092021
+RJVAF02712|Atividades de extração e produção de petróleo e gás - MALHADO - Valor das entradas|01012019|
+RJVAF12712|Atividades de extração e produção de petróleo e gás - MALHADO - Valor das saídas|01012019|
+RJVAF02812|Atividades de extração e produção de petróleo e gás - MARIMBÁ - Valor das entradas|01012019|
+RJVAF12812|Atividades de extração e produção de petróleo e gás - MARIMBÁ - Valor das saídas|01012019|
+RJVAF02912|Atividades de extração e produção de petróleo e gás - MARLIM - Valor das entradas|01012019|
+RJVAF12912|Atividades de extração e produção de petróleo e gás - MARLIM - Valor das saídas|01012019|
+RJVAF03012|Atividades de extração e produção de petróleo e gás - MARLIM LESTE - Valor das entradas|01012019|
+RJVAF13012|Atividades de extração e produção de petróleo e gás - MARLIM LESTE - Valor das saídas|01012019|
+RJVAF03112|Atividades de extração e produção de petróleo e gás - MARLIM SUL - Valor das entradas|01012019|
+RJVAF13112|Atividades de extração e produção de petróleo e gás - MARLIM SUL - Valor das saídas|01012019|
+RJVAF03212|Atividades de extração e produção de petróleo e gás - MORÉIA - Valor das entradas|01012019|30092021
+RJVAF13212|Atividades de extração e produção de petróleo e gás - MORÉIA - Valor das saídas|01012019|30092021
+RJVAF03212|Atividades de extração e produção de petróleo e gás - MOREIA - Valor das entradas|01102021|
+RJVAF13212|Atividades de extração e produção de petróleo e gás - MOREIA - Valor das saídas|01102021|
+RJVAF03312|Atividades de extração e produção de petróleo e gás - NAMORADO - Valor das entradas|01012019|
+RJVAF13312|Atividades de extração e produção de petróleo e gás - NAMORADO - Valor das saídas|01012019|
+RJVAF03412|Atividades de extração e produção de petróleo e gás - NE NAMORADO - Valor das entradas|01012019|
+RJVAF13412|Atividades de extração e produção de petróleo e gás - NE NAMORADO - Valor das saídas|01012019|
+RJVAF05912|Atividades de extração e produção de petróleo e gás - NORDESTE DE SAPINHOA - Valor das entradas|01102021|31012025
+RJVAF15912|Atividades de extração e produção de petróleo e gás - NORDESTE DE SAPINHOA - Valor das saídas|01102021|31012025
+RJVAF06012|Atividades de extração e produção de petróleo e gás - OESTE DE ATAPU - Valor das entradas|01102021|
+RJVAF16012|Atividades de extração e produção de petróleo e gás - OESTE DE ATAPU - Valor das saídas|01102021|
+RJVAF03512|Atividades de extração e produção de petróleo e gás - PAMPO - Valor das entradas|01012019|
+RJVAF13512|Atividades de extração e produção de petróleo e gás - PAMPO - Valor das saídas|01012019|
+RJVAF03612|Atividades de extração e produção de petróleo e gás - PAPA-TERRA - Valor das entradas|01012019|
+RJVAF13612|Atividades de extração e produção de petróleo e gás - PAPA-TERRA - Valor das saídas|01012019|
+RJVAF03712|Atividades de extração e produção de petróleo e gás - PARATI - Valor das entradas|01012019|
+RJVAF13712|Atividades de extração e produção de petróleo e gás - PARATI - Valor das saídas|01012019|
+RJVAF03812|Atividades de extração e produção de petróleo e gás - PARGO - Valor das entradas|01012019|
+RJVAF13812|Atividades de extração e produção de petróleo e gás - PARGO - Valor das saídas|01012019|
+RJVAF03912|Atividades de extração e produção de petróleo e gás - PEREGRINO - Valor das entradas|01012019|
+RJVAF13912|Atividades de extração e produção de petróleo e gás - PEREGRINO - Valor das saídas|01012019|
+RJVAF04012|Atividades de extração e produção de petróleo e gás - PIRAÚNA - Valor das entradas|01012019|
+RJVAF14012|Atividades de extração e produção de petróleo e gás - PIRAÚNA - Valor das saídas|01012019|
+RJVAF04112|Atividades de extração e produção de petróleo e gás - POLVO - Valor das entradas|01012019|
+RJVAF14112|Atividades de extração e produção de petróleo e gás - POLVO - Valor das saídas|01012019|
+RJVAF04212|Atividades de extração e produção de petróleo e gás - RONCADOR - Valor das entradas|01012019|
+RJVAF14212|Atividades de extração e produção de petróleo e gás - RONCADOR - Valor das saídas|01012019|
+RJVAF04312|Atividades de extração e produção de petróleo e gás - SALEMA - Valor das entradas|01012019|
+RJVAF14312|Atividades de extração e produção de petróleo e gás - SALEMA - Valor das saídas|01012019|
+RJVAF04412|Atividades de extração e produção de petróleo e gás - SAPINHOÁ - Valor das entradas|01012019|31012025
+RJVAF14412|Atividades de extração e produção de petróleo e gás - SAPINHOÁ - Valor das saídas|01012019|31012025
+RJVAF04512|Atividades de extração e produção de petróleo e gás - SÉPIA - Valor das entradas|01012019|
+RJVAF14512|Atividades de extração e produção de petróleo e gás - SÉPIA - Valor das saídas|01012019|
+RJVAF04612|Atividades de extração e produção de petróleo e gás - SUL DE LULA - Valor das entradas|01012019|30092021
+RJVAF14612|Atividades de extração e produção de petróleo e gás - SUL DE LULA - Valor das saídas|01012019|30092021
+RJVAF04612|Atividades de extração e produção de petróleo e gás - SUL DE TUPI - Valor das entradas|01102021|
+RJVAF14612|Atividades de extração e produção de petróleo e gás - SUL DE TUPI - Valor das saídas|01102021|
+RJVAF06112|Atividades de extração e produção de petróleo e gás - SURURU - Valor das entradas|01102021|30102025
+RJVAF16112|Atividades de extração e produção de petróleo e gás - SURURU - Valor das saídas|01102021|30102025
+RJVAF04712|Atividades de extração e produção de petróleo e gás - TAMBAÚ - Valor das entradas|01012019|
+RJVAF14712|Atividades de extração e produção de petróleo e gás - TAMBAÚ - Valor das saídas|01012019|
+RJVAF04812|Atividades de extração e produção de petróleo e gás - TARTARUGA VERDE - Valor das entradas|01012019|
+RJVAF14812|Atividades de extração e produção de petróleo e gás - TARTARUGA VERDE - Valor das saídas|01012019|
+RJVAF04912|Atividades de extração e produção de petróleo e gás - TRILHA - Valor das entradas|01012019|
+RJVAF14912|Atividades de extração e produção de petróleo e gás - TRILHA - Valor das saídas|01012019|
+RJVAF05012|Atividades de extração e produção de petróleo e gás - TUBARÃO AZUL - Valor das entradas|01012019|
+RJVAF15012|Atividades de extração e produção de petróleo e gás - TUBARÃO AZUL - Valor das saídas|01012019|
+RJVAF05112|Atividades de extração e produção de petróleo e gás - TUBARÃO MARTELO - Valor das entradas|01012019|
+RJVAF15112|Atividades de extração e produção de petróleo e gás - TUBARÃO MARTELO - Valor das saídas|01012019|
+RJVAF05212|Atividades de extração e produção de petróleo e gás - URUGUÁ - Valor das entradas|01012019|
+RJVAF15212|Atividades de extração e produção de petróleo e gás - URUGUÁ - Valor das saídas|01012019|
+RJVAF05312|Atividades de extração e produção de petróleo e gás - VERMELHO - Valor das entradas|01012019|
+RJVAF15312|Atividades de extração e produção de petróleo e gás - VERMELHO - Valor das saídas|01012019|
+RJVAF05412|Atividades de extração e produção de petróleo e gás - VIOLA - Valor das entradas|01012019|
+RJVAF15412|Atividades de extração e produção de petróleo e gás - VIOLA - Valor das saídas|01012019|
+RJVAF05512|Atividades de extração e produção de petróleo e gás - VOADOR - Valor das entradas|01012019|
+RJVAF15512|Atividades de extração e produção de petróleo e gás - VOADOR - Valor das saídas|01012019|
+RJVAF05612|Atividades de extração e produção de petróleo e gás - MERO- Valor das entradas|01012020|
+RJVAF15612|Atividades de extração e produção de petróleo e gás - MERO - Valor das saídas|01012020|
+RJVAF05712|Atividades de extração e produção de petróleo e gás - TAMBUATÁ - Valor das entradas|01012020|
+RJVAF15712|Atividades de extração e produção de petróleo e gás - TAMBUATÁ - Valor das saídas|01012020|
+RJVAF06212|Atividades de extração e produção de petróleo e gás - TARTARUGA VERDE SUDOESTE - Valor das entradas|01102021|
+RJVAF16212|Atividades de extração e produção de petróleo e gás - TARTARUGA VERDE SUDOESTE - Valor das saídas|01102021|
+RJVAF02612|Atividades de extração e produção de petróleo e gás - TUPI - Valor das entradas|01102021|
+RJVAF12612|Atividades de extração e produção de petróleo e gás - TUPI - Valor das saídas|01102021|
+RJVAF06312|Atividades de extração e produção de petróleo e gás - ATAPU_ECO - Valor das entradas|01042024|
+RJVAF16312|Atividades de extração e produção de petróleo e gás - ATAPU_ECO - Valor das saídas|01042024|
+RJVAF06412|Atividades de extração e produção de petróleo e gás - BUZIOS_ECO - Valor das entradas|01042024|
+RJVAF16412|Atividades de extração e produção de petróleo e gás - BUZIOS_ECO - Valor das saídas|01042024|
+RJVAF06512|Atividades de extração e produção de petróleo e gás - ESPADIM - Valor das entradas|01042024|
+RJVAF16512|Atividades de extração e produção de petróleo e gás - ESPADIM - Valor das saídas|01042024|
+RJVAF06612|Atividades de extração e produção de petróleo e gás - ITAPU_ECO - Valor das entradas|01042024|
+RJVAF16612|Atividades de extração e produção de petróleo e gás - ITAPU_ECO - Valor das saídas|01042024|
+RJVAF06712|Atividades de extração e produção de petróleo e gás - MANJUBA - Valor das entradas|01042024|
+RJVAF16712|Atividades de extração e produção de petróleo e gás - MANJUBA - Valor das saídas|01042024|
+RJVAF06812|Atividades de extração e produção de petróleo e gás - NORTE DE BERBIGÃO - Valor das entradas|01042024|
+RJVAF16812|Atividades de extração e produção de petróleo e gás - NORTE DE BERBIGÃO - Valor das saídas|01042024|
+RJVAF06912|Atividades de extração e produção de petróleo e gás - NORTE DE SURURU - Valor das entradas|01042024|30102025
+RJVAF16912|Atividades de extração e produção de petróleo e gás - NORTE DE SURURU - Valor das saídas|01042024|30102025
+RJVAF07012|Atividades de extração e produção de petróleo e gás - OLIVA - Valor das entradas|01042024|
+RJVAF17012|Atividades de extração e produção de petróleo e gás - OLIVA - Valor das saídas|01042024|
+RJVAF07112|Atividades de extração e produção de petróleo e gás - PITANGOLA - Valor das entradas|01042024|
+RJVAF17112|Atividades de extração e produção de petróleo e gás - PITANGOLA - Valor das saídas|01042024|
+RJVAF07212|Atividades de extração e produção de petróleo e gás - SÉPIA LESTE - Valor das entradas|01042024|
+RJVAF17212|Atividades de extração e produção de petróleo e gás - SÉPIA LESTE - Valor das saídas|01042024|
+RJVAF07312|Atividades de extração e produção de petróleo e gás - SÉPIA_ECO - Valor das entradas|01042024|
+RJVAF17312|Atividades de extração e produção de petróleo e gás - SÉPIA_ECO - Valor das saídas|01042024|
+RJVAF07412|Atividades de extração e produção de petróleo e gás - SUL DE BERBIGÃO - Valor das entradas|01042024|
+RJVAF17412|Atividades de extração e produção de petróleo e gás - SUL DE BERBIGÃO - Valor das saídas|01042024|
+RJVAF07512|Atividades de extração e produção de petróleo e gás - SUL DE SURURU - Valor das entradas|01042024|30102025
+RJVAF17512|Atividades de extração e produção de petróleo e gás - SUL DE SURURU - Valor das saídas|01042024|30102025
+RJVAF07612|Atividades de extração e produção de petróleo e gás - MAROMBA - Valor das entradas|01042024|
+RJVAF17612|Atividades de extração e produção de petróleo e gás - MAROMBA - Valor das saídas|01042024|
+RJVAF07712|Atividades de extração e produção de petróleo e gás - RAIA MANTA - Valor das entradas|01022025|31012026
+RJVAF17712|Atividades de extração e produção de petróleo e gás - RAIA MANTA - Valor das saídas|01022025|31012026
+RJVAF07712|Atividades de extração e produção de petróleo e gás - RAIA - Valor das entradas|01022026|
+RJVAF17712|Atividades de extração e produção de petróleo e gás - RAIA - Valor das saídas|01022026|
+RJVAF07812|Atividades de extração e produção de petróleo e gás - RAIA PINTADA - Valor das entradas|01022025|31012026
+RJVAF17812|Atividades de extração e produção de petróleo e gás - RAIA PINTADA - Valor das saídas|01022025|31012026
+RJVAF07912|Atividades de extração e produção de petróleo e gás - ORCA - Valor das entradas|01112025|
+RJVAF17912|Atividades de extração e produção de petróleo e gás - ORCA - Valor das saídas|01112025|
+RJVAF08012|Atividades de extração e produção de petróleo e gás - SUL DE ORCA - Valor das entradas|01112025|
+RJVAF18012|Atividades de extração e produção de petróleo e gás - SUL DE ORCA - Valor das saídas|01112025|
+RJVAF00013|Prestação de Serviço de comunicação ou telecomunicação gratuito para consumidor final - Valor das entradas|01012020|31012025
+RJVAF10013|Prestação de Serviço de comunicação ou telecomunicação gratuito para consumidor final - Valor das saídas|01012020|31012025
+RJVAF10014|Fornecimento por geradora de energia elétrica gerada em modalidade hidrelétrica - Valor das saídas|01012022|
+RJVAF10015|Prestação de serviço de transporte intermunicipal e interestadual por contribuinte enquadrado na Lei 2.778/97 - Valor das saídas|01012024|
+RJVAF00015|Prestação de serviço de transporte intermunicipal e interestadual por contribuinte enquadrado na Lei 2.778/97 - Valor das entradas|01012024|
+RJVAF10016|Prestação de serviço de transporte intermunicipal e interestadual por contribuinte enquadrado na Lei 2.804/97 - Valor das saídas|01012024|
+RJVAF00016|Prestação de serviço de transporte intermunicipal e interestadual por contribuinte enquadrado na Lei 2.804/97 - Valor das entradas|01012024|
+RJVAF10017|Prestação de serviço de transporte intermunicipal e interestadual por contribuinte enquadrado na Lei 2.869/97 - Valor das saídas|01012024|
+RJVAF00017|Prestação de serviço de transporte intermunicipal e interestadual por contribuinte enquadrado na Lei 2.869/97 - Valor das entradas|01012024|
+RJVAF30001|Revendedor autônomo - venda porta a porta|01012024|01012024

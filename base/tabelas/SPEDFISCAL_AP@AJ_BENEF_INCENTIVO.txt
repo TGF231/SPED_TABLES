@@ -1,0 +1,24 @@
+versão=6 COD_AJ, DESC_AJ, DT_INI, DT_FIM
+AP10000001|Outros créditos; Op.Própria; Resp.: Própria; A apurar; Mercadoria; Devolução ou pagamento indevido - Diferencial de alíquotas ativo permanente|01052017|
+AP10000002|Outros créditos; Op.Própria; Resp.: Própria; Apur.: A apurar; Mercadoria; Devolução ou pagamento indevido - Diferencial de alíquotas uso ou consumo|01052017|
+AP10000003|Outros créditos; Op. própria; Resp. própria; A apurar; Mercadoria; Crédito Presumido ALCMS|01012019|
+AP10000100|Outros créditos; Op. própria; Resp. própria; A apurar; Mercadoria; Antecipação tributária com direito a crédito|01052017|31102017
+AP20000001|Estorno de débito; Op.Própria; Resp.: Própria; A apurar; Mercadoria; Ativo permanente|01052017|
+AP20000002|Estorno de débito; Op.Própria; Resp. Própria; A apurar; Mercadoria; Uso e Consumo.|01052017|
+AP40000001|Outros débitos; Op.Própria; Resp. Própria; A apurar; Mercadoria; Ativo permanente|01052017|
+AP40990003|Outros débitos; Op. Própria; Resp.: Informativo; Informativo; Mercadoria; Transferência de crédito|01052017|
+AP70000001|Débitos especiais; Op. Própria; Resp. própria; A apurar; Mercadoria; Diferencial de alíquotas de bem do ativo permanente|01052017|
+AP70000002|Débitos especiais; Op. Própria; Resp. própria; A apurar; Mercadoria; Diferencial de alíquotas de bem para uso ou consumo|01052017|
+AP70000100|Débitos especiais; Op. Própria; Resp. própria; A apurar; Mercadoria; Antecipação tributária com direito a crédito|01052017|
+AP70000200|Débitos especiais; Op. Própria; Resp. própria; A apurar; Mercadoria; Antecipação tributária SEM direito a crédito / Mercadoria de estado não signatário / imposto a recolher|01052017|
+AP70000202|Débitos especiais; Op. Própria; Resp. própria; A apurar; Mercadoria; Recomposição da base de cálculo da ST, referente ao serviço de transporte tomado, não incluído na base de cálculo do ICMS-ST / imposto a recolher|01052017|
+AP70010100|Débitos especiais; Op. Própria; Resp. própria; Recolhimento espontâneo; Mercadoria; Antecipação tributária com direito a crédito / ICMS pago antecipadamente por DAR Avulso|01052017|
+AP70010200|Débitos especiais; Op. Própria; Resp. própria; Recolhimento espontâneo; Mercadoria; Antecipação tributária SEM direito a crédito / Mercadoria de estado não signatário / imposto pago antecipadamente por DAR Avulso|01052017|
+AP70010202|Débitos especiais; Op. Própria; Resp. própria; Recolhimento espontâneo; Mercadoria; Recomposição da base de cálculo da ST, referente ao serviço de transporte tomado, não incluído na base de cálculo do ICMS-ST / imposto pago antecipadamente por DAR Avulso|01052017|
+AP70100001|Débitos especiais; Op. Própria; Resp. solidária; A apurar; Mercadoria; Diferencial de alíquotas de bem do ativo permanente|01052017|
+AP70100002|Débitos especiais; Op. Própria; Resp. solidária; A apurar; Mercadoria; Diferencial de alíquotas de bem para uso ou consumo|01052017|
+AP70100201|Débitos especiais; Op. Própria; Resp. solidária; A apurar; Mercadoria; Antecipação tributária SEM direito a crédito / Mercadoria de estado signatário / imposto a recolher|01052017|
+AP70110201|Débitos especiais; Op. Própria; Resp. solidária; Recolhimento espontâneo; Mercadoria; Antecipação tributária SEM direito a crédito / Mercadoria de Estado signatário / ICMS pago antecipadamente por DAR Avulso|01052017|
+AP50000001|Estorno de crédito; Op. própria; Resp. própria; A apurar; Mercadoria; Estorno do crédito presumido da ALCMS|01012019|
+AP10000004|Outrso créditos; Op. própria; Resp. própria; A apurar; Mercadoria; Crédito Presumido nas operações de saída interestadual de mercadoria importada do exterior (Decreto nº1780/2019)|01042019|
+AP20000003|Estorno de débito; Op. Própria; Resp. Própria; A apurar; Mercadoria; Imposto indevidamente destacado a maior em documento fiscal|01052017|

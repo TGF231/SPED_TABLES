@@ -1,0 +1,11 @@
+versão=2 COD_PROD, DESC_PROD, DT_INI, DT_FIM
+01|Álcool Etílico Hidratado Carburante|01012020|30062020
+01|Álcool Etílico Hidratado Carburante|01072020|
+02|Álcool Etílico Anidro Carburante|01012020|30062020
+02|Álcool Etílico Anidro Carburante|01072020|
+03|Açúcar|01012020|30062020
+03|Açúcar|01072020|
+04|Álcool Etílico Hidratado Outros Fins|01012020|30062020
+04|Álcool Etílico Hidratado Outros Fins|01072020|
+05|Álcool Etílico Anidro Outros Fins|01012020|30062020
+05|Álcool Etílico Anidro Outros Fins|01072020|

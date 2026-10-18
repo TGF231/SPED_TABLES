@@ -1,0 +1,197 @@
+versão=2 COD_AJUR, DESC_AJUR, DT_INI, DT_FIM
+PE000100|Operação com item não incentivado: sub apuração 01|01012019|
+PE010301|Indústria: sub apuração 03 - Operação não incentivada de item com incentivo|01012019|
+PE010302|Indústria: sub apuração 03 - Operação incentivada de item com incentivo|01012019|
+PE010401|Indústria: sub apuração 04 - Operação não incentivada de item com incentivo|01012019|
+PE010402|Indústria: sub apuração 04 - Operação incentivada de item com incentivo|01012019|
+PE010501|Indústria: sub apuração 05 - Operação não incentivada de item com incentivo|01012019|
+PE010502|Indústria: sub apuração 05 - Operação incentivada de item com incentivo|01012019|
+PE010601|Indústria: sub apuração 06 - Operação não incentivada de item com incentivo|01012019|
+PE010602|Indústria: sub apuração 06 - Operação incentivada de item com incentivo|01012019|
+PE010701|Indústria: sub apuração 07 - Operação não incentivada de item com incentivo|01012019|
+PE010702|Indústria: sub apuração 07 - Operação incentivada de item com incentivo|01012019|
+PE010801|Indústria: sub apuração 08 - Operação não incentivada de item com incentivo|01012019|
+PE010802|Indústria: sub apuração 08 - Operação incentivada de item com incentivo|01012019|
+PE010901|Indústria: sub apuração 09 - Operação não incentivada de item com incentivo|01012019|
+PE010902|Indústria: sub apuração 09 - Operação incentivada de item com incentivo|01012019|
+PE011001|Indústria: sub apuração 10 - Operação não incentivada de item com incentivo|01012019|
+PE011002|Indústria: sub apuração 10 - Operação incentivada de item com incentivo|01012019|
+PE011101|Indústria: sub apuração 11 - Operação não incentivada de item com incentivo|01012019|
+PE011102|Indústria: sub apuração 11 - Operação incentivada de item com incentivo|01012019|
+PE011201|Indústria: sub apuração 12 - Operação não incentivada de item com incentivo|01012019|
+PE011202|Indústria: sub apuração 12 - Operação incentivada de item com incentivo|01012019|
+PE011301|Indústria: sub apuração 13 - Operação não incentivada de item com incentivo|01012019|
+PE011302|Indústria: sub apuração 13 - Operação incentivada de item com incentivo|01012019|
+PE011401|Indústria: sub apuração 14 - Operação não incentivada de item com incentivo|01012019|
+PE011402|Indústria: sub apuração 14 - Operação incentivada de item com incentivo|01012019|
+PE011501|Indústria: sub apuração 15 - Operação não incentivada de item com incentivo|01012019|
+PE011502|Indústria: sub apuração 15 - Operação incentivada de item com incentivo|01012019|
+PE011601|Indústria: sub apuração 16 - Operação não incentivada de item com incentivo|01012019|
+PE011602|Indústria: sub apuração 16 - Operação incentivada de item com incentivo|01012019|
+PE011701|Indústria: sub apuração 17 - Operação não incentivada de item com incentivo|01012019|
+PE011702|Indústria: sub apuração 17 - Operação incentivada de item com incentivo|01012019|
+PE011801|Indústria: sub apuração 18 - Operação não incentivada de item com incentivo|01012019|
+PE011802|Indústria: sub apuração 18 - Operação incentivada de item com incentivo|01012019|
+PE011901|Indústria: sub apuração 19 - Operação não incentivada de item com incentivo|01012019|
+PE011902|Indústria: sub apuração 19 - Operação incentivada de item com incentivo|01012019|
+PE012001|Indústria: sub apuração 20 - Operação não incentivada de item com incentivo|01012019|
+PE012002|Indústria: sub apuração 20 - Operação incentivada de item com incentivo|01012019|
+PE012101|Indústria: sub apuração 21 - Operação não incentivada de item com incentivo|01012019|
+PE012102|Indústria: sub apuração 21 - Operação incentivada de item com incentivo|01012019|
+PE012201|Indústria: sub apuração 22 - Operação não incentivada de item com incentivo|01012019|
+PE012202|Indústria: sub apuração 22 - Operação incentivada de item com incentivo|01012019|
+PE012301|Indústria: sub apuração 23 - Operação não incentivada de item com incentivo|01012019|
+PE012302|Indústria: sub apuração 23 - Operação incentivada de item com incentivo|01012019|
+PE012401|Indústria: sub apuração 24 - Operação não incentivada de item com incentivo|01012019|
+PE012402|Indústria: sub apuração 24 - Operação incentivada de item com incentivo|01012019|
+PE012501|Indústria: sub apuração 25 - Operação não incentivada de item com incentivo|01012019|
+PE012502|Indústria: sub apuração 25 - Operação incentivada de item com incentivo|01012019|
+PE012601|Indústria: sub apuração 26 - Operação não incentivada de item com incentivo|01012019|
+PE012602|Indústria: sub apuração 26 - Operação incentivada de item com incentivo|01012019|
+PE012701|Indústria: sub apuração 27 - Operação não incentivada de item com incentivo|01012019|
+PE012702|Indústria: sub apuração 27 - Operação incentivada de item com incentivo|01012019|
+PE012801|Indústria: sub apuração 28 - Operação não incentivada de item com incentivo|01012019|
+PE012802|Indústria: sub apuração 28 - Operação incentivada de item com incentivo|01012019|
+PE012901|Indústria: sub apuração 29 - Operação não incentivada de item com incentivo|01012019|
+PE012902|Indústria: sub apuração 29 - Operação incentivada de item com incentivo|01012019|
+PE013001|Indústria: sub apuração 30 - Operação não incentivada de item com incentivo|01012019|
+PE013002|Indústria: sub apuração 30 - Operação incentivada de item com incentivo|01012019|
+PE013101|Indústria: sub apuração 31 - Operação não incentivada de item com incentivo|01012019|
+PE013102|Indústria: sub apuração 31 - Operação incentivada de item com incentivo|01012019|
+PE013201|Indústria: sub apuração 32 - Operação não incentivada de item com incentivo|01012019|
+PE013202|Indústria: sub apuração 32 - Operação incentivada de item com incentivo|01012019|
+PE013301|Indústria: sub apuração 33 - Operação não incentivada de item com incentivo|01012019|
+PE013302|Indústria: sub apuração 33 - Operação incentivada de item com incentivo|01012019|
+PE013401|Indústria: sub apuração 34 - Operação não incentivada de item com incentivo|01012019|
+PE013402|Indústria: sub apuração 34 - Operação incentivada de item com incentivo|01012019|
+PE013501|Indústria: sub apuração 35 - Operação não incentivada de item com incentivo|01012019|
+PE013502|Indústria: sub apuração 35 - Operação incentivada de item com incentivo|01012019|
+PE013601|Indústria: sub apuração 36 - Operação não incentivada de item com incentivo|01012019|
+PE013602|Indústria: sub apuração 36 - Operação incentivada de item com incentivo|01012019|
+PE013701|Indústria: sub apuração 37 - Operação não incentivada de item com incentivo|01012019|
+PE013702|Indústria: sub apuração 37 - Operação incentivada de item com incentivo|01012019|
+PE013801|Indústria: sub apuração 38 - Operação não incentivada de item com incentivo|01012019|
+PE013802|Indústria: sub apuração 38 - Operação incentivada de item com incentivo|01012019|
+PE013901|Indústria: sub apuração 39 - Operação não incentivada de item com incentivo|01012019|
+PE013902|Indústria: sub apuração 39 - Operação incentivada de item com incentivo|01012019|
+PE014001|Indústria: sub apuração 40 - Operação não incentivada de item com incentivo|01012019|
+PE014002|Indústria: sub apuração 40 - Operação incentivada de item com incentivo|01012019|
+PE014101|Indústria: sub apuração 41 - Operação não incentivada de item com incentivo|01012019|
+PE014102|Indústria: sub apuração 41 - Operação incentivada de item com incentivo|01012019|
+PE014201|Indústria: sub apuração 42 - Operação não incentivada de item com incentivo|01012019|
+PE014202|Indústria: sub apuração 42 - Operação incentivada de item com incentivo|01012019|
+PE014301|Indústria: sub apuração 43 - Operação não incentivada de item com incentivo|01012019|
+PE014302|Indústria: sub apuração 43 - Operação incentivada de item com incentivo|01012019|
+PE014401|Indústria: sub apuração 44 - Operação não incentivada de item com incentivo|01012019|
+PE014402|Indústria: sub apuração 44 - Operação incentivada de item com incentivo|01012019|
+PE014501|Indústria: sub apuração 45 - Operação não incentivada de item com incentivo|01012019|
+PE014502|Indústria: sub apuração 45 - Operação incentivada de item com incentivo|01012019|
+PE014601|Indústria: sub apuração 46 - Operação não incentivada de item com incentivo|01012019|
+PE014602|Indústria: sub apuração 46 - Operação incentivada de item com incentivo|01012019|
+PE014701|Indústria: sub apuração 47 - Operação não incentivada de item com incentivo|01012019|
+PE014702|Indústria: sub apuração 47 - Operação incentivada de item com incentivo|01012019|
+PE014801|Indústria: sub apuração 48 - Operação não incentivada de item com incentivo|01012019|
+PE014802|Indústria: sub apuração 48 - Operação incentivada de item com incentivo|01012019|
+PE014901|Indústria: sub apuração 49 - Operação não incentivada de item com incentivo|01012019|
+PE014902|Indústria: sub apuração 49 - Operação incentivada de item com incentivo|01012019|
+PE015001|Indústria: sub apuração 50 - Operação não incentivada de item com incentivo|01012019|
+PE015002|Indústria: sub apuração 50 - Operação incentivada de item com incentivo|01012019|
+PE030301|Importação: sub apuração 03 - Operação não incentivada de item com incentivo|01012019|
+PE030302|Importação: sub apuração 03 - Operação incentivada de item com incentivo|01012019|
+PE030401|Importação: sub apuração 04 - Operação não incentivada de item com incentivo|01012019|
+PE030402|Importação: sub apuração 04 - Operação incentivada de item com incentivo|01012019|
+PE030501|Importação: sub apuração 05 - Operação não incentivada de item com incentivo|01012019|
+PE030502|Importação: sub apuração 05 - Operação incentivada de item com incentivo|01012019|
+PE030601|Importação: sub apuração 06 - Operação não incentivada de item com incentivo|01012019|
+PE030602|Importação: sub apuração 06 - Operação incentivada de item com incentivo|01012019|
+PE030701|Importação: sub apuração 07 - Operação não incentivada de item com incentivo|01012019|
+PE030702|Importação: sub apuração 07 - Operação incentivada de item com incentivo|01012019|
+PE030801|Importação: sub apuração 08 - Operação não incentivada de item com incentivo|01012019|
+PE030802|Importação: sub apuração 08 - Operação incentivada de item com incentivo|01012019|
+PE030901|Importação: sub apuração 09 - Operação não incentivada de item com incentivo|01012019|
+PE030902|Importação: sub apuração 09 - Operação incentivada de item com incentivo|01012019|
+PE031001|Importação: sub apuração 10 - Operação não incentivada de item com incentivo|01012019|
+PE031002|Importação: sub apuração 10 - Operação incentivada de item com incentivo|01012019|
+PE031101|Importação: sub apuração 11 - Operação não incentivada de item com incentivo|01012019|
+PE031102|Importação: sub apuração 11 - Operação incentivada de item com incentivo|01012019|
+PE031201|Importação: sub apuração 12 - Operação não incentivada de item com incentivo|01012019|
+PE031202|Importação: sub apuração 12 - Operação incentivada de item com incentivo|01012019|
+PE031301|Importação: sub apuração 13 - Operação não incentivada de item com incentivo|01012019|
+PE031302|Importação: sub apuração 13 - Operação incentivada de item com incentivo|01012019|
+PE031401|Importação: sub apuração 14 - Operação não incentivada de item com incentivo|01012019|
+PE031402|Importação: sub apuração 14 - Operação incentivada de item com incentivo|01012019|
+PE031501|Importação: sub apuração 15 - Operação não incentivada de item com incentivo|01012019|
+PE031502|Importação: sub apuração 15 - Operação incentivada de item com incentivo|01012019|
+PE031601|Importação: sub apuração 16 - Operação não incentivada de item com incentivo|01012019|
+PE031602|Importação: sub apuração 16 - Operação incentivada de item com incentivo|01012019|
+PE031701|Importação: sub apuração 17 - Operação não incentivada de item com incentivo|01012019|
+PE031702|Importação: sub apuração 17 - Operação incentivada de item com incentivo|01012019|
+PE031801|Importação: sub apuração 18 - Operação não incentivada de item com incentivo|01012019|
+PE031802|Importação: sub apuração 18 - Operação incentivada de item com incentivo|01012019|
+PE031901|Importação: sub apuração 19 - Operação não incentivada de item com incentivo|01012019|
+PE031902|Importação: sub apuração 19 - Operação incentivada de item com incentivo|01012019|
+PE032001|Importação: sub apuração 20 - Operação não incentivada de item com incentivo|01012019|
+PE032002|Importação: sub apuração 20 - Operação incentivada de item com incentivo|01012019|
+PE032101|Importação: sub apuração 21 - Operação não incentivada de item com incentivo|01012019|
+PE032102|Importação: sub apuração 21 - Operação incentivada de item com incentivo|01012019|
+PE032201|Importação: sub apuração 22 - Operação não incentivada de item com incentivo|01012019|
+PE032202|Importação: sub apuração 22 - Operação incentivada de item com incentivo|01012019|
+PE032301|Importação: sub apuração 23 - Operação não incentivada de item com incentivo|01012019|
+PE032302|Importação: sub apuração 23 - Operação incentivada de item com incentivo|01012019|
+PE032401|Importação: sub apuração 24 - Operação não incentivada de item com incentivo|01012019|
+PE032402|Importação: sub apuração 24 - Operação incentivada de item com incentivo|01012019|
+PE032501|Importação: sub apuração 25 - Operação não incentivada de item com incentivo|01012019|
+PE032502|Importação: sub apuração 25 - Operação incentivada de item com incentivo|01012019|
+PE032601|Importação: sub apuração 26 - Operação não incentivada de item com incentivo|01012019|
+PE032602|Importação: sub apuração 26 - Operação incentivada de item com incentivo|01012019|
+PE032701|Importação: sub apuração 27 - Operação não incentivada de item com incentivo|01012019|
+PE032702|Importação: sub apuração 27 - Operação incentivada de item com incentivo|01012019|
+PE032801|Importação: sub apuração 28 - Operação não incentivada de item com incentivo|01012019|
+PE032802|Importação: sub apuração 28 - Operação incentivada de item com incentivo|01012019|
+PE032901|Importação: sub apuração 29 - Operação não incentivada de item com incentivo|01012019|
+PE032902|Importação: sub apuração 29 - Operação incentivada de item com incentivo|01012019|
+PE033001|Importação: sub apuração 30 - Operação não incentivada de item com incentivo|01012019|
+PE033002|Importação: sub apuração 30 - Operação incentivada de item com incentivo|01012019|
+PE033101|Importação: sub apuração 31 - Operação não incentivada de item com incentivo|01012019|
+PE033102|Importação: sub apuração 31 - Operação incentivada de item com incentivo|01012019|
+PE033201|Importação: sub apuração 32 - Operação não incentivada de item com incentivo|01012019|
+PE033202|Importação: sub apuração 32 - Operação incentivada de item com incentivo|01012019|
+PE033301|Importação: sub apuração 33 - Operação não incentivada de item com incentivo|01012019|
+PE033302|Importação: sub apuração 33 - Operação incentivada de item com incentivo|01012019|
+PE033401|Importação: sub apuração 34 - Operação não incentivada de item com incentivo|01012019|
+PE033402|Importação: sub apuração 34 - Operação incentivada de item com incentivo|01012019|
+PE033501|Importação: sub apuração 35 - Operação não incentivada de item com incentivo|01012019|
+PE033502|Importação: sub apuração 35 - Operação incentivada de item com incentivo|01012019|
+PE033601|Importação: sub apuração 36 - Operação não incentivada de item com incentivo|01012019|
+PE033602|Importação: sub apuração 36 - Operação incentivada de item com incentivo|01012019|
+PE033701|Importação: sub apuração 37 - Operação não incentivada de item com incentivo|01012019|
+PE033702|Importação: sub apuração 37 - Operação incentivada de item com incentivo|01012019|
+PE033801|Importação: sub apuração 38 - Operação não incentivada de item com incentivo|01012019|
+PE033802|Importação: sub apuração 38 - Operação incentivada de item com incentivo|01012019|
+PE033901|Importação: sub apuração 39 - Operação não incentivada de item com incentivo|01012019|
+PE033902|Importação: sub apuração 39 - Operação incentivada de item com incentivo|01012019|
+PE034001|Importação: sub apuração 40 - Operação não incentivada de item com incentivo|01012019|
+PE034002|Importação: sub apuração 40 - Operação incentivada de item com incentivo|01012019|
+PE034101|Importação: sub apuração 41 - Operação não incentivada de item com incentivo|01012019|
+PE034102|Importação: sub apuração 41 - Operação incentivada de item com incentivo|01012019|
+PE034201|Importação: sub apuração 42 - Operação não incentivada de item com incentivo|01012019|
+PE034202|Importação: sub apuração 42 - Operação incentivada de item com incentivo|01012019|
+PE034301|Importação: sub apuração 43 - Operação não incentivada de item com incentivo|01012019|
+PE034302|Importação: sub apuração 43 - Operação incentivada de item com incentivo|01012019|
+PE034401|Importação: sub apuração 44 - Operação não incentivada de item com incentivo|01012019|
+PE034402|Importação: sub apuração 44 - Operação incentivada de item com incentivo|01012019|
+PE034501|Importação: sub apuração 45 - Operação não incentivada de item com incentivo|01012019|
+PE034502|Importação: sub apuração 45 - Operação incentivada de item com incentivo|01012019|
+PE034601|Importação: sub apuração 46 - Operação não incentivada de item com incentivo|01012019|
+PE034602|Importação: sub apuração 46 - Operação incentivada de item com incentivo|01012019|
+PE034701|Importação: sub apuração 47 - Operação não incentivada de item com incentivo|01012019|
+PE034702|Importação: sub apuração 47 - Operação incentivada de item com incentivo|01012019|
+PE034801|Importação: sub apuração 48 - Operação não incentivada de item com incentivo|01012019|
+PE034802|Importação: sub apuração 48 - Operação incentivada de item com incentivo|01012019|
+PE034901|Importação: sub apuração 49 - Operação não incentivada de item com incentivo|01012019|
+PE034902|Importação: sub apuração 49 - Operação incentivada de item com incentivo|01012019|
+PE035001|Importação: sub apuração 50 - Operação não incentivada de item com incentivo|01012019|
+PE035002|Importação: sub apuração 50 - Operação incentivada de item com incentivo|01012019|
+PE040201|Central de distribuição: sub apuração 02 - Operação não incentivada de item com incentivo|01012019|
+PE040202|Central de distribuição: sub apuração 02 - Operação incentivada de item com incentivo|01012019|
+PE058002|Comércio atacadista - sistemática especial da Lei Nº 14.721/2012): sub apuração 80|01012022|

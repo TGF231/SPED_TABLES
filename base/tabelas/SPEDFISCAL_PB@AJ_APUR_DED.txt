@@ -1,0 +1,128 @@
+versão=25 COD_AJUR, DESC_AJUR, DT_INI, DT_FIM
+PB000001|Outros débitos para ajuste de apuração ICMS para PB|01012009|30042012
+PB000001|Outros débitos para ajuste de apuração ICMS|01052012|
+PB000002|TARE  Ajuste a débito para recolhimento do valor mínimo fixado.|01102016|31122016
+PB000003|TARE  Ajuste a débito referente adicional de transferência/venda para empresas do mesmo grupo com posterior saída interestadual.|01102016|
+PB000004|FAIN - Ajuste a débito, conforme Art. 5º, §6º, IV, do Dec. 17.252/94|01082019|
+PB000010|Débito referente ao saldo devedor recebido da apuração do ICMS DIFAL/FCP (EC 87/15) do remetente da PB|01012016|
+PB000011|ICMS relativo à perda de EHC em sistema dutoviário, Decreto Nº 41.310/2021|01052021|
+PB000012|ICMS relativo à perda de EAC em sistema dutoviário, Decreto Nº 41.311/2021|01052021|
+PB000013|ICMS Veículos Automotores Usados nos termos do Decreto nº 43.374/2023|01022023|
+PB010001|Estorno de créditos para ajuste de apuração ICMS para PB|01012009|30042012
+PB010001|Estorno de créditos para ajuste de apuração ICMS|01052012|
+PB010002|Estorno de créditos para apuração do ICMS Simples Nacional|01012014|
+PB010003|Estorno de créditos a serem transportados para o registro E220 para fins de cálculo do valor do estoque das mercadorias que passaram a ser tributadas pela ST|01032016|
+PB010004|TARE - Estorno de créditos das entradas proporcional às saídas com benefício.|01102016|
+PB010005|TARE - Estorno de crédito referente devolução de vendas.|01102016|
+PB010006|TARE - Estorno de crédito presumido referente pagamento ICMS em atraso|01102016|
+PB010007|Bares e Restaurantes (Decreto 33.657/12) - Estorno de créditos para ajuste da apuração do ICMS.|01102016|
+PB010008|Estorno de crédito referente a CT-e substituído|01062023|
+PB012001|Outros créditos para ajuste de apuração ICMS ST para PB|01012009|02012009
+PB012003|Repasse- Valor do repasse para outras UF'S para ajuste a crédito de apuração ICMS ST para PB|01012009|02012009
+PB020001|Outros créditos para ajuste de apuração ICMS para PB|01012009|30042012
+PB020001|Outros créditos para ajuste de apuração ICMS|01052012|
+PB020002|Outros Regimes Especiais - Valor do crédito presumido para ajuste de apuração ICMS para PB|01012009|30042012
+PB020002|Outros Regimes Especiais - Valor do crédito presumido para ajuste de apuração ICMS|01052012|
+PB020003|Termo de Acordo de Regime Especial (TARE) - Valor do crédito presumido para ajuste de apuração ICMS|01052012|
+PB020003|Termo de Acordo de Regime Especila (TARE) - Valor do crédito presumido para ajuste de apuração ICMS para PB|01012009|30042012
+PB020004|Previsão no RICMS - Valor do crédito presumido para ajuste de apuração ICMS para PB|01012009|30042012
+PB020004|Previsão no RICMS - Valor do crédito presumido para ajuste de apuração ICMS|01052012|
+PB020005|FAIN - Valor do crédito presumido para ajuste de apuração ICMS para PB|01012009|30042012
+PB020005|FAIN - Valor do crédito presumido para ajuste de apuração ICMS|01052012|
+PB020006|Cheque Habitação - Valor do crédito gerado com o recebimento do cheque habitação como pagamento para ajuste de apuração ICMS para PB|01012009|30042012
+PB020006|Cheque Habitação - Valor do crédito gerado com o recebimento do cheque habitação como pagamento para ajuste de apuração ICMS|01052012|
+PB020007|Cheque Educação - Valor do crédito gerado com o recebimento do cheque educação como pagamento para ajuste de apuração ICMS para PB|01012009|30042012
+PB020007|Cheque Educação - Valor do crédito gerado com o recebimento do cheque educação como pagamento para ajuste de apuração ICMS|01052012|
+PB020008|Gol de Placa - Valor do crédito utilizado com o Incentivo denominado Gol de Placa para ajuste de apuração ICMS para PB|01012009|30042012
+PB020008|Gol de Placa - Valor do crédito utilizado com o Incentivo denominado Gol de Placa para ajuste de apuração ICMS|01052012|
+PB020009|FIC (Fundo de Incentivo a Cultura) - Valor concedido de crédito presumido do ICMS de até 80% (oitenta por cento) do valor aplicado pelos contribuintes no financiamento de projetos culturais para ajuste de apuração ICMS para PB|01012009|30042012
+PB020009|FIC (Fundo de Incentivo a Cultura) - Valor concedido de crédito presumido do ICMS de até 80% (oitenta por cento) do valor aplicado pelos contribuintes no financiamento de projetos culturais para ajuste de apuração ICMS|01052012|30062023
+PB020010|Processos Judiciais - Valor de credito concedido para ajuste de apuração ICMS PB|01012009|30042012
+PB020010|Processos Judiciais - Valor de credito concedido para ajuste de apuração ICMS|01052012|
+PB020011|Ativo Imobilizado - Valor do Crédito CIAP|01052012|
+PB020011|Ativo Imobilizado - Valor do Crédito do Ativo Imobilizado|01012009|30042012
+PB020012|Garantido recolhido - Valor de crédito para ajuste do ICMS PB|01012009|30042012
+PB020012|Garantido recolhido - Valor de crédito para ajuste do ICMS|01052012|
+PB020013|Antecipado recolhido - Valor de Crédito para ajuste do ICMS PB|01012009|30042012
+PB020013|Antecipado recolhido - Valor de Crédito para ajuste do ICMS|01052012|
+PB020014|Crédito por aquisição de empresa Simples Nacional|01012014|
+PB020015|Crédito do estoque por desenquadramento do Simples Nacional|01012014|
+PB020016|TARE - Valor do crédito oriundo do recolhimento mínimo de períodos anteriores|01102016|
+PB020017|TARE PLÁSTICOS - Valor do crédito oriundo do recolhimento mínimo de períodos anteriores|01102016|
+PB020018|REGIME ESPECIAL - Decreto nº 31.072/2010 ANEXO II - Valor do Crédito Presumido para ajuste de apuração|01092017|
+PB020019|Valor do crédito presumido para ajuste na apuração - Decreto 40.446/2020|01092020|
+PB020020|Créditos para ajuste de apuração do ICMS SUCATA, recolhido pela indústria na aquisição|01082022|
+PB020021|Programa de concessão de incentivo fiscal ao setor cultural  Dec. Nº 43.711/23|01072023|
+PB020022|Crédito presumido nas entradas de produtos fornecidos por agroindústria familiar  Art. 6º, LII, § 52, II.(Convênio 102/21)|01012023|
+PB020068|Crédito referente ao saldo credor recebido da apuração do ICMS DIFAL/FCP (EC 87/15) do remetente da PB|01012016|
+PB030001|Estorno de débitos para ajuste de apuração ICMS para PB|01012009|30042012
+PB030001|Estorno de débitos para ajuste de apuração ICMS|01052012|
+PB030002|FUNCEP-PB-ICMS NORMAL - O valor informado neste campo deverá se no máximo 2% do valor informado no registro para estorno de debitos para ajuste de apuração ICMS para PB|01012009|30042012
+PB030002|FUNCEP-PB-ICMS NORMAL - O valor informado neste campo deverá se no máximo 2% do valor informado no registro para estorno de debitos para ajuste de apuração ICMS|01052012|31122012
+PB030003|Estorno de débitos para apuração do ICMS Simples Nacional|01012014|
+PB030004|TARE  Estorno de débito referente devolução de compras.|01102016|
+PB030005|Bares e Restaurantes (Decreto 33.657/12) - Estorno de débitos para ajuste da apuração do ICMS.|01102016|
+PB030006|Estorno de débitos para apuração do ICMS SUCATA  Referente a valores recolhidos antecipadamente|01082022|
+PB030007|Estorno de débitos referente a CT-e substituído|01062023|
+PB040001|Deduções do imposto apurado na apuração ICMS para PB|01012009|30042012
+PB040001|Deduções do imposto na apuração ICMS|01052012|
+PB040002|FUNCEP-PB-ICMS NORMAL - O valor informado neste campo deverá se no máximo 2% do valor informado no registro para dedução de debitos para ajuste de apuração ICMS|01012013|
+PB050001|Outros Débitos especiais de ICMS para a  PB|01012009|30042012
+PB050001|Outros Débitos especiais de ICMS|01052012|
+PB050002|Diferencial de Alíquota de consumo e ativo fixo|01012009|31122012
+PB050003|FUNCEP - PB - Diferencial de alíquota - Valor Recolhido|01012009|31122012
+PB050004|Operações com Veículos Automotores Usados nos Termos do Decreto nº 30.106/08|01102010|31122012
+PB050005|ICMS Simples Nacional|01012014|
+PB050006|TARE PLÁSTICOS - Ajuste a débito para recolhimento do valor mínimo fixado.|01102016|
+PB050007|TARE  Ajuste a débito para recolhimento do valor mínimo fixado.|01012017|
+PB091000|TARE  Controle de Saldo Excedente de Garantido para abater do recolhimento mínimo variável|01012021|
+PB100001|Outros débitos para ajuste de apuração ICMS ST para PB|01012009|30042012
+PB100001|Outros débitos para ajuste de apuração ICMS ST|01052012|
+PB100002|Outros débitos referente aos estoques das mercadorias que passaram a ser tributadas pela ST|01032016|
+PB110001|Estorno de créditos para ajuste de apuração ICMS ST para PB|01012009|30042012
+PB110001|Estorno de créditos para ajuste de apuração ICMS ST|01052012|
+PB120001|Outros créditos para ajuste de apuração ICMS  ST para PB|03012009|30042012
+PB120001|Outros créditos para ajuste de apuração ICMS  ST|01052012|
+PB120002|Outros créditos oriundos de transferência do registro E110 para fins de apuração do ICMS do estoque das mercadorias que passaram a ser tributadas pela ST|01032016|
+PB120003|Repasse- Valor do  repasse para outras UF'S para ajuste a crédito de apuração ICMS ST para PB|03012009|30042012
+PB120003|Repasse- Valor do  repasse para outras UF'S para ajuste a crédito de apuração ICMS ST|01052012|
+PB120004|Substituição tributária interna motivada por regime especial de tributação - Fonte|01012009|30042012
+PB120005|Ajuste a crédito referente a pagamento efetuado antecipadamente ICMS  ST|01072023|
+PB120006|Ajuste a crédito referente a valores decorrentes de processos de ressarcimentos ICMS  ST|01072023|
+PB130001|Estorno de débitos para ajuste de apuração ICMS ST para PB|01012009|30042012
+PB130001|Estorno de débitos para ajuste de apuração ICMS ST|01052012|
+PB130002|FUNCEP - PB- SUBSTITUIÇÃO PELAS SAÍDAS PARA O ESTADO - Valor recolhido - estorno de debitos para ajuste de apuração ICMS para PB|01012009|30042012
+PB130002|FUNCEP - PB- SUBSTITUIÇÃO PELAS SAÍDAS PARA O ESTADO - Valor recolhido - estorno de debitos para ajuste de apuração ICMS ST|01052012|31122012
+PB130003|FUNCEP - PB- SUBSTITUIÇÃO PELAS ENTRADAS - Valor recolhido - estorno de debitos para ajuste de apuração ICMS para PB|01012009|30042012
+PB130003|FUNCEP - PB- SUBSTITUIÇÃO PELAS ENTRADAS - Valor recolhido - estorno de debitos para ajuste de apuração ICMS ST|01052012|31122012
+PB130004|FUNCEP - PB - REGIME FONTE - Valor recolhido - estorno de debitos para ajuste de apuração ICMS ST|01052012|31122012
+PB130004|FUNCEP - PB - REGIME FONTE - Valor recolhido - estorno de debitos para ajuste de apuração ICMS SUBSTITUIÇÃO para PB|01012009|30042012
+PB140001|Deduções do imposto apurado na apuração ICMS ST para PB|01012009|30042012
+PB140001|Deduções do imposto na apuração ICMS ST|01052012|
+PB140002|FUNCEP - PB- SUBSTITUIÇÃO PELAS SAÍDAS PARA O ESTADO - Valor recolhido - dedução de debitos para ajuste de apuração ICMS ST|01012013|
+PB140003|FUNCEP - PB- SUBSTITUIÇÃO PELAS ENTRADAS - Valor recolhido - dedução de debitos para ajuste de apuração ICMS ST|01012013|
+PB140004|FUNCEP - PB - REGIME FONTE - Valor recolhido - dedução de debitos para ajuste de apuração ICMS ST|01012013|
+PB150001|Outros Débitos especiais de ICMS ST para a PB|01012009|30042012
+PB150001|Outros Débitos especiais de ICMS ST|01052012|
+PB150002|FUNCEP - PB - Substituição por Entrada - Valor Recolhido|01012009|31122012
+PB150003|Substituição tributária interna motivada por regime especial de tributação - Fonte|01012009|
+PB200001|Débito referente ao saldo credor do ICMS Difal/FCP transferido para a apuração do ICMS normal do próprio contribuinte|01012016|
+PB209999|Outros débitos para ajuste de apuração do ICMS Difal/FCP para a UF da PB|01012016|31122016
+PB209999|Outros débitos para ajuste de apuração ICMS Difal para a UF da PB|01012017|
+PB219999|Estorno de créditos para ajuste de apuração do ICMS Difal/FCP para a UF da PB|01012016|31122016
+PB219999|Estorno de créditos para ajuste de apuração ICMS Difal para a UF da PB|01012017|
+PB220001|Crédito referente ao saldo devedor do ICMS Difal/FCP transferido para a apuração do ICMS normal do próprio contribuinte|01012016|
+PB229999|Outros créditos para ajuste de apuração do ICMS Difal/FCP para a UF da PB|01012016|31122016
+PB229999|Outros créditos para ajuste de apuração ICMS Difal para a UF da PB|01012017|
+PB239999|Estorno de débitos para ajuste de apuração do ICMS Difal/FCP para a UF da PB|01012016|31122016
+PB239999|Estorno de débitos para ajuste de apuração ICMS Difal para a UF da PB|01012017|
+PB249999|Deduções do imposto apurado na apuração do ICMS Difal/FCP para a UF da PB|01012016|31122016
+PB249999|Deduções do imposto apurado na apuração ICMS Difal para a UF da PB|01012017|
+PB259999|Débito especial de ICMS Difal/FCP para a UF da PB|01012016|31122016
+PB259999|Débito especial de ICMS Difal para a UF da PB|01012017|
+PB309999|Outros débitos para ajuste de apuração ICMS FCP para a UF da PB|01012017|
+PB319999|Estorno de créditos para ajuste de apuração ICMS FCP para a UF da PB|01012017|
+PB329999|Outros créditos para ajuste de apuração ICMS FCP para a UF da PB|01012017|
+PB339999|Estorno de débitos para ajuste de apuração ICMS FCP para a UF da PB|01012017|
+PB349999|Deduções do imposto apurado na apuração ICMS FCP para a UF da PB|01012017|
+PB359999|Débito especial de ICMS FCP para a UF da PB|01012017|

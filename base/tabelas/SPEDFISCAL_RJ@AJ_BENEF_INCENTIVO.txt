@@ -1,0 +1,150 @@
+versão=69 COD_AJ, DESC_AJ, DT_INI, DT_FIM
+RJ00080300|Crédito Presumido sobre as entradas interestaduais  incisos II e III do artigo 3° da Lei n° 4.173/03|01012017|31032019
+RJ10000000|Crédito relativo a ICMS  próprio não apropriado no momento da aquisição de mercadoria sujeita a ICMS-ST devolvida ou remetida para outra UF ou em caso de devolução de mercadoria adquirida para uso e consumo|03012018|
+RJ10000001|Crédito de ICMS originário de operações com empresas do Simples Nacional|01122015|
+RJ10000002|Outros créditos - Devolução de ativo permanente|01092019|
+RJ10000004|Outros Créditos - Recuperação do imposto devido por diferencial de alíquotas (difal) em caso de devolução interestadual de ativo fixo|01032020|
+RJ10000005|Outros Créditos - Recuperação do imposto devido por diferencial de alíquotas (difal) em caso de devolução interestadual de mercadoria adquirida para uso ou consumo|01032020|
+RJ10000006|Outros Créditos - Decisão Judicial|01092021|
+RJ10001000|Crédito de ICMS apropriado pelo tomador do serviço de transporte de carga|29052018|30062018
+RJ10001002|Outros créditos - Crédito de ICMS decorrente de serviço prestado por transportador estabelecido em outra UF ou por transportador autônomo|01072021|
+RJ10001004|Outros créditos - Crédito de ICMS pelo transportador subcontratante decorrente do serviço prestado pelo transportador subcontratado|01072021|
+RJ10001005|Outros créditos - Crédito de ICMS pelo transportador redespachante decorrente do serviço prestado por transportador autônomo redespachado|01072021|
+RJ10009000|Outros créditos - Saldo credor acumulado recebido em transferência de terceiros na aquisição de insumos, mercadorias ou bens do ativo permanente|01052019|
+RJ10080000|Outros créditos - Crédito presumido em função de norma relacionada no manual de que trata o Decreto 27.815/2001|01042019|
+RJ10080001|Outros créditos - Devolução de mercadoria cuja saída tenha sido amparada por isenção, redução da base de cálculo, não incidência ou redução de alíquota e não tenha sido amparada por inexigibilidade de estorno de crédito|01102019|
+RJ10080002|Outros créditos - Transferência de saldo credor ou repasse de crédito em função de norma relacionada no manual de que trata o Decreto 27.815/2001|01042019|
+RJ10080003|Outros créditos - Recebimento pela refinaria do crédito transferido pelo distribuidor de combustível - Decreto 48.543/2023|01052023|
+RJ10080004|Outros créditos - Recebimento pela refinaria do crédito transferido pelo distribuidor de combustível - Resolução SEFAZ 526/2023|01052023|
+RJ10080300|Crédito Presumido sobre as entradas internas  inciso IV do artigo 3° da Lei n° 4.173/03|01012017|31032019
+RJ10100000|Outros Créditos (devolução/ST ou remessa interestadual/ST)|01102012|02012018
+RJ11000000|Crédito de ICMS-ST por devolução ou remessa interestadual|03012018|
+RJ11080000|Outros créditos - Recebimento pela refinaria do crédito transferido pelo distribuidor de combustível - Decreto 48.486/2023|01092023|
+RJ11080001|Outros créditos - Recebimento pela refinaria do crédito transferido pelo distribuidor de combustível - Decreto 48.565/2023|01052023|
+RJ11100000|Crédito de ICMS-ST em caso de devolução ou remessa interestadual (responsável solidário)|03012018|
+RJ20000000|Estorno de débitos - ICMS devido em documento fiscal complementar emitido em período de apuração diferente do período de apuração do fato gerador. Lançamento conjunto com débito especial|01012019|01012019
+RJ20000000|Estorno de débitos - ICMS devido em documento fiscal complementar emitido em período de apuração diferente do período de apuração do fato gerador. Lançamento conjunto com débito especial|01092019|
+RJ20000001|Estorno de débitos - Estorno vinculado ao débito especial do ICMS devido em função da diferença a maior entre o documento fiscal de substituição e o documento fiscal substituído quando a substituição ocorre em período de apuração diferente do período de apuração do fato gerador|01072021|25112021
+RJ20000001|Estorno de débitos - Estorno vinculado ao débito especial do ICMS devido em função da diferença a maior entre o documento fiscal de substituição e o documento fiscal substituído quando a substituição ocorre em período de apuração diferente do período de apuração do fato gerador|01122021|29102024
+RJ20000002|Estorno de débitos - Decisão Judicial|01092021|
+RJ20000003|Estorno de débitos - Sistema de Escoamento do Gás Natural não processado da Bacia de Campos ou SEG-BC - Decreto 48.683/2023|01092023|
+RJ20000004|Estorno de débitos - Estorno vinculado à NF-e emitida pelo fornecimento de óleo diesel marítimo em competência posterior ao do fornecimento|01092023|
+RJ20001002|Estorno de débitos - Estorno de débito - emissão de CT-e de substituição|03042023|
+RJ20080100|Estorno de Débito - conforme art.3º da Lei 5.636/10|01052012|31052016
+RJ20001001|Estorno do ICMS destacado no documento fiscal de prestação de serviço de transporte quando o serviço for iniciado em outra UF|01092019|
+RJ20002000|Estorno de débito - NFCom substituída|25072025|
+RJ20002001|Estorno de débito - Estorno vinculado ao débito especial do ICMS devido em função da diferença a maior entre a NFCom de substituição e o a NFCom substituída quando a substituição ocorrer em período de apuração diferente do período de apuração do fato gerador|25072025|
+RJ20003000|Estornos de débitos de ICMS - NF3e substituída|29102024|
+RJ20003001|Estorno de débito  Estorno vinculado ao débito especial do ICMS devido em função da diferença a maior entre o documento fiscal de substituição e o documento fiscal substituído quando a substituição ocorre em período de apuração diferente do período de apuração do fato gerador|29102024|
+RJ20008000|Estornos de débitos - NF3e substituída|01022022|29102024
+RJ21000000|Estorno de débitos - ICMS-ST devido em documento fiscal complementar emitido em período de apuração diferente do período de apuração do fato gerador. Lançamento conjunto com débito especial|01032021|
+RJ21003000|Estornos de débitos de ICMS-ST- NF3e substituída|29102024|
+RJ21003001|Estorno de débito  Estorno vinculado ao débito especial do ICMS-ST devido em função da diferença a maior entre o documento fiscal de substituição e o documento fiscal substituído quando a substituição ocorre em período de apuração diferente do período de apuração do fato gerador|29102024|
+RJ40000001|ICMS diferencial de alíquota na aquisição de ativo permanente|01092009|01092009
+RJ40000002|ICMS diferencial de alíquota na aquisição de material de uso e consumo|01092009|01092009
+RJ40009000|Outros Débitos - Saldo Credor utilizado para pagamento de ICMS Importação - Livro III do RICMS|01052014|30042019
+RJ40009000|Outros débitos - Saldo credor acumulado aproveitado para pagamento de ICMS devido em operação de importação|01052019|
+RJ40009001|Outros débitos - Saldo credor acumulado aproveitado para pagamento de ICMS devido em operação de aquisição de sucata|01052019|
+RJ40080001|Outros débitos - Transferência de saldo credor ou repasse de crédito em função de norma relacionada no manual de que trata o Decreto 27.815/2001|01042019|
+RJ40080002|Outros débitos - Transferência do distribuidor de combustível para a refinaria de crédito presumido relativo ao Convênio ICMS 21/2023|01052023|
+RJ40080003|Outros débitos - Transferência do distribuidor de combustível para a refinaria de crédito presumido relativo ao Convênio ICMS 63/2023|01052023|
+RJ40080004|Outros débitos - Transferência do distribuidor de combustível para a refinaria de crédito presumido relativo ao Convênio ICMS 29/2023|01092023|
+RJ40080005|Outros débitos - Transferência do distribuidor de combustível para a refinaria de crédito presumido relativo ao Convênio ICMS 27/2023|01052023|
+RJ40080100|Outros Débitos - conforme art.3º da Lei 5.636/10|01052012|31052016
+RJ40081000|Outros débitos  cláusula nona do Ajuste SINIEF n° 22/21|13072021|
+RJ50000000|Estorno de Créditos - Devolução de mercadoria adquirida de contribuinte optante pelo Simples Nacional quando tiver ocorrido apropriação de crédito de ICMS na entrada|01032020|
+RJ50000001|Estorno de Créditos - Devolução de mercadoria adquirida para compor o ativo fixo cuja apropriação do crédito tiver sido iniciada|01032020|
+RJ50000013|Estorno de Créditos - Crédito relativo à sucata utilizada na fabricação de produto com posterior saída não tributada - art.6º, II, b, do Livro XII do RICMS/2000|01052024|
+RJ50001000|Estorno de crédito - Escrituração pelo tomador do serviço de CT-e de substituição|03042023|
+RJ50002000|Estorno de crédito - Estorno do crédito do ICMS oriundo de NFCom substituída|25072025|
+RJ50080001|Estorno de créditos - Devolução de mercadoria cuja saída tenha sido amparada por benefício fiscal da espécie crédito presumido|01102019|
+RJ50080100|Estorno de Crédito- conforme art.3º da Lei 5.636/10|01052012|31052016
+RJ50080101|Estorno de Crédito - § 7º do art. 2 º da Resolução SEFAZ Nº 520/12|01092012|31032019
+RJ50081000|Estorno de crédito: estorno do crédito presumido relativo ao Convênio ICMS 106/96 oriundo de CT-e substituído|03042023|
+RJ61000004|Dedução - ICMS ST recolhido antecipadamente, por operação|01072025|01072025
+RJ70000001|ICMS devido na importação|01092010|
+RJ70000002|ICMS diferencial de alíquota na aquisição de material de uso e consumo|01092010|
+RJ70000003|ICMS diferencial de alíquota na aquisição de ativo permanente|01092010|
+RJ70000005|FECP referente à importação|01112010|
+RJ70000006|FECP referente ao diferencial de alíquotas|01112010|
+RJ70000007|ICMS devido na forma do parágrafo 19 do artigo 2.º da Lei n.º 6.331/12|01072016|31032019
+RJ70000008|ICMS devido na operação disposta no inciso II do artigo 3.º da Lei n.º 6.331/12|01072016|31032019
+RJ70000009|ICMS devido por esgotamento do prazo de suspensão ou não configuração da condição que a autorize|01082017|
+RJ70000011|Débito especial - ICMS devido em função de emissão de documento fiscal complementar emitido em período de apuração diferente do período de apuração do fato gerador|01092019|
+RJ70000012|Débitos especiais - ICMS devido em função da diferença a maior entre o documento fiscal de substituição e o documento fiscal substituído quando a substituição ocorre em período de apuração diferente do período de apuração do fato gerador|01072021|25112021
+RJ70000012|Débitos especiais - ICMS devido em função da diferença a maior entre o documento fiscal de substituição e o documento fiscal substituído quando a substituição ocorre em período de apuração diferente do período de apuração do fato gerador|01122021|29102024
+RJ70000013|Débitos especiais - Pagamento do ICMS diferido na aquisição de sucata - art. 6°, inc. II, c, do Livro XII do RICMS/2000|01052024|
+RJ70002000|Débito especial - Débito especial do ICMS devido em função da diferença a maior entre a NFCom de substituição e o a NFCom substituída quando a substituição ocorrer em período de apuração diferente do período de apuração do fato gerador|25072025|
+RJ70003000|Débitos especiais  ICMS devido em função da diferença a maior entre o documento fiscal de substituição e o documento fiscal substituído quando a substituição ocorre em período de apuração diferente do período de apuração do fato gerador|29102024|
+RJ71003000|Débitos especiais  ICMS-ST devido em função da diferença a maior entre o documento fiscal de substituição e o documento fiscal substituído quando a substituição ocorre em período de apuração diferente do período de apuração do fato gerador|29102024|
+RJ70080001|Débitos especiais - Débito previsto em norma relacionada no manual de que trata o Decreto 27.815/2001|01072022|
+RJ71000001|ICMS ST nas operações|01092010|30092017
+RJ71000001|ICMS-ST devido pelo substituto tributário|01102017|
+RJ71000002|FECP em razão da substituição tributária em operações internas|01112010|30092017
+RJ71000002|FECP-ST devido pelo substituto tributário|01102017|
+RJ71000004|Débito especial - ICMS-ST recolhido antecipadamente, por operação|01072025|01072025
+RJ71000011|Débito especial - ICMS-ST devido em função de emissão de documento fiscal complementar emitido em período de apuração diferente do período de apuração do fato gerador|01032021|
+RJ70000014|Débitos especiais - ICMS-difal devido na prestação de serviço não vinculada à prestação subsquente - Resolução SEFAZ 253 de 2021|01092021|
+RJ70000015|Débitos especiais - FECP-difal devido na prestação de serviço não vinculada à prestação subsquente - Resolução SEFAZ 253 de 2021|01092021|
+RJ70000016|Débitos especiais - ICMS devido nas operações de aquisição internas e interestaduais com os bens ou mercadorias referenciados no parágrafo 1º do artigo 2º da Lei 8.890/2020- Lei 8.890 de 15 de junho de 2020|01052022|
+RJ71001000|ICMS-ST devido pelo tomador de serviço de transporte de carga|29052018|30062018
+RJ71001001|FECP-ST devido pelo tomador de serviço de transporte de carga|29052018|30062018
+RJ71001002|Débitos especiais - ICMS-ST retido em prestação de serviço de transporte realizado por transportador estabelecido em outra UF ou por transportador autônomo|01072021|
+RJ71001003|Débitos especiais - FECP-ST retido em prestação de serviço de transporte realizado por transportador estabelecido em outra UF ou por transportador autônomo|01072021|
+RJ71001004|Débitos especiais - ICMS-ST pago pelo subscontratante de prestação de serviço de transporte|01072021|
+RJ71001005|Débitos especiais - FECP-ST pago pelo subscontratante de prestação de serviço de transporte|01072021|
+RJ71100001|ICMS-ST devido pelo responsável solidário nas operações internas e interestaduais|01102017|
+RJ71100002|FECP-ST devido pelo responsável solidário nas operações internas e interestaduais|01102017|
+RJ71111000|Serviço de transporte autônomo ou não contribuinte|01052014|30062021
+RJ90090100|Isenção - Resolução SEFAZ nº 435/11|01012012|30042012
+RJ90980000|Informativo - Isenção, não incidênica, redução de base de cálculo ou de alíquota de ICMS em função de norma relacionada no manual de que trata o Decreto 27.815/2001|01042019|
+RJ90980001|Informativo - Diferimento em função de norma relacionada no manual de que trata o Decreto 27.815/2001|01042019|
+RJ90980002|Informativo - Isenção, não incidência, redução de BC ou de alíquota de ICMS-difal em função de norma relacionada no Manual de que trata o Decreto 27.815/2001 (Manual de Benefícios)|08032022|
+RJ90990001|Informativo - Suspensão de ST - Lei 9.428/21|01042022|
+RJ90990002|Informativo - Suspensão de ST - Lei 9.222/21|01112021|
+RJ90990003|Informativo - Desobrigado por decisão judicial do pagamento de imposto extra apuração|01052022|
+RJ91980000|Informativo - Isenção, não incidência, redução de base de cálculo ou de alíquota de ICMS-ST em função de norma relacionada no manual de que trata o Decreto 27.815/2001|01042019|
+RJ91990100|ICMS-ST retido - Petróleo e Energia|01052014|31012026
+RJ91990101|ICMS-ST retido - Outros Produtos|01052014|31012026
+RJ99980100|Isenção - Resolução SEFAZ nº 435/11|01052012|31072014
+RJ99980101|ICMS isento  artigo 4º da Lei nº 6.979/15|01122015|31032019
+RJ99980200|Tributação de 12%  § 1º  do artigo 6º da Lei nº 6.979/15|01122015|31032019
+RJ99980201|Saída interna  § 2º do artigo 5º da Lei nº 6.979/15|01122015|31032019
+RJ99980400|Redução de Base de Cálculo do ICMS  inciso I do artigo 1º do Decreto 36.453/04|01012017|31032019
+RJ99980401|Redução de Base de Cálculo do ICMS  inciso I do artigo 1° do Decreto  44.498/13|01012017|31032019
+RJ99980402|Redução de Base de Cálculo do ICMS-ST  inciso III do artigo 2° do Decreto  44.498/13|01012017|31032019
+RJ99980500|Crédito Diferido Lei  5.636/10|01052012|31052016
+RJ99980501|Diferencial de Alíquota Diferido -  Lei 5.636/10|01052012|31052016
+RJ99980502|Débito Diferido Lei  5.636/10|01052012|31052016
+RJ99980503|ICMS diferido  incisos I, II e III do artigo 3º da Lei nº 6.979/15|01122015|31032019
+RJ99980504|ICMS diferido  incisos IV e V do artigo 3º da Lei nº 6.979/15|01122015|31032019
+RJ99980505|ICMS diferido nas operações dispostas nos incisos I e II do artigo 6.º da Lei n.º 6.331/12|01072016|31032019
+RJ99980506|ICMS diferido nas operações dispostas nos incisos I e II do artigo 9.º da Lei n.º 6.331/12|01072016|31032019
+RJ99980507|ICMS diferido nas operações dispostas no inciso III do artigo 6.º da Lei n.º 6.331/12|01072016|31032019
+RJ99980508|ICMS diferido nas operações dispostas no paragrafo único do artigo 5° da Lei n° 4.173/03|01012017|31032019
+RJ99980509|ICMS diferido nas operações dispostas no inciso II do artigo 1° do Decreto  44.498/13|01012017|31032019
+RJ99980900|Transferência para fabricação de produtos - § 1º do art. 3 º da Resolução SEFAZ Nº 520/12|01092012|31032019
+RJ99980901|Transferência interna do industrial  § 5º do artigo 5º da Lei nº 6.979/15|01122015|31032019
+RJ99989100|Isenção - Resolução Sefaz no. 293/10|01062015|31032019
+RJ99990201|Operações com sucata|01122015|31032019
+RJ99990202|Operações destinadas à Zona Franca de Manaus|01122015|31072016
+RJ99990202|Operações destinadas à Zona Franca de Manaus e à Área de Livre Comércio|01082016|31032019
+RJ99999120|Créditos Recebidos de estabelecimento de terceiros para utilização na Apuração Normal - REFIS|01052014|01052014
+RJ99999121|Créditos Recebidos de estabelecimento de terceiros para utilização na Apuração Normal - Livro III do RICMS|01052014|30042019
+RJ99999122|Créditos Recebidos de estabelecimento do mesmo sujeito passivo para utilização na Apuração Normal|01052014|30042019
+RJ99999123|Créditos Recebidos para pagamento de Auto de Infração|01052014|30042019
+RJ99999124|Créditos Recebidos para pagamento de Débito Inscrito em Dívida Ativa|01052014|01052014
+RJ99999125|Créditos Recebidos para pagamento de Parcelamento|01052014|30042019
+RJ99999126|Créditos Recebidos para pagamento de ICMS de Importação|01052014|30042019
+RJ99999127|Créditos Recebidos para pagamento de Sucata em Geral|01052014|30042019
+RJ99999128|Transferência de Créditos Acumulados de Exportação|01052014|30042019
+RJ99999129|Transferência de Créditos Acumulados por Estabelecimento Industrial|01052014|30042019
+RJ99999130|Transferência de Créditos Acumulados - REFIS|01052014|01052014
+RJ99999131|Devolução de Transferência de Créditos Acumulados - REFIS|01052014|01052014
+RJ99999132|Utilização de Crédito Acumulado para pagamento de Auto de Infração - REFIS|01052014|30062017
+RJ99999133|Utilização de Crédito Acumulado para pagamento de Débito Inscrito em Dívida Ativa - REFIS|01052014|30062017
+RJ99999134|Utilização de Crédito Acumulado para pagamento de Parcelamento - REFIS|01052014|30062017
+RJ99999135|Utilização de Crédito Acumulado para pagamento de Auto de Infração - Livro III do RICMS|01052014|30042019
+RJ99999136|Utilização de Crédito Acumulado para pagamento de Débito Inscrito em Dívida Ativa - Livro III do RICMS|01052014|30062017
+RJ99999137|Utilização de Crédito Acumulado para pagamento de Parcelamento - Livro III do RICMS|01052014|30042019
+RJ99999138|Utilização de Crédito Acumulado destinado ao pagamento de Sucata - Livro III do RICMS|01052014|30042019

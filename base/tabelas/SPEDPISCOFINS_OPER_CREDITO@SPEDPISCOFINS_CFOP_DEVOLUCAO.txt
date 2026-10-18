@@ -1,0 +1,44 @@
+versão=5 CFOP, DESC_CFOP, DT_INI, DT_FIM
+5205|Anulação de valor relativo a aquisição de serviço de comunicação|01012011|
+5206|Anulação de valor relativo a aquisição de serviço de transporte|01012011|
+5207|Anulação de valor relativo à compra de energia elétrica|01012011|
+6205|Anulação de valor relativo a aquisição de serviço de comunicação|01012011|
+6206|Anulação de valor relativo a aquisição de serviço de transporte|01012011|
+6207|Anulação de valor relativo à compra de energia elétrica|01012011|
+7205|Anulação de valor relativo a aquisição de serviço de comunicação|01012011|
+7206|Anulação de valor relativo a aquisição de serviço de transporte|01012011|
+7207|Anulação de valor relativo à compra de energia elétrica|01012011|
+5201|Devolução de compra para industrialização|01012011|
+5202|Devolução de compra para comercialização|01012011|
+5210|Devolução de compra para utilização na prestação de serviço|01012011|
+5214|Devolução de fixação de preço de produção do estabelecimento produtor, inclusive quando remetidas anteriormente com previsão de posterior ajuste ou fixação de preço, de ato cooperativo, para comercialização.|01012018|
+5215|Devolução de fixação de preço de produção do estabelecimento produtor, inclusive quando remetidas anteriormente com previsão de posterior ajuste ou fixação de preço, de ato cooperativo, para industrialização.|01012018|
+5216|Devolução de entrada decorrente do fornecimento de produto ou mercadoria de ato cooperativo|01052019|
+5410|Devolução de compra para industrialização em operação com mercadoria sujeita ao regime de substituição tributária|01012011|
+5411|Devolução de compra para comercialização em operação com mercadoria sujeita ao regime de substituição tributária|01012011|
+5413|Devolução de mercadoria destinada ao uso ou consumo, em operação com mercadoria sujeita ao regime de substituição tributária|01012011|
+5660|Devolução de compra de combustível ou lubrificante adquiridos para industrialização subsequente|01012011|
+6201|Devolução de compra para industrialização|01012011|
+6202|Devolução de compra para comercialização|01012011|
+6210|Devolução de compra para utilização na prestação de serviço|01012011|
+6214|Devolução de fixação de preço de produção do estabelecimento produtor, inclusive quando remetidas anteriormente com previsão de posterior ajuste ou fixação de preço, de ato cooperativo, para comercialização.|01012018|
+6215|Devolução de fixação de preço de produção do estabelecimento produtor, inclusive quando remetidas anteriormente com previsão de posterior ajuste ou fixação de preço, de ato cooperativo para industrialização.|01012018|
+6216|Devolução de entrada decorrente do fornecimento de produto ou mercadoria de ato cooperativo|01052019|
+6410|Devolução de compra para industrialização em operação com mercadoria sujeita ao regime de substituição tributária|01012011|
+6411|Devolução de compra para comercialização em operação com mercadoria sujeita ao regime de substituição tributária|01012011|
+6413|Devolução de mercadoria destinada ao uso ou consumo, em operação com mercadoria sujeita ao regime de substituição tributária|01012011|
+6660|Devolução de compra de combustível ou lubrificante adquiridos para industrialização subsequente|01012011|
+7201|Devolução de compra para industrialização (Importação)|01012011|
+7202|Devolução de compra para comercialização  (Importação)|01012011|
+7210|Devolução de compra para utilização na prestação de serviço  (Importação)|01012011|
+5553|Devolução de compra de bem para o ativo imobilizado|01012011|
+5556|Devolução de compra de material de uso ou consumo|01012011|
+5661|Devolução de compra de combustível ou lubrificante adquiridos para comercialização|01012011|
+5662|Devolução de compra de combustível ou lubrificante adquiridos por consumidor ou usuário final|01012011|
+6553|Devolução de compra de bem para o ativo imobilizado|01012011|
+6556|Devolução de compra de material de uso ou consumo|01012011|
+6661|Devolução de compra de combustível ou lubrificante adquiridos para comercialização|01012011|
+6662|Devolução de compra de combustível ou lubrificante adquiridos por consumidor ou usuário final|01012011|
+7211|Devolução de compras para industrialização sob o regime de drawback|01012011|
+7553|Devolução de compra de bem para o ativo imobilizado|01012011|
+7556|Devolução de compra de material de uso ou consumo|01012011|

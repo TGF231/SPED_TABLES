@@ -1,0 +1,31 @@
+versão=4 COD_REC, DESC_COD, DT_INI, DT_FIM
+113000|ICMS - Apuração Normal|01122020|
+113001|ICMS - Imposto, Juros e Multa|01122020|
+113002|ICMS - Auto de Infração - Imposto, Juros e Multa|01122020|
+113003|ICMS - Aviso de Débito - Imposto, Juros e Multa|01122020|
+113004|ICMS - Parcelamento - Imposto, Juros e Multa|01122020|
+113005|ICMS - Contribuintes Não Inscritos - Imposto, Juros e Multa|01122020|
+113006|ICMS - Multas Obrigação Acessória|01122020|
+113007|ICMS - Termo de Responsabilidade, Depósito e Confissão de Dívida|01122020|
+113008|ICMS - Termo de Verificação de Irregularidades|01122020|
+113009|ICMS - Simples Nacional - Imposto|01122020|
+113010|ICMS - Carga Tributaria Complementar|01122020|
+113011|ICMS - Antecipacao Parcial|01122020|
+113012|ICMS - Débito Estoque Mercadoria|01122020|
+113013|ICMS - Diferencial de alíquota - Ativo Imobilizado|01122020|
+113014|ICMS - Transporte Alternativo|01122020|
+113020|ICMS - Venda a Consumidor Final|01122020|
+113024|ICMS - Malhas Fiscais|01122020|
+113131|ICMS - Controle Exportação|01062023|
+113158|ICMS - Anistia|01122020|
+113166|ICMS - Dívida Ativa - Pagamento Integral|01122020|
+113174|ICMS - Dívida Ativa - Parcelamento|01122020|
+113344|ICMS - Multas - Obrigação Principal|01122020|
+113387|ICMS - Adicional FECOP - Lei 5.622/06|01122020|
+113388|FECOP - Contribuinte não inscrito|01122020|
+121135|Taxa - Administração COTAC|01122020|
+122017|Taxa - Secretaria de Fazenda|01122020|
+122100|Taxa - FUNEF|01122020|
+131100|FDI - PI|01062023|
+113115|ICMS - Importação|01122020|
+113116|ICMS - Substituição das Saídas|01042026|

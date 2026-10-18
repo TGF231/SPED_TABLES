@@ -1,0 +1,101 @@
+versão=18 COD_AJ, DESC_AJ, DT_INI, DT_FIM
+MA00000000|Crédito por entrada|13012009|11092009
+MA10000002|Crédito por transferência/ressarcimento|13012009|11092009
+MA10000004|Antecipação total|13012009|11092009
+MA10000006|Deduões|13012009|11092009
+MA10000008|Outros créditos/Op.Própria/Resp.: Própria/Apur.: A apurar/Mercadoria/Transferência interestadual de Ativo permanente|01042015|31012026
+MA10000009|Crédito presumido|13012009|11092009
+MA10000018|Crédito Fiscal e Financeiro|13012009|11092009
+MA10000019|Restituião|13012009|11092009
+MA10000020|Crédito presumido setor atacadista|13012009|11092009
+MA10000021|Antecipação parcial|13012009|11092009
+MA10000022|CREDITO ATIVO IMOBILIZADO|13012009|31032015
+MA10000023|CREDITO PRESUMIDO|13012009|31032015
+MA10000024|CREDITO POR TRANSFERENCIA/RESSARCIMENTO|13012009|31032015
+MA10000025|RESTITUICAO|13012009|31032015
+MA10000026|CREDITO PRESUMIDO SETOR ATACADISTA|13012009|31032015
+MA10000040|OUTROS CREDITOS NAO INFORMADOS|13012009|31032015
+MA10000041|TRANSFERENCIA DE CREDITO ACUMULADO OU RESSARCIMENTO|13012009|31032015
+MA10000104|Outros créditos/Op.Própria/Resp.: Própria/Apur.: A apurar/Mercadoria/Antecipação Tributária|01042015|
+MA10000109|Outros Créditos/Op.Própria/Resp.: Própria/Apur.: A apurar/Mercadoria/Crédito Presumido por produto ou operação|01042015|31012026
+MA10000998|CREDITO FISCAL E FINANCEIRO|13012009|31032015
+MA10000999|Outros Créditos não informados|13012009|11092009
+MA10010004|Outros créditos/Op.Própria/Resp.: Própria/Apur.: Recolhimento Espontâneo/Mercadoria/Antecipação Tributária entrada interestadual apurado em verificação fiscal na entrada de mercadoria|01042015|31012026
+MA10990010|Outros créditos/Op.Própria/Resp.: Informativo/Apur.: Informativo/Mercadoria/Lançamento extemporâneo|01042015|31012026
+MA10011014|Outros créditos/Op.Própria/Resp.: Própria/Apur.: Recolhimento Espontâneo/Transporte/ST - Transporte|01042015|
+MA10990020|Outros créditos/Op.Própria/Resp.: Informativo/Apur.: Informativo/Mercadoria/Créditos devido à aquisição de mercadorias de contribuintes optantes pelo Simples Nacional|01042015|31032023
+MA11900011|Outros créditos/Op.ST/Resp.: Informativo/Apur.: A apurar/Mercadoria/Ressarcimento|01042015|
+MA10000099|Outros créditos/Oper. Própria;Resp. : Própria/Apur.: A apurar/Mercadoria/Outros Ajustes|01042015|
+MA20000000|Estorno de débito|13012009|11092009
+MA20000008|Estorno débito/Op.Própria/Resp.: Própria/Apur.: A apurar/Mercadoria/Devolução Ativo permanente|01042015|
+MA20000020|ESTORNOS DE DEBITOS|13012009|31032015
+MA20000021|Estorno débito/Op.Própria/Resp.: Própria/Apur.: A apurar/Mercadoria/Devolução material de Uso e Consumo|01042015|
+MA20000100|Estorno de débitos/Op.Própria/Resp.: Própria/Apur.: A apurar/Mercadoria/Devolução - Mercadoria ST - Destaque do ICMS normal no doc. Fiscal|01042015|31012026
+MA20000999|Estorno de débito/Op.Própria/Resp.: Própria/Apur.: A apurar/Mercadoria/Outros Ajustes|01042015|
+MA30000000|Débitos pelas saídas|13012009|11092009
+MA40000002|Transferência de crédito acumulado ou ressarcimento|13012009|11092009
+MA40000020|OUTROS DEBITOS|13012009|31032015
+MA40000099|Outros débitos/Op.Própria/Resp.: Própria/Apur.: A apurar/Mercadoria/Outros Ajustes|01042015|
+MA40000999|Outros débitos|13012009|11092009
+MA40990002|Outros débitos/Op.Própria/Resp.: Informativo/Apur.: Informativo/Mercadoria/Transferência saldo credor entre estabelecimentos mesma empresa|01042015|31032023
+MA40990022|Outros débitos/Op.Própria/Resp.: Informativo/Apur.: Informativo/Mercadoria/Transferência de crédito acumulado-exportação para estabelecimento de outra empresa|01042015|
+MA40900024|Outros débitos/Op.Própria/Resp.: Informativo/Apur.: A apurar/Mercadoria/Transferência saldo credor entre estabelecimentos mesma empresa|01042015|31032023
+MA41000999|Outros débitos/Op.ST/Resp.: Própria/Apur.: A apurar/Mercadoria/Outros Ajustes|01042015|
+MA50000000|Estorno de crédito|13012009|11092009
+MA50000020|ESTORNOS DE CREDITOS|13012009|31032015
+MA50000999|Estorno de crédito/Op.Própria/Resp.: Própria/Apur.: A apurar/Mercadoria/Outros Ajustes|01042015|
+MA60000020|DEDUCOES|13012009|31032015
+MA60000023|Dedução/Op.Própria/Resp.: Própria/Apur.: A apurar/Mercadoria/Fundo de Pobreza|01042015|
+MA60990002|Dedução/Op.Própria/Resp.: Informativo/Apur.: Informativo/Mercadoria/transferência de crédito entre estabelecimentos da mesma empresa|01042015|31012026
+MA60990024|Dedução/Op.Própria/Resp.: InformativoqApur.: Informativo/Mercadoria/Transferência de saldo devedor de ICMS para outro estabelecimento da mesma empresa|01042015|
+MA61000023|Dedução/Op.ST/Resp.: Própria/Apur.: A apurar/Mercadoria/Fundo de Pobreza|01042015|
+MA69990002|Dedução/Informativo/Resp. : Informativo/Apur. : Informativo/mercadoria/transferência de crédito entre estabelecimentos da mesma empresa.|01042015|01042015
+MA70000001|Débitos especiais/Op.Própria/Resp.: Própria/Apur.: A apurar/Mercadoria/Dif.Alíquota|01042015|31082020
+MA70000004|Débitos especiais/Op.Própria/Resp.: Própria/Apur.: A apurar/Mercadoria/Antecipação Tributária|01042015|
+MA70000023|Débitos Especiais/Op.Própria/Resp.: Própria/Apur.: A apurar/Mercadoria/Fundo de Pobreza|01042015|
+MA70001001|Débitos especiais/Op.Própria/Resp.: Própria/Apur.: A apurar/Transporte/Dif.Alíquota|01042015|31082020
+MA70010004|Débitos Especiais/Op. Própri/Resp.: Própria/Apur.: Recolhimento Espontâneo/Mercadoria/Antecipação Tributária, apurado em verificação fiscal na entrada de mercadoria|01042015|31012026
+MA70011014|Débitos especiais/Op.Própria/Resp.: Própria/Apur.: Recolhimento Espontâneo/Transporte/ST - Transporte|01042015|
+MA70010017|Débitos especiais/Op.Própria/Resp.: Própria/Apur.: Recolhimento Espontâneo/Mercadoria/Importação|01042015|
+MA70010018|Débitos especiais/Op.Própria/Resp.: Própria/Apur.: Recolhimento Espontâneo/Mercadoria/Diferimento|01042015|
+MA70011001|Débitos especiais/Op.Própria/Resp.: PrópriaqApur.: Recolhimento Espontâneo/Transporte/Dif.Alíquota|01042015|
+MA70110000|Débitos especiais/Op.Própria/Resp.: Solidária/Apur.: Recolhimento Espontâneo/Mercadoria/Op. Normal|01042015|
+MA71000019|Débitos especiais/Op.ST/Resp.: Própria/Apur.: A apurar/Mercadoria/ST entrada|01042015|
+MA71000023|Débitos Especiais/Op.ST/Resp.: Própria/Apur.: A apurar/Mercadoria/Fundo de Pobreza|01042015|
+MA71010010|Débitos especiais/Op.ST/esp.: Própria/Apur.: Recolhimento Espontâneo/Mercadoria/Lançamento extemporâneo|01042015|
+MA71010017|Débitos especiais/Op.ST/Resp.: Própria/Apur.: Recolhimento Espontâneo/Mercadoria/Importação|01042015|
+MA90090004|Informativo/Op. Própria/esp.: Própria/Apur.: Informativo/Mercadoria/Antecipação Tributária, apurado em verificação fiscal na entrada de mercadoria|01042015|31012026
+MA90090017|Informativo/Op.Própria/Resp.: Própria/Apur.: Informativo/Mercadoria/Importação|01042015|
+MA90990007|Informativo/Op.Própria/Resp.: Informativo/Apur.: Informativo/Mercadoria/Desconto - ICMS repassado ao destinatário|01042015|31012026
+MA90990017|Informativo/Op.Própria/Resp.: Informativo/Apur.: Informativo/Mercadoria/Importação-pgto crédito exportação|01042015|
+MA91090017|Informativo/Op.ST/Resp.: Própria/Apur: Informativo/Mercadoria/Importação|01042015|
+MA91090019|Informativo/Op.ST/Resp.: Própria/Apur.: Informativo/Mercadoria/ST entrada|01042015|
+MA91990011|Informativo/Op.ST/Resp.: Informativo/Apur.: Informativo/Mercadoria/ICMS/ST - Ressarcimento|01042015|
+MA91990017|Informativo/Op.ST/Resp.: Informativo/Apur.: Informativo/Mercadoria/Importação-pgto crédito exportação|01042015|
+MA99990022|Informativo/Informativo/Resp.: Informativo/Apur.: Informativo/Mercadoria/Recebimento em transferência crédito acumulado de exportação de outra empresa|01042015|01042015
+MA90990022|Informativo/Op.Própria/Resp.: Informativo/Apur.: Informativo/Mercadoria/Recebimento em transferência crédito acumulado de exportação de outra empresa|01042015|
+MA90091001|Informativo/Op.Própria/Resp.: Própria/Apur.: Informativo/Mercadoria/Dif.Alíquota|21032019|31012026
+MA10003009|Outros créditos/Oper. Própria/Resp. : Própria/Apur.: A apurar/Energia Elétrica/Energia elétrica consumida processo industrial|01082020|
+MA10000105|Outros créditos/Oper. Própria/Resp. : Própria/Apur.: A apurar/Mercadoria/Pagamento Antecipado Dif. Alíquota|01082020|31012026
+MA50003021|Estorno de créditos/Op.Própria/Resp.: Própria/Apur.: A apurar/Energia Elétrica/Estorno de crédito Energia Elétrica - Setor Administrativo|01082020|
+MA50003022|Estorno de créditos/Op.Própria/Resp.: Própria/Apur.: A apurar/Energia Elétrica/Estorno de crédito Energia Elétrica - Saídas Não Tributadas|01082020|
+MA61000001|Dedução/Op.ST/Resp.: Própria/Apur.: A apurar/Mercadoria/ICMS ST de entrada de Medicamentos quando ICMS ST for devido na saída|01082020|
+MA70000002|Débitos especiais/Op.Própria/Resp.: Própria/Apur.: A apurar/Mercadoria/Dif.Alíquota - Ativo Imobilizado|01082020|
+MA70000003|Débitos especiais/Op.Própria/Resp.: Própria/Apur.: A apurar/Mercadoria/Dif.Alíquota - Uso e Consumo|01082020|
+MA70001002|Débitos especiais/Op.Própria/Resp.: Própria/Apur.: A apurar/Transporte/Dif.Alíquota - Aquisição de serviço de transporte de bens destinados ao ativo imobilizado|01082020|
+MA70001003|Débitos especiais/Op.Própria/Resp.: Própria/Apur.: A apurar/Transporte/Dif.Alíquota - Aquisição de serviço de transporte de bens destinados ao uso e consumo|01082020|
+MA70001004|Débitos especiais/Op.Própria/Resp.: Própria/Apur.: A apurar/Transporte/Dif.Alíquota/Aquisição de Mercadoria|01082020|
+MA90090005|Informativo/Op. Própria/esp.: Própria/Apur.: Informativo/Mercadoria/Antecipação Tributária, apurado em verificação fiscal na entrada de mercadoria|01082020|31012026
+MA90090020|Informativo; Op.Própria; Resp.: Própria; Apur.: Informativo; Mercadoria; Importação; Prévio Recolhimento de ICMS com posterior alteração de BC; aumento do ICMS-Importação e redução equivalente do ICMS-ST.|01012022|
+MA91090020|Informativo; Op.ST; Resp.: Própria; Apur.: Informativo; Mercadoria; Importação; Prévio Recolhimento de ICMS com posterior alteração de BC; aumento do ICMS-Importação e redução equivalente do ICMS-ST.|01012022|
+MA72080010|Débitos especiais/Outras Apurações/Resp.: Própria/Incentivo fiscal/Mercadoria/ Benefício de bebidas quentes|01012022|31032023
+MA70000005|Débitos especiais/Op. Própria/Resp.: Própria/Apur.: A apurar/Transporte/Taxa de Fiscalização de Transporte de Grãos|01042023|
+MA70000006|Débitos especiais/Op. Própria/Resp.: Própria/Apur.: A apurar/Transporte/Taxa de Controle e Monitoramento Ambiental de Recursos Minerais|01042023|
+MA71000001|Débitos especiais/Op. ST/Resp.: Própria/Apur.: A apurar/Mercadoria/Benefício de bebidas quentes|01042023|
+MA30009001|Débito por saída/Op. Própria/Resp.: Própria/Apur.: A apurar/Outras/Transferência de saldo devedor entre estabelecimentos da mesma empresa|01042023|
+MA00000002|Crédito por entrada/Op. Própria/Resp.: Própria/Apur.: A apurar/Mercadoria/ Crédito DIESEL S10 utilizado por empresas mineradoras|01012022|
+MA00000001|Crédito por Entrada/ Op. Própria/ Resp.: Própria/ Apur.: A apurar/ Mercadoria/ Crédito de Combustível por transportadoras|01012023|
+MA70002001|Débitos especiais/Op.Própria/Resp.: Própria ST/Apur.: A apurar/Mercadoria/ Substituição Tributária lançada por Termo de Verificação Fiscal-TVI|01042022|31012026
+MA72000001|Contribuição Especial de Grãos|01012025|
+MA70000007|Contribuição Especial de Grãos|01012025|
+MA00000111|Crédito por Entrada/ Op. Própria/ Resp.: Própria/ Apur.: A apurar/ Mercadoria/ Crédito de uso e consumo por Transportadoras|01012020|

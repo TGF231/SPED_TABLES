@@ -1,0 +1,160 @@
+versão=69 COD_AJUR, DESC_AJUR, DT_INI, DT_FIM
+RO000001|Diferencial Alíquota Ativo Permanente|01012009|01102012
+RO000002|Diferencial Alíquota Uso e Consumo|01012009|01102012
+RO010001|Estorno de créditos . Processo Administrativo ou Judicial|01012009|
+RO020001|Ressarcimento|01012009|01102012
+RO020002|Presumido|01012009|01102012
+RO020003|Crédito Fiscal - Antecipado|01012009|
+RO020004|PIT - Crédito Presumido  implantação|01032013|
+RO020005|PIT - Crédito Presumido - ampliação ou modernização|01032013|
+RO030001|Estorno de débitos. Precesso Administrativo ou Judicial|01012009|
+RO040001|Incentivo Fiscal|01012009|01102012
+RO009999|Outros débitos para ajuste de apuração ICMS|01012009|01042016
+RO019999|Estorno de créditos para ajuste de apuração ICMS;|01012009|01042016
+RO029999|Outros créditos para ajuste de apuração ICMS|01012009|01042016
+RO039999|Estorno de débitos para ajuste de apuração ICMS|01012009|01042016
+RO049999|Deduções do imposto apurado na apuração ICMS|01012009|01042016
+RO109999|Outros débitos para ajuste de apuração ICMS ST|01012009|
+RO119999|Estorno de créditos para ajuste de apuração ICMS ST|01012009|
+RO129999|Outros créditos para ajuste de apuração ICMS ST;|01012009|
+RO139999|Estorno de débitos para ajuste de apuração ICMS ST|01012009|
+RO149999|Deduções do imposto apurado na apuração ICMS ST|01012009|
+RO050001|PIT|10032011|01102012
+RO059999|Outros Débitos Especiais|10032011|
+RO010002|Estorno de Crédito Presumido Guajará-Mirim - Desinternamento Exportação|01072012|
+RO010003|Estorno de Crédito Presumido Guajará-Mirim - desinternamento (exceto exportação)|01072012|
+RO209999|Outros Débitos para ajuste de apuração ICMS Difal/FCP|01012016|30062016
+RO219999|Estorno de Créditos para ajuste de apuração ICMS Difal/FCP|01012016|30062016
+RO229999|Outros Créditos para ajuste de apuração ICMS Difal/FCP|01012016|30062016
+RO239999|Estorno de Débitos para ajuste de apuração ICMS Difal/FCP|01012016|30062016
+RO249999|Deduções do imposto apurado na apuração ICMS Difal/FCP|01012016|30062016
+RO259999|Débito Especial de ICMS Difal/FCP|01012016|30062016
+RO020006|Crédito Presumido - Item 22, Tabela I do Anexo IV do RICMS|01052016|30042018
+RO009999|Outros débitos para ajuste de apuração ICMS|02042016|
+RO010004|Estorno de créditos para ajuste de apuração ICMS - Art. 46, III, e §§ do RICMS/RO|01042016|30042018
+RO010005|Estorno de créditos para ajuste de apuração ICMS - Art. 46, IV, e §§ do RICMS/RO|01042016|30042018
+RO010006|Estorno de créditos para ajuste de apuração ICMS - Art. 46, V, e §§ do RICMS/RO|01042016|30042018
+RO200001|Outros débitos para ajuste de apuração ICMS Difal para a UF RO - EC 87/2015|01042016|
+RO010007|Estorno de créditos para ajuste de apuração ICMS  Art. 46, VI, e §§ do RICMS/RO|01042016|30042018
+RO211001|Estorno de créditos para ajuste de apuração ICMS Difal para a UF RO - EC 87/2015|01042016|
+RO220001|Outros créditos para ajuste de apuração ICMS Difal para a UF RO  EC 87/2015|01042016|
+RO231001|Estorno de débitos para ajuste de apuração ICMS Difal para a UF RO - EC 87/2015|01042016|
+RO240001|Deduções do imposto apurado na apuração ICMS Difal para a UF RO - EC 87/2015|01042016|
+RO250001|Débito especial de ICMS Difal para a UF RO - EC 87/2015|01042016|
+RO200002|Outros débitos para ajuste de apuração ICMS FECOEP para a UF RO|01042016|31122016
+RO211002|Estorno de créditos para ajuste de apuração ICMS FECOEP para a UF RO|01042016|31122016
+RO220002|Outros créditos para ajuste de apuração ICMS FECOEP para a UF RO|01042016|31122016
+RO231002|Estorno de débitos para ajuste de apuração ICMS FECOEP para a UF RO|01042016|31122016
+RO240002|Deduções do imposto apurado na apuração ICMS FECOEP para a UF RO|01042016|31122016
+RO250002|Débito especial de ICMS FECOEP para a UF RO|01042016|31122016
+RO030002|Estorno de débito para ajuste de apuração do ICMS - Remessa de mercadoria para venda fora do estabelecimento|01042016|
+RO020007|Crédito Presumido - Item 4 - Tabela 1 - Anexo IV do RICMS - Empresa de transporte de passageiros|01042016|30042018
+RO030003|Estorno de débito para ajuste de apuração do ICMS - Devolução de bilhetes de passagens empresa de transporte de passageiros|01042016|
+RO000008|Débito para ajuste da apuração de ICMS referente ao DIFAL/EC-87|01042016|
+RO000009|Débito para ajuste da apuração de ICMS referente ao FECOEP|01042016|
+RO020008|Crédito Presumido - Item 21 - Tabela 1 - Anexo IV do RICMS - ECF/NFCE|01042016|30042018
+RO050010|Débito Especial à apuração do FECOEP|01042016|
+RO030004|Estorno de Débito Referente ao FECOEP pago fora da apuração|01042016|
+RO020009|Restituição de ICMS (Artigos 901 a 908 do RICMS/RO) - Valor a crédito|01062016|
+RO010008|Estorno de créditos para ajuste de apuração ICMS - Art. 46, I, e §§ do RICMS/RO|01042016|30042018
+RO010009|Estorno de créditos para ajuste de apuração ICMS - Art. 46, II, e §§ do RICMS/RO|01042016|30042018
+RO050002|Contribuição para o FITHA - Fundo para a infraestrutura de transporte e habitação|01112016|
+RO050003|Contribuição para o FIDER - Fundo de planejamento e desenvolvimento industrial de Rondônia|01112016|
+RO050004|Fundo PROLEITE|01112016|
+RO150001|Débito especial de ICMS-ST|01112016|
+RO200002|Outros débitos para ajuste de apuração ICMS Difal para a UF RO|01012017|
+RO211002|Estorno de créditos para ajuste de apuração ICMS Difal para a UF RO|01012017|
+RO220002|Outros créditos para ajuste de apuração ICMS Difal para a UF RO|01012017|
+RO231002|Estorno de débitos para ajuste de apuração ICMS Difal para a UF RO|01012017|
+RO240002|Deduções do imposto apurado na apuração ICMS Difal para a UF RO|01012017|
+RO250002|Débito especial de ICMS Difal para a UF RO|01012017|
+RO300002|Outros débitos para ajuste de apuração ICMS FECOEP para a UF RO|01012017|
+RO311002|Estorno de créditos para ajuste de apuração ICMS FECOEP para a UF RO|01012017|
+RO320002|Outros créditos para ajuste de apuração ICMS FECOEP para a UF RO|01012017|
+RO331002|Estorno de débitos para ajuste de apuração ICMS FECOEP para a UF RO|01012017|
+RO340002|Deduções do imposto apurado na apuração ICMS FECOEP para a UF RO|01012017|
+RO350002|Débito especial de ICMS FECOEP para a UF RO|01012017|
+RO030005|PIT  Estorno de débito referente atividade industrial incentivada  somente atividade industrial e comercial|01012017|
+RO020010|PIT  Crédito Presumido  atividade industrial e comercial  implantação|01012017|
+RO020011|PIT  Crédito Presumido  atividade industrial e comercial  ampliação ou modernização|01012017|
+RO050005|FUNCAFÉ/RO  Fundo de Apoio à Cultura do café em Rondônia|01012017|
+RO050006|FGPPP/RO  Fundo Garantidor de Parcerias Público-Privadas|01012017|
+RO010010|Estorno do crédito presumido ref. atividade industrial incentivada|01012017|
+RO000010|Telecomunicações  ICMS proporcional às saídas isentas, não tributadas ou com redução de base de cálculo (§ 1º, Cláusula terceira, Convênio ICMS 17/2013)  Valor a débito|01042017|
+RO000011|Telecomunicações  ICMS proporcional às cessões de meio destinadas a consumo próprio (§ 1º Cláusula terceira, Convênio ICMS 17/2013)  Valor a débito|01042017|
+RO000012|Telecomunicações  ICMS complementar, na condição de responsável tributário (§ 2º, Cláusula terceira, Convênio 17/2013)  Valor a débito|01042017|
+RO000013|Telecomunicações  ICMS COBILLING (Convênio ICMS 126/1998) - Valor a débito|01042017|
+RO020012|CRÉDITO  PRESUMIDO    GRATUIDADE  TRANSPORTE  DE  PASSAGEIROS    ITEM  24    TABELA 1  ANEXO 4|01082017|30042018
+RO010011|ANULAÇÃO/ESTORNO DE CRÉDITO FISCAL|01012018|
+RO020013|CRÉDITO   PRESUMIDO   -    ITEM   20    -  TABELA 1 - ANEXO 4 DO RICMS/RO|01012018|30042018
+RO020020|Crédito Presumido - Item 14 - Parte 2 - Anexo IV do RICMS - Valor a Crédito|01052018|
+RO020015|Crédito Presumido - Item 3 - Parte 2 - Anexo IV do RICMS - Valor a Crédito|01052018|
+RO020016|Crédito Presumido - Item 13 - Parte 2 - Anexo IV do RICMS - Valor a Crédito|01052018|
+RO020017|Crédito Presumido - Item 15 - Parte 2 - Anexo IV do RICMS - Valor a Crédito|01052018|
+RO020018|Crédito Presumido - Item 12 - Parte 2 - Anexo IV do RICMS - Valor a Crédito|01052018|
+RO010017|Estorno de créditos para ajuste de apuração ICMS - Art. 47, Inciso I do RICMS/RO|01052018|
+RO010012|Estorno de créditos para ajuste de apuração ICMS - Art. 47, Inciso III do RICMS/RO|01052018|
+RO010013|Estorno de créditos para ajuste de apuração ICMS - Art. 47, Inciso IV do RICMS/RO|01052018|
+RO010014|Estorno de créditos para ajuste de apuração ICMS - Art. 47, Inciso V do RICMS/RO|01052018|
+RO010015|Estorno de créditos para ajuste de apuração ICMS - Art. 47, Inciso VI do RICMS/RO|01052018|
+RO010016|Estorno de crédito - Contribuinte enquadrado no Simples Nacional|01122017|
+RO020019|Crédito sujeito a homologação - RC 003/2018|01062018|
+RO010018|Estorno de créditos para ajuste de apuração ICMS - Art. 47, Inciso II do RICMS/RO|01052018|
+RO020014|CRÉDITO PRESUMIDO - ITEM 9 - PARTE 2 - ANEXO 4 DO RICMS/RO (Somente NFC-e)|01052018|
+RO020021|Crédito referente à apuração CIAP - Ativo Permanente|01052018|
+RO020022|Ressarcimento de Substituição Tributária em conta gráfica  Inciso I, Art. 21, parte I do Anexo IV do RICMS|01052018|31102024
+RO020023|Ressarcimento  Crédito referente à operação própria do substituto tributário|01052018|31102024
+RO020024|Ressarcimento Extemporâneo de Substituição Tributária em conta gráfica  Inciso I, Art. 21, parte I do Anexo IV do RICMS|01052018|31102024
+RO020025|Ressarcimento Extemporâneo Crédito referente à operação própria do substituto tributário|01052018|31102024
+RO020026|Crédito homologado  Inciso I  RC 06/2018|01062018|31032020
+RO020027|Crédito homologado  Inciso II RC 06/2018|01062018|31032020
+RO020028|Crédito homologado  Inciso III  RC 06/2018|01062018|31032020
+RO020029|Crédito homologado  Inciso IV  RC 06/2018|01062018|31032020
+RO020030|Crédito homologado  Inciso V  RC 06/2018|01062018|31032020
+RO020031|Crédito homologado  Inciso VI  RC 06/2018|01062018|31032020
+RO020032|Crédito homologado  Inciso VII  RC 06/2018|01062018|31032020
+RO020033|Crédito mudança de tributação - Art. 48 - anexo VI do RICMS|01052018|
+RO150002|Débito especial de ICMS-ST referente à apuração do FECOEP|01092018|
+RO030006|Estorno de Débito para ajuste de apuração do ICMS - Serviços não medidos de televisão por assinatura, via satélite (art. 11, §6º, LC 87/96)|01012019|
+RO020034|Crédito sujeito a rito especial de controle - inciso III, RC 01/2020.|01032020|
+RO020035|Crédito sujeito a rito especial de controle - inciso IV, RC 01/2020.|01032020|
+RO020036|Crédito sujeito a rito especial de controle - inciso V, RC 01/2020.|01032020|
+RO020037|Crédito sujeito a rito especial de controle - inciso VI, RC 01/2020|01032020|
+RO020038|Crédito sujeito a rito especial de controle - Parágrafo Único  Art. 4º - RC 01/2020.|01032020|
+RO010019|Estorno de crédito  Saídas isentas ou não tributadas  RC 01/2020.|01032020|
+RO120001|Ressarcimento de imposto retido por substituição tributária operações com gasolina, óleo diesel e álcool etílico hidratado carburante.|01022022|01022022
+RO100001|Complementação de imposto retido por substituição tributária operações com gasolina, óleo diesel e álcool etílico hidratado carburante.|01022022|01022022
+RO020039|Crédito fiscal de estoque remanescente  exclusão do Simples Nacional|01012022|
+RO000015|Ato Concessório  Transferência de Créditos Fiscais, Art. 28 - Anexo IX  Valor a débito|01082022|
+RO000014|Ajuste a Débito lançado pelo produtor de Biodiesel B100 optante pelo tratamento diferenciado, conforme Convênio ICMS 206/2021, correspondente ao valor do imposto nas operações com B100|01012022|
+RO040002|Ajuste de Dedução do ICMS apurado oriundo dos créditos apropriados no Registro 1200, utilizado por produtor de biodiesel B100 optante pelo tratamento diferenciado, conforme Convênio ICMS 206/2021|01012022|
+RO090001|Controle de Crédito Extra-Apuração a ser lançado pelo produtor optante pelo tratamento diferenciado conforme, Convênio ICMS 206/2021, correspondente ao imposto retido pelo substituto tributário nas operações com B100|01012022|
+RO120002|Ajuste a Crédito ST da refinaria referente ao ressarcimento de ICMS concedido ao produtor de biodiesel B100 optante pelo tratamento diferenciado, conforme Convênio ICMS 206/2021|01012022|
+RO020040|Crédito FITHA Serviço Telefônico fixo comutado  Art.2°-B Parágrafo único LC.292/2003|01012018|
+RO030007|Estorno de débito  Rondônia Rural Show|01052023|31072023
+RO020041|Crédito  Guia DAS  Desenquadramento Simples Nacional|01062018|
+RO020042|Crédito  Diferencial de Alíquota  Desenquadramento Simples Nacional|01062018|
+RO000016|Débito NFe  Desenquadramento Simples Nacional|01062018|
+RO000017|DÉBITO PARA AJUSTE NA APURAÇÃO DE ICMS DECORRENTE DE PENDÊNCIA NO FISCONFORME|01012023|
+RO030008|PIT - Estorno de débito referente a arrecadação de ICMS MONOFÁSICO  PRODUTOR DE BIODISEL - Convênio ICMS n. 199/22, cláusula décima, III|01092023|
+RO050007|DÉBITO NOTA FISCAL COMPLEMENTAR|01122022|
+RO000018|Débito em razão de diferença de alíquota interestadual e interna - remessas entre estabelecimentos da mesma pessoa jurídica|01042024|30062024
+RO020043|Crédito em razão de diferença de alíquota interestadual e interna - remessas entre estabelecimentos da mesma pessoa jurídica|01042024|30062024
+RO030009|Estorno de débito  Rondônia Rural Show|01042024|31082024
+RO020044|Crédito Presumido - Decreto 29.251/2024 (Convênio ICMS 198/2023)|01072024|
+RO020045|Crédito Presumido - Atacadista na ALCGM  Decreto 28662/2023|20122023|
+RO020046|Crédito Presumido  Atacadista - Decreto 28662/2023|20122023|
+RO010020|Estorno de Crédito - produtos importados  art.10, inciso I, Decreto 28662/2023|20122023|
+RO010021|Estorno de Crédito  demais operações  art.10, inciso II, Decreto 28662/2023|20122023|
+RO050008|CONTRIBUIÇÃO PARA O FUNDAT|01122023|
+RO020047|Ressarcimento de Substituição Tributária em conta gráfica - Inciso I, Art. 21, parte 1 do Anexo VI do RICMS.|01012025|
+RO020048|Ressarcimento Extemporâneo de Substituição Tributária em conta gráfica - Inciso I, Art. 21, parte 1 do Anexo VI do RICMS.|01012025|
+RO020049|Ressarcimento  Crédito referente à operação própria do substituto tributário.|01012025|
+RO020050|Ressarcimento Extemporâneo  Crédito referente à operação própria do substituto tributário.|01012025|
+RO010022|Estorno de Crédito Presumido (Estoque  Convênio ICM 65/88)  Art. 11, III, Decreto 28.662/2023|20122023|
+RO030010|Estorno de débito  Rondônia Rural Show|01042025|31082025
+RO010023|Estorno de crédito referente a mercadoria remetida com isenção para ZFM ou ALC|01072025|
+RO120003|Ressarcimento de Substituição Tributária em conta gráfica - § 5° do Art. 24-A do Anexo VI do RICMS/RO|01022025|
+RO100002|Complemento de Substituição Tributária em conta gráfica - § 5° do Art. 24-A do Anexo VI do RICMS/RO|01022025|
+RO010024|Estorno de crédito presumido do estoque decorrente do Convênio ICM 65/88 - contribuintes detentores do regime especial da Lei 5.710/23 estabelecidos na ALCGM - Art. 7º, II, Decreto 29.232/2024.|01012026|
+RO030011|Estorno de débito  Rondônia Rural Show|01042026|31082026

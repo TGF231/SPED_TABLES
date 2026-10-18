@@ -1,0 +1,2 @@
+versão=1 TIPO_UTIL, DESC_TIPO, DT_INI, DT_FIM
+MA01|Utilização de crédito transferido por ato judicial|01022022|

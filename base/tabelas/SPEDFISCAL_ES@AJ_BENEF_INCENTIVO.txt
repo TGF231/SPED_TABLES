@@ -1,0 +1,100 @@
+versão=14 COD_AJ, DESC_AJ, DT_INI, DT_FIM
+ES23000230|APURAÇÃO EM SEPARADO1: DÉBITO CAFÉ ARÁBICA: Estorno de Débito da Apuração própria para Débito na Apuração em separado indicador é '3'(filho C195 código A28793)|01072011|
+ES23000231|APURAÇÃO EM SEPARADO1: DÉBITO SACARIA CAFÉ ARÁBICA: Estorno de Débito da Apuração própria para Débito na Apuração em separado indicador '3'(filho C195 código A28793)|01072011|
+ES24000240|APURAÇÃO EM SEPARADO2: DÉBITO CAFÉ CONILON: Estorno de Débito da Apuração própria para Débito na Apuração em separado indicador '4'(filho C195 código C28874)|01072011|
+ES24000241|APURAÇÃO EM SEPARADO2: DÉBITO SACARIA CAFÉ CONILON: Estorno de Débito da Apuração própria para Débito na Apuração em separado indicador '4'(filho C195 código C28874)|01072011|
+ES25000250|APURAÇÃO EM SEPARADO3: DÉBITO outra apuração 'NÃO ESPECIFICADA': Estorno de Débito da Apuração própria para Débito na Apuração em separado indicador '5'|01072011|31122012
+ES25000250|APURAÇÃO EM SEPARADO3: DÉBITO outra apuração 'NÃO ESPECIFICADA': estorno de débito da apuração própria para débito na apuração em separado, indicador '5'. Se a operação for amparada pela Lei n.º 2.508, de 1970, use código próprio|01012013|
+ES53000530|APURAÇÃO EM SEPARADO1: CRÉDITO CAFÉ ARÁBICA: Estorno de Crédito da Apuração própria para Crédito na Apuração em separado indicador '3'(filho C195 código A28793)|01072011|
+ES53000531|APURAÇÃO EM SEPARADO1: CRÉDITO SACARIA CAFÉ ARÁBICA: Estorno de Crédito da Apuração própria para Crédito na Apuração em separado indicador '3'(filho C195 código A28793)|01072011|
+ES53001532|APURAÇÃO EM SEPARADO1: CRÉDITO FRETE CAFÉ ARÁBICA: Estorno de Crédito da Apuração própria para Crédito na Apuração em separado indicador '3'(filho C195 código A28793)OBS:Documento de transporte no mesmo mês|01072011|31122012
+ES54000540|APURAÇÃO EM SEPARADO2: CRÉDITO CAFÉ CONILON: Estorno de Crédito da Apuração própria para Crédito na Apuração em separado indicador '4'(filho C195 código C28874)|01072011|
+ES54000541|APURAÇÃO EM SEPARADO2: CRÉDITO SACARIA CAFÉ CONILON: Estorno de Crédito da Apuração própria para Crédito na Apuração em separado indicador '4'(filho C195 código C28874)|01072011|
+ES54001542|APURAÇÃO EM SEPARADO2: CRÉDITO FRETE CAFÉ CONILON: Estorno de Crédito da Apuração própria para Crédito na Apuração em separado indicador '4'(filho C195 código C28874)OBS:Documento de transporte no mesmo mês|01072011|31122012
+ES55000550|APURAÇÃO EM SEPARADO3: CRÉDITO outra apuração 'NÃO ESPECIFICADA': Estorno de Crédito da Apuração própria para Crédito na Apuração em separado indicador '5'|01072011|31122012
+ES55000550|APURAÇÃO EM SEPARADO3: CRÉDITO outra apuração 'NÃO ESPECIFICADA': estorno de crédito da apuração própria para crédito na apuração em separado, indicador '5'. Se a operação for amparada pela Lei n.º 2.508, de 1970, use código próprio|01012013|
+ES55001551|APURAÇÃO EM SEPARADO3: CRÉDITO outra apuração 'NÃO ESPECIFICADA/FRETE': Estorno de Crédito da Apuração própria para Crédito na Apuração em separado indicador '5'.OBS:Documento de transporte no mesmo mês|01072011|31122012
+ES73000730|APURAÇÃO EM SEPARADO1: DÉBITO ESPECIAL CAFÉ ARÁBICA: ICMS recolhido ou a recolher Extra-Apuração devido na Apuração em separado indicador '3'(filho C195 código A28793)|01072011|
+ES74000740|APURAÇÃO EM SEPARADO2: DÉBITO ESPECIAL CAFÉ CONILON: ICMS recolhido ou a recolher Extra-Apuração devido na Apuração em separado indicador '4'(filho C195 código C28874)|01072011|
+ES75000750|APURAÇÃO EM SEPARADO3: DÉBITO ESPECIAL 'NÃO ESPECIFICADA': ICMS recolhido ou a recolher Extra-Apuração devido na Apuração em separado indicador '5'|01072011|31122012
+ES75000750|APURAÇÃO EM SEPARADO3: DÉBITO ESPECIAL 'NÃO ESPECIFICADA': imposto recolhido ou a recolher extra-apuração devido na apuração em separado, indicador '5'. Se a operação for amparada pela Lei n.º 2.508, de 1970, use código próprio|01012013|
+ES40000400|OUTROS DÉBITOS: 'NÃO ESPECIFICADO' por outro código (Obrigatório informar descrição complementar)|01072011|
+ES40009401|OUTROS DÉBITOS: Transferência de saldo credor à estabelecimento de mesma empresa (Art. 143 RICMS-ES/Apuração consolidada)|01102011|
+ES40009402|OUTROS DÉBITOS: Recebimento, por transferência, de Saldo Devedor de estabelecimento de mesma empresa (Art. 143 RICMS-ES/Apuração consolidada)|01102011|
+ES40009403|OUTROS DÉBITOS: Transferência de saldo credor acumulado por estabelecimento exportador/equiparado (Obrigatório informar norma que fundamenta transferência: Art.112 ou outra; e o nº processo autorizador)|01102011|
+ES40009404|OUTROS DÉBITOS: Transferência de saldo credor acumulado nos demais casos, por estabelecimento industrial (Obrigatório informar norma que fundamenta transferência:Art.113 ou outra; e o nº processo autorizador)|01102011|04102015
+ES40009405|OUTROS DÉBITOS: Transferência de saldo credor acumulado para outro estabelecimento da mesma empresa(Obrigatório informar norma que fundamenta transferência)|01102011|
+ES40009406|OUTROS DÉBITOS: Devolução de saldo credor acumulado recebido(Obrigatório informar descrição complementar)|01102011|
+ES40101407|OUTROS DÉBITOS: ICMS s/ Serviço Transporte devido pelo remetente nas formas do Art. 220-A do RICMS-ES (Cod. Receita 127-9)|01102011|
+ES10000100|OUTROS CRÉDITOS: 'NÃO ESPECIFICADO' por outro código (Obrigatório informar descrição complementar)|01072011|
+ES10009101|OUTROS CRÉDITOS: Transferência de Saldo Devedor à estabelecimento de mesma empresa (Art. 143 RICMS-ES/Apuração consolidada)|01102011|
+ES10009102|OUTROS CRÉDITOS: Recebimento, por transferência, de Saldo Credor de estabelecimento de mesma empresa (Art. 143 RICMS-ES/Apuração consolidada)|01102011|
+ES10009103|OUTROS CRÉDITOS: Recebimento, por transferência, de saldo credor acumulado de estabelecimento exportador/equiparado (Obrigatório informar norma que fundamenta transferência: Art.112 ou outra; e o nº processo autorizador)|01102011|
+ES10009104|OUTROS CRÉDITOS: Recebimento, por transferência, de saldo credor acumulado nos demais casos, de estabelecimento industrial (Obrigatório informar norma que fundamenta transferência: Art.113 ou outra; e o nº processo autorizador)|01102011|
+ES10009105|OUTROS CRÉDITOS: Recebimento, por transferência, de saldo credor acumulado de estabelecimento da mesma empresa(Obrigatório informar norma que fundamenta transferência)|01102011|
+ES10009106|OUTROS CRÉDITOS: Recebimento, por devolução de transferência, de saldo credor acumulado(Obrigatório informar descrição complementar)|01102011|
+ES10000107|OUTROS CRÉDITOS: Entradas provenientes de contribuintes optantes pelo Simples Nacional, nos termos do art. 23 da LC 123/06|01102011|
+ES10000108|OUTROS CRÉDITOS: relativo à saída de obra de arte, conforme Art. 107, V do RICMS-ES|01102011|
+ES10000109|OUTROS CRÉDITOS: relativo à operação interna tributada com metais e pedras preciosas e semipreciosas, conforme Art. 107, VI do RICMS-ES|01102011|30042016
+ES10000110|OUTROS CRÉDITOS: nas operações interestaduais, conforme Art. 107, XXIV do RICMS-ES|01102011|
+ES10000111|OUTROS CRÉDITOS: ao estabelecimento industrial, conforme Art. 107, XXIX do RICMS-ES|01102011|
+ES10000112|OUTROS CRÉDITOS: nas operações interestaduais, conforme Art. 107, XXXIV do RICMS-ES|01102011|
+ES10000113|OUTROS CRÉDITOS: nas saídas interestaduais, conforme Art. 530-L-F, II do RICMS-ES|01102011|
+ES10000114|OUTROS CRÉDITOS: nas operações interestaduais de vendas dos produtos arrolados no inciso II Art. 530-L-L do RICMS-ES|01102011|
+ES10000115|OUTROS CRÉDITOS: nas operações interestaduais, conforme Art. 530-L-N, III do RICMS-ES|01102011|
+ES10000116|OUTROS CRÉDITOS: nas operações interestaduais, conforme Art. 530-L-P, III do RICMS-ES|01102011|
+ES10000117|OUTROS CRÉDITOS: nas operações interestaduais, conforme Art. 530-L-R, II do RICMS-ES|01102011|
+ES10000118|OUTROS CRÉDITOS: nas operações interestaduais, conforme Art. 530-L-R-D, II do RICMS-ES|01102011|
+ES10000119|OUTROS CRÉDITOS: nas operações interestaduais, conforme Art. 530-L-R-E, II do RICMS-ES|01102011|
+ES10000120|OUTROS CRÉDITOS: nas operações interestaduais, conforme Art. 530-L-R-G, III do RICMS-ES|01102011|
+ES10000121|OUTROS CRÉDITOS: nas operações interestaduais, conforme Art. 530 L-R-H, III do RICMS-ES|01102011|
+ES10000122|OUTROS CRÉDITOS: nas operações interestaduais com produtos industrializados neste Estado, conforme Art. 530-Z-N do RICMS-ES|01102011|
+ES10000123|OUTROS CRÉDITOS: na aquisição leite produzido no Estado, conforme Art. 530-Z-P do RICMS-ES|01102011|
+ES10000124|OUTROS CRÉDITOS: nas operações interestaduais produtos industrializados neste Estado, conforme Art. 530-Z-R, II do RICMS-ES|01102011|
+ES10000125|OUTROS CRÉDITOS: Crédito extemporâneo relativo à nota fiscal de entrada escriturada fora do prazo (conforme Art. 142, I do RICMS-ES)|01102011|
+ES10001126|OUTROS CRÉDITOS: relativo ao imposto destacado no documento de arrecadação referente ao serviço de transporte de autônomo ou transportadora de outra UF, sem CTRC, nas formas do Art. 74, §1°, II do RICMS-ES|01102011|
+ES20000200|ESTORNO DE DÉBITO: 'NÃO ESPECIFICADO' por outro código (Obrigatório informar descrição complementar)|01072011|
+ES20000201|ESTORNO DE DÉBITO: Estorno de 33% do Débito das operações de saídas interestaduais destinadas a comercialização ou industrialização, conforme Art. 530-L-R-B do RICMS-ES|01102011|31082015
+ES50000500|ESTORNO DE CRÉDITO: 'NÃO ESPECIFICADO' por outro código (Obrigatório informar descrição complementar)|01072011|
+ES50000501|ESTORNO DE CRÉDITO: Valor excedende destacado a maior no documento fiscal|01102011|
+ES70000700|DÉBITO ESPECIAL: ICMS Extra-apuração 'NÃO ESPECIFICADO' por outro código (Obrigatório informar descrição complementar)|01072011|
+ES70009701|DÉBITO ESPECIAL: Diferencial de Alíquota pela entrada do Ativo Fixo|01102011|
+ES70009702|DÉBITO ESPECIAL: Diferencial de Alíquota pela entrada de Uso ou Consumo|01102011|
+ES70009703|DÉBITO ESPECIAL: Diferencial de Alíquota pela  utilização de serviço de transporte cuja prestação não esteja vinculada a operação ou prestação subseqüentes|01102011|
+ES70000704|DÉBITO ESPECIAL: Na entrada da importação do exterior, exceto FUNDAP|01102011|
+ES70000705|DÉBITO ESPECIAL: ICMS da nota fiscal de saída escriturada extemporaneamente|01102011|
+ES70001706|DÉBITO ESPECIAL: ICMS devido pelo alienante ou remetente relativo à prestação de serviço de autônomo ou transportadora outra UF,  nas formas do Art. 220, I do RICMS-ES|01102011|
+ES70001707|DÉBITO ESPECIAL: ICMS devido pelo destinatário relativo à prestação de serviço de autônomo ou transportadora outra UF, nas formas do Art. 220, III do RICMS-ES|01102011|
+ES11000910|OUTROS CRÉDITOS ST: 'NÃO ESPECIFICADO' por outro código (Obrigatório informar descrição complementar)|01072011|
+ES41000410|OUTROS DÉBITOS ST: 'NÃO ESPECIFICADO' por outro código (Obrigatório informar descrição complementar)|01072011|
+ES71000710|DÉBITO ESPECIAL ST: ICMS ST Extra-apuração 'NÃO ESPECIFICADO' por outro código (Obrigatório informar descrição complementar)|01072011|
+ES71000711|DÉBITO ESPECIAL ST: ICMS ST na entrada da mercadoria no estabelecimento com atribuição de ST dada por Termo de Acordo SEFAZ (Obrigatório informar nº Termo de Acordo)|01102011|
+ES71000712|DÉBITO ESPECIAL ST: ICMS ST devido na entrada da mercadoria  procedente da UF sem acordo firmado em Convênio ou Protocolo/Não Signatário da ST|01102011|
+ES71100713|DÉBITO ESPECIAL ST: ICMS ST devido solidariamente pelo contribuinte substituído na entrada da mercadoria nas hipóteses de erro ou de omissão do substituto|01102011|
+ES71000714|DÉBITO ESPECIAL ST: ICMS ST devido na entrada da importação do exterior|01102011|
+ES99990990|INFORMATIVO: Informativo 'NÃO ESPECIFICADO' (Obrigatório informar descrição complementar)|01072011|
+ES99990991|INFORMATIVO: Antecipação do ICMS 'NÃO ESPECIFICADO' (Obrigatório informar descrição complementar, inclusive nº DUA)|01102011|
+ES99990992|INFORMATIVO: Antecipação do ICMS da operação de saída de AEHC ou de Álcool não combustível, conf/ estabelece Art. 244-A do RICMS-ES (Obrigatório informar nº DUA)|01102011|
+ES99991993|INFORMATIVO: ICMS recolhido antes de iniciada a prestação de serviço de autônomo ou transportadora de outra UF, conforme Art. 220, § 4º do RICMS-ES (Obrigatório informar nº DUA)|01102011|
+ES10000127|OUTROS CRÉDITOS: nas operações interestaduais destinadas a consumidor final, venda não presencial (art. 530-L-R-I, I)|01012013|31122016
+ES10000128|OUTROS CRÉDITOS: nas operações interestaduais destinadas a consumidor final, venda não presencial (art. 530-L-R-I, II)|01012013|31122017
+ES10000129|OUTROS CRÉDITOS: nas operações interestaduais destinadas a consumidor final, venda não presencial (art. 530-L-R-I, III)|01012013|
+ES10000130|OUTROS CRÉDITOS: nas operações internas (art. 107, XXXV)|01012013|31122018
+ES25000251|APURAÇÃO EM SEPARADO3: DÉBITO OPERAÇÃO LEI 2.508: estorno de débito da apuração própria para débito na apuração em separado, indicador '5 (filho C195, código 250870)|01012013|
+ES53001533|APURAÇÃO EM SEPARADO1: CRÉDITO FRETE CAFÉ ARÁBICA: estorno de crédito da apuração própria para crédito na apuração em separado, indicador '3 (filho D195, código A28793)|01012013|
+ES54001543|APURAÇÃO EM SEPARADO2: CRÉDITO FRETE CAFÉ CONILON: estorno de crédito da apuração própria para crédito na apuração em separado, indicador '4 (filho D195, código C28874)|01012013|
+ES55001552|APURAÇÃO EM SEPARADO3: CRÉDITO outra apuração 'NÃO ESPECIFICADA/FRETE': estorno de crédito da apuração própria para crédito na apuração em separado, indicador '5'. Se a operação for amparada pela Lei n.º 2.508, de 1970, use código próprio|01012013|
+ES55000553|APURAÇÃO EM SEPARADO3: CRÉDITO OPERAÇÃO LEI N.º 2.508: estorno de crédito da apuração própria para crédito na apuração em separado, indicador '5 (filho C195 código 250870)|01012013|
+ES55001554|APURAÇÃO EM SEPARADO3: CRÉDITO PRESTAÇÃO LEI N.º 2.508: estorno de crédito da apuração própria para crédito na apuração em separado, indicador '5 (filho D195 código 250870)|01012013|
+ES70000708|DÉBITO ESPECIAL: imposto complementar devido pelo adquirente da mercadoria, quando não destiná-la à comercialização ou industrialização (art. 534-Z-Z-A, § 4.º)|01012013|
+ES75000751|APURAÇÃO EM SEPARADO3: DÉBITO ESPECIAL LEI N.º 2.508: imposto recolhido ou a recolher extra-apuração devido na apuração em separado, indicador '5' (filho C195 código 250870)|01012013|
+ES99999994|INFORMATIVO: diferimento do pagamento do imposto na aquisição de máquinas e equipamentos. Informar na descrição complementar norma que fundamenta|01012013|
+ES99999995|INFORMATIVO: diferimento do pagamento do diferencial de alíquota na aquisição de ativo fixo. Informar na descrição complementar norma que fundamenta|01012013|
+ES50001000|Estorno do crédito em caso de emissão de CT-e substituto referenciando o CT-e emitido com erro (art. 543-V-A)|16052023|
+ES20001000|Estorno do débito em caso de emissão de CT-e substituto referenciando o CT-e emitido com erro (art. 543-V-A)|16052023|
+ES20003000|Estornos de débitos - NF3e substituída (art. 557-A-L,§1°, I do RICMS-ES )|17072023|
+ES70003000|Débitos especiais - ICMS devido em função da diferença a maior entre o documento fiscal de substituição e o documento fiscal substituído quando a substituição ocorrer em período de apuração diferente do período de apuração do fato gerador(art. 557-A-L,§2°, I do RICMS-ES )|17072023|
+ES20003001|Estornos de débitos - Estorno vinculado ao débito especial do ICMS devido em função da diferença a maior entre o documento fiscal de substituição e o documento fiscal substituído quando a substituição ocorre em período de apuração diferente do período de apuração do fato gerador (art. 557-A-L,§2°, II do RICMS-ES )|17072023|
+ES50003000|Estornos de créditos - NF3e substituída (art. 557-A-M do RICMS-ES )|17072023|
+ES50001000|Estorno do crédito em caso de emissão de CT-e substituto referenciando o CT-e emitido com erro (art. 543-V-A)|03042023|15052023
+ES20001000|Estorno do débito em caso de emissão de CT-e substituto referenciando o CT-e emitido com erro (art. 543-V-A)|03042023|15052023

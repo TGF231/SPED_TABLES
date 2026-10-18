@@ -1,0 +1,10 @@
+versão=2 CODIGO, DESCRICAO, DT_INI, DT_FIM, IND_ATIV, IND_AJUSTE, GRUPO, SUBGRUPO, IND_OUTROS
+R0601010|Receita da Securitização de Créditos Imobiliários|01012014||01;06|P|600|R0601|N
+R0602010|Receita da Securitização de Créditos Financeiros|01012014||01;06|P|600|R0602|N
+R0603010|Receita da Securitização de Créditos Agrícolas|01012014||01;06|P|600|R0603|N
+R0604010|Outras Receitas da Atividade|01012014||01;06|P|600|R0604|S
+R0605010|Receitas não operacionais decorrentes da venda de bens do ativo permanente (não circulante)|01012014||01;06|P|600|R0605|N
+R0606010|Receita da Securitização de Créditos|04082022||01;06|P|600|R0606|N
+R0605020|Outras receitas não operacionais|01012014||01;06|P|600|R0605|S
+R0698100|Ajustes negativos de receitas|01012014||01;06|N|600|R0698|N
+R0699100|Ajustes positivos de receitas|01012014||01;06|P|600|R0699|N

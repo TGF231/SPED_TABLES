@@ -1,0 +1,7 @@
+versão=1 CODIGO, DESCRICAO, DT_INI, DT_FIM, IND_ATIV, IND_AJUSTE, GRUPO, SUBGRUPO, IND_OUTROS
+D0501010|Alugueis e Renda|01012014||03;06|P|500|D0501|N
+D0502010|Lucro na venda|01012014||03;06|P|500|D0502|N
+D0503010|Reavaliação positiva da carteira de investimentos imobiliários referida nos Códigos D0501 e D0502|01012014||03;06|P|500|D0503|N
+D0590010|Outras deduções e exclusões de caráter específico|01012014||03;06|P|500|D0590|S
+D0598010|Ajustes Negativos das deduções e exclusões de caráter específico|01012014||03;06|N|500|D0598|N
+D0599010|Ajustes Positivos das deduções e exclusões de caráter específico|01012014||03;06|P|500|D0599|N

@@ -1,0 +1,455 @@
+versão=53 INF_ADIC, DESC_INF, DT_INI, DT_FIM
+MT000002|DIFERIMENTO DO ICMS DEVIDO A TÍTULO DE DIFERENCIAL DE ALÍQUOTAS. Art. 41 Anexo VII RICMS/MT|01012020|30042026
+MT000002|DIFERIMENTO DO ICMS DEVIDO A TÍTULO DE DIFERENCIAL DE ALÍQUOTAS. Art. 41 Anexo VII RICMS/MT|01052026|31122026
+MT000003|Total recolhido no mês a título de  Fundo Estadual de Combate e Erradicação da Pobreza conforme Lei Complementar n° 460, de 26 de dezembro de 2011|01072012|
+MT000006|Valor do Fundo Estadual de Equilíbrio Fiscal de Mato Grosso - FEEF/MT apurado no mês|01072018|
+MT000900|Isenção nas operações com medicamentos Zolgensma destinados a tratamento da Atrofia Muscular Espinal. Art. 15-A Anexo IV - RICMS/MT.|01042025|
+MT000901|Isenção nas operações com princípio ativo e medicamento relacionados no Anexo Único do Convênio ICMS n° 100/2021 destinados a tratamento da Atrofia Muscular Espinal. Art. 15-B, Anexo IV - RICMS/MT.|01042025|
+MT000902|Isenção nas operações com medicamento Elevidys destinado ao tratamento de distrofia muscular de Duchenne. Art. 15-C, Anexo IV - RICMS/MT.|01042025|30042026
+MT000902|Isenção nas operações com medicamento Elevidys destinado ao tratamento de distrofia muscular de Duchenne. Art. 15-C, Anexo IV - RICMS/MT.|01052026|31122026
+MT000903|Isenção nas operações internas com ativadores de vulcanização da borracha classificados no código 2805.19.90 NCM. Art. 73-B, Anexo IV - RICMS/MT.|01042025|30042026
+MT000903|Isenção nas operações internas com ativadores de vulcanização da borracha classificados no código 2805.19.90 NCM. Art. 73-B, Anexo IV - RICMS/MT.|01052026|31122026
+MT000904|Isenção nas operações envolvendo lojas francas (free-shops), localizadas na sede do município de Cáceres - MT, enquadrado como Cidade Gêmea de cidade estrangeira. Anexo XX - RICMS/MT. Lei 12.897/2025.|01062025|
+MT001001|Isenção do ICMS nas operações  água natural canalizada. Art. 1º Anexo IV - RICMS/MT|01012020|31032025
+MT001003|Isenção saída interna de merc. da cesta básica, arroladas no art. 1° do Anexo V, adquiridas pelo Gov. Estado para famílias carentes, assim como a prest de serv de transp correspondente.  Art. 3º Anexo IV - RICMS/MT|01012020|
+MT001004|Isenção saídas, internas ou interestaduais, dos produtos, em estado natural, exceto quando destinados à industrialização, arrolados no art. 4º Anexo IV - RICMS/MT|01012020|
+MT001007|Isenção saída interna de leite pasteurizado tipo especial, com 3,2% de gordura, e de leite pasteurizado magro, reconstituído ou não, com até 2% de gordura, do estabelecimento varejista com destino a consumidor final. Art. 7º Anexo IV - RICMS/MT|01012020|
+MT001006|Isenção nas saídas internas e interestaduais de pescados criados em cativeiro. Art. 6º Anexo IV - RICMS/MT|01052025|31072027
+MT001008|Isenção saída, em doação, de alimentos considerados perdas, para estabelecimentos de Banco de Alimentos e do Instituto de Integração e de Promoção da Cidadania. Convênio 136/94. Art. 8º Anexo IV - RICMS/MT|01012020|
+MT001009|Isenção saída interna e interestaduais de mercadorias, em decorrência de doação, destinadas ao atendimento do Programa de Segurança Alimentar e Nutricional. Art. 9º Anexo IV - RICMS/MT|01072023|30042026
+MT001009|Isenção saída interna e interestaduais de mercadorias, em decorrência de doação, destinadas ao atendimento do Programa de Segurança Alimentar e Nutricional. Art. 9º Anexo IV - RICMS/MT|01052026|31122026
+MT001010|Isenção no fornecimento de refeições a presos recolhidos às cadeias públicas, efetuado por pessoa natural que não exerça outra atividade com finalidade lucrativa. Art. 10 Anexo IV - RICMS/MT.|01012020|
+MT001011|Isenção no fornecimento de alimentação e bebida não alcoólica realizado por restaurantes populares, integrantes de programas específicos instituídos pela União, pelo Estado de Mato Grosso ou por Município mato-grossense. Art. 11 Anexo IV - RICMS/MT.|01012020|30042026
+MT001011|Isenção no fornecimento de alimentação e bebida não alcoólica realizado por restaurantes populares, integrantes de programas específicos instituídos pela União, pelo Estado de Mato Grosso ou por Município mato-grossense. Art. 11 Anexo IV - RICMS/MT.|01052026|31122026
+MT001012|Isenção em operações internas com gêneros alimentícios regionais, destinados à merenda escolar, fornecida gratuitamente pela rede pública de ensino. Art. 12 Anexo IV - RICMS/MT.|01012020|
+MT001013|Isenção em operações com produtos alimentícios, realizadas em eventos promovidos com fins assistenciais. Art. 13 Anexo IV - RICMS/MT.|01012020|30042026
+MT001013|Isenção em operações com produtos alimentícios, realizadas em eventos promovidos com fins assistenciais. Art. 13 Anexo IV - RICMS/MT.|01052026|31122026
+MT001014|Isenção na importação do exterior dos remédios relacionados na cláusula primeira do Convênio ICMS 41/91, sem similar nacional, efetuada diretamente pela APAE  Associação de Pais e Amigos dos Excepcionais. Art. 14 Anexo IV - RICMS/MT.|01012020|30042026
+MT001014|Isenção na importação do exterior dos remédios relacionados na cláusula primeira do Convênio ICMS 41/91, sem similar nacional, efetuada diretamente pela APAE  Associação de Pais e Amigos dos Excepcionais. Art. 14 Anexo IV - RICMS/MT.|01052026|31122026
+MT001015|Isenção nas operações com medicamentos, usados no tratamento de câncer, relacionados no Anexo Único do Convênio ICMS 162/94. Art. 15 Anexo IV - RICMS/MT.|01012020|
+MT001016|Isenção nas operações realizadas com  medicamentos, fármacos e produtos intermediários classificados segundo a Nomenclatura Brasileira  Sistema Harmonizado  NBM/SH, relacionados nos incisos do caput da cláusula primeira do Convênio ICMS 140/2001. Art. 16 Anexo IV - RICMS/MT.|01012020|30042026
+MT001016|Isenção nas operações realizadas com  medicamentos, fármacos e produtos intermediários classificados segundo a Nomenclatura Brasileira  Sistema Harmonizado  NBM/SH, relacionados nos incisos do caput da cláusula primeira do Convênio ICMS 140/2001. Art. 16 Anexo IV - RICMS/MT.|01052026|31122026
+MT001017|Isenção nas importações de medicamentos, fármacos e produtos intermediários, destinado ao tratamento dos portadores do vírus da AIDS, inciso I da cláusula primeira do convênio ICMS 10/2002. Art. 17 Anexo IV - RICMS/MT.|01012020|
+MT001018|Isenção nas saídas internas e interestaduais de medicamentos, fármacos e produtos intermediários, destinado ao tratamento dos portadores do vírus da AIDS, inciso II da cláusula primeira do convênio ICMS 10/2002. Art. 17 Anexo IV - RICMS/MT.|01012020|
+MT001019|Isenção do ICMS nas operações com fármacos e medicamentos relacionados no Anexo Único do Convênio ICMS 87/2002, destinados a órgãos da Administração Pública, direta e indireta, federal, estadual e municipal e suas fundações públicas. Art. 18 Anexo IV - RICMS/MT.|01072023|30042026
+MT001019|Isenção do ICMS nas operações com fármacos e medicamentos relacionados no Anexo Único do Convênio ICMS 87/2002, destinados a órgãos da Administração Pública, direta e indireta, federal, estadual e municipal e suas fundações públicas. Art. 18 Anexo IV - RICMS/MT.|01052026|31122026
+MT001020|Isenção em operações de produtos farmacêuticos e fraldas geriátricas. Art. 19 Anexo IV - RICMS/MT.|01012020|
+MT001021|Isenção nas operações com fosfato de oseltamivir, vinculadas ao Programa Farmácia Popular do Brasil e destinadas ao tratamento dos portadores da Gripe A (H1N1). Art. 20 Anexo IV - RICMS/MT.|01012020|30042026
+MT001021|Isenção nas operações com fosfato de oseltamivir, vinculadas ao Programa Farmácia Popular do Brasil e destinadas ao tratamento dos portadores da Gripe A (H1N1). Art. 20 Anexo IV - RICMS/MT.|01052026|31122026
+MT001022|Isenção em operações realizadas pela Hemobrás, com os fármacos e medicamentos derivados do plasma humano, coletado nos hemocentros de todo o Brasil. Art. 21 Anexo IV - RICMS/MT.|01012020|
+MT001023|Isenção nas saídas do Reagente para diagnóstico da Doença de Chagas, com destino a órgão ou entidade da Administração Pública Direta, suas autarquias ou fundações. Art. 22 Anexo IV - RICMS/MT.|01012020|30042026
+MT001023|Isenção nas saídas do Reagente para diagnóstico da Doença de Chagas, com destino a órgão ou entidade da Administração Pública Direta, suas autarquias ou fundações. Art. 22 Anexo IV - RICMS/MT.|01052026|31122026
+MT001024|Isenção nas operações com preservativos, classificados no código 4014.10.00 da Comum do Mercosul  NCM. Art. 23 Anexo IV - RICMS/MT.|01012020|30042026
+MT001024|Isenção nas operações com preservativos, classificados no código 4014.10.00 da Comum do Mercosul  NCM. Art. 23 Anexo IV - RICMS/MT.|01052026|31122026
+MT001025|Isenção na operação com os equipamentos e insumos destinados à prestação de serviços de saúde, indicados no Anexo Único do Convênio ICMS 1/99. Art. 24 Anexo IV - RICMS/MT.|01012020|30042026
+MT001025|Isenção na operação com os equipamentos e insumos destinados à prestação de serviços de saúde, indicados no Anexo Único do Convênio ICMS 1/99. Art. 24 Anexo IV - RICMS/MT.|01052026|31122026
+MT001026|Isenção na importação de aparelhos, máquinas, equipamentos e instrumentos médico-hospitalares ou técnico-científicos laboratoriais, sem similar produzido no país, órgãos ou entidades da administração pública, nos termos da Lei (federal) n° 12.101/2009. Art. 25 Anexo IV - RICMS/MT.|01012020|30042026
+MT001026|Isenção na importação de aparelhos, máquinas, equipamentos e instrumentos médico-hospitalares ou técnico-científicos laboratoriais, sem similar produzido no país, órgãos ou entidades da administração pública, nos termos da Lei (federal) n° 12.101/2009. Art. 25 Anexo IV - RICMS/MT.|01052026|31122026
+MT001027|Isenção nas operações com os produtos e equipamentos utilizados em diagnóstico em imunohematologia, sorologia e coagulação, destinados a órgãos ou entidades da Administração Pública. Art. 26 Anexo IV - RICMS/MT.|01012020|30042026
+MT001027|Isenção nas operações com os produtos e equipamentos utilizados em diagnóstico em imunohematologia, sorologia e coagulação, destinados a órgãos ou entidades da Administração Pública. Art. 26 Anexo IV - RICMS/MT.|01052026|31122026
+MT001028|Isenção operações com aceleradores lineares, realizadas no âmbito do Programa Nacional de Oncologia do Ministério da Saúde. Art. 27 Anexo IV - RICMS/MT.|01012020|
+MT001029|Isenção na importação realizada pela Fundação Nacional de Saúde e pelo Ministério da Saúde, por meio da Coordenação-Geral de Recursos Logísticos, , destinados às campanhas de vacinação e de programas nacionais de combate à dengue, malária, febre amarela e outros agravos. Art. 28 Anexo IV - RICMS/MT.|01052024|30042026
+MT001029|Isenção na importação realizada pela Fundação Nacional de Saúde e pelo Ministério da Saúde, por meio da Coordenação-Geral de Recursos Logísticos, , destinados às campanhas de vacinação e de programas nacionais de combate à dengue, malária, febre amarela e outros agravos. Art. 28 Anexo IV - RICMS/MT.|01052026|31122026
+MT001030|Isenção na entrada de mercadoria importada do exterior realizada por órgãos e entidades de hematologia e hemoterapia governamental, sem fins lucrativos. Art. 29 Anexo IV - RICMS/MT.|01052024|30042026
+MT001030|Isenção na entrada de mercadoria importada do exterior realizada por órgãos e entidades de hematologia e hemoterapia governamental, sem fins lucrativos. Art. 29 Anexo IV - RICMS/MT.|01052026|31122026
+MT001031|Isenção na saída interna ou interestadual de equipamentos e acessórios, com destino a instituição pública ou entidade assistencial, para atendimento exclusivo de pessoa portadora de deficiência física, auditiva, mental, visual e múltipla. Art. 30 Anexo IV - RICMS/MT.|01012020|30042026
+MT001031|Isenção na saída interna ou interestadual de equipamentos e acessórios, com destino a instituição pública ou entidade assistencial, para atendimento exclusivo de pessoa portadora de deficiência física, auditiva, mental, visual e múltipla. Art. 30 Anexo IV - RICMS/MT.|01052026|31122026
+MT001032|Isenção nas operações com as mercadorias, segundo as respectivas classificações da Nomenclatura Comum do Mercosul  NCM, arroladas nos incisos do caput da cláusula primeira do Convênio ICMS 126/2010. Art. 31 Anexo IV - RICMS/MT.|01072023|
+MT001033|Isenção nas saídas internas de veículo automotor novo, destinado a pessoa portadora de deficiência física, visual, mental severa ou profunda, síndrome de Down ou autista, diretamente ou por intermédio de seu representante legal, desde que as respectivas operações de saída sejam isentas de IPI. Artigo 32, Anexo IV, RICMS.|01072023|30042026
+MT001033|Isenção nas saídas internas de veículo automotor novo, destinado a pessoa portadora de deficiência física, visual, mental severa ou profunda, síndrome de Down ou autista, diretamente ou por intermédio de seu representante legal, desde que as respectivas operações de saída sejam isentas de IPI. Artigo 32, Anexo IV, RICMS.|01052026|
+MT001034|Isenção saída de mercadorias de produção própria, por instituições de assistência social e de educação, sem fins lucrativos. Artigo 33, Anexo IV, RICMS.|01012020|
+MT001035|Isenção na saída de mercadoria doadas para assistência a vítimas de calamidade pública, bem como o serviço de transporte. Art. 34 Anexo IV - RICMS/MT.|01012020|
+MT001036|Isenção na saída de mercadorias doadas ao Governo do Estado para distribuição gratuita a pessoas necessitadas ou vítimas de catástrofes, bem como o serviço de transporte. Art. 35 Anexo IV - RICMS/MT|01012020|30042026
+MT001036|Isenção na saída de mercadorias doadas ao Governo do Estado para distribuição gratuita a pessoas necessitadas ou vítimas de catástrofes, bem como o serviço de transporte. Art. 35 Anexo IV - RICMS/MT|01052026|31122026
+MT001037|Isenção na saída de mercadorias doadas a órgãos e entidades da administração direta e indireta para distribuição às vítimas da seca. Art. 36 Anexo IV - RICMS/MT|01012020|30042026
+MT001037|Isenção na saída de mercadorias doadas a órgãos e entidades da administração direta e indireta para distribuição às vítimas da seca. Art. 36 Anexo IV - RICMS/MT|01052026|31122026
+MT001038|Isenção nas importações de mercadorias, doadas por organizações internacionais ou estrangeiras ou por países estrangeiros, para distribuição gratuita em programas implementados por instituição educacional ou de assistência social, relacionados com suas finalidades essenciais, bem como suas saídas posteriores. Art. 37 Anexo IV - RICMS/MT|01012020|
+MT001039|Isenção na saída de mercadoria decorrente de doação efetuada à Secretaria de Estado de Educação, para distribuição, também por doação, à rede oficial de ensino. Art. 38 Anexo IV - RICMS/MT|01012020|30042026
+MT001039|Isenção na saída de mercadoria decorrente de doação efetuada à Secretaria de Estado de Educação, para distribuição, também por doação, à rede oficial de ensino. Art. 38 Anexo IV - RICMS/MT|01052026|31122026
+MT001040|Isenção na entrada, por doação, de produtos importados do exterior, diretamente por órgãos ou entidades da Administração Pública, direta ou indireta, fundações, entidades beneficentes ou de assistência social atendendo a previsão do artigo 14 do CTN. Art. 39 Anexo IV - RICMS/MT.|01012020|
+MT001041|Isenção saída, em doação, de microcomputador usado (seminovo), efetuada, diretamente, pelo estabelecimento fabricante ou suas filiais, para escolas públicas especiais e profissionalizantes, associações destinadas a portadores de deficiência e comunidades carentes. Art. 40 Anexo IV - RICMS/MT.|01012020|
+MT001042|Isenção nas saídas de produtos típicos de artesanato regional, tal como definido no Regulamento do IPI. Art. 41 Anexo IV - RICMS/MT.|01012020|
+MT001043|Isenção nas saídas de obra de arte, realizada pelo próprio autor. Art. 42 Anexo IV - RICMS/MT.|01012020|
+MT001044|Isenção nas saídas interna de produtos resultantes do trabalho de reeducação de detentos, promovida por estabelecimentos do Sistema Penitenciário do Estado. Art. 43 Anexo IV - RICMS/MT.|01012020|
+MT001045|Isenção nas operações com medicamentos e reagentes químicos, relacionados no Anexo Único do Convênio ICMS 9/2007. Art. 48 Anexo IV - RICMS/MT|01012020|30042026
+MT001045|Isenção nas operações com medicamentos e reagentes químicos, relacionados no Anexo Único do Convênio ICMS 9/2007. Art. 48 Anexo IV - RICMS/MT|01052026|31122026
+MT001046|Isenção nas operações importação do exterior de aparelhos, máquinas, equipamentos e instrumentos,  importados por universidades públicas ou por fundações educacionais de ensino superior, instituídas e mantidas pelo poder público. Art. 49 Anexo IV - RICMS/MT|01012020|30042026
+MT001046|Isenção nas operações importação do exterior de aparelhos, máquinas, equipamentos e instrumentos,  importados por universidades públicas ou por fundações educacionais de ensino superior, instituídas e mantidas pelo poder público. Art. 49 Anexo IV - RICMS/MT|01052026|31122026
+MT001047|Isenção do ICMS na importação de bens destinados a ensino e pesquisa científica, nas condições previstas no art. 50 Anexo IV - RICMS/MT (Convênio ICMS 93/98).|01012020|
+MT001048|Isenção nas saídas, interna e interestadual, de mercadorias, promovidas por órgãos ou entidades da Adm. Pública, para industrialização com previsão de retorno  ao órgão ou empresa remetente. Art. 51 Anexo IV - RICMS/MT|01012020|
+MT001049|Isenção em Operações com Bens e Mercadorias Adquiridos para Atendimento ao Transporte Escolar.  Art. 52 Anexo IV - RICMS/MT|01052020|30042026
+MT001049|Isenção em Operações com Bens e Mercadorias Adquiridos para Atendimento ao Transporte Escolar.  Art. 52 Anexo IV - RICMS/MT|01052026|31122026
+MT001052|Isenção em Operações com Bens e Mercadorias Adquiridos por Outros Órgãos da Administração Pública Federal, aquisição de veículos pelo Departamento de Polícia Rodoviária Federal. Art. 55 Anexo IV - RICMS/MT|01012020|
+MT001053|Isenção nas operações e prestações na aquisição de equipamentos de segurança eletrônica realizadas através do Departamento Penitenciário Nacional. Art. 56 Anexo IV - RICMS/MT|01012020|
+MT001055|Isenção na saída interna de veículo novo adquirido pele SESP (Programa de Reequipamento Policial), e pela SEFAZ, para reequipamento da fiscalização estadual. Art. 58 Anexo IV - RICMS/MT|01012020|
+MT001056|Isenção na entrada de mercadoria importada do exterior, sem similar nacional, realizada por órgão da Administração Pública Estadual Direta, para a integração do ativo imobilizado.  Art. 59 Anexo IV - RICMS/MT|01012020|
+MT001057|Isenção na saída interna de veículos, quando adquiridos pelo Governo do Estado, com recursos do fundo especial de reequipamento policial, para a Polícia Civil. Art. 60 Anexo IV - RICMS/MT|01012020|
+MT001058|Isenção nas operações internas de fornecimento de energia elétrica, destinada ao consumo por órgãos da Administração Pública Estadual Direta e prestações de serviços de telecomunicação. Art. 61 Anexo IV - RICMS/MT|01012020|
+MT001059|Isenção nas importações e saídas internas de mercadorias destinadas à ampliação do Sistema de Informática da Secretaria de Estado de Fazenda. Art. 62 Anexo IV - RICMS/MT|01012020|
+MT001060|Isenção na operação de aquisição efetuada pelo Estado, por meio de adjudicação, de mercadoria oferecida à penhora. Art. 63 Anexo IV - RICMS/MT|01012020|
+MT001061|Isenção nas saídas internas e interestaduais relativas a operações e prestações destinadas aos Programas de Fortalecimento e Modernização das Áreas de Gestão, de Planejamento e de Controle Externo dos Estados. Art. 64 Anexo IV - RICMS/MT|01052024|30042026
+MT001061|Isenção nas saídas internas e interestaduais relativas a operações e prestações destinadas aos Programas de Fortalecimento e Modernização das Áreas de Gestão, de Planejamento e de Controle Externo dos Estados. Art. 64 Anexo IV - RICMS/MT|01052026|31122026
+MT001062|Isenção em Outras Operações com Bens e Mercadorias Adquiridos por Órgãos do Poder Executivo Estadual, suas Fundações e Autarquias. Art. 65 Anexo IV - RICMS/MT|01012020|
+MT001063|Isenção em Operações com Bens e Mercadorias e/ou Prestações de Serviços, Envolvendo Organismos Alcançados por Acordos Internacionais. Art. 66 Anexo IV - RICMS/MT|01012020|
+MT001064|Isenção em Operações com Bens e Mercadorias Adquiridos por Corpo de Bombeiro Voluntário. Art. 67 Anexo IV - RICMS/MT|01012020|30042026
+MT001064|Isenção em Operações com Bens e Mercadorias Adquiridos por Corpo de Bombeiro Voluntário. Art. 67 Anexo IV - RICMS/MT|01052026|31122026
+MT001066|Isenção na saída de óleo lubrificante usado para estabelecimento rerrefinador ou coletor-revendedor, registrado ANP. Art. 69 Anexo IV - RICMS/MT|01012020|
+MT001067|Isenção em operações e prestações internas e interestaduais, com embalagens de agrotóxicos usadas. Art. 70 Anexo IV - RICMS/MT|01012020|
+MT001068|Isenção na operação de devolução impositiva de embalagem vazia de agrotóxico e respectiva tampa, realizada sem ônus. Art. 71 Anexo IV - RICMS/MT|01012020|
+MT001069|Isenção na saída de pilhas e baterias usadas, após seu esgotamento energético, que tenham como objetivo sua reutilização, reciclagem, tratamento ou disposição final ambientalmente adequada. Art. 72 Anexo IV - RICMS/MT|01012020|
+MT001070|Isenção na saída de pneus usados, mesmo que recuperados de abandono, que tenham como objetivo sua reciclagem, tratamento ou disposição final ambientalmente adequada. Art. 73 Anexo IV - RICMS/MT|01012020|
+MT001072|Isenção nas saídas de equipamentos necessários à implementação de controle fiscal, adquiridos por indústria fabricantes dos produtos classificados nas posições 22.02 e 22.03 da TIPI. Art. 75 Anexo IV - RICMS/MT|01012020|
+MT001073|Isenção nas operações internas, de importação e interestaduais o de equipamentos de informática e de comunicação, necessários à implantação do SPED, da NF-e, a serem financiados pelo MT FOMENTO. Art. 76 Anexo IV - RICMS/MT|01012020|
+MT001074|Isenção nas saídas e retorno de mercadorias om destino a exposições ou feiras, para fins de exibição ao público em geral, com previsão de retorno. Art. 77 Anexo IV - RICMS/MT|01012020|
+MT001075|Isenção nas saídas de mercadorias a título de distribuição gratuita, de amostra de produto de diminuto ou nenhum valor comercial.  Art. 78 Anexo IV - RICMS/MT|01012020|
+MT001076|Isenção nas operações interestaduais de transferências de bens de ativo fio e de uso e consumo, realizadas por empresas prestadoras de serviços de transporte aéreo. Art. 79 Anexo IV - RICMS/MT|01012020|
+MT001077|Isenção na transferência de bens, realizada pela Transportadora Brasileira Gasoduto Bolívia Brasil  TBG, dentro do território nacional, para fins de manutenção do Gasoduto Brasil-Bolívia. Art. 80 Anexo IV - RICMS/MT|01012020|30042026
+MT001077|Isenção na transferência de bens, realizada pela Transportadora Brasileira Gasoduto Bolívia Brasil  TBG, dentro do território nacional, para fins de manutenção do Gasoduto Brasil-Bolívia. Art. 80 Anexo IV - RICMS/MT|01052026|31122026
+MT001078|Isenção na saída interna entre estabelecimentos de uma mesma empresa, de bens integrados ao ativo imobilizado. Art. 81 Anexo IV - RICMS/MT|01012020|
+MT001079|Isenção na saída de vasilhames, recipientes e embalagens, inclusive sacaria, desde que devam retornar ao estabelecimento remetente ou outro do mesmo titular, inclusive a destroca de botijões vazios (vasilhame). Art. 82 Anexo IV - RICMS/MT|01012020|
+MT001080|Isenção nas remessas de peças defeituosas para o fabricante, desde que ocorram em até 30 (trinta) dias depois do prazo de vencimento da garantia. Art. 83 Anexo IV - RICMS/MT|01012020|
+MT001081|Isenção na operações com peças de uso aeronáutico, desde que vinculadas a contrato de garantia conforme disposição dos artigos 856 a 861 das disposições permanentes. Art. 84 Anexo IV - RICMS/MT|01012020|30042026
+MT001081|Isenção na operações com peças de uso aeronáutico, desde que vinculadas a contrato de garantia conforme disposição dos artigos 856 a 861 das disposições permanentes. Art. 84 Anexo IV - RICMS/MT|01052026|31122026
+MT001082|Isenção em operações com bens e mercadorias destinados à Zona Franca de Manaus  SUFRAMA, desde que o estabelecimento destinatário tenha domicílio nos municípios de Manaus, Rio Preto da Eva ou Presidente Figueiredo, no Estado do Amazonas. Art. 85 Anexo IV - RICMS/MT|01012020|
+MT001083| Isenção em operações com bens e mercadorias destinados a Área de Livre Comércio de Macapá (AP) e Santana (AP), Boa Vista (RR) e Bonfim (RR), Guajará-mirim (RO), Tabatinga (AM), Cruzeiro do Sul (AC), Brasileia (AC) e Epitaciolândia (AC). Art. 86 Anexo IV - RICMS/MT.|01012020|
+MT001084|Isenção em Operações com Insumos Agropecuários Destinados a Participantes do Projeto Integrado de Exploração Agropecuária e Agroindustrial do Estado de Roraima. Art. 87 Anexo IV - RICMS/MT|01012020|30042026
+MT001084|Isenção em Operações com Insumos Agropecuários Destinados a Participantes do Projeto Integrado de Exploração Agropecuária e Agroindustrial do Estado de Roraima. Art. 87 Anexo IV - RICMS/MT|01052026|31122026
+MT001086|Isenção nas saídas internas de produtos previstos na Lei (federal) n° 11.508/2007, com destino a estabelecimento localizado em Zona de Processamento de Exportação  ZPE. Art. 89 Anexo IV - RICMS/MT|01012020|
+MT001087|Isenção na importação dos bens relacionados no Anexo Único do Convênio ICMS 28/2005, destinados a integrar o ativo imobilizado de empresa beneficiada pelo REPORTO, para porto localizado em território mato-grossense.  Art. 90 Anexo IV - RICMS/MT|01012020|30042026
+MT001087|Isenção na importação dos bens relacionados no Anexo Único do Convênio ICMS 28/2005, destinados a integrar o ativo imobilizado de empresa beneficiada pelo REPORTO, para porto localizado em território mato-grossense.  Art. 90 Anexo IV - RICMS/MT|01052026|31122026
+MT001088|Isenção na saída interna de bem arrolado no Anexo Único do Convênio ICMS 3/2006, destinado a integrar o ativo imobilizado de empresa beneficiada pelo REPORTO. Art. 91 Anexo IV - RICMS/MT|01012020|30042026
+MT001088|Isenção na saída interna de bem arrolado no Anexo Único do Convênio ICMS 3/2006, destinado a integrar o ativo imobilizado de empresa beneficiada pelo REPORTO. Art. 91 Anexo IV - RICMS/MT|01052026|31122026
+MT001089|Isenção do DIFAL incidente na aquisição interestadual dos bens relacionados no Anexo Único do Convênio ICMS 97/2006, para aparelhamento, modernização e utilização de portos localizados no território mato-grossense. Art. 92 Anexo IV - RICMS/MT|01012020|30042026
+MT001089|Isenção do DIFAL incidente na aquisição interestadual dos bens relacionados no Anexo Único do Convênio ICMS 97/2006, para aparelhamento, modernização e utilização de portos localizados no território mato-grossense. Art. 92 Anexo IV - RICMS/MT|01052026|31122026
+MT001090|Isenção importações de bens ou mercadorias vinculadas ao REPETRO. Art. 93 Anexo IV - RICMS/MT|01012020|30042026
+MT001090|Isenção importações de bens ou mercadorias vinculadas ao REPETRO. Art. 93 Anexo IV - RICMS/MT|01052026|31122026
+MT001091|Isenção em operações antecedentes à saída para o exterior, vinculadas ao REPETRO. Art. 94 Anexo IV - RICMS/MT|01012020|30042026
+MT001091|Isenção em operações antecedentes à saída para o exterior, vinculadas ao REPETRO. Art. 94 Anexo IV - RICMS/MT|01052026|31122026
+MT001092|Isenção nas operação de importação de bens ou mercadorias classificados nos códigos da (NBM/SH) constantes no Anexo Único do Convênio ICMS 130/2007. Art. 95 Anexo IV - RICMS/MT|01012020|30042026
+MT001092|Isenção nas operação de importação de bens ou mercadorias classificados nos códigos da (NBM/SH) constantes no Anexo Único do Convênio ICMS 130/2007. Art. 95 Anexo IV - RICMS/MT|01052026|31122026
+MT001093|Isenção nas operação de importação, de mercadoria ou bem, sob o amparo do Regime Especial Aduaneiro de Admissão Temporária, cláusula 1ª do Convênio ICMS 58/99. Art. 96 Anexo IV - RICMS/MT.|01012020|
+MT001094|Isenção nas operações de importação realizadas sob o regime de drawback, em que a mercadoria seja empregada ou consumida no processo de industrialização de produto a ser exportado. Art. 97 Anexo IV - RICMS/MT.|01012020|
+MT001095|Isenção nas operações com máquinas, equipamentos, aparelhos, instrumentos ou materiais, ou seus respectivos acessórios, sobressalentes ou ferramentas, vinculadas ao Programa BEFIE. Art. 98 Anexo IV - RICMS/MT.|01012020|
+MT001096|Isenção nas operações sujeitas ao regime de tributação simplificada, nos termos do Convênio ICMS 18/95. Art. 99 Anexo IV - RICMS/MT.|01012020|
+MT001097|Isenção nas operações com veículos automotores destinados a taxistas e em operações com embarcações ou com aeronaves. Art. 100 Anexo IV - RICMS/MT.|01052020|30042026
+MT001097|Isenção nas operações com veículos automotores destinados a taxistas e em operações com embarcações ou com aeronaves. Art. 100 Anexo IV - RICMS/MT.|01052026|31122026
+MT001098|Isenção na operação de saída com embarcações construídas no país, bem como o fornecimento de peças, partes e componentes utilizados pela indústria naval. Art. 101 Anexo IV - RICMS/MT|01012020|
+MT001099|Isenção nas operações com matéria prima, material secundário, embalagens, partes, peças, máquinas e equipamentos a serem empregados na execução do PROSUB - Programa de Desenvolvimento de Submarinos. Art. 101-A Anexo IV - RICMS/MT.|01012020|
+MT001100|Isenção nas operações destinadas à fabricação de aeronaves para exportação. Art. 102 Anexo IV - RICMS/MT|01012020|30042026
+MT001100|Isenção nas operações destinadas à fabricação de aeronaves para exportação. Art. 102 Anexo IV - RICMS/MT|01052026|31122026
+MT001102|Isenção nas operações com Combustíveis Destinados ao Abastecimento de Embarcações ou Aeronave. Art. 103 Anexo IV - RICMS/MT.|01012020|30062023
+MT001103|Isenção nas operações com óleo diesel destinado ao consumo por embarcações pesqueiras nacionais. Art. 104 Anexo IV - RICMS/MT.|01012020|
+MT001105|Isenção nas operações com bens e mercadorias destinados à formação do sistema ferroviário. Art. 105 Anexo IV - RICMS/MT.|01012020|30042026
+MT001105|Isenção nas operações com bens e mercadorias destinados à formação do sistema ferroviário. Art. 105 Anexo IV - RICMS/MT.|01052026|31122026
+MT001106|Isenção na importação dos produtos, sem similar no país, para serem utilizados na prestação de serviço de transporte ferroviário de cargas. Art. 106 Anexo IV - RICMS/MT|01062024|30062026
+MT001106|Isenção na importação dos produtos, sem similar no país, para serem utilizados na prestação de serviço de transporte ferroviário de cargas. Art. 106 Anexo IV - RICMS/MT|01072026|31122026
+MT001107|Isenção do diferencial de alíquotas nas operações de aquisições interestaduais de máquinas, aparelhos, equipamentos, suas partes, peças e outros materiais destinados à construção, operação, exploração e conservação do sistema ferroviário de transporte. Art. 107 Anexo IV - RICMS/MT|01012020|30042026
+MT001107|Isenção do diferencial de alíquotas nas operações de aquisições interestaduais de máquinas, aparelhos, equipamentos, suas partes, peças e outros materiais destinados à construção, operação, exploração e conservação do sistema ferroviário de transporte. Art. 107 Anexo IV - RICMS/MT|01052026|31122026
+MT001109|Isenção nas operações de Aquisições interestaduais de vagões para serem utilizados na prestação de serviço de transporte ferroviário de cargas, em relação ao ICMS devido a título de diferencial de alíquota. Art. 109 Anexo IV - RICMS/MT|01012020|
+MT001110|Isenção nas operações internas e interestaduais com bens e mercadorias destinados às redes de transportes públicos sobre trilhos de passageiros, em relação ao ICMS devido a título de diferencial de alíquota. Art. 110 Anexo IV - RICMS/MT.|01012020|
+MT001111|Isenção nas operações com reprodutores e matrizes de animais vacuns, ovinos, suínos e bufalinos . Art. 111 Anexo IV - RICMS/MT.|01012020|
+MT001112|Isenção nas operações de importação do exterior de reprodutores e matrizes caprinas. Art. 112 Anexo IV - RICMS/MT.|01012020|30042026
+MT001112|Isenção nas operações de importação do exterior de reprodutores e matrizes caprinas. Art. 112 Anexo IV - RICMS/MT.|01052026|31122026
+MT001113|Isenção nas operação interna ou interestadual com embrião ou sêmen congelado ou resfriado, ambos de bovino. Art. 113 Anexo IV - RICMS/MT.|01012020|
+MT001114|Isenção nas operação de saída interna de mudas de plantas, exceto as ornamentais. Art. 114 Anexo IV - RICMS/MT.|01012020|
+MT001115|Isenção nas operações internas realizadas com os insumos agropecuários. Art. 115 Anexo IV - RICMS/MT|01052020|31122027
+MT001116|Isenção nas operações de entrada de máquina de limpar e selecionar frutas. Art. 116 Anexo IV - RICMS/MT.|01012020|
+MT001117|Isenção nas operações decorrentes de importação de tratores agrícolas de quatro rodas e de colheitadeiras mecânicas de algodão. Art. 117 Anexo IV - RICMS/MT.|01012020|
+MT001118|Isenção nas operações de aquisições interestaduais de tratores, de até 75CV, por pequenos agricultores, no âmbito do Programa Nacional Trator Popular. Art. 118 Anexo IV - RICMS/MT.|01012020|
+MT001119|Isenção nas operação de circulação de mercadorias, caracterizada pela emissão e negociação de Certificado de Depósito Agropecuário  CDA e de Warrant Agropecuário  WA, nos mercados de bolsa e de balcão, como ativos financeiros, instituídos pela Lei n° 11.076/2004. Art. 119 Anexo IV - RICMS/MT.|01012020|30042026
+MT001119|Isenção nas operação de circulação de mercadorias, caracterizada pela emissão e negociação de Certificado de Depósito Agropecuário  CDA e de Warrant Agropecuário  WA, nos mercados de bolsa e de balcão, como ativos financeiros, instituídos pela Lei n° 11.076/2004. Art. 119 Anexo IV - RICMS/MT.|01052026|31122026
+MT001120|Isenção nas operação interna com produtos vegetais destinados à produção de biodiesel, desde que o destinatário esteja previamente registrado e autorizado pela ANP. Art. 120 Anexo IV - RICMS/MT.|01012020|
+MT001121|Isenção nas operações de saídas de óleo comestível usado, destinado à utilização como insumo industrial, especialmente na indústria saboeira e na produção de biodiesel (B100).Art. 121 Anexo IV - RICMS/MT.|01012020|
+MT001122|Isenção nas operações internas e interestaduais com polpa de cacau. Art. 122 Anexo IV - RICMS/MT.|01012020|30042026
+MT001122|Isenção nas operações internas e interestaduais com polpa de cacau. Art. 122 Anexo IV - RICMS/MT.|01052026|31122026
+MT001123|Isenção nas operações internas com os seguintes produtos nativos de origem vegetal. Art. 123 Anexo IV - RICMS/MT.|01012020|
+MT001126|Isenção nas operações com Bens e Mercadorias de Uso pelo Segmento de Energia Elétrica. Art. 126 Anexo IV - RICMS/MT|01012020|
+MT001127|Isenção nas operação de Saída de mercadoria com destino à Itaipu Binacional. Art. 127 Anexo IV - RICMS/MT.|01012020|
+MT001128|Isenção do ICMS nas aquisições e respectivas saídas internas de geladeiras e lâmpadas, referentes a doações efetuadas pela Energisa S/A, e o retorno das sucatas aos fabricantes, por meio do Projeto de Eficientização Energética em Comunidades de Baixa Renda. Caput e Inciso II, § 1° art. 128 Anexo IV - RICMS/MT.|01052024|30042026
+MT001128|Isenção do ICMS nas aquisições e respectivas saídas internas de geladeiras e lâmpadas, referentes a doações efetuadas pela Energisa S/A, e o retorno das sucatas aos fabricantes, por meio do Projeto de Eficientização Energética em Comunidades de Baixa Renda. Caput e Inciso II, § 1° art. 128 Anexo IV - RICMS/MT.|01052026|31122026
+MT001129|Isenção do DIFAL incidente nas operações interestaduais de aquisição das geladeiras e lâmpadas, referentes a doações efetuadas pela Energisa S/A no âmbito do Projeto de Eficientização Energética em Comunidades de Baixa Renda. Inciso I, § 1º art. 128 Anexo IV - RICMS/MT|01052024|30042026
+MT001129|Isenção do DIFAL incidente nas operações interestaduais de aquisição das geladeiras e lâmpadas, referentes a doações efetuadas pela Energisa S/A no âmbito do Projeto de Eficientização Energética em Comunidades de Baixa Renda. Inciso I, § 1º art. 128 Anexo IV - RICMS/MT|01052026|31122026
+MT001131|Isenção nas operações de saídas internas de mercadorias produzidas por estabelecimento enquadrado como agroindústria familiar. Art. 119-A, Anexo IV - RICMS/MT|01062024|30042026
+MT001131|Isenção nas operações de saídas internas de mercadorias produzidas por estabelecimento enquadrado como agroindústria familiar. Art. 119-A, Anexo IV - RICMS/MT|01052026|31122026
+MT001133|Isenção do ICMS no fornecimento de energia elétrica para consumidor enquadrado na classe residencial com consumo mensal de até 100 Kwh. Art. 130-B Anexo IV - RICMS/MT.|01012020|30042026
+MT001133|Isenção do ICMS no fornecimento de energia elétrica para consumidor enquadrado na classe residencial com consumo mensal de até 100 Kwh. Art. 130-B Anexo IV - RICMS/MT.|01052026|31122026
+MT001134|Isenção do ICMS no fornecimento de energia elétrica para consumidor enquadrado na classe rural com consumo mensal de até 50 Kwh. Art. 130-C Anexo IV - RICMS/MT.|01012020|30042026
+MT001134|Isenção do ICMS no fornecimento de energia elétrica para consumidor enquadrado na classe rural com consumo mensal de até 50 Kwh. Art. 130-C Anexo IV - RICMS/MT.|01052026|31122026
+MT001136|Prestação de serviço de transporte de passageiros, desde que com características de transporte urbano. - Art. 131 Anexo IV - RICMS/MT.|01012020|
+MT001137|Prestação de serviço de transporte rodoviário de passageiros, realizada por veículos registrados na categoria de aluguel (táxi). Art. 132 Anexo IV - RICMS/MT.|01012020|
+MT001139|Prestações de serviços de transporte aéreo intermunicipal, interestadual e internacional de passageiro - Art. 134 Anexo IV - RICMS/MT.|01012020|
+MT001140|Isenção na saída interestadual, promovida pela Empresa Brasileira de Telecomunicações S/A  EMBRATEL  de equipamentos de sua propriedade. Art. 135 Anexo IV - RICMS/MT|01012020|
+MT001142|Isenção na importação de máquinas, equipamentos, partes e acessórios destinados a empresa de radiodifusão, dos produtos relacionados no Anexo Único do Convênio ICMS 10/2007. Art. 137 Anexo IV - RICMS/MT|01052020|30042026
+MT001142|Isenção na importação de máquinas, equipamentos, partes e acessórios destinados a empresa de radiodifusão, dos produtos relacionados no Anexo Único do Convênio ICMS 10/2007. Art. 137 Anexo IV - RICMS/MT|01052026|31122026
+MT001143|Isenção na prestação de serviços locais de difusão sonora. Art. 138 Anexo IV - RICMS/MT|01012020|
+MT001144|Isenção na prestação de serviços de comunicação referente ao acesso à internet e à conectividade em banda larga, no âmbito do Programa GESAC, instituído pelo Governo Federal. Art. 139 Anexo IV - RICMS/MT|01012020|
+MT001145|Isenção na prestações de serviço de comunicação referentes ao acesso à internet e à conectividade em banda larga, destinadas a escolas públicas , e na doação de equipamentos a serem utilizados na prestação desses serviços. Art. 140 Anexo IV - RICMS/MT|01012020|
+MT001146|Redução a 41,17% na base de cálculo em operações com mercadorias integrantes da cesta básica. Inciso I, art. 1º Anexo V - RICMS/MT|03012020|
+MT001147|Redução a 58,33% na base de cálculo em operações com mercadorias integrantes da cesta básica. Inciso II, art. 1º Anexo V - RICMS/MT|03012020|
+MT001150|Isenção nas operações de saídas internas, exclusivamente de produtos agrícolas, promovidas por produtores rurais cadastrados junto à SEAF/MT. Art. 119-B, Anexo IV - RICMS/MT|01062024|30042026
+MT001150|Isenção nas operações de saídas internas, exclusivamente de produtos agrícolas, promovidas por produtores rurais cadastrados junto à SEAF/MT. Art. 119-B, Anexo IV - RICMS/MT|01052026|31122026
+MT001335|Isenção do ICMS no fornecimento de energia elétrica à Associação Matrogrossene de Combate ao Câncer, Hospital de Câncer de MT, CNPJ 24.672.792/0001-09. Art. 130-E, Anexo IV - RICMS/MT|01062024|30042026
+MT001335|Isenção do ICMS no fornecimento de energia elétrica à Associação Matrogrossene de Combate ao Câncer, Hospital de Câncer de MT, CNPJ 24.672.792/0001-09. Art. 130-E, Anexo IV - RICMS/MT|01052026|31122026
+MT001135|Isenção do ICMS no fornecimento de energia elétrica para hospitais filantrópicos, desde que classificados como entidade beneficente de assistência social, nos termos da Lei Complementar n° 187/2021. Art. 130-F Anexo IV - RICMS/MT|01062024|30042026
+MT001135|Isenção do ICMS no fornecimento de energia elétrica para hospitais filantrópicos, desde que classificados como entidade beneficente de assistência social, nos termos da Lei Complementar n° 187/2021. Art. 130-F Anexo IV - RICMS/MT|01052026|31122026
+MT001175|Redução de base de cálculo do ICMS a 73,33% nas operações de saída interestaduais com máquinas, aparelhos e equipamentos industriais. Art. 25, I, a, Anexo V -RICMS/MT.|01052020|30042026
+MT001175|Redução de base de cálculo do ICMS a 73,33% nas operações de saída interestaduais com máquinas, aparelhos e equipamentos industriais. Art. 25, I, a, Anexo V -RICMS/MT.|01052026|31122026
+MT001176|Redução de base de cálculo do ICMS a 58,33% nas operações de saída interestaduais com máquinas e implementos agrícolas. Art. 25, I, b, Anexo V - RICMS/MT.|01052020|30042026
+MT001176|Redução de base de cálculo do ICMS a 58,33% nas operações de saída interestaduais com máquinas e implementos agrícolas. Art. 25, I, b, Anexo V - RICMS/MT.|01052026|31122026
+MT001177|Redução de base de cálculo do ICMS a 51,77% nas operações de saída interna com máquinas, aparelhos e equipamentos industriais. Art. 25, II, a, Anexo V - RICMS/MT.|01052020|30042026
+MT001177|Redução de base de cálculo do ICMS a 51,77% nas operações de saída interna com máquinas, aparelhos e equipamentos industriais. Art. 25, II, a, Anexo V - RICMS/MT.|01052026|31122026
+MT001178|Redução de base de cálculo do ICMS a 32,95% nas operações de saída interna com máquinas e implementos agrícolas. Art. 25, II, b Anexo V - RICMS/MT.|01052020|30042026
+MT001178|Redução de base de cálculo do ICMS a 32,95% nas operações de saída interna com máquinas e implementos agrícolas. Art. 25, II, b Anexo V - RICMS/MT.|01052026|31122026
+MT001180|Redução de base de cálculo do ICMS de 5,1595% nas operações interestaduais realizadas por estabelecimento fabricante ou importador  - Anexos I do Convênio ICMS 133/2002 e tributadas pela alíquota de 7%. Art. 27, I, a Anexo V - RICMS/MT.|01012020|30042026
+MT001180|Redução de base de cálculo do ICMS de 5,1595% nas operações interestaduais realizadas por estabelecimento fabricante ou importador  - Anexos I do Convênio ICMS 133/2002 e tributadas pela alíquota de 7%. Art. 27, I, a Anexo V - RICMS/MT.|01052026|31122026
+MT001181|Redução de base de cálculo do ICMS de 5,4653% nas operações interestaduais realizadas por estabelecimento fabricante ou importador  - Anexos I do Convênio ICMS 133/2002 e tributadas pela alíquota de 12%. Art. 27, I, b Anexo V - RICMS/MT.|01012020|30042026
+MT001181|Redução de base de cálculo do ICMS de 5,4653% nas operações interestaduais realizadas por estabelecimento fabricante ou importador  - Anexos I do Convênio ICMS 133/2002 e tributadas pela alíquota de 12%. Art. 27, I, b Anexo V - RICMS/MT.|01052026|31122026
+MT001182|Redução de base de cálculo do ICMS de 5% nas operações interestaduais realizadas por estabelecimento fabricante ou importador  - Anexos I do Convênio ICMS 133/2002 e tributadas pela alíquota de 4%. Art. 27, I, c Anexo V - RICMS/MT.|01012020|30042026
+MT001182|Redução de base de cálculo do ICMS de 5% nas operações interestaduais realizadas por estabelecimento fabricante ou importador  - Anexos I do Convênio ICMS 133/2002 e tributadas pela alíquota de 4%. Art. 27, I, c Anexo V - RICMS/MT.|01052026|31122026
+MT001183|Redução de base de cálculo do ICMS de 2,3676% nas operações interestaduais realizadas por estabelecimento fabricante ou importador  - Anexos II do Convênio ICMS 133/2002 e tributadas pela alíquota de 7%. Art. 27, II, a Anexo V - RICMS/MT.|01012020|30042026
+MT001183|Redução de base de cálculo do ICMS de 2,3676% nas operações interestaduais realizadas por estabelecimento fabricante ou importador  - Anexos II do Convênio ICMS 133/2002 e tributadas pela alíquota de 7%. Art. 27, II, a Anexo V - RICMS/MT.|01052026|31122026
+MT001184|Redução de base de cálculo do ICMS de 2,5080% nas operações interestaduais realizadas por estabelecimento fabricante ou importador  - Anexos II do Convênio ICMS 133/2002 e tributadas pela alíquota de 12%. Art. 27, II, b Anexo V - RICMS/MT.|01012020|30042026
+MT001184|Redução de base de cálculo do ICMS de 2,5080% nas operações interestaduais realizadas por estabelecimento fabricante ou importador  - Anexos II do Convênio ICMS 133/2002 e tributadas pela alíquota de 12%. Art. 27, II, b Anexo V - RICMS/MT.|01052026|31122026
+MT001185|Redução de base de cálculo do ICMS de 2,29% nas operações interestaduais realizadas por estabelecimento fabricante ou importador  - Anexos II do Convênio ICMS 133/2002 e tributadas pela alíquota de 4%. Art. 27, II, c Anexo V - RICMS/MT.|01012020|30042026
+MT001185|Redução de base de cálculo do ICMS de 2,29% nas operações interestaduais realizadas por estabelecimento fabricante ou importador  - Anexos II do Convênio ICMS 133/2002 e tributadas pela alíquota de 4%. Art. 27, II, c Anexo V - RICMS/MT.|01052026|31122026
+MT001186|Redução de base de cálculo do ICMS de 0,7129% nas operações interestaduais realizadas por estabelecimento fabricante ou importador  - Anexos III do Convênio ICMS 133/2002 e tributadas pela alíquota de 7%. Art. 27, III, a Anexo V - RICMS/MT.|01012020|30042026
+MT001186|Redução de base de cálculo do ICMS de 0,7129% nas operações interestaduais realizadas por estabelecimento fabricante ou importador  - Anexos III do Convênio ICMS 133/2002 e tributadas pela alíquota de 7%. Art. 27, III, a Anexo V - RICMS/MT.|01052026|31122026
+MT001187|Redução de base de cálculo do ICMS de 0,7551% nas operações interestaduais realizadas por estabelecimento fabricante ou importador  - Anexos III do Convênio ICMS 133/2002 e tributadas pela alíquota de 12%. Art. 27, III, b Anexo V - RICMS/MT.|01012020|30042026
+MT001187|Redução de base de cálculo do ICMS de 0,7551% nas operações interestaduais realizadas por estabelecimento fabricante ou importador  - Anexos III do Convênio ICMS 133/2002 e tributadas pela alíquota de 12%. Art. 27, III, b Anexo V - RICMS/MT.|01052026|31122026
+MT001188|Redução de base de cálculo do ICMS de 0,6879% nas operações interestaduais realizadas por estabelecimento fabricante ou importador  - Anexos III do Convênio ICMS 133/2002 e tributadas pela alíquota de 4%. Art. 27, III, c Anexo V - RICMS/MT.|01012020|30042026
+MT001188|Redução de base de cálculo do ICMS de 0,6879% nas operações interestaduais realizadas por estabelecimento fabricante ou importador  - Anexos III do Convênio ICMS 133/2002 e tributadas pela alíquota de 4%. Art. 27, III, c Anexo V - RICMS/MT.|01052026|31122026
+MT001190|Redução base de cálculo do ICMS a 23,53%, nas operações realizadas pela indústria com destino ao Ministério da Defesa e seus órgãos, quando tributadas com a alíquota de 17%. Art. 28, § 1º, I Anexo V - RICMS/MT|01012020|30042026
+MT001190|Redução base de cálculo do ICMS a 23,53%, nas operações realizadas pela indústria com destino ao Ministério da Defesa e seus órgãos, quando tributadas com a alíquota de 17%. Art. 28, § 1º, I Anexo V - RICMS/MT|01052026|31122026
+MT001191|Redução base de cálculo do ICMS a 33,33%, nas operações realizadas pela indústria com destino ao Ministério da Defesa e seus órgãos, quando tributadas com a alíquota de 12%. Art. 28, § 1º, II Anexo V - RICMS/MT|01012020|30042026
+MT001191|Redução base de cálculo do ICMS a 33,33%, nas operações realizadas pela indústria com destino ao Ministério da Defesa e seus órgãos, quando tributadas com a alíquota de 12%. Art. 28, § 1º, II Anexo V - RICMS/MT|01052026|31122026
+MT001192|Redução de base de cálculo do ICMS a 40% nas saídas interestaduais dos produtos arrolados na cláusula primeira do Convênio ICMS 100/97. Art. 30 Anexo V - RICMS/MT.|01052020|31122027
+MT001193|Redução de base de cálculo do ICMS a 70% nas saídas interestaduais dos produtos arrolados na cláusula segunda do Convênio ICMS 100/97. Art. 31 Anexo V - RICMS/MT.|01052020|31122027
+MT001194|Redução de base de cálculo do ICMS a 58,333% do valor da operação, nas saídas internas de arroz em casca do estabelecimento do produtor rural com destino à CONAB. Art. 32 Anexo V - RICMS/MT.|01012020|31122032
+MT001195|Redução de base de cálculo do ICMS nas operações com café cru corresponderá aos valores estabelecidos pelo Convênio ICMS 15/90.  Art. 33 Anexo V - RICMS/MT.|01012020|
+MT001196|Redução de base de cálculo do ICMS a 48,89% do valor da operação com equinos puro-sangue, operações internas.  Art. 34 Anexo V - RICMS/MT.|01012020|
+MT001197|Redução de base de cálculo do ICMS a 50% do valor da operação interna com álcool etílico hidratado combustível - AEHC para o estabelecimento industrial inscrito no Cadastro de Contribuintes do Estado. Art. 35 Anexo V - RICMS/MT.|01082022|31032025
+MT001197|Redução de base de cálculo do ICMS ao valor que resultar do % definido mediante Resolução CONDEPRODEMAT sobre o valor do PMPF com álcool etílico hidratado combustível - AEHC para o estabelecimento industrial inscrito no Cadastro de Contribuintes do Estado. Art. 35 Anexo V - RICMS/MT.|01042025|31122032
+MT001198|Redução de base de cálculo do ICMS a 50% do valor da operação nas saídas interestaduais de suínos vivos realizadas por produtor rural. Art. 33-A Anexo V - RICMS/MT.|01012024|31072024
+MT001201|Redução de base de cálculo do ICMS a 5,88% do valor da operação interna tributada, com metais, pedras preciosas e semipreciosas. Art.41 do Anexo V do RICMS/MT.|01012020|
+MT001202|Redução de base de cálculo do ICMS a 50% do valor da respectiva operação, nas saídas internas de obra de arte, recebida diretamente do autor com a isenção do ICMS. Art. 42 Anexo V - RICMS/MT.|01012020|
+MT001203|Redução de base de cálculo nas operações internas com discos fonográficos e assemelhados, na proporção do valor dos direitos autorais, artísticos e conexos, comprovadamente pagos a autores e artistas nacionais. Art. 43 Anexo V - RICMS/MT.|01052020|30062023
+MT001206|Redução de base de cálculo em operações com aparelhos e equipamentos utilizados na telefonia celular de forma que resulte em percentual de margem de lucro igual a 9%. Art. 46 Anexo V - RICMS/MT.|01012020|30062023
+MT001208|Redução de base de cálculo em 100% nas saídas interestaduais com Etilenoglicol (MEG) e Polietileno Tereftalato (Resina PET). Art. 48 Anexo V - RICMS/MT|01012020|30042026
+MT001208|Redução de base de cálculo em 100% nas saídas interestaduais com Etilenoglicol (MEG) e Polietileno Tereftalato (Resina PET). Art. 48 Anexo V - RICMS/MT|01052026|31122026
+MT001209|Redução de base de cálculo em 100% nas saídas interestaduais dos produtos Para-Xileno (PX) e Ácido Tereftálico Purificado (PTA). Art. 49 Anexo V - RICMS/MT|01052024|30042026
+MT001209|Redução de base de cálculo em 100% nas saídas interestaduais dos produtos Para-Xileno (PX) e Ácido Tereftálico Purificado (PTA). Art. 49 Anexo V - RICMS/MT|01052026|31122026
+MT001210|Redução de base de cálculo do ICMS de 8,78%, nas operações interestaduais sujeitas à alíquota de 7% nas operações com Pneumáticos. Art. 52, I Anexo V - RICMS/MT.|01012020|
+MT001211|Redução de base de cálculo do ICMS de 9,30%, nas operações interestaduais sujeitas à alíquota de 12% nas operações com Pneumáticos. Art. 52, II Anexo V - RICMS/MT.|01012020|
+MT001212|Redução de base de cálculo do ICMS de 8,50%, nas operações interestaduais sujeitas à alíquota de 4% nas operações com Pneumáticos. Art. 52, III Anexo V - RICMS/MT.|01012020|
+MT001218|Redução de base de cálculo em 100% do valor da operação, as saídas internas de briquetes, lenha e resíduos de madeira, com destino a consumidor ou usuário final, inclusive pessoa de direito público ou privado não contribuinte. Art. 55, Anexo V  RICMS/MT|01072023|31122032
+MT001220|Redução de base de cálculo do ICMS a 5,9% do valor da operação, nas saídas internas de sucatas de papel, de vidro e de plástico, destinadas a estabelecimento industrial que tenha como objetivo a reciclagem. Art. 57 Anexo V - RICMS/MT.|01012020|
+MT001221|Redução de base de cálculo do ICMS a 7% do valor da operação, em importações efetuadas do Paraguai por contribuintes optantes pelo Simples Nacional.  Art. 58 Anexo V - RICMS/MT.|01012020|30042026
+MT001221|Redução de base de cálculo do ICMS a 7% do valor da operação, em importações efetuadas do Paraguai por contribuintes optantes pelo Simples Nacional.  Art. 58 Anexo V - RICMS/MT.|01052026|31122026
+MT001222|Redução de base de cálculo do ICMS a 33,25% do valor das prestações internas de serviço de transporte aéreo, tributadas à alíquota de 12%. Art. 62 Anexo V - RICMS/MT.|01012020|30062023
+MT001223|Redução de base de cálculo do ICMS em 20% do valor das prestações internas de serviço de transporte intermunicipal de produto originado da produção no território mato-grossense. Art. 64 Anexo V - RICMS/MT.|01012020|
+MT001224|Redução de base de cálculo do ICMS a 50% do valor das prestações de serviço de televisão por assinatura.  Art. 65 Anexo V - RICMS/MT.|01012020|30062023
+MT001225|Redução de base de cálculo do ICMS a 58,824% do valor das prestações de serviço de radiochamada. Art. 66 Anexo V - RICMS/MT|01072023|
+MT001226|Redução de base de cálculo do ICMS a 29,412% do valor das prestações onerosa de serviço de comunicação, na modalidade de monitoramento e rastreamento de veículos e cargas.  Art. 68 Anexo V - RICMS/MT.|01072023|
+MT001246|Proalmat - Redução de Base de Cálculo - Algodão em Pluma. Lei 6.883/97|01012026|31122032
+MT001247|Isenção - Art. 45, I - Anexo IV - RICMS/MT|01012020|30042026
+MT001247|Isenção - Art. 45, I - Anexo IV - RICMS/MT|01052026|31122026
+MT001248|Isenção - Art. 45, II - Anexo IV - RICMS/MT|01012020|30042026
+MT001248|Isenção - Art. 45, II - Anexo IV - RICMS/MT|01052026|31122026
+MT001249|Isenção - Art. 45, III - Anexo IV - RICMS/MT|01012020|30042026
+MT001249|Isenção - Art. 45, III - Anexo IV - RICMS/MT|01052026|31122026
+MT001250|Isenção - Art. 47 - Anexo IV - RICMS/MT.|01012020|30042026
+MT001250|Isenção - Art. 47 - Anexo IV - RICMS/MT.|01052026|31122026
+MT001251|Redução de base de cálculo - Art. 29, I Anexo - V - RICMS/MT|01012020|30042026
+MT001251|Redução de base de cálculo - Art. 29, I Anexo - V - RICMS/MT|01052026|31122026
+MT001252|Redução de base de cálculo - Art. 29, II Anexo - V - RICMS/MT|01012020|30042026
+MT001252|Redução de base de cálculo - Art. 29, II Anexo - V - RICMS/MT|01052026|31122026
+MT001253|Redução de base de cálculo - Art. 29-A - Anexo V - RICMS/MT|01012020|30042026
+MT001254|Redução de base de cálculo a 83,333% do valor da operação no fornecimento de energia elétrica a consumidor residencial com consumo mensal acima de 100 Kwh a até 150 Kwh. Art. 40-A, Anexo V - RICMS/MT|01062024|30042026
+MT001254|Redução de base de cálculo a 83,333% do valor da operação no fornecimento de energia elétrica a consumidor residencial com consumo mensal acima de 100 Kwh a até 150 Kwh. Art. 40-A, Anexo V - RICMS/MT|01052026|31122026
+MT001255|Redução de base de cálculo a 25% do valor da operação no fornecimento de energia elétrica a consumidor rural com consumo mensal acima de 50 Kwh a até 500 Kwh. Art. 40-B, Anexo V - RICMS/MT|01062024|30042026
+MT001255|Redução de base de cálculo a 25% do valor da operação no fornecimento de energia elétrica a consumidor rural com consumo mensal acima de 50 Kwh a até 500 Kwh. Art. 40-B, Anexo V - RICMS/MT|01052026|31122026
+MT001257|Redução de base de cálculo do ICMS de 20% na prestação de serviço de transporte interna, efetuada de forma regular. Art. 64 Anexo V - RICMS/MT|01012020|
+MT001258|Redução de base de cálculo do ICMS a 41,17% do valor da prestação no transporte intermunicipal de passageiro, com início e término no território mato-grossense. Art. 64-A Anexo V - RICMS/MT|01012020|30042026
+MT001258|Redução de base de cálculo do ICMS a 41,17% do valor da prestação no transporte intermunicipal de passageiro, com início e término no território mato-grossense. Art. 64-A Anexo V - RICMS/MT|01052026|31122026
+MT001259|Redução de Base de Cálculo a ser utilizado na falta de um código específico, sob pena de aplicação de multas por informação incorreta|01012020|
+MT001260|Isenção - Art. 44 - Anexo IV - RICMS/MT|03012020|
+MT001263|Redução de base de cálculo do ICMS incidente nas prestações internas de Serviços de Comunicações Multimídia - SCM a consumidor final.  Art. 69, Anexo V - RICMS/MT|01032020|30042026
+MT001263|Redução de base de cálculo do ICMS incidente nas prestações internas de Serviços de Comunicações Multimídia - SCM a consumidor final.  Art. 69, Anexo V - RICMS/MT|01052026|31122026
+MT001265|Redução de base de cálculo a 80% do valor da operação - Programa VOE MT. Art 4º, I da Lei 10.395/2016|01042025|
+MT001266|Redução de base de cálculo a 73,53% do valor da operação - Programa VOE MT. Art 4º, II da Lei 10.395/2016|01042025|
+MT001267|Redução de base de cálculo a 58,82% do valor da operação - Programa VOE MT. Art 4º, III da Lei 10.395/2016|01042025|
+MT001268|Redução de base de cálculo a 41,18% do valor da operação - Programa VOE MT. Art 4º, IV da Lei 10.395/2016|01042025|
+MT001269|Redução de base de cálculo a 23,53% do valor da operação - Programa VOE MT. Art 4º, V da Lei 10.395/2016|01042025|
+MT001270|Isenção do ICMS nas saídas de combustível e lubrificantes - Programa VOE MT. Art 4º, VI da Lei 10.395/2016|01012020|
+MT001271|Isenção do ICMS - Art. 1º da Lei nº 11.329/2021|26032021|31122024
+MT001272|Redução da base de cálculo do ICMS nos termos do art. 53-A, Anexo V - RICMS/MT|09072021|30042026
+MT001272|Redução da base de cálculo do ICMS nos termos do art. 53-A, Anexo V - RICMS/MT|01052026|31122026
+MT001273|Redução de base de cálculo - Art. 31-A - Anexo V - RICMS/MT|01012022|
+MT001400|Redução de base de cálculo - Inciso I, alínea a, Art. 50-A - Anexo V - RICMS/MT|01032025|31122026
+MT001401|Redução de base de cálculo - Inciso I, alínea b, Art. 50-A - Anexo V - RICMS/MT|01032025|31122026
+MT001402|Redução de base de cálculo - Inciso II, alínea a, Art. 50-A - Anexo V - RICMS/MT|01032025|31122026
+MT001403|Redução de base de cálculo - Inciso II, alínea b, Art. 50-A - Anexo V - RICMS/MT|01032025|31122026
+MT001274|Isenção nas operações internas com irrigadores e sistemas de irrigação para uso na agricultura ou horticultura, por aspersão ou gotejamento, inclusive os elementos integrantes desses sistemas, como máquinas, aparelhos, equipamentos, dispositivos e instrumentos. Art. 118-A Anexo IV - RICMS/MT.|01012022|30042026
+MT001274|Isenção nas operações internas com irrigadores e sistemas de irrigação para uso na agricultura ou horticultura, por aspersão ou gotejamento, inclusive os elementos integrantes desses sistemas, como máquinas, aparelhos, equipamentos, dispositivos e instrumentos. Art. 118-A Anexo IV - RICMS/MT.|01052026|31122026
+MT001130|Redução de base de cálculo do ICMS a 17,65% nas operações internas com madeira de reflorestamento, (PMFS) ou (PEF). Art. 34-A, Anexo V - RICMS/MT|01062024|30042026
+MT001130|Redução de base de cálculo do ICMS a 17,65% nas operações internas com madeira de reflorestamento, (PMFS) ou (PEF). Art. 34-A, Anexo V - RICMS/MT|01052026|31122026
+MT001152|Redução de base de cálculo do ICMS de 58,824%, nas operações internas sujeitas à alíquota de 17% com produtos resultantes da industrialização da mandioca. Art. 5º Anexo V - RICMS/MT.|01012020|30042026
+MT001152|Redução de base de cálculo do ICMS de 58,824%, nas operações internas sujeitas à alíquota de 17% com produtos resultantes da industrialização da mandioca. Art. 5º Anexo V - RICMS/MT.|01052026|31122026
+MT001153|Redução de base de cálculo do ICMS de 41,666% nas operações internas e interestaduais sujeitas à alíquota de 12% com produtos resultantes da industrialização da mandioca. Art. 5º Anexo V - RICMS/MT.|01012020|30042026
+MT001153|Redução de base de cálculo do ICMS de 41,666% nas operações internas e interestaduais sujeitas à alíquota de 12% com produtos resultantes da industrialização da mandioca. Art. 5º Anexo V - RICMS/MT.|01052026|31122026
+MT001149|Redução  da base de calculo do ICMS a 58,33% do valor das operações interestaduais tributadas a 12%, com carnes e miudezas resultante do abate de aves, leporídeos, e gado bovino, bufalino, caprino, ovino e suíno. Inciso I, art. 3º Anexo V - RICMS/2014|01012020|
+MT001166|Redução de base de cálculo do ICMS a 7,5% na importação de bens ou mercadorias, sob o amparo do REPETRO, para aplicação nas instalações de produção de petróleo e gás natural. Art. 18, I Anexo V - RICMS/MT|01012020|30042026
+MT001166|Redução de base de cálculo do ICMS a 7,5% na importação de bens ou mercadorias, sob o amparo do REPETRO, para aplicação nas instalações de produção de petróleo e gás natural. Art. 18, I Anexo V - RICMS/MT|01052026|31122026
+MT001167|Redução de base de cálculo do ICMS a 3% na importação de bens ou mercadorias, sob o amparo do REPETRO, para aplicação nas instalações de produção de petróleo e gás natural. Art. 18, II Anexo V - RICMS/MT|01012020|30042026
+MT001167|Redução de base de cálculo do ICMS a 3% na importação de bens ou mercadorias, sob o amparo do REPETRO, para aplicação nas instalações de produção de petróleo e gás natural. Art. 18, II Anexo V - RICMS/MT|01052026|31122026
+MT001168|Redução de base de cálculo do ICMS a 7,5% nas saídas destinadas ao exterior, de bens ou mercadorias fabricadas no país que venham a ser subsequentemente importados, destinadas às atividades Albergadas pelo REPETRO. Art. 19, I Anexo V - RICMS/MT|01012020|30042026
+MT001168|Redução de base de cálculo do ICMS a 7,5% nas saídas destinadas ao exterior, de bens ou mercadorias fabricadas no país que venham a ser subsequentemente importados, destinadas às atividades Albergadas pelo REPETRO. Art. 19, I Anexo V - RICMS/MT|01052026|31122026
+MT001169|Redução de base de cálculo do ICMS a 3% nas saídas destinadas ao exterior, de bens ou mercadorias fabricadas no país que venham a ser subsequentemente importados, destinadas às atividades Albergadas pelo REPETRO. Art. 19, II Anexo V - RICMS/MT|01012020|30042026
+MT001169|Redução de base de cálculo do ICMS a 3% nas saídas destinadas ao exterior, de bens ou mercadorias fabricadas no país que venham a ser subsequentemente importados, destinadas às atividades Albergadas pelo REPETRO. Art. 19, II Anexo V - RICMS/MT|01052026|31122026
+MT001170|Redução de base de cálculo do ICMS na entrada de mercadoria ou bem, em operações vinculadas ao REPETRO,  na mesma proporção em que forem reduzidos os impostos federais. Art. 20 Anexo V -RICMS/MT|01012020|
+MT001171|Redução de base de cálculo do ICMS nas operações de entrada do exterior albergadas pelo programa BEFIE, na mesmo proporção da redução do Imposto de Importação. Art. 21 Anexo V - RICMS/MT.|01012020|
+MT001174|Redução de base de cálculo do ICMS a 70,59% em operações nas entradas de veículos automotores novos, inclusive veículos de duas rodas, destinados a contribuinte do imposto, ainda que transportador autônomo, para integração ao ativo fixo. Art. 24, § 2º Anexo V - RICMS/MT.|01062024|30042026
+MT001174|Redução de base de cálculo do ICMS a 70,59% em operações nas entradas de veículos automotores novos, inclusive veículos de duas rodas, destinados a contribuinte do imposto, ainda que transportador autônomo, para integração ao ativo fixo. Art. 24, § 2º Anexo V - RICMS/MT.|01052026|31122026
+MT001158|Redução de base de cálculo nas operações interestaduais com os produtos farmacêuticos indicados na alínea a do inciso I do caput do artigo 1°  da Lei (federal) n° 10.147. Art. 12, I, a, do Anexo V do RICMS-MT.|01012020|
+MT001159|Redução de base de cálculo nas  operações interestaduais com os produtos farmacêuticos indicados na alínea a do inciso I do caput do artigo 1°  da Lei (federal) n° 10.147. Art. 12, I, b, do Anexo V do RICMS-MT.|01012020|
+MT001160|Redução de base de cálculo nas  operações interestaduais com os produtos farmacêuticos indicados na alínea a do inciso I do caput do artigo 1° da Lei (federal) n° 10.147. Art. 12, I, c, do Anexo V do RICMS-MT.|01012020|
+MT001161|Redução de base de cálculo nas  operações interestaduais com os produtos de perfumaria, de toucador ou de higiene pessoal, indicados na alínea b do inciso I do caput do artigo 1°  da Lei (federal) n° 10.147. Art. 12, II, a Anexo V - RICMS-MT.|01012020|
+MT001162|Redução de base de cálculo nas  operações interestaduais com os produtos de perfumaria, de toucador ou de higiene pessoal, indicados na alínea b do inciso I do caput do artigo 1°  artigo 1° da Lei (federal) n° 10.147. Art. 12, II, b Anexo V - RICMS-MT.|01012020|
+MT001163|Redução de base de cálculo nas  operações interestaduais com os produtos de perfumaria, de toucador ou de higiene pessoal, indicados na alínea a do inciso I do caput do artigo 1°  da Lei (federal) n° 10.147. Art. 12, II, c Anexo V do RICMS-MT.|01012020|
+MT001164|Redução de base de cálculo do ICMS a 40% do valor da operação com os produtos listados no Anexo Único do Convênio ICMS 8/2011,voltadas para a preservação ambiental. Art. 15 Anexo V - RICMS/2014.|01012020|
+MT002014|Isenção nas operações internas, inclusive DIFAL, de aquisições de bens e mercadorias destinadas à implantação de modal de mobilidade urbana nas cidades de Cuiabá e Várzea Grande, em decorrência das obras inacabadas da Copa do Mundo de Futebol FIFA 2014. Art. 15-A, Anexo XIV- RICMS/MT|01062024|30042026
+MT002014|Isenção nas operações internas, inclusive DIFAL, de aquisições de bens e mercadorias destinadas à implantação de modal de mobilidade urbana nas cidades de Cuiabá e Várzea Grande, em decorrência das obras inacabadas da Copa do Mundo de Futebol FIFA 2014. Art. 15-A, Anexo XIV- RICMS/MT|01052026|31122026
+MT110023|Débito quitado por GNRE Utilizar nas hipóteses em que já houve recolhimento antecipado para a Nota Fiscal, mediante GNRE On Line|01032014|
+MT000001|11. Débitos extra-apuração|01012011|31122019
+MT000002|12.  Débitos de diferencial de alíquota|01012011|31122019
+MT000003|Débitos de diferencial de alíquota Total recolhido no mês a título de  Fundo Estadual de Combate e Erradicação da Pobreza conforme Lei Complementar n° 460, de 26 de dezembro de 2011|01042012|30062012
+MT000004|Saldo devedor apurado, conforme artigo 1º, § 3º ao 7º. Portaria 204/2012|01102012|31122019
+MT000005|Saldo credor apurado, conforme artigo 1º, § 3º ao 7º. Portaria 204/2012|01102012|31122019
+MT001002|Isenção saída interna arroz, inclusive quebrado ou fragmentado na forma de quirera de qualquer tipo, feijão e banana em estado natural. Art. 2º Anexo IV - RICMS/MT|01012020|31122032
+MT001005|Isenção operações internas e interestaduais de comercialização e industrialização de peies  e jacaré, suas carnes e partes, criados em cativeiro localizado em MT. Art. 5º Anexo IV - RICMS/MT|01012020|20072027
+MT001006|Isenção nas saídas internas e interestaduais de pirarucu e tambaqui criados em cativeiro. Art. 6º Anexo IV - RICMS/MT|01012020|30042025
+MT001009|Isenção saída interna e interestaduais de mercadorias, em decorrência de doação, destinadas ao atendimento do Programa intitulado Fome Zero. Art. 9º Anexo IV - RICMS/MT|01012020|30062023
+MT001019|Isenção do ICMS nas operações com fármacos e medicamentos destinados a órgãos da Administração Pública Direta Federal, Estadual e Municipal. Art. 18 Anexo IV - RICMS/MT.|01012020|30062023
+MT001029|Isenção na importação realizada pela Fundação Nacional de Saúde e pelo Ministério da Saúde, por meio da Coordenação-Geral de Recursos Logísticos, , destinados às campanhas de vacinação e de programas nacionais de combate à dengue, malária, febre amarela e outros agravos. Art. 28Anexo IV - RICMS/MT.|01012020|30042024
+MT001030|Isenção na importação dos remédios relacionados na cláusula primeira do Convênio ICMS 41/91, sem similar nacional, efetuada diretamente pela APAE. Art. 29 Anexo IV - RICMS/MT.|01012020|30042024
+MT001032|Isenção operações com as mercadorias, segundo as respectivas classificações da Nomenclatura Comum do Mercosul  NCM, arroladas nos incisos do caput da cláusula primeira do Convênio ICMS 126/2010. Art. 30 Anexo IV - RICMS/MT.|01012020|30062023
+MT001033|Isenção saídas internas de veículo automotor novo, destinado a portador de deficiência física, visual, mental severa ou profunda, ou autista, diretamente ou por intermédio de seu representante legal, desde que as saídas sejam isentas de IPI. Artigo 32, Anexo IV, RICMS.|01012020|30062023
+MT001049|Isenção em Operações com Bens e Mercadorias Adquiridos para Atendimento ao Transporte Escolar.  Art. 52 Anexo IV - RICMS/MT|01012020|30042020
+MT001050|Isenção em Operações com Bens e Mercadorias Adquiridos no Âmbito do Programa Nacional de Informática na Educação. Art. 53 Anexo IV - RICMS/MT|01012020|31102020
+MT001054|Isenção nas saídas internas dos veículos, máquinas e equipamentos, novos, abaixo relacionados, quando destinados ao Poder Executivo dos Municípios Mato-grossenses. Art. 57 Anexo IV - RICMS/MT|01012020|31122032
+MT001061|Isenção nas saídas internas e interestaduais relativas a operações e prestações destinadas aos Programas de Fortalecimento e Modernização das Áreas de Gestão, de Planejamento e de Controle Eterno do Estados. Art. 64 Anexo IV - RICMS/MT|01012020|30042024
+MT001065|Isenção em Operações com Bens e Mercadorias Adquiridos por Consórcios Intermunicipais. Art. 68 Anexo IV - RICMS/MT|01012020|31122032
+MT001071|Isenção nas operações de importação de inseticidas, pulverizadores e outros produtos, destinados ao combate à dengue, malária e febre amarela. Art. 74 Anexo IV - RICMS/MT|01012020|31122027
+MT001085|Isenção em operações e prestações internas e de importação do exterior de bens, instalados na Zona de Processamento de Exportação  ZPE. Art. 88 Anexo IV - RICMS/MT|01012020|31122032
+MT001097|Isenção nas operações com veículos automotores destinados a taxistas e em operações com embarcações ou com aeronaves. Art. 100 Anexo IV - RICMS/MT.|01012020|30042020
+MT001101|Isenção nas aquisições interestaduais de ônibus novos para compor as frotas das empresas de transporte coletivo urbano, em relação ao Diferencial de Alíquotas devido a MT. Art. 102-A Anexo IV - RICMS/MT.|01012020|31122032
+MT001104|Isenção nas operações com Óleo Diesel Destinado ao Abastecimento de Veículos de Transporte Coletivo Urbano em Região Metropolitana. Art. 104-A Anexo IV - RICMS/MT.|01012020|31122032
+MT001108|Isenção nas operações de importação do exterior de máquinas, aparelhos, equipamentos, suas partes, peças e outros materiais destinados à construção, operação, exploração e conservação do sistema ferroviário de transporte de MT. Art. 108 Anexo IV - RICMS/MT|01012020|31102020
+MT001115|Isenção nas operações internas realizadas com os insumos agropecuários. Art. 115 Anexo IV - RICMS/MT|01012020|30042020
+MT001124|Isenção nas operações de comercialização interna de sementes nativas in natura e mudas, ambas de espécies florestais, exclusivamente, mato-grossenses. Art. 124 Anexo IV - RICMS/MT.|01012020|31122032
+MT001125|Isenção nas operações com máquinas, aparelhos, equipamentos e instrumentos utilizados na geração de energia eólica. Art. 125 Anexo IV - RICMS/MT.|01012020|31122028
+MT001128|Isenção do ICMS nas aquisições e respectivas saídas internas de geladeiras e lâmpadas, referentes a doações efetuadas pela Energisa S/A, e o retorno das sucatas aos fabricantes, por meio do Projeto de Eficientização Energética em Comunidades de Baia Renda. Art. 128 Anexo IV - RICMS/MT.|01012020|30042024
+MT001129|Isenção do difal incidente nas operações interestaduais de aquisição das geladeiras e lâmpadas, referentes a doações efetuadas pela Energisa S/A no âmbito do Projeto de Eficientização Energética em Comunidades de Baia Renda. § 1º art. 128 Anexo IV - RICMS/MT|01012020|30042024
+MT001132|Isenção do ICMS nas operações internas relativas à circulação de energia elétrica, sujeitas a faturamento sob o Sistema de Compensação de Energia Elétrica de que trata a RN nº 482/2012, da ANEEL. Art. 130-A Anexo IV - RICMS/MT.|01012020|31122027
+MT001138|Prestações de serviço de transporte executadas dentro do território nacional, exclusivamente, nas operações que destinem ao exterior mercadorias, inclusive produtos primários, produtos industrializados e semielaborados. Art. 133 Anexo IV - RICMS/MT.|01012020|31122032
+MT001141|Isenção nas entradas dos bens importados relacionados Convênio ICMS 130/2006, destinados ao ativo permanente de estabelecimento mato-grossense integrante do grupo de empresas que compõem a Rede Mato-Grossense de Televisão  RMTV.  Art. 136 Anexo IV - RICMS/MT|01012020|31102020
+MT001142|Isenção na importação de máquinas, equipamentos, partes e acessórios destinados a empresa de radiodifusão, dos produtos relacionados no Anexo Único do Convênio ICMS 10/2007. Art. 137 Anexo IV - RICMS/MT|01012020|30042020
+MT001146|Redução de 41,17% na base de cálculo em operações com mercadorias integrantes da cesta básica. Inciso I, art. 1º Anexo V - RICMS/MT|01012020|02012020
+MT001147|Redução de 58,33% na base de cálculo em operações com mercadorias integrantes da cesta básica. Inciso II, art. 1º Anexo V - RICMS/MT|01012020|02012020
+MT001148|Redução da Base de cálculo do ICMS em 100% do valor das operações internas com produtos com origem nos reinos animal e vegetal predominantemente utilizados na alimentação humana. Art. 2º Anexo V - RICMS/2014.|01012020|31122032
+MT001151|Redução de base de cálculo do ICMS a 50% do valor das operações internas com Leite Pasteurizado destinado a varejistas e consumidores finais. Art. 4º Anexo V -RICMS/2014|01012020|31122032
+MT001154|Redução de base de cálculo a 47,88% do ICMS ST em operações internas com farinha de trigo. Art. 6º Anexo V - RICMS/2014.|01012020|31122032
+MT001155|Redução de base de cálculo a 41,18% do valor da operação no fornecimento de refeições por bares, restaurantes e similares. Art. 7º Anexo V - RICMS/2014.|01012020|31122032
+MT001157|Redução de base de cálculo a 20,60% nas operações internas com água, do o valor da operação com garrafão de 20 litros ou outra forma de envasamento. Art. 11 Anexo V - RICMS-MT|01012020|31122032
+MT001165|Redução de base de cálculo nas entradas interestaduais de mercadorias destinadas a feiras e exposições de produtos artesanais, de forma que a carga tributária seja equivalente a 7,5% do valor da Nota Fiscal. Art. 16 Anexo V - RICMS/2014|01012020|30042026
+MT001165|Redução de base de cálculo nas entradas interestaduais de mercadorias destinadas a feiras e exposições de produtos artesanais, de forma que a carga tributária seja equivalente a 7,5% do valor da Nota Fiscal. Art. 16 Anexo V - RICMS/2014|01052026|30042027
+MT001172|Redução de Base de Cálculo do ICMS a 70,59% nas operações internas e de importação com veículos automotores rodoviários. Art. 22 Anexo V - RICMS/MT.|01012020|30042026
+MT001172|Redução de Base de Cálculo do ICMS a 70,59% nas operações internas e de importação com veículos automotores rodoviários. Art. 22 Anexo V - RICMS/MT.|01052026|31122026
+MT001173|Redução  da base de calculo do ICMS a 16,667% nas operações internas com carnes e miudezas comestíveis das espécies suína, ovina e caprina. Art. 3º-A, I Anexo V - RICMS/MT.|01012020|31122032
+MT001174|Redução de base de cálculo do ICMS a 70,59% em operações nas entradas de veículos automotores novos, inclusive veículos de duas rodas, destinados a contribuinte do imposto, ainda que transportador autônomo, para integração ao ativo fio. Art. 24, § 2º Anexo V - RICMS/MT.|01012020|31122022
+MT001175|Redução de base de cálculo do ICMS a 73,33% nas operações de saída interestaduais com máquinas, aparelhos e equipamentos industriais. Art. 25, I, a, Anexo V -RICMS/MT.|01012020|30042020
+MT001176|Redução de base de cálculo do ICMS a 58,33% nas operações de saída interestaduais com máquinas e implementos agrícolas. Art. 25, I, b, Anexo V - RICMS/MT.|01012020|30042020
+MT001177|Redução de base de cálculo do ICMS a 51,77% nas operações de saída interna com máquinas, aparelhos e equipamentos industriais. Art. 25, II, a, Anexo V - RICMS/MT.|01012020|30042020
+MT001178|Redução de base de cálculo do ICMS a 32,95% nas operações de saída interna com máquinas e implementos agrícolas. Art. 25, II, b Anexo V - RICMS/MT.|01012020|30042020
+MT001179|Redução de base de cálculo do ICMS a 70,59% nas operações internas e interestaduais promovidas por contribuinte mato-grossense, realizadas com máquinas, aparelhos, equipamentos e implementos. Art. 26 Anexo V - RICMS/MT.|01012020|31122032
+MT001189|Redução de base de cálculo do ICMS a 41,18% do valor da respectiva operação, nas operações internas com máquinas e equipamentos rodoviários. Art. 27-A Anexo V - RICMS/MT|01012020|30042026
+MT001189|Redução de base de cálculo do ICMS a 41,18% do valor da respectiva operação, nas operações internas com máquinas e equipamentos rodoviários. Art. 27-A Anexo V - RICMS/MT|01052026|31122026
+MT001192|Redução de base de cálculo do ICMS a 40% nas saídas interestaduais dos produtos arrolados na cláusula primeira do Convênio ICMS 100/97. Art. 30 Anexo V - RICMS/MT.|01012020|30042020
+MT001193|Redução de base de cálculo do ICMS a 70% nas saídas interestaduais dos produtos arrolados na cláusula segunda do Convênio ICMS 100/97. Art. 31 Anexo V - RICMS/MT.|01012020|30042020
+MT001197|Redução de base de cálculo do ICMS a 28% do valor da operação interna com álcool etílico hidratado combustível - AEHC para o estabelecimento industrial inscrito no Cadastro de Contribuintes do Estado. Art. 35 Anexo V - RICMS/MT.|01012020|31072022
+MT001199|Redução de base de cálculo do ICMS a 11,78% do valor da operação nas operações internas e de importação de gás natural destinado ao consumo veicular ou industrial. Art. 38 Anexo V - RICMS/MT.|01012020|31122032
+MT001200|Redução de base de cálculo do ICMS em 50% do valor da operação, nas saídas internas de QAV (querosene de aviação) adquiridas por empresa de aviação aérea regional que possua voos regulares dentro do Estado de Mato Grosso. Art. 39 Anexo V - RICMS/MT.|01012020|02012020
+MT001200|Redução de base de cálculo do ICMS em 28% do valor da operação, nas saídas internas de QAV (querosene de aviação) adquiridas por empresa de aviação aérea regional que possua voos regulares dentro do Estado de Mato Grosso. Art. 39 Anexo V - RICMS/MT.|03012020|30042027
+MT001203|Redução de base de cálculo nas operações internas com discos fonográficos e assemelhados, na proporção do valor dos direitos autorais, artísticos e conexos, comprovadamente pagos a autores e artistas nacionais. Art. 43 Anexo V - RICMS/MT.|01012020|30042020
+MT001207|Redução de Base de cálculo em 100% nas operações com asfaltos modificados, cimento asfáltico, emulsões asfálticas e semelhantes, nas saídas internas. Art. 47 Anexo V - RICMS/MT.|01012020|31122032
+MT001209|Redução de base de cálculo em 100% nas saídas interestaduais dos produtos Para-Xileno (P) e Ácido Tereftálico Purificado (PTA). Art. 49 Anexo v - RICMS/MT|01012020|30042024
+MT001213|Redução de base de cálculo do ICMS a 41,17%, nas saídas internas promovidas por estabelecimentos inscritos no estado, de produtos de informática. Art. 53 Anexo V - RICMS/MT|01012020|30042026
+MT001213|Redução de base de cálculo do ICMS a 41,17%, nas saídas internas promovidas por estabelecimentos inscritos no estado, de produtos de informática. Art. 53 Anexo V - RICMS/MT|01052026|30042027
+MT001214|Redução de base de cálculo do ICMS a 5% nas operações com veículos usados. Art. 54, I Anexo V - RICMS/MT.|01012020|30042026
+MT001214|Redução de base de cálculo do ICMS a 5% nas operações com veículos usados. Art. 54, I Anexo V - RICMS/MT.|01052026|30042027
+MT001215|Redução de base de cálculo do ICMS a 20% nas operações com vestuário, móveis, motores, máquinas e aparelhos. Art. 54, II Anexo V - RICMS/MT.|01012020|30042026
+MT001215|Redução de base de cálculo do ICMS a 20% nas operações com vestuário, móveis, motores, máquinas e aparelhos. Art. 54, II Anexo V - RICMS/MT.|01052026|30042027
+MT001216|Redução de base de cálculo do ICMS a 0% nas operações com veículo automotor pesado, utilizado no transporte de pessoas ou cargas. Art. 54, III Anexo V - RICMS/MT.|01012020|30042026
+MT001216|Redução de base de cálculo do ICMS a 0% nas operações com veículo automotor pesado, utilizado no transporte de pessoas ou cargas. Art. 54, III Anexo V - RICMS/MT.|01052026|30042027
+MT001217|Redução de base de cálculo do ICMS a 0% nas operações com máquinas e implementos agrícolas. Art. 54, IV Anexo V - RICMS/MT.|01012020|30042026
+MT001217|Redução de base de cálculo do ICMS a 0% nas operações com máquinas e implementos agrícolas. Art. 54, IV Anexo V - RICMS/MT.|01052026|30042027
+MT001218|Redução de base de cálculo em 100% do valor da operação, as saídas internas de briquetes, lenha e resíduos de madeira, com destino a consumidor ou usuário final, inclusive pessoa de direito público ou privado não contribuinte.|01012020|30062023
+MT001225|Redução de base de cálculo do ICMS a 33,333% do valor das prestações de serviço de radiochamada.  Art. 66 Anexo V - RICMS/MT.|01012020|30062023
+MT001226|Redução de base de cálculo do ICMS a 16,666% do valor das prestações onerosa de serviço de comunicação, na modalidade de monitoramento e rastreamento de veículos e cargas.  Art. 68 Anexo V - RICMS/MT.|01012020|30062023
+MT001227|Prodeic Investe Confecção Mato Grosso - Redução de Base de Cálculo|01012020|31122032
+MT001228|Prodeic Investe Couro Mato Grosso - Redução de Base de Cálculo|01012020|31122032
+MT001229|Prodeic Investe Energias Renováveis  - Redução de Base de Cálculo|01012020|31122032
+MT001230|Prodeic Investe Frigoríficos de Suínos   - Redução de Base de Cálculo|01012020|31122032
+MT001231|Prodeic Investe Artigos Ópticos  - Redução de Base de Cálculo|01012020|31122032
+MT001232|Prodeic Investe Indústria Alimentícia de Origem Vegetal e Animal  - Redução de Base de Cálculo|01012020|31122032
+MT001233|Prodeic Investe Indústria de Máquinas, Equipamentos Industriais e Produtos para Transporte  - Redução de Base de Cálculo|01012020|31122032
+MT001234|Prodeic Investe Indústria de Produtos de Borracha e de Material Plástico  - Redução de Base de Cálculo|01012020|31122032
+MT001235|Prodeic Investe Indústria Metalmecânica  - Redução de Base de Cálculo|01012020|31122032
+MT001236|Prodeic Investe Indústria Bebidas  - Redução de Base de Cálculo|01012020|31122032
+MT001237|Prodeic Investe Industria Produtos Químicos  - Redução de Base de Cálculo|01012020|31122032
+MT001238|Prodeic Investe Laticínios Mato Grosso - Redução de Base de Cálculo|01012020|31122032
+MT001239|Prodeic Investe Madeira Mato Grosso - Redução de Base de Cálculo|01012020|31122032
+MT001240|Prodeic Investe Trigo Mato Grosso - Redução de Base de Cálculo|01012020|31122032
+MT001241|Prodeic Investe Mineração Mato Grosso  - Redução de Base de Cálculo|01012020|31122032
+MT001242|Prodeic Investe Mato Grosso Biocombustíveis -Redução de Base de Cálculo|01012020|31122032
+MT001243|Prodeic Investe Mato Grosso Reciclagem- -Redução de Base de Cálculo|01012020|31122032
+MT001244|Redução  da base de calculo do ICMS a 16,667% nas operações internas com aves abatidas, suas carnes e miudezas comestíveis. Art. 3º-A, II Anexo V - RICMS/MT.|01012020|02012020
+MT001244|Proalmat - Redução de Base de Cálculo - Algodão em Pluma|03012020|04012020
+MT001244|Redução  da base de calculo do ICMS a 16,667% nas operações internas com aves abatidas, suas carnes e miudezas comestíveis. Art. 3º-A, II Anexo V - RICMS/MT.|05012020|31122032
+MT001245|Redução  da base de calculo do ICMS a 16,667% nas operações internas com carnes e miudezas comestíveis, frescas, refrigeradas ou congeladas, bem como charque, carne cozida enlatada e cornedbeef, das espécies bovina e bufalina. Art. 3º-A, III Anexo V - RICMS/MT.|01012020|31122032
+MT001246|Isenção - Art. 44 - Anexo IV - RICMS/MT|01012020|02012020
+MT001246|Proalmat - Redução de Base de Cálculo - Algodão em Pluma|03012020|31122025
+MT001254|Redução de base de cálculo - Art. 40-A - Anexo V - RICMS/MT|01012020|31052024
+MT001255|Redução de base de cálculo - Art. 40-B - Anexo V - RICMS/MT|01012020|31052024
+MT001256|Redução de base de cálculo - Art. 14-A - Anexo V - RICMS/MT|01012020|02012020
+MT001260|Redução  da base de calculo do ICMS a 16,667% nas operações internas com aves abatidas, suas carnes e miudezas comestíveis. Art. 3º-A, II Anexo V - RICMS/MT.|01012020|02012020
+MT001261|Redução de base de cálculo - Programa de Apoio ao Comércio Exterior no Estado de MT  COMEX/MT, nos termos do art. 6º, I, Anexo XIX  RICMS/MT|01022020|31122032
+MT001262|Redução de base de cálculo - Programa de Apoio ao Comércio Exterior no Estado de MT  COMEX/MT, nos termos do art. 6º, II, Anexo XIX  RICMS/MT|01022020|31122032
+MT001264|Prodeic Investe Cervejas e Chopes Artesanais - Op interna -Redução de Base de Cálculo|01012020|31122032
+MT001265|Redução de base de cálculo (20%) - Programa VOE MT. Art 4º, I da Lei 10.395/2016|01012020|31032025
+MT001266|Redução de base de cálculo (50%) - Programa VOE MT. Art 4º, II da Lei 10.395/2016|01012020|31032025
+MT001267|Redução de base de cálculo (60%) - Programa VOE MT. Art 4º, III da Lei 10.395/2016|01012020|31032025
+MT001268|Redução de base de cálculo (72%) - Programa VOE MT. Art 4º, IV da Lei 10.395/2016|01012020|31032025
+MT001269|Redução de base de cálculo (84%) - Programa VOE MT. Art 4º, V da Lei 10.395/2016|01012020|31032025
+MT110001|Débito Quitado Serve para os casos em que a NF já possui recolhimento antecipado|01042013|31122019
+MT110002|Débito Já Lançado em TAD Serve para os casos em que a NF já lançada via Termo de Apreensão (TAD) e foi lançada novamente no DAR de Lançamento do ICMS|01042013|31122019
+MT110003|Lançamento em Duplicidade Serve para os casos em que a NF foi lançada  em outro instrumento constitutivo|01042013|31122019
+MT110004|Mercadoria Isenta / Imunidade Serve para os casos de NF com mercadorias Isentas ou Imunes|01042013|31122019
+MT110005|Devolução, remessa ou retorno para conserto, substituição em garantia, remessa por conta e ordem, remessa para industrialização. Serve para os casos em que a NF tenha as seguintes naturezas de operações:|01042013|31122019
+MT110006|Mercadorias destinadas à demonstração, mercadorias destinadas a mostruário, mercadorias remetidas para treinamento, remessa em consignação mercantil, arrendamento mercantil (leasing), empréstimo e locação ou  comodato. Devolução  Remessa ou retorno para conserto Substituição em garantia Remessa por conta e ordem Remessa para industrialização.|01042013|31122019
+MT110007|Remetente da mercadoria credenciado como substituto tributário junto à Secretaria de Estado de Fazenda de Mato Grosso Serve para os casos em que fornecedor seja credenciado como substituto tributário junto à SEFAZ e tenha recolhido o ICMS-ST em sua apuração mensal|01042013|31122019
+MT110008|SOMENTE PARA DÉBITOS DE ESTIMATIVA SIMPLIFICADA - Operações com veículos automotores novos, bem como com os semirreboques arrolados no inciso II do § 1° do artigo 19 do Anexo VIII deste regulamento (efeitos a partir de 1° de agosto de 2012) Conforme Inciso I do § 2°, Art. 87-J-6/RICMS|01042013|31122019
+MT110009|SOMENTE PARA DÉBITOS DE ESTIMATIVA SIMPLIFICADA - Operações com bebidas alcoólicas, inclusive cerveja e chope  Conforme Inciso II do § 2°, Art. 87-J-6/RICMS|01042013|31122019
+MT110010|SOMENTE PARA DÉBITOS DE ESTIMATIVA SIMPLIFICADA - Operações com cigarros, fumo e seus derivados Conforme Inciso III do § 2°, Art. 87-J-6/RICMS|01042013|31122019
+MT110011|SOMENTE PARA DÉBITOS DE ESTIMATIVA SIMPLIFICADA - Operações com combustíveis arrolados nos incisos do caput do artigo 297 das disposições permanentes e com biodiesel  B100  Conforme Inciso IV do § 2°, Art. 87-J-6/RICMS|01042013|31122019
+MT110012|SOMENTE PARA DÉBITOS DE ESTIMATIVA SIMPLIFICADA - Operações com energia elétrica Conforme Inciso V do § 2°, Art. 87-J-6/RICMS|01042013|31122019
+MT110013|SOMENTE PARA DÉBITOS DE ESTIMATIVA SIMPLIFICADA - Saídas de produtos integrantes da cesta básica, arroladas no artigo 7° do Anexo VIII deste Regulamento, do estabelecimento industrial mato-grossense onde foram produzidos. Conforme Inciso VI do § 2°, Art. 87-J-6/RICMS|01042013|31122019
+MT110014|CONTRIBUINTES DO SIMPLES NACIONAL  diferença cobrada acima dos 7,5% do valor da operação, com mercadorias destinadas a revenda ou a emprego em processo industrial, após o acréscimo ao valor total exarado na Nota. NÃO SE ENQUADRAM PRODUTOS DE SUBSTITUIÇÃO TRIBUTÁRIA! Conforme Inciso I do artigo 47 do Anexo V III/RICMS|01042013|31122019
+MT110015|CONTRIBUINTES DO SIMPLES NACIONAL - diferença cobrada acima dos 4,0% do valor total da Nota Fiscal de aquisição em relação aos bens e mercadorias destinados à integração ao ativo permanente ou ao uso e consumo do estabelecimento Conforme Inciso II do Art. 47 do Anexo VIII/RICMS, Informar somente a diferença a ser ajustada a ser creditada.|01042013|31102015
+MT110016|CONTRIBUINTES DO SEGMENTO DE MATERIAL DE CONSTRUÇÃO - diferença cobrada acima dos 10,15% do valor total da Nota Fiscal de aquisição, recolhida previamente ao início da remessa do bem ou mercadoria Conforme Inciso II do Art. 50 do Anexo VIII/RICMS, Informar somente a diferença a ser ajustada a ser creditada|01042013|31122019
+MT110017|"CONTRIBUINTES DO FUPIS Lançamento Indevido para a NF de entrada de bem ou mercadoria, originários de outra unidade da Federação, cuja tributação ocorrer com a alíquota fixada para operação destinada a consumidor final;"|01042013|31122019
+MT110018|CONTRIBUINTES OPTANTES PELO FUPIS Lançamento indevido para a Nota Fiscal de entrada de bem ou mercadoria, em operação tributada pelo regime de substituição tributária, cujo ICMS devido ao Estado de Mato Grosso tenha sido retido pelo remetente|01042013|31122019
+MT110019|CONTRIBUINTES DO FUPIS Lançamento Indevido para a NF de entrada de bem ou mercadoria, em operação tributada pelo regime de substituição tributária, cujo ICMS devido ao Estado de Mato Grosso tenha sido retido pelo remetente|01042013|01042013
+MT110020|FUNDO ESTADUAL DE COMBATE E ERRADICAÇÃO DA POBREZA Empresa já solicitou exclusão do regime de lançamento de Oficio do Fundo Estadual de Combate e Erradicação da Pobreza (Obrigatório informar o número do processo no qual foi concedida a exclusão do art. 87-J-9-1, §5º.)|01042013|31122019
+MT110021|FUNDO ESTADUAL DE COMBATE E ERRADICAÇÃO DA POBREZA Empresa optante pelo SIMPLES NACIONAL, com lançamento relativo ao FECEP em percentual superior ao limite fixado no §6º do art. 47 do Anexo VIII do RICMS|01042013|31122019
+MT110022|FUNDO ESTADUAL DE COMBATE E ERRADICAÇÃO DA POBREZA Empresa com CNAE principal excluído do FECEP (ex.: vestuário)|01042013|31122019

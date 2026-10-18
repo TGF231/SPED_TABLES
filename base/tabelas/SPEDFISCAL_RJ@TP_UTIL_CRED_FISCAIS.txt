@@ -1,0 +1,60 @@
+versão=21 TIPO_UTIL, DESC_TIPO, DT_INI, DT_FIM
+RJ01|Dedução|01012009|30042014
+RJ01|Utilização do Próprio para pagamento de Auto de Infração|01052014|30042019
+RJ02|Utilização do Próprio para pagamento de Dívida Ativa|01052014|30062017
+RJ03|Utilização do Próprio para pagamento de Parcelamento|01052014|30042019
+RJ04|Utilização do Próprio para pagamento de ICMS de Importação|01052014|30042019
+RJ05|Utilização do Próprio para pagamento de Sucata em geral|01052014|30042019
+RJ06|Utilização do Próprio na Apuração Normal|01062014|30042019
+RJ10|Compensações entre estabelecimentos para utilização na  Apuração Normal|01052014|30042019
+RJ11|Transferência entre estabelecimentos do mesmo sujeito passivo para pagamento de Auto de Infração|01052014|30042019
+RJ12|Transferência entre estabelecimentos do mesmo sujeito passivo para pagamento de Débito Inscrito em Dívida Ativa|01052014|01052014
+RJ13|Transferência entre estabelecimentos do mesmo sujeito passivo para pagamento de Parcelamento|01052014|30042019
+RJ14|Transferência entre estabelecimentos do mesmo sujeito passivo para pagamento de Importação|01052014|30042019
+RJ15|Transferência entre estabelecimentos do mesmo sujeito passivo para pagamento de Sucata em geral|01052014|30042019
+RJ20|Transferência para terceiros para utilização na Apuração Normal|01052014|30042019
+RJ21|Compensação|01012009|30042014
+RJ21|Transferência para terceiros para pagamento de Auto de Infração|01052014|30042019
+RJ22|Transferência para terceiros para pagamento de Débito Inscrito em Dívida Ativa|01052014|01052014
+RJ23|Transferência para terceiros para pagamento de Parcelamento|01052014|30042019
+RJ24|Transferência para terceiros para pagamento de ICMS de Importação|01052014|30042019
+RJ25|Transferência para terceiros para pagamento de Sucata em geral|01052014|30042019
+RJ30|Baixa de Provisão por indeferimento|01052014|30042019
+RJ31|Baixa de Provisão por desistência|01052014|30042019
+RJ32|Utilização da provisão para Uso Próprio|01052014|30042019
+RJ33|Utilização da provisão para Transferência para Terceiros|01052014|30042019
+RJ41|Transferência|01012009|30042014
+RJ61|Restituição|01012009|30042014
+RJ81|Estorno|01012009|30042014
+RJ99|Outros|01012009|30042014
+RJ99|Provisão para Uso Próprio e para Terceiros|01052014|30042019
+RJ00|Controle - Utilização do saldo credor acumulado na apuração regular pela sistemática de débitos e créditos|01052019|
+RJ01|Controle - Compensação de saldo credor e devedor entre estabelecimentos da empresa|01052019|
+RJ02|Controle - Aproveitamento do saldo credor acumulado para pagamento de ICMS devido em operação de importação|01052019|
+RJ03|Controle - Transferência do saldo credor acumulado entre estabelecimentos da empresa para pagamento de ICMS devido na importação|01052019|
+RJ04|Controle - Aproveitamento do saldo credor acumulado para pagamento do ICMS devido em operação de aquisição de sucata|01052019|
+RJ05|Controle - Transferência do saldo credor acumulado para estabelecimentos da empresa para pagamento do ICMS devido em operação de aquisição de sucata|01052019|
+RJ06|Controle - Aproveitamento do saldo credor acumulado para pagamento de créditos tributários objeto de auto de infração, nota de lançamento, nota de débito ou parcelamento|01052019|
+RJ07|Controle - Transferência de saldo credor acumulado para terceiros na aquisição de insumos, mercadorias ou bens do ativo permanente|01052019|
+RJ08|Controle - Utilização do valor remanescente do saldo credor recebido em transferência que extrapolou o limite legal de utilização mensal em períodos anteriores|01052019|
+RJ09|Controle - Transferência de saldo credor em função de incentivo fiscal listado no manual de que trata o Decreto 27.815/2001|01052019|
+RJ17|Controle - Reserva de saldo credor acumulado de exportação para aproveitamento da empresa|01052019|
+RJ18|Controle - Reserva de saldo credor acumulado de exportação para transferência|01052019|
+RJ19|Controle - Reserva de saldo credor acumulado por estabelecimento industrial para aproveitamento da empresa|01052019|
+RJ20|Controle - Reserva de saldo credor acumulado por estabelecimento industrial para transferência|01052019|
+RJ29|Controle - Cancelamento da reserva de saldo credor acumulado por desistência ou indeferimento do pedido|01052019|
+RJ30|Controle - Utilização do crédito para compensação com débitos próprios -  Convênio ICMS nº 206/21|01012022|31072022
+RJ30|Controle - Utilização do crédito para compensação com débitos próprios -  Convênio ICMS nº 206/21|01082022|
+RJ31|Controle - Utilização para ressarcimento de terceiros - Convênio ICMS nº 206/21|01012022|31072022
+RJ31|Controle - Utilização para ressarcimento de terceiros - Convênio ICMS nº 206/21|01082022|
+RJ32|Controle - Utilização do crédito para compensação com débitos próprios  Art. 4º, § 3º, V, da Resolução SEFAZ n° 578/23|01012024|
+RJ33|Controle - Utilização do crédito para compensação com outros estabelecimentos da mesma sociedade  Art. 5º, § 2º, V, da Resolução SEFAZ n° 578/23|01012024|
+RJ34|Controle - Transferência do crédito presumido concedido ao distribuidor pelo Convênio ICMS 21/2023|01052023|
+RJ35|Controle - Transferência do crédito presumido concedido ao distribuidor pelo Convênio ICMS 63/2023|01052023|
+RJ36|Controle - Transferência do crédito presumido concedido ao distribuidor pelo Convênio ICMS 29/2023|01092023|
+RJ37|Controle - Transferência do crédito presumido concedido ao distribuidor pelo Convênio ICMS 27/2023|01052023|
+RJ38|Controle - Utilização do crédito transferido ao distribuidor de combustíveis - Decreto 48.486/2023|02102025|
+RJ50|Liberação pecuniária de crédito com recursos do FUNDES|01062017|
+RJ51|Compensação do ICMS em função de recursos não repassados do FUNDES|01062017|
+RJ52|Baixa de saldo remanescente do FUNDES por rescisão contratual ou término do prazo para sua utilização|01062017|
+RJ53|Compensação do ICMS por filial em função de recursos não repassados do FUNDES|01072017|

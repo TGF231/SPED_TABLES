@@ -1,0 +1,11 @@
+versão=1 TIPO_UTIL, DESC_TIPO, DT_INI, DT_FIM
+AP01|Dedução|01012009|
+AP02|Utilização de crédito para abatimento de saldo devedor, limitado a 30%|01022017|
+AP03|Utilização de crédito limitado para abatimento de saldo devedor|01022017|
+AP21|Compensação|01012009|
+AP41|Transferência|01012009|
+AP42|Crédito transferido para estabelecimento de mesma titularidade situado no Estado|01022017|
+AP43|Crédito transferido para outro contribuinte amapaense|01022017|
+AP61|Restituição|01012009|
+AP81|Estorno|01012009|
+AP99|Outros|01012009|

@@ -1,0 +1,6 @@
+versão=2 COD_AJUSTE, DESCRICAO, DT_INI, DT_FIM
+10|ICMS a Recolher - Operações Próprias (E110)|01012018|
+11|ICMS a Recolher - Substituição Tributária (E210)|01012018|
+12|ICMS a Recolher - Diferencial de Alíquota (E310)|01012018|
+20|ISSQN|01012018|
+99|Outros|01012018|

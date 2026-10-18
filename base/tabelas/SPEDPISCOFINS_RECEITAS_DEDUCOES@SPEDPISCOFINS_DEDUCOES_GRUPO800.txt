@@ -1,0 +1,7 @@
+versão=2 CODIGO, DESCRICAO, DT_INI, DT_FIM, IND_ATIV, IND_AJUSTE, GRUPO, SUBGRUPO, IND_OUTROS
+D0801010|Despesas de Captação de recursos para a Securitização de Créditos Imobiliários|01012014||01;06|P|800|D0801|N
+D0802010|Despesas de Captação de recursos para a Securitização de Créditos Financeiros|01012014||01;06|P|800|D0802|N
+D0803010|Despesas de Captação de recursos para a Securitização de Créditos Agrícolas|01012014||01;06|P|800|D0803|N
+D0804010|Despesas de Captação de recursos para a Securitização de Créditos|04082022||01;06|P|800|D0804|N
+D0898010|Ajustes Negativos das deduções e exclusões de caráter específico|01012014||01;06|N|800|D0898|N
+D0899010|Ajustes Positivos das deduções e exclusões de caráter específico|01012014||01;06|P|800|D0803|N

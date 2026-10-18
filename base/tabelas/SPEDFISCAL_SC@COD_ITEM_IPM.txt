@@ -1,0 +1,27 @@
+versão=7 COD_IPM, DESC_COD, DT_INI, DT_FIM
+01|Extração mineral do subsolo realizada em unidades de exploração da própria empresa quando o minério ou a boca da mina se localizarem em município diverso da sede do estabelecimento do contribuinte|01012020|31032024
+02|Transferências recebidas de estabelecimento do mesmo titular a preço de venda a varejo|01012020|31032024
+03|Transferências enviadas a estabelecimento do mesmo titular a preço de venda a varejo|01012020|31032024
+04|Subsídios concedidos por órgãos dos governos federal, estadual ou municipal, sobre entradas|01012020|
+05|Saída de mercadoria realizada pelo sistema de marketing direto e que destine mercadorias a revendedores que operem na modalidade de venda porta-a- porta|01012020|31032024
+06|Saída de mercadoria realizada por estabelecimento diverso daquele no qual as transações foram efetivadas, desde que:a) ambos estejam localizados no território catarinense, eb) o estabelecimento onde ocorreu a efetiva venda não tenha emitido a NF-e da venda.|01012020|
+07|Saída de mercadorias ao varejo realizada através de entreposto ou posto de abastecimento, situados no Estado (Exige TTD)|01012020|
+08|Saída de partes e peças de um todo realizada por detentor de TTD (Tratamento Tributário Diferenciado código 998) autorizando lançar a operação nos CFOP 5.949 ou 6.949 e desde que a posterior transmissão de propriedade do produto final seja lançada nos CFOP 5.116, 5.117, 6.116 ou 6.117.|01012020|
+09|Saída para informar a transmissão da propriedade de parte ou do todo realizada por detentor de TTD (998) autorizando lançar a operação no CFOP 5.116, 5.117, 6.116 ou6.117, relativo as saídas das partes e peças anteriormente registradas nos CFOP 5.949 ou 6949.|01012020|
+10|Entrada na Trading de mercadoria importada por conta e ordem de terceiros e registrada nos CFOP 1949, 2949, 3949 edesde que não registrada nos CFOP 1101, 1102, 2101, 2102,3101 ou 3102 e não se trate de simples remessa, devolução, retorno ou anulações. (É Exigido TTD 998)|01012020|
+11|Saída da Trading de mercadoria importada por conta e ordem de terceiros com destino ao adquirente e registrada nos CFOP 5949 ou 6949 e desde que não registradas nos CFOP  5101, 5102, 6101, 6102 e não se trate de simples remessa, devolução, retorno ou anulações.  (É Exigido TTD 998)|01012020|
+12|Exportação de produtos recebidos em transferência ou para fim específico de exportação a preço inferior ao da efetiva exportação, nos termos do disposto no art. 10-B do RICMS-SC.|01012020|
+13|Exportação de produtos através de estabelecimento do mesmo titular localizado em outra UF, desde que o produto tenha sido transferido para a unidade exportadora a preço inferior ao da efetiva exportação, nos termos do disposto no art. 10-C do RICMS-SC.|01012020|31032024
+14|Geração de Energia Elétrica por fonte Hidráulica|01012020|31032024
+15|Venda de energia elétrica adquirida de terceiros, realizada por estabelecimento gerador de energia elétrica por fonte hidráulica|01012020|31032024
+16|Entrada da energia elétrica em estabelecimento gerador de energia elétrica por fonte hidráulica adquirida de terceiros, para comercialização.|01012020|31032024
+17|Índice de rateio do Valor Adicionado (VA) decorrente de Convenio ou Acordo entre municípios, mesmo que por ordem judicial.|01012020|
+18|Prestação de serviço de telecomunicações, exceto os serviços previstos no art. 91 do Anexo 6 do RICMS/SC-01.|01012024|
+19|Venda de energia elétrica por não distribuidor a consumidor independente, inclusive da parcela relativa à demanda contratada.|01012024|
+20|Distribuição de energia elétrica a consumidor pessoa física ou jurídica, inclusive a consumidor independente, também da demanda contratada.|01012024|
+21|Fornecimento de gás natural.|01012024|
+22|Fornecimento de alimentos preparados (CNAE 5620101).|01012024|
+23|Prestação de serviço de transporte de passageiros.|01012024|
+24|Produção ou extração primária própria acobertada por nota fiscal de transferência CFOP 1101 ou 1102 (Exige TTD).|01012024|30042024
+25|Compra de insumos utilizados na prestação de serviço sujeito exclusivamente ao ISS, quando não especificados com os CFOP 1.933, 2.933, 1.128, 2.128 e 3.128.|01012024|
+26|Produção ou extração primária própria acobertada por nota fiscal de transferência CFOP 1151 ou 1152 (Exige TTD).|01012024|

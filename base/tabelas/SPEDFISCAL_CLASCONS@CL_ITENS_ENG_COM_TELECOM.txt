@@ -1,0 +1,91 @@
+versão=3 COD_CLASS, DESC_AJUR, DT_INI, DT_FIM
+0101|Assinatura de serviços de telefonia|01012009|
+0102|Assinatura de serviços de comunicação de dados|01012009|
+0103|Assinatura de serviços de TV por Assinatura|01012009|
+0104|Assinatura de serviços de provimento à internet|01012009|
+0105|Assinatura de outros serviços de multimídia|01012009|
+0199|Assinatura de outros serviços|01012009|
+0201|Habilitação de serviços de telefonia|01012009|
+0202|Habilitação de serviços de comunicação de dados|01012009|
+0203|Habilitação de TV por Assinatura|01012009|
+0204|Habilitação de serviços de provimento à internet|01012009|
+0205|Habilitação de outros serviços multimídia|01012009|
+0299|Habilitação de outros serviços|01012009|
+0301|Serviço Medido - chamadas locais|01012009|
+0302|Serviço Medido - chamadas interurbanas no Estado|01012009|
+0303|Serviço Medido - chamadas interurbanas para fora do Estado|01012009|
+0304|Serviço Medido - chamadas internacionais|01012009|
+0305|Serviço Medido - Números Especiais (0300/0500/0600/0800/etc.)|01012009|
+0306|Serviço Medido - comunicação de dados|01012009|
+0307|Serviço Medido - chamadas originadas em Roaming|01012009|
+0308|Serviço Medido - chamadas recebidas em Roaming|01012009|
+0309|Serviço Medido - adicional de chamada|01012009|
+0310|Serviço Medido - provimento de acesso à Internet|01012009|
+0311|Serviço Medido - pay-per-view (programação TV)|01012009|
+0312|Serviço Medido - Mensagem SMS|01012009|
+0313|Serviço Medido - Mensagem MMS|01012009|
+0314|Serviço Medido - outros mensagens|01012009|
+0315|Serviço Medido - serviço multimídia|01012009|
+0399|Serviço Medido - outros serviços|01012009|
+0401|Cartão Telefônico - Telefonia Fixa|01012009|
+0402|Cartão Telefônico - Telefonia Móvel|01012009|
+0403|Cartão de Provimento de acesso à internet|01012009|
+0404|Ficha Telefônica|01012009|
+0405|Recarga de Créditos - Telefonia Fixa|01012009|
+0406|Recarga de Créditos - Telefonia Móvel|01012009|
+0407|Recarga de Créditos - Provimento de acesso à Internet|01012009|
+0499|Outras cobranças realizadas de assinantes de plano serviço pré-pago|01012009|
+0501|Serviço Adicional (substituição de número, troca de aparelho, emissão de 2ª via de conta, conta detalhada, etc.)|01012009|
+0502|Serviço Facilidades (identificador de chamadas, caixa postal, transferência temporária, não-perturbe, etc.)|01012009|
+0599|Outros Serviços|01012009|
+0601|Energia Elétrica - Consumo|01012009|
+0602|Energia Elétrica - Demanda|01012009|
+0603|Energia Elétrica - Serviços (Vistoria de unidade consumidora, Aferição de Medidor, Ligação, Religação, Troca de medidor, etc.)|01012009|
+0604|Energia Elétrica - Encargos Emergenciais|01012009|
+0605|Tarifa de Uso dos Sistemas de Distribuição de Energia Elétrica - TUSD - Consumidor Cativo|01012009|
+0606|Tarifa de Uso dos Sistemas de Distribuição de Energia Elétrica - TUSD - Consumidor Livre|01012009|
+0607|Encargos de Conexão|01012009|
+0608|Tarifa de Uso dos Sistemas de Transmissão de Energia Elétrica - TUST - Consumidor Cativo|01012009|
+0609|Tarifa de Uso dos Sistemas de Transmissão de Energia Elétrica - TUST - Consumidor Livre|01012009|
+0610|Subvenção econômica para consumidores da subclasse "baixa renda"|01012009|
+0699|Energia Elétrica - Outros|01012009|
+0701|de Aparelho Telefônico|01012009|
+0702|de Aparelho Identificador de chamadas|01012009|
+0703|de Modem|01012009|
+0704|de Rack|01012009|
+0705|de Sala/Recinto|01012009|
+0706|de Roteador|01012009|
+0707|de Servidor|01012009|
+0708|de Multiplexador|01012009|
+0709|de Decodificador/Conversor|01012009|
+0799|Outras disponibilizações|01012009|
+0801|Cobrança de Serviços de Terceiros|01012009|
+0802|Cobrança de Seguros|01012009|
+0803|Cobrança de Financiamento de Aparelho/Serviços|01012009|
+0804|Cobrança de Juros de Mora|01012009|
+0805|Cobrança de Multa de Mora|01012009|
+0806|Cobrança de Conta de meses anteriores|01012009|
+0807|Cobrança de Taxa Iluminação Pública|01012009|
+0808|Retenção de ICMS-ST|01012009|
+0899|Outras Cobranças|01012009|
+0901|Dedução relativa a impugnação de serviços|01012009|
+0902|Dedução referente ajuste de conta|01012009|
+0903|Redutor  Energia Elétrica - In Nº 306/2003(PIS/COFINS/IRPJ/CSLL)|01012009|
+0904|Dedução relativa à multa pela interrupção de fornecimento|01012009|
+0905|Dedução relativa à distribuição de dividendos Eletrobrás|01012009|
+0906|Dedução relativa à subvenção econômica para consumidores da subclasse "baixa renda"|01012009|
+0999|Outras deduções|01012009|
+1001|Serviço não medido de serviços de telefonia|01012009|
+1002|Serviço não medido de serviços de comunicação de dados|01012009|
+1003|Serviço não medido de serviços de TV por Assinatura|01012009|
+1004|Serviço não medido de serviços de provimento à internet|01012009|
+1005|Serviço não medido de outros serviços de multimídia|01012009|
+1099|Serviço não medido de outros serviços|01012009|
+1101|Interconexão: Detraf, SMS, MMS|01012009|
+1102|Detrat, Transmissão|01012009|
+1103|Roaming|01012009|
+1104|Exploração Industrial de Linha Dedicada - EILD|01012009|
+1199|Outras Cessões de Meios de Rede|01012009|
+1105|Lançamento de ICMS proporcional às saídas isentas, não tributadas ou com redução de base de cálculo (§ 1º, Cláusula terceira, Convênio ICMS 17/2013)|12042013|
+1106|Lançamento de ICMS proporcional às cessões de meio destinadas a consumo próprio (§ 1º Cláusula terceira, Convênio ICMS 17/2013)|12042013|
+1107|Lançamento de ICMS complementar, na condição de responsável tributário (§ 2º, Cláusula terceira, Convênio 17/2013)|12042013|

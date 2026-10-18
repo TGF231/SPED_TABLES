@@ -1,0 +1,333 @@
+versão=66 COD_AJ, DESC_AJ, DT_INI, DT_FIM
+SC00000001|Crédito do ICMS de mercadoria sujeita à substituição tributária|01012009|
+SC00000999|Outros ajustes de créditos por entradas|01012009|
+SC00003002|Crédito na aquisição de energia elétrica por prestador de serviço de telecomunicações.|01012009|31122009
+SC00003003|Crédito proporcional da energia elétrica com base em laudo técnico|01012009|31122009
+SC10000001|Crédito presumido às distribuidoras de filmes, nas saídas de filmes gravados.|01012009|
+SC10000002|Crédito presumido à indústria farmacoquímica.|01012009|
+SC10000003|Crédito presumido ao beneficiador na saída de arroz beneficiado.|01012009|
+SC10000004|Crédito presumido ao fabricante enquadrado no Pró-Emprego nas saídas de produtos derivados de aves domésticas.|01012009|
+SC10000005|Crédito presumido ao fabricante na saída de farinha de trigo e mistura para a preparação de pães.|01012009|
+SC10000006|Crédito presumido ao fabricante na saída de leite e derivados.|01012009|31082022
+SC10000007|Crédito presumido ao fabricante nas operações próprias com sacos de papel.|01062020|
+SC10000007|Crédito presumido ao fabricante nas operações próprias com sacos de papel.|01012009|31122019
+SC10000008|Crédito presumido ao fabricante nas saídas de leite em pó.|01012009|28022025
+SC10000008|Crédito Presumido ao fabricante estabelecido neste Estado, nas saídas interestaduais de leite em pó previstas no inciso XVII do art. 15 do Anexo 2 do RICMS/SC-01.|01032025|
+SC10000009|Crédito presumido ao fabricante nas saídas internas de café torrado em grão ou moído, vinho ou açúcar.|01012009|31122019
+SC10000010|Crédito presumido ao industrial, nas saídas de massas alimentícias, biscoitos e bolachas.|01012009|
+SC10000011|Crédito presumido na saída de cevada, malte, lúpulo e cobre, importados do exterior.|01012009|31122019
+SC10000012|Crédito presumido na saída de feijão.|01012009|
+SC10000013|Crédito presumido na saída de mercadorias importadas do exterior.|01012009|31122019
+SC10000014|Crédito presumido na saída de pneus novos importados.|01012009|31122019
+SC10000015|Crédito presumido na saída de produtos da indústria de automação, informática e telecomunicações.|01012009|31122019
+SC10000016|Crédito presumido na saída interna de adesivo hidroxilado resultante de garrafa PET.|01012009|
+SC10000017|Crédito presumido na saída interna de bolachas e biscoitos.|01012009|
+SC10000018|Crédito presumido na saída posterior à importação, para que a alíquota resulte em 3% (Pró-Emprego)|01012009|31122019
+SC10000019|Crédito presumido nas saídas de peixes, crustáceos ou moluscos.|01012009|30042022
+SC10000020|Crédito referente a exclusão do acréscimo financeiro da BC do ICMS|01012009|31122019
+SC10000022|Crédito na venda de automóvel com isenção à deficiente físico, em que o ICMS foi anteriormente retido por substituição tributária|01012009|31102024
+SC10000023|Crédito na venda de mercadoria sujeita a substituição tributária para órgão publico com isenção|01012009|31122019
+SC10000024|Crédito presumido à empresa que produzir produto sem similar catarinense (Pró-Emprego).|01012009|31082023
+SC10000025|Crédito presumido à indústria produtora de bens e serviços de informática.|01012009|
+SC10000026|Crédito presumido na saída do importador de bens e serviços de informática.|01012009|31122019
+SC10000027|Crédito presumido ao atacadista de medicamentos na entrada de produtos farmacêuticos.|01012009|31122019
+SC10000028|Crédito presumido ao estabelecimento industrial na entrada de chapas finas a frio, zincadas e aço inox.|01012009|31052022
+SC10000029|Crédito presumido ao estabelecimento industrial nas saídas de câmaras frigoríficas para caminhões (PRO-CARGAS).|01012009|
+SC10000030|Crédito de ICMS proporcional da mercadoria recebida com substituição tributária, quando efetuada nova saída interestadual|01012017|31012019
+SC10000030|Crédito proporcional a mercadoria recebida com substituição tributária, quando efetuada nova retenção.|01012009|31122016
+SC10000031|Crédito remanescente na transferência de bens do ativo permanente para outro estabelecimento do mesmo titular.|01012009|31122024
+SC10000032|Crédito proporcional à mercadoria devolvida, cujo imposto foi recolhido no ingresso da mercadoria no regime da substituição tributária|01012009|
+SC10000033|Crédito presumido na saída de artigos têxteis, de vestuário, artefatos de couro e seus acessórios promovidas por estabelecimento industrial|01012009|31072024
+SC10000034|Crédito por aquisição de empresa do Simples Nacional|01012010|31052022
+SC10000035|Ressarcimento de ICMS ST decorrente de venda para empresa do Simples Nacional|01012017|31012019
+SC10000036|Crédito do ICMS próprio proporcional a mercadoria recebida com substituição tributária, quando efetuada nova saída interestadual|01012017|
+SC10000037|Crédito imposto retido recolhido conforme art. 21, § 4º e 22 do Anexo 3 no caso de devolução de aquisição de mercadoria adquirida no regime de substituição tributária|01122018|
+SC10000038|Crédito Presumido - Fabricante. Na saída de biodiesel|01012020|30062023
+SC10000039|Crédito Presumido - Remetente. Na saída interestadual de madeira serrada em bruto ou beneficiada, oriundas de reflorestamento.|01012020|
+SC10000040|Crédito Presumido - Fabricante. Na saída interestadual de erva-mate beneficiada em embalagem de 1 Kg|01012020|
+SC10000041|Crédito Presumido - Fabricante. Na saída de bens e serviços de informática que NÃO atendam a Lei Federal nº 8248/91|01012020|
+SC10000042|Crédito Presumido - Importador. Na saída de produtos acabados de informática importados do exterior|01012020|
+SC10000043|Crédito Presumido - Beneficiário Regime Especial. Lei 10297/96, Art.43. Nas hipóteses do TTD 373|01012020|31102020
+SC10000044|Crédito Presumido - Fabricante. Na saída de Artigos têxteis, de vestuário e de artefatos de couro e seus acessórios|01012020|30112021
+SC10000045|Crédito Presumido - Fabricante. Na saída interestadual de suplementos alimentares (NCM 2106.90.90)|01012020|
+SC10000046|Crédito ao remetente. Relativo ao imposto destacado e retido, nas saídas sujeitas a ST à detentores do Pró-Emprego (diferimento operação interna)|01012020|
+SC10000047|Crédito Presumido - Beneficiário Regime Especial. Lei 10297/96, Art.43. Na saída subsequente de mercadoria, nas hipóteses dos TTDs 409, 410 ou 411|01012020|
+SC10000048|Crédito Presumido - Lei 10297/96, Art. 43. Nas hipóteses do TTD 425|01012020|
+SC10000049|Crédito Presumido - Lei 10297/96, Art. 43. Nas hipóteses do TTD 393|01012020|31102020
+SC10000050|Crédito Presumido - Lei 10297/96, Art. 43. Nas hipóteses do TTD 466|01012020|31052022
+SC10000051|Crédito pela saída tributada de mercadoria do estabelecimento que ocorreu sem o aproveitamento, total ou parcial, do credito do imposto destacado no documento fiscal de entrada.|01012020|
+SC10000052|Crédito Presumido - Remetente. Na saída de obra de arte recebida com Isenção|01012020|
+SC10000053|Crédito Presumido - Fabricante. Na entrada de leite in natura produzido no Estado, proporcional às saídas tributadas de produtos dele derivados.|01062020|
+SC10000053|Crédito Presumido - Fabricante. Na saída de produtos derivados de leite.|01012020|31052020
+SC10000054|Crédito Presumido - Fabricante. Na saída de Artigos de cristal de chumbo.|01012020|
+SC10000055|Crédito Presumido - Fabricante. Na saída interestadual de produtos resultantes da industrialização do leite|01012020|28022025
+SC10000055|Crédito Presumido - Fabricante. Na saída interestadual de produtos resultantes da industrialização de leite ou de soro de leite.|01032025|
+SC10000056|Crédito Presumido - Fabricante. Na saída dos produtos classificados na NCM 8517.18.91.|01012020|
+SC10000057|Crédito Presumido - Fabricante. Na saída de cerveja e chope artesanal produzido por microcervejaria.|01012020|
+SC10000058|Crédito Presumido - Fabricante.  Na saída de óleo vegetal, margarina vegetal, creme vegetal e gordura vegetal.|01012020|
+SC10000059|Crédito Presumido - Fabricante. Na saída de maionese (NCM 21.03.90.11)|01012020|
+SC10000060|Crédito Presumido - Abatedor. Na saída interna de produto resultante do abate de aves domésticas|01012020|
+SC10000061|Crédito Presumido - Abatedor. Na saída interna de produtos do abate de suínos.|01012020|
+SC10000062|Crédito Presumido - Importador. Na saída subsequente à importação de medicamentos, matérias primas e equipamentos médico-hospitalares|01012020|
+SC10000063|Crédito Presumido - Fabricante.  Na saída de vinho, exceto composto, na hipótese do RICMS-SC/01, An2, Art. 21, X|01012020|
+SC10000064|Crédito Presumido - Fabricante. Na saída de produto em que o material reciclado correspondente, no mínimo, a 75% do custo.|01012020|31122022
+SC10000065|Crédito Presumido - Fabricante. Na saída interna de vinho, na hipótese do RICMS-SC/01, An2, Art. 21, XIII|01012020|
+SC10000066|Crédito Presumido - Remetente. Na operação interestadual de venda a consumidor realizada    por internet ou telemarketing|01012020|
+SC10000067|Crédito Presumido - Distribuidora. Na saída interestadual de venda direta a consumidor de filmes gravados|01012020|
+SC10000068|Crédito - Fundos - Contribuinte. No desfazimento de vendas ou devoluções quando previsto no regime especial.|01012020|31052022
+SC10000069|Crédito. Remetente. Na prestação de serviço de transporte promovido por transportador não inscrito realizado com cláusula CIF.|01012020|
+SC10000070|Crédito Presumido - Prestador do Serviço. Na prestação de serviço de transporte de carga.|01012020|
+SC10000071|Crédito presumido - Fabricante. Na saída interna de café torrado em grão ou moído e açúcar.|01012020|
+SC10000072|Crédito de ICMS recolhido relativo à entrada de mercadoria importada acobertada por DI ou DSI desembaraçada|01012020|
+SC10000073|Crédito do Imposto Recolhido na Importação por Meio de Encomendas Aéreas Internacionais Transportadas por "Courier"|01012020|
+SC10000074|Crédito presumido - Abatedor. Na saída de produtos resultantes do abate de gado bovino.|01012020|31082022
+SC10000075|Crédito presumido - Fabricante. Na saída de Embarcações Náuticas - Pró- Náutica.|01012020|
+SC10000076|Crédito presumido - Abatedor. Na Entrada de Suínos e Aves Produzidos no Estado - An2, Art. 17, III|01012020|
+SC10000077|Crédito presumido - Beneficiário Regime Especial. Lei 10297/96, Art.43. Na saída de Mercadorias de produção própria, nos termos TTD 384|01012020|31102020
+SC10000078|Crédito de ICMS pago por ocasião do fato gerador|01012020|
+SC10000079|Crédito Presumido - Fabricante. Nas saídas internas de produtos resultantes da industrialização de leite|01062020|
+SC10000080|Crédito presumido para bares, restaurantes e estabelecimentos similares.|01062020|
+SC10000999|Outros ajustes de "outros créditos"|01012009|
+SC10010021|Crédito de ICMS pago por ocasião do fato gerador|01012009|30062021
+SC11000001|Ressarcimento de ICMS ST decorrente de venda para empresa do Simples Nacional|01012013|31012019
+SC11000002|Ressarcimento de ICMS ST decorrente da venda para contribuinte localizado em outra unidade da federação|01012013|31012019
+SC11000003|Crédito presumido relativo às aquisições interestaduais de mercadorias sujeitas à Substituição Tributária|01012020|
+SC11000003|Crédito presumido relativo às aquisições interestaduais de mercadorias sujeitas à Substituição Tributária|01012013|31122019
+SC11000004|Crédito imposto retido recolhido conforme art. 21, § 4º e 22 do Anexo 3 no caso de devolução de aquisição de mercadoria adquirida no regime de substituição tributária|01122018|
+SC11000999|Outros ajustes de "outros créditos"|01012009|
+SC11010001|Crédito de ICMS pago por ocasião do fato gerador|01012009|30062024
+SC20000001|Estorno de débito relativo a devolução de mercadoria adquirida no regime de substituição tributária|01012010|
+SC20000002|Estorno de débito proporcional à devolução da mercadoria, quando o crédito pela entrada foi estornado conforme disposto no An. 2, art. 23, III|01012020|31102020
+SC20000003|Estorno do débito relativo a saída subsequente de mercadorias em operações alcançadas pelo TTD dos benefícios 409, 410 ou 411|01012020|
+SC20000004|Estorno de débito do ICMS por Saída ou início da prestação em Mês Posterior ao da Emissão do Documento Fiscal em Operação ou Prestação|01012020|
+SC20000005|Estorno de débito do imposto recolhido decorrente da emissão de Nota Fiscal Complementar para regularização de preço ou quantidade ou correção do valor do imposto|01012020|
+SC20000006|Estorno de débito, relativo à devolução de mercadoria, cuja entrada ocorreu sem o aproveitamento, total ou parcial, do credito do imposto destacado no documento fiscal.|01012020|
+SC20000007|Estorno de débito, relativo à devolução de mercadoria, cuja entrada ocorreu com limitação ao aproveitamento, total ou parcial, do credito do imposto destacado no documento fiscal.|01012020|
+SC20000008|Estorno de débito, relativo a devolução de mercadoria, quando o crédito pela entrada foi estornado.|01012020|
+SC20000009|Estorno de débito do ICMS destacado indevidamente em documento fiscal e lançado no livro fiscal|01062020|
+SC20000999|Outros ajustes de estorno de débitos|01012009|
+SC21000001|Estorno de débito relativo a devolução de mercadoria adquirida no regime de substituição tributária|01012010|
+SC21000002|Estorno de débito do ICMS ST por Saída ou início da prestação em Mês Posterior ao da Emissão do Documento Fiscal em Operação ou Prestação|01012020|
+SC21000003|Estorno de débito do ICMS ST recolhido decorrente da emissão de Nota Fiscal Complementar para regularização de preço ou quantidade ou correção do valor do imposto|01012020|
+SC21000999|Outros ajustes de estorno de débitos|01012009|
+SC23000001|SA Etanol Hidratado - Estorno na conta gráfica normal do débito de ICMS incidente sobre as saídas e transferência do imposto para a sub-apuração|01012020|31122022
+SC24000001|SA Crédito Presumido - Estorno na conta gráfica normal do débito de ICMS incidente sobre as saídas e transferência do imposto para a sub-apuração|01012020|
+SC30000999|Outros ajustes de débitos por saídas|01012009|
+SC31000999|Outros ajustes de débitos por saídas|01012009|
+SC40000001|ICMS devido na alienação antecipada de bens ou mercadorias importadas com diferimento|01012009|
+SC40000002|ICMS diferencial de alíquota - aquisição de bens do ativo permanente.|01012009|
+SC40000003|ICMS diferencial de alíquota - aquisição de material de uso e consumo|01012009|
+SC40000004|ICMS devido na entrada de arroz, oriundo do Estado do Rio Grande do Sul.|01012009|
+SC40000005|ICMS devido na entrada de leite fluído, pasteurizado ou não, esterilizado ou reidratado, oriundo do Estado do Rio Grande do Sul.|01012009|
+SC40000006|Débito de ICMS ST relativo a entrada de mercadorias sujeitas a substituição tributária, procedente de Estado signatário de Convênio ou Protocolo, sem a retenção ou pagamento do Imposto|01012020|31052020
+SC40000007|ICMS diferencial de alíquota  aquisição de serviço de transporte de bens destinados auso e consumo|01012020|
+SC40000008|ICMS diferencial de alíquota  aquisição de serviço de transporte de bens destinados a ativo permanente|01062020|
+SC40000999|Outros ajustes de "outros débitos|01012009|
+SC41000001|Débito de ICMS devido pela entrada de mercadorias sujeitas à substituição tributária por apuração (An2, art. 91-B)|01012013|30062023
+SC41000002|Débito de ICMS devido pela entrada de mercadorias sujeitas ao regime de substituição tributária de unidades não signatárias.|01062020|
+SC41000002|Débito de ICMS devido pela entrada de mercadorias sujeitas ao regime de substituição tributária nos termos dos art. 20, § 1º, I e § 4º do An.3 do RICMS/SC|01012013|31052020
+SC41000003|Débito de ICMS devido pela entrada de mercadorias sujeitas a ST, postergado para o momento da saída. An.3, art. 11, §12 e §14|01012018|01012018
+SC41000003|Débito de ICMS devido pela entrada de mercadorias sujeitas a ST, postergado para o momento da saída. An.3, art. 17, §12 e §14|02012018|
+SC41000004|Débitos de ICMS apurado por ocasião da entrada mercadoria|01012020|
+SC41000999|Outros ajustes de "outros débitos"|01012009|
+SC50000001|Estorno de crédito relativo ao valor do ICMS normal, apropriado na entrada, de mercadoria com ST|01012018|
+SC50000002|Estorno do crédito presumido decorrente de devolução ou desfazimento de venda.|01062020|30112024
+SC50000002|Estorno do crédito presumido decorrente de devolução ou desfazimento de venda realizada em períodos anteriores|01012020|31052020
+SC50000003|Estorno do crédito efetivo quando o contribuinte optar pelo crédito presumido|01062020|31122022
+SC50000999|Outros ajustes de estorno de crédito|01012009|
+SC51000999|Outros ajustes de estorno de crédito|01012009|
+SC53000001|SA Etanol Hidratado - Estorno na conta gráfica normal do Crédito de ICMS apropriado sobre as entradas de mercadorias e transferência do imposto para a sub-apuração|01012020|31122022
+SC53001001|SA Etanol Hidratado  Estorno na conta gráfica normal do crédito de ICMS apropriado sobre aquisições de serviço de transporte e transferência do imposto para a sub-apuração|01012020|31122022
+SC54000001|SA Crédito Presumido - Estorno de crédito da conta gráfica normal do crédito presumido de ICMS utilizado, transferido para a sub- apuração, decorrente das vendas de mercadorias|01012020|
+SC54000002|SA Crédito Presumido - Estorno de crédito da conta gráfica normal do crédito de ICMS, transferido para a sub- apuração, destacado sobre as devoluções de vendas de mercadorias|01012020|
+SC60000999|Outros ajustes de deduções|01012009|
+SC61000999|Outros ajustes de deduções|01012009|
+SC63000999|Outros ajustes de deduções|01062020|31122022
+SC64000999|Outros ajustes de deduções|01062020|
+SC70000001|ICMS devido na entrada, no Estado, de carnes bovina, bufalina e suas miudezas comestíveis|01012009|
+SC70000002|ICMS devido na entrada, no Estado, de feijão|01012009|
+SC70000003|ICMS devido na entrada, no Estado, de ladrilhos e placas para pavimentação ou revestimento|01012009|30062021
+SC70000004|ICMS devido na entrada, no Estado, de produtos farmacêuticos de uso humano, não sujeitos à substituição tributária|01012009|30062021
+SC70000005|ICMS devido na importação|01012009|
+SC70000006|ICMS devido por responsabilidade tributária (exceto substituição tributária)|01012009|
+SC70000007|ICMS devido por responsabilidade tributária na contratação de frete com transportador autônomo ou empresa de outra UF|01012010|
+SC70000008|ICMS Diferença entre alíquota interna e interestadual destinadas a comercialização ou industrialização|01012013|01012013
+SC70000009|ICMS devido na saída por ocasião do fato gerador|01012020|
+SC70000010|ICMS devido decorrente da emissão de Nota Fiscal Complementar para regularização de preço ou quantidade ou correção do valor do imposto|01012020|
+SC70000011|ICMS apurado e devido na saída por ocasião do fato gerador, conforme exigido em Ato Declaratório|01012020|31032021
+SC70000999|Outros ajustes de débitos especiais|01012009|
+SC71000001|Débito de ICMS devido pela entrada de mercadorias sujeitas a substituição tributária sem a retenção do ICMS|01012010|
+SC71000002|ICMS ST devido na saída por ocasião do fato gerador, conforme exigido em Ato Declaratório|01012020|31032021
+SC71000003|ICMS ST devido decorrente da emissão de Nota Fiscal Complementar para regularização de preço ou quantidade ou correção do valor do imposto|01012020|
+SC71000004|ICMS ST devido na saída por ocasião do fato gerador|01012020|
+SC71000999|Outros ajustes de débitos especiais|01012009|
+SC73000999|Outros ajustes de débitos especiais|01062020|31122022
+SC74000999|Outros ajustes de débitos especiais|01062020|
+SC90000001|Valor da saída isenta com expressa autorização para manutenção dos saldos acumulados em decorrência deste tratamento|01012015|
+SC90000002|Valor da saída diferida com expressa autorização para manutenção dos saldos acumulados em decorrência deste tratamento|01012015|
+SC90000003|Operação computada no cálculo do Valor Adicionado Fiscal (VAF) dos municípios|01012020|
+SC90000004|Operação de entrada de item utilizado no ciclo de produção dos artigos beneficiados pelo TTD 372 (inciso XXXIX do art. 15 do Anexo 2 do RICMS/SC-01)|01112021|
+SC90000005|Operação de saída beneficiada pelo TTD 372 (inciso XXXIX do art. 15 do Anexo 2 do RICMS/SC-01)|01112021|
+SC90000999|Outros ajustes somente informativos|01012009|
+SC91000999|Outros ajustes somente informativos|01012009|
+SC10000081|Crédito Presumido na operação própria com produto de plástico para utilidades domésticas alcançadas pelo TTD do benefício 1002|01102020|
+SC10000082|Crédito Presumido na operação própria com materiais para uso medicinal, cirúrgico, dentário ou veterinário alcançadas pelo TTD do benefício 1003|01102020|
+SC10000083|Crédito presumido - Saída interestadual promovida pelo próprio fabricante de produtos têxteis e artigos de vestuários|01102020|
+SC10000084|Crédito presumido - Saída interestadual promovida pelo próprio fabricante de estruturas para uso na construção civil|01102020|
+SC10000043|Crédito Presumido - Beneficiário Regime Especial. Lei 10297/96, Art.43. Nas hipóteses do TTD 373|01112020|
+SC10000049|Crédito Presumido - Lei 10297/96, Art. 43. Nas hipóteses do TTD 393|01112020|
+SC10000077|Crédito presumido - Beneficiário Regime Especial. Lei 10297/96, Art.43. Na saída de Mercadorias de produção própria, nos termos TTD 384|01112020|
+SC00000002|Crédito do ICMS de mercadoria recebida do armazém-geral, por conta e ordem do estabelecimento depositante situado em outra unidade da Federação|01012021|
+SC10000085|Crédito presumido - Fabricante de mercadorias especificadas para uso na construção situado no Estado|01102020|
+SC10000086|Crédito presumido - Saída interestadual promovida pelo próprio fabricante de produtos alimentícios especificados|01102020|
+SC10000087|Crédito presumido - Saída interestadual com produtos alimentícios especificados|01102020|
+SC10000088|Crédito Presumido - Na saída interestadual promovida pelo próprio fabricante de refrigeradores e congeladores especificados - An2, art. 255|01012021|
+SC10000089|Crédito presumido -  Saída de materiais de uso medicinal, cirúrgico, dentário ou veterinário, sem similar no estado, adquiridos de outra UF - exige regime especial - Anexo 2, art. 245, III|01032021|
+SC70000011|ICMS apurado e devido na saída por ocasião do fato gerador, exigido em Termo de Enquadramento de Contumaz ou Ato Declaratório/RE|01042021|
+SC71000002|ICMS ST devido na saída por ocasião do fato gerador, exigido em Termo de Enquadramento de Contumaz ou Ato Declaratório/RE|01042021|
+SC10000090|Crédito ao prestador de serviço de transporte do combustível, lubrificante, aditivo, fluido, pneu, câmara de ar e peça de reposição - TTD 1030|01072021|31032024
+SC50000004|Estorno do crédito efetivo quando o contribuinte optar pelo crédito presumido.|01072021|30112021
+SC10000091|Crédito presumido na saída de tratores agrícolas produzidos pelo próprio estabelecimento beneficiário|01082021|
+SC10000092|Crédito presumido concedido ao fabricante de lâminas de madeira composta na saída dos produtos acabados|01082021|
+SC10000093|Crédito presumido na saída com as mercadorias constantes da Seção LXVIII do Anexo 1, produzidos pelo próprio estabelecimento beneficiário (NCM 3920.10.90 e 3923.21.90)|01082021|
+SC10000094|Crédito presumido na saída interestadual de café torrado em grão, moído ou descafeinado, classificado na subposição 0901.2 da NCM, produzidos pelo próprio estabelecimento beneficiário|01082021|
+SC10000095|Crédito presumido na saída de mercadorias constantes das Seções LXI a LXVI do Anexo 1, fabricado pelo próprio estabelecimento beneficiário, sem similar produzido neste Estado|01092021|31082023
+SC10000096|Crédito presumido na saída interna de telhas onduladas de fibrocimento (NCM 6811.82.00)|01032022|
+SC10000097|Crédito presumido na importação de insumos com diferimento  Anexo 2, art. 266, I, f|01032022|
+SC10000098|Crédito presumido na saída de materiais uso medicinal, cirúrgico, dentário ou veterinário, sem similar no estado, recebido de outro integrante do grupo econômico|01032022|
+SC40000009|ICMS ressarcido ao produtor de Biodiesel|01032022|30062023
+SC10000019|Crédito presumido nas saídas de peixes, crustáceos ou moluscos, Exceto Saídas Referidas no Inciso I, § 4º com regime especial - Anexo 2, Art. 21, VI|01052022|
+SC10000099|Crédito por Aquisição de Empresa do Simples Nacional  LC 123/06, art. 23|01052022|
+SC10000100|Crédito Presumido por Aquisição em Operação Interna de Empresa do Simples Nacional - An.2, art. 15, XXVI|01052022|
+SC10000101|Estabelecimento Industrial na Entrada de Chapas Finas a Frio, Zincadas e Aço Inox - Anexo 2, Art. 18, §§ 5º e 6º - Exige Regime Especial|01052022|
+SC10000102|Estabelecimento Industrial na Entrada de Chapas Finas a Frio, Zincadas e Aço Inox - Anexo 2, Art. 18, §§ 8º a 12 - Exige Regime Especial|01052022|
+SC10000103|Estabelecimento Industrial na Entrada de Chapas Finas a Frio, Zincadas e Aço Inox - Anexo 2, Art. 18, § 2º - Exige Regime Especial|01052022|
+SC10000104|Saídas de hadoque, bacalhau, congrio, merluza, pirarucu e salmão  Anexo 2, art. 21, § 4º, I  Exige Regime Especial|01052022|
+SC10000006|Crédito presumido ao fabricante nas saídas internas de leite esterilizado longa vida (alínea a do inciso XIV do art. 15 do Anexo 2 do RICMS/SC-01)|01092022|
+SC10000074|Crédito presumido - Comercialização de carne fresca, resfriada ou congelada de gado bovino ou bubalino pelo abatedor credenciado no Programa de Apoio à Criação de Gado para o Abate Precoce (inciso I do art. 16 do Anexo 2 do RICMS/SC-01)|01092022|28022026
+SC10000105|Crédito presumido ao fabricante nas saídas de leite fluído em embalagem com apresentação pronta para consumo humano e destinada aos demais Estados da região Sul e Sudeste, exceto ao Estado do Espírito Santo (alínea b do inciso XIV do art. 15 do Anexo 2 do RICMS/SC-01)|01092022|
+SC10000106|Crédito presumido ao fabricante nas saídas de leite fluído em embalagem com apresentação pronta para consumo humano e destinada aos Estados da região Norte, Nordeste e Centro-Oeste e do Estado do Espírito Santo (alínea c do inciso XIV do art. 15 do Anexo 2 do RICMS/SC-01)|01092022|
+SC10000107|Crédito presumido ao fabricante nas saídas internas de queijo prato e mozarela (alínea d do inciso XIV do art. 15 do Anexo 2 do RICMS/SC-01)|01092022|28022025
+SC10000107|Crédito presumido ao fabricante nas saídas internas previstas na alínea d do inciso XIV do art. 15 do Anexo 2 do RICMS/SC-01.|01032025|
+SC10000108|Crédito presumido ao fabricante nas saídas de queijo prato e mozarela destinada aos demais Estados da região Sul e da região Sudeste, exceto ao Estado do Espírito Santo (alínea e do inciso XIV do art. 15 do Anexo 2 do RICMS/SC-01)|01092022|28022025
+SC10000108|Crédito presumido ao fabricante nas saídas previstas na alínea e do inciso XIV do art. 15 do Anexo 2 do RICMS/SC-01.|01032025|
+SC10000109|Crédito presumido nas saídas internas de carnes e miudezas comestíveis frescas, resfriadas ou congeladas de bovino ou bubalino adquiridos de produtores catarinenses pelo abatedor credenciado no Programa de Apoio à Criação de Gado para o Abate Precoce (inciso II do art. 16 do Anexo 2 do RICMS/SC-01)|01092022|28022026
+SC10000110|Crédito presumido nas saídas interestaduais de carnes e miudezas comestíveis frescas, resfriadas ou congeladas de bovino ou bubalino adquiridos de produtores catarinenses pelo estabelecimento abatedor (§ 5º do inciso II do art. 16 do Anexo 2 do RICMS/SC-01)|01092022|28022026
+SC10000111|Crédito presumido nas saídas internas de carnes e miudezas comestíveis frescas, resfriadas ou congeladas de bovino ou bubalino adquiridos de produtores catarinenses pelo estabelecimento abatedor (§ 12 do inciso II do art. 16 do Anexo 2 do RICMS/SC-01)|01092022|28022026
+SC50000005|Estorno de crédito. Operação interestadual de venda a consumidor realizada por internet ou telemarketing - Anexo 2, Art. 21, XV|01092022|30092022
+SC50000005|Estorno de crédito. Operação interestadual de venda a consumidor realizada por internet ou telemarketing - Anexo 2, Art. 21, XV|01102022|31052025
+SC50000005|Estorno de crédito efetivo das mercadorias por ocasião da saída na operação interestadual de venda a consumidor realizada por internet ou telemarketing (inciso XV do caput do art. 21 do Anexo 2 do RICMS/SC-01)|01062025|
+SC10000112|Crédito Presumido, em substituição aos créditos efetivos do imposto, nas saídas de produtos industrializados em cuja fabricação houver sido utilizado material reciclável correspondente a, no mínimo, 50% (cinquenta por cento) da composição da matéria-prima, realizadas pelo estabelecimento industrial que os tenha produzido|01012023|
+SC20000010|Estorno de débito, diante da devolução de mercadoria saída com o crédito presumido do TTD 478, para anular o estorno do crédito da entrada quando promovido pela regra do Anexo 2, art. 23, §4º do RICMS/SC-01|01012023|
+SC50000006|Estorno do crédito efetivo quando o contribuinte optar pelo crédito presumido. (RICMS/SC-01, Anexo 2, Art. 15, X)|01012023|31032023
+SC50000007|Estorno do crédito efetivo quando o contribuinte optar pelo crédito presumido. TTD 154 (RICMS/SC-01, Anexo 2, Art. 15, XVII)|01012023|31032023
+SC50000008|Estorno do crédito efetivo quando o contribuinte optar pelo crédito presumido. (RICMS/SC-01, Anexo 2, Art. 15, XXVI)|01012023|31032023
+SC50000009|Estorno do crédito efetivo quando o contribuinte optar pelo crédito presumido. (RICMS/SC-01, Anexo 2, Art. 15, XXVIII)|01012023|31032023
+SC50000010|Estorno do crédito efetivo quando o contribuinte optar pelo crédito presumido. (RICMS/SC-01, Anexo 2, Art. 15, XXIX)|01012023|31032023
+SC50000011|Estorno do crédito efetivo quando o contribuinte optar pelo crédito presumido. TTD 336 (RICMS/SC-01, Anexo 2, Art. 15, XXXI)|01012023|31032023
+SC50000012|Estorno do crédito efetivo quando o contribuinte optar pelo crédito presumido. TTD 331 (RICMS/SC-01, Anexo 2, Art. 17, III)|01012023|31032023
+SC50000013|Estorno do crédito efetivo quando o contribuinte optar pelo crédito presumido. (RICMS/SC-01, Anexo 2, Art. 21, IV)|01012023|31032023
+SC50000014|Estorno do crédito efetivo quando o contribuinte optar pelo crédito presumido. (RICMS/SC-01, Anexo 2, Art. 21, IV)|01012023|31032023
+SC50000015|Estorno do crédito efetivo quando o contribuinte optar pelo crédito presumido. (RICMS/SC-01, Anexo 2, Art. 21, V)|01012023|31032023
+SC50000016|Estorno do crédito efetivo quando o contribuinte optar pelo crédito presumido. (RICMS/SC-01, Anexo 2, Art. 21, VI, alínea "a")|01012023|31032023
+SC50000017|Estorno do crédito efetivo quando o contribuinte optar pelo crédito presumido. TTD 483 (RICMS/SC-01, Anexo 2, Art. 21, VI, alínea "b")|01012023|31032023
+SC50000018|Estorno do crédito efetivo quando o contribuinte optar pelo crédito presumido. (RICMS/SC-01, Anexo 2, Art. 21, VII)|01012023|31032023
+SC50000019|Estorno do crédito efetivo quando o contribuinte optar pelo crédito presumido. (RICMS/SC-01, Anexo 2, Art. 21, VIII)|01012023|31032023
+SC50000020|Estorno do crédito efetivo quando o contribuinte optar pelo crédito presumido. TTD 47 (RICMS/SC-01, Anexo 2, Art. 21, IX)|01012023|31032023
+SC50000022|Estorno do crédito efetivo quando o contribuinte optar pelo crédito presumido. TTD 105 (RICMS/SC-01, Anexo 2, Art. 21, X)|01012023|31032023
+SC50000023|Estorno do crédito efetivo quando o contribuinte optar pelo crédito presumido. TTD 1077 (RICMS/SC-01, Anexo 2, Art. 21, XII)|01012023|31032023
+SC50000024|Estorno do crédito efetivo quando o contribuinte optar pelo crédito presumido. (RICMS/SC-01, Anexo 2, Art. 21, XIII)|01012023|31032023
+SC50000025|Estorno do crédito efetivo quando o contribuinte optar pelo crédito presumido. TTD 350 (RICMS/SC-01, Anexo 2, Art. 21, XIV)|01012023|31032023
+SC50000026|Estorno do crédito efetivo quando o contribuinte optar pelo crédito presumido. TTD 479 (RICMS/SC-01, Anexo 2, Art. 21, XVI)|01012023|31032023
+SC50000027|Estorno do crédito efetivo quando o contribuinte optar pelo crédito presumido. (RICMS/SC-01, Anexo 2, Art. 25)|01012023|31032023
+SC50000028|Estorno do crédito efetivo quando o contribuinte optar pelo crédito presumido. (RICMS/SC-01, Anexo 2, Art. 25)|01012023|31032023
+SC50000029|Estorno do crédito efetivo quando o contribuinte optar pelo crédito presumido. (RICMS/SC-01, Anexo 2, Art. 52)|01012023|31032023
+SC50000030|Estorno do crédito efetivo quando o contribuinte optar pelo crédito presumido. TTD 65 (RICMS/SC-01, Anexo 2, Art. 144)|01012023|31032023
+SC50000031|Estorno do crédito efetivo quando o contribuinte optar pelo crédito presumido. TTD 194 (RICMS/SC-01, Anexo 2, Art. 145)|01012023|31032023
+SC50000032|Estorno do crédito efetivo quando o contribuinte optar pelo crédito presumido. TTD 71 (RICMS/SC-01, Anexo 2, Art. 146)|01012023|31032023
+SC50000033|Estorno do crédito efetivo quando o contribuinte optar pelo crédito presumido. TTD 360 (RICMS/SC-01, Anexo 2, Art. 149)|01012023|31032023
+SC50000034|Estorno do crédito efetivo quando o contribuinte optar pelo crédito presumido. TTD 106 (RICMS/SC-01, Anexo 2, Art. 176)|01012023|31032023
+SC50000035|Estorno do crédito efetivo quando o contribuinte optar pelo crédito presumido. TTD 375 (RICMS/SC-01, Anexo 2, Art. 196)|01012023|31032023
+SC50000036|Estorno do crédito efetivo quando o contribuinte optar pelo crédito presumido. TTD 1002 (RICMS/SC-01, Anexo 2, Art. 244)|01012023|31032023
+SC50000037|Estorno do crédito efetivo quando o contribuinte optar pelo crédito presumido. TTD 1003 (RICMS/SC-01, Anexo 2, Art. 245, I)|01012023|31032023
+SC50000038|Estorno do crédito efetivo quando o contribuinte optar pelo crédito presumido. TTD 1070 (RICMS/SC-01, Anexo 2, Art. 245, II)|01012023|31032023
+SC50000039|Estorno do crédito efetivo quando o contribuinte optar pelo crédito presumido. TTD 1005 (RICMS/SC-01, Anexo 2, Art. 245, III)|01012023|31032023
+SC50000040|Estorno do crédito efetivo quando o contribuinte optar pelo crédito presumido. (RICMS/SC-01, Anexo 2, Art. 246)|01012023|31032023
+SC50000041|Estorno do crédito efetivo quando o contribuinte optar pelo crédito presumido. TTD 1006 (RICMS/SC-01, Anexo 2, Art. 247, I)|01012023|31032023
+SC50000042|Estorno do crédito efetivo quando o contribuinte optar pelo crédito presumido. TTD 1009 (RICMS/SC-01, Anexo 2, Art. 248, II)|01012023|31032023
+SC50000043|Estorno do crédito efetivo quando o contribuinte optar pelo crédito presumido. TTD 1012 (RICMS/SC-01, Anexo 2, Art. 249, II)|01012023|31032023
+SC50000044|Estorno do crédito efetivo quando o contribuinte optar pelo crédito presumido. TTD 1017 (RICMS/SC-01, Anexo 2, Art. 254, caput)|01012023|31032023
+SC50000045|Estorno do crédito efetivo quando o contribuinte optar pelo crédito presumido. TTD 1052 (RICMS/SC-01, Anexo 2, Art. 254, § 4º)|01012023|31032023
+SC50000046|Estorno do crédito efetivo quando o contribuinte optar pelo crédito presumido. TTD 1022 (RICMS/SC-01, Anexo 2, Art. 257)|01012023|31032023
+SC50000047|Estorno do crédito efetivo quando o contribuinte optar pelo crédito presumido. TTD 1025 (RICMS/SC-01, Anexo 2, Art. 258, II)|01012023|31032023
+SC50000048|Estorno do crédito efetivo quando o contribuinte optar pelo crédito presumido. TTD 1027 (RICMS/SC-01, Anexo 2, Art. 259, II)|01012023|31032023
+SC50000049|Estorno do crédito efetivo quando o contribuinte optar pelo crédito presumido. (RICMS/SC-01, Anexo 2, Art. 260, II, a)|01012023|31032023
+SC50000050|Estorno do crédito efetivo quando o contribuinte optar pelo crédito presumido. (RICMS/SC-01, Anexo 2, Art. 260, II, b)|01012023|31032023
+SC50000051|Estorno do crédito efetivo quando o contribuinte optar pelo crédito presumido. TTD 1076 (RICMS/SC-01, Anexo 2, Art. 266-A)|01012023|31032023
+SC50000052|Estorno do crédito efetivo quando o contribuinte optar pelo crédito presumido. (RICMS/SC-01, Anexo 4, Art. 14-B)|01012023|31032023
+SC50000053|Estorno do crédito efetivo quando o contribuinte optar pelo crédito presumido. (RICMS/SC-01, Anexo 6, Art. 269)|01012023|31032023
+SC10000113|Crédito Presumido. ICMS. Nas saídas de peixes, crustáceos ou moluscos, promovidas por outros estabelecimentos, exceto varejistas, calculado sobre o valor do imposto devido pela operação própria. RICMS/SC-01, Anexo 2, Art. 21, VI, alínea "b"|01012023|
+SC50000054|Estorno do crédito efetivo quando o contribuinte optar pelo crédito presumido.  (RICMS/SC-01, Anexo 2, Art. 21, VI, alínea "b")|01012023|31032023
+SC50000055|Estorno do crédito efetivo quando o contribuinte optar pelo crédito presumido. (RICMS/SC-01, Anexo 2, Art. 23, III)|01042023|
+SC50000056|Estorno do crédito em caso de emissão de CT-e substituto referenciando o CT-e emitido com erro. (Anexo 11, art. 50 do RICMS/SC-01)|01042023|
+SC20000011|Estorno de débito em caso de emissão de CT-e substituto referenciando o CT-e emitido com erro. (Anexo 11, art. 50 do RICMS/SC-01)|01042023|
+SC00000003|Crédito do ICMS de combustível sujeito à incidência monofásica. (Art. 29 c/c  § 5º do art. 112, RICMS-SC/01)|01052023|
+SC10000114|Crédito presumido, em substituição aos créditos efetivos, ao estabelecimento produtor de biodiesel na saída de biodiesel produzido pelo próprio estabelecimento beneficiário, em montante equivalente a 75%  do valor do imposto devido na operação própria  (art. 259, II, § 3º do Anexo 2 do RICMS-SC/01).|01052023|
+SC10000115|Crédito presumido ao produtor de biodiesel estabelecido em Santa Catarina em valor equivalente a 41,66% do valor da parcela do imposto devido a este Estado na qualidade de unidade federada do produtor de biodiesel. (art. 284 do Anexo 2 do RICMS-SC/01).|01052023|
+SC10000119|Crédito pelo tomador de serviço de transporte realizado com cláusula FOB e recolhimento antecipado à UF onde iniciada a prestação realizada por transportador não inscrito no Estado. (Art. 29 do RICMS-SC/01).|01072023|
+SC10000024|Crédito presumido à empresa que produzir produto sem similar catarinense (Pró-Emprego). (art. 15-A do Decreto Estadual n° 105/2007 - REVOGADO)|01092023|
+SC10000120|Crédito presumido nas mercadorias produzidas pelo próprio estabelecimento no Estado, sem similar produzido neste Estado, de forma a resultar carga tributária final equivalente a 3% (três por cento) da base de cálculo integral relativa à operação própria. (Pró-Emprego). (art. 254, caput do Anexo 2 do RICMS/SC-01)|01092023|
+SC10000095|Crédito presumido nas operações próprias com mercadorias não relacionadas nas Seções LXI, LXII, LXIII, LXIV, LXV e LXVI do Anexo 1 do RICMS/SC-01, com destino a contribuinte do imposto, sujeitas às alíquotas de 7% e 12%, ou com destino a consumidor final. RICMS/SC-01, Anexo 2, art. 254, § 4º.|01092023|
+SC50000060|Estorno de crédito na devolução ao prestador de serviço de transporte do combustível, lubrificante, aditivo, fluido, pneu, câmara de ar e peça de reposição - TTD 1030 (RICMS-SC/01, Art. 29, § 8º).|01092023|30092025
+SC50000061|Estorno de crédito de ICMS na devolução de combustível sujeito à incidência monofásica. (Art. 29 c/c  § 5º do art. 112, RICMS-SC/01)|01092023|
+SC20000012|Estorno de débito pelo prestador do serviço em caso de emissão de BP-e substituto referenciando o BP-e substituído. (Anexo 11, art. 184 do RICMS/SC-01).|01012023|
+SC11000005|Crédito de ICMS  ST ao destinatário interdependente referente ao imposto retido nas operações de entrada entre empresas interdependentes com apuração compartilhada. (§§ 8º ao 10 do art. 17 do Anexo 3 do RICMS-SC/01).|01012024|
+SC00000004|Crédito de ICMS - Normal ao destinatário interdependente referente ao imposto destacado nas operações de entrada entre empresas interdependentes com apuração compartilhada. (§§ 8º ao 10 do art. 17 do Anexo 3 do RICMS-SC/01).|01012024|
+SC11000006|Crédito presumido nas operações com óleo diesel destinado ao transporte coletivo.|01102023|
+SC11000007|Crédito presumido nas operações com óleo diesel destinado a embarcações pesqueiras.|01102023|
+SC10000121|Crédito presumido ao estabelecimento abatedor na entrada de ovino produzido neste estado e se destine ao abate - Anexo 2, Art. 15, XLV, a.|01012024|
+SC10000122|Crédito presumido ao estabelecimento abatedor na saída interna de produtos resultantes do abate de ovino - Anexo 2, Art. 15, XLV, b.|01012024|
+SC10000123|Crédito presumido ao estabelecimento na saída de alho beneficiado recebido de produtor situado no Estado - Anexo 2, art. 21, XVIII.|01012024|
+SC20000013|Estorno de débito do ICMS, declarado em DDE, decorrente da emissão de Nota Fiscal Complementar para correção do valor do imposto.|01032024|
+SC10000124|Crédito Presumido no percentual de 12% (doze por cento) calculado sobre o valor das aquisições internas de biogás e biometano pela Companhia de Gás de Santa Catarina (SCGÁS) -  Anexo 2, Art. 21, XVII.|01122023|
+SC10000033|Crédito presumido concedido ao estabelecimento industrial nas saídas de artigos têxteis, vestuário, artefatos de couro e seus acessórios produzidos pelo próprio estabelecimento. - Exige Comunicação - Anexo 2, Art. 21, IX.|01082024|
+SC20000014|Estorno de débito do diferencial de alíquotas apurado na entrada, nos casos de devolução de material de uso ou consumo ou ativo imbolizado em operações interestaduais.|01082024|31082024
+SC90000006|Operação de entrada de item utilizado no ciclo de produção dos artigos beneficiados pelo TTD 106 (§ 5º do art. 176 do Anexo 2 do RICMS/SC-01).|01012016|
+SC90000007|Operação de saída beneficiada pelo TTD 106 (§ 5º do art. 176 do Anexo 2 do RICMS/SC-01).|01012016|
+SC20000014|Estorno de débito do diferencial de alíquotas apurado na entrada, nos casos de devolução de material de uso ou consumo ou ativo imobilizado em operações interestaduais.|01092024|
+SC10000125|Crédito Presumido ao primeiro estabelecimento varejista adquirente das mercadorias do inciso XXXV, art. 1º, Anexo 2, desde que a saída tributada posterior seja destinada à comercialização, no montante do imposto que seria devido na operação praticada pelo beneficiário, caso fosse tributada, Convenio ICMS 102/21. Anexo 2, Art. 1º, XXXV, § 12, VI.|01122023|
+SC50000062|Estorno do crédito pelo adquirente em caso de emissão de NF3e substituta referenciando a NF3e substituída. (Anexo 11, art. 163 do RICMS/SC-01)|01012024|
+SC50000063|Estorno de crédito pelo tomador do serviço em caso emissão de NFCom de Substituição referenciando a NFCom com erro.  (Anexo 11, art. 211, II do RICMS/SC-01)|01112024|
+SC20000015|Estorno de débito pelo prestador do serviço em caso emissão de NFCom de Substituição referenciando a NFCom com erro. (Anexo 11, art. 211, II do RICMS/SC-01)|01112024|
+SC10000022|Crédito na venda de veículo automotor com isenção a deficiente físico e com ICMS retido por substituição tributária. (art. 38 do Anexo 2 do RICMS-SC/01).|01112024|
+SC10000126|Crédito de ICMS na venda de veículo automotor com isenção ao Corpo de Bombeiros Voluntário ou Militar, para reequipamento da SEF ou SSP e a órgão público estadual, autorizado no montante do ICMS retido por substituição tributária em favor deste Estado, constante da Nota Fiscal relativa à entrada do veículo no estabelecimento revendedor.|01092024|
+SC10000127|Crédito Presumido aos estabelecimentos fabricantes de sucos de frutas classificados na posição 20.09 da NCM, no montante de 66,66% do valor do imposto relativo à operação própria nas saídas sujeitas à alíquota de 12% desses produtos. Anexo 2, Art. 21, XIX do RICMS/SC-01.|01082024|
+SC10000128|Crédito Presumido aos estabelecimentos fabricantes, equivalente a 50% do valor do imposto devido nas saídas de mandioca e também realizadas por centro de distribuição ou estabelecimento industrial pertencente ao mesmo titular, desde que não tenha sido anteriormente utilizado na operação de transferência. An 2, Art. 15, XLVIII do RICMS/SC-01.|01082024|
+SC10000129|Crédito Presumido equivalente a 2,5% da base de cálculo do imposto devido na operação própria interestadual sujeita à alíquota de 12%, com as mercadorias produzidas pelo próprio estabelecimento ou promovidas por estabelecimentos atacadistas, desde que tenham sido produzidas neste Estado. An 2, Art. 15, L do RICMS/SC-01.|01082024|30092025
+SC50000002|Estorno do crédito presumido decorrente de devolução ou desfazimento de venda, e nos casos de redespacho de serviço de transporte.|01122024|
+SC54000003|SA Crédito Presumido - Serviço de Transporte - Estorno de crédito da conta gráfica normal do crédito de ICMS, transferido para a sub-apuração, relativo ao crédito presumido da parcela do redespacho.|01122024|
+SC10000130|Crédito Presumido aos estabelecimentos industrializadores, em montante igual ao que resultar da aplicação do percentual de 10% sobre o valor das saídas sujeitas à alíquota de 12%, destinadas a contribuintes localizados nos Estados de MG e RJ, de farinha de trigo e misturas de produção própria. An 2, Art. 15, XLVII  do RICMS/SC-01.|01082024|
+SC10000131|Crédito Presumido, até 31 de dezembro de 2024, aos estabelecimentos fabricantes de móveis com CNAE 3101-2/00, equivalente a 5% sobre o valor da entrada, nas operações internas com painéis de partículas de madeira (MDP), painéis de fibras de madeira de média densidade (MDF) e chapas de fibras de madeira. An 2, Art. 15, XLIX do RICMS/SC-01.|01122024|31122024
+SC10000132|Crédito Presumido, até 31 de dezembro de 2024, em substituição aos créditos efetivos do imposto, aos estabelecimentos fabricantes de torres para linhas de transmissão de energia e estruturas metálicas para subestações, com NCM 7308.20.00, de 75% do débito do imposto sobre as saídas internas e interestaduais. An 2, Art. 21, XX do RICMS/SC-01.|01122024|31122024
+SC10000133|Crédito presumido ao fabricante nas saídas previstas na alínea f do inciso XIV do art. 15 do Anexo 2 do RICMS/SC-01.|01092024|
+SC10000134|Crédito Presumido aos estabelecimentos industrializadores, em montante equivalente a 4% do valor das saídas interestaduais, de produção própria, sujeitas à alíquota de 12%, de pastas de farinha de trigo para a preparação de produtos de padaria, classificadas nos códigos 1901.20.10, 1901.20.20 e 1901.20.90 da NCM. An 2, Art. 15, LI do RICMS/SC-01.|01012025|
+SC20000016|Estorno de débito do diferencial de alíquotas pago na entrada da mercadoria destinada a uso/consumo ou ativo imobilizado, posteriormente vendida ou transferida para estabelecimento da mesma empresa localizada em outra UF. (Art. 29 do RICMS/SC-01)|01012025|
+SC50000064|Estorno de crédito efetivo do frete na prestação de serviço de transporte, quando o tomador for contribuinte, por ocasião da saída na operação interestadual de venda a consumidor realizada por internet ou telemarketing (inciso XV do caput do art. 21 do Anexo 2 do RICMS/SC-01)|01012025|
+SC20000017|Estorno de débito correspondente ao desconto concedido nas saídas de mercadorias em operação fora do estabelecimento. (Art. 44 a 48 do Anexo 06 do RICMS/SC-01)|01082025|
+SC10000135|Crédito presumido  - Fornecimento de alimentação em bares, restaurantes e estabelecimentos similares  exige comunicação (art. 266-A do Anexo 2 do RICMS/SC-01).|01092025|
+SC10000131|Crédito Presumido aos estabelecimentos fabricantes de móveis com CNAE 3101-2/00, equivalente a 5% sobre o valor da entrada, nas operações internas com painéis de partículas de madeira (MDP), painéis de fibras de madeira de média densidade (MDF) e chapas de fibras de madeira. An 2, Art. 15, XLIX do RICMS/SC-01.|01012025|
+SC10000132|Crédito Presumido em substituição aos créditos efetivos do imposto, aos estabelecimentos fabricantes de torres para linhas de transmissão de energia e estruturas metálicas para subestações, com NCM 7308.20.00, de 75% do débito do imposto sobre as saídas internas e interestaduais. An 2, Art. 21, XX do RICMS/SC-01.|01012025|
+SC10000136|Crédito Presumido equivalente a 2,5% do valor da base de cálculo do imposto devido na operação própria interestadual sujeita à alíquota de 12%, com as mercadorias previstas no inciso LII do art. 15 do Anexo 2, produzidas pelo próprio estabelecimento.|01092025|
+SC10000137|Crédito Presumido ao estabelecimento fabricante de até 30% do valor do imposto próprio devido nas operações com os produtos dos incisos do art. 266-B do Anexo 2, limitado a que o saldo devedor, após a apropriação do crédito presumido, resulte em carga tributária mínima de 3% da base de cálculo relativa ao faturamento das mercadorias beneficiadas.|01092025|
+SC10000138|Crédito Presumido à indústria automobilística situada neste Estado, na saída tributada de automóveis, componentes, subcomponentes, partes ou peças, importados diretamente pelo estabelecimento beneficiário, de modo a resultar carga tributária final equivalente a 1% do valor da operação própria.|01102025|
+SC10000139|Crédito Presumido à indústria automobilística situada neste Estado, na saída tributada de automóveis, componentes, subcomponentes, partes ou peças, fabricados pelo estabelecimento beneficiário, com carga tributária final de, nos 10  primeiros anos de atividade, 2% do valor da operação própria; e nos demais anos, 3% do valor da operação própria.|01102025|
+SC11000008|Crédito de ICMS-ST ao substituto tributário atacadista ou distribuidor estabelecido neste estado e detentor do TTD 1082 e que adquire bebidas quentes, relacionadas no III-A do Anexo 1-A, de atacadista ou distribuidor na condição de substituído tributário, localizados neste estado. Limitado ao ST recolhido a SC e informado na NF do substituído.|01012025|
+SC10000140|Crédito Presumido ao estabelecimento abatedor credenciado no Programa de Apoio à Criação de Gado para Abate Precoce, Lei n.º 9.183/1993, em substituição aos créditos efetivos, calculado sobre o valor da saída tributada, exceto nas saídas com diferimento do imposto, de carne fresca, resfriada ou congelada de gado bovino ou bubalino pelo abatedor.|01012026|
+SC10000141|Crédito Presumido ao estabelecimento abatedor não credenciado no Programa de Apoio à Criação de Gado para Abate Precoce, em substituição aos créditos efetivos do imposto, desde que o gado tenha sido adquirido de produtores catarinenses, equivalente a 11% do valor da saída interna tributada.|01012026|
+SC10000142|Crédito Presumido ao estabelecimento abatedor, equivalente a 5,5% do valor da operação, na saída interestadual de carnes e miudezas comestíveis frescas, resfriadas ou congeladas de gado bovino ou bubalino, desde que adquirido de produtores catarinenses.|01012026|
+SC10000143|Crédito presumido complementar ao abatedor credenciado no Programa de Apoio à Criação de Gado para Abate Precoce (Lei nº 9.183/1993), em substituição aos créditos efetivos, calculado sobre o valor da saída tributada, exceto com diferimento, de carne fresca, resfriada ou congelada de bovino ou bubalino promovida pelo próprio estabelecimento.|01012026|
+SC30000001|Débito normal para regularização no desenquadramento retroativo do Regime Simples Nacional para o Regime Normal. (Anexo 4, Art. 14-A do RICMS-SC)|01012026|
+SC00000005|Crédito de ICMS Normal na importação de insumos agropecuários com apuração mensal pelo confronto entre os débitos e os créditos escriturados no mês. (Art. 53, §§ 26 e 27 do RICMS/SC)|01032026|
+SC40000010|Débito de ICMS normal na importação de insumos agropecuários com apuração mensal pelo confronto entre os débitos e os créditos escriturados no mês. (Art. 53, §§ 26 e 27 do RICMS/SC)|01032026|
+SC11000009|Crédito de ICMS-ST ao atacadista de lubrificantes substituto tributário estabelecido neste estado que adquire lubrificantes, relacionados na Seção VII do Anexo 1-A, de substituído tributário localizado neste estado.|01052026|
+SC10000144|Crédito Presumido ao fabricante estabelecido neste Estado, sobre a base de cálculo do imposto referente às saídas internas e interestaduais de ketchup e de outros molhos de tomate classificados nos códigos 2103.20.10 e 2103.20.90 da NCM, produzidos pelo próprio estabelecimento.|01052026|

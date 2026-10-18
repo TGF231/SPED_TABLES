@@ -1,0 +1,188 @@
+versão=38 COD_AJUR, DESC_AJUR, DT_INI, DT_FIM
+MG000001|Apuração do ICMS; Outros débitos; Débitos transferidos do Difal Origem (E300=MG) para apuração do ICMS OP (E110) por meio do ajuste MG230001.|01012016|28022022
+MG009998|Apuração do ICMS; Débito de Ajuste referente a pagamento de ICMS a maior do que o apurado no período, por operação, a ser transferido para o período seguinte, em conformidade com RECF|01092025|
+MG009999|Apuração do ICMS; Outros débitos para ajuste de apuração ICMS;|01012009|
+MG010001|Apuração do ICMS; Estorno de créditos; determinados por ato administrativo ou judicial.|01012009|
+MG010002|Apuração do ICMS; Estorno de créditos por opção pelo Simples Nacional|01012018|
+MG010003|Apuração do ICMS; Estorno de créditos; TTS verificação fiscal|01012019|01012019
+MG010003|Apuração do ICMS; Estorno de créditos; Estorno do crédito lançado através do ajuste MG020009 - TTS verificação fiscal|02012019|
+MG019999|Apuração do ICMS; Estorno de créditos para ajuste de apuração ICMS.|01012009|
+MG020001|Apuração do ICMS; Outros créditos; determinados por ato administrativo ou judicial.|01012009|
+MG020002|Apuração do ICMS; Outros créditos; referentes ao Valor total do crédito presumido.|01012009|
+MG020003|Apuração do ICMS; Outros créditos; Incentivo fiscal a cultura - lei 12733|01012009|01102012
+MG020004|Apuração do ICMS; Outros créditos; referente à apropriação de crédito do CIAP|01012012|
+MG020005|Apuração do ICMS; Outros créditos; Crédito do imposto corretamente destacado em documento fiscal, previamente escriturado, e não aproveitado na época própria|01082014|
+MG020006|Apuração do ICMS; Outros créditos; Devolução - Diferencial de Alíquota - Uso e Consumo.|01012015|30062016
+MG020006|Apuração do ICMS; Outros créditos; Devolução ou pagamento indevido - Diferencial de alíquota|01072016|
+MG020007|Apuração do ICMS; Outros créditos; Restituição por Creditamento  Art. 24, inciso III - Anexo XV|01012015|30042024
+MG020007|Apuração do ICMS; Outros créditos; Restituição por Creditamento  Art. 37, inciso II do Anexo VII do RICMS/23|01052024|
+MG020008|Apuração do ICMS; Outros créditos; Créditos transferidos do Difal Origem (E300=MG) para apuração do ICMS (E110) por meio do ajuste MG210001.|01012016|28022022
+MG020009|Apuração do ICMS; Outros créditos; O crédito do imposto corretamente destacado, documento previamente escriturado, mas não aproveitado na entrada - TTS verificação fiscal|01012019|
+MG020010|Apuração do ICMS; Outros créditos; Crédito valor original do ICMS relativo a cada parcela do crédito tributário parcelado|01102024|
+MG020011|Apuração do ICMS; Crédito de Ajuste referente à transferência de saldo positivo de ICMS pago a maior do que o apurado no período anterior, por operação, em conformidade com RECF|01092025|
+MG020015|Apuração do ICMS; Outros créditos; Crédito do estoque de Fundo de Erradicação da Miséria - FEM. Encerramento da vigência em 31/12/2022.|01012023|31122023
+MG020015|Apuração do ICMS; Outros créditos; Crédito do estoque de Fundo de Erradicação da Miséria - FEM.|01012024|
+MG029999|Apuração do ICMS; Outros créditos para ajuste de apuração ICMS.|01012009|
+MG030001|Apuração do ICMS; Estorno de débitos; determinados por ato administrativo ou judicial.|01012009|
+MG030002|Apuração do ICMS; Estorno de débitos; referente ao CTRC emitido pelo transportador, com ICMS de responsabilidade do remetente/alienante.|01012009|
+MG030003|Apuração do ICMS; Estorno de débitos; lançamento efetuado em decorrência de emissão de documento fiscal relativo à operação também registrada em ECF|01062013|
+MG030004|Apuração do ICMS; Estorno de débitos; Serviço de Comunicação|01102015|
+MG030006|Apuração do ICMS; Estorno de débitos; Fundo de Erradicação da Miséria  FEM - adicionado ao ICMS/ST|01092016|31122016
+MG030006|Apuração do ICMS; Estorno de débitos; Fundo de Erradicação da Miséria  FEM - adicionado ao ICMS/OP|01012017|31122018
+MG030006|Apuração do ICMS; Estorno de débitos; Fundo de Erradicação da Miséria  FEM - adicionado ao ICMS/OP - outros documentos fiscais|01012019|
+MG039999|Apuração do ICMS; Estorno de débitos para ajuste de apuração ICMS.|01012009|
+MG040001|Apuração do ICMS; Dedução do imposto apurado; Utilização de crédito transferido, limitado a 30% do débito.|01012009|
+MG040002|Apuração do ICMS; Dedução do imposto apurado; Transferência entre 2 estabelecimentos do mesmo titular.|01012009|31082025
+MG040002|Apuração do ICMS; Dedução do imposto apurado; Transferência entre 2 estabelecimentos do mesmo titular. Art. 30, § 2º, RICMS 2023.|01092025|
+MG040003|Apuração do ICMS; Dedução do imposto apurado; Incentivo fiscal à cultura|01082014|
+MG040004|Apuração do ICMS; Dedução do imposto apurado; Incentivo fiscal ao esporte|01082014|
+MG040005|Apuração do ICMS; Dedução do imposto apurado; Incentivo à pontualidade do recolhimento de tributos|01052018|
+MG040006|Apuração do ICMS; Dedução do imposto apurado; Utilização de crédito acumulado, limitado a 30% do débito - e-commerce.|01012018|
+MG040007|Apuração do ICMS; Dedução do imposto apurado; Incentivo fiscal a cultura limitado a 5%. Parágrafo 3º, Art. 118, Decreto nº 48.819/2024|01062024|
+MG049999|Apuração do ICMS; Deduções do imposto apurado na apuração ICMS.|01012009|31122014
+MG050000|Apuração do ICMS; Débito Especial; ICMS Diferença de Alíquota apurado em verificação fiscal.|01012009|
+MG050001|Apuração do ICMS; Débito Especial; ICMS Diferença de Alíquota apurado após o vencimento.|01012009|
+MG050002|Apuração do ICMS; Débito Especial; Estorno de crédito devido a inventário - RE/TTS  Recolhimento fracionado|01012017|28022022
+MG050003|Apuração do ICMS; Débito Especial; Débito Extemporâneo referente ao Estorno de Crédito  Estoque / Inventário  Declaração Fracionada|01022017|28022022
+MG050006|Apuração do ICMS; Débito Especial; Fundo de Erradicação da Miséria - FEM|01082014|31052023
+MG050006|Apuração do ICMS; Débito Especial; Fundo de Erradicação da Miséria - FEM|01012024|
+MG050007|Apuração do ICMS; Débito Especial; Fundo de Erradicação da Miséria - FEM - Antecipado|01082014|
+MG050008|Apuração do ICMS; Débito Especial; Recolhimento complementar - Regime Especial.|01012018|
+MG050099|Apuração do ICMS; Débito Especial; ICMS Diferença de Alíquota - outros|01012009|
+MG050100|Apuração do ICMS; Débito Especial; ICMS de importação apurado por verificação fiscal.|01012009|
+MG050101|Apuração do ICMS; Débito Especial; ICMS de importação pago no período, com emissão de Nota de entrada no período posterior.|01012009|
+MG050199|Apuração do ICMS; Débito Especial; ICMS de importação - outros|01012009|
+MG050200|Apuração do ICMS; Débito Especial; ICMS referente ao diferimento, apurado por verificação fiscal.|01012009|
+MG050201|Apuração do ICMS; Débito Especial; ICMS referente ao diferimento, apurado após o vencimento.|01012009|
+MG050299|Apuração do ICMS; Débito Especial; ICMS referente a diferimento - outros|01012009|
+MG050300|Apuração do ICMS; Débito Especial; ICMS referente à Antecipação tributária, apurado por verificação fiscal.|01012009|
+MG050301|Apuração do ICMS; Débito Especial; ICMS referente à Antecipação tributária, apurado após o vencimento.|01012009|
+MG050399|Apuração do ICMS; Débito Especial; ICMS referente à Antecipação tributária - outros|01012009|
+MG050400|Apuração do ICMS; Débito Especial; ICMS destacado a menor, apurado em verificação fiscal.|01012009|
+MG050401|Apuração do ICMS; Débito Especial; ICMS destacado a menor, apurado após o vencimento.|01012009|
+MG059998|Apuração do ICMS; Débito Especial; ICMS - Outros.|01012009|
+MG090001|Apuração do ICMS extra-apuração; Dedução do imposto apurado; Utilização de crédito transferido, limitado a 30% do débito.|01012013|31072014
+MG090002|Apuração do ICMS extra-apuração; Dedução do imposto apurado; Crédito apropriado de Incentivo à Cultura.|01012014|31072014
+MG091001|Apropriação de crédito por exportação - detentor original|01082014|
+MG091002|Apropriação de crédito por saída com diferimento|01082014|
+MG091003|Apropriação de crédito por saída com redução de Base de Cálculo|01082014|
+MG091004|Apropriação de crédito por saída com alíquota inferior à alíquota de entrada|01082014|
+MG091005|Apropriação de crédito por saída isenta - RICMS (exceto Anexo VIII)|01082014|30042024
+MG091005|Apropriação de crédito por saída isenta - RICMS (exceto Anexo III do RICMS/23)|01052024|
+MG091006|Apropriação de crédito por saída isenta - Disciplinado no Anexo VIII|01082014|30042024
+MG091006|Apropriação de crédito por saída isenta - Disciplinado no Anexo III do RICMS/23|01052024|
+MG091007|Apropriação de crédito extemporâneo - conf. Art. 28-B - Anexo VIII|01082014|01082014
+MG091007|Apropriação de crédito extemporâneo - conf. Art. 27-B - Anexo VIII|02082014|30042024
+MG091007|Apropriação de crédito extemporâneo - conf. Art. 30 - Anexo III do RICMS/23|01052024|
+MG091008|Apropriação de crédito por expansão / instalação industrial|01082014|
+MG091009|Apropriação de crédito por formação de estoque|01082014|
+MG091010|Apropriação de crédito por mudança de forma de tributação|01082014|
+MG091011|Apropriação de crédito  Acúmulo de crédito do CIAP|01102015|
+MG091012|Apropriação de crédito por aquisição de serviços tributados pelo ICMS|01102015|
+MG091013|Apropriação de crédito por recolhimento a maior do ICMS|01102015|
+MG091014|Apropriação de crédito extemporâneo - conf. § 2º do art. 67 da Parte Geral do RICMS|01012022|30042024
+MG091014|Apropriação de crédito extemporâneo - conf. § 2º do art. 32 da Parte Geral do RICMS/23|01052024|
+MG091015|Apropriação de crédito por restituição de ICMS ST mediante creditamento ou abatimento, observado o limite de 30% (trinta por cento) do saldo devedor do ICMS OP ou ST apurado.|01012022|
+MG091016|Apropriação de crédito do ICMS OP nos termos do parágrafo 10 do art. 66, observado o limite de 30% (trinta por cento) do saldo devedor do ICMS OP apurado.|01012022|30042024
+MG091016|Apropriação de crédito do ICMS OP nos termos do § 15 do art. 31 do RICMS/23, observado o limite de 30% (trinta por cento) do saldo devedor do ICMS OP apurado.|01052024|
+MG091017|Controle de Crédito Aprovado no DCA  Exportação|01072023|
+MG091018|Controle de Crédito Aprovado no DCA  Outros Créditos (Diferimento e Redução de Base de Cálculo)|01072023|
+MG092001|Apropriação de crédito por Incentivo à Cultura|01082014|
+MG092002|Apropriação de crédito por Incentivo ao Esporte|01082014|
+MG092003|Apropriação de crédito extra-apuração por ato administrativo/judicial|01082014|
+MG092004|Apropriação de crédito  Saldo credor apurado no período do FEM Operações Próprias|01092016|
+MG092005|Apropriação de crédito  Saldo credor apurado no período do FEM Substituição Tributária|01092016|
+MG092006|Apropriação de crédito  Saldo credor apurado em período anterior ao mês de início da vigência de Regime Especial|01092018|
+MG092007|Apropriação de crédito  Crédito outorgado|01072023|
+MG092008|Apropriação de crédito por Incentivo à Cultura limitado a 5%. Parágrafo 3º, Art. 118, Decreto nº 48.819/2024|01062024|
+MG095001|Crédito recebido por transf. de detentor de crédito de exportação|01082014|
+MG095002|Crédito recebido por transf. em pagamento de cotas / ações|01082014|
+MG095003|Crédito recebido por transf. para instalação /  expansão|01082014|
+MG095004|Crédito recebido por transf. em pagamento de aquisição de mercadorias / ativo imobilizado|01082014|
+MG095005|Crédito recebido por transf. para pagamento de crédito tributário|01082014|
+MG095006|Crédito recebido por transf. para pagamento de ICMS de importação|01082014|
+MG095007|Crédito recebido por transf. para abatimento de até 30% do saldo devedor|01082014|
+MG095008|Crédito recebido por transf. para abatimento do saldo devedor sem limitação|01082014|30062015
+MG095008|Crédito recebido por transf. para abatimento até o limite do saldo devedor|01072015|
+MG095009|Crédito recebido por transf. para abatimento do saldo devedor sem limitação|01072023|
+MG109998|Apuração do ICMS ST; Outros débitos para ajuste de apuração ICMS ST; Outros débitos para ajuste de apuração ICMS monofásico.|01052023|
+MG109999|Apuração do ICMS ST; Outros débitos para ajuste de apuração ICMS ST.|01012009|
+MG119998|Apuração do ICMS ST; Estorno de créditos para ajuste de apuração ICMS ST; Estorno créditos para ajuste de apuração ICMS monofásico.|01052023|
+MG119999|Apuração do ICMS ST; Estorno de créditos para ajuste de apuração ICMS ST.|01012009|
+MG120001|Apuração do ICMS ST; Outros créditos; Devolução|01012015|
+MG120007|Apuração do ICMS ST; Outros créditos; Restituição por Ressarcimento  Art. 24, inciso I - Anexo XV|01012015|30042024
+MG120007|Apuração do ICMS ST; Outros créditos; Restituição por Ressarcimento  § 1 do Art. 37 do Anexo V do RICMS/23|01052024|
+MG120008|Apuração do ICMS ST; Outros créditos; Restituição por Abatimento  Art. 24, inciso II - Anexo XV|01012015|30042024
+MG120008|Apuração do ICMS ST; Outros créditos; Restituição por Abatimento  Art. 37, inciso I - Anexo VII do RICMS/23|01052024|
+MG120009|Apuração do ICMS ST; Outros créditos; Fundo de Erradicação da Miséria - FEM Extemporâneo|01072015|
+MG120010|Apuração do ICMS ST; Outros créditos; Desfazimento ST CST10 - RE|01072016|31072024
+MG120010|Apuração do ICMS ST; Outros créditos; Desfazimento ST CST10 - RE, e Art. 22-A do Anexo VII do RICMS/2023|01082024|
+MG120011|Apuração do ICMS ST; Outros créditos; Desfazimento ST CST60 - RE|01072016|31072024
+MG120011|Apuração do ICMS ST; Outros créditos; Desfazimento ST CST60 - RE, e Art. 22-A do Anexo VII do RICMS/2023|01082024|
+MG120012|Apuração do ICMS ST; Outros créditos; Restituição de ST - RPTA|01012017|
+MG120013|Apuração do ICMS ST; Outros créditos; Outros créditos; ICMS monofásico. Repasse para outras UFs.|01052023|
+MG120014|Apuração do ICMS ST; Outros créditos; ICMS monofásico. Crédito presumido.|01052023|
+MG120015|Apuração do ICMS ST; Outros créditos; Crédito do estoque de Fundo de Erradicação da Miséria - FEM. Encerramento da vigência em 31/12/2022.|01012023|31122023
+MG120015|Apuração do ICMS ST; Outros créditos; Crédito do estoque de Fundo de Erradicação da Miséria - FEM|01012024|
+MG129998|Apuração do ICMS ST; Outros créditos; Outros créditos para ajuste de apuração ICMS monofásico.|01052023|
+MG129999|Apuração do ICMS ST; Outros créditos para ajuste de apuração ICMS ST.|01012009|31072015
+MG130006|Apuração do ICMS ST; Estorno de débitos; Fundo de Erradicação da Miséria - FEM|01072015|31082016
+MG130006|Apuração do ICMS ST; Estorno de débitos; Fundo de Erradicação da Miséria  FEM - adicionado ao ICMS/ST|01092016|31122018
+MG130006|Apuração do ICMS ST; Estorno de débitos; Fundo de Erradicação da Miséria  FEM - adicionado ao ICMS/ST na escrituração|01012019|31052023
+MG130006|Apuração do ICMS ST; Estorno de débitos; Fundo de Erradicação da Miséria  FEM - adicionado ao ICMS/ST na escrituração|01012024|
+MG139998|Apuração do ICMS ST; Estorno de débitos; Estorno débitos para ajuste de apuração ICMS monofásico.|01052023|
+MG139999|Apuração do ICMS ST; Estorno de débitos para ajuste de apuração ICMS ST.|01012009|
+MG149999|Apuração do ICMS ST; Deduções do imposto apurado na apuração ICMS ST.|01012009|
+MG150000|Apuração do ICMS ST; Débito Especial; ICMS Diferença de Alíquota apurado em verificação fiscal.|01012009|
+MG150001|Apuração do ICMS ST; Débito Especial; ICMS ST de Diferença de Alíquota apurado após o vencimento.|01012009|
+MG150006|Apuração do ICMS ST; Débito Especial; Fundo de Erradicação da Miséria - FEM|01082014|31052023
+MG150006|Apuração do ICMS ST; Débito Especial; Fundo de Erradicação da Miséria - FEM|01012024|
+MG150007|Apuração do ICMS ST; Débito Especial; Fundo de Erradicação da Miséria - FEM - Antecipado|01082014|31052023
+MG150007|Apuração do ICMS ST; Débito Especial; Fundo de Erradicação da Miséria - FEM - Antecipado|01012024|
+MG150009|Apuração do ICMS ST; Débito Especial; Fundo de Erradicação da Miséria - FEM Extemporâneo|01072015|31052023
+MG150009|Apuração do ICMS ST; Débito Especial; Fundo de Erradicação da Miséria - FEM Extemporâneo|01012024|
+MG150099|Apuração do ICMS ST; Débito Especial; ICMS ST de Diferença de Alíquota - outros|01012009|
+MG150101|Apuração do ICMS ST; Débito Especial; ICMS ST de importação pago no período, com emissão de Nota de entrada no período posterior.|01012012|
+MG150399|Apuração do ICMS ST; Débito Especial; Recolhimento Antecipado|01092016|
+MG150400|Apuração do ICMS ST; Débito Especial; ICMS ST destacado a menor, apurado em verificação fiscal.|01012009|
+MG150401|Apuração do ICMS ST; Débito Especial; ICMS ST destacado a menor, apurado após o vencimento.|01012009|
+MG150500|Apuração do ICMS ST; Débito Especial; ICMS ST interna, apurado por verificação fiscal.|01012009|
+MG150501|Apuração do ICMS ST; Débito Especial; ICMS ST interna, apurado após o vencimento.|01012009|
+MG150502|Apuração do ICMS ST; Débito Especial; ICMS ST interna pago no período com emissão de Nota de entrada no período posterior.|01012009|30062015
+MG150502|Apuração do ICMS ST; Débito Especial; ICMS ST interna recolhido no período com escrituração do documento de entrada da mercadoria no período posterior.|01072015|
+MG150599|Apuração do ICMS ST; Débito Especial; ICMS ST interna - outros|01012009|
+MG150600|Apuração do ICMS ST; Débito Especial; ICMS ST de transporte, apurado por verificação fiscal.|01012009|
+MG150601|Apuração do ICMS ST; Débito Especial; ICMS ST de transporte, apurado após o vencimento.|01012009|
+MG150699|Apuração do ICMS ST; Débito Especial; ICMS ST de transporte - outros|01012009|
+MG159998|Apuração do ICMS ST; Débito Especial; Débito especial para ajuste de apuração ICMS monofásico.|01052023|
+MG159999|Apuração do ICMS ST; Débito Especial; ICMS ST - Outros.|01012009|
+MG209999|Outros débitos para ajuste de apuração ICMS Difal/FCP para a MG|01012016|31122016
+MG209999|Outros débitos para ajuste de apuração ICMS DIFAL EC.87/15 para a MG|01012017|
+MG210001|Apuração do DIFAL EC.87/15; Estorno de crédito; Créditos transferidos do Difal Origem (E300=MG) para apuração do ICMS (E110) por meio do ajuste MG020008.|01012016|28022022
+MG210002|Estorno de crédito DIFAL Destino MG  devolução  processo de restituição|01092016|
+MG210003|Estorno de crédito FCP MG  devolução  processo de restituição|01092016|31122016
+MG219999|Estorno de créditos para ajuste de apuração ICMS Difal/FCP para a MG|01012016|31122016
+MG219999|Estorno de créditos para ajuste de apuração ICMS DIFAL EC.87/15 para a MG|01012017|
+MG229999|Outros créditos para ajuste de apuração ICMS Difal/FCP para a MG|01012016|31122016
+MG229999|Outros créditos para ajuste de apuração ICMS DIFAL EC.87/15 para a MG|01012017|
+MG230001|Apuração do DIFAL EC.87/15; Estorno de débitos; Débitos transferidos do Difal Origem (E300=MG) para apuração do ICMS OP (E110) por meio do ajuste MG000001.|01012016|28022022
+MG230002|Estorno de Débito DIFAL Destino MG  recolhimento por operação|01092016|
+MG230003|Estorno de Débito FCP MG  recolhimento por operação|01092016|31122016
+MG239999|Estorno de débitos para ajuste de apuração ICMS Difal/FCP para a MG|01012016|31122016
+MG239999|Estorno de débitos para ajuste de apuração ICMS DIFAL EC.87/15 para a MG|01012017|
+MG249999|Deduções do imposto apurado na apuração ICMS Difal/FCP para a MG|01012016|31122016
+MG249999|Deduções do imposto apurado na apuração ICMS DIFAL EC.87/15 para a MG|01012017|
+MG250001|Débito Especial - Débito do ICMS Interestadual apurado devido a MG - ECF autorizado por MG em outra UF  Conv.ICMS 84/2001|01072016|
+MG250002|Débito Especial de ICMS DIFAL Destino MG  recolhimento por operação|01092016|
+MG250003|Débito Especial de FCP MG  recolhimento por operação|01092016|31122016
+MG259999|Débito especial de ICMS Difal/FCP para a MG|01012016|31122016
+MG259999|Débito especial de ICMS DIFAL EC.87/15 para a MG|01012017|
+MG309999|Outros débitos para ajuste de apuração FCP para MG|01012017|
+MG310003|Estorno de crédito FCP MG  devolução  processo de restituição|01012017|
+MG319999|Estorno de créditos para ajuste de apuração FCP para MG|01012017|
+MG329999|Outros créditos para ajuste de apuração FCP para MG|01012017|
+MG330003|Estorno de Débito FCP MG  recolhimento por operação|01012017|
+MG339999|Estorno de débitos para ajuste de apuração FCP para MG|01012017|
+MG349999|Deduções do imposto apurado na apuração FCP para MG|01012017|
+MG350003|Débito Especial de FCP MG  recolhimento por operação|01012017|
+MG359999|Débito especial de FCP para MG|01012017|

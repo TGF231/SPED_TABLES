@@ -151,7 +151,7 @@ def _conferir(app, rel, arquivo, dados, falhas):
     rel.conferir("tabelas do PVA", tabelas_pva)
 
     def guias_praticos():
-        # viajam em recursos/ (SPED Tables.spec); sem eles a ajuda F1 some
+        # viajam em base/guias/ (SPED Tables.spec); sem eles a ajuda F1 some
         from sped_tables.infra import guias
         info = {}
         for layout in ("ICMS", "CONTRIB"):

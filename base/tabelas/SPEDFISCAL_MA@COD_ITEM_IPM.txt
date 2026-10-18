@@ -1,0 +1,8 @@
+versão=1 COD_IPM, DESC_COD, DT_INI, DT_FIM
+MAVAF001|Atividades de Distribuição de Energia Elétrica|01012020|
+MAVAF002|Atividades de Prestação de Serviços de Comunicação/Telecomunicação|01012020|
+MAVAF003|Produção de Petróleo e Gás Natural - Na Hipótese da Produção se Estender por Mais de um Município|01012020|
+MAVAF004|Atividades de Prestação de Serviço de Transporte Ferroviário de Passageiros|01012020|
+MAVAF005|Prestação de Serviço de Transporte Rodoviário Intermunicipal e Interestadual de Passageiros|01012020|
+MAVAF006|Prestação de Serviço de Transporte Aquaviário de Passageiros|01012020|
+MAVAF007|Aquisições de produtos agrícolas, pastoris, extrativos minerais, pescados ou outros produtos extrativos ou agropecuários sem NFA-e do produtor|01012020|

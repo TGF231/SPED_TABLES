@@ -1,0 +1,63 @@
+versão=11 COD_AJUR, DESC_AJUR, DT_INI, DT_FIM
+SE000001|OUTROS DÉBITOS.|01012009|
+SE000002|DÉBITOS RECEBIDOS.|01012009|
+SE000003|DÉBITO REFERENTE AO PSDI.|01012009|
+SE000004|TRANSFERÊNCIA DO LIVRO I DE APURAÇÃO.|01012009|
+SE010000|ESTORNO DE CRÉDITO.|01012009|
+SE010001|ESTORNO DE CRÉDITOS DETERMINADOS POR ATO ADMINISTRATIVO OU JUDICIIAL. SEM EMISSÃO DE NF.|01012009|
+SE020000|OUTROS CRÉDITOS.|01012009|
+SE020001|OUTROS CRÉDITOS DETERMINADOS POR ATO ADMINISTRATIVO OU JUDICIIAL. SEM EMISSÃO DE NF.|01012009|
+SE020002|OUTROS CRÉDITOS REFERENTES AO VALOR TOTAL DO CRÉDITO PRESUMIDO. SEM EMISSÃO DE NF.|01012009|
+SE020003|UTILIZAÇÃO DOS CRÉDITOS IMOBILIZADO.|01012009|
+SE020004|CRÉDITOS RECEBIDOS.|01012009|
+SE020005|SALDO CREDOR DO PERÍODO ANTERIOR.|01012009|
+SE020006|ICMS ANTECIPADO.|01012009|
+SE020007|TRANSFERÊNCIA DE CRÉDITOS DO LIVRO DE APURAÇÃO II PARA O LIVRO DE APURAÇÃO I.|01012009|
+SE020008|Outros Créditos restituição|01012020|
+SE020009|Outros Créditos- Aquisição Interestadual de Farinha de Trigo- Ressarcimento|01012020|
+SE020010|Crédito presumido- Comercio atacadista- outros créditos ref. ao valor total do crédito presumido, sem emissão de NF.|01012020|
+SE020011|Crédito presumido- Comercio Varejista- outros créditos ref. ao valor total do crédito presumido, sem emissão de NF|01012020|
+SE020012|Crédito presumido- Comunicação- outros créditos ref. ao valor total do crédito presumido, sem emissão de NF|01012020|
+SE020013|Crédito presumido- Indústria- outros créditos ref. ao valor total do crédito presumido, sem emissão de NF|01012020|
+SE020014|Crédito presumido- Produtor Rural- outros créditos ref. ao valor total do crédito presumido, sem emissão de NF|01012020|
+SE020015|Crédito presumido- Serviços- outros créditos ref. ao valor total do crédito presumido, sem emissão de NF|01012020|
+SE020016|Crédito presumido- Transporte- outros créditos ref. ao valor total do crédito presumido, sem emissão de NF|01012020|
+SE030000|ESTORNO DE DÉBITO.|01012009|
+SE030001|ESTORNO DE DÉBITOS DETERMINADOS POR ATO ADMINISTRATIVO OU JUDICIIAL. SEM EMISSÃO DE NF.|01012009|
+SE030002|ESTORNO DE DÉBITOS REFERENTE AO CTRC EMITIDO PELO TRANSPORTADOR, COM ICMS DE RESPONSABILIDADE DO REMENTENTE /ALIENANTE. SEM EMISSÃO DE NF.|01012009|
+SE040000|DEDUÇÕES.|01012009|
+SE040001|UTILIZAÇÃO DE CRÉDITO TRANSFERIDO. EMISSÃO DE NF NO MÊS POSTERIOR.|01012009|
+SE040002|TRANSFERÊNCIA ENTRE 2 ESTABELECIMENTOS DO MESMO TITULAR. EMISSÃO DE NF NO MÊS POSTERIOR.|01012009|
+SE040003|DEDUÇÕES REF. AO PSDI|01012009|
+SE040004|Dedução ref. ao PSDI contribuinte beneficiário do PSDI  ICMS NORMAL|01012020|
+SE040005|Deduções ref. ao PSDI- contribuinte beneficiário do PSDI-ICMS dif. Alíquota (ativo fixo)|01012020|
+SE040006|RECOLHIMENTO COMPLEMENTAR REFERENTE A CLÁUSULA TERCEIRA DO AJUSTE SINIEF 22/2021.|01032022|
+SE050002|Débitos especiais- Importação- PSDI- art.3º, IV, c da lei nº 3.140/91|01012020|
+SE050003|Débito Fiscal Especial de Autoregularização Amigo da Gente|01012019|
+SE059999|DÉBITOS FISCAIS ESPECIAIS|01012009|
+SE109999|OUTROS DÉBITOS PARA AJUSTE DE APURAÇÃO ICMS ST.|01012009|
+SE119999|ESTORNO DE CRÉDITO PARA  AJUSTE DE APURAÇÃO ICMS ST.|01012009|
+SE129999|OUTROS CRÉDITOS PARA AJUSTE DE APURAÇÃO ICMS ST.|01012009|
+SE139999|ESTORNO DE DÉBITOS PARA AJUSTE DE ICMS ST.|01012009|
+SE149999|DEDUÇÕES DO IMPOSTO APURADO NA APURAÇÃO DO ICMS ST.|01012009|
+SE159999|DÉBITO ESPECIAL DE ICMS ST.|01012009|
+SE200001|Outros débitos para ajuste de apuração ICMS Difal/FCP para SE|01012016|31122016
+SE210100|Estorno de créditos para ajuste de apuração ICMS Difal/FCP para SE|01012016|31122016
+SE220200|Outros créditos para ajuste de apuração ICMS Difal/FCP para SE|01012016|31122016
+SE230300|Estorno de débitos para ajuste de apuração ICMS Difal/FCP para SE|01012016|31122016
+SE240400|Deduções do imposto apurado na apuração ICMS Difal/FCP para  SE|01012016|31122016
+SE250500|Débito especial de ICMS Difal/FCP para a SE|01012016|31122016
+SE099999|Controle do ICMS extra-apuração para SE|01012016|
+SE200001|Outros débitos para ajuste de apuração ICMS Difal para SE|01012017|
+SE210100|Estorno de créditos para ajuste de apuração ICMS Difal para SE|01012017|
+SE220200|Outros créditos para ajuste de apuração ICMS Difal para SE|01012017|
+SE230300|Estorno de débitos para ajuste de apuração ICMS Difal para SE|01012017|
+SE240400|Deduções do imposto apurado na apuração ICMS Difal para SE|01012017|
+SE250500|Débito especial de ICMS Difal para SE|01012017|
+SE300001|Outros débitos para ajuste de apuração ICMS FCP para SE|01012017|
+SE310100|Estorno de créditos para ajuste de apuração ICMS FCP para SE|01012017|
+SE320200|Outros créditos para ajuste de apuração ICMS FCP para SE|01012017|
+SE330300|Estorno de débitos para ajuste de apuração ICMS FCP para SE|01012017|
+SE340400|Deduções do imposto apurado na apuração ICMS FCP para SE|01012017|
+SE350500|Débito especial de ICMS FCP para SE|01012017|
+SE050001|Débito Fiscal Especial do Fundo de Equilíbrio Fiscal|01012017|

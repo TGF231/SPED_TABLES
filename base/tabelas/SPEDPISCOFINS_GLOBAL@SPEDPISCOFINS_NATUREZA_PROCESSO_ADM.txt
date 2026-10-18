@@ -1,0 +1,8 @@
+versão=2 CODIGO, DESCRICAO, DT_INI, DT_FIM
+01|Processo Administrativo de Consulta|01012017|
+02|Despacho Decisório|01012017|
+03|Ato Declaratório Executivo|01012017|
+04|Ato Declaratório Interpretativo|01012017|
+05|Decisão Administrativa de DRJ ou do CARF|01012017|
+06|Auto de Infração|01012017|
+99|Outros|01012017|

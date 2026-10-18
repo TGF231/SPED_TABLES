@@ -1,0 +1,10 @@
+versão=1 CODIGO, DESCRICAO, DT_INI, DT_FIM, IND_ATIV, IND_AJUSTE, GRUPO, SUBGRUPO, IND_OUTROS
+D0301010|Provisões de prêmios - Previdencia Complementar Aberta  (Resolução CNSP nº 281/2014)|01012014||03;06|P|300|D0301|N
+D0301020|Provisões matematicas - Previdencia Complementar Aberta  (Resolução CNSP nº 281/2014)|01012014||03;06|P|300|D0301|S
+D0301030|Demais provisões - Previdencia Complementar Aberta (Resolução CNSP nº 281/2014)|01012014||03;06|P|300|D0301|N
+D0301070|Provisões ou reservas técnicas - Entidades fechadas|01012014||03;06|P|300|D0301|N
+D0302010|Rendimentos auferidos nas Aplicações Financeiras de recursos destinados com Provisões Técnicas|01012014||03;06|P|300|D0302|N
+D0303010|Rendimentos dos ativos financeiros garantidores das provisões técnicas de empresas de seguros privados destinadas exclusivamente a planos de benefícios de caráter previdenciário e a seguros de vida com cláusula de cobertura por sobrevivência|01012014||03;06|P|300|D0303|N
+D0390010|Outras deduções e exclusões de caráter específico|01012014||03;06|P|300|D0390|S
+D0398010|Ajustes Negativos das deduções e exclusões de caráter específico|01012014||03;06|N|300|D0398|N
+D0399010|Ajustes Negativos das deduções e exclusões de caráter específico|01012014||03;06|P|300|D0399|N

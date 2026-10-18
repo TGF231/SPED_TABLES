@@ -1,0 +1,22 @@
+versão=9 INF_ADIC, DESC_INF, DT_INI, DT_FIM
+BA000110|Declaração da Receita Incentivada - Incentivo do Crédito Presumido de ICMS, Lei 7.025/97 e Decreto 6.734/97|01072014|
+BA000111|Declaração de créditos de ICMS não utilizados por empresa beneficiada com o incentivo fiscal do Crédito Presumido, Dec. 6.734/97|01112014|
+BA000112|Declaração do valor das operações relativas às atividades incentivadas, Dec nº 18.802/18|01122023|
+BA000113|Declaração do valor das operações de saída dos produtos amparados pelo incentivo fiscal do art. 269, inciso XIII do RICMS/BA, aprovado pelo Decreto 13.780/2012|01032026|
+BA000114|Declaração de créditos de ICMS não utilizados relativos aos insumos dos produtos fabricados e amparados pelo incentivo fiscal do art. 269, inciso XIII do RICMS/BA, aprovado pelo Decreto 13.780/2012|01032026|
+BA000115|Declaração de Piso de Faturamento por empresa beneficiada com o incentivo fiscal do Crédito Presumido, Dec. 6.734/97|01112014|
+BA000116|Declaração do valor mínimo anual a recolher - PROIND - Dec nº 18.802/18|01122023|
+BA000120|Declaração de Débito - Programa Desenvolve - ICMS com prazo de recolhimento dilatado, Lei 7.980/01 e Decreto 8.205/02|01072014|
+BA000121|Declaração do SDPI (Saldo Devedor Passível do Incentivo pelo DESENVOLVE - Programa Desenvolve, Lei 7.980/01 e Decreto 8.205/02|01072014|
+BA000125|Declaração de Piso de Recolhimento por empresa beneficiada como Programa Desenvolve, Dec. 8.805/02|01112014|
+BA000126|Declaração de Piso de Recolhimento Anual por empresa beneficiada como Programa PROIND, Dec. 18.802/2019|01012019|
+BA000127|Declaração de Valor Mínimo de Recolhimento por empresa beneficiada como Programa PROIND, Dec. 18.802/2019|01012022|
+BA000130|Declaração de Débito - Programa Pronaval - ICMS com prazo de recolhimento dilatado, Lei 9.829/05 e Decreto 11.015/08|01072014|
+BA000131|Declaração do SDPI (Saldo Devedor Passível do Incentivo pelo PRONAVAL - Programa Pronaval, Lei 9.829/05 e Decreto 11.015/08|01072014|
+BA000135|Declaração de Piso de Recolhimento por empresa beneficiada como Programa Pronaval, Dec. 11.015/08|01112015|
+BA000140|Declaração da Receita Incentivada - Artigos de Informática, eletrônica e Telecomunicações, Decreto 4.316/95|01072014|
+BA000141|Declaração de Créditos de ICMS não utilizados, por empresa beneficiada com o Crédito Presumido - Dec. 4.316/95|01092016|
+BA000150|Declaração da Receita Incentivada - PROIND - nos termos do art. 1º do Decreto nº 18.802/18|01012022|
+BA000151|Declaração do Saldo Devedor Passível do Incentivo do PROIND - Decreto 18.802/2018|01012019|
+BA000122|Declaração do VSB (Valor Sujeito ao Benefício) do Programa DESENVOLVE - Lei 7.980/01 e Decreto 8.205/02|01112014|31082015
+BA000141|Declaração de Créditos de ICMS não utilizados, por empresa beneficiada com o Crédito Presumido - Dec. 6.734/97|01112014|31082016

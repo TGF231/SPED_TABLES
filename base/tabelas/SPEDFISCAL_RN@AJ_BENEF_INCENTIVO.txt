@@ -1,0 +1,200 @@
+versão=26 COD_AJ, DESC_AJ, DT_INI, DT_FIM
+RN00000002|Crédito de ICMS antecipado recolhido (1240)|01052017|
+RN00000009|ICMS antecipado (1240)  recolhido no Posto Fiscal, inclusive nas saídas|01102010|
+RN00000010|ICMS antecipado (1240) retido pelo fornecedor na nota fiscal, decorrente de substituição tributária por opção própria. Art. 36, XII e Art. 83, §4º, II do Dec. nº 31.825/2022|01082023|
+RN00000011|Regime Atacadista - Crédito nas aquisições de outro detentor do regime atacadista (18%), Art. 16-B, §3º|01102019|30062026
+RN00000012|Regime Atacadista - Crédito nas aquisições de outro detentor do regime atacadista (25% ou 27%), Art. 16-B, §3º|01102019|30062026
+RN00000013|Regime Atacadista - Crédito nas aquisições de outro detentor do regime atacadista (Cesta Básica), Art. 16-B, §3º|01102019|30062026
+RN00000014|Regime Atacadista Medicamentos- Crédito nas aquisições de outro detentor do regime atacadista, Art. 16-P, § 3º|01012020|30062026
+RN00000015|Regime Atacadista - Crédito nas aquisições de produtos da Cesta Básica, Art. 16-B, §16º, inciso I|01052020|30062026
+RN00000016|Regime Atacadista - Crédito nas aquisições de produtos adquiridos da indústria local, Art. 16-B, §16º, inciso I|01052020|30062026
+RN00000017|Regime Atacadista - Crédito nas aquisições de produtos adquiridos da indústria local, Art. 16-B, §16º, inciso II|01052020|30062026
+RN00000018|Regime Atacadista - Crédito nas aquisições de produtos adquiridos da indústria local ou em operação cujo imposto já tenha sido retido anteriormente por substituição tributária, Art. 16-P, §10 - Dec. 22.199/2011|01052020|30062026
+RN10000001|Crédito presumidoart. 9º (Ref. a 1/3 do estoque de mercadorias tributadas) - 2% RN10000001|01052011|
+RN10000002|Outros Créditos  FECOP  5410  (Op. Direta Consumo)|01082011|
+RN10000400|Outros Créditos  Crédito Presumido referente às aquisições de peixe, moluscos ou crustáceos, capturados ou criados em viveiros neste Estado, desde que adquiridos de produtores, beneficiadores ou cooperativas de produtores ou pescadores, optantes do Simples Nacional.RICMS-Art.112,XXIX|01012020|
+RN10000401|Outros Créditos  Crédito presumido referente às aquisições de serviços de industrialização por encomenda ou de mercadorias, sujeitas à incidência do ICMS, efetuadas à empresa industrial enquadrada no Simples Nacional, localizada neste Estado.RICMS-Art.112,XXIII|01012020|28022026
+RN10001001|Outros Créditos - ICMS sobre Serviço de Transporte recolhido antecipadamente (Cód. de Receita 2220)|01012020|
+RN11000001|Outros Créditos  FECOP  5415  (Op. Interna S.T.)|01082011|
+RN11000002|Outros Créditos  FECOP  5420  (Op. Interest. S.T.)|01082011|
+RN40000001|Outros Débitos - Aquisições internas - art. 4º, I,- Cód. Recolhimento 1210 - 1,00% (um por cento), exceto quando for entre detentores do regime especial estabelecido neste Decreto RN40000001|01052011|
+RN40000002|Outros Débitos - Aquisições interestaduais - art. 4º, II, a - Cód. Recolhimento 1242 - 6,00% (seis por cento) - oriundas dos Estados das Regiões Sul e Sudeste, exceto Espírito Santo RN40000002|01052011|
+RN40000003|Outros Débitos - Aquisições interestaduais  art. 4º, II, b - Cód. Recolhimento 1242 - 3,50% - oriundas dos Estados das Regiões Norte, Nordeste e Centro-Oeste, inclusive Espírito Santo RN40000003|01052011|
+RN40000004|Outros Débitos - Aquisições do exterior  art. 4º, III - Cód. Recolhimento 1230 - 6,00% RN40000004|01052011|
+RN40000005|Outros Débitos - Aquisições produtos da cesta básica - 0% RN40000005|01052011|
+RN40000006|Outros Débitos - Saídas internas - art. 4º, IV, a Cód. Recolhimento 1210 (Alíquota 17%) - 3,00% (três por cento) RN40000006|01052011|
+RN40000007|Outros Débitos - Saídas internas - art. 4º, IV, b Cód. Recolhimento 1210 (Alíquota 25 %) - 4,41% RN40000007|01052011|
+RN40000008|Outros Débitos - Saídas internas - art. 4º, V, a Cód. Recolh. 1210 (P Física - Alíquota 17%) - 2,55% RN40000008|01052011|
+RN40000009|Outros Débitos - Saídas internas - art. 4º, V, b Cód. Recolh. 1210 (P Física - Alíquota 25%) - 3,75%  RN40000009|01052011|
+RN40000010|Outros Débitos - Saídas internas  Não contribuintes - art. 4º, VI,Cód. Recolh. 1210 (Excedente de 20%) - 2% RN40000010|01052011|
+RN40000011|Outros Débitos - Saídas internas - art. 4º, VII, b.1 Cód. Recolh. 1210 (Anexo 114) - 5% RN40000011|01052011|
+RN40000012|Outros Débitos - Saídas interestaduais - art. 4º, VII, a Cód. Recolh. 1210   (Prod.Quimioterápicos) - 2,3% RN40000012|01052011|
+RN40000013|Outros Débitos - Saídas interestaduais - art. 4º, VII, b.2 Cód. Recolhimento 1210 (Anexo 114) - 2,5% RN40000013|01052011|
+RN40000014|Outros Débitos - Saídas interestaduais - art. 4º, VIII, a Cód. Recolhimento 1210 - 1,00% RN40000014|01052011|
+RN40000015|Outros Débitos - Saídas interestaduais - art. 4º, VIII, b Cód. Recolhimento 1210 - 3,00% RN40000015|01052011|
+RN40000016|Regime Atacadista - Ent. Interestadual por Transferência oriundas dos Estados das Regiões Sul e Sudeste, exceto Espirito Santo - Art. 4º, inciso IX, alínea "a" do Dec. 22.199/2011|01122016|
+RN40000017|Regime Atacadista - Ent. Interestadual por Transferência oriundas dos Estados das Regiões Norte, Nordeste e Centro-Oeste, inclusive Espirito Santo - Art. 4º, inciso IX, alínea "b" do Dec. 22.199/2011|01122016|
+RN40000018|Regime Atacadista - Saída Interna por Transferência para outro estabelecimento da mesma empresa. Art. 4º, inciso X, alínea "a" do Dec. 22.199/2011|01122016|
+RN40000019|Regime Atacadista - Saída Interna por Transferência para outro estabelecimento da mesma empresa. Art. 4º, inciso X, alínea "b" do Dec. 22.199/2011|01122016|
+RN40000020|Regime Atacadista - Saída Interna por Transferência para outro estabelecimento da mesma empresa. Art. 4º, inciso XI do Dec. 22.199/2011|01122016|
+RN40000021|Regime Atacadista - Saída Interna Exceto Transferência para outro estabelecimento da mesma empresa. Art. 4º, inciso XII do Dec. 22.199/2011|01122016|
+RN50009001|Regime Atacadista - Estorno de crédito nas devoluções de produtos da Cesta Básica, Art. 16-B, §16º, inciso I|01012020|
+RN50009002|Regime Atacadista - Estorno de crédito nas devoluções de produtos adquiridos da indústria local, Art. 16-B, §16º, inciso I|01012020|
+RN70000001|Débito Especial Extra-apuração - FECOP  5410  (Op. Direta Consumo) - 2% RN70000001|01052011|
+RN70000003|Débito Especial lançado por TAFD, recolhido ou a recolher, apropriado no período da escrituração do documento fiscal  Art. 36, XII do Dec. nº 31.825/2022 e Art. 10  Portaria 122/2017.|01082023|
+RN70000004|Débito Especial antecipado, retido e destacado nos campos BC-ST e ICMS-ST da NF de entrada, pelo contribuinte ST de outra UF, por opção própria, mediante Reg. Esp. de tributação (art. 89, § 2° do Decreto 31.825/22)|01082023|
+RN70000005|Débito Especial referente a documento fiscal extemporâneo|01082011|
+RN70000006|Débito Especial - Aquisições interestaduais - art. 4º, II, a - Cód. Recolhimento 1242 - 6,00% (seis por cento) - oriundas dos Estados das Regiões Sul e Sudeste, exceto Espírito Santo|01082011|
+RN70000007|Débito Especial - Aquisições interestaduais  art. 4º, II, b - Cód. Recolhimento 1242 - 3,50% - oriundas dos Estados das Regiões Norte, Nordeste e Centro-Oeste, inclusive Espírito Santo|01082011|
+RN70001004|ICMS recolhido antecipado referente a diferencial de alíquota de Serviço de Transporte(1245).|01102010|
+RN70001007|ICMS a recolher referente a diferencial de alíquota de Serviço de Transporte - ativo permanente(1245)|01122015|
+RN70001008|ICMS a recolher referente a diferencial de alíquota de Serviço de Transporte - consumo(1245)|01122015|
+RN70009002|ICMS recolhido antecipado referente a diferencial de alíquota do Ativo Imobilizado(1245)|01102010|
+RN70009003|ICMS recolhido antecipado referente a diferencial de alíquota de uso e consumo(1245)|01102010|
+RN70009005|ICMS a recolher referente a diferencial de alíquota do Ativo Imobilizado(1245)|01072010|
+RN70009006|ICMS a recolher referente a diferencial de alíquota de material de uso e consumo(1245)|01072010|
+RN71000001|Débito Especial Extra-apuração - FECOP  5415  (Op. Interna S.T.)|01082011|
+RN71000002|Débito Especial Extra-apuração - FECOP  5420  (Op. Interest. S.T.)|01082011|
+RN71000229|Débito Especial  Parcela devida ao Estado do RN, decorrente da venda direta a consumidor de veículos automotores, realizada por montadora ou importadora.Convênio 51/00|01102010|
+RN71100001|Débito Especial - substituto pelas saídas - Nas saídas internas de produtos derivados de farinha de trigo realizada por estabelecimentos beneficiários do PROEDI (1225) - Art. 1º, §§5º e 6º do anexo 009 do Dec. nº 31.825/2022|01082023|
+RN71100008|Débito Especial - Substituto pelas entradas - ICMS retido de terceiros em operações de entrada de mercadorias (1220) - Dec. Nº 31.825/2022, art. 58, inciso V, alínea c.|01082023|
+RN71100224|Débito Especial - ICMS devido referente às operações sujeitas à substituição tributária, a ser recolhido pelo próprio adquirente, por não ter sido retido pelo remetente, exceto os valores recolhidos ou a recolher através de TADF (1241). Dec. Nº 31.825/2022, art. 649, § 3º|01082023|
+RN71100225|Débito Especial - ICMS devido referente às operações sujeitas à substituição tributária, a ser recolhido ou a recolher pelo próprio adquirente através de TADF (1241).- Dec. Nº 13.640/89|01082023|01082023
+RN71100226|Débito Especial - ICMS referente às operações sujeitas à substituição tributária recolhido pelo próprio adquirente, no posto fiscal. (DARE) .- Dec. Nº 13.640/90|01082023|01082023
+RN71101111|Débito Especial - Substituto pelas saídas - prestação de serviços de transportes - ART. 649 IV e VI do Dec. Nº 31.825/2022 (1225)|01082023|
+RN79990302|DIFERIMENTO - aquisição, em operação interna, de minerais, tais como areia, brita, argila, pedra e quaisquer outras mercadorias, para emprego em obra de responsabilidade de empresa de construção civil.Dec. 13.640/ 97  - Art. 31, IX|01082023|01082023
+RN91990227|ICMS referente às operações sujeitas à substituição tributária recolhido através de GNRE.- Dec. Nº 13.640/91|01082023|01082023
+RN91990228|ICMS referente às operações sujeitas à substituição tributária, retido na nota fiscal, pelo contribuinte com inscrição de substituto tributário no RN .- Dec. Nº 13.640/92|01082023|01082023
+RN99990001|Informativo - Valor Contábil - Outras Aquisições não alcançada pelo Regime (Ativo Fixo, Consumo, ST, etc.) RN99990001|01052011|
+RN99990002|Informativo - Valor Contábil - Outras Saídas internas não alcançada pelo Regime  RN99990002|01052011|
+RN99990003|Informativo - Valor Contábil - Outras Saídas interestaduais não alcançadas pelo Regime  RN99990003|01052011|
+RN99990004|Informativo - Período da efetiva entrada ou saída das mercadorias: escrituração do documento fiscal, sem crédito nem débito especial - Regime de Caixa|01082011|
+RN99990101|SUSPENSÃO - mercadoria remetida a outro estabelecimento do mesmo contribuinte ou de terceiros, dentro do Estado, para fins de industrialização ou beneficiamento. - Art. 8º, §1º, I do Dec. nº 31.825/2022|01082023|
+RN99990102|SUSPENSÃO - retorno de produto de que trata o inciso I do art. 29, ao estabelecimento de origem. - Art. 8º, §1º, II - Dec. nº 31.825/2022|01082023|
+RN99990103|SUSPENSÃO - de produtos agropecuários ou industrializados destinados a exposição ou feira, para fins de exposição ao público em geral. - Art. 8º, §1º, III - Dec. nº 31.825/2022|01082023|
+RN99990104|SUSPENSÃO - produtos de que trata o inciso III do art. 29, em retorno ao estabelecimento de origem. - Art. 8º, §1º, IV - Dec. nº 31.825/2022|01082023|
+RN99990105|SUSPENSÃO - bens, máquinas, equipamentos e objetos usados, bem como de suas partes e peças, integrados no ativo fixo, destinados a outros estabelecimentos, dentro do Estado, para fins de conserto, limpeza, revisão, restauração ou recondicionamento. - Art. 8º, §1º, V - Dec. nº 31.825/2022|01082023|
+RN99990106|SUSPENSÃO - retorno ao estabelecimento de origem, dos bens referidos no art. 8º, §1º, VI - Dec. nº 31.825/2022|01082023|
+RN99990107|SUSPENSÃO - mercadorias em demonstração, dentro do território do Estado. - Art. 8º, §1º, VII - Dec. nº 31.825/2022|01082023|
+RN99990108|SUSPENSÃO - mercadorias de que trata o inciso VII do art. 8º, em retorno ao estabelecimento de origem. - Art. 8º, §1º, VIII - Dec. nº 31.825/2022|01082023|
+RN99990109|SUSPENSÃO - em operações interestaduais de produtos destinados a conserto, reparo ou industrialização. - Art. 8º, §1º, IX - Dec. nº 31.825/2022|01082023|
+RN99990110|SUSPENSÃO - operações internas, de obras de arte que se destinem a demonstração e exposições, quando efetuadas por galerias de arte e estabelecimentos similares. - Art. 8º, §1º, X - Dec. nº 31.825/2022|01082023|
+RN99990111|SUSPENSÃO - retorno ao estabelecimento de origem, das mercadorias previstas nos incisos IX e X do art. 8º - Art. 8º, §1º, XI - Dec. nº 31.825/2022|01082023|
+RN99990112|SUSPENSÃO - operações interestaduais, de bens integrados ao ativo imobilizado, bem como de moldes e matrizes, para fornecimento de serviços fora do estabelecimento, para serem utilizados na elaboração de produtos encomendados pelo remetente. - Art. 8º, §1º, XII - Dec. nº 31.825/2022|01082023|
+RN99990113|SUSPENSÃO - bens a que se refere o inciso XII do art. 29, em retorno ao estabelecimento de origem. - Art. 8º, §1º, XIII - Dec. nº 31.825/2022|01082023|
+RN99990201|DIFERIMENTO - saída interna de minério promovida por garimpeiro diretamente para o Órgão Estadual competente. - Art. 1º, I do Anexo 002 - Dec. nº 31.825/2022|01082023|
+RN99990202|DIFERIMENTO - saída interna de leite fresco, produzido neste Estado. - Dec. 13.640/ 97  - Art. 31, IV|01082023|01082023
+RN99990203|DIFERIMENTO - saída interna de mercadorias do estabelecimento produtor para estabelecimento de cooperativa de que faça parte, situada dentro do Estado. - Art. 23, I do Anexo 002  - Dec. nº 31.825/2022|01082023|
+RN99990204|DIFERIMENTO - saída interna de mercadorias de estabelecimento de cooperativa de produtores para estabelecimento, neste Estado, da própria cooperativa, de cooperativa central ou de federação de que a cooperativa remetente faça parte. - Art. 23, II do Anexo 002 - Dec. nº 31.825/2022|01082023|
+RN99990205|DIFERIMENTO - saída interna de um para outro estabelecimento produtor do mesmo contribuinte, localizado no mesmo Município, de produto primário em estado bruto ou submetido a beneficiamento elementar. - Art. 28, III do Anexo 002 - Dec. nº 31.825/2022|01082023|
+RN99990206|DIFERIMENTO - aquisição, em operação interna, de minerais, tais como areia, brita, argila, pedra e quaisquer outras mercadorias, para emprego em obra de responsabilidade de empresa de construção civil. - Dec. 13.640/ 97  - Art. 31, IX|01082023|01082023
+RN99990207|DIFERIMENTO - operação interna de transferência de estoque de mercadorias, móveis e utensílios, de firma ou sociedade, para outra firma ou sociedade, dentro do Estado, em virtude de transformação, fusão ou incorporação. - Art. 28, IV do Anexo 002 - Dec. nº 31.825/2022|01082023|
+RN99990208|DIFERIMENTO - saída interna, para incorporação ao ativo fixo de pessoas jurídicas, de máquinas, equipamentos, instalações, móveis e utensílios, desde que para integralização de capital social subscrito ou em decorrência de transformação, fusão ou incorporação de empresas localizadas dentro do Estado. - Art. 28, II do Anexo 002 - Dec. nº 31.825/2022|01082023|
+RN99990209|DIFERIMENTO - importação, realizada por contribuinte do imposto, de quaisquer mercadorias, por 60 (sessenta) dias a partir da data em que ocorrer o desembaraço aduaneiro. Art. 24, §§1º e 2º do Anexo 002 - Dec. nº 31.825/2022|01082023|
+RN99990210|DIFERIMENTO - operações internas de fornecimento de alimentação, bebidas e outras mercadorias, inclusive os serviços prestados a qualquer empresa, decorrentes de contrato que envolva repetidos fornecimentos. - Art. 28, I do Anexo 002 - Dec. nº 31.825/2022|01082023|
+RN99990211|DIFERIMENTO - operações internas ou interestaduais com EAC ou com B100, quando destinados a distribuidora de combustíveis, para o momento em que ocorrer a saída da gasolina C ou a saída do óleo diesel B promovida pela distribuidora de combustíveis (Conv. ICMS 110/07 e 130/20)|01082023|
+RN99990212|DIFERIMENTO - importação de produtos de fiação e tecelagem, realizadas por estabelecimento industrial. - Art. 24, V do Anexo 002 - Dec. nº 31.825/2022|01082023|
+RN99990213|DIFERIMENTO - importação do produto classificado na posição NBM-SH 1001.90.90  trigo em grão, realizada por estabelecimento industrial. - Art. 24, III do Anexo 002 - Dec. nº 31.825/2022|01082023|
+RN99990214|DIFERIMENTO - importação do produto classificado na posição NCM 3206.19.90; 3901.10.92; 3901.90.10; 3901.90.90; 3921.90.20; 7607.11.90; 7607.20.00 - Art. 24, VI, a a g do Anexo 002 - Dec. nº 31.825/2022|01082023|
+RN99990215|DIFERIMENTO - na importação do exterior de partes e peças de reposição para máquinas e equipamentos utilizados no processo produtivo da empresa adquirente, quando esta for beneficiária do PROEDI. - Art. 25, I do Anexo 002 - Dec. nº 31.825/2022|01082023|
+RN99990216|DIFERIMENTO - na aquisição em outra unidade da federação, relativamente ao diferencial de alíquota, de partes e peças de reposição para máquinas e equipamentos utilizados no processo produtivo da empresa adquirente. - Art. 26, I do Anexo 002 - Dec. nº 31.825/2022|01082023|
+RN99990217|DIFERIMENTO - na importação do exterior de matéria-prima e de insumos a serem utilizados exclusivamente no processo produtivo da empresa adquirente, quando esta for beneficiária do PROEDI. - Art. 24, VII do Anexo 002 - Dec. nº 31.825/2022|01082023|
+RN99990219|DIFERIMENTO - nas operações interestaduais com cana-de-açúcar de terceiros ou própria oriunda de unidade autônoma localizada em área não-contígua e utilizada como insumo em atividade integrada, entre contribuintes dos Estados da Paraíba, Pernambuco e Rio Grande do Norte. - Art. 21, I do Anexo 002 - Dec. nº 31.825/2022|01082023|
+RN99990220|DIFERIMENTO - na saída interna de mercadorias destinadas à utilização como matéria prima, material secundário ou de embalagem, por outra empresa localizada neste Estado, promovida por estabelecimento beneficiário do Programa de Apoio ao Desenvolvimento Industrial do Rio Grande do Norte (PROADI). - Dec. 13.640/ 97  - Art. 31, XXVI|01082023|01082023
+RN99990221|DIFERIMENTO - nas saídas internas de produtos com bordados típicos regionais identificados pela marca Bordados do Seridó, promovidas por associações ou cooperativas legalmente constituídas. - Art. 23, IV do Anexo 002 - Dec. nº 31.825/2022|01082023|
+RN99990222|DIFERIMENTO - saídas internas promovidas por refinaria ou suas bases, de gasolina A, álcool etílico anidro combustível e óleo diesel destinadas à distribuidora de combustíveis detentora do regime especial. - Dec. 13.640/ 97  - Art. 31, XXVIII|01082023|01082023
+RN99990223|DIFERIMENTO - na importação do exterior do produto classificado na posição NCM-SH  1101.00.10 - farinha de trigo, a ser utilizada exclusivamente no processo produtivo da empresa adquirente, realizada por estabelecimento industrial beneficiário do PROEDI, exceto moageiro. - Art. 24, IV do Anexo 002 - Dec. nº 31.825/2022|01082023|
+RN99990300|Venda direta a consumidor de veículos automotore, localizado no RN, realizada por montadora ou importadora.Convênio 51/00|01102010|
+RN99990301|Venda direta a consumidor de veículos automotores, localizado no RN. Nos casos em que a concessionária que fará a entrega do veículo estiver localizada em outra Unidade da Federação. Convênio 51/01, claúsula primeira § 2º.|01102010|
+RN99993218|DIFERIMENTO - no fornecimento de energia elétrica, pela Companhia Energética do Rio Grande do Norte  COSERN, para as cooperativas de eletrificação rural inscritas no Cadastro de Contribuintes do Estado do Rio Grande do Norte. - Art. 23, III do Anexo 002 - Dec. nº 31.825/2022|01082023|
+RN99999001|Regime Especial Atacadista - saídas internas para órgãos públicos - Inc VI, Art. 4º do Dec. 22.199/2011|01082023|
+RN99999002|Regime Especial Atacadista - saídas interestaduais para órgãos públicos - §3º do Art. 4º do Dec. 22.199/2011|01082023|
+RN99999003|Regime Especial Atacadista - entrada interna proveniente de contribuinte detentor do regime especial previsto no Dec. 22.199/2011. 4º, I, "a"|01082023|
+RN99999004|Regime Especial Atacadista - entrada interna proveniente de industria localizada neste estado. Art. 4º, I, "b" Dec. 22.199/2011|01082023|
+RN99999005|Regime Especial Atacadista - saída interestadual mercadorias desembaraçadas em portos e aeroportos do RN. Art. 4º, VIII, "a" Dec. 22.199/2011|01082023|
+RN99990101|SUSPENÇÃO - mercadoria remetida a outro estabelecimento do mesmo contribuinte ou de terceiros, dentro do Estado, para fins de industrialização ou beneficiamento. - Dec. 13.640/ 97  - Art. 29, I|01072010|28022018
+RN99990102|SUSPENÇÃO - retorno de produto de que trata o inciso I do art. 29, ao estabelecimento de origem. - Dec. 13.640/ 97  - Art. 29, II|01072010|28022018
+RN99990103|SUSPENÇÃO - de produtos agropecuários ou industrializados destinados a exposição ou feira, para fins de exposição ao público em geral. - Dec. 13.640/ 97  - Art. 29, III|01072010|28022018
+RN99990104|SUSPENÇÃO - produtos de que trata o inciso III do art 29, em retorno ao estabelecimento de origem. - Dec. 13.640/ 97  - Art. 29, IV|01072010|28022018
+RN99990105|SUSPENÇÃO - bens, máquinas, equipamentos e objetos usados, bem como de suas partes e peças, integrados no ativo fixo, destinados a outros estabelecimentos, dentro do Estado, para fins de conserto, limpeza, revisão, restauração ou recondicionamento. - Dec. 13.640/ 97  - Art. 29, V|01072010|28022018
+RN99990106|SUSPENÇÃO - retorno ao estabelecimento de origem, dos bens referidos no inciso V do art 29. - Dec. 13.640/ 97  - Art. 29, VI|01072010|28022018
+RN99990107|SUSPENÇÃO - mercadorias em demostração, dentro do território do Estado. - Dec. 13.640/ 97  - Art. 29, VII|01072010|28022018
+RN99990108|SUSPENÇÃO - mercadorias de que trata o inciso VII do art 29, em retorno ao estabelecimento de origem. - Dec. 13.640/ 97  - Art. 29, VIII|01072010|28022018
+RN99990109|SUSPENÇÃO - em operações interestaduais de produtos destinados a conserto, reparo ou industrialização. - Dec. 13.640/ 97  - Art. 29, IX|01072010|28022018
+RN99990110|SUSPENÇÃO - operações internas, de obras de arte que se destinem a demonstração e exposições, quando efetuadas por galerias de arte e estabelecimentos similares. - Dec. 13.640/ 97  - Art. 29, X|01072010|28022018
+RN99990111|SUSPENÇÃO - retorno ao estabelecimento de origem, das mercadorias previstas nos incisos IX e X do art 29. - Dec. 13.640/ 97  - Art. 29, XI|01072010|28022018
+RN99990112|SUSPENÇÃO - operações interestaduais, de bens integrados ao ativo imobilizado, bem como de moldes, matrizes,e etc para fornecimento de serviços fora do estabelecimento, ou com destino a outro estabelecimento inscrito como contribuinte, para serem utilizados na elaboração de produtos encomendados pelo remetente. - Dec. 13.640/ 97  - Art. 29, XII|01072010|28022018
+RN99990113|SUSPENÇÃO - bens a que se refere o inciso XII do art 29, em retorno ao estabelecimento de origem . - Dec. 13.640/ 97  - Art. 29, XIII|01072010|28022018
+RN00000002|Crédito de ICMS antecipado (1240), recolhido ou a recolher, com débito lançado por TAFD, apropriado no período da escrituração do documento fiscal - Dec. 13.640/ 97 - Art. 109 A, XII  e Portaria 066/2006, art. 8º|01082011|30042017
+RN00000001|ICMS antecipado (1240) a recolher  com débito lançado por  TAFD ou recolhido no Posto Fiscal, inclusive nas saídas  - Dec. 13.640/ 97  - Art. 109 A, XII|01072010|30092010
+RN99999002|ICMS recolhido antecipado referente a diferencial de alíquota do Ativo Imobilizado(1245)|01072010|30092010
+RN99999003|ICMS recolhido antecipado referente a diferencial de alíquota de uso e consumo(1245)|01072010|30092010
+RN99999004|ICMS recolhido antecipado referente a diferencial de alíquota de Serviço de Transporte(1245)|01072010|30092010
+RN70001007|ICMS a recolher referente a diferencial de alíquota de Serviço de Transporte(1245)|01072010|30112015
+RN70000002|Débito Especial Extra-apuração - FECOP  5415  (Op. Interna S.T.) - 2% RN70000002|01052011|31032017
+RN00000008|ICMS antecipado (1240) a recolher  com débito lançado por  TAFD ou recolhido no Posto Fiscal, inclusive nas saídas.  - Dec. 13.640/ 97  - Art. 109 A, XII  e Portaria 066/2006, art. 8º|01102010|31072011
+RN00000010|ICMS  antecipado (1240 ) retido pelo fornecedor na nota fiscal,  decorrente de substituição tributária por opção própria.Dec. 13.640/ 97  - Art. 109 A, XII e art. 662-B inciso V, alínea b|01102010|31072023
+RN70000003|Débito Especial lançado por TAFD, recolhido ou a recolher, apropriado no período da escrituração do documento fiscal - Dec. 13.640/ 97 - Art. 109 A, XII  e Portaria 066/2006, art. 8º|01082011|31072023
+RN70000004|Débito Especial antecipado, retido e destacado nos campos BC-ST e ICMS-ST da NF de entrada, pelo contribuinte ST de outra UF, por opção própria, mediante Reg. Esp. de tributação (art. 662-B, inciso V, alínea b, do RICMS)|01082011|31072023
+RN71100001|Débito Especial - substituto pelas saídas - Nas saídas internas de produtos derivados de farinha de trigo realizada por estabelecimentos beneficiários do PROADI (1225) - Dec. 13.640/ 97 - Art. 903 -B , § 5º e 6º|01012009|31072023
+RN71100008|Débito Especial - Substituto pelas entradas - ICMS retido de terceiros em operações de entrada de mercadorias (1220) - Dec. Nº 13.640/97 - art. 578, parágrafo 1º, d, 6|01012011|31072023
+RN71100224|Débito Especial - ICMS devido referente às operações sujeitas à substituição tributária, a ser recolhido pelo próprio adquirente, por não ter sido retido pelo remetente, exceto os valores recolhidos ou a recolher através de TADF (1241).Dec. Nº 13.640/88|01112015|31072023
+RN71100225|Débito Especial - ICMS devido referente às operações sujeitas à substituição tributária, a ser recolhido ou a recolher pelo próprio adquirente através de TADF (1241).- Dec. Nº 13.640/89|01112015|31072023
+RN71100226|Débito Especial - ICMS referente às operações sujeitas à substituição tributária recolhido pelo próprio adquirente, no posto fiscal. (DARE) .- Dec. Nº 13.640/90|01112015|31072023
+RN71101111|Débito Especial - Substituto pelas saídas - prestação de serviços de transportes - ART. 850 IV e VI do RICMS/RN (1225) -|01012011|31072023
+RN79990302|DIFERIMENTO - aquisição, em operação interna, de minerais, tais como areia, brita, argila, pedra e quaisquer outras mercadorias, para emprego em obra de responsabilidade de empresa de construção civil.Dec. 13.640/ 97  - Art. 31, IX|01102010|31072023
+RN91990227|ICMS referente às operações sujeitas à substituição tributária recolhido através de GNRE.- Dec. Nº 13.640/91|01102010|31072023
+RN91990228|ICMS referente às operações sujeitas à substituição tributária, retido na nota fiscal, pelo contribuinte com inscrição de substituto tributário no RN .- Dec. Nº 13.640/92|01102010|31072023
+RN99990101|SUSPENSÃO - mercadoria remetida a outro estabelecimento do mesmo contribuinte ou de terceiros, dentro do Estado, para fins de industrialização ou beneficiamento. - Dec. 13.640/ 97  - Art. 29, I|01032018|31072023
+RN99990102|SUSPENSÃO - retorno de produto de que trata o inciso I do art. 29, ao estabelecimento de origem. - Dec. 13.640/ 97  - Art. 29, II|01032018|31072023
+RN99990103|SUSPENSÃO - de produtos agropecuários ou industrializados destinados a exposição ou feira, para fins de exposição ao público em geral. - Dec. 13.640/ 97  - Art. 29, III|01032018|31072023
+RN99990104|SUSPENSÃO - produtos de que trata o inciso III do art 29, em retorno ao estabelecimento de origem. - Dec. 13.640/ 97  - Art. 29, IV|01032018|31072023
+RN99990105|SUSPENSÃO - bens, máquinas, equipamentos e objetos usados, bem como de suas partes e peças, integrados no ativo fixo, destinados a outros estabelecimentos, dentro do Estado, para fins de conserto, limpeza, revisão, restauração ou recondicionamento. - Dec. 13.640/ 97  - Art. 29, V|01032018|31072023
+RN99990106|SUSPENSÃO - retorno ao estabelecimento de origem, dos bens referidos no inciso V do art 29. - Dec. 13.640/ 97  - Art. 29, VI|01032018|31072023
+RN99990107|SUSPENSÃO - mercadorias em demostração, dentro do território do Estado. - Dec. 13.640/ 97  - Art. 29, VII|01032018|31072023
+RN99990108|SUSPENSÃO - mercadorias de que trata o inciso VII do art 29, em retorno ao estabelecimento de origem. - Dec. 13.640/ 97  - Art. 29, VIII|01032018|31072023
+RN99990109|SUSPENSÃO - em operações interestaduais de produtos destinados a conserto, reparo ou industrialização. - Dec. 13.640/ 97  - Art. 29, IX|01032018|31072023
+RN99990110|SUSPENSÃO - operações internas, de obras de arte que se destinem a demonstração e exposições, quando efetuadas por galerias de arte e estabelecimentos similares. - Dec. 13.640/ 97  - Art. 29, X|01032018|31072023
+RN99990111|SUSPENSÃO - retorno ao estabelecimento de origem, das mercadorias previstas nos incisos IX e X do art 29. - Dec. 13.640/ 97  - Art. 29, XI|01032018|31072023
+RN99990112|SUSPENSÃO - operações interestaduais, de bens integrados ao ativo imobilizado, bem como de moldes, matrizes,e etc para fornecimento de serviços fora do estabelecimento, ou com destino a outro estabelecimento inscrito como contribuinte, para serem utilizados na elaboração de produtos encomendados pelo remetente. - Dec. 13.640/ 97  - Art. 29, XII|01032018|31072023
+RN99990113|SUSPENSÃO - bens a que se refere o inciso XII do art 29, em retorno ao estabelecimento de origem . - Dec. 13.640/ 97  - Art. 29, XIII|01032018|31072023
+RN99990201|DIFERIMENTO - saída interna de minério promovida por garimpeiro diretamente para o Órgão Estadual competente. - Dec. 13.640/ 97  - Art. 31, II|01072010|31072023
+RN99990202|DIFERIMENTO - saída interna de leite fresco, produzido neste Estado. - Dec. 13.640/ 97  - Art. 31, IV|01072010|31072023
+RN99990203|DIFERIMENTO - saída interna de mercadorias do estabelecimento produtor para estabelecimento de cooperativa de que faça parte, situada dentro do Estado. - Dec. 13.640/ 97  - Art. 31, VI|01072010|31072023
+RN99990204|DIFERIMENTO - saída interna de mercadorias de estabelecimento de cooperativa de produtores para estabelecimento, neste Estado, da própria cooperativa, de cooperativa central ou de federação de que a cooperativa remetente faça parte. - Dec. 13.640/ 97  - Art. 31, VII|01072010|31072023
+RN99990205|DIFERIMENTO - saída interna de um para outro estabelecimento produtor do mesmo contribuinte, localizado no mesmo Município, de produto primário em estado bruto ou submetido a beneficiamento elementar. - Dec. 13.640/ 97  - Art. 31, VIII|01072010|31072023
+RN99990206|DIFERIMENTO - aquisição, em operação interna, de minerais, tais como areia, brita, argila, pedra e quaisquer outras mercadorias, para emprego em obra de responsabilidade de empresa de construção civil. - Dec. 13.640/ 97  - Art. 31, IX|01072010|31072023
+RN99990207|DIFERIMENTO - operação interna de transferência de estoque de mercadorias, móveis e utensílios, de firma ou sociedade, para outra firma ou sociedade, dentro do Estado, em virtude de transformação, fusão ou incorporação. - Dec. 13.640/ 97  - Art. 31, X|01072010|31072023
+RN99990208|DIFERIMENTO - saída interna, para incorporação ao ativo fixo de pessoas jurídicas, de máquinas, equipamentos, instalações, móveis e utensílios, desde que para integralização de capital social subscrito ou em decorrência de transformação, fusão ou incorporação de empresas localizadas dentro do Estado. - Dec. 13.640/ 97  - Art. 31, XI|01072010|31072023
+RN99990209|DIFERIMENTO - importação, realizada por contribuinte do imposto, de quaisquer mercadorias,  por 60 (sessenta) dias a partir da data em que ocorrer o desembaraço aduaneiro. - Dec. 13.640/ 97  - Art. 31, XIV|01072010|31072023
+RN99990210|DIFERIMENTO - operações internas de fornecimento de alimentação, bebidas e outras mercadorias, inclusive os serviços prestados a qualquer empresa, decorrentes de contrato que envolva repetidos fornecimentos. - Dec. 13.640/ 97  - Art. 31, XV|01072010|31072023
+RN99990211|DIFERIMENTO - operações internas ou interestaduais com AEAC ou com B100, quando destinado à distribuidora de combustíveis ou a saída do óleo diesel resultante da mistura com B100, promovida pela distribuidora de combustíveis.  - Dec. 13.640/ 97  - Art. 31, XVI|01072010|31072023
+RN99990212|DIFERIMENTO - importação de produtos de fiação e tecelagem, realizadas por estabelecimento industrial. - Dec. 13.640/ 97  - Art. 31, XVII|01072010|31072023
+RN99990213|DIFERIMENTO - importação do produto classificado na posição NBM-SH 1001.90.90  trigo em grão, realizada por estabelecimento industrial. - Dec. 13.640/ 97  - Art. 31, XVIII|01072010|31072023
+RN99990214|DIFERIMENTO - de importação do produto classificado na posição NCM 3206.19.90  Outros; 3901.10.92  Polietileno sem carga; 3901.90.10  Copolímero de Etileno e Ácido Acrílico; 3901.90.90  Outros; 3921.90.20  Outras chapas, com suporte ou reforço; 7607.11.90  Outras; 7607.20.00  com suporte - Dec. 13.640/ 97  - Art. 31, XX|01072010|31072023
+RN99990215|DIFERIMENTO - na importação do exterior de partes e peças de reposição para máquinas e equipamentos utilizados no processo produtivo da empresa adquirente, quando esta for beneficiária do PROADI. - Dec. 13.640/ 97  - Art. 31, XXI|01072010|31072023
+RN99990216|DIFERIMENTO - na aquisição em outra unidade da federação, relativamente ao diferencial de alíquota, de partes e peças de reposição para máquinas e equipamentos utilizados no processo produtivo da empresa adquirente. - Dec. 13.640/ 97  - Art. 31, XXII|01072010|31072023
+RN99990217|DIFERIMENTO - na importação do exterior de matéria-prima e de insumos a serem utilizados exclusivamente no processo produtivo da empresa adquirente, quando esta for beneficiária do PROADI. - Dec. 13.640/ 97  - Art. 31, XXIII|01072010|31072023
+RN99990219|DIFERIMENTO - nas operações interestaduais com cana-de-açúcar de terceiros ou própria oriunda de unidade autônoma localizada em área não-contígua e utilizada como insumo em atividade integrada, entre contribuintes dos Estados da Paraíba, Pernambuco e Rio Grande do Norte. - Dec. 13.640/ 97  - Art. 31, XXV|01072010|31072023
+RN99990220|DIFERIMENTO - na saída interna de mercadorias destinadas à utilização como matéria prima, material secundário ou de embalagem, por outra empresa localizada neste Estado, promovida por estabelecimento beneficiário do Programa de Apoio ao Desenvolvimento Industrial do Rio Grande do Norte (PROADI). - Dec. 13.640/ 97  - Art. 31, XXVI|01072010|31072023
+RN99990221|DIFERIMENTO - nas saídas internas de produtos com bordados típicos regionais identificados pela marca Bordados do Seridó, promovidas por associações ou cooperativas legalmente constituídas. - Dec. 13.640/ 97  - Art. 31, XXVII|01072010|31072023
+RN99990222|DIFERIMENTO - saídas internas promovidas por refinaria ou suas bases, de gasolina A, álcool etílico anidro combustível e óleo diesel destinadas à distribuidora de combustíveis detentora do regime especial. - Dec. 13.640/ 97  - Art. 31, XXVIII|01072010|31072023
+RN99990223|DIFERIMENTO - na importação do exterior do produto classificado na posição NCM-SH  1101.00.10 - farinha de trigo, a ser utilizada exclusivamente no processo produtivo da empresa adquirente, realizada por estabelecimento industrial beneficiário do PROADI, exceto moageiro. - Dec. 13.640/ 97  - Art. 31, XXIX|01072010|31072023
+RN99993218|DIFERIMENTO - no fornecimento de energia elétrica, pela Companhia Energética do Rio Grande do Norte  COSERN, para as cooperativas de eletrificação rural inscritas no Cadastro de Contribuintes do Estado do Rio Grande do Norte. - Dec. 13.640/ 97  - Art. 31, XXIV|01072010|31072023
+RN99999001|Regime Especial Atacadista - saídas internas para órgãos públicos - Inc VI, Art. 4º do Dec. 22.199/2011|01022016|31072023
+RN99999002|Regime Especial Atacadista - saídas interestaduais para órgãos públicos - §3º do Art. 4º do Dec. 22.199/2011|01022016|31072023
+RN99999003|Regime Especial Atacadista - entrada interna proveniente de contribuinte detentor do regime especial previsto no Dec. 22.199/2011. 4º, I, "a"|01122016|31072023
+RN99999004|Regime Especial Atacadista - entrada interna proveniente de industria localizada neste estado. Art. 4º, I, "b" Dec. 22.199/2011|01122016|31072023
+RN99999005|Regime Especial Atacadista - saída interestadual mercadorias desembaraçadas em portos e aeroportos do RN. Art. 4º, VIII, "a" Dec. 22.199/2011|01122016|31072023
+RN41100224|Outros débitos - ICMS devido referente às operações sujeitas à substituição tributária, a ser recolhido pelo próprio adquirente, por não ter sido retido pelo remetente, exceto os valores recolhidos ou a recolher através de TADF (1241).Dec. Nº 13.640/88|01102010|31102015
+RN70000008|Débito Especial - Substituto pelas entradas - ICMS retido de terceiros em operações de entrada de mercadorias (1220) - Dec. Nº 13.640/97 - art. 578, parágrafo 1º, d, 6|01102011|31102015
+RN71100225|Outros débitos - ICMS devido referente às operações sujeitas à substituição tributária, a ser recolhido ou a recolher pelo próprio adquirente através de TADF (1241).- Dec. Nº 13.640/89|01102010|31102015
+RN71100226|Outros débitos - ICMS referente às operações sujeitas à substituição tributária recolhido pelo próprio adquirente, no posto fiscal. (DARE) .- Dec. Nº 13.640/90|01102010|31102015
+RN10000003|Outros Créditos  Crédito de ICMS incidente sobre as aquisições de mercadorias de ME ou EPP optante pelo Simples Nacional, desde que destinadas à comercialização ou industrialização|01102011|31122019
+RN10000400|Outros Créditos   Crédito presumido decorrente da aquisição de mercadorias, destinasda à comercialização ou industrialização, a contribuinte optante pelo simples. Lei 123/2006, art. 23.|01102010|31122019
+RN10000401|Outros Créditos  Crédito presumido decorrente da aquisição de mercadorias, destinasda à comercialização ou industrialização, adquirida de  contribuinte optante pelo simples, localizado no RN,  que exercece a atividades industrial.|01102010|31122019
+RN71100225|Débito Especial - ICMS devido referente às operações sujeitas à substituição tributária, a ser recolhido ou a recolher pelo próprio adquirente através de TADF (1241)|02082023|
+RN91990227|ICMS referente às operações sujeitas à substituição tributária recolhido através de GNRE.|02082023|
+RN91990228|ICMS referente às operações sujeitas à substituição tributária, retido na nota fiscal, pelo contribuinte com inscrição de substituto tributário no RN|02082023|
+RN10000403|Outros Créditos  Crédito presumido referente às aquisições Internas de Mercadorias Produzidas por Produtores Enquadrados na Agricultura Familiar ou Agroindústria Familiar, Portadores do Selo dos Produtos da Agricultura Familiar do Rio Grande do Norte (SAF/RN) - Art. 11-B do Anexo 003  Dec. Nº 31.825/2022|01092024|
+RN10000401|Crédito presumido - referente às aquisições de serviços de industrialização por encomenda ou de mercadorias, sujeitas à incidência do ICMS, efetuadas à empresa industrial enquadrada no Simples Nacional, localizada neste Estado - Art. 15 do Anexo 003  Dec. nº 31.825/2022|01032026|

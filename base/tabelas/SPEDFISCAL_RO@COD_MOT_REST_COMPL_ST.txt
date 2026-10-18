@@ -1,0 +1,10 @@
+versão=1 COD_AJUR, DESC_AJUR, DT_INI, DT_FIM
+RO000|Não se aplica ressarcimento ou complementação de ICMS/ST - Operações com gasolina, óleo diesel e álcool etílico hidratado carburante|01022022|
+RO100|Ressarcimento de ICMS/ST, em razão do valor de saída da mercadoria final ser inferior ao da BC/ST - Operações com gasolina, óleo diesel e álcool etílico hidratado carburante|01022022|
+RO200|Ressarcimento de ICMS/ST, em razão da não ocorrência do fato gerador presumido - Operações com gasolina, óleo diesel e álcool etílico hidratado carburante|01022022|
+RO300|Complementação de ICMS/ST, em razão do valor de saída da mercadoria a consumidor final ser superior ao da BC/ST - Operações com gasolina, óleo diesel e álcool etílico hidratado carburante|01022022|
+RO400|Devolução de entradas - Operações com gasolina, óleo diesel e álcool etílico hidratado carburante|01022022|
+RO500|Devolução de saídas em que não se aplicou ressarcimento ou complemento - Operações com gasolina, óleo diesel e álcool etílico hidratado carburante|01022022|
+RO600|Estorno do ressarcimento do imposto, calculado com base no valor saída inferior ao valor da BC ICMS ST - Operações com gasolina, óleo diesel e álcool etílico hidratado carburante|01022022|
+RO700|Estorno do ressarcimento do imposto, por não ocorrência do fato gerador presumido - Operação com combustíveis - Operações com gasolina, óleo diesel e álcool etílico hidratado carburante|01022022|
+RO800|Estorno do complemento do imposto, calculado com base no valor de saída da mercadoria superior ao valor da BC ICMS ST - Operações com gasolina, óleo diesel e álcool etílico hidratado carburante|01022022|

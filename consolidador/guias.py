@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
-"""Extrai os **guias práticos** (EFD ICMS/IPI e EFD Contribuições) para os
-JSON de `recursos/`, que o programa usa como texto de ajuda e como a fonte
+"""Extrai os **guias práticos** (EFD ICMS/IPI e EFD Contribuições) para
+`base/guias/`, que o programa usa como texto de ajuda e como a fonte
 escrita das regras que reproduz.
 
-    py ferramentas/extrair_guias.py ICMS    "Guia Prático EFD - Versão 3.2.4.pdf"
-    py ferramentas/extrair_guias.py CONTRIB "Guia_Pratico_EFD_Contribuicoes_Versao_1_35.pdf"
+    py -m consolidador guia ICMS    "Guia Prático EFD - Versão 3.2.4.pdf"
+    py -m consolidador guia CONTRIB "Guia_Pratico_EFD_Contribuicoes_Versao_1_35.pdf"
 
 Precisa do `pdftotext` (vem com o Git para Windows, em `mingw64/bin`, e com
 o poppler). O texto sai com `-layout`: no modo corrido o PDF embaralha
@@ -31,13 +31,7 @@ import os
 import re
 import shutil
 import subprocess
-import sys
 import unicodedata
-
-RAIZ = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-sys.path.insert(0, RAIZ)
-
-from sped_tables.infra.guias import ARQUIVOS as SAIDA  # noqa: E402
 
 CABECALHO = re.compile(
     r"^\s*(Guia Pr[áa]tico.*Vers[ãa]o.*|Atualiza[çc][ãa]o:.*|"
@@ -291,19 +285,15 @@ def extrair(texto, layout):
             "registros": registros}
 
 
-def main():
-    layout, pdf = sys.argv[1].upper(), sys.argv[2]
-    if layout not in SAIDA:
-        raise SystemExit("leiaute: ICMS ou CONTRIB")
+def gravar(layout, pdf, fontes):
+    """Extrai o guia do PDF para `fontes/guias/<layout>.json` e devolve o
+    caminho."""
+    if layout not in ("ICMS", "CONTRIB"):
+        raise ValueError("leiaute: ICMS ou CONTRIB")
     guia = extrair(texto_do_pdf(pdf), layout)
-    destino = os.path.join(RAIZ, "recursos", SAIDA[layout])
+    destino = os.path.join(fontes, "guias", layout + ".json")
     os.makedirs(os.path.dirname(destino), exist_ok=True)
     with open(destino, "w", encoding="utf-8", newline="\n") as fh:
         json.dump(guia, fh, ensure_ascii=False, indent=1, sort_keys=True)
         fh.write("\n")
-    print("%s %s: %d registros -> %s" % (guia["guia"], guia["versao"],
-                                         len(guia["registros"]), destino))
-
-
-if __name__ == "__main__":
-    main()
+    return destino

@@ -1,0 +1,3 @@
+versão=1 INF_ADIC, DESC_INF, DT_INI, DT_FIM
+RN000001|Número de empregados no último dia do período de apuração|01012022|
+RN000002|Percentual incentivado pelo PROEDI no período de apuração|01012022|

@@ -1,0 +1,14 @@
+versão=1 TIPO_UTIL, DESC_TIPO, DT_INI, DT_FIM
+RN01|Dedução|01012009|
+RN21|Compensação|01012009|
+RN41|Transferência|01012009|
+RN61|Restituição|01012009|
+RN70|EXPORTAÇÃO - Crédito exportação Homologado|01102013|
+RN71|EXPORTAÇÃO  Baixa de Crédito exportação por acumulação indevida|01102013|
+RN72|EXPORTAÇÃO - Compensação Crédito exportação Homologado|01102013|
+RN73|EXPORTAÇÃO - Provisionamento Crédito exportação Homologado|01102013|
+RN74|EXPORTAÇÃO - Compensação Crédito exportação Provisionado com Débito de ICMS Antecipado|01102013|
+RN75|EXPORTAÇÃO - Compensação Crédito exportação Provisionado com Débito de Diferença de Alíquota|01102013|
+RN76|EXPORTAÇÃO - Transferência Crédito exportação Homologado|01102013|
+RN81|Estorno|01012009|
+RN99|Outros|01012009|

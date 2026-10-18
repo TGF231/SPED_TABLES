@@ -1,0 +1,6 @@
+versão=1 COD_AJUR, DESC_AJUR, DT_INI, DT_FIM
+MS000|Não se aplica restituição ou complementação de ICMS/ST|01012020|
+MS100|Restituição de ICMS/ST, em razão do valor de saída da mercadoria final ser inferior ao da BC/ST|01012020|
+MS200|Restituição de ICMS/ST, em razão da não ocorrência do fato gerador presumido|01012020|
+MS201|Restituição de ICMS/ST, em razão da saída interestadual|01012020|
+MS300|Complementação de ICMS/ST, em razão do valor de saída da mercadoria a consumidor final ser superior ao da BC/ST|01012020|

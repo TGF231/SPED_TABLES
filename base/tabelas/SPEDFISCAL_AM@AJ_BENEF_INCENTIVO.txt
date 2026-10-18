@@ -1,0 +1,58 @@
+versão=34 COD_AJ, DESC_AJ, DT_INI, DT_FIM
+AM10000001|Crédito Presumido de 3% - saída de mercadoria importada do exterior com similar nacional destinada a contribuinte em outra unidade da federação - Lei Estadual nº 3.830/2012, art. 1º, inciso I, "b"|01072014|31122014
+AM10000002|Crédito Presumido de 6% - saída de mercadoria importada do exterior com similar nacional destinada a não contribuinte em outra unidade da federação - Lei Estadual nº 3.830/2012, art. 1º, inciso I, "c"|01072014|31122014
+AM10000003|Crédito Presumido de 6% - saída de mercadoria importada do exterior sem similar nacional destinada a contribuinte em outra unidade da federação - Lei Estadual nº 3.830/2012, art. 1º, inciso II, "b"|01072014|31122014
+AM10000004|Crédito Presumido de 6% - saída de mercadoria importada do exterior sem similar nacional destinada a não contribuinte em outra unidade da federação - Lei Estadual nº 3.830/2012, art. 1º, inciso II, "c"|01072014|31122014
+AM23000001|Outras apurações  operações incentivadas  produtos com características definidas na Lei Estadual nº 2.826/2003, art. 10, incisos I, IV e VII  Saídas|01072014|31122014
+AM24000002|Outras apurações  operações incentivadas  produtos com características definidas na Lei Estadual nº 2.826/2003, art. 10, incisos II, III, V e VI  Saídas|01072014|31122014
+AM25000003|Outras apurações  operações incentivadas  produtos com características definidas na Lei Estadual nº 2.826/2003, art. 10, inciso VIII  Saídas|01072014|31122014
+AM53000001|Outras apurações  operações incentivadas  produtos com características definidas na Lei Estadual nº 2.826/2003, art. 10, incisos I, IV e VII  Entradas|01072014|31122014
+AM54000002|Outras apurações  operações incentivadas  produtos com características definidas na Lei Estadual nº 2.826/2003, art. 10, incisos II, III, V e VI  Entradas|01072014|31122014
+AM55000003|Outras apurações  operações incentivadas  produtos com características definidas na Lei Estadual nº 2.826/2003, art. 10, inciso VIII  Entradas|01072014|31122014
+AM71011001|Retenção de ICMS-ST pela aquisição de serviço de transporte interestadual e intermunicipal iniciado no Estado  Decreto Estadual nº 20.686/1999, art. 110, III|01072014|31122014
+AM71011002|Retenção de ICMS-ST pela aquisição de serviço de transporte interestadual e intermunicipal prestado por transportador autônomo  Decreto Estadual nº 20.686/1999, art. 3º, XVII|01072014|31122014
+AM99991001|ICMS retido por substituição tributária pelo tomador do serviço de transporte - Decreto Estadual nº 20.686/1999, art. 111, § 12, inciso V|01072014|31122014
+AM23000001|Outras apurações  operações incentivadas  produtos com características definidas na Lei Estadual nº 2.828/2003, art. 10, incisos I, IV e VII  Saídas|01012014|01012014
+AM24000002|Outras apurações  operações incentivadas  produtos com características definidas na Lei Estadual nº 2.828/2003, art. 10, incisos II, III, V e VI  Saídas|01012014|01012014
+AM25000003|Outras apurações  operações incentivadas  produtos com características definidas na Lei Estadual nº 2.828/2003, art. 10, inciso VIII  Saídas|01012014|01012014
+AM53000001|Outras apurações  operações incentivadas  produtos com características definidas na Lei Estadual nº 2.828/2003, art. 10, incisos I, IV e VII  Entradas|01012014|01012014
+AM54000002|Outras apurações  operações incentivadas  produtos com características definidas na Lei Estadual nº 2.828/2003, art. 10, incisos II, III, V e VI  Entradas|01012014|01012014
+AM55000003|Outras apurações  operações incentivadas  produtos com características definidas na Lei Estadual nº 2.828/2003, art. 10, inciso VIII  Entradas|01012014|01012014
+AM00000001|Crédito de ICMS pela aquisição de mercadoria de microempresa ou empresa de pequeno porte optante pelo Simples Nacional  Lei Complementar Federal nº 123/2006, art. 23, §§ 1º a 5º|01012015|
+AM10000001|Crédito Presumido de 3% - saída de mercadoria importada do exterior com similar nacional destinada a contribuinte em outra unidade da federação - Lei Estadual nº 3.830/2012, art. 1º, inciso I, "b"|01012015|
+AM10000002|Crédito Presumido de 6% - saída de mercadoria importada do exterior com similar nacional destinada a não contribuinte em outra unidade da federação - Lei Estadual nº 3.830/2012, art. 1º, inciso I, "c"|01012015|
+AM10000003|Crédito Presumido de 6% - saída de mercadoria importada do exterior sem similar nacional destinada a contribuinte em outra unidade da federação - Lei Estadual nº 3.830/2012, art. 1º, inciso II, "b"|01012015|
+AM10000004|Crédito Presumido de 6% - saída de mercadoria importada do exterior sem similar nacional destinada a não contribuinte em outra unidade da federação - Lei Estadual nº 3.830/2012, art. 1º, inciso II, "c"|01012015|
+AM23000001|Outras apurações  operações incentivadas  produtos com características definidas na Lei Estadual nº 2.826/2003, art. 10, incisos I, IV e VII  Saídas|01012015|31122019
+AM24000002|Outras apurações  operações incentivadas  produtos com características definidas na Lei Estadual nº 2.826/2003, art. 10, incisos II, III, V e VI  Saídas|01012015|31122019
+AM25000003|Outras apurações  operações incentivadas  produtos com características definidas na Lei Estadual nº 2.826/2003, art. 10, inciso VIII  Saídas|01012015|31122019
+AM26000004|Outras apurações  operações incentivadas  produtos com nível de crédito estímulo de 100% (cem por cento)  Saídas|01012015|
+AM53000001|Outras apurações  operações incentivadas  produtos com características definidas na Lei Estadual nº 2.826/2003, art. 10, incisos I, IV e VII  Entradas|01012015|31122019
+AM54000002|Outras apurações  operações incentivadas  produtos com características definidas na Lei Estadual nº 2.826/2003, art. 10, incisos II, III, V e VI  Entradas|01012015|31122019
+AM55000003|Outras apurações  operações incentivadas  produtos com características definidas na Lei Estadual nº 2.826/2003, art. 10, inciso VIII  Entradas|01012015|31122019
+AM56000004|Outras apurações  operações incentivadas  produtos com nível de crédito estímulo de 100% (cem por cento)  Entradas|01012015|
+AM71011001|Retenção de ICMS-ST pela aquisição de serviço de transporte interestadual e intermunicipal iniciado no Estado  Decreto Estadual nº 20.686/1999, art. 110, III|01012015|
+AM71011002|Retenção de ICMS-ST pela aquisição de serviço de transporte interestadual e intermunicipal prestado por transportador autônomo  Decreto Estadual nº 20.686/1999, art. 3º, XVII|01012015|
+AM99991001|ICMS retido por substituição tributária pelo tomador do serviço de transporte - Decreto Estadual nº 20.686/1999, art. 111, § 12, inciso V|01012015|
+AM70010003|FPS- Operação Interna|01072017|31122019
+AM27000005|Outras apurações  operações incentivadas  operações definidas na Lei Estadual nº 3.830/2012, art. 3º - Saídas|01012014|
+AM23000001|Outras apurações  operações incentivadas  produtos com nível de crédito estímulo de 90,25 % (noventa inteiros e vinte e cinco centésimos por cento)  Saídas|01012020|
+AM24000002|Outras apurações  operações incentivadas  produtos com nível de crédito estímulo de 75 % (setenta e cinco por cento)  Saídas|01012020|
+AM25000003|Outras apurações  operações incentivadas  produtos com nível de crédito estímulo de 55 % (cinquenta e cinco por cento)  Saídas|01012020|
+AM53000001|Outras apurações  operações incentivadas  produtos com nível de crédito estímulo de 90,25 % (noventa inteiros e vinte e cinco centésimos por cento)  Entradas|01012020|
+AM54000002|Outras apurações  operações incentivadas  produtos com nível de crédito estímulo de 75 % (setenta e cinco por cento)  Entradas|01012020|
+AM55000003|Outras apurações  operações incentivadas  produtos com nível de crédito estímulo de 55 % (cinquenta e cinco por cento)  Entradas|01012020|
+AM70010003|FPS  Operação Interna - Decreto Estadual nº 38.006/2017, art. 3º, incisos III, alíneas a, b e c, V e VI|01012020|
+AM11000001|Ressarcimento de ICMS-ST pelo substituto tributário  RICMS, art. 374-E, § 1º, inciso II|17052021|
+AM08000001|Cesta Básica  Lei nº 6.107/22  crédito do ICMS que seria permitido nas entradas interestaduais de mercadorias|01032023|31052023
+AM08000002|Cesta Básica  Lei nº 6.107/22  crédito do ICMS operação própria que seria permitido nas devoluções de mercadorias objeto de operação interna de saída|01032023|31052023
+AM08000003|Cesta Básica  Lei nº 6.107/22  crédito do ICMS por substituição tributária que seria permitido nas devoluções de mercadorias objeto de operação interna de saída|01032023|31052023
+AM38000001|Cesta Básica  Lei nº 6.107/22  ICMS operação própria que seria devido sobre as operações internas de saída|01032023|31052023
+AM38000002|Cesta Básica  Lei nº 6.107/22  ICMS por substituição tributária que seria devido sobre as operações internas de saída|01032023|31052023
+AM58000001|Cesta Básica  Lei nº 6.107/22  crédito do ICMS que seria permitido nas entradas interestaduais de mercadorias	|01032023|
+AM58000002|Cesta Básica  Lei nº 6.107/22  crédito do ICMS operação própria que seria permitido nas devoluções de mercadorias objeto de operação interna de saída	|01032023|
+AM58000003|Cesta Básica  Lei nº 6.107/22  crédito do ICMS por substituição tributária que seria permitido nas devoluções de mercadorias objeto de operação interna de saída	|01032023|
+AM28000001|Cesta Básica  Lei nº 6.107/22  ICMS operação própria que seria devido sobre as operações internas de saída	|01032023|
+AM28000002|Cesta Básica  Lei nº 6.107/22  ICMS por substituição tributária que seria devido sobre as operações internas de saída	|01032023|
+AM00000002|Crédito presumido correspondente a 80% (oitenta por cento) do resultado da aplicação da alíquota ad rem sobre a quantidade de óleo diesel adquirida|01052023|
+AM57000005|Outras apurações - operações incentivadas - operações definidas na Lei Estadual nº 3.830/2012, art. 3º - Entradas (devoluções)|01122019|
