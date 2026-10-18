@@ -707,6 +707,38 @@ class TestJanela(unittest.TestCase):
             j.close()
         self.assertEqual(self.erros, [], self._falhas())
 
+    def test_diagnostico_automatico_sem_achados_diz_o_que_rodou(self):
+        """Ao abrir o arquivo o Diagnóstico roda sozinho e, sem achados, só
+        fala pela barra de status. Sem a base (ou com a versão do arquivo
+        fora dela) a barra não pode dizer "nenhum problema nas verificações
+        automáticas": diz que valeram só as regras embutidas e o que faltou.
+        Com a base e a versão nela, o texto de sempre."""
+        from sped_tables.interface.controladores import gerais
+        casos = (
+            ({"versao": "020", "registros_descritor": 10},
+             "Diagnóstico: nenhum problema nas verificações automáticas."),
+            ({"sem_base": True},
+             "Diagnóstico: nenhum problema nas regras embutidas; base de "
+             "referência indisponível."),
+            ({"fora_da_base": "015"},
+             "Diagnóstico: nenhum problema nas regras embutidas; a versão "
+             "015 do leiaute não está na base de referência."),
+        )
+        for info, esperado in casos:
+            with self.subTest(info=info), PastaTemporaria() as p, \
+                    mock.patch.object(gerais.diagnostico, "verificar",
+                                      lambda doc, info=info: ([], info)):
+                j = self.ed.JanelaPrincipal()
+                self.assertTrue(j.abrir_caminho(icms_basico().gravar(p)))
+                _esperar()
+                self.assertEqual(j.statusBar().currentMessage(), esperado)
+                # sem achados o diálogo não abre (só a barra de status fala)
+                self.assertNotIn("DialogoDiagnostico",
+                                 getattr(j, "_janelas", {}))
+                j.alterado = False
+                j.close()
+        self.assertEqual(self.erros, [], self._falhas())
+
     def test_todas_as_acoes_nos_dois_leiautes(self):
         for montador in (icms_basico(), contrib_basico()):
             with self.subTest(layout=montador.layout), \

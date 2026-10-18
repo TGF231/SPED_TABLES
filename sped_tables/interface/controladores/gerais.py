@@ -439,9 +439,19 @@ class ControladorGerais:
             return
         total = sum(a.quantidade for a in achados)
         if automatico and not total:
-            self.statusBar().showMessage(
-                "Diagnóstico: nenhum problema nas verificações automáticas.",
-                8000)
+            # sem a base (ou com a versão do arquivo fora dela) só as regras
+            # embutidas rodaram: dizer "nenhum problema nas verificações
+            # automáticas" seria aprovar o que não foi conferido
+            if info.get("fora_da_base"):
+                texto = ("nenhum problema nas regras embutidas; a versão %s "
+                         "do leiaute não está na base de referência."
+                         % info["fora_da_base"])
+            elif info.get("sem_base"):
+                texto = ("nenhum problema nas regras embutidas; base de "
+                         "referência indisponível.")
+            else:
+                texto = "nenhum problema nas verificações automáticas."
+            self.statusBar().showMessage("Diagnóstico: " + texto, 8000)
             return
         self._dlg_diag = abrir_janela(self, DialogoDiagnostico(
             achados, info, self._acoes_dos_modulos(), self.ir_para_registro,
