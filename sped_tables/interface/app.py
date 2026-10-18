@@ -131,7 +131,7 @@ def main():
         sys.exit(autoteste.executar(app, sys.argv[2:]))
     # antes de qualquer janela: exceção num slot, sem isto, encerra o processo
     falhas.instalar(avisar=avisar_erro)
-    # liga as regras fiscais às tabelas oficiais do PVA instalado
+    # liga as regras fiscais à base de referência
     montagem.configurar()
     from PyQt6.QtCore import qInstallMessageHandler
     qInstallMessageHandler(_mensagens_do_qt)

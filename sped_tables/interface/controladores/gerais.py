@@ -148,10 +148,10 @@ class ControladorGerais:
     def escolher_pasta_pva(self):
         """Aponta onde os PVAs estão instalados (`config.definir_raiz_pva`).
 
-        A detecção automática cobre a pasta padrão da RFB e as de Arquivos de
-        Programas; instalação noutro lugar desligava as verificações que
-        dependem das tabelas do PVA sem dizer nada. Pasta vazia volta à
-        detecção.
+        A pasta só serve ao *Abrir no PVA* — as tabelas e o leiaute vêm da
+        base de referência. A detecção automática cobre a pasta padrão da
+        RFB e as de Arquivos de Programas; instalação noutro lugar impedia
+        abrir o arquivo no PVA. Pasta vazia volta à detecção.
         """
         atual = config.raiz_pva()
         pasta = QFileDialog.getExistingDirectory(
@@ -447,26 +447,26 @@ class ControladorGerais:
         diálogo, e só sobre o que tem conserto mecânico."""
         if not self.doc:
             return
-        # as tabelas dos PVAs mandam: a lista de códigos válidos acompanha
-        # a atualização do validador oficial sem mexer no código daqui
+        # as tabelas da base de referência mandam: a lista de códigos válidos
+        # acompanha a atualização do validador oficial sem mexer no código
+        # daqui
         dominios, info = validacao.dominios_do_documento(self.doc)
         achados = validacao.validar(self.doc, dominios_pva=dominios)
         if not achados:
             informar(self, "Validar campos pelo leiaute",
                      "Nenhum campo preenchido está fora do domínio do "
-                     "leiaute.\n\n%s" % self._resumo_tabelas_pva(dominios,
-                                                  info))
+                     "leiaute.\n\n%s" % self._resumo_tabelas(dominios, info))
             return
         self._dlg_validacao = abrir_janela(self, DialogoValidacao(
             self.doc, achados, self.ir_para_registro, self,
-            info_tabelas=self._resumo_tabelas_pva(dominios, info)))
+            info_tabelas=self._resumo_tabelas(dominios, info)))
         auto = sum(1 for o in achados if o.sugestao is not None)
         self.statusBar().showMessage(
             "Validação: %d campo(s) fora do domínio, %d com conserto "
             "automático." % (len(achados), auto), 8000)
 
     @staticmethod
-    def _resumo_tabelas_pva(dominios, info):
+    def _resumo_tabelas(dominios, info):
         """Diz de onde veio a validação. Sem isso o usuário não sabe se o
         resultado saiu das tabelas oficiais ou das regras embutidas.
 
@@ -477,15 +477,17 @@ class ControladorGerais:
         inutilizável. Aqui as duas formas são aceitas.
         """
         if not dominios:
-            return ("Tabelas dos PVAs não encontradas — a verificação usou "
-                    "apenas as regras embutidas. Instale os PVAs para validar "
-                    "contra as mesmas tabelas do fisco.")
+            return ("Base de referência sem o leiaute deste arquivo — a "
+                    "verificação usou apenas as regras embutidas, que "
+                    "cobrem menos que o validador oficial.")
         # a lista dos nomes não informa nada (são 724 num arquivo real, em
         # ordem alfabética); o que responde "de onde veio isto" é a origem
         nomes = {k[1] if isinstance(k, tuple) else k for k in dominios}
-        txt = ("Validação feita pelo descritor do PVA: %d par(es) "
+        txt = ("Validação feita pelo leiaute da versão %s (%s): %d par(es) "
                "registro/campo, em %d campo(s) distintos."
-               % (len(dominios), len(nomes)))
+               % (info.get("versao") or "?",
+                  referencias.atual().descricao(),
+                  len(dominios), len(nomes)))
         fontes = [(info.get("por_enum"), "enumeração do descritor"),
                   (info.get("por_tabela"), "tabela externa"),
                   (info.get("por_formato"), "tipo/tamanho do descritor")]

@@ -429,6 +429,41 @@ class TestJanela(unittest.TestCase):
             referencias.definir(antes)
         self.assertEqual(self.erros, [], self._falhas())
 
+    def test_diagnostico_mostra_a_versao_do_leiaute_da_base(self):
+        """A base entrega a versão do leiaute que valeu para o arquivo: o
+        texto de origem do Diagnóstico a mostra (sem ela saía "versão ?")."""
+        from PyQt6.QtWidgets import QLabel
+        with PastaTemporaria() as p:
+            j = self.ed.JanelaPrincipal()
+            self.assertTrue(j.abrir_caminho(icms_basico().gravar(p)))
+            _esperar()
+            j.diagnosticar()
+            textos = [l.text() for l in
+                      j._janelas["DialogoDiagnostico"].findChildren(QLabel)]
+            self.assertTrue(any("leiaute da versão 020 (" in t
+                                for t in textos), textos)
+            self.assertFalse(any("versão ?" in t for t in textos), textos)
+            j.close()
+        self.assertEqual(self.erros, [], self._falhas())
+
+    def test_resumo_da_validacao_cita_a_versao_e_a_base(self):
+        """"Validar campos" diz de onde veio a validação: o leiaute da
+        versão do arquivo, na base de referência em uso. Sem o leiaute do
+        arquivo, diz que valeram só as regras embutidas."""
+        from sped_tables.dominio import validacao
+        from sped_tables.dominio.sped_model import SpedDocument
+        from sped_tables.interface.controladores.gerais import (
+            ControladorGerais)
+        with PastaTemporaria() as p:
+            doc = SpedDocument.carregar(icms_basico().gravar(p))
+        dominios, info = validacao.dominios_do_documento(doc)
+        self.assertEqual(info["versao"], "020")
+        texto = ControladorGerais._resumo_tabelas(dominios, info)
+        self.assertIn("leiaute da versão 020 (base de referência ", texto)
+        self.assertNotIn("PVA", texto)
+        self.assertIn("Base de referência sem o leiaute deste arquivo",
+                      ControladorGerais._resumo_tabelas({}, {}))
+
     def test_cst_por_ncm_sem_tabelas_avisa_e_nao_acusa(self):
         """Fonte sem classificador (`None`): o diálogo recusa com o aviso em
         vez de comparar com uma tabela vazia, que tributaria todo NCM."""

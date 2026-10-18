@@ -203,7 +203,7 @@ class TestContribuicoes(unittest.TestCase):
                          0.0)
         self.assertTrue(any(r.reg == "0500" for r in doc.registros))
         # a largura aprendida do "entregue" (13, do leiaute do programa) é
-        # limitada pela do descritor do PVA quando ele está instalado
+        # limitada pela do descritor da base de referência
         larg = geracao._larguras(self.memoria, "CONTRIB", "31082026").get(
             "0200", self.memoria["larguras"]["CONTRIB"]["0200"])
         self.assertEqual(len(next(r for r in doc.registros

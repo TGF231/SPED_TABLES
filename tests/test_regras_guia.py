@@ -8,7 +8,6 @@ from sped_tables.dominio import diagnostico
 from sped_tables.dominio import revisao
 from sped_tables.dominio import regras_guia as G
 from sped_tables.dominio.sped_model import SpedDocument
-from sped_tables.infra import descritor_pva
 from tests.fabrica import PastaTemporaria, contrib_basico, icms_basico
 
 
@@ -390,18 +389,19 @@ class TestRevisaoDeCodigo(unittest.TestCase):
         self.assertEqual(G.documentos_c190_divergentes(doc), [])
 
 
-@unittest.skipUnless(descritor_pva.disponivel(), "PVA não instalado")
 class TestValidadoresDoPva(unittest.TestCase):
 
     def test_ids_existem_no_descritor(self):
-        """Todo id em `pva` existe no descritor de algum leiaute — erro de
-        digitação ali faria o diagnóstico continuar listando a regra como
-        "só o PVA verifica"."""
+        """Todo id em `pva` existe no leiaute de alguma versão guardada —
+        erro de digitação ali faria o diagnóstico continuar listando a
+        regra como "só o PVA verifica"."""
+        from sped_tables.infra import base_referencia
+        base, _origem = base_referencia.em_uso()
         todos = set()
-        for layout in ("ICMS", "CONTRIB"):
-            est, _info = descritor_pva.carregar(layout)
-            for d in est.values():
-                todos |= set(d.get("validadores", ()))
+        for layout in base_referencia.LEIAUTES:
+            for versao in base.versoes(layout):
+                for d in base.estrutura(layout, versao).values():
+                    todos |= set(d.get("validadores", ()))
         self.assertEqual(G.validadores_reproduzidos() - todos, set())
 
 

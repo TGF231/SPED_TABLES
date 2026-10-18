@@ -3794,7 +3794,8 @@ class SpedDocument:
             naturezas = {}
         if not naturezas:
             self.motivo_creditos = ("a tabela de CFOP com direito a crédito "
-                                    "do PVA não está disponível")
+                                    "da base de referência não está "
+                                    "disponível")
             return []
 
         fora = []
@@ -3940,8 +3941,8 @@ class SpedDocument:
             except Exception:                                   # noqa: BLE001
                 naturezas = {}
             if not naturezas:
-                motivo = ("a tabela de CFOP com direito a crédito do PVA não "
-                          "está disponível")
+                motivo = ("a tabela de CFOP com direito a crédito da base de "
+                          "referência não está disponível")
 
         resumo = {}
         for tributo, reg_cons, reg_det in (("PIS", "M200", "M210"),

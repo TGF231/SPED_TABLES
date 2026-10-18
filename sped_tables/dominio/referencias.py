@@ -10,9 +10,8 @@ O domínio não sabe **onde** isso está nem **como** se lê: pede a esta porta,
 e a versão do leiaute que pede é a do arquivo (`versao_do_leiaute`). Quem
 liga a porta a uma implementação é a montagem da aplicação
 (`sped_tables.aplicacao.montagem`), no início do programa; a implementação
-de verdade é a base de referência (`sped_tables.infra.referencias_base`;
-enquanto ela não entra, `sped_tables.infra.referencias_pva`). A porta em si
-não lê instalação nenhuma.
+de verdade é a base de referência (`sped_tables.infra.referencias_base`). A
+porta em si não lê instalação nenhuma.
 
 Sem nada ligado vale `Referencias` desta página, que não tem tabela
 nenhuma: cada regra que depende dela se abstém, como já fazia quando o PVA

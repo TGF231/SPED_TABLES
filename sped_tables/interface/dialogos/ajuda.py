@@ -8,7 +8,7 @@ from PyQt6.QtWidgets import (
     QDialog, QDialogButtonBox, QLabel, QTextBrowser, QVBoxLayout,
 )
 
-from sped_tables.dominio import ajuda
+from sped_tables.dominio import ajuda, referencias
 
 LIMITE_DICA = 700        # a dica do cabeçalho é um resumo; o resto é no F1
 
@@ -105,8 +105,8 @@ def html_do_registro(r, campo_atual=None):
                    % (_e(c["nome"]), c["n"], _titulo(c), marca))
         out += ["<p>%s</p>" % s for s in _secoes(c)]
     if r["fonte"]:
-        out.append("<p><i>Fonte: %s e descritor do PVA instalado.</i></p>"
-                   % _e(r["fonte"]))
+        out.append("<p><i>Fonte: %s e o leiaute da %s.</i></p>"
+                   % (_e(r["fonte"]), _e(referencias.atual().descricao())))
     return "\n".join(out)
 
 

@@ -11,7 +11,8 @@ import sys
 import unittest
 from unittest import mock
 
-from sped_tables.infra import banco_pva, config
+from consolidador import banco_pva
+from sped_tables.infra import config
 from tests.fabrica import PastaTemporaria
 
 RAIZ = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))

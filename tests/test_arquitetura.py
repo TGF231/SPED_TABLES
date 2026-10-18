@@ -36,7 +36,8 @@ PROIBIDO = {
 }
 # a raiz de composição é o único ponto da aplicação que nomeia a
 # implementação concreta de uma porta
-EXCECOES = {("aplicacao", "montagem.py", "sped_tables.infra.referencias_pva")}
+EXCECOES = {("aplicacao", "montagem.py",
+             "sped_tables.infra.referencias_base")}
 
 
 def _imports(caminho):
@@ -89,6 +90,59 @@ class TestRegraDeDependencia(unittest.TestCase):
                 if nome.endswith(".py"):
                     for _l, mod in _imports(os.path.join(raiz, nome)):
                         self.assertNotEqual(mod, "sped_editor", nome)
+
+
+class TestSemPvaNoPrograma(unittest.TestCase):
+    """O programa não lê a instalação do PVA para validar; só o Abrir no
+    PVA a usa. (Que o `sped_tables` nunca importa o consolidador já está em
+    `TestRegraDeDependencia`.)"""
+
+    # quem pode citar a raiz/pasta do PVA: o Abrir no PVA e quem a escolhe
+    PODEM = {os.path.join("infra", "pva.py"),
+             os.path.join("infra", "config.py"),
+             os.path.join("aplicacao", "envio_pva.py"),
+             os.path.join("interface", "controladores", "gerais.py")}
+    NOMES = ("raiz_pva", "pasta_pva", "pasta_tabelas", "jar_descritor",
+             "PVAS")
+
+    def test_so_o_abrir_no_pva_le_a_instalacao(self):
+        violacoes = []
+        for raiz, _d, nomes in os.walk(PACOTE):
+            for nome in nomes:
+                if not nome.endswith(".py"):
+                    continue
+                caminho = os.path.join(raiz, nome)
+                rel = os.path.relpath(caminho, PACOTE)
+                if rel in self.PODEM:
+                    continue
+                with open(caminho, encoding="utf-8") as fh:
+                    arvore = ast.parse(fh.read())
+                for no in ast.walk(arvore):
+                    if (isinstance(no, ast.Attribute)
+                            and no.attr in self.NOMES
+                            and isinstance(no.value, ast.Name)
+                            and no.value.id == "config"):
+                        violacoes.append("%s:%d config.%s"
+                                         % (rel, no.lineno, no.attr))
+        self.assertEqual(violacoes, [])
+
+    def test_sem_base_a_montagem_liga_a_fonte_vazia(self):
+        from unittest import mock
+        from sped_tables.infra import base_referencia, dados
+        avisos = []
+        dados.ao_avisar(avisos.append)
+        anterior = referencias.atual()
+        try:
+            with mock.patch.object(base_referencia, "em_uso",
+                                   lambda: (None, "nenhuma legível")), \
+                    self.assertLogs("sped_tables", "WARNING"):
+                montagem.configurar()
+            self.assertEqual(type(referencias.atual()),
+                             referencias.Referencias)
+            self.assertTrue(avisos)
+        finally:
+            dados.ao_avisar(None)
+            referencias.definir(anterior)
 
 
 class FonteDeTeste(referencias.Referencias):
@@ -153,6 +207,11 @@ class TestPorta(unittest.TestCase):
         fonte = FonteDeTeste()
         montagem.configurar(fonte)
         self.assertIs(referencias.atual(), fonte)
+
+    def test_montagem_liga_a_base_de_referencia(self):
+        from sped_tables.infra.referencias_base import ReferenciasBase
+        montagem.configurar()
+        self.assertIsInstance(referencias.atual(), ReferenciasBase)
 
 
 class TestSessao(unittest.TestCase):

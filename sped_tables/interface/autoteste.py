@@ -152,10 +152,10 @@ def _conferir(app, rel, arquivo, dados, falhas):
 
     def guias_praticos():
         # viajam em base/guias/ (SPED Tables.spec); sem eles a ajuda F1 some
-        from sped_tables.infra import guias
+        from sped_tables.dominio import referencias
         info = {}
         for layout in ("ICMS", "CONTRIB"):
-            g = guias.carregar(layout)
+            g = referencias.atual().guia(layout)
             info[layout] = ("%s %s, %d registros" % (
                 g.get("guia"), g.get("versao"), len(g.get("registros", {})))
                 if g else "ausente")

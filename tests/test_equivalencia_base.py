@@ -10,14 +10,14 @@ import json
 import os
 import unittest
 
+import tests
 from consolidador.instalacao import InstalacaoPVA
 from sped_tables.infra import base_referencia
 from sped_tables.infra.referencias_base import ReferenciasBase
-from sped_tables.infra import config
 
-# até a troca (Tarefa 7) a suíte ainda enxerga o PVA pelo config
-PVA = config.raiz_pva() if any(
-    os.path.isdir(config.pasta_pva(l)) for l in config.PVAS) else None
+# a suíte roda com a pasta do PVA vazia; a instalação de verdade, quando
+# existe, é a que `tests/__init__.py` guardou antes de isolá-la
+PVA = tests.PVA_REAL
 
 
 @unittest.skipUnless(PVA, "PVA não instalado nesta máquina")
@@ -83,10 +83,9 @@ class TestBaseReproduzOPva(unittest.TestCase):
 
 
 def _referencia_pva():
-    """O lado "PVA" da comparação pela porta: o leitor antigo enquanto ele
-    existe (troca na Tarefa 7)."""
-    from sped_tables.infra.referencias_pva import ReferenciasPVA
-    return ReferenciasPVA()
+    """O lado "PVA" da comparação pela porta: o mesmo adaptador, lendo a
+    instalação em vez da base."""
+    return ReferenciasBase(TestBaseReproduzOPva.pva)
 
 
 if __name__ == "__main__":
