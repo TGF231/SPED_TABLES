@@ -930,6 +930,15 @@ class TestAutoteste(unittest.TestCase):
         self.assertIn("tradução pt-BR do Qt", nomes)
         self.assertIn("abrir, salvar e reabrir", nomes)
         self.assertIn("leitura paralela de XMLs", nomes)
+        # a base de referência substituiu as duas fontes antigas
+        self.assertNotIn("tabelas do PVA", nomes)
+        self.assertNotIn("guias práticos", nomes)
+        item = next(i for i in saida["itens"]
+                    if i["nome"] == "base de referência")
+        with open(os.path.join(raiz, "base", "manifesto.json"),
+                  encoding="utf-8") as fh:
+            versao = json.load(fh)["versao"]
+        self.assertEqual(item["detalhe"]["versao"], versao)
 
     def test_sem_pasta_indicada_isola_os_dados(self):
         from sped_tables.interface import autoteste

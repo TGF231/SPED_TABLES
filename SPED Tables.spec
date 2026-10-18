@@ -13,8 +13,10 @@ O que precisa viajar junto com o executável e não é código:
   mesma pasta. É o `qtbase` que traz as strings de diálogo.
 * **`icon.ico`**, que além de ícone do executável é carregado em tempo de
   execução pela barra de título própria e pelo `setWindowIcon`.
-* **`base/guias/*.json`**, os guias práticos dos dois SPEDs extraídos
-  por `py -m consolidador guia`: sem eles a ajuda de campo some.
+* **`recursos/base_referencia.db`**, a base de referência compilada de
+  `base/` por `ferramentas/gerar_executavel.py`: leiaute de cada versão,
+  tabelas oficiais e guias práticos. Sem ela as validações pelo leiaute se
+  desligam.
 * **`correlacoes_cfop.json`**, o conjunto inicial de correlações CFOP
   saída→entrada. Na primeira execução, `dados.instalar()` copia daqui para
   `%APPDATA%\SPED Tables` o que ainda não existir lá — os dados do usuário
@@ -63,10 +65,9 @@ if not _qm:
         "diálogos em inglês." % _traducoes_qt)
 
 _recursos = [("icon.ico", "."),
-             # os guias práticos extraídos: a ajuda de cada campo e o texto
-             # que as regras citam (py -m consolidador guia)
-             ("base/guias/ICMS.json", "base/guias"),
-             ("base/guias/CONTRIB.json", "base/guias")]
+             # a base de referência compilada (gerar_executavel.py a gera
+             # de base/ antes do PyInstaller): leiautes, tabelas e guias
+             ("recursos/base_referencia.db", "recursos")]
 _opcionais = [("correlacoes_cfop.json", ".")]
 _recursos += [(o, d) for o, d in _opcionais if os.path.isfile(o)]
 

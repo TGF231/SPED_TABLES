@@ -6,11 +6,15 @@
 1. cria (ou reaproveita) `.venv-exe` com um Python do uv e instala **só**
    `requirements-executavel.txt` — do Python do sistema, o PyInstaller
    arrastava tudo o que estivesse instalado lá;
-2. roda o PyInstaller com o `SPED Tables.spec`, que ainda tira do pacote as
+2. compila a base de referência de `base/` para `recursos/base_referencia.db`
+   — a que vai dentro do executável é sempre a de agora, nunca a que
+   estiver por acaso em `recursos/`;
+3. roda o PyInstaller com o `SPED Tables.spec`, que ainda tira do pacote as
    DLLs e os plugins do Qt que o programa não carrega
    (`build/manifesto_executavel.txt` lista o que ficou e o que saiu);
-3. roda o `--autoteste` do executável numa pasta de dados temporária, sobre
-   um SPED sintético — o pacote enxuto precisa continuar inteiro.
+4. roda o `--autoteste` do executável numa pasta de dados temporária, sobre
+   um SPED sintético — o pacote enxuto precisa continuar inteiro, inclusive
+   a base de referência.
 
 Precisa do `uv` no PATH (https://docs.astral.sh/uv/).
 """
@@ -97,6 +101,18 @@ def ambiente(recriar=False):
     _rodar("uv", "pip", "sync", "--python", PYTHON, REQUISITOS)
 
 
+def compilar_base():
+    """A base de referência vai dentro do executável, compilada de base/
+    agora — nunca a que estiver por acaso em recursos/."""
+    sys.path.insert(0, RAIZ)
+    from sped_tables.infra import base_referencia
+    m = base_referencia.compilar(base_referencia.pasta_fontes(),
+                                 base_referencia.caminho_embutido())
+    tamanho = os.path.getsize(base_referencia.caminho_embutido()) / 1e6
+    print("base de referência %s compilada (%.1f MB)"
+          % (m["versao"], tamanho))
+
+
 def empacotar():
     _rodar(PYTHON, "-m", "PyInstaller", "--noconfirm", "--clean",
            "SPED Tables.spec")
@@ -129,6 +145,7 @@ def autoteste():
 
 if __name__ == "__main__":
     ambiente("--recriar" in sys.argv)
+    compilar_base()
     empacotar()
     if "--sem-autoteste" not in sys.argv:
         autoteste()
