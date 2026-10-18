@@ -51,7 +51,7 @@ equivalência a usa. Nenhum outro teste pula por falta de PVA.
 | `test_base_referencia` | A base: compilação reproduzível (mesmas fontes, mesmo SHA-256), leitura, escolha entre a embutida e a importada, e a importação que recusa pacote adulterado, igual ou mais antigo, de esquema novo, truncado ou ilegível — e a falha de gravação. |
 | `test_referencias_base` | O adaptador da porta sobre a base: estrutura pela versão do arquivo, "fora da base", vigência, tabelas, classificador de NCM. |
 | `test_tabelas_oficiais` | As tabelas oficiais lidas de texto (formato do PVA, com vigência), independente de onde o texto veio. |
-| `test_versao_leiaute` | Quem tem o documento pede a estrutura do `COD_VER` dele, nunca "a mais recente" (diagnóstico, validação, regras do guia, geração). |
+| `test_versao_leiaute` | Quem tem o documento pede a estrutura do `COD_VER` dele (diagnóstico, validação, regras do guia); a geração, a versão vigente no período; só `COD_VER` ilegível cai na mais recente. |
 | `test_consolidador` | `py -m consolidador` sobre uma instalação de PVA **inventada**: extrai, compila, publica, e recusa — sem deixar `base/` quebrada — o que não serve. |
 | `test_equivalencia_base` | **O teste central da migração:** a base compilada de `base/` responde igual ao PVA instalado nesta máquina. Pula sem PVA (ver 1.2.1). |
 | `test_estrutura` | Armadilhas: código depois de `return`, import sem uso, nome da biblioteca padrão, método duplicado. |
@@ -116,21 +116,22 @@ CLAUDE.md, "Os guias práticos e as regras do guia").
 
 ### 1.2.1 Leiaute e tabelas contra o PVA instalado
 
-Dois testes cuidam de a base não ficar para trás do PVA — e nenhum deles é
-juiz do que o programa acusa, só de a **fonte** estar certa:
+Dois testes cuidam de a **fonte** estar certa — nenhum é juiz do que o
+programa acusa —, e só um deles olha o PVA:
 
-- `tests/test_guias.py` confere, **sem PVA**, que o leiaute do programa tem a
-  **estrutura** do descritor guardado na base (largura e posição de cada
-  campo, registro a registro) e que, onde o guia nomeia o campo, o nome bate
-  com o do leiaute na mesma posição. Saiu guia novo: rode a suíte antes de
-  qualquer outra coisa — a divergência aparece aqui, não na grade do usuário.
-- `tests/test_equivalencia_base.py` roda **só com PVA instalado**
-  (`tests.PVA_REAL`): a base compilada de `base/` tem de responder igual à
-  instalação — versões do leiaute, estrutura, tabelas e cada método da
-  porta. **Falhou** (o PVA foi atualizado e a base ficou para trás)? Rode
-  `py -m consolidador extrair`, **revise o `git diff base/`** (o que mudou
-  é exatamente o que o PVA novo trouxe: versão de leiaute, campo, código de
-  tabela), rode a suíte de novo e faça o commit da base.
+- `tests/test_guias.py` roda **sem PVA** e confere o leiaute do programa
+  contra o descritor **guardado na base**: a **estrutura** (largura e posição
+  de cada campo, registro a registro) e, onde o guia nomeia o campo, que o
+  nome bata com o do leiaute na mesma posição. Saiu guia novo ou leiaute
+  novo: rode a suíte antes de qualquer outra coisa — a divergência aparece
+  aqui, não na grade do usuário.
+- `tests/test_equivalencia_base.py` é o **único que compara com o PVA** e roda
+  **só com PVA instalado** (`tests.PVA_REAL`): a base compilada de `base/` tem
+  de responder igual à instalação — versões do leiaute, estrutura, tabelas e
+  cada método da porta. **Falhou** (o PVA foi atualizado e a base ficou para
+  trás)? Rode `py -m consolidador extrair`, **revise o `git diff base/`** (o
+  que mudou deve ser o que o PVA novo trouxe: versão de leiaute, campo, código
+  de tabela), rode a suíte de novo e faça o commit da base.
 
 Para refazer os JSON dos guias e o `COBERTURA.md`:
 

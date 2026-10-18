@@ -592,8 +592,9 @@ referência guarda as duas:
 | `PROD_MONO_ALIQ_DIFER` | 4.3.10 | perfumaria, higiene pessoal, medicamentos, veículos, autopeças (Lei 10.147/2000) |
 
 Não há pasta nem arquivo para apontar: as tabelas vêm da **base de
-referência** (ver *Base de referência*, adiante), extraídas dos PVAs na hora
-de compilar o programa. Sem as tabelas na base, a verificação diz que não
+referência** (ver *Base de referência*, adiante): o consolidador as extrai
+das pastas dos PVAs para `base/`, e o programa leva a base já compilada. Sem
+as tabelas na base, a verificação diz que não
 tem com o que comparar — sem a 4.3.10, produtos como o sabonete (NCM
 `34011190`) passariam despercebidos enquanto o PVA os acusa.
 
@@ -1111,9 +1112,14 @@ As tabelas vêm da **base de referência** (ver adiante): não há pasta nem
 arquivo para configurar, e o diálogo mostra a versão de cada tabela usada.
 A verificação respeita a **vigência** (DT_INI/DT_FIM) na data de referência —
 por padrão a DT_FIN do arquivo — e as exceções (NCM_EX); o **gênero** do item
-vem dos dois primeiros dígitos do NCM. Quando o consolidador recebeu a
-**Tabela NCM Vigente** (XLSX do portal Siscomex) ao montar a base, ela também
-valida os NCMs.
+vem dos dois primeiros dígitos do NCM.
+
+**Tabela NCM Vigente (Siscomex).** Antes dava para apontar a planilha XLSX
+nesta tela; agora ela entra na base, entregue ao consolidador
+(`py -m consolidador extrair --ncm planilha.xlsx`). **A base entregue com
+esta versão (`2026.10.1`) foi extraída sem ela**, então a conferência de NCM
+vigente está **desligada** até alguém extrair de novo com `--ncm` e publicar
+a base.
 
 Exemplos de achados típicos: entrada de produto **monofásico** (bebidas) com CST
 50 — crédito indevido, quando o correto seria 73/98 — ou produto de **alíquota
@@ -1317,8 +1323,9 @@ PVA nenhum, a pré-validação dá o mesmo resultado. A instalação só é usad
 - **Para quem compila o programa.** O pacote `consolidador/` roda na
   máquina de quem gera o executável (nunca na de quem o usa):
   `py -m consolidador extrair` lê os PVAs instalados nela (e, com `--ncm`, a
-  planilha de NCM vigente do Siscomex) e regrava as fontes em `base/`, em
-  texto, para revisar com `git diff base/`; `guia` extrai um guia prático
+  planilha de NCM vigente do Siscomex — a base `2026.10.1` foi extraída sem
+  ela) e regrava as fontes em `base/`, em texto, para revisar com
+  `git diff base/`; `guia` extrai um guia prático
   de um PDF; `compilar` gera o banco; `publicar` gera o pacote para
   importação. O `ferramentas/gerar_executavel.py` compila a base antes do
   PyInstaller.

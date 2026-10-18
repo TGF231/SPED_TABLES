@@ -59,7 +59,9 @@ guias e regrava as fontes da base de referência (`base/`). Ele pode importar o
  (nunca importa o consolidador)                  (no executável, ou importada)
 ```
 
-`tests/test_arquitetura.py` confere as duas direções.
+`tests/test_arquitetura.py` reprova o `sped_tables` que importar o
+`consolidador`; que o consolidador possa importar o programa é permitido, e não
+há teste para isso.
 
 ---
 
@@ -198,10 +200,13 @@ referência…*.
 
 **A porta pede a versão do leiaute do arquivo.** `estrutura(layout, versao)`
 devolve a estrutura do `COD_VER` que o arquivo declara
-(`referencias.versao_do_leiaute(doc)` o tira do 0000); `versao=None` é "a mais
-recente", que só a geração de um período novo usa. Versão que a base não guarda
-volta como `fora_da_base`: o programa avisa e se abstém, em vez de cobrar a
-estrutura de outra versão.
+(`referencias.versao_do_leiaute(doc)` o tira do 0000). A geração do SPED, que
+não tem arquivo, pede a versão vigente no fim do período que gera
+(`versao_vigente(layout, fim)`). `versao=None` é "a mais recente" e é o
+**recuo**: vale quando o arquivo não declara um `COD_VER` legível (e no
+autoteste), não uma escolha de quem tem a versão em mãos. Versão que a base não
+guarda volta como `fora_da_base`: o programa avisa e se abstém, em vez de
+cobrar a estrutura de outra versão.
 
 Sem nada ligado vale a fonte **vazia**: cada regra que precisa de tabela se
 abstém, que é o que acontece quando nenhuma base é legível (e a pessoa é

@@ -41,8 +41,10 @@ Fora do `sped_tables/`, na raiz, o pacote **`consolidador/`** (`descritor`,
 `instalacao`, `extracao`, `guias`, `banco_pva`; linha de comando `py -m
 consolidador extrair|guia|compilar|publicar`) é o único que lê a instalação do
 PVA para extrair a base — na máquina de **quem compila**, nunca na de quem usa.
-Ele pode importar o `sped_tables`; **o `sped_tables` nunca importa o
-`consolidador`** (`tests/test_arquitetura.py` confere as duas coisas).
+Ele pode importar o `sped_tables` (é permitido, e não há teste para isso);
+**o `sped_tables` nunca importa o `consolidador`** — `tests/test_arquitetura.py`
+reprova o contrário, e confere também que só o *Abrir no PVA* (e quem escolhe
+a pasta) lê a raiz do PVA pelo `config`.
 
 `sped_editor.py` na raiz é só o lançador. `sped_tables/version.py` tem
 `__version__`, `APP_NAME` e `canal()`.
@@ -67,9 +69,10 @@ Regras gerais:
 ## A base de referência
 
 Tudo o que o programa sabe do SPED **fora do próprio código** — a estrutura
-do leiaute de cada versão, as tabelas oficiais, os guias práticos e o NCM
-vigente — vem de uma base montada na compilação, nunca da instalação do PVA
-da máquina (`docs/adr/0001-base-de-referencia-compilada.md`; vocabulário em
+do leiaute de cada versão, as tabelas oficiais, os guias práticos e (quando o
+consolidador o recebeu) o NCM vigente — vem de uma base montada na
+compilação, nunca da instalação do PVA da máquina
+(`docs/adr/0001-base-de-referencia-compilada.md`; vocabulário em
 `CONTEXT.md`). Até a 1.1.0-dev.15 o programa lia o descritor e as tabelas do
 PVA de quem o usava: com PVA antigo a pré-validação discordava do PVA
 vigente, e sem PVA as regras se abstinham. O projeto é o primeiro de quatro
@@ -79,10 +82,15 @@ vigente, e sem PVA as regras se abstinham. O projeto é o primeiro de quatro
   `manifesto.json`, `leiaute/<LEIAUTE>/<COD_VER>.json`,
   `tabelas/<GRUPO>@<TABELA>.txt` (o `$` da chave vira `@` no nome do arquivo,
   que atrapalha o terminal), `guias/<LEIAUTE>.json` e `ncm/vigente.txt`
-  (opcional). Só **fatos** — campos, tipos, tamanhos, códigos de tabela
-  pública —: nada de SQL, Java nem texto de mensagem do PVA. Fontes em
-  UTF-8 (o SPED continua latin-1). Quem as regrava é o consolidador, na
-  máquina de quem compila; a revisão é o `git diff base/`.
+  (opcional: **a base `2026.10.1` não o tem** — `origem.ncm` do manifesto é
+  `null` —, então a Tabela NCM Vigente do Siscomex está desligada,
+  `vigente_ncm` volta `None`, até alguém extrair com `py -m consolidador
+  extrair --ncm planilha.xlsx`; antes a pessoa a ligava apontando a planilha
+  na tela das tabelas da RFB, que saiu). Só **fatos** — campos, tipos,
+  tamanhos, códigos de tabela pública —: nada de SQL, Java nem texto de
+  mensagem do PVA. Fontes em UTF-8 (o SPED continua latin-1). Quem as
+  regrava é o consolidador, na máquina de quem compila; a revisão é o
+  `git diff base/`.
 - **Compilação reproduzível.** `infra/base_referencia.py` compila `base/`
   num SQLite (`recursos/base_referencia.db`, ~1,8 MB, fora do git) com ordem
   fixa e **sem data de compilação**: mesmas fontes, mesmo banco, byte a byte,
@@ -104,8 +112,12 @@ vigente, e sem PVA as regras se abstinham. O projeto é o primeiro de quatro
   diálogo (num slot do Qt ela derrubaria o processo).
 - **O leiaute vale pela versão do arquivo.** O helper do domínio
   `referencias.versao_do_leiaute(doc)` tira o `COD_VER` do 0000, e quem tem o
-  documento em mãos pede `referencias.atual().estrutura(layout, versao)`;
-  `versao=None` é "a mais recente" e só serve à geração de um período novo. Versão que a base não
+  documento em mãos pede `referencias.atual().estrutura(layout, versao)`. A
+  geração, que não tem arquivo, pede a versão do período que gera:
+  `fonte.versao_vigente(layout, fim)`. `versao=None` pede "a mais recente" e
+  é o **recuo**: vale quando o arquivo não declara um `COD_VER` legível
+  (`versao_do_leiaute` devolve `None`) e é o que o autoteste usa — nunca a
+  escolha de quem tem a versão em mãos. Versão que a base não
   guarda volta `fora_da_base`, e o programa **avisa e se abstém**: cobrar a
   estrutura de outra versão acusaria campo que o arquivo nem tem. Quem
   consome essa resposta tem de dizer que não conferiu — o Diagnóstico sem a
@@ -114,7 +126,10 @@ vigente, e sem PVA as regras se abstinham. O projeto é o primeiro de quatro
 - **Retenção:** as versões com vigência nos últimos **5 anos** mais a atual
   (e as futuras que já tenham descritor) — hoje ICMS/IPI 015 a 020. **O
   Contribuições só tem a 006**, vigente desde 01/01/2020 e sem data final: é
-  a única que o descritor dele publica dentro da janela.
+  a única versão dele com vigência dentro da janela — na tabela de versões
+  do PVA (`SPEDPISCOFINS_VERSOES_LEIAUTE`), a 002 a 005 terminam entre 2012 e
+  2019, antes do corte de 5 anos. No ICMS/IPI, a 021 (2027) está na tabela
+  mas ainda não tem descritor: fica fora da base, com aviso do consolidador.
 - **`tests/fabrica.py` declara `COD_VER` `020` (ICMS/IPI) e `006`
   (Contribuições) de propósito:** são versões que a base guarda e é a
   estrutura delas que o arquivo sintético precisa ter. Trocar por versão

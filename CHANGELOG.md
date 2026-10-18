@@ -5,16 +5,18 @@
 ### Adicionado
 - **Base de referência.** O leiaute de cada versão, as tabelas oficiais
   (CST, CFOP, códigos de ajuste e de receita por UF, naturezas da receita,
-  monofásicos e alíquota zero…), os guias práticos e, quando o consolidador
-  o recebeu, o NCM vigente passam a vir de uma base compilada na geração do
-  programa (`base/` →
-  `recursos/base_referencia.db`, 1,8 MB), e não mais da instalação do PVA na
-  máquina de quem usa. Com PVA antigo ou sem PVA nenhum, a pré-validação é
-  a mesma — o que antes dependia da versão que a pessoa tinha instalado, e
-  desligava metade das verificações quando não havia nenhuma. O PVA da
-  máquina só serve ao *Abrir no PVA*. Fontes em texto em `base/`,
-  revisáveis por diff; a compilação é reproduzível (mesmas fontes, mesmo
-  banco, byte a byte); a versão é `AAAA.MM.n` (esta, `2026.10.1`).
+  monofásicos e alíquota zero…) e os guias práticos passam a vir de uma base
+  compilada na geração do programa (`base/` → `recursos/base_referencia.db`,
+  1,8 MB), e não mais da instalação do PVA na máquina de quem usa. Com PVA
+  antigo ou sem PVA nenhum, a pré-validação é a mesma — o que antes dependia
+  da versão que a pessoa tinha instalado, e desligava metade das
+  verificações quando não havia nenhuma. O PVA da máquina só serve ao *Abrir
+  no PVA*. Fontes em texto em `base/`, revisáveis por diff; a compilação é
+  reproduzível (mesmas fontes, mesmo banco, byte a byte); a versão é
+  `AAAA.MM.n` (esta, `2026.10.1`). **A base entregue não traz a Tabela NCM
+  Vigente** (`origem.ncm` do manifesto é `null`): a conferência de NCM
+  vigente da classificação fica desligada (`vigente_ncm` volta `None`) até
+  alguém extrair com `py -m consolidador extrair --ncm planilha.xlsx`.
 - **Leiaute pela versão do arquivo.** Cada arquivo é conferido com a
   estrutura do `COD_VER` que declara no 0000 (ICMS/IPI 015 a 020,
   Contribuições 006), e não com a mais recente: um campo que só existe na
@@ -35,8 +37,8 @@
   de dados); a ilegível é ignorada, nunca apagada.
 - **Consolidador** (`py -m consolidador extrair|guia|compilar|publicar`),
   pacote novo na raiz que roda na máquina de **quem compila**: `extrair`
-  lê os PVAs instalados e o NCM vigente e regrava `base/` (a revisão é o
-  `git diff base/`); `guia` extrai o guia prático de um PDF; `compilar`
+  lê os PVAs instalados (e, com `--ncm`, a planilha de NCM vigente) e
+  regrava `base/` (a revisão é o `git diff base/`); `guia` extrai o guia prático de um PDF; `compilar`
   gera o banco; `publicar` gera o pacote para importação. Recusa
   extrair sem PVA e nunca grava base parcial. O `sped_tables` não o
   importa — `tests/test_arquitetura.py` confere.
@@ -62,10 +64,11 @@
   tabelas e descritor e guarda só onde está o PVA para o *Abrir no PVA*;
   `SPED_TABLES_PVA`, quando definida, é a raiz mesmo sem PVA dentro.
 - **A suíte roda com a pasta do PVA apontada para um diretório vazio**,
-  como o programa na máquina de quem não tem PVA, e compila a base de
-  `base/` uma vez por execução. Os testes de `test_guias` e `test_regras_guia`
-  leem a base e deixaram de pular sem PVA; só o de equivalência precisa da
-  instalação (`tests.PVA_REAL`).
+  como o programa na máquina de quem não tem PVA, e liga a base de
+  referência: o `compilar_se_preciso` recompila `recursos/base_referencia.db`
+  (fora do git) quando ele falta ou quando `base/` é mais nova. Os testes de
+  `test_guias` e `test_regras_guia` leem a base e deixaram de pular sem PVA;
+  só o de equivalência precisa da instalação (`tests.PVA_REAL`).
 - **Diagnóstico sem a base não aprova.** O cabeçalho do diálogo e a barra de
   status do diagnóstico automático diziam "nenhum problema nas verificações"
   também quando a base faltava ou a versão do arquivo estava fora dela — ou
@@ -85,9 +88,11 @@
 ### Removido
 - A configuração *Tabelas da RFB* (pasta e arquivos do CST por NCM): as
   tabelas de alíquota zero e de monofásicos vêm da base, e o diálogo *CST
-  por NCM* deixou de pedir caminho. A Tabela NCM Vigente do Siscomex passa a
-  ser entregue ao consolidador (`extrair --ncm planilha.xlsx`), não ao
-  programa.
+  por NCM* deixou de pedir caminho. **A Tabela NCM Vigente do Siscomex**,
+  que antes a pessoa podia ligar apontando a planilha, passa a ser entregue
+  ao consolidador (`py -m consolidador extrair --ncm planilha.xlsx`), não ao
+  programa — e como a base `2026.10.1` foi extraída sem ela, a conferência de
+  NCM vigente está **desligada** até a próxima extração com `--ncm`.
 
 ### Corrigido
 - **Importar uma base não vira exceção quando a gravação falha.** Disco
