@@ -393,11 +393,17 @@ def inspecionar(caminho_zip):
             "confere": digital == manifesto.get("sha256"), "banco": banco}
 
 
+def _falha_ao_gravar(exc):
+    return BaseRecusada("Não foi possível gravar a base na pasta de dados "
+                        "(%s). A base em uso continua valendo." % exc)
+
+
 def importar(caminho_zip):
     """Instala a base do pacote na pasta de dados, se ela for íntegra,
     legível por este programa e mais nova que a em uso. Devolve o
     manifesto; o que não serve levanta `BaseRecusada` sem tocar na base em
-    uso."""
+    uso — inclusive a falha de gravação (disco cheio, antivírus, pasta de
+    rede), que quem importa trata como qualquer outra recusa."""
     pacote = inspecionar(caminho_zip)
     if not pacote["confere"]:
         raise BaseRecusada(
@@ -406,8 +412,11 @@ def importar(caminho_zip):
             % pacote["sha256"][:16])
     destino = caminho_importado()
     temporario = destino + ".importando"
-    dados.gravar_atomico(temporario, pacote["banco"])
     try:
+        try:
+            dados.gravar_atomico(temporario, pacote["banco"])
+        except OSError as exc:
+            raise _falha_ao_gravar(exc)
         try:
             nova = Base(temporario)
         except EsquemaNovo as exc:
@@ -425,8 +434,15 @@ def importar(caminho_zip):
                                       atual.manifesto()["versao"])):
             raise BaseRecusada("A base %s não é mais nova que a em uso (%s)."
                                % (versao, atual.manifesto()["versao"]))
-        os.replace(temporario, destino)
+        try:
+            os.replace(temporario, destino)
+        except OSError as exc:
+            raise _falha_ao_gravar(exc)
     finally:
-        if os.path.exists(temporario):
-            os.remove(temporario)
+        # limpar o temporário nunca pode mascarar o motivo da recusa
+        try:
+            if os.path.exists(temporario):
+                os.remove(temporario)
+        except OSError:
+            pass
     return nova.manifesto()

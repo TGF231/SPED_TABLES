@@ -348,6 +348,56 @@ class TestImportacao(unittest.TestCase):
         self.assertEqual(self._sobras(), [])
         self.assertEqual(B.em_uso()[1], "embutida")
 
+    def test_falha_ao_gravar_vira_recusa(self):
+        """Disco cheio, antivírus, pasta de rede: o `OSError` da gravação não
+        escapa de `importar` (o diálogo só trata `BaseRecusada`). Vira
+        recusa com mensagem clara, a base em uso não muda e não sobra
+        temporário."""
+        pacote = self._pacote("2026.11.1")
+        real = os.replace
+
+        def troca_que_falha(origem, destino_final, *a, **k):
+            if destino_final == self.importada:
+                raise PermissionError(13, "acesso negado")
+            return real(origem, destino_final, *a, **k)
+
+        casos = {
+            "gravar o temporário": mock.patch.object(
+                B.dados, "gravar_atomico",
+                side_effect=OSError(28, "sem espaço no disco")),
+            "trocar pelo destino": mock.patch.object(
+                B.os, "replace", troca_que_falha),
+        }
+        for nome, falha in casos.items():
+            with self.subTest(nome):
+                with falha, self.assertRaises(B.BaseRecusada) as ctx:
+                    B.importar(pacote)
+                texto = str(ctx.exception)
+                self.assertIn("Não foi possível gravar a base na pasta de "
+                              "dados", texto)
+                self.assertIn("A base em uso continua valendo.", texto)
+                self.assertFalse(os.path.exists(self.importada))
+                self.assertEqual(self._sobras(), [])
+                self.assertEqual(B.em_uso()[1], "embutida")
+
+    def test_falha_ao_remover_o_temporario_nao_mascara_a_recusa(self):
+        """Pacote recusado e, além disso, o temporário não sai (antivírus
+        segurando o arquivo): quem recebe a exceção continua vendo o motivo
+        da recusa, não o `OSError` da limpeza."""
+        pacote = self._pacote("2026.10.1")          # não é mais nova
+        real = os.remove
+
+        def remove_que_falha(caminho, *a, **k):
+            if str(caminho).endswith(".importando"):
+                raise PermissionError(13, "em uso por outro processo")
+            return real(caminho, *a, **k)
+
+        with mock.patch.object(B.os, "remove", remove_que_falha):
+            with self.assertRaises(B.BaseRecusada) as ctx:
+                B.importar(pacote)
+        self.assertIn("não é mais nova", str(ctx.exception))
+        self.assertFalse(os.path.exists(self.importada))
+
     def _fluxo_deflate(self, zip_ok):
         """`(início, tamanho)` do fluxo deflate do banco dentro do pacote."""
         with zipfile.ZipFile(zip_ok) as z:

@@ -239,10 +239,22 @@ class DialogoDiagnostico(QDialog):
 
         pal = tema.atual()
         total = sum(a.quantidade for a in achados)
-        cab = QLabel("<b>%d</b> problema(s) em %d tipo(s) de verificação."
-                     % (total, len(achados)) if total else
-                     "Nenhum problema nas verificações automáticas.")
-        cab.setProperty("role", "erro" if total else "ok")
+        # sem o leiaute do arquivo na base valeram só as regras embutidas:
+        # "nenhum problema" não pode soar como aprovação (nem sair em verde)
+        parcial = bool(info.get("fora_da_base") or info.get("sem_base"))
+        if total:
+            texto_cab, papel_cab = (
+                "<b>%d</b> problema(s) em %d tipo(s) de verificação."
+                % (total, len(achados)), "erro")
+        elif parcial:
+            texto_cab, papel_cab = (
+                "Nenhum problema nas regras embutidas — a conferência pelo "
+                "leiaute não rodou.", "aviso")
+        else:
+            texto_cab, papel_cab = (
+                "Nenhum problema nas verificações automáticas.", "ok")
+        cab = QLabel(texto_cab)
+        cab.setProperty("role", papel_cab)
         lay.addWidget(cab)
 
         if info.get("fora_da_base"):
@@ -265,7 +277,7 @@ class DialogoDiagnostico(QDialog):
                    info.get("registros_descritor", "?")))
         origem = QLabel(texto_origem)
         origem.setWordWrap(True)
-        origem.setProperty("role", "info")
+        origem.setProperty("role", "aviso" if parcial else "info")
         lay.addWidget(origem)
 
         self.resumo = QTableWidget(0, len(self.COLS))

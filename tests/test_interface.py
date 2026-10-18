@@ -628,10 +628,11 @@ class TestJanela(unittest.TestCase):
         self.assertEqual(self.erros, [], self._falhas())
 
     def test_diagnostico_sem_base_avisa_pela_acao(self):
-        """O último elo do "sem base": a fonte vazia chega à tela. Dispara a
-        ação do Diagnóstico (não o diálogo montado à mão) e a tela diz que a
-        base está indisponível — nunca "nenhum problema" como falsa
-        aprovação."""
+        """O último elo do "sem base": a fonte vazia chega à tela. Com a
+        fonte vazia, a ação do Diagnóstico (disparada pela tabela de ações,
+        não o diálogo montado à mão) mostra o rótulo "Base de referência
+        indisponível" com o papel `aviso` (não `info`), não mostra o texto
+        "Verificado com o leiaute" e não tem nenhum rótulo `ok` (verde)."""
         from PyQt6.QtWidgets import QLabel
         from sped_tables.dominio import referencias
         antes = referencias.definir(None)              # fonte vazia: sem base
@@ -641,18 +642,69 @@ class TestJanela(unittest.TestCase):
                 self.assertTrue(j.abrir_caminho(icms_basico().gravar(p)))
                 _esperar()
                 j.act_diagnostico.trigger()
-                textos = [l.text() for l in
-                          j._janelas["DialogoDiagnostico"].findChildren(
-                              QLabel)]
-                self.assertTrue(
-                    any("Base de referência indisponível" in t
-                        for t in textos), textos)
+                rotulos = j._janelas["DialogoDiagnostico"].findChildren(
+                    QLabel)
+                textos = [l.text() for l in rotulos]
+                indisponivel = [l for l in rotulos if
+                                "Base de referência indisponível" in l.text()]
+                self.assertEqual([l.property("role") for l in indisponivel],
+                                 ["aviso"], textos)
                 self.assertFalse(any("Verificado com o leiaute" in t
                                      for t in textos), textos)
+                self.assertEqual([l.text() for l in rotulos
+                                  if l.property("role") == "ok"], [])
                 j.alterado = False
                 j.close()
         finally:
             referencias.definir(antes)
+        self.assertEqual(self.erros, [], self._falhas())
+
+    def test_diagnostico_sem_achados_nao_aprova_sem_a_base(self):
+        """Sem achados, mas sem a base (ou com a versão do arquivo fora
+        dela), valeram só as regras embutidas: o cabeçalho tem o papel
+        `aviso`, diz que a conferência pelo leiaute não rodou, a origem
+        também é `aviso` e nenhum rótulo é `ok`. Com a base e a versão nela,
+        nada muda: "Nenhum problema…" em `ok` e a origem em `info`."""
+        from PyQt6.QtWidgets import QLabel
+        from sped_tables.interface.controladores import gerais
+        casos = (
+            ({"sem_base": True}, "aviso"),
+            ({"fora_da_base": "015"}, "aviso"),
+            ({"versao": "020", "registros_descritor": 10}, "ok"),
+        )
+        with PastaTemporaria() as p:
+            j = self.ed.JanelaPrincipal()
+            self.assertTrue(j.abrir_caminho(icms_basico().gravar(p)))
+            _esperar()
+            for info, papel in casos:
+                with self.subTest(info=info), mock.patch.object(
+                        gerais.diagnostico, "verificar",
+                        lambda doc, info=info: ([], info)):
+                    j.act_diagnostico.trigger()
+                    rotulos = j._janelas["DialogoDiagnostico"].findChildren(
+                        QLabel)
+                    textos = [l.text() for l in rotulos]
+                    cab = [l for l in rotulos
+                           if l.text().startswith("Nenhum problema")]
+                    self.assertEqual(len(cab), 1, textos)
+                    self.assertEqual(cab[0].property("role"), papel, textos)
+                    origem = [l for l in rotulos if l.wordWrap()]
+                    self.assertEqual(len(origem), 1, textos)
+                    self.assertEqual(origem[0].property("role"),
+                                     "info" if papel == "ok" else "aviso",
+                                     textos)
+                    if papel == "aviso":
+                        self.assertIn("a conferência pelo leiaute não rodou",
+                                      cab[0].text())
+                        self.assertEqual(
+                            [l.text() for l in rotulos
+                             if l.property("role") == "ok"], [])
+                    else:
+                        self.assertEqual(
+                            cab[0].text(),
+                            "Nenhum problema nas verificações automáticas.")
+            j.alterado = False
+            j.close()
         self.assertEqual(self.erros, [], self._falhas())
 
     def test_todas_as_acoes_nos_dois_leiautes(self):

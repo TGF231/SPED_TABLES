@@ -58,7 +58,7 @@ class TestVerificar(unittest.TestCase):
         linha[m.tabela["0150"].index("COD_MUN")] = "0000000"
         doc = _doc(m)
         achados, _info = diagnostico.verificar(doc)
-        mun =[a for a in achados if a.reg == "0150" and a.campo == "COD_MUN"]
+        mun = [a for a in achados if a.reg == "0150" and a.campo == "COD_MUN"]
         self.assertEqual([a.tipo for a in mun], ["municipio"])
         self.assertNotIn("municipio",
                          dict(diagnostico.impedem_importacao(achados)))
@@ -80,7 +80,7 @@ class TestVerificar(unittest.TestCase):
                 c100[i] = ""
         c100[nomes.index("COD_SIT")] = "02"
         achados, _info = diagnostico.verificar(_doc(m))
-        obr ={(a.reg, a.campo) for a in achados if a.tipo == "obrigatorio"}
+        obr = {(a.reg, a.campo) for a in achados if a.tipo == "obrigatorio"}
         self.assertFalse({x for x in obr if x[0] == "C100"}, obr)
         c100[nomes.index("NUM_DOC")] = ""
         achados, _info = diagnostico.verificar(_doc(m))
