@@ -57,6 +57,12 @@ desenho em `docs/superpowers/specs/`; as decisões de fundo estão em
   publicam, detecta o que mudou e propõe as mudanças na base. Regra tirada
   de nota técnica antes de existir PVA que a aplique é **antecipada**: acusa
   como aviso até ser **confirmada** no PVA de ensaio.
+  Pendência que já se sabe: no EFD Contribuições o `extrair` só liga o
+  descritor da versão **em aberto** (a 006). Quando o PVA publicar a 007, a
+  006 passa a ter data final e fica sem descritor mapeável — e o `extrair`
+  recusa a base inteira, inclusive para atualizar só tabelas, até a 006 sair
+  da janela de 5 anos. A spec manda o contrário (versão que não puder ser
+  confirmada fica fora da base); precisa ser resolvido antes da 007.
 - **Migração e cobertura (4).** Passar as regras de `dominio/regras_guia.py`
   e as verificações do diagnóstico para o motor, com a mesma saída, e ampliar
   a cobertura segundo as fases abaixo.
