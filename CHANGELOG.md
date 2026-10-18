@@ -38,7 +38,8 @@
 - **Consolidador** (`py -m consolidador extrair|guia|compilar|publicar`),
   pacote novo na raiz que roda na máquina de **quem compila**: `extrair`
   lê os PVAs instalados (e, com `--ncm`, a planilha de NCM vigente) e
-  regrava `base/` (a revisão é o `git diff base/`); `guia` extrai o guia prático de um PDF; `compilar`
+  regrava `base/` (a revisão é o `git diff base/`); `guia` extrai o guia
+  prático de um PDF e avança a versão da base no manifesto; `compilar`
   gera o banco; `publicar` gera o pacote para importação. Recusa
   extrair sem PVA e nunca grava base parcial. O `sped_tables` não o
   importa — `tests/test_arquitetura.py` confere.
@@ -76,6 +77,31 @@
   faltou ("nenhum problema nas regras embutidas; a versão XXX do leiaute
   não está na base de referência"), e o cabeçalho do diálogo sai como aviso,
   não em verde.
+- **Arquivo de leiaute mais novo que a base diz o remédio.** A base
+  `2026.10.1` vai do ICMS/IPI 015 ao 020: a partir de 2027, todo arquivo
+  com `COD_VER` 021 perderia as verificações de leiaute com uma mensagem
+  que sugeria arquivo velho ("a base guarda os últimos 5 anos") e não dizia
+  o que fazer. O adaptador marca `info["mais_nova_que_a_base"]` quando a
+  versão do arquivo passa da maior guardada (comparação numérica; `COD_VER`
+  que não é número nunca levanta); o Diagnóstico, no diálogo e na barra do
+  automático, diz que a versão X é mais nova que a base em uso, que valeram
+  só as regras embutidas e que é preciso **importar uma base mais nova em
+  Configurações → Base de referência…**. Versão antiga demais mantém o texto
+  dos 5 anos.
+- **Geração pelos XMLs aponta período que a base não cobre.** Sem versão de
+  leiaute vigente no período (`versao_vigente` devolve `None`) a geração
+  continua na versão mais recente, como antes, mas agora registra um
+  apontamento de revisão — que não bloqueia a gravação — dizendo que o
+  leiaute do período não está na base e que valeu a mais recente.
+- **Abrir no PVA avisa quando a pré-checagem não rodou.** Sem a estrutura do
+  leiaute (base ausente ou sem a versão do arquivo) os achados que o PVA
+  recusa na importação nem existem, e a lista vazia passava em silêncio.
+  `envio_pva.pre_checagem_com_aviso` devolve também o aviso, e a pergunta
+  que já existe antes de abrir o PVA o mostra — sem impedir o envio, que o
+  PVA valida de qualquer jeito.
+- **Itens do 0200 sem referência** diz a origem verdadeira dos campos que
+  apontam para o 0200: o leiaute da versão do arquivo na base de
+  referência, e, sem ele, a varredura pelo valor do `COD_ITEM`.
 - **Base ilegível dá um aviso só, com a causa** (arquivo truncado, esquema
   mais novo, manifesto ruim): sobrando uma base legível, a ilegível é
   avisada e ignorada; sobrando nenhuma, a montagem dá a única mensagem, em
@@ -95,6 +121,15 @@
   NCM vigente está **desligada** até a próxima extração com `--ncm`.
 
 ### Corrigido
+- **`consolidador guia` regrava o manifesto.** O comando refazia
+  `base/guias/*.json` sem tocar em `base/manifesto.json`: a versão da base e
+  o `origem.guias` ficavam os antigos, o pacote saía com o mesmo `AAAA.MM.n`
+  e conteúdo diferente, quem tinha a base embutida recebia "não é mais
+  nova" ao importar, e duas bases distintas passavam a ter a mesma
+  identidade (a impressão digital publicada deixava de identificá-la). Agora,
+  depois de gravar o guia, registra `origem.guias` do layout e avança a
+  `versao` pela regra do `extrair`; aceita `--data` e `--versao` com o mesmo
+  sentido.
 - **Importar uma base não vira exceção quando a gravação falha.** Disco
   cheio, antivírus ou pasta de rede ao gravar o temporário ou trocá-lo pelo
   destino são recusados com "Não foi possível gravar a base na pasta de
@@ -108,12 +143,18 @@
   pelo caminho de rede).
 
 ### Notas
-- **O que foi medido:** a suíte passa com a pasta do PVA vazia, e os
-  arquivos reais passaram nos invariantes de `tests/test_reais.py` (gravar e
-  reabrir, correções em lote idempotentes, nenhuma verificação levanta
-  exceção) sem nenhum PVA. A conferência dos números exatos pelo
-  `gabarito.json` é da máquina que o tem; o teste de equivalência garante
-  que a base dá ao programa as mesmas respostas que o PVA de onde saiu.
+- **O que foi medido:** a suíte passa com a pasta do PVA vazia. Nos 7
+  arquivos reais disponíveis (todos em ICMS/IPI 020 e Contribuições 006), os
+  números do `gabarito.json` — revisão por regra e diagnóstico — deram
+  **idênticos** aos do código anterior, que lia o PVA instalado, agora com a
+  pasta do PVA vazia. Arquivo de versão anterior do leiaute passa a ser
+  conferido pela própria versão, o que pode mudar o resultado dele **de
+  propósito** (critério 3 da spec). O teste de equivalência garante que a
+  base dá ao programa as mesmas respostas que o PVA de onde saiu.
+- Um teste confere a versão por arquivo **sobre a base entregue**
+  (`tests/test_versao_leiaute.py`): a mesma linha de `C120.COD_DOC_IMP` (que
+  aceita 0 e 1 na 019 e 0, 1 e 2 na 020) e do `1310` (10 campos na 019, 11
+  na 020) é acusada no arquivo 019 e não no 020.
 - O `COBERTURA.md` foi regenerado a partir da base (guias e descritor): os
   números não mudaram.
 - `tests/fabrica.py` declara `COD_VER` `020` (ICMS/IPI) e `006`

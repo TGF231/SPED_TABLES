@@ -203,10 +203,14 @@ devolve a estrutura do `COD_VER` que o arquivo declara
 (`referencias.versao_do_leiaute(doc)` o tira do 0000). A geração do SPED, que
 não tem arquivo, pede a versão vigente no fim do período que gera
 (`versao_vigente(layout, fim)`). `versao=None` é "a mais recente" e é o
-**recuo**: vale quando o arquivo não declara um `COD_VER` legível (e no
-autoteste), não uma escolha de quem tem a versão em mãos. Versão que a base não
-guarda volta como `fora_da_base`: o programa avisa e se abstém, em vez de
-cobrar a estrutura de outra versão.
+**recuo**: vale quando o arquivo não declara um `COD_VER` legível, quando a
+geração pede um período que nenhuma versão da base cobre (`versao_vigente`
+devolve `None`; ela segue na mais recente e aponta isso para revisão, sem
+bloquear) e no autoteste — não uma escolha de quem tem a versão em mãos.
+Versão que a base não guarda volta como `fora_da_base`: o programa avisa e se
+abstém, em vez de cobrar a estrutura de outra versão. Se a versão passa da
+maior guardada, vem também `mais_nova_que_a_base`, e a tela manda importar
+uma base mais nova em vez de sugerir arquivo velho.
 
 Sem nada ligado vale a fonte **vazia**: cada regra que precisa de tabela se
 abstém, que é o que acontece quando nenhuma base é legível (e a pessoa é

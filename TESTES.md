@@ -49,10 +49,10 @@ equivalência a usa. Nenhum outro teste pula por falta de PVA.
 | `test_robustez` | Um teste por achado da revisão de código; configuração (`config`); JSON atômico; CSV com `;` e travessão. |
 | `test_arquitetura` | **Regra de dependência entre as camadas** — inclusive que o `sped_tables` não importa o `consolidador` e que só o *Abrir no PVA* cita a pasta do PVA; a porta das tabelas oficiais com fonte inventada (regras testadas sem PVA); sem base, a montagem liga a fonte vazia; sessão e envio ao PVA sem tela; canal da versão. |
 | `test_base_referencia` | A base: compilação reproduzível (mesmas fontes, mesmo SHA-256), leitura, escolha entre a embutida e a importada, e a importação que recusa pacote adulterado, igual ou mais antigo, de esquema novo, truncado ou ilegível — e a falha de gravação. |
-| `test_referencias_base` | O adaptador da porta sobre a base: estrutura pela versão do arquivo, "fora da base", vigência, tabelas, classificador de NCM. |
+| `test_referencias_base` | O adaptador da porta sobre a base: estrutura pela versão do arquivo, "fora da base" (e "mais nova que a base"), vigência, tabelas, classificador de NCM. |
 | `test_tabelas_oficiais` | As tabelas oficiais lidas de texto (formato do PVA, com vigência), independente de onde o texto veio. |
-| `test_versao_leiaute` | Quem tem o documento pede a estrutura do `COD_VER` dele (diagnóstico, validação, regras do guia); a geração, a versão vigente no período; só `COD_VER` ilegível cai na mais recente. |
-| `test_consolidador` | `py -m consolidador` sobre uma instalação de PVA **inventada**: extrai, compila, publica, e recusa — sem deixar `base/` quebrada — o que não serve. |
+| `test_versao_leiaute` | Quem tem o documento pede a estrutura do `COD_VER` dele (diagnóstico e validação); a geração, a versão vigente no período; só `COD_VER` ilegível cai na mais recente. Sobre a **base entregue**, a mesma linha é acusada no arquivo 019 e não no 020 (`C120.COD_DOC_IMP`, `1310`). |
+| `test_consolidador` | `py -m consolidador` sobre uma instalação de PVA **inventada**: extrai, compila, publica, avança a versão da base ao trocar um guia (`guia`), e recusa — sem deixar `base/` quebrada — o que não serve. |
 | `test_equivalencia_base` | **O teste central da migração:** a base compilada de `base/` responde igual ao PVA instalado nesta máquina. Pula sem PVA (ver 1.2.1). |
 | `test_estrutura` | Armadilhas: código depois de `return`, import sem uso, nome da biblioteca padrão, método duplicado. |
 | `test_interface` | A janela nasce; **toda ação do menu roda** nos dois leiautes; a tabela de ações é coerente; o formulário de empresa; `main()` inteiro pelo `sped_editor.py`. |
@@ -114,7 +114,7 @@ banco de cada validação do PVA de ensaio (`banco_pva.inconsistencias`, no
 sempre condição ou tolerância que o guia não escreve e o PVA aplica (ver
 CLAUDE.md, "Os guias práticos e as regras do guia").
 
-### 1.2.1 Leiaute e tabelas contra o PVA instalado
+### 1.2.1 Leiaute e tabelas: a base confere com o programa e com o PVA
 
 Dois testes cuidam de a **fonte** estar certa — nenhum é juiz do que o
 programa acusa —, e só um deles olha o PVA:
@@ -140,6 +140,12 @@ py -m consolidador guia ICMS "Guia Prático EFD - Versão X.pdf"
 py -m consolidador guia CONTRIB "Guia_Pratico_EFD_Contribuicoes_X.pdf"
 py ferramentas/cobertura_guias.py
 ```
+
+Cada `guia` regrava também o `base/manifesto.json`: registra o guia em
+`origem.guias` e **avança a versão da base** (`AAAA.MM.n`, pela regra do
+`extrair`; `--data` e `--versao` valem aqui também). Sem isso o pacote
+publicado teria o mesmo número de uma base de conteúdo diferente. Revise o
+`git diff base/` — guias e manifesto — antes de publicar.
 
 `base/` é regravada pelo consolidador, nunca à mão. O `.db` compilado é
 reproduzível: duas compilações das mesmas fontes dão o mesmo SHA-256.

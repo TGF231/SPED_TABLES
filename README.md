@@ -879,8 +879,9 @@ você está.
 Os textos são dos guias oficiais — *Guia Prático EFD ICMS/IPI 3.2.4* e *EFD
 Contribuições 1.35* —, extraídos para `base/guias/` e compilados na base de
 referência. Saiu guia novo: `py -m consolidador guia ICMS|CONTRIB arquivo.pdf`
-e gere o executável de novo (ou publique o pacote da base, ver *Base de
-referência*).
+— que registra o guia no manifesto e **avança a versão da base**, como o
+`extrair` — e gere o executável de novo (ou publique o pacote da base, ver
+*Base de referência*).
 
 ### Crédito em CFOP que não dá direito (EFD Contribuições)
 
@@ -1325,9 +1326,10 @@ PVA nenhum, a pré-validação dá o mesmo resultado. A instalação só é usad
   `py -m consolidador extrair` lê os PVAs instalados nela (e, com `--ncm`, a
   planilha de NCM vigente do Siscomex — a base `2026.10.1` foi extraída sem
   ela) e regrava as fontes em `base/`, em texto, para revisar com
-  `git diff base/`; `guia` extrai um guia prático
-  de um PDF; `compilar` gera o banco; `publicar` gera o pacote para
-  importação. O `ferramentas/gerar_executavel.py` compila a base antes do
+  `git diff base/`; `guia` extrai um guia prático de um PDF e avança a
+  versão da base no manifesto (sem isso o pacote sairia com o mesmo número
+  de uma base diferente); `compilar` gera o banco; `publicar` gera o pacote
+  para importação. O `ferramentas/gerar_executavel.py` compila a base antes do
   PyInstaller.
 
 ### Pasta dos PVAs
@@ -1401,7 +1403,7 @@ completa está em [ARQUITETURA.md](ARQUITETURA.md).
 | `sped_tables/infra/` | Configuração, pasta de dados, base de referência e suas tabelas, automação do PVA, acervo, registro de falhas. |
 | `sped_tables/interface/` | A aplicação PyQt6: janela, tabela de ações, controladores, grades, diálogos, tema. |
 | `consolidador/` | `py -m consolidador extrair\|guia\|compilar\|publicar`: lê os PVAs e os guias na máquina de **quem compila** e regrava `base/`. O `sped_tables` não o importa. |
-| `base/` | As fontes da base de referência, em texto e versionadas: manifesto, leiaute por versão, tabelas oficiais, guias práticos e NCM vigente. |
+| `base/` | As fontes da base de referência, em texto e versionadas: manifesto, leiaute por versão, tabelas oficiais, guias práticos e, quando extraído com `--ncm`, o NCM vigente (a `2026.10.1` não o traz). |
 | `recursos/base_referencia.db` | A base compilada de `base/` (o programa a recompila sozinho; não vai para o git); vai junto no executável. |
 | `tests/` | Suíte automática (ver [TESTES.md](TESTES.md)). |
 | `SPED Tables.spec` | Empacotamento (PyInstaller, arquivo único). |

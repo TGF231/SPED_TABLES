@@ -116,13 +116,19 @@ vigente, e sem PVA as regras se abstinham. O projeto é o primeiro de quatro
   geração, que não tem arquivo, pede a versão do período que gera:
   `fonte.versao_vigente(layout, fim)`. `versao=None` pede "a mais recente" e
   é o **recuo**: vale quando o arquivo não declara um `COD_VER` legível
-  (`versao_do_leiaute` devolve `None`) e é o que o autoteste usa — nunca a
-  escolha de quem tem a versão em mãos. Versão que a base não
-  guarda volta `fora_da_base`, e o programa **avisa e se abstém**: cobrar a
-  estrutura de outra versão acusaria campo que o arquivo nem tem. Quem
-  consome essa resposta tem de dizer que não conferiu — o Diagnóstico sem a
-  base, ou com a versão fora dela, não escreve "nenhum problema" (aprovaria
-  o que não rodou).
+  (`versao_do_leiaute` devolve `None`), quando a geração pede um período que
+  nenhuma versão da base cobre (`versao_vigente` devolve `None`: ela segue na
+  mais recente e **aponta** isso para revisão, sem bloquear) e é o que o
+  autoteste usa — nunca a escolha de quem tem a versão em mãos. Versão que a
+  base não guarda volta `fora_da_base`, e o programa **avisa e se abstém**:
+  cobrar a estrutura de outra versão acusaria campo que o arquivo nem tem.
+  Quando a versão passa da maior guardada vem também
+  `mais_nova_que_a_base` — o remédio é importar uma base mais nova, não é
+  arquivo velho —, e a mensagem diz isso. Quem consome essa resposta tem de
+  dizer que não conferiu — o Diagnóstico sem a base, ou com a versão fora
+  dela, não escreve "nenhum problema" (aprovaria o que não rodou), e a
+  pré-checagem do *Abrir no PVA* avisa que a conferência não rodou, sem
+  impedir o envio.
 - **Retenção:** as versões com vigência nos últimos **5 anos** mais a atual
   (e as futuras que já tenham descritor) — hoje ICMS/IPI 015 a 020. **O
   Contribuições só tem a 006**, vigente desde 01/01/2020 e sem data final: é
@@ -678,7 +684,10 @@ Os dois guias (EFD ICMS/IPI 3.2.4, EFD Contribuições 1.35) estão extraídos
 em `base/guias/<LEIAUTE>.json` por `py -m consolidador guia ICMS|CONTRIB
 arquivo.pdf` (`consolidador/guias.py`), que roda o `pdftotext -layout` (vem
 com o Git para Windows) — e viajam na base compilada, não mais soltos em
-`recursos/`. O domínio os pede à porta:
+`recursos/`. O comando `guia` regrava também o `base/manifesto.json`
+(`origem.guias` e a versão da base, pela regra do `extrair`): guia novo é
+base nova, e a mesma versão `AAAA.MM.n` nunca nomeia dois conteúdos. O
+domínio os pede à porta:
 `referencias.atual().guia(layout)`; `referencias.texto_do_campo` devolve o
 texto de um campo **só se o nome bater** (o guia 3.2.4 já descreve campos de
 leiaute mais novo que o da base, como o `IND_BENEFICIO` do E111).
