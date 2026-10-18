@@ -232,6 +232,33 @@ class TestEmUso(unittest.TestCase):
         base, motivo = B.em_uso()
         self.assertIsNone(base)
         self.assertIn("nenhuma", motivo)
+        self.assertEqual(self.avisos, [])
+
+    def test_nenhuma_legivel_nao_avisa_cada_ilegivel(self):
+        """Nenhuma candidata sobra: quem avisa é a montagem, uma vez só. Aqui
+        não há aviso por ilegível — dois modais seguidos para o mesmo
+        problema —, e o motivo diz quais estavam ilegíveis e por quê."""
+        for destino in (self.embutida, self.importada):
+            with open(destino, "wb") as fh:
+                fh.write(b"isto nao e sqlite")
+        base, motivo = B.em_uso()
+        self.assertIsNone(base)
+        self.assertEqual(self.avisos, [])
+        self.assertIn("nenhuma", motivo)
+        self.assertIn("a base embutida está ilegível (", motivo)
+        self.assertIn("a base importada está ilegível (", motivo)
+        self.assertEqual(ler(self.embutida), b"isto nao e sqlite")  # intacta
+
+    def test_so_a_embutida_e_ilegivel(self):
+        """Sem importada e com a embutida ilegível, o motivo cita só a
+        embutida e não há aviso à parte."""
+        with open(self.embutida, "wb") as fh:
+            fh.write(b"")
+        base, motivo = B.em_uso()
+        self.assertIsNone(base)
+        self.assertEqual(self.avisos, [])
+        self.assertIn("a base embutida está ilegível (", motivo)
+        self.assertNotIn("importada", motivo)
 
 
 class TestImportacao(unittest.TestCase):

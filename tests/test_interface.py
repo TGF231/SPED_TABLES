@@ -599,6 +599,62 @@ class TestJanela(unittest.TestCase):
             j.close()
         self.assertEqual(self.erros, [], self._falhas())
 
+    def test_base_de_referencia_mostra_a_versao_e_importa(self):
+        from sped_tables.dominio import referencias
+        from sped_tables.infra import base_referencia
+        from tests import base_teste
+        j = self.ed.JanelaPrincipal()
+        j.act_base_referencia.trigger()
+        dlg = j._janelas["DialogoBaseReferencia"]
+        base, _origem = base_referencia.em_uso()
+        self.assertIn(base.manifesto()["versao"], dlg.lbl.text())
+        with PastaTemporaria() as p:
+            pacote = base_referencia.empacotar(
+                base_teste.compilada(p, versao="2999.01.1"),
+                os.path.join(p, "pacote.zip"))
+            with mock.patch.object(
+                    QFileDialog, "getOpenFileName",
+                    staticmethod(lambda *a, **k: (pacote, ""))), \
+                    mock.patch.object(dlg, "_confirmar", lambda m, d: True):
+                dlg._importar()
+            try:
+                self.assertIn("2999.01.1", dlg.lbl.text())
+                self.assertIn("2999.01.1", referencias.atual().nome)
+            finally:
+                os.remove(base_referencia.caminho_importado())
+                from sped_tables.aplicacao import montagem
+                montagem.configurar()
+        j.close()
+        self.assertEqual(self.erros, [], self._falhas())
+
+    def test_diagnostico_sem_base_avisa_pela_acao(self):
+        """O último elo do "sem base": a fonte vazia chega à tela. Dispara a
+        ação do Diagnóstico (não o diálogo montado à mão) e a tela diz que a
+        base está indisponível — nunca "nenhum problema" como falsa
+        aprovação."""
+        from PyQt6.QtWidgets import QLabel
+        from sped_tables.dominio import referencias
+        antes = referencias.definir(None)              # fonte vazia: sem base
+        try:
+            with PastaTemporaria() as p:
+                j = self.ed.JanelaPrincipal()
+                self.assertTrue(j.abrir_caminho(icms_basico().gravar(p)))
+                _esperar()
+                j.act_diagnostico.trigger()
+                textos = [l.text() for l in
+                          j._janelas["DialogoDiagnostico"].findChildren(
+                              QLabel)]
+                self.assertTrue(
+                    any("Base de referência indisponível" in t
+                        for t in textos), textos)
+                self.assertFalse(any("Verificado com o leiaute" in t
+                                     for t in textos), textos)
+                j.alterado = False
+                j.close()
+        finally:
+            referencias.definir(antes)
+        self.assertEqual(self.erros, [], self._falhas())
+
     def test_todas_as_acoes_nos_dois_leiautes(self):
         for montador in (icms_basico(), contrib_basico()):
             with self.subTest(layout=montador.layout), \

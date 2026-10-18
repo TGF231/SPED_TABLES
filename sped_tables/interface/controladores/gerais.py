@@ -15,6 +15,7 @@ from sped_tables.dominio import regras_guia
 from sped_tables.dominio import revisao as rev
 from sped_tables.dominio import validacao
 from sped_tables.dominio import xml_fiscal as xf
+from sped_tables.aplicacao import montagem
 from sped_tables.dominio.empresas import dados_do_arquivo
 from sped_tables.infra import cadastro, config
 from sped_tables.infra import memoria as memoria_infra
@@ -23,6 +24,8 @@ from sped_tables.interface.comum import (abrir_janela, calcular,
                                          ler_nfes_da_pasta,
                                          lista_de_mudancas,
                                          ler_pasta_xml)
+from sped_tables.interface.dialogos.base_referencia import (
+    DialogoBaseReferencia)
 from sped_tables.interface.dialogos.cadastro import (
     DialogoCodCta, DialogoItensNaoUsados,
 )
@@ -144,6 +147,12 @@ class ControladorGerais:
         self._dlg_conferencia = abrir_janela(self, DialogoConferencia(
             None, self, doc=self.doc, nfes=nfes, tributo=tributo,
             correlacoes=self.correlacoes_cfop))
+
+    def mostrar_base_referencia(self):
+        """A base de referência em uso (versão, data, origem, impressão
+        digital) e a importação de uma mais nova."""
+        self._dlg_base = abrir_janela(self, DialogoBaseReferencia(
+            self, ao_importar=montagem.configurar))
 
     def escolher_pasta_pva(self):
         """Aponta onde os PVAs estão instalados (`config.definir_raiz_pva`).

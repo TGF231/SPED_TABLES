@@ -57,10 +57,8 @@ class TestVerificar(unittest.TestCase):
         linha = next(c for c in m.linhas if c[0] == "0150")
         linha[m.tabela["0150"].index("COD_MUN")] = "0000000"
         doc = _doc(m)
-        achados, info = diagnostico.verificar(doc)
-        if info.get("sem_base"):
-            self.skipTest("o domínio do município vem da tabela do PVA")
-        mun = [a for a in achados if a.reg == "0150" and a.campo == "COD_MUN"]
+        achados, _info = diagnostico.verificar(doc)
+        mun =[a for a in achados if a.reg == "0150" and a.campo == "COD_MUN"]
         self.assertEqual([a.tipo for a in mun], ["municipio"])
         self.assertNotIn("municipio",
                          dict(diagnostico.impedem_importacao(achados)))
@@ -81,10 +79,8 @@ class TestVerificar(unittest.TestCase):
             if nome not in diagnostico.IDENTIFICACAO["C100"] | {"REG"}:
                 c100[i] = ""
         c100[nomes.index("COD_SIT")] = "02"
-        achados, info = diagnostico.verificar(_doc(m))
-        if info.get("sem_base"):
-            self.skipTest("obrigatoriedade vem do descritor do PVA")
-        obr = {(a.reg, a.campo) for a in achados if a.tipo == "obrigatorio"}
+        achados, _info = diagnostico.verificar(_doc(m))
+        obr ={(a.reg, a.campo) for a in achados if a.tipo == "obrigatorio"}
         self.assertFalse({x for x in obr if x[0] == "C100"}, obr)
         c100[nomes.index("NUM_DOC")] = ""
         achados, _info = diagnostico.verificar(_doc(m))

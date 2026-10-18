@@ -312,13 +312,17 @@ def em_uso():
     """`(Base, "embutida" | "importada")` da base que vale — a mais nova
     entre as duas —, ou `(None, motivo)` quando nenhuma é legível.
 
-    Importada ilegível é avisada e ignorada; nunca apagada."""
+    Ilegível é ignorada, nunca apagada. Sobrando uma legível, a ilegível é
+    avisada. Sobrando nenhuma, não se avisa uma a uma: o `motivo` diz quais
+    estavam ilegíveis e por quê, e quem liga o programa (`montagem`) dá a
+    única mensagem — senão a pessoa veria dois modais seguidos para o mesmo
+    problema."""
     try:
         compilar_se_preciso()
     except Exception as exc:                               # noqa: BLE001
         dados.avisar("Não foi possível compilar a base de referência de "
                      "base/ (%s); segue a última compilada." % exc)
-    candidatas = []
+    candidatas, ilegiveis = [], []
     for origem, caminho in (("embutida", caminho_embutido()),
                             ("importada", caminho_importado())):
         if not os.path.exists(caminho):
@@ -326,10 +330,17 @@ def em_uso():
         try:
             candidatas.append((Base(caminho), origem))
         except BaseInvalida as exc:
-            dados.avisar("A base de referência %s está ilegível (%s) e foi "
-                         "ignorada." % (origem, exc))
+            ilegiveis.append((origem, exc))
     if not candidatas:
-        return None, "nenhuma base de referência legível"
+        motivo = "nenhuma base de referência legível"
+        if ilegiveis:
+            motivo += ": " + "; ".join(
+                "a base %s está ilegível (%s)" % (origem, exc)
+                for origem, exc in ilegiveis)
+        return None, motivo
+    for origem, exc in ilegiveis:
+        dados.avisar("A base de referência %s está ilegível (%s) e foi "
+                     "ignorada." % (origem, exc))
     return max(candidatas,
                key=lambda c: chave_da_versao(c[0].manifesto()["versao"]))
 

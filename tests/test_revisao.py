@@ -65,9 +65,6 @@ class TestRegras(unittest.TestCase):
         self.assertIn("entrada", p.descricao)
 
     def test_0900_so_depois_do_prazo(self):
-        from sped_tables.dominio import referencias
-        if not referencias.atual().prazo_entrega("082026"):
-            self.skipTest("tabela de prazos do PVA não instalada")
         doc = _doc(contrib_basico())
         self.assertEqual(revisao.verificar_0900_ausente(doc, hoje="20260901"),
                          [])

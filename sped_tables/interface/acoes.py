@@ -159,8 +159,10 @@ ACOES = (
          "editar_correlacoes_cfop", SEMPRE, MENU_CONFIG),
     Acao("act_sistemas_erp", "Sistemas ERP (conexões e mapeamento)…",
          "sistemas_erp", SEMPRE, MENU_CONFIG, pronta=False),
-    Acao("act_pasta_pva", "Pasta dos PVAs…", "escolher_pasta_pva", SEMPRE,
-         MENU_CONFIG),
+    Acao("act_base_referencia", "Base de referência…",
+         "mostrar_base_referencia", SEMPRE, MENU_CONFIG),
+    Acao("act_pasta_pva", "Pasta dos PVAs (para o Abrir no PVA)…",
+         "escolher_pasta_pva", SEMPRE, MENU_CONFIG),
 
     # ---- barra, depois de Ferramentas: o fim do caminho
     Acao("act_abrir_pva", "Abrir no PVA", "abrir_no_pva", COM_PVA, BARRA),
