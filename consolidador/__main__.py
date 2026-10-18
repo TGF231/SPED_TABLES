@@ -4,8 +4,10 @@
     py -m consolidador extrair [--pva PASTA] [--data AAAA-MM-DD]
                                [--versao AAAA.MM.n] [--ncm planilha.xlsx]
         lê os PVAs desta máquina e regrava base/ (revise com git diff)
-    py -m consolidador guia ICMS|CONTRIB arquivo.pdf
-        extrai o guia prático para base/guias/
+    py -m consolidador guia ICMS|CONTRIB arquivo.pdf [--data AAAA-MM-DD]
+                            [--versao AAAA.MM.n]
+        extrai o guia prático para base/guias/ e avança a versão da base no
+        manifesto, como o extrair (a base com guia novo não é a mesma base)
     py -m consolidador compilar [--saida arquivo.db]
         compila base/ (rodando do código-fonte, o programa faz isso sozinho)
     py -m consolidador publicar [--saida PASTA]
@@ -34,6 +36,8 @@ def main(argv=None):
     g = sub.add_parser("guia")
     g.add_argument("layout", choices=("ICMS", "CONTRIB"))
     g.add_argument("pdf")
+    g.add_argument("--data", type=datetime.date.fromisoformat)
+    g.add_argument("--versao")
     c = sub.add_parser("compilar")
     c.add_argument("--saida", default=base_referencia.caminho_embutido())
     u = sub.add_parser("publicar")
@@ -51,6 +55,17 @@ def main(argv=None):
                   % (m["versao"], m["leiautes"], len(m["tabelas"])))
         elif a.comando == "guia":
             print("guia gravado em", guias.gravar(a.layout, a.pdf, fontes))
+            # só depois de o guia estar gravado: o manifesto passa a dizer
+            # qual guia vale e a base ganha versão nova
+            m = extracao.registrar_guia(
+                fontes, a.layout, a.data or datetime.date.today(),
+                versao=a.versao)
+            if m is None:
+                print("base/ ainda sem manifesto: o próximo extrair "
+                      "registra o guia.")
+            else:
+                print("base %s: guia %s. Revise com: git diff base/"
+                      % (m["versao"], m["origem"]["guias"][a.layout]))
         elif a.comando == "compilar":
             m = base_referencia.compilar(fontes, a.saida)
             print("base %s compilada em %s (%.1f MB)" % (

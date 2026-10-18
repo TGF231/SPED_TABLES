@@ -9,12 +9,14 @@ import json
 import os
 import unittest
 import zipfile
+from unittest import mock
 
-from consolidador import descritor, extracao, instalacao as I
+from consolidador import descritor, extracao, guias, instalacao as I
 from consolidador.__main__ import main as principal
 from sped_tables.infra import base_referencia
 from sped_tables.infra.referencias_base import ReferenciasBase
 from tests.fabrica import PastaTemporaria
+from tests.test_guias import TEXTO_GUIA
 
 XML = """<descritor-escrituracao>
 <registro id="C100" nivel="2" ocorrencia="1:N" chave="IND_OPER">
@@ -365,16 +367,109 @@ class TestExtracao(unittest.TestCase):
                          "2026.10.1")
 
 
-class TestLinhaDeComando(unittest.TestCase):
-    """`py -m consolidador`: só o que não regrava o `base/` do repositório
-    (o `extrair` de verdade roda à mão, com revisão do `git diff base/`)."""
-
+class _Rodar:
     def _rodar(self, *argv):
         saida, erro = io.StringIO(), io.StringIO()
         with contextlib.redirect_stdout(saida), \
                 contextlib.redirect_stderr(erro):
             codigo = principal(list(argv))
         return codigo, saida.getvalue(), erro.getvalue()
+
+
+class TestGuiaNoManifesto(_Rodar, unittest.TestCase):
+    """`guia` regrava os guias de `base/guias/` **e o manifesto junto**: sem
+    isso o pacote saía com o mesmo `AAAA.MM.n` e conteúdo diferente, e duas
+    bases distintas passavam a ter a mesma identidade."""
+
+    def _base_com_guias_fora(self, p):
+        destino = os.path.join(p, "base")
+        pva = I.InstalacaoPVA(_pva_falso(os.path.join(p, "pva")),
+                              data=DATA, fontes=destino)
+        return destino, extracao.extrair(pva, destino)
+
+    def _guia(self, destino, *argv, texto=TEXTO_GUIA):
+        """Roda `guia` sobre o `destino` com o texto do PDF trocado."""
+        with mock.patch.object(base_referencia, "pasta_fontes",
+                               lambda: destino), \
+                mock.patch.object(guias, "texto_do_pdf", lambda pdf: texto):
+            return self._rodar("guia", *argv)
+
+    def _manifesto(self, destino):
+        with open(os.path.join(destino, "manifesto.json"),
+                  encoding="utf-8") as fh:
+            return json.load(fh)
+
+    def test_guia_avanca_a_versao_e_registra_o_guia(self):
+        with PastaTemporaria() as p:
+            destino, antes = self._base_com_guias_fora(p)
+            banco_antes = os.path.join(p, "antes.db")
+            base_referencia.compilar(destino, banco_antes)
+            codigo, saida, erro = self._guia(
+                destino, "ICMS", "guia.pdf", "--data", "2026-10-20")
+            self.assertEqual((codigo, erro), (0, ""))
+            m = self._manifesto(destino)
+            self.assertEqual(antes["versao"], "2026.10.1")
+            self.assertEqual(m["versao"], "2026.10.2")
+            self.assertEqual(m["data"], "2026-10-20")
+            self.assertEqual(m["origem"]["guias"]["ICMS"],
+                             "EFD ICMS/IPI 9.9.9")
+            # o outro guia, o leiaute e as tabelas ficam como estavam
+            self.assertEqual(m["origem"]["guias"]["CONTRIB"],
+                             antes["origem"]["guias"]["CONTRIB"])
+            self.assertEqual(m["leiautes"], antes["leiautes"])
+            self.assertEqual(m["tabelas"], antes["tabelas"])
+            self.assertIn("2026.10.2", saida)
+            # e a base compilada agora é mais nova que a anterior
+            banco = os.path.join(p, "depois.db")
+            base_referencia.compilar(destino, banco)
+            nova = base_referencia.Base(banco)
+            velha = base_referencia.Base(banco_antes)
+            self.assertGreater(
+                base_referencia.chave_da_versao(nova.manifesto()["versao"]),
+                base_referencia.chave_da_versao(velha.manifesto()["versao"]))
+            self.assertEqual(nova.guia("ICMS")["versao"], "9.9.9")
+
+    def test_guia_aceita_versao_e_data_como_o_extrair(self):
+        with PastaTemporaria() as p:
+            destino, _antes = self._base_com_guias_fora(p)
+            codigo, _s, erro = self._guia(
+                destino, "ICMS", "guia.pdf", "--data", "2026-11-03",
+                "--versao", "2026.11.7")
+            self.assertEqual((codigo, erro), (0, ""))
+            m = self._manifesto(destino)
+            self.assertEqual((m["versao"], m["data"]),
+                             ("2026.11.7", "2026-11-03"))
+
+    def test_guia_que_falha_nao_toca_no_manifesto(self):
+        """O manifesto só é regravado depois de o guia ter sido gravado."""
+        def falha(pdf):
+            raise SystemExit("pdftotext não encontrado")
+        with PastaTemporaria() as p:
+            destino, _antes = self._base_com_guias_fora(p)
+            foto = _foto(destino)
+            with mock.patch.object(base_referencia, "pasta_fontes",
+                                   lambda: destino), \
+                    mock.patch.object(guias, "texto_do_pdf", falha):
+                with self.assertRaises(SystemExit):
+                    self._rodar("guia", "ICMS", "guia.pdf")
+            self.assertEqual(_foto(destino), foto)
+
+    def test_guia_sem_manifesto_grava_so_o_guia(self):
+        """Pasta de fontes ainda sem manifesto (nada extraído): o guia entra
+        e o próximo `extrair` o registra — não há versão para avançar."""
+        with PastaTemporaria() as p:
+            codigo, saida, erro = self._guia(p, "ICMS", "guia.pdf")
+            self.assertEqual((codigo, erro), (0, ""))
+            self.assertTrue(os.path.isfile(
+                os.path.join(p, "guias", "ICMS.json")))
+            self.assertFalse(os.path.exists(
+                os.path.join(p, "manifesto.json")))
+            self.assertIn("extrair", saida)
+
+
+class TestLinhaDeComando(_Rodar, unittest.TestCase):
+    """`py -m consolidador`: só o que não regrava o `base/` do repositório
+    (o `extrair` de verdade roda à mão, com revisão do `git diff base/`)."""
 
     def test_extrair_sem_pva_recusa_e_nao_toca_em_base(self):
         base = base_referencia.pasta_fontes()

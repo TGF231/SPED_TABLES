@@ -102,6 +102,33 @@ def _levantar(instalacao, ncm_xlsx):
     return leiautes, tabs, ncms, origem
 
 
+def registrar_guia(destino, layout, data, versao=None):
+    """Depois de o guia de `layout` ter sido gravado em `destino/guias/`
+    (`guias.gravar`): põe no manifesto o guia que agora vale e **avança a
+    versão da base**, pela mesma regra do `extrair` (`versao` explícita, ou
+    n + 1 no mesmo mês da anterior). Sem isso o pacote saía com o mesmo
+    `AAAA.MM.n` e conteúdo diferente: quem tem a base embutida recebia "não
+    é mais nova", e duas bases distintas tinham a mesma identidade.
+
+    Devolve o manifesto regravado, ou `None` quando `destino` ainda não tem
+    manifesto (nada foi extraído; o primeiro `extrair` registra os guias)."""
+    caminho_manifesto = os.path.join(destino, "manifesto.json")
+    if not os.path.exists(caminho_manifesto):
+        return None
+    with open(caminho_manifesto, encoding="utf-8") as fh:
+        manifesto = json.load(fh)
+    with open(os.path.join(destino, "guias", layout + ".json"),
+              encoding="utf-8") as fh:
+        guia = json.load(fh)
+    manifesto.setdefault("origem", {}).setdefault("guias", {})[layout] = (
+        "%s %s" % (guia.get("guia", ""), guia.get("versao", "")))
+    manifesto["versao"] = versao or proxima_versao(manifesto.get("versao"),
+                                                   data)
+    manifesto["data"] = data.isoformat()
+    _gravar_json(caminho_manifesto, manifesto, ordenar=True)
+    return manifesto
+
+
 def extrair(instalacao, destino, versao=None, ncm_xlsx=None):
     """Regrava `destino` (a pasta `base/`) com o que a instalação publica e
     devolve o manifesto. Guias ficam como estão (`py -m consolidador
