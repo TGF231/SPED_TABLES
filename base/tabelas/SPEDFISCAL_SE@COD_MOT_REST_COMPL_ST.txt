@@ -1,0 +1,11 @@
+versão=1 COD_AJUR, DESC_AJUR, DT_INI, DT_FIM
+SE000|Não se aplica restituição ou complementação de ICMS-ST|01012021|
+SE100|Restituição de ICMS-ST em razão do valor de saída da mercadoria final ser inferior ao da base de cálculo/ST|01012021|
+SE200|Restituição de ICMS-ST em razão da não ocorrência do fato gerador presumido. SE220 Ressarcimento de ICMS-ST em razão da saída interestadual da mercadoria já alcançada pela ST|01012021|
+SE220|Ressarcimento de ICMS-ST em razão da saída interestadual da mercadoria já alcançada pela ST|01012021|
+SE300|Complementação de ICMS-ST em razão do valor de saída da mercadoria a consumidor final ser superior ao da base de cálculo/ST|01012021|
+SE400|Devolução de entradas|01012021|
+SE500|Devolução de saídas em que não se aplicou restituição, ressarcimento ou complementação|01012021|
+SE600|Estorno da restituição/ressarcimento do imposto, calculado com base no valor saída inferior ao valor da BC ICMS ST|01012021|
+SE620|Estorno da ressarcimento de ICMS-ST em razão da saída interestadual da mercadoria já alcançada pela ST|01012021|
+SE800|Estorno do complemento do imposto, calculado com base no valor de saída da mercadoria superior ao valor da BC ICMS ST|01012021|

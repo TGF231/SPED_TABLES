@@ -13,7 +13,6 @@ from PyQt6.QtWidgets import (
 from sped_tables.aplicacao.sessao import Sessao
 from sped_tables.infra import cadastro
 from sped_tables.dominio.sped_model import SpedDocument
-from sped_tables.infra import config
 from sped_tables.infra import dados
 from sped_tables.infra import pva
 from sped_tables.interface import acoes
@@ -62,9 +61,6 @@ class JanelaPrincipal(ControladorArquivo, ControladorIcms,
         # correlações de CFOP (saída -> entradas válidas), persistidas em JSON
         self._caminho_correl = cadastro.caminho_correlacoes()
         self.correlacoes_cfop = cadastro.carregar_correlacoes()
-
-        # configuração das tabelas da RFB (verificação de CST por NCM)
-        self.cfg_tabelas = config.tabelas_rfb()
 
         # Um caminho só para montar a janela. Até a 0.52.0 eram dois — o
         # `sped_editor.ui` do Qt Designer e um fallback em código —, e só o
@@ -205,31 +201,35 @@ class JanelaPrincipal(ControladorArquivo, ControladorIcms,
         self._sincronizar_rotulo_tema()
 
     def _montar_barra_ferramentas(self):
-        """Barra: as ações de arquivo, Empresas, o botão Ferramentas (menus
-        por leiaute) e o tema — tudo na ordem da tabela."""
+        """Barra: o caminho do arquivo (abrir, salvar, Empresas,
+        Diagnóstico), o botão Ferramentas com os submenus por etapa do
+        trabalho, *Abrir no PVA* e o tema — tudo na ordem da tabela."""
         barra = QToolBar("Principal")
         barra.setMovable(False)
         self.addToolBar(barra)
         self.toolbar = barra
 
         menu = QMenu(self)
-        self._menus = {}
-        for chave, titulo, _layout in acoes.MENUS:
-            if chave == acoes.MENU_GERAIS:
-                menu.addSeparator()
+        self.menu_ferramentas = menu
+        self._menus = {acoes.MENU_RAIZ: menu}
+        raiz = [a for a in acoes.visiveis() if a.onde == acoes.MENU_RAIZ]
+        for a in raiz:
+            menu.addAction(getattr(self, a.atributo))
+        if raiz:
+            menu.addSeparator()
+        for chave, titulo in acoes.MENUS:
             self._menus[chave] = menu.addMenu(titulo)
-        # nomes antigos, usados pelos testes e por quem desabilita o submenu
-        self.menu_icms = self._menus[acoes.MENU_ICMS]
-        self.menu_contrib = self._menus[acoes.MENU_CONTRIB]
-        self.menu_gerais = self._menus[acoes.MENU_GERAIS]
 
+        depois = []
         for a in acoes.visiveis():
             acao = getattr(self, a.atributo)
-            if a.onde == acoes.BARRA:
+            if a.atributo in acoes.DEPOIS_DO_MENU:
+                depois.append(a)
+            elif a.onde == acoes.BARRA:
                 if a.separador:
                     barra.addSeparator()
                 barra.addAction(acao)
-            elif a.onde in self._menus:
+            elif a.onde in self._menus and a.onde != acoes.MENU_RAIZ:
                 sub = self._menus[a.onde]
                 if a.separador and not sub.isEmpty():
                     sub.addSeparator()
@@ -242,23 +242,33 @@ class JanelaPrincipal(ControladorArquivo, ControladorIcms,
         botao.setMenu(menu)
         botao.setPopupMode(QToolButton.ToolButtonPopupMode.InstantPopup)
         botao.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextOnly)
-        barra.addSeparator()
         barra.addWidget(botao)
         self._botao_ferramentas = botao
+        for a in depois:
+            barra.addAction(getattr(self, a.atributo))
         barra.addSeparator()
         barra.addAction(self.act_tema)
 
     def _habilitar_acoes(self):
-        """Liga e desliga cada ação conforme o arquivo aberto (ou nenhum)."""
+        """Liga e desliga cada ação conforme o arquivo aberto (ou nenhum).
+
+        A ação de outro leiaute **some** do menu, em vez de ficar cinza: o
+        menu de quem abriu um EFD Contribuições não precisa mostrar o
+        recálculo do E110. Sem arquivo aberto, todas aparecem (desligadas) —
+        é assim que se descobre o que o programa faz. Submenu sem nenhuma
+        ação visível some junto."""
         layout = self.doc.layout if self.doc is not None else None
         tem_pva = (layout is not None
                    and pva.instalacao(layout) is not None)
         for a in acoes.visiveis():
-            getattr(self, a.atributo).setEnabled(
-                acoes.habilitada(a, layout, tem_pva))
-        for chave, _titulo, so_layout in acoes.MENUS:
-            if so_layout is not None:
-                self._menus[chave].setEnabled(layout == so_layout)
+            acao = getattr(self, a.atributo)
+            acao.setEnabled(acoes.habilitada(a, layout, tem_pva))
+            acao.setVisible(acoes.aparece(a, layout))
+        for chave, _titulo in acoes.MENUS:
+            sub = self._menus[chave]
+            sub.menuAction().setVisible(
+                any(x.isVisible() for x in sub.actions()
+                    if not x.isSeparator()))
 
     def _sincronizar_rotulo_tema(self):
         if hasattr(self, "act_tema"):

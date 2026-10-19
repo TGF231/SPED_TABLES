@@ -1,0 +1,19 @@
+versão=1 CODIGO, DESCRICAO, DT_INI, DT_FIM, IND_ATIV, IND_AJUSTE, GRUPO, SUBGRUPO, IND_OUTROS
+D0001010|Reversão de provisões operacionais|01012014||01;02;03;04;05;06|P|000|D0001|N
+D0001020|Reversão de outras provisões|01012014||01;02;03;04;05;06|P|000|D0001|N
+D0002010|Recuperação de créditos no período  Renegociação de dívida|01012014||01;02;03;04;05;06|P|000|D0002|N
+D0002020|Recuperação de créditos no período  Bens recebidos a título de quitação|01012014||01;02;03;04;05;06|P|000|D0002|N
+D0002030|Recuperação de créditos no período  Demais formas de recuperação|01012014||01;02;03;04;05;06|P|000|D0002|N
+D0003010|Resultado positivo decorrente de participações societárias no país avaliadas pelo patrimônio líquido|01012014||01;02;03;04;05;06|P|000|D0003|N
+D0003020|Resultado positivo decorrente de participações societárias no exterior avaliadas pelo patrimônio líquido|01012014||01;02;03;04;05;06|P|000|D0003|N
+D0004010|Lucros e dividendos derivados de participações societárias no país avaliadas pelo custo de aquisição|01012014||01;02;03;04;05;06|P|000|D0004|N
+D0004020|Lucros e dividendos derivados de participações societárias no exterior avaliadas pelo custo de aquisição|01012014||01;02;03;04;05;06|P|000|D0004|N
+D0005010|Receita da venda de bens do ativo permanente (não-circulante)  Realizável a longo prazo|01012014||01;02;03;04;05;06|P|000|D0005|N
+D0005020|Receita da venda de bens do ativo permanente (não-circulante)  Investimentos|01012014||01;02;03;04;05;06|P|000|D0005|N
+D0005030|Receita da venda de bens do ativo permanente (não-circulante)  Imobilizado|01012014||01;02;03;04;05;06|P|000|D0005|N
+D0006010|Vendas canceladas  Mercadorias e Produtos|01012014||01;02;03;04;05;06|P|000|D0006|N
+D0006020|Vendas canceladas  Serviços|01012014||01;02;03;04;05;06|P|000|D0006|N
+D0006030|Descontos incondicionais|01012014||01;02;03;04;05;06|P|000|D0006|N
+D0006040|IPI  Substituição Tributária|01012014||01;02;03;04;05;06|P|000|D0006|N
+D0006050|ICMS  Substituição tributária|01012014||01;02;03;04;05;06|P|000|D0006|N
+D0090010|Outras deduções e exclusões de caráter geral|01012013||01;02;03;04;05;06|P|000|D0090|S

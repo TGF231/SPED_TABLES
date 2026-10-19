@@ -8,7 +8,6 @@ from sped_tables.dominio import diagnostico
 from sped_tables.dominio import revisao
 from sped_tables.dominio import regras_guia as G
 from sped_tables.dominio.sped_model import SpedDocument
-from sped_tables.infra import descritor_pva
 from tests.fabrica import PastaTemporaria, contrib_basico, icms_basico
 
 
@@ -288,16 +287,16 @@ class TestRevisaoDeCodigo(unittest.TestCase):
         self.assertEqual(diagnostico._num_campos_descritor(est),
                          {"0220": 4})
 
-    def test_diagnostico_sem_pva_roda_as_regras_do_guia(self):
+    def test_diagnostico_sem_base_roda_as_regras_do_guia(self):
         from sped_tables.dominio import referencias
-        antes = referencias.definir(None)          # fonte vazia: sem PVA
+        antes = referencias.definir(None)          # fonte vazia: sem base
         try:
             m = icms_basico()
             m.alterar("C190", VL_ICMS="6,00")
             achados, info = diagnostico.verificar(_doc(m))
         finally:
             referencias.definir(antes)
-        self.assertTrue(info["sem_pva"])
+        self.assertTrue(info["sem_base"])
         self.assertIn("guia_c190_soma", {a.tipo for a in achados})
 
     def test_saida_depois_do_periodo_conta_uma_vez(self):
@@ -390,18 +389,19 @@ class TestRevisaoDeCodigo(unittest.TestCase):
         self.assertEqual(G.documentos_c190_divergentes(doc), [])
 
 
-@unittest.skipUnless(descritor_pva.disponivel(), "PVA não instalado")
 class TestValidadoresDoPva(unittest.TestCase):
 
     def test_ids_existem_no_descritor(self):
-        """Todo id em `pva` existe no descritor de algum leiaute — erro de
-        digitação ali faria o diagnóstico continuar listando a regra como
-        "só o PVA verifica"."""
+        """Todo id em `pva` existe no leiaute de alguma versão guardada —
+        erro de digitação ali faria o diagnóstico continuar listando a
+        regra como "só o PVA verifica"."""
+        from sped_tables.infra import base_referencia
+        base, _origem = base_referencia.em_uso()
         todos = set()
-        for layout in ("ICMS", "CONTRIB"):
-            est, _info = descritor_pva.carregar(layout)
-            for d in est.values():
-                todos |= set(d.get("validadores", ()))
+        for layout in base_referencia.LEIAUTES:
+            for versao in base.versoes(layout):
+                for d in base.estrutura(layout, versao).values():
+                    todos |= set(d.get("validadores", ()))
         self.assertEqual(G.validadores_reproduzidos() - todos, set())
 
 

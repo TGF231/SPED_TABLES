@@ -1,0 +1,37 @@
+versão=5 CODIGO, DESCRICAO, DT_INI, DT_FIM, PERIODICID
+217201|Cofins - Faturamento - PJ em geral (cumulativo)|01012014||Mensal
+585601|Cofins - Não cumulativa|01012014||Mensal
+217208|Cofins - Faturamento - PJ em geral (cumulativo) - SCP|01012014||Mensal
+585608|Cofins - Não cumulativa - SCP|01012014||Mensal
+076001|Cofins - Regime Especial de Tributação - Cervejas (art. 32 Lei nº 11.727/2008)|01012014|30042015|Mensal
+076002|Cofins - Regime Especial de Tributação - Cervejas (art. 32 Lei nº 11.727/2008) - SCP|01012014|30042015|Mensal
+076003|Cofins - Regime Especial de Tributação - Cervejas|01052015||Mensal
+076004|Cofins - Regime Especial de Tributação - Cervejas - SCP|01052015||Mensal
+077601|Cofins - Regime Especial de Tributação - Demais Bebidas (art. 32 Lei nº 11.727/2008)|01012014|30042015|Mensal
+077602|Cofins - Regime Especial de Tributação - Demais Bebidas (art. 32 Lei nº 11.727/2008) - SCP|01012014|30042015|Mensal
+077603|Cofins - Regime Especial de Tributação - Demais Bebidas|01052015||Mensal
+077604|Cofins - Regime Especial de Tributação - Demais Bebidas - SCP|01052015||Mensal
+092901|Cofins - Regime Especial de Apuração e Pagamento (RECOB) - Álcool|01012014||Mensal
+092902|Cofins - Regime Especial de Apuração e Pagamento (RECOB) - Álcool - SCP|01012014||Mensal
+184001|Cofins - Substituição tributária na revenda de produtos sujeitos a alíquotas diferenciadas (art. 64, Lei nº 11.196/2005)|01012014||Mensal
+184002|Cofins - Substituição tributária na revenda de produtos sujeitos a alíquotas diferenciadas (art. 65, Lei nº 11.196/2005)|01012014||Mensal
+184003|Cofins - Substituição tributária na revenda de produtos sujeitos a alíquotas diferenciadas (art. 64, Lei nº 11.196/2005) - SCP|01012014||Mensal
+184004|Cofins - Substituição tributária na revenda de produtos sujeitos a alíquotas diferenciadas (art. 65, Lei nº 11.196/2005) - SCP|01012014||Mensal
+217202|Cofins - Faturamento - PJ em geral (ART. 10º DA IN SRF 23/1997 E ART. 26º DA IN SRF 69/2001)|01012014||Diária
+217204|Cofins - Substituição tributária na comercialização de cigarros|01012014||Mensal
+217209|Cofins - Substituição tributária na comercialização de cigarros - SCP|01012014||Mensal
+217210|Cofins - Faturamento - PJ em geral - perda de isenção, suspensao, redução de alíquotas ou não-incidência por não cumprimento das condições exigidas para o benefício|01012014|31122018|Diária
+217211|Cofins - Faturamento - PJ em geral - perda de isenção, suspensao, redução de alíquotas ou não-incidência por não cumprimento das condições exigidas para o benefício - SCP|01012014|31122018|Diária
+585610|Cofins - Não cumulativa - PJ em geral - perda de isenção, suspensao, redução de alíquotas ou não-incidência por não cumprimento das condições exigidas para o benefício|01012014|31122018|Diária
+585611|Cofins - Não cumulativa - PJ em geral - perda de isenção, suspensao, redução de alíquotas ou não-incidência por não cumprimento das condições exigidas para o benefício - SCP|01012014|31122018|Diária
+684001|Cofins - Combustíveis|01012014||Mensal
+684008|Cofins - Combustíveis - SCP|01012014||Mensal
+798701|Cofins - Entidades financeiras e equiparadas (PJ relacionadas no § 1º, art. 22 da Lei nº 8.212/1991)|01012014||Mensal
+864501|Cofins - Substituição tributária na comercialização de veículos|01012014||Mensal
+864508|Cofins - Substituição tributária na comercialização de veículos - SCP|01012014||Mensal
+778401|Cofins - Cumulativa - Trans Navios|01012015||-
+778402|Cofins - Não Cumulativa - Trans Navios|01012015||-
+217216|Cofins - Faturamento - PJ em geral - perda de isenção, suspensao, redução de alíquotas ou não-incidência por não cumprimento das condições exigidas para o benefício|01012014||Mensal
+217217|Cofins - Faturamento - PJ em geral - perda de isenção, suspensao, redução de alíquotas ou não-incidência por não cumprimento das condições exigidas para o benefício - SCP|01012014||Mensal
+585616|Cofins - Não cumulativa - PJ em geral - perda de isenção, suspensao, redução de alíquotas ou não-incidência por não cumprimento das condições exigidas para o benefício|01012014||Mensal
+585617|Cofins - Não cumulativa - PJ em geral - perda de isenção, suspensao, redução de alíquotas ou não-incidência por não cumprimento das condições exigidas para o benefício - SCP|01012014||Mensal

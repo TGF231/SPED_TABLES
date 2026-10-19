@@ -1,0 +1,48 @@
+versão=1 COD_IPM, DESC_COD, DT_INI, DT_FIM
+PACOME01|Aquisição de serviços de Comunicação/Telecomunicação - valor contábil das entradas e aquisições de serviço de comunicação, por município paraense, proporcionalmente às saídas, excluindo-se as operações dedutíveis|01012022|
+PACOMS01|Prestação de serviços de Comunicação/Telecomunicação - valor contábil das saídas e prestações de serviço de comunicação, por município paraense onde ocorreu a prestação, excluindo-se as operações dedutíveis|01012022|
+PAGEEE01|Geração de Energia, exceto hidrelétricas - Entradas - valor contábil das operações das entradas  e insumos utilizados na geração de energia elétrica, por município paraense, proporcionalmente às saídas, excluindo-se as operações dedutíveis|01012022|
+PAGEES01|Geração de Energia, exceto hidrelétrica - Saídas - valor contábil das operação das saídas de geração de energia, exceto hidrelétrica, por município paraense onde ocorreu o fato gerador, excluindo-se as operações dedutíveis|01012022|
+PADEEE01|Distribuição de Energia Elétrica - Entradas - valor contábil das operações das entradas  e insumos utilizados na distribuição de energia elétrica, por município paraense, proporcionalmente às saídas, excluindo-se as operações dedutíveis|01012022|
+PADEES01|Distribuição de Energia Elétrica - Saídas - valor contábil das operação das saídas de distribuição de energia elétrica, por município paraense onde ocorreu o fornecimento, excluindo-se as operações dedutíveis|01012022|
+PAEE99|Exclusões das Entradas - Informar outros ajustes específicos necessários, que devam reduzir os valores de entrada, definidos pela SEFA-PA|01012022|
+PAES99|Exclusões das Saídas - Informar outros ajustes específicos necessários, que devam reduzir os valores de saída, definidos pela SEFA-PA|01012022|
+PAIE99|Inclusões das Entradas - Informar outros ajustes específicos necessários, que devam aumentar os valores de entrada, definidos pela SEFA-PA|01012022|
+PAIS99|Inclusões das Saídas - Informar outros ajustes específicos necessários, que devam aumentar os valores de saída, definidos pela SEFA-PA|01012022|
+PAESPE01|Entradas - Empresas que possuam inscrição centralizada, concedida mediante regime especial e que não estejam relacionadas nos demais códigos|01012022|
+PAESPS01|Saídas - Empresas que possuam inscrição centralizada, concedida mediante regime especial e que não estejam relacionadas nos demais códigos|01012022|
+PAEXTE01|Entradas - Extração de minério e de substâncias minerais para empresas que possuam mina situada, geograficamente, em mais de um Município.|01012022|
+PAEXTS01|Saídas - Extração de minério e de substâncias minerais para empresas que possuam mina situada, geograficamente, em mais de um Município.|01012022|
+PAEXT01|Mão de Obra Direta|01012022|
+PAEXT02|Mão de obra indireta|01012022|
+PAEXT03|Custo com transporte na mina|01012022|
+PAEXT04|Depreciação|01012022|
+PAEXT05|Amortização|01012022|
+PAEXT06|Exaustão|01012022|
+PAEXT07|CFEM|01012022|
+PAEXT08|TFRM|01012022|
+PAEXT09|Estocagem|01012022|
+PAEXT10|Expedição|01012022|
+PAEXT11|Transporte próprio para entrega ao comprador|01012022|
+PAEXT12|Transporte contratado com terceiros para entrega ao comprador|01012022|
+PAEXT13|Custos portuários|01012022|
+PAEXT14|Quantidade de toneladas produzidas|01012022|
+PAEXT15|Quantidade de toneladas vendidas|01012022|
+PAEXT16|Quantidade de toneladas transferidas|01012022|
+PAEXT17|COMBUSTÍVEIS|01012022|
+PAEXT18|GRAXAS E LUBRIFICANTES|01012022|
+PAEXT19|ENERGIA ELÉTRICA|01012022|
+PAEXT20|PRODUTOS QUÍMICOS E REAGENTES|01012022|
+PAEXT21|EXPLOSIVOS|01012022|
+PAEXT22|CORREIAS TRANSPORTADORAS|01012022|
+PAEXT23|PEÇAS|01012022|
+PAEXT24|ACESSÓRIOS|01012022|
+PAEXT25|PNEUMÁTICOS|01012022|
+PAEXT26|TUBULAÇÕES|01012022|
+PAEXT27|SOBRESSALENTES PARA BOMBAS|01012022|
+PAEXT28|MATERIAIS ELÉTRICOS|01012022|
+PAEXT29|GASES INDUSTRIAIS|01012022|
+PAEXT30|TELAS DE PENEIRAS|01012022|
+PAEXT31|MATERIAIS DE FIXAÇÃO|01012022|
+PAEXT32|CORPOS MOEDORES|01012022|
+PAEXT33|OUTROS MATERIAIS E DEMAIS MATERIAIS|01012022|

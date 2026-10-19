@@ -5,7 +5,7 @@ from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QColor, QKeySequence, QShortcut
 from PyQt6.QtWidgets import (
     QAbstractItemView, QComboBox, QGridLayout, QGroupBox,
-    QHBoxLayout, QLabel, QLineEdit, QMessageBox, QPushButton, QTableWidget,
+    QHBoxLayout, QLabel, QLineEdit, QPushButton, QTableWidget,
     QTableWidgetItem, QVBoxLayout, QWidget,
 )
 
@@ -13,6 +13,7 @@ from sped_tables.interface.comum import linhas_da_tabela
 from sped_tables.interface.comum import exportar_csv
 from sped_tables.interface import tema
 from sped_tables.interface.comum import _br, _num_celula
+from sped_tables.interface.comum import informar
 
 
 # ---------------------------------------------------------------------------
@@ -383,8 +384,8 @@ class RelatorioWidget(QWidget):
 
     def _exportar_csv(self):
         if self.tabela.rowCount() == 0:
-            QMessageBox.information(self, "Exportar CSV",
-                                    "Gere o relatório antes de exportar.")
+            informar(self, "Exportar CSV",
+                     "Gere o relatório antes de exportar.")
             return
         exportar_csv(self, "Exportar relatório", "relatorio_sped.csv",
                      getattr(self, "_cols", []),

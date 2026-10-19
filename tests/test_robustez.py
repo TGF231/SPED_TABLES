@@ -8,9 +8,10 @@ from unittest import mock
 from sped_tables.infra import cadastro
 from sped_tables.infra import arquivos
 from sped_tables.infra import config
-from sped_tables.infra import dados
-from sped_tables.infra import descritor_pva
+from sped_tables.infra import tabelas_ncm
+from sped_tables.infra.referencias_base import ReferenciasBase
 from sped_tables.dominio import empresas as emp_mod
+from sped_tables.dominio.ncm import ClassificadorNCM
 from sped_tables.dominio.sped_model import SpedDocument
 from tests.fabrica import (CNPJ_TESTE, PastaTemporaria, contrib_basico,
                            icms_basico)
@@ -147,8 +148,8 @@ class TestConfiguracao(unittest.TestCase):
         self._pasta.__exit__(None, None, None)
 
     def _pva_falso(self, raiz):
-        for layout, cfg in config.PVAS.items():
-            os.makedirs(os.path.join(raiz, cfg["pasta"], cfg["tabelas"]))
+        for cfg in config.PVAS.values():
+            os.makedirs(os.path.join(raiz, cfg["pasta"]))
         return raiz
 
     def test_variavel_de_ambiente_manda(self):
@@ -156,9 +157,16 @@ class TestConfiguracao(unittest.TestCase):
             os.environ[config.VARIAVEL] = self._pva_falso(p)
             config.esquecer()
             self.assertEqual(config.raiz_pva(), p)
-            self.assertEqual(config.pasta_tabelas("ICMS"),
-                             os.path.join(p, "Fiscal", "recursos",
-                                          "TabelasExternas"))
+            self.assertEqual(config.pasta_pva("ICMS"),
+                             os.path.join(p, "Fiscal"))
+
+    def test_variavel_para_pasta_sem_pva_ainda_e_a_raiz(self):
+        """A variável manda mesmo sem PVA dentro: é o que isola a suíte da
+        instalação da máquina (pasta vazia = quem não tem PVA)."""
+        with PastaTemporaria() as p:
+            os.environ[config.VARIAVEL] = p
+            config.esquecer()
+            self.assertEqual(config.raiz_pva(), p)
 
     def test_escolha_gravada_vale_na_proxima_vez(self):
         with PastaTemporaria() as p:
@@ -168,21 +176,49 @@ class TestConfiguracao(unittest.TestCase):
             self.assertEqual(config.raiz_pva(), p)
             self.assertEqual(config.ler()["raiz_pva"], p)
 
-    def test_tabelas_rfb_migram_do_arquivo_antigo(self):
-        with open(dados.caminho(config.ARQUIVO_ANTIGO_RFB), "w",
-                  encoding="utf-8") as fh:
-            fh.write('{"zero": "C:/tabelas/zero.txt"}')
-        self.assertEqual(config.tabelas_rfb()["zero"], "C:/tabelas/zero.txt")
-        config.gravar_tabelas_rfb({"mono": "C:/m.txt"})
-        self.assertEqual(config.tabelas_rfb()["mono"], "C:/m.txt")
-        self.assertEqual(config.tabelas_rfb()["zero"], "")
 
-    def test_descritor_e_lido_uma_vez(self):
-        if not descritor_pva.disponivel():
-            self.skipTest("PVA não instalado")
-        a = descritor_pva.carregar("ICMS")
-        b = descritor_pva.carregar("ICMS")
-        self.assertIs(a, b)
+class _OrigemSoDeTabelas:
+    """Qualquer origem com a interface da base: aqui, só as tabelas."""
+
+    def __init__(self, tabelas):
+        self._tabelas = tabelas
+
+    def manifesto(self):
+        return {"versao": "9.9.9", "data": "2026-01-01"}
+
+    def tabelas(self):
+        return self._tabelas
+
+    def ncm_vigente(self):
+        return None
+
+
+class TestClassificadorNcmDaBase(unittest.TestCase):
+
+    def test_classificador_ncm_sem_tabelas_e_none(self):
+        """A porta promete `ClassificadorNCM` ou `None`. Sem as tabelas de
+        alíquota zero e de monofásicos o classificador sairia **vazio** — e
+        vazio trata todo NCM como tributado, acusando divergência que não
+        existe (saída em CST 04/06 com sugestão 01)."""
+        fonte = ReferenciasBase(_OrigemSoDeTabelas({}))
+        self.assertIsNone(fonte.classificador_ncm())
+
+    def test_classificador_ncm_com_uma_tabela_ja_serve(self):
+        """Basta uma das três tabelas (zero, mono, mono_difer) para existir
+        o que comparar."""
+        genero = (tabelas_ncm.CHAVE_GENERO, ("versão=1 COD, DESC\n", 1))
+        for chave in (tabelas_ncm.CHAVE_ALIQ_ZERO, tabelas_ncm.CHAVE_MONO,
+                      tabelas_ncm.CHAVE_MONO_DIFER):
+            tabs = dict([genero, (chave, ("versão=1 COD, DESC\n", 1))])
+            fonte = ReferenciasBase(_OrigemSoDeTabelas(tabs))
+            self.assertIsInstance(fonte.classificador_ncm(),
+                                  ClassificadorNCM, chave)
+
+    def test_classificador_ncm_so_com_genero_e_none(self):
+        """O gênero e o NCM vigente não classificam ninguém sozinhos."""
+        tabs = {tabelas_ncm.CHAVE_GENERO: ("versão=1 COD, DESC\n", 1)}
+        fonte = ReferenciasBase(_OrigemSoDeTabelas(tabs))
+        self.assertIsNone(fonte.classificador_ncm())
 
 
 class TestIndiceDoAcervo(unittest.TestCase):

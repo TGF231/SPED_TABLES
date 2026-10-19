@@ -137,30 +137,25 @@ def _conferir(app, rel, arquivo, dados, falhas):
                 "copiados na primeira: %s" % copiados)
     rel.conferir("instalação da pasta de dados", instalacao)
 
-    def tabelas_pva():
+    def base_de_referencia():
+        # vai dentro do executável (SPED Tables.spec); sem ela as
+        # validações pelo leiaute e as tabelas oficiais se desligam
         from sped_tables.dominio import referencias
+        from sped_tables.infra import base_referencia
         montagem.configurar()
-        info = {}
-        for layout in ("ICMS", "CONTRIB"):
-            estrutura, meta = referencias.atual().estrutura(layout)
-            info[layout] = ("%d registros no descritor" % len(estrutura)
-                            if estrutura else "PVA não encontrado")
-        # sem PVA a função fica sem as tabelas oficiais, mas não é defeito
-        # do pacote: registra e segue
+        base, origem = base_referencia.em_uso()
+        if base is None:
+            return False, origem
+        info = {"versao": base.manifesto()["versao"], "origem": origem}
+        for layout in base_referencia.LEIAUTES:
+            est, meta = referencias.atual().estrutura(layout)
+            guia = referencias.atual().guia(layout)
+            info[layout] = "versão %s, %d registros, guia %s" % (
+                meta.get("versao"), len(est), guia.get("versao"))
+            if not est or not guia:
+                return False, info
         return True, info
-    rel.conferir("tabelas do PVA", tabelas_pva)
-
-    def guias_praticos():
-        # viajam em recursos/ (SPED Tables.spec); sem eles a ajuda F1 some
-        from sped_tables.infra import guias
-        info = {}
-        for layout in ("ICMS", "CONTRIB"):
-            g = guias.carregar(layout)
-            info[layout] = ("%s %s, %d registros" % (
-                g.get("guia"), g.get("versao"), len(g.get("registros", {})))
-                if g else "ausente")
-        return all(v != "ausente" for v in info.values()), info
-    rel.conferir("guias práticos", guias_praticos)
+    rel.conferir("base de referência", base_de_referencia)
 
     def leitura_paralela():
         # o processo filho é o próprio executável: sem o `freeze_support` do
@@ -207,8 +202,7 @@ def _conferir(app, rel, arquivo, dados, falhas):
                 info[nome] = getattr(mod, "__version__", "ok")
             except ImportError:
                 info[nome] = "ausente"
-                if nome != "pymysql":       # opcional: MySQL
-                    faltam.append(nome)
+                faltam.append(nome)
         return not faltam, info
     rel.conferir("drivers dos bancos de ERP", drivers_erp)
 

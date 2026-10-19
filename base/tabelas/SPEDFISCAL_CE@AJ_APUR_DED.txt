@@ -1,0 +1,221 @@
+versão=52 COD_AJUR, DESC_AJUR, DT_INI, DT_FIM
+CE000001|Débito Reserva Transferência de Crédito|01012009|
+CE000002|Débito Diferencial de Alíquota - Imobilizado|01012009|
+CE000003|Débito Transferência de Crédito|01012009|
+CE000004|Débito Compensação de Débito na Divida Ativa|01012009|
+CE000005|Débito - Fecop ICMS Normal|01012009|01012012
+CE000006|Débito Diferencial de Alíquota - Consumo|01012009|
+CE000007|Débito - Faturamento - Termo de acordo 35/91|01012009|
+CE000008|Débitos Outros|01012009|
+CE000009|Débito de Diferença de Cartão de Crédito.|01012012|
+CE000010|Débito de ICMS carga líquida- operações internas.|01012012|31122015
+CE000011|Débito de ICMS carga líquida- operações interestaduais.|01012012|31122015
+CE000012|Débito de ICMS DIFAL EC 87/2015|01012016|
+CE000013|Débito de Transferência de Crédito Outorgado de óleo diesel|01052023|03052023
+CE000013|Débito de Transferência de Crédito Outorgado de óleo diesel|04052023|31122023
+CE000013|Débito de transferência de crédito outorgado de óleo diesel (Convênio ICMS 21/23) - item 12.0 do Anexo IV do Decreto nº 33.327/2019|01012024|
+CE000014|Débito Diferencial de Alíquota - Serviço|01032024|
+CE010001|Estorno de Crédito Saídas Isentas e não Tributadas|01012009|
+CE010002|Estorno de Crédito Bens de Ativo por Saídas Não Tributadas|01012009|
+CE010003|Estorno de Crédito Suframa|01012009|
+CE010004|Estorno de Crédito de Bens de Ativo por Baixa|01012009|
+CE010005|Entradas de Energia Elétrica (Empresa comunicação)|01012009|30042024
+CE010006|Estorno Créditos Outros|01012009|
+CE010007|Estorno de crédito - ICMS da Energia Elétrica (Emp de moagem de trigo) de operações não destinadas à ZFM|01012019|
+CE010008|Estorno de crédito  Substituição de Nota Fiscal de NF3e|01102023|30042024
+CE010008|Estorno de crédito correspondente a NF3e substituída, escriturada com crédito do imposto, por ocasião da escrituração da NF3e de substituição|01052024|
+CE010009|Estorno de crédito correspondente a CT-e/CT-e OS substituído, escriturado com crédito do imposto, por ocasião da escrituração de CT-e/CT-e OS de substituição|01052024|
+CE010010|Estorno de crédito de 20% do valor do ICMS destacado no documento fiscal de aquisição de energia elétrica quando o sujeito passivo com estabelecimento industrial não dispuser de equipamento que faça medição própria específica para a área industrial|01052024|
+CE010011|Estorno de crédito de ICMS decaído conforme o artigo 78 da Lei nº 18.665/2023|01012009|
+CE010012|Estorno de crédito correspondente a NFCom substituída, escriturada com crédito do imposto, por ocasião da escrituração da NFCom de substituição|01102024|
+CE010013|Estorno de crédito de ICMS no mês da adesão ao Regime Simplificado de Tributação (bares e restaurantes), conforme previsto no arts. 509-B, parágrafo único, inciso I, e 763, § 6º, do Decreto nº 24.569/1997|01012021|
+CE010014|Estorno de crédito de ICMS relativo ao ICMS ST pago pelo fornecedor em operação interna, apropriado nos termos do art. 509-A do Decreto n.º 24.569/1997, cuja saída ocorra sem débito do imposto|01122025|
+CE010015|Estorno de crédito de ICMS relativo ao ICMS ST pago na entrada pelo próprio contribuinte, apropriado nos termos do art. 509-A do Decreto nº 24.569/1997, cuja saída ocorra sem débito do imposto|01122025|
+CE010016|Estorno de crédito de ICMS relativo à baixa de estoque (extravio, perecimento, deterioração, furto ou roubo), nos termos do Ajuste Sinief nº 49/2025|01012021|
+CE010017|Estorno de crédito de ICMS não homologado pela Sefaz, nos termos do § 3º do art. 2º da Lei nº 19.646/2026|13022025|
+CE010018|Estorno de crédito de ICMS utilizado em dação em pagamento para recebimento em transferência de imóveis integrantes do patrimônio estadual e desafetados, nos termos do art. 2º da Lei nº 19.646/2026|13022025|
+CE020001|Crédito Presumido|01012009|
+CE020002|Crédito de Antecipado|01012009|
+CE020003|Crédito de Diferencial de Alíquota|01012009|
+CE020004|Crédito de Transferência de Crédito|01012009|
+CE020005|Crédito de Bens do Ativo Imobilizado|01012009|
+CE020006|Crédito Restituição de Indébito|01012009|
+CE020007|Crédito ICMS a Mais ou em Duplicidade|01012009|
+CE020008|Crédito ICMS Importação Diferido|01012009|
+CE020009|Crédito Decorrente de Auto de Infração|01012009|
+CE020010|Créditos Extemporâneos|01012009|
+CE020011|Crédito Outros|01012009|
+CE020012|Crédito Fecop ICMS Normal|01012012|31122015
+CE020013|Devolução de mercadorias - ICMS DIFAL|01012016|
+CE020014|Crédito de material de embalagem nas remessas para ZFM|01012019|
+CE020015|Crédito da tomada de serviço de transporte a custo CIF para ZFM|01012019|
+CE020016|Crédito de Transferência de Crédito Outorgado de óleo diesel|01052023|03052023
+CE020016|Crédito de Transferência de Crédito Outorgado de óleo diesel|04052023|04052023
+CE020016|Crédito Outorgado de óleo diesel|05052023|31122023
+CE020016|Crédito outorgado de óleo diesel (Convênio ICMS 21/23) - item 12.0 do Anexo IV do Decreto nº 33.327/2019|01012024|
+CE020017|Crédito de Transferência de Crédito Outorgado de óleo diesel|01052023|30062023
+CE020017|Crédito Presumido do MFE|01072023|01072023
+CE020017|Crédito de Transferência de Crédito Outorgado de óleo diesel|02072023|31122023
+CE020017|Crédito de transferência de crédito outorgado de óleo diesel (Convênio ICMS 21/23) - item 12.0 do Anexo IV do Decreto nº 33.327/2019|01012024|
+CE020018|Crédito Presumido do MFE|01072023|
+CE020019|Crédito presumido de 100% sobre o valor do ICMS devido nas operações de saída internas e interestaduais com flores naturais de corte e em vaso, promovidas por estabelecimento produtor - item 1.0.1 do Anexo IV do Decreto nº 33.327/2019|01012024|
+CE020020|Crédito presumido de 100% sobre o ICMS devido nas operações de saída interestaduais com ovos férteis, pintos de um dia, ovos, aves e suas correspondentes partes e miúdos, congelados, resfriados ou em estado natural, promovidas por estabelecimento produtor - item 1.0.2 do Anexo IV do Decreto nº 33.327/2019|01012024|
+CE020021|Crédito presumido de 100% sobre o valor do ICMS devido nas operações de saída internas com aves e suas correspondentes partes e miúdos, congelados ou resfriados, promovidas por estabelecimento produtor - item 1.0.3 do Anexo IV do Decreto nº 33.327/2019|01012024|
+CE020022|Crédito presumido de 100% sobre o valor do ICMS devido nas operações de saída internas e interestaduais com suínos, realizadas por produtores do Estado do Ceará - item 1.0.4 do Anexo IV do Decreto nº 33.327/2019|01012024|
+CE020023|Crédito presumido de 100% sobre o valor do ICMS devido nas operações de saída internas e interestaduais com uva, promovidas por estabelecimento produtor - item 1.0.5 do Anexo IV do Decreto nº 33.327/2019|01012024|
+CE020024|Crédito presumido de 50% calculado sobre o valor do imposto incidente na saída de obra de arte recebida com isenção diretamente do autor (Convênios ICMS 59/91 e ICMS 151/94) - item 2.0 do Anexo IV do Decreto nº 33.327/2019|01012024|
+CE020025|Crédito presumido de 65% nas operações de saída com telhas, tijolos, lajotas e manilhas, promovidas por estabelecimento industrial ceramista, quando a carga tributária do produto for maior ou igual a 18% - item 3.0.1 do Anexo IV do Decreto nº 33.327/2019|01012024|
+CE020026|Crédito presumido de 50% nas operações de saída com telhas, tijolos, lajotas e manilhas, promovidas por estabelecimento industrial ceramista, quando a carga tributária do produto for menor que 18% - item 3.0.2 do Anexo IV do Decreto nº 33.327/2019|01012024|
+CE020027|Crédito presumido de 15% nas operações de saída de sal marinho promovidas por estabelecimento extrator (Convênio ICMS 02/92) - item 4.0 do Anexo IV do Decreto nº 33.327/2019|01012024|
+CE020028|Crédito presumido de 12,2% calculado sobre o valor da operação de entrada promovida por estabelecimento industrial consumidor de aços planos, para as matérias-primas indicadas no item 5.0.1 do Anexo IV do Decreto nº 33.327/2019|01012024|
+CE020029|Crédito presumido de 8% calculado sobre o valor da operação de entrada promovida por estabelecimento industrial consumidor de aços planos, para bobinas e chapas finas a frio, da posição 7209 da NCM - item 5.0.2 do Anexo IV do Decreto nº 33.327/2019|01012024|
+CE020030|Crédito presumido de 6,5% calculado sobre o valor da operação de entrada promovida por estabelecimento industrial consumidor de aços planos, para as matérias-primas indicadas no item 5.0.3 do Anexo IV do Decreto nº 33.327/2019|01012024|
+CE020031|Crédito presumido de 20% do valor do ICMS incidente na prestação, para os estabelecimentos prestadores de serviço de transporte, exceto aéreo e dutoviário, adotado opcionalmente pelo contribuinte (Convênios ICMS 106/96 e 100/01) - item 6.0 do Anexo IV do Decreto nº 33.327/2019|01012024|
+CE020032|Crédito presumido do ICMS, em até 100% do valor do investimento efetivamente realizado no território cearense, à empresa prestadora de serviço de comunicação de voz e dados - item 7.0 do Anexo IV do Decreto nº 33.327/2019|01012024|
+CE020033|Crédito presumido no mesmo valor do ICMS destacado na NF de saída das mercadorias produzidas ou comercializadas, inclusive na forma de kits, pelo AMIGOS DO BEM (Convênio ICMS 129/04), indicadas no item 8.0 do Anexo IV do Decreto nº 33.327/2019|01012024|
+CE020034|Crédito presumido de 100% calculado sobre o valor do ICMS devido quando das operações internas realizadas por estabelecimento industrial com queijo mussarela produzido no Estado do Ceará - item 9.0 do Anexo IV do Decreto nº 33.327/2019|01012024|
+CE020035|Crédito presumido do ICMS aos envasadores de água mineral, natural, artificial ou adicionada de sais, de até 90% do custo pela geração, impressão, contagem e controle dos SF-e, por 90 dias da data inicial da obrigatoriedade da sua afixação - item 11.0 do Anexo IV do Decreto nº 33.327/2019|01012024|
+CE020036|Crédito presumido de 95% calculado sobre o valor do ICMS devido nas operações de saída dos produtos derivados do leite indicados no item 13.0 do Anexo IV do Decreto nº 33.327/2019, promovidas por estabelecimento industrializador|01012024|
+CE020037|Crédito presumido de 6,55% sobre o valor do ICMS debitado nas operações promovidas por estabelecimento que exerça a atividade econômica de fabricação de produtos do refino de petróleo e de gás natural, classificada no código 1921-7/00 da CNAE - Decreto nº 33.135/2019|01012024|
+CE020038|Crédito presumido do ICMS, sobre o valor da saída, para o estabelecimento comercial varejista, inscrito no Ceará no regime normal, que realize exclusivamente operações de saída interestadual de mercadoria destinada a não contribuinte do ICMS, por meio da Internet ou de telemarketing - Decreto nº 33.749/2020|01012024|
+CE020039|Crédito presumido do ICMS, sobre o valor da saída, para o estabelecimento comercial varejista, inscrito no Ceará no regime normal, que realize exclusivamente vendas diretas para consumidor final, pessoa física, por meio da Internet (e-commerce) - Decreto nº 33.945/2021|01012024|
+CE020040|Crédito outorgado de 100% do valor do ICMS incidente na saída de óleo diesel a ser consumido por embarcações pesqueiras nacionais que estejam registradas no órgão controlador ou responsável pelo setor - Convênio ICMS 58/96|01012024|
+CE020041|Crédito do ICMS relativo a CT-e substituído, lançado somente após a emissão do CT-e substituto - Ajuste SINIEF 09/07|01012024|30042024
+CE020042|Crédito de ICMS relativo aos insumos empregados na produção de mercadorias realizada pelo próprio contribuinte e tributadas na forma do § 1º do art. 509 do Decreto nº 4.569/1997 - ICMS ST pago pelo fornecedor em operação interna|01122025|
+CE020043|Crédito de ICMS relativo aos insumos empregados na produção de mercadorias realizada pelo próprio contribuinte e tributadas na forma do § 1º do art. 509 do Decreto nº 24.569/1997 - ICMS ST pago na entrada pelo próprio contribuinte|01122025|
+CE030001|Estorno Débito Reversão de Reserva de Transferência|01012009|
+CE030002|Estorno de Débito - Faturamento - Energia - Conv. 30/04|01012009|
+CE030003|Estorno de Débito - Faturamento - Comunicação - Conv 39/01|01012009|
+CE030004|Estorno Débito Outros|01012009|
+CE030005|Ajuste de Débito - segmento moageiro|01012016|
+CE030006|Estorno BP-e Substituído|01012018|30042024
+CE030006|Estorno de débito correspondente a BP-e substituído, escriturado com débito do imposto, por ocasião da escrituração de BP-e de substituição|01052024|
+CE030007|Estorno de Débito de ICMS destacado para fins de exclusão da Base de Cálculo do PIS/COFINS|25042023|
+CE030008|Estorno de débito de ICMS decorrente da emissão de documento fiscal complementar após o mês de emissão do documento fiscal original|01052024|
+CE030008|Estorno de débito de ICMS decorrente da emissão de documento fiscal complementar após o mês de emissão do documento fiscal original|01012021|30042024
+CE030009|Estorno de débito correspondente a NF3e substituída, escriturada com débito do imposto, por ocasião da escrituração da NF3e de substituição|01052024|
+CE030010|Estorno de débito correspondente a CT-e/CT-e OS substituído, escriturado com débito do imposto, por ocasião da escrituração de CT-e/CT-e OS de substituição|01052024|
+CE030011|Estorno de débito de ICMS relativo a operações de saída interestaduais, em que o imposto foi pago e destacado no documento fiscal exclusivamente para fins de crédito do adquirente|01062025|
+CE030012|Estorno de débito correspondente a NFCom substituída, escriturada com débito do imposto, por ocasião da escrituração da NFCom de substituição|01102024|
+CE040001|Dedução referente ao FDI - Provin|01012009|31052019
+CE040001|Dedução referente ao FDI|01062019|
+CE040002|Dedução referente Fecop ICMS Normal|01012009|
+CE040003|Incentivo Fiscal|01012009|31122018
+CE040004|FDI- Transferencia de credito|01012009|
+CE040005|Incentivo a cultura|01012019|
+CE040006|Incentivo ao esporte|01012019|
+CE040007|Dedução do FECOP decorrente da emissão de documento fiscal complementar após o mês de emissão do documento fiscal original|01052024|
+CE040007|Dedução do FECOP decorrente da emissão de documento fiscal complementar após o mês de emissão do documento fiscal original|01012021|30042024
+CE050001|Credenciados - ICMS Antecipados|01012009|21122018
+CE050001|ICMS Antecipado|23122018|
+CE050002|Credenciados - Diferencial de Alíquota|01012009|21122018
+CE050002|Diferencial de Alíquota|22122018|30092026
+CE050002|Diferencial de Alíquota pago na Operação - SITRAM|01102026|
+CE050003|Débito - fecop ICMS normal|01012009|
+CE050004|Decreto 31109/2013|01012015|
+CE050005|Fecop DIFAL EC87/2015|01012016|29022024
+CE050005|Débito especial FECOP DIFAL|01032024|
+CE050006|Debito Regime Especial - Veiculos Usados|01012017|
+CE050007|Fundo Estadual de Equilibrio Fiscal - FEEF|01092016|
+CE050008|ICMS IMPORTAÇÃO|01012019|
+CE050009|ICMS AUTORREGULARIZAÇÃO POR DENÚNCIA ESPONTÂNEA|01012017|
+CE050010|FECOP ICMS AUTORREGULARIZAÇÃO POR DENÚNCIA ESPONTÂNEA|01012017|
+CE050011|Débito especial FECOP DIFAL por operação|01032024|
+CE050012|Débito especial de ICMS decorrente da emissão de documento fiscal complementar após o mês de emissão do documento fiscal original|01052024|
+CE050012|Débito especial de ICMS decorrente da emissão de documento fiscal complementar após o mês de emissão do documento fiscal original|01012021|30042024
+CE050013|Débito especial do FECOP decorrente da emissão de documento fiscal complementar após o mês de emissão do documento fiscal original|01052024|
+CE050013|Débito especial do FECOP decorrente da emissão de documento fiscal complementar após o mês de emissão do documento fiscal original|01012021|30042024
+CE050014|Débito especial ICMS - autorregularização decorrente de monitoramento fiscal|01012019|
+CE050015|Débito especial ICMS de operações com energia elétrica no Mercado de Curto Prazo (MCP)|01102024|
+CE050016|Débito especial ICMS decorrente de operações de entrada de energia elétrica, devido pela conexão e pelo uso direto dos sistemas de transmissão, nos termos do Convênio ICMS 117/04|01102024|
+CE050017|Débito especial ICMS referente ao adicional estabelecido pela Resolução do Senado Federal nº 13/2012|01062025|
+CE050018|Débito especial de ICMS decorrente da alteração de regime de pagamento - ICMS estoque final|01012020|
+CE050019|Débito especial de ICMS decorrente de solicitação de baixa cadastral, paralisação temporária e outras situações - ICMS estoque final|01012020|
+CE100001|Débitos outros|01012009|
+CE100002|Débito ref ao caput do art.1º do Decreto nº31.288/2013|01012013|
+CE100003|Débito de ICMS - Lei nº 14.237/2008 - entrada interestadual - para uso exclusivo por detentores de RET|01072024|
+CE100004|Débito de ICMS - Lei nº 14.237/2008 - entrada interna - para uso exclusivo por detentores de RET|01072024|
+CE100005|Débito de ICMS - Lei nº 14.237/2008 - saída interna - para uso exclusivo por detentores de RET|01072024|
+CE100006|Débito de ICMS - Lei nº 14.237/2008 - importação do exterior - para uso exclusivo por detentores de RET|01072024|
+CE100007|Débito de ICMS ST decorrente de operações de saída interna realizadas por estabelecimento com Regime Especial de Tributação (RET) destinadas ao Canal Hospitalar ou para consumidor final, pessoa física ou jurídica não contribuinte do ICMS, nos termos da alínea b do inciso II e do item 2 da alínea a do inciso III, ambos do art. 2º da IN nº 74/25|01062025|
+CE100008|Débito de ICMS Substituição Tributária (ICMS-ST) decorrente de divergência identificada na apuração, devidamente homologado pela Sefaz|01012021|
+CE110001|Estorno Creditos Outros|01012009|
+CE110003|Estorno de crédito nos termos do inciso II do § 2º do art 1º do Decreto nº31.288/2013|01012013|
+CE110004|Estorno de Crédito de ICMS Substituição Tributária (ICMS-ST) decorrente de autorização para transferência de créditos entre estabelecimentos do mesmo sujeito passivo, devidamente autorizado pela Sefaz em parecer ou documento equivalente|01012027|
+CE120001|Créditos Outros|01012009|
+CE120002|Crédito de ressarcimento homologado nos termos do § 1º do art 1º do Decreto nº31.288/2013|01012013|30062024
+CE120002|Crédito de ressarcimento de ICMS ST|01072024|
+CE120003|Pagamento Antecipado- GIA-ST|01012019|
+CE120004|Crédito Presumido do MFE - ST|01072023|
+CE120005|Crédito presumido de ICMS - Lei nº 14.237/2008 - concedido a detentores de Regime Especial de Tributação - RET|01072024|
+CE120006|Compensação do ICMS ST retido por ocasião da entrada interestadual, em decorrência de operações de saída interna subsequentes amparadas por isenção do ICMS, destinadas, exclusivamente, a órgãos da Administração Pública estadual, direta e indireta, bem como nas hipóteses de devoluções de mercadorias inservíveis ou avariadas|01062025|
+CE120007|Crédito de ICMS Substituição Tributária (ICMS-ST) decorrente de autorização para recebimento em transferência de estabelecimento do mesmo sujeito passivo, devidamente autorizado pela Sefaz em parecer ou documento equivalente|01012027|
+CE130001|Estorno Debito Outros|01012009|
+CE130002|Ajuste de Débito segmento moageiro|01012016|
+CE130003|Estorno de Débito de ICMS ST destacado para fins de exclusão da Base de Cálculo do PIS/COFINS|04052023|04052023
+CE130004|Estorno de débito de ICMS ST decorrente da emissão de documento fiscal complementar após o mês de emissão do documento fiscal original|01052024|
+CE130004|Estorno de débito de ICMS ST decorrente da emissão de documento fiscal complementar após o mês de emissão do documento fiscal original|01012021|30042024
+CE130005|Estorno de débito de ICMS - Lei nº 14.237/2008 - entrada interestadual - valores recolhidos pelo SITRAM - para uso exclusivo por detentores de RET|01072024|
+CE130006|Estorno de débito de ICMS - Lei nº 14.237/2008 - entrada interna - valores recolhidos na entrada - para uso exclusivo por detentores de RET|01072024|
+CE130007|Estorno de débito de ICMS - Lei nº 14.237/2008 - operação de importação do exterior - valores recolhidos na importação - para uso exclusivo por detentores de RET|01072024|
+CE140001|Fecop - ST - saídas internas|01012009|21122018
+CE140001|Fecop - ST - internas|22122018|30062024
+CE140001|Fecop - ST - saídas internas|01072024|
+CE140002|Fecop - ST - entrada interestadual|01012009|
+CE140003|Fecop - ST - entrada interna|01012009|
+CE140004|Dedução FECOP ST convênio ou protocolo|01022024|
+CE140005|Dedução do FECOP ST decorrente da emissão de documento fiscal complementar após o mês de emissão do documento fiscal original|01052024|
+CE140005|Dedução do FECOP ST decorrente da emissão de documento fiscal complementar após o mês de emissão do documento fiscal original|01012021|30042024
+CE149999|Deduções do imposto apurado na apuração ICMS ST|01022024|
+CE150001|Credenciados - ST - Entrada interestadual|01012009|
+CE150002|Não credenciados - ST - Entrada interestadual|01012009|
+CE150003|ST - Entradas internas|01012009|
+CE150004|ST - Saidas Internas|01012009|
+CE150005|Fecop - ST - saídas internas|01012009|
+CE150006|Fecop - ST - entrada interestadual|01012009|
+CE150007|Fecop - ST - entrada interna|01012009|
+CE150008|Débito mensal a recolher nos termos do inciso II do § 2º do art 1º do Decreto nº31.288/2013|01012013|
+CE150009|Carga liquida - entrada interna|01112013|31122015
+CE150010|Carga liquida - entrada interestadual|01112013|31122015
+CE150011|Carga liquida - saída interna|01112013|31122015
+CE150012|Carga liquida - saída interestadual|01112013|31122015
+CE150013|Distribuidora de combustível =- alcool hidratado|01012016|
+CE150014|Complemento de carga tributária - Diesel - Decreto 29.248/2008|01012016|30062024
+CE150014|Débito especial ICMS ST - complemento de carga tributária - óleo diesel - item 12.4 do Anexo IV do Decreto n° 33.327/2019|01072024|
+CE150015|Distribuidora degradação JET x Diesel|01012016|
+CE150016|Distribuidora de combustível - ICMS frete|01012016|
+CE150017|Decreto 31.109/2013|01012016|
+CE150018|Fundo Estadual de Equilibrio Fiscal FEEF|01092016|
+CE150019|Mudança de tributação - ICMS ST a recolher|01122017|
+CE150020|ICMS ST importação|01012019|
+CE150021|ICMS ST  Repasse Retido Outro Contribuinte  GIA-ST|01012019|
+CE150022|FRETE-ST|01012020|
+CE150023|ICMS-ST AUTORREGULARIZAÇÃO POR DENÚNCIA ESPONTÂNEA|01012017|
+CE150024|FECOP ICMS-ST AUTORREGULARIZAÇÃO POR DENÚNCIA ESPONTÂNEA|01012017|
+CE150025|Débito especial FECOP ST convênio ou protocolo|01022024|
+CE150026|Débito especial de ICMS ST decorrente da emissão de documento fiscal complementar após o mês de emissão do documento fiscal original|01052024|
+CE150026|Débito especial de ICMS ST decorrente da emissão de documento fiscal complementar após o mês de emissão do documento fiscal original|01012021|30042024
+CE150027|Débito especial do FECOP ST decorrente da emissão de documento fiscal complementar após o mês de emissão do documento fiscal original|01052024|
+CE150027|Débito especial do FECOP ST decorrente da emissão de documento fiscal complementar após o mês de emissão do documento fiscal original|01012021|30042024
+CE150028|Débito especial de ICMS ST para os Produtos Farmacêuticos (Decreto nº 36.617/2025) - Atacadista com adesão ao Regime Especial de Tributação (RET) - ICMS pago na entrada interestadual|01062025|
+CE150029|Débito especial de ICMS ST para os Produtos Farmacêuticos (Decreto nº 36.617/2025) - Atacadista sem adesão ao Regime Especial de Tributação (RET) e Varejo - ICMS pago na entrada interestadual|01062025|
+CE150030|Débito especial de ICMS ST para os produtos integrantes da sistemática do Decreto nº 29.560/2008, na forma do § 6º do art. 5º do Decreto nº 36.617/2025 - Atacadista com adesão ao Regime Especial de Tributação Misto (RET Misto) - ICMS pago na entrada interestadual|01062025|
+CE150031|Débito especial de ICMS ST para os Produtos Farmacêuticos (Decreto nº 36.617/2025) - Centro de Distribuição com adesão ao Regime Especial de Tributação (RET) - ICMS pago na entrada interestadual|01062025|
+CE209999|Outros débitos para ajuste de apuração ICMS Difal/FCP para o CE|01012016|31122016
+CE209999|Outros débitos para ajuste de apuração ICMS Difal|01012017|
+CE219999|Estorno de créditos para ajuste de apuração ICMS Difal/FCP para o CE|01012016|31122016
+CE219999|Estorno de créditos para ajuste de apuração ICMS Difal|01012017|
+CE229999|Outros créditos para ajuste de apuração ICMS Difal/FCP para o CE|01012016|31122016
+CE229999|Outros créditos para ajuste de apuração ICMS Difal|01012017|
+CE239999|Estorno de débitos para ajuste de apuração ICMS Difal/FCP para o CE|01012016|31122016
+CE239999|Estorno de débitos para ajuste de apuração ICMS Difal|01012017|
+CE249999|Deduções do imposto apurado na apuração ICMS Difal/FCP para o CE|01012016|31122016
+CE249999|Deduções do imposto apurado na apuração ICMS Difal|01012017|
+CE259999|Débito especial de ICMS Difal/FCP para o CE|01012016|31122016
+CE259999|Débito especial de ICMS Difal|01012017|
+CE309999|Outros débitos para ajuste de apuração ICMS FCP|01012017|
+CE319999|Estorno de créditos para ajuste de apuração ICMS FCP|01012017|
+CE329999|Outros créditos para ajuste de apuração ICMS FCP|01012017|
+CE339999|Estorno de débitos para ajuste de apuração ICMS FCP|01012017|
+CE349999|Deduções do imposto apurado na apuração ICMS FCP|01012017|
+CE359999|Débito especial de ICMS FCP|01012017|

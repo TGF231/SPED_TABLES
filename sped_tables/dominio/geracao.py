@@ -47,6 +47,9 @@ class Resultado:
         self.ignorados = []      # [(chave, motivo)]
         self.participantes_novos = {}   # documento -> código atribuído
         self.contagem = {}
+        # chaves fora do período que a pessoa mandou incluir: documentos
+        # extemporâneos (COD_SIT 01/07; o ICMS da saída vai para o DEB_ESP)
+        self.extemporaneos = set()
 
     def apontar(self, tipo, documento, item, detalhe, bloqueia=False,
                 dados=None):
@@ -128,9 +131,16 @@ class _Linhas:
 
 
 # ---------------------------------------------------------- classificação
-def classificar(lote, cnpj, periodo, res, regra_data=None, excluir=()):
+def classificar(lote, cnpj, periodo, res, regra_data=None, excluir=(),
+                incluir=()):
     """Separa o que é da empresa no período: `{"entradas", "saidas",
-    "fretes_entrada", "fretes_saida"}` — e diz o que ficou de fora."""
+    "fretes_entrada", "fretes_saida"}` — e diz o que ficou de fora.
+
+    Documento com data de outro mês vai para `res.fora_periodo` — **a não
+    ser** que a chave esteja em `incluir`: aí é a pessoa dizendo que é
+    extemporâneo (o cupom em contingência transmitido no mês seguinte), e
+    ele entra, anotado em `res.extemporaneos`. Nunca se decide isso
+    sozinho."""
     cnpj = so_digitos(cnpj)
     data_entrada = regra_data or "saida"
     grupos = {"entradas": [], "saidas": [], "fretes_entrada": [],
@@ -158,8 +168,10 @@ def classificar(lote, cnpj, periodo, res, regra_data=None, excluir=()):
         if n.situacao == "cancelada":
             data = _data(n.dhemi)
         if not no_periodo(data):
-            res.fora_periodo.append((n.chave, data))
-            continue
+            if n.chave not in incluir:
+                res.fora_periodo.append((n.chave, data))
+                continue
+            res.extemporaneos.add(n.chave)
         grupos[grupo].append(n)
     for c in lote.ctes:
         if c.chave in excluir:
@@ -177,20 +189,23 @@ def classificar(lote, cnpj, periodo, res, regra_data=None, excluir=()):
             continue
         data = _data(c.dhemi)
         if not no_periodo(data):
-            res.fora_periodo.append((c.chave, data))
-            continue
+            if c.chave not in incluir:
+                res.fora_periodo.append((c.chave, data))
+                continue
+            res.extemporaneos.add(c.chave)
         grupos[grupo].append(c)
     return grupos
 
 
-def _cod_sit(doc):
+def _cod_sit(doc, extemporaneos=()):
     if doc.situacao == "cancelada":
         return "02"
     if doc.situacao == "denegada":
         return "04"
-    if getattr(doc, "fin", None) == "2":
-        return "06"                                # complementar
-    return "00"
+    complementar = getattr(doc, "fin", None) == "2"
+    if doc.chave in extemporaneos:
+        return "07" if complementar else "01"
+    return "06" if complementar else "00"
 
 
 # ------------------------------------------------------------ participante
@@ -239,6 +254,7 @@ class _Itens:
         self.naturezas = {}          # COD_NAT -> descrição (0400)
         self.contas = set()          # COD_CTA usadas (0500)
         self._atual = {}             # o produto em escrituração agora
+        self.vendidos_novos = []     # produtos próprios fora da memória
 
     def _apontar(self, *args, **k):
         # o mesmo dict em todos os apontamentos do item: a escrituração
@@ -385,22 +401,48 @@ class _Itens:
         return {"CFOP": cfop, "CST_ICMS": cst,
                 "CREDITA_ICMS": "S" if credita else "N"}
 
-    def _cadastro(self, cod, item):
+    def _cadastro(self, cod, item, apontar=True):
         if cod in self.cadastro_usado:
             return self.cadastro_usado[cod]
         cad = self.m["cadastro"].get(cod)
         if cad is None:
-            cad = {"DESCR_ITEM": (item.xprod or "")[:255],
-                   "COD_BARRA": item.cean or "",
-                   "UNID_INV": item.unid or "", "TIPO_ITEM": "00",
-                   "COD_NCM": item.ncm or ""}
-            self._apontar("produto fora do cadastro", "0200", cod,
-                             "cadastro montado do XML (tipo 00 — mercadoria "
-                             "para revenda); confira")
+            cad = _cadastro_do_xml(item)
+            if apontar:
+                self._apontar("produto fora do cadastro", "0200", cod,
+                              "cadastro montado do XML (tipo 00 — mercadoria "
+                              "para revenda); confira")
+            else:
+                self.vendidos_novos.append(cod)
         self.cadastro_usado[cod] = cad
         return cad
 
+    def saida(self, item):
+        """Cadastra no 0200 (e a unidade no 0190) o produto de um documento
+        **emitido pela empresa** — NF-e e NFC-e de venda. O código já é o
+        próprio (`cProd`); o cadastro é o que a empresa declarou no SPED
+        entregue e, para produto que a memória não conhece, o do XML. O
+        0200 precisa listar o que a empresa movimentou, mesmo quando o
+        documento não leva C170 (a NFC-e)."""
+        cod = (item.cprod or "").strip()[:60]
+        if not cod:
+            return
+        cad = self._cadastro(cod, item, apontar=False)
+        unid = cad.get("UNID_INV") or item.unid or ""
+        if unid:
+            self.unidades.setdefault(unid, self.m["unidades"].get(unid, unid))
+
     def registros(self, linhas):
+        if self.vendidos_novos:
+            novos = sorted(set(self.vendidos_novos))
+            self.res.apontar(
+                "produtos vendidos fora do cadastro", "0200",
+                "%d produto(s)" % len(novos),
+                "a memória não tem o cadastro de %d produto(s) vendido(s) "
+                "(%s%s): o 0200 foi montado do XML (tipo 00 — mercadoria "
+                "para revenda); confira" % (
+                    len(novos), ", ".join(novos[:10]),
+                    "…" if len(novos) > 10 else ""))
+            self.vendidos_novos = []
         for unid in sorted(self.unidades):
             linhas.reg("0190", UNID=unid, DESCR=self.unidades[unid] or unid)
         for cod in sorted(self.cadastro_usado):
@@ -412,9 +454,18 @@ class _Itens:
                        DESCR_NAT=self.naturezas[nat] or nat)
 
 
+def _cadastro_do_xml(item):
+    """Os campos do 0200 que o XML do produto diz."""
+    return {"DESCR_ITEM": (item.xprod or "")[:255],
+            "COD_BARRA": item.cean or "",
+            "UNID_INV": item.unid or "", "TIPO_ITEM": "00",
+            "COD_NCM": item.ncm or "",
+            "CEST": getattr(item, "cest", "") or ""}
+
+
 # --------------------------------------------------------------- ICMS/IPI
 def gerar_icms(memoria, lote, periodo, saldo_credor_anterior=None,
-               correlacoes=None, excluir=()):
+               correlacoes=None, excluir=(), incluir=()):
     """O EFD ICMS/IPI do período (`AAAAMM`). Devolve `Resultado`.
 
     `saldo_credor_anterior` é o do E110 do mês anterior; sem ele, vale o que
@@ -429,7 +480,8 @@ def gerar_icms(memoria, lote, periodo, saldo_credor_anterior=None,
     ini, fim = limites(periodo)
     entrada_pad = memoria.get("padroes", {}).get("entrada", {})
     grupos = classificar(lote, memoria["cnpj"], periodo, res,
-                         entrada_pad.get("DT_E_S"), set(excluir or ()))
+                         entrada_pad.get("DT_E_S"), set(excluir or ()),
+                         set(incluir or ()))
     uf = _modelo_valor(modelos["0000"], "UF", "ICMS")
     part = _Participantes(memoria, res)
     itens = _Itens(memoria, res, correlacoes, uf)
@@ -444,7 +496,7 @@ def gerar_icms(memoria, lote, periodo, saldo_credor_anterior=None,
     for n in docs:
         entrada = n in grupos["entradas"]
         oper = "0" if entrada else "1"
-        sit = _cod_sit(n)
+        sit = _cod_sit(n, res.extemporaneos)
         base = dict(IND_OPER=oper, IND_EMIT="1" if entrada else "0",
                     COD_MOD=n.mod, COD_SIT=sit, SER=n.serie or "",
                     NUM_DOC=n.nnf, CHV_NFE=n.chave)
@@ -452,6 +504,7 @@ def gerar_icms(memoria, lote, periodo, saldo_credor_anterior=None,
             c.reg("C100", **base)
             continue
         pad = padroes.get("%s|%s" % (n.mod, oper), {})
+        # no ICMS/IPI o extemporâneo vai com a data real do XML
         data_doc = _data(n.dhemi)
         if entrada:
             data_es = (data_doc if entrada_pad.get("DT_E_S") == "emissao"
@@ -477,6 +530,7 @@ def gerar_icms(memoria, lote, periodo, saldo_credor_anterior=None,
                 campos = itens.entrada(n, it)
             else:
                 campos = _item_proprio(it)
+                itens.saida(it)
             c.reg("C170", NUM_ITEM=str(it.nitem or k), **campos)
 
     # ---- bloco D: CT-e
@@ -484,9 +538,16 @@ def gerar_icms(memoria, lote, periodo, saldo_credor_anterior=None,
     for ct in sorted(grupos["fretes_entrada"] + grupos["fretes_saida"],
                      key=lambda x: (_data(x.dhemi), int(x.nct or 0))):
         _cte_icms(d, ct, ct in grupos["fretes_entrada"], part, res, uf)
+    if res.extemporaneos:
+        res.apontar("documento extemporâneo", "C100", "",
+                    "%d documento(s) de outro mês incluído(s) por escolha, "
+                    "com COD_SIT 01 (07 no complementar); o ICMS das saídas "
+                    "vai para o DEB_ESP do E110 e para o E116"
+                    % len(res.extemporaneos))
 
     # ---- o documento, montado e calculado pelo código de sempre
-    t = _Linhas("ICMS", _larguras(memoria, "ICMS"))
+    _apontar_leiaute_do_periodo(res, "ICMS", fim)
+    t = _Linhas("ICMS", _larguras(memoria, "ICMS", fim))
     t.modelo(modelos["0000"], DT_INI=ini, DT_FIN=fim, COD_FIN="0")
     t.reg("0001", IND_MOV="0")
     for tipo in ("0002", "0005", "0100"):
@@ -524,13 +585,37 @@ def gerar_icms(memoria, lote, periodo, saldo_credor_anterior=None,
     return res
 
 
-def _larguras(memoria, layout):
+def _apontar_leiaute_do_periodo(res, layout, fim):
+    """Período que nenhuma versão do leiaute da base cobre (`fim`,
+    DDMMAAAA): `_larguras` segue na versão mais recente, como sempre fez, e
+    isto **diz** que foi assim — apontamento que não bloqueia. Sem base
+    ligada não há versão que tenha valido, e nada se aponta."""
+    fonte = referencias.atual()
+    if fonte.versao_vigente(layout, fim) is not None:
+        return
+    estrutura, info = fonte.estrutura(layout, None)
+    if not estrutura:
+        return
+    res.apontar(
+        "leiaute do período fora da base", "0000", "",
+        "O período %s/%s não está coberto por nenhuma versão do leiaute %s "
+        "da base de referência: a largura dos registros veio da versão mais "
+        "recente (%s). Confira o COD_VER do arquivo e, se ele for de um "
+        "leiaute mais novo, importe uma base mais nova em Configurações → "
+        "Base de referência…"
+        % (fim[2:4], fim[4:], "ICMS/IPI" if layout == "ICMS"
+           else "Contribuições", info.get("versao") or "?"))
+
+
+def _larguras(memoria, layout, fim):
     """Largura de cada registro: a do SPED que a empresa entregou, limitada
-    pela do descritor do PVA instalado quando ele existe — vale a menor, que
-    é o que o PVA aceita (o 0200 do EFD Contribuições tem 12 campos lá e 13
-    no leiaute do programa)."""
+    pela do descritor da versão vigente no fim do período (`fim`,
+    DDMMAAAA) — vale a menor, que é o que o PVA aceita (o 0200 do EFD
+    Contribuições tem 12 campos lá e 13 no leiaute do programa)."""
     larguras = dict(memoria.get("larguras", {}).get(layout) or {})
-    estrutura, _info = referencias.atual().estrutura(layout)
+    fonte = referencias.atual()
+    estrutura, _info = fonte.estrutura(layout,
+                                       fonte.versao_vigente(layout, fim))
     if estrutura:
         for reg, n in diagnostico._num_campos_descritor(estrutura).items():
             larguras[reg] = min(larguras.get(reg, n), n)
@@ -612,7 +697,7 @@ def _calcular_c(doc):
 def _cte_icms(d, ct, entrada, part, res, uf):
     """D100 + D190 de um CT-e."""
     onde = "CT-e %s/%s" % (ct.serie, ct.nct)
-    sit = _cod_sit(ct)
+    sit = _cod_sit(ct, res.extemporaneos)
     base = dict(IND_OPER="0" if entrada else "1",
                 IND_EMIT="1" if entrada else "0", COD_MOD="57",
                 COD_SIT=sit, SER=ct.serie or "", NUM_DOC=ct.nct,
@@ -655,16 +740,22 @@ def _apuracao_icms(doc, memoria, modelos, periodo, ini, fim,
                    saldo_credor_anterior, res):
     """Bloco E: ICMS próprio pela soma dos analíticos; ST e DIFAL sem
     movimento (do modelo); IPI pelos itens de entrada."""
-    e = _Linhas("ICMS", _larguras(memoria, "ICMS"))
-    debitos = creditos = 0.0
+    e = _Linhas("ICMS", _larguras(memoria, "ICMS", fim))
+    debitos = creditos = deb_esp = 0.0
     for reg in ("C190", "D190"):
         i = doc._ix(reg, "VL_ICMS")
         io = doc._ix(reg[0] + "100", "IND_OPER")
+        isit = doc._ix(reg[0] + "100", "COD_SIT")
         for r in doc.registros:
             if r.reg == reg and r.pai is not None:
                 v = _to_num(r.valor(i))
                 if (r.pai.valor(io) or "") == "1":
-                    debitos += v
+                    # saída extemporânea: não é débito do período, é débito
+                    # especial (o PVA confere em MSG_DEB_ESP_E110)
+                    if (r.pai.valor(isit) or "") in ("01", "07"):
+                        deb_esp += v
+                    else:
+                        debitos += v
                 else:
                     creditos += v
     if saldo_credor_anterior is None:
@@ -691,12 +782,14 @@ def _apuracao_icms(doc, memoria, modelos, periodo, ini, fim,
           VL_SLD_APURADO=_fmt_val(recolher), VL_TOT_DED="0",
           VL_ICMS_RECOLHER=_fmt_val(recolher),
           VL_SLD_CREDOR_TRANSPORTAR=_fmt_val(_positivo(-apurado)),
-          DEB_ESP="0")
-    if recolher and "E116" in modelos:
-        e.modelo(modelos["E116"], VL_OR=_fmt_val(recolher),
+          DEB_ESP=_fmt_val(round(deb_esp, 2)))
+    # o E116 soma o ICMS a recolher e o débito especial
+    a_pagar = round(recolher + deb_esp, 2)
+    if a_pagar and "E116" in modelos:
+        e.modelo(modelos["E116"], VL_OR=_fmt_val(a_pagar),
                  DT_VCTO=_vencimento(modelos["E116"], periodo),
                  MES_REF=periodo[4:] + periodo[:4])
-    elif recolher:
+    elif a_pagar:
         res.apontar("E116", "E110", "", "há ICMS a recolher e a memória não "
                     "tem o modelo do E116 (código de receita, vencimento)")
     for reg, filho in (("E200", "E210"), ("E300", "E310")):
@@ -760,7 +853,8 @@ def _positivo(v):
 
 
 # ---------------------------------------------------------- Contribuições
-def gerar_contrib(memoria, lote, periodo, correlacoes=None, excluir=()):
+def gerar_contrib(memoria, lote, periodo, correlacoes=None, excluir=(),
+                  incluir=()):
     """O EFD Contribuições do período (`AAAAMM`). Devolve `Resultado`.
 
     Entradas com C170 (PIS/COFINS e conta pela memória); NFC-e com C175
@@ -777,7 +871,8 @@ def gerar_contrib(memoria, lote, periodo, correlacoes=None, excluir=()):
     ini, fim = limites(periodo)
     entrada_pad = memoria.get("padroes", {}).get("entrada", {})
     grupos = classificar(lote, memoria["cnpj"], periodo, res,
-                         entrada_pad.get("DT_E_S"), set(excluir or ()))
+                         entrada_pad.get("DT_E_S"), set(excluir or ()),
+                         set(incluir or ()))
     uf = _modelo_valor(memoria.get("modelos", {}).get("ICMS", {}).get(
         "0000", ["0000"]), "UF", "ICMS") if "ICMS" in memoria.get(
         "modelos", {}) else ""
@@ -794,7 +889,7 @@ def gerar_contrib(memoria, lote, periodo, correlacoes=None, excluir=()):
     for n in docs:
         entrada = n in grupos["entradas"]
         oper = "0" if entrada else "1"
-        sit = _cod_sit(n)
+        sit = _cod_sit(n, res.extemporaneos)
         base = dict(IND_OPER=oper, IND_EMIT="1" if entrada else "0",
                     COD_MOD=n.mod, COD_SIT=sit, SER=n.serie or "",
                     NUM_DOC=n.nnf, CHV_NFE=n.chave)
@@ -810,6 +905,11 @@ def gerar_contrib(memoria, lote, periodo, correlacoes=None, excluir=()):
         else:
             data_es = data_doc
             frete = n.vfrete
+        if n.chave in res.extemporaneos:
+            # no EFD Contribuições o documento fica no mês: o PVA de lá
+            # recusa data de outro mês mesmo com COD_SIT 01
+            # (MSG_PERIODO_INCOMPATIVEL_SAIDA); vai o primeiro dia
+            data_doc = data_es = ini
         zeros = {k: "0" for k in (
             "VL_ABAT_NT", "VL_BC_ICMS_ST", "VL_ICMS_ST", "VL_IPI",
             "VL_PIS_ST", "VL_COFINS_ST")}
@@ -828,8 +928,11 @@ def gerar_contrib(memoria, lote, periodo, correlacoes=None, excluir=()):
                       **itens.entrada(n, it))
         else:
             xml_nfce[n.chave] = n
+            for it in n.itens:
+                itens.saida(it)
 
-    t = _Linhas("CONTRIB", _larguras(memoria, "CONTRIB"))
+    _apontar_leiaute_do_periodo(res, "CONTRIB", fim)
+    t = _Linhas("CONTRIB", _larguras(memoria, "CONTRIB", fim))
     t.modelo(modelos["0000"], DT_INI=ini, DT_FIN=fim, TIPO_ESCRIT="0",
              IND_SIT_ESP="", NUM_REC_ANTERIOR="")
     t.reg("0001", IND_MOV="0")
@@ -887,6 +990,7 @@ def gerar_contrib(memoria, lote, periodo, correlacoes=None, excluir=()):
     _aliquota_do_regime(doc, memoria, res)
     doc.recalcular_bloco_m()
     _codigos_de_receita(doc, modelos)
+    _receitas_sem_contribuicao(doc, list(xml_nfce.values()), memoria, res)
     res.doc = SpedDocument.de_texto(doc.gerar_texto())
     res.contagem = {k: len(v) for k, v in grupos.items()}
     return res
@@ -917,6 +1021,102 @@ def _aliquota_do_regime(doc, memoria, res):
                         "as NFC-e vieram com %s/%s; o regime da empresa é "
                         "%s/%s" % (ap, ac, regime["ALIQ_PIS"],
                                    regime["ALIQ_COFINS"]))
+
+
+# CST de saída sem contribuição: a receita vai para o M400/M800, detalhada
+# por natureza no M410/M810 (tabelas 4.3.10 a 4.3.16)
+CST_SEM_CONTRIBUICAO = ("04", "05", "06", "07", "08", "09")
+
+
+def _natureza_pelo_ncm(tabela, ncm, ex_ipi=""):
+    """A natureza cujo prefixo de NCM mais longo casa com o produto."""
+    ncm = so_digitos(ncm)
+    melhor, tam = None, -1
+    for codigo, prefixos, ex in tabela:
+        if ex and ex != (ex_ipi or ""):
+            continue
+        for p in prefixos:
+            if ncm.startswith(p) and len(p) > tam:
+                melhor, tam = codigo, len(p)
+    return melhor
+
+
+def _receitas_sem_contribuicao(doc, saidas, memoria, res):
+    """M400/M410 (PIS) e M800/M810 (COFINS) — filhos obrigatórios do bloco
+    M quando há receita com CST 04 a 09.
+
+    O total de cada CST é a receita que o PVA confere
+    (`receita_por_cst`, o mesmo da `conferir_receitas_isentas`). A
+    natureza vem do NCM de cada item do XML pela tabela do CST (o prefixo
+    mais longo); sem casamento, a natureza que a empresa usou no SPED
+    entregue naquele CST (apontado); sem nenhuma das duas, a linha sai sem
+    natureza e **bloqueia** — o PVA recusaria. O total do CST é repartido
+    entre as naturezas pela proporção dos itens, com o rateio de sempre
+    (`rateio_acessorios`): o M410 fecha com o M400 ao centavo."""
+    m001 = next((r for r in doc.registros if r.reg == "M001"), None)
+    if m001 is None:
+        return
+    vistas = memoria.get("naturezas_receita", {})
+    contas = memoria.get("contas_receita", {})
+    no_0500 = {(r.valor(doc._ix("0500", "COD_CTA")) or "").strip()
+               for r in doc.registros if r.reg == "0500"}
+
+    def conta(chave):
+        c = contas.get(chave, "")
+        return c if c in no_0500 else ""
+
+    for trib, pai, filho, campo, attr in (
+            ("PIS", "M400", "M410", "CST_PIS", "pis_cst"),
+            ("COFINS", "M800", "M810", "CST_COFINS", "cofins_cst")):
+        totais = {cst: round(v, 2)
+                  for cst, v in doc.receita_por_cst(trib).items()
+                  if cst in CST_SEM_CONTRIBUICAO and round(v, 2)}
+        if not totais:
+            continue
+        partes = {}
+        for n in saidas:
+            for it in n.itens:
+                cst = (getattr(it, attr) or "").strip()
+                if cst not in totais:
+                    continue
+                tabela = referencias.atual().tabela_natureza_receita(cst)
+                nat = _natureza_pelo_ncm(tabela, it.ncm)
+                if nat is None:
+                    ja = vistas.get(cst) or {}
+                    nat = max(ja, key=ja.get) if ja else ""
+                    res.apontar(
+                        "natureza da receita pela prática", filho, cst,
+                        "%s (NCM %s, CST %s): %s" % (
+                            it.xprod, it.ncm, cst,
+                            "usei a natureza %s, a que a empresa usa neste "
+                            "CST" % nat if nat else "nenhuma tabela nem a "
+                            "memória dizem a natureza"),
+                        bloqueia=not nat)
+                v = (it.vprod or 0.0) - (it.vdesc or 0.0)
+                partes.setdefault(cst, {})
+                partes[cst][nat] = partes[cst].get(nat, 0.0) + v
+        with doc.lote():
+            for cst in sorted(totais):
+                depois = doc._ancora_antes(m001, pai)
+                reg = doc.novo_registro(pai, pai=m001, depois=depois)
+                doc._preencher(reg, [pai, cst, _fmt_val(totais[cst]),
+                                     conta("%s|%s" % (pai, cst)), ""])
+                nats = sorted(partes.get(cst, {}).items()) or [
+                    (max(vistas.get(cst) or {"": 1},
+                         key=(vistas.get(cst) or {"": 1}).get), 1.0)]
+                if not any(n for n, _v in nats):
+                    res.apontar("natureza da receita desconhecida", filho,
+                                cst, "receita de CST %s sem natureza: "
+                                     "informe no M410/M810" % cst,
+                                bloqueia=True)
+                valores = SpedDocument.rateio_acessorios(
+                    totais[cst], [v for _n, v in nats])
+                ant = reg
+                for (nat, _v), vl in zip(nats, valores):
+                    f = doc.novo_registro(filho, pai=reg, depois=ant)
+                    doc._preencher(f, [filho, nat, _fmt_val(vl), conta(
+                        "%s|%s|%s" % (filho, cst, nat)), ""])
+                    ant = f
 
 
 def _codigos_de_receita(doc, modelos):

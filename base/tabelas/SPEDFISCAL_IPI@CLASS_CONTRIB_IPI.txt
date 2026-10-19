@@ -1,0 +1,11 @@
+versão=1 TP_ATIV, DESC_TP_AT, DT_INI, DT_FIM
+00|Industrial - Transformação|01012020|
+01|Industrial - Beneficiamento|01012020|
+02|Industrial - Montagem|01012020|
+03|Industrial - Acondicionamento ou Reacondicionamento|01012020|
+04|Industrial - Renovação ou Recondicionamento|01012020|
+05|Equiparado a industrial - Por opção|01012020|
+06|Equiparado a industrial - Importação Direta|01012020|
+07|Equiparado a industrial - Por lei específica|01012020|
+08|Equiparado a industrial - Não enquadrado nos códigos 05, 06 ou 07|01012020|
+09|Outros|01012020|

@@ -401,6 +401,32 @@ class LinhasInvalidas(ValueError):
                "\n… e mais %d." % mais if mais > 0 else ""))
 
 
+# Registro de totais (C175, C181, C190, D190…): fora da chave só há valores
+# e quantidades, que a fusão de repetidos soma, e estes textos, que viajam
+# junto quando não se contradizem. Registro com outro campo fora da chave
+# (o C170, cujo NUM_ITEM repetido é item mal numerado) não se funde.
+SOMAVEIS = ("VL_", "QUANT_", "QTD")
+COMPLEMENTARES = ("COD_OBS", "INFO_COMPL", "COD_CTA")
+
+
+class GrupoRepetido:
+    """Irmãos do mesmo tipo e do mesmo pai com a mesma chave do leiaute.
+    `chave` = `[(campo, valor do primeiro)]`; `motivo` é None quando a
+    fusão pode somá-los num só, ou diz por que não pode."""
+
+    __slots__ = ("reg", "pai", "registros", "chave", "motivo", "_somar",
+                 "_completar")
+
+    def __init__(self, reg, pai, registros, chave, motivo, somar, completar):
+        self.reg = reg
+        self.pai = pai
+        self.registros = registros
+        self.chave = chave
+        self.motivo = motivo
+        self._somar = somar            # [(índice, nome)] dos valores
+        self._completar = completar    # índices de texto, iguais ou vazios
+
+
 class SpedDocument:
     """Documento SPED completo: lista ordenada + floresta hierárquica."""
 
@@ -1356,7 +1382,7 @@ class SpedDocument:
     # -------------------------------------------------------------------
     # Números que os cálculos leem
     # -------------------------------------------------------------------
-    def numeros_invalidos(self, registros):
+    def numeros_invalidos(self, registros, prefixos=PREFIXOS_NUMERICOS):
         """`[(registro, campo, valor)]` dos campos numéricos (pelo nome, como
         na validação de leiaute) preenchidos com o que não é número do SPED.
         Vazio não entra: é zero legítimo."""
@@ -1367,7 +1393,7 @@ class SpedDocument:
             if ixs is None:
                 nomes = campos(r.reg, self.layout, len(r.campos))
                 ixs = [(i, n) for i, n in enumerate(nomes)
-                       if i and n.startswith(PREFIXOS_NUMERICOS)]
+                       if i and n.startswith(prefixos)]
                 plano[chave] = ixs
             for i, nome in ixs:
                 if i < len(r.campos):
@@ -1376,9 +1402,9 @@ class SpedDocument:
                         saida.append((r, nome, v))
         return saida
 
-    def _exigir_numeros(self, registros):
+    def _exigir_numeros(self, registros, prefixos=PREFIXOS_NUMERICOS):
         """Levanta `CamposInvalidos` antes de qualquer alteração."""
-        ruins = self.numeros_invalidos(registros)
+        ruins = self.numeros_invalidos(registros, prefixos)
         if ruins:
             raise CamposInvalidos(ruins)
 
@@ -1390,6 +1416,82 @@ class SpedDocument:
             saida.append(c)
             saida.extend(f for f in c.filhos if f.reg == tipo)
         return saida
+
+    # Compra para revenda com ICMS já retido por substituição tributária
+    # (CFOP 1403/2403) e CST de ST com ICMS próprio do fornecedor (x10, x70):
+    # o adquirente não se credita do ICMS próprio — o imposto da cadeia já
+    # foi recolhido por ST. Base, alíquota e valor do ICMS do item ficam zero.
+    CFOP_COMPRA_ST_SEM_CREDITO = ("1403", "2403")
+    CST_ST_COM_ICMS_PROPRIO = ("10", "70")
+
+    def itens_credito_icms_st(self):
+        """C170 de **entrada** com CFOP 1403/2403, CST x10/x70 e algum valor
+        de ICMS próprio (base, alíquota ou valor) — crédito que não cabe."""
+        if self.layout != "ICMS":
+            return []
+        i = {c: self._ix("C170", c) for c in (
+            "CFOP", "CST_ICMS", "VL_BC_ICMS", "ALIQ_ICMS", "VL_ICMS")}
+        i_op = self._ix("C100", "IND_OPER")
+        out = []
+        for r in self.registros:
+            if r.reg != "C170" or r.pai is None or r.pai.reg != "C100":
+                continue
+            if (r.pai.valor(i_op) or "").strip() != "0":
+                continue
+            if (r.valor(i["CFOP"]) or "").strip() not in \
+                    self.CFOP_COMPRA_ST_SEM_CREDITO:
+                continue
+            if (r.valor(i["CST_ICMS"]) or "").strip()[-2:] not in \
+                    self.CST_ST_COM_ICMS_PROPRIO:
+                continue
+            if any(_to_num(r.valor(i[c])) for c in (
+                    "VL_BC_ICMS", "ALIQ_ICMS", "VL_ICMS")):
+                out.append(r)
+        return out
+
+    def previa_credito_icms_st(self):
+        """O que `zerar_credito_icms_st` faria, sem mexer: `{"itens",
+        "documentos", "vl_bc", "vl_icms"}`."""
+        itens = self.itens_credito_icms_st()
+        i_bc, i_v = self._ix("C170", "VL_BC_ICMS"), self._ix("C170", "VL_ICMS")
+        return {"itens": len(itens),
+                "documentos": len({id(r.pai) for r in itens}),
+                "vl_bc": round(sum(_to_num(r.valor(i_bc)) for r in itens), 2),
+                "vl_icms": round(sum(_to_num(r.valor(i_v)) for r in itens),
+                                 2)}
+
+    def zerar_credito_icms_st(self):
+        """Zera base, alíquota e valor do ICMS próprio dos itens de
+        `itens_credito_icms_st`, refaz o C190 dos documentos tocados (o
+        `consolidar_c190` de sempre), põe no C100 a base e o ICMS somados
+        do C190 e tira do `VL_TOT_CREDITOS` do E110 o crédito retirado,
+        recalculando os saldos. Devolve a prévia do que foi feito."""
+        itens = self.itens_credito_icms_st()
+        docs = []
+        for r in itens:
+            if all(r.pai is not d for d in docs):
+                docs.append(r.pai)
+        self._exigir_numeros(itens + docs + [
+            f for d in docs for f in d.filhos if f.reg == "C190"] + [
+            r for r in self.registros if r.reg == "E110"])
+        resumo = self.previa_credito_icms_st()
+        if not itens:
+            return resumo
+        for r in itens:
+            for campo in ("VL_BC_ICMS", "ALIQ_ICMS", "VL_ICMS"):
+                i = self._ix("C170", campo)
+                if i is not None and i < len(r.campos):
+                    r.set_valor(i, "0")
+        with self.lote():
+            for d in docs:
+                self.refazer_c190(d)
+        e110 = next((r for r in self.registros if r.reg == "E110"), None)
+        i_cred = self._ix("E110", "VL_TOT_CREDITOS")
+        if e110 is not None and i_cred is not None and resumo["vl_icms"]:
+            novo = max(_to_num(e110.valor(i_cred)) - resumo["vl_icms"], 0.0)
+            e110.set_valor(i_cred, _fmt_val(round(novo, 2)))
+            self.recalcular_e110()
+        return resumo
 
     def consolidar_c190(self, c100):
         """
@@ -1509,6 +1611,190 @@ class SpedDocument:
         return {"grupos": len(chaves), "removidos": n_rem, "criados": n_cri,
                 "base_pis_cofins": usou_pc, "sem_base": sem_base}
 
+    # campo do C100 <- soma do mesmo campo nos C190 do documento. É o que o
+    # PVA confere entre os dois (o VL_DOC não: ele é o valor do documento, e
+    # o VL_OPR do C190 é que sai dele)
+    TOTAIS_C100_PELO_C190 = ("VL_BC_ICMS", "VL_ICMS", "VL_BC_ICMS_ST",
+                             "VL_ICMS_ST", "VL_IPI")
+
+    def totais_c100_pelo_c190(self, c100):
+        """Põe no C100 a base e os impostos somados dos seus C190. Campo
+        vazio com soma zero **continua vazio**: a NFC-e deixa ST e IPI em
+        branco no C100, e zero ali dá `MSG_NFE_CONSUMIDOR`. Devolve `{campo:
+        (antes, depois)}` do que mudou."""
+        c190 = [f for f in c100.filhos if f.reg == "C190"]
+        mudou = {}
+        if not c190:
+            return mudou
+        for campo in self.TOTAIS_C100_PELO_C190:
+            i100, i190 = self._ix("C100", campo), self._ix("C190", campo)
+            if i100 is None or i190 is None:
+                continue
+            soma = round(sum(_to_num(f.valor(i190)) for f in c190), 2)
+            antes = (c100.valor(i100) or "").strip()
+            if not antes and not soma:
+                continue
+            if antes and round(_to_num(antes), 2) == soma:
+                continue
+            c100.set_valor(i100, _fmt_val(soma))
+            mudou[campo] = (antes, _fmt_val(soma))
+        return mudou
+
+    def fundir_c190_duplicados(self, c100):
+        """Funde os C190 de mesma chave (CST + CFOP + alíquota) do documento
+        num só, somando os valores — o conserto para quem **não tem C170**
+        de onde refazer o analítico (a NFC-e), e para a troca de CST que
+        juntou dois grupos. A chave é a do `chave_c190`, então funciona sem
+        leiaute de referência. Devolve quantos C190 saíram."""
+        chave = ("CST_ICMS", "CFOP", "ALIQ_ICMS")
+        grupos = self._grupos_repetidos(
+            [f for f in c100.filhos if f.reg == "C190"],
+            {"C190": (campos("C190", self.layout, 0), chave, set())},
+            self.chave_c190)
+        return self.fundir_chaves_repetidas(grupos)
+
+    def chaves_repetidas(self):
+        """Irmãos (mesmo pai, mesmo tipo) com a mesma **chave** que o leiaute
+        de referência declara — o PVA recusa com
+        `MSG_CHAVE_EXISTE_NO_REGISTRO_ITEM` (154 registros têm chave no
+        ICMS/IPI, 145 no Contribuições). Só os registros de totais (C175,
+        C181, C190, D190…) podem ser fundidos; o `motivo` de cada
+        `GrupoRepetido` diz quando não. **Não altera nada.**
+
+        Campo numérico da chave é comparado como número: `1,65` e `1,6500`
+        são a mesma alíquota, como no `chave_c190`. Sem leiaute de
+        referência, nada é acusado."""
+        try:
+            estrutura, _i = referencias.atual().estrutura(
+                self.layout, referencias.versao_do_leiaute(self))
+        except Exception:                                   # noqa: BLE001
+            return []
+        planos = {}
+        for reg, d in (estrutura or {}).items():
+            chave = [c.strip() for c in (d.get("chave") or "").split(",")
+                     if c.strip()]
+            if chave:
+                cs = d.get("campos") or {}
+                planos[reg] = (list(cs), chave,
+                               {n for n, c in cs.items()
+                                if c.get("tipo") == "N"})
+        return self._grupos_repetidos(self.registros, planos)
+
+    @staticmethod
+    def _valor_de_chave(v, numerico):
+        v = (v or "").strip()
+        if numerico and (not v or RE_NUM_SPED.match(v)):
+            return round(_to_num(v), 6)
+        return v
+
+    def _grupos_repetidos(self, registros, planos, chave_de=None):
+        """`[GrupoRepetido]` dos `registros` que repetem, entre irmãos, a
+        chave do tipo deles. `planos` = `{registro: (nomes dos campos,
+        campos da chave, campos numéricos)}`; `chave_de(r)`, quando dada,
+        substitui a chave montada pelos campos."""
+        ixs, por = {}, {}
+        for r in registros:
+            plano = planos.get(r.reg)
+            if plano is None:
+                continue
+            if r.reg not in ixs:
+                ixs[r.reg] = [(i, c in plano[2]) for i, c in (
+                    (self._ix(r.reg, c), c) for c in plano[1])
+                    if i is not None]
+            if not ixs[r.reg]:
+                continue
+            k = (chave_de(r) if chave_de is not None else
+                 tuple(self._valor_de_chave(r.valor(i), num)
+                       for i, num in ixs[r.reg]))
+            pai = r.pai.uid if r.pai is not None else None
+            por.setdefault((pai, r.reg, k), []).append(r)
+        return [self._grupo(regs, planos[regs[0].reg])
+                for regs in por.values() if len(regs) > 1]
+
+    def _grupo(self, regs, plano):
+        nomes, chave, _numericos = plano
+        reg = regs[0].reg
+        somar, completar, alheios = [], [], []
+        for i, nome in enumerate(nomes):
+            if i == 0 or nome in chave:
+                continue
+            if nome.startswith(SOMAVEIS):
+                somar.append((i, nome))
+            else:
+                completar.append(i)
+                if nome not in COMPLEMENTARES:
+                    alheios.append(nome)
+        # campos além do leiaute (versão mais nova): iguais ou vazios
+        completar += range(len(nomes), max(len(r.campos) for r in regs))
+        motivo = None
+        if alheios:
+            motivo = ("não é registro de totais (%s%s fora da chave): "
+                      "corrija na grade" % (", ".join(alheios[:3]),
+                                            "…" if len(alheios) > 3 else ""))
+        elif any(r.filhos for r in regs):
+            motivo = "tem registros filhos, que não há como reatribuir"
+        else:
+            for i in completar:
+                distintos = {(r.valor(i) or "").strip() for r in regs} - {""}
+                if len(distintos) > 1:
+                    motivo = "%s diferente entre os repetidos" % (
+                        nomes[i] if i < len(nomes) else "campo %d" % (i + 1))
+                    break
+        valores = [(c, (regs[0].valor(self._ix(reg, c)) or "").strip())
+                   for c in chave]
+        return GrupoRepetido(reg, regs[0].pai, regs, valores, motivo, somar,
+                             completar)
+
+    def fundir_chaves_repetidas(self, grupos=None):
+        """Funde cada grupo de `chaves_repetidas()` — ou os `grupos` dados —
+        que pode ser fundido: o primeiro registro fica, com a soma dos
+        valores e das quantidades e o texto complementar que só um deles
+        trazia; os outros saem. Os totais do documento e da apuração não
+        mudam, porque a soma é a mesma. Devolve quantos registros saíram.
+
+        Valor a somar que não é número do SPED recusa tudo antes de mexer
+        (`CamposInvalidos`); valor vazio em todos continua vazio."""
+        if grupos is None:
+            grupos = self.chaves_repetidas()
+        grupos = [g for g in grupos if g.motivo is None]
+        if not grupos:
+            return 0
+        self._exigir_numeros([r for g in grupos for r in g.registros],
+                             PREFIXOS_NUMERICOS + ("QUANT_",))
+        with self.lote():
+            for g in grupos:
+                alvo, outros = g.registros[0], g.registros[1:]
+                for i, nome in g._somar:
+                    vals = [(r.valor(i) or "").strip() for r in g.registros]
+                    if any(vals):
+                        soma = sum(_to_num(v) for v in vals)
+                        alvo.set_valor(i, _fmt_val(round(soma, 2))
+                                       if nome.startswith("VL_")
+                                       else _fmt_qtd(soma))
+                for i in g._completar:
+                    if not (alvo.valor(i) or "").strip():
+                        v = next((r.valor(i) for r in outros
+                                  if (r.valor(i) or "").strip()), "")
+                        if v:
+                            alvo.set_valor(i, v)
+                for r in outros:
+                    self.remover_registro(r)
+        return sum(len(g.registros) - 1 for g in grupos)
+
+    def refazer_c190(self, c100):
+        """O *Recalcular C190* de um documento: o analítico refeito pelos
+        itens (`consolidar_c190`) — ou, sem C170, os C190 de mesma chave
+        fundidos — e o C100 acertado pelo C190 (`totais_c100_pelo_c190`).
+        Devolve o resumo do `consolidar_c190` com `fundidos` e `c100` (o que
+        mudou no C100)."""
+        res = self.consolidar_c190(c100)
+        if res is None:
+            return None
+        if res.get("sem_c170"):
+            res["fundidos"] = self.fundir_c190_duplicados(c100)
+        res["c100"] = self.totais_c100_pelo_c190(c100)
+        return res
+
     def chave_c190(self, r):
         """`(CST_ICMS, CFOP, alíquota)` de um C170 ou C190 — a chave do
         analítico. Sem espaços e com a alíquota como número: "18" e "18,00"
@@ -1610,10 +1896,11 @@ class SpedDocument:
                           for c in docs]
         # confere todos antes do primeiro: parar no meio deixaria metade dos
         # documentos refeitos
-        self._exigir_numeros(self._com_itens(documentos))
+        self._exigir_numeros(self._com_itens(documentos) + [
+            f for c in documentos for f in c.filhos if f.reg == "C190"])
         tot = {"documentos": 0, "corrigidos": 0, "grupos": 0, "removidos": 0,
                "criados": 0, "base_pis_cofins": 0, "sem_base": 0,
-               "sem_c170": 0}
+               "sem_c170": 0, "fundidos": 0, "c100": 0}
         i_red = self._ix("C190", "VL_RED_BC")
 
         def red_do_doc(c100):
@@ -1623,11 +1910,16 @@ class SpedDocument:
         with self.lote():
             for c100 in documentos:
                 antes = red_do_doc(c100)
-                res = self.consolidar_c190(c100)
+                res = self.refazer_c190(c100)
                 if not res:
                     continue
+                if res["c100"]:
+                    tot["c100"] += 1
                 if res.get("sem_c170"):
+                    # sem itens não há de onde refazer: os duplicados são
+                    # fundidos (a NFC-e consolidada)
                     tot["sem_c170"] += 1
+                    tot["fundidos"] += res["fundidos"]
                     continue
                 tot["documentos"] += 1
                 # documento em que a redução realmente mudou — sem isso, rodar
@@ -2264,7 +2556,8 @@ class SpedDocument:
         # supor que o campo se chama sempre COD_ITEM
         campos_ref = {}
         try:
-            est, _i = referencias.atual().estrutura(self.layout)
+            est, _i = referencias.atual().estrutura(
+                self.layout, referencias.versao_do_leiaute(self))
             for (reg, campo), (alvo, campo_alvo) in \
                     referencias.do_descritor(est).items():
                 if alvo == "0200" and campo_alvo == "COD_ITEM":
@@ -3501,7 +3794,8 @@ class SpedDocument:
             naturezas = {}
         if not naturezas:
             self.motivo_creditos = ("a tabela de CFOP com direito a crédito "
-                                    "do PVA não está disponível")
+                                    "da base de referência não está "
+                                    "disponível")
             return []
 
         fora = []
@@ -3647,8 +3941,8 @@ class SpedDocument:
             except Exception:                                   # noqa: BLE001
                 naturezas = {}
             if not naturezas:
-                motivo = ("a tabela de CFOP com direito a crédito do PVA não "
-                          "está disponível")
+                motivo = ("a tabela de CFOP com direito a crédito da base de "
+                          "referência não está disponível")
 
         resumo = {}
         for tributo, reg_cons, reg_det in (("PIS", "M200", "M210"),

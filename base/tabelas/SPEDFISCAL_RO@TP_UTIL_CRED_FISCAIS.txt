@@ -1,0 +1,8 @@
+versão=1 TIPO_UTIL, DESC_TIPO, DT_INI, DT_FIM
+RO01|Dedução|01012009|
+RO11|Ressarcimento|01012022|
+RO21|Compensação|01012009|
+RO41|Transferência|01012009|
+RO61|Restituição|01012009|
+RO81|Estorno|01012009|
+RO99|Outros|01012009|

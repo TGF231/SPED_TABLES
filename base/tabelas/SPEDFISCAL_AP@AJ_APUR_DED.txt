@@ -1,0 +1,101 @@
+versão=8 COD_AJUR, DESC_AJUR, DT_INI, DT_FIM
+AP000001|Outros débitos -  Transferência de saldo credor para outro estabelecimento do sujeito passivo localizado no Estado|01052017|
+AP000002|Outros débitos - Recebimento de saldo devedor transferido por outro estabelecimento do sujeito passivo localizado no Estado|01052017|
+AP000003|Outros débitos; Débitos transferidos do Difal Origem (E300=AP) para apuração do ICMS OP (E110) por meio do ajuste AP230001|01052017|
+AP000004|Outros débitos; Débito a vista do imposto relativo ao estoque de mercadoria entrada no regime de substituição tributária ou com carga tributária majorada|01062018|
+AP000005|Outros débitos; Débito parcelado do imposto relativo ao estoque de mercadoria entrada no regime de substituição tributária ou com carga tributária majorada|01062018|
+AP009998|Outros débitos genérico - ICMS próprio - utilizar em função da inexistência de código específico na tabela e descrever no registro E111|01052017|
+AP009999|Outros débitos para ajuste de apuração ICMS para|01012009|31072017
+AP010001|Estorno de créditos - prescrição|01052017|
+AP010002|Estorno de créditos - transporte para o registro E220 para fins de cálculo do valor do estoque das mercadorias que passaram a ser tributadas pela ST|01052017|
+AP010003|Estorno de créditos - determinado por ato administrativo ou judicial|01052017|
+AP010004|Estorno de créditos - por saída com isenção|01052017|
+AP010005|Estorno de créditos - proporcional, por saída com redução da base de cálculo|01052017|
+AP010006|Estorno de créditos  referente ao estoque de mercadorias objeto de concessão de isenção ou redução da carga tributária|01062018|
+AP019998|Estorno de créditos genérico - ICMS próprio - utilizar em função da inexistência de código específico na tabela e descrever no registro E111|01052017|
+AP019999|Estorno de créditos para ajuste de apuração ICMS para|01012009|31072017
+AP020001|Outros créditos - Transferência de saldo devedor para outro estabelecimento do sujeito passivo localizado no Estado|01052017|
+AP020002|Outros créditos - Recebimento de saldo credor transferido por outro estabelecimento do sujeito passivo localizado no Estado|01052017|
+AP020003|Outros créditos - determinados por ato administrativo ou judicial|01052017|
+AP020004|Outros créditos - Ativo imobilizado 1/48|01052017|
+AP020005|Outros créditos - AINF - direito a crédito do imposto lançado e recolhido|01052017|
+AP020006|Outros créditos - ICMS retido em venda ao Estado|01052017|
+AP020007|Outros créditos - Créditos transferidos do Difal Origem (E300=AP) para apuração do ICMS (E110) por meio do ajuste AP210001|01052017|
+AP021001|Outros créditos - Crédito presumido - Dec. nº2766/2007 - Setor Produtivo|01052017|
+AP021002|Outros créditos - Crédito presumido - Dec. nº0526/2000 - Serviços de Transporte|01052017|
+AP021003|Outros créditos - Crédito presumido - Dec. nº3599/2001 - Pescado|01052017|
+AP021004|Outros créditos - Crédito presumido - Convênio ICMS 23/90 - Direitos autorais, artísticos e conexos, comprovadamente pagos a autores e artistas nacionais|01012018|
+AP021005|Outros créditos - Crédito presumido -  Dec. Nº4095/2005 - Saída interestadual de látex in natura, cernambi virgem prensado (CVP), folha semi-artefato (FSA), folha de defumação líquida (FDL) e couro vegetal|01012018|
+AP021006|Outros créditos - Crédito presumido -  Dec. Nº0221/2006 - Projetos Culturais|01012018|
+AP021007|Outros créditos - Crédito presumido -  Dec. Nº4098/2011 - Importação (art. 129, Lei nº400/1997)|01012018|
+AP021008|Outros créditos - Crédito presumido -  Dec. Nº4884/2011 - Investimentos em Infraestrutura|01012018|
+AP021009|Outros créditos - Crédito presumido - Dec. Nº2169/2018 - Empresas fornecedoras de energia elétrica e prestadoras de serviço de comunicação|01012018|30082018
+AP021009|Outros créditos - Crédito presumido - Dec. Nº2169/2018 - Empresas fornecedoras de energia elétrica e prestadoras de serviço de comunicação|31082018|31082018
+AP021009|Outros créditos - Crédito presumido - Dec. Nº2169/2018 - Empresas fornecedoras de energia elétrica e prestadoras de serviço de comunicação|01092018|
+AP021999|Outros créditos - Crédito presumido - Outros - utilizar em função da inexistência de código específico na tabela e descrever no registro E111|01052017|
+AP029998|Outros créditos genérico - ICMS próprio - utilizar em função da inexistência de código específico na tabela e descrever no registro E111|01052017|
+AP029999|Outros créditos para ajuste de apuração ICMS para|01012009|31072017
+AP030001|Estorno de débitos - determinado por ato administrativo ou judicial|01052017|
+AP039998|Estorno de débitos genérico - ICMS próprio - utilizar em função da inexistência de código específico na tabela e descrever no registro E111|01052017|
+AP039999|Estorno de débitos para ajuste de apuração ICMS para|01012009|31072017
+AP040001|Deduções - Utilização de crédito recebido por transferência de empresa exportadora, limitado a 30% do saldo devedor do período|01052017|
+AP049998|Deduções do imposto - Genérico - utilizar em função da inexistência de código específico na tabela|01052017|
+AP049999|Deduções do imposto apurado na apuração ICMS para|01012009|31072017
+AP059999|Débito especial de ICMS - Genérico|01052017|
+AP059999|Débito especial de ICMS para|01012009|30042017
+AP090001|Apropriação de crédito por exportação - detentor original|01052017|
+AP091001|Crédito recebido por transferência de detentor de crédito de exportação|01052017|
+AP099998|Controle do ICMS extra-apuração - Genérico - utilizar em função da inexistência de código específico na tabela|01052017|
+AP099999|Controle do ICMS extra-apuração para|01012009|31072017
+AP109999|Outros débitos para ajuste de apuração ICMS ST|01052017|
+AP109999|Outros débitos para ajuste de apuração ICMS ST para|01012009|30042017
+AP119999|Estorno de créditos para ajuste de apuração ICMS ST|01052017|
+AP119999|Estorno de créditos para ajuste de apuração ICMS ST para|01012009|30042017
+AP129999|Outros créditos para ajuste de apuração ICMS ST|01052017|
+AP129999|Outros créditos para ajuste de apuração ICMS ST para|01012009|30042017
+AP139999|Estorno de débitos para ajuste de apuração ICMS ST|01052017|
+AP139999|Estorno de débitos para ajuste de apuração ICMS ST para|01012009|30042017
+AP149999|Deduções do imposto apurado na apuração ICMS ST|01052017|
+AP149999|Deduções do imposto apurado na apuração ICMS ST para|01012009|30042017
+AP159999|Débito especial de ICMS ST|01052017|
+AP159999|Débito especial de ICMS ST para|01012009|30042017
+AP209998|Outros débitos para ajuste de apuração ICMS Difal/FCP para a UF|01012016|31122016
+AP209999|Outros débitos para ajuste de apuração ICMS Difal/FCP para a UF|01012016|31122016
+AP210001|Estorno de crédito; Créditos transferidos do Difal Origem (E300=AP) para apuração do ICMS (E110) por meio do ajuste AP020007|01052017|
+AP219998|Estorno de créditos genérico - ICMS Difal/FCP - utilizar em função da inexistência de código específico na tabela e descrever no registro E111|01052017|
+AP219999|Estorno de créditos para ajuste de apuração ICMS Difal/FCP para a UF|01012016|31122016
+AP229998|Outros créditos para ajuste de apuração ICMS Difal/FCP para a UF|01052017|
+AP229999|Outros créditos para ajuste de apuração ICMS Difal/FCP para a UF|01012016|31122016
+AP230001|Estorno de débitos; Débitos transferidos do Difal Origem (E300=AP) para apuração do ICMS OP (E110) por meio do ajuste AP000003|01052017|
+AP239998|Estorno de débitos genérico - ICMS Difal/FCP - utilizar em função da inexistência de código específico na tabela e descrever no registro E111|01052017|
+AP239999|Estorno de débitos para ajuste de apuração ICMS Difal/FCP para a UF|01012016|31122016
+AP249999|Deduções do imposto apurado na apuração ICMS Difal/FCP para a UF|01012016|31122016
+AP259999|Débito especial de ICMS Difal/FCP para a UF|01012016|31122016
+AP209999|Outros débitos para ajuste de apuração ICMS Difal para a UF|01012017|
+AP219999|Estorno de créditos para ajuste de apuração ICMS Difal para a UF|01012017|
+AP229999|Outros créditos para ajuste de apuração ICMS Difal para a UF|01012017|
+AP239999|Estorno de débitos para ajuste de apuração ICMS Difal para a UF|01012017|
+AP249999|Deduções do imposto apurado na apuração ICMS Difal para a UF|01012017|
+AP259999|Débito especial de ICMS Difal para a UF|01012017|
+AP309999|Outros débitos para ajuste de apuração ICMS FCP para a UF|01012017|
+AP319999|Estorno de créditos para ajuste de apuração ICMS FCP para a UF|01012017|
+AP329999|Outros créditos para ajuste de apuração ICMS FCP para a UF|01012017|
+AP339999|Estorno de débitos para ajuste de apuração ICMS FCP para a UF|01012017|
+AP349999|Deduções do imposto apurado na apuração ICMS FCP para a UF|01012017|
+AP359999|Débito especial de ICMS FCP para a UF|01012017|
+AP020008|Outros créditos  Pagamento de ICMS antecipação com direito a crédito (sem encerramento)|01102017|
+AP092001|Apropriação de crédito concedido por processo administrativo ou judicial|01102017|
+AP000006|Outros débitos - uso exclusivo em registro 1921  VAREJISTA (RICMS, Anexo III, Título I, Capítulo II, Seção VI, Subseção I)  débito relativo ao valor obtido pela aplicação da alíquota interna sobre o valor efetivo de venda constante no documento fiscal|01012020|
+AP000007|Outros débitos - uso exclusivo em registro 1921  NÃO VAREJISTA (RICMS, Anexo III, Título I, Capítulo II, Seção VI, Subseção II)  débito relativo ao valor obtido pela aplicação da alíquota interna sobre o valor efetivo de venda constante no documento fiscal|01012020|
+AP000008|Outros débitos - uso exclusivo em registro E111  apropriação do valor a complementar apurado em subapuração do registro 1920, na apuração do imposto próprio|01012020|
+AP010007|Estorno de créditos - uso exclusivo em registro 1921  VAREJISTA (RICMS, Anexo III, Título I, Capítulo II, Seção VI, Subseção I)  estorno do crédito lançado pelas entradas ou pelo inventário do estoque, nas saídas isentas ou não tributadas de mercadorias a consumidor final deste Estado, ou nas saídas não destinadas a consumidor final deste Estado|01012020|
+AP010008|Estorno de créditos - uso exclusivo em registro 1921  estorno do saldo credor a restituir apurado na subapuração informada em registro 1920, para transferência à apuração do imposto próprio|01012020|
+AP010009|Estorno de créditos - uso exclusivo em registro 1921  VAREJISTA (RICMS, Anexo III, Título I, Capítulo II, Seção VI, Subseção I)  estorno do crédito lançado nas entradas ou pelo inventário do estoque, nas saídas destinadas a consumidor final de mercadorias listadas no Anexo Único da IN 003/20, sem identificação do destinatário no documento fiscal|01012020|
+AP010010|Estorno de créditos - uso exclusivo em registro 1921  NÃO VAREJISTA (RICMS, Anexo III, Título I, Capítulo II, Seção VI, Subseção II)  estorno do valor lançado pela entrada da mercadoria, em caso de devolução de mercadorias ou retorno de mercadorias não entregues|01012020|
+AP020009|Outros créditos - uso exclusivo em registro 1921  VAREJISTA (RICMS, Anexo III, Título I, Capítulo II, Seção VI, Subseção I)  apropriação de crédito relativo às entradas de mercadorias para comercialização recebidas pelo estabelecimento que tenham sido submetidas à substituição tributária|01012020|
+AP020010|Outros créditos - uso exclusivo em registro 1921  NÃO VAREJISTA (RICMS, Anexo III, Título I, Capítulo II, Seção VI, Subseção II)  apropriação de crédito relativo às entradas de mercadoria recebidas com substituição tributária e que tenham sido objeto de saídas destinadas a consumidor final deste Estado, exceto se isentas ou não tributadas|01012020|
+AP020011|Outros créditos - uso exclusivo em registro E111  apropriação do valor a restituir apurado em subapuração do registro 1920, na apuração do imposto próprio|01012020|
+AP020012|Outros créditos - uso exclusivo em registro 1921  VAREJISTA (RICMS, Anexo III, Título I, Capítulo II, Seção VI, Subseção I)  apropriação do crédito relativo às mercadorias ST em estoque (Bloco H), para fins de adjudicação do valor do imposto presumido|01012020|
+AP030002|Estorno de débitos - uso exclusivo em registro 1921  VAREJISTA (RICMS, Anexo III, Título I, Capítulo II, Seção VI, Subseção I)  estorno do valor lançado pela saída da mercadoria, em caso de devolução de mercadorias ou retorno de mercadorias não entregues|01012020|
+AP030003|Estorno de débitos - uso exclusivo em registro 1921  NÃO VAREJISTA (RICMS, Anexo III, Título I, Capítulo II, Seção VI, Subseção II)  estorno do valor lançado pela saída da mercadoria, em caso de devolução de mercadorias ou retorno de mercadorias não entregues|01012020|
+AP040002|Deduções - uso exclusivo em registro 1921  dedução do valor a complementar da subapuração informada em registro 1920, para transferência à apuração do imposto próprio|01012020|

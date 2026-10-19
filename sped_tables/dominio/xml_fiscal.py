@@ -115,10 +115,12 @@ CSTAT_EVENTO_OK = {"135", "136", "155"}
 class ItemNFe:
     __slots__ = ("nitem", "cprod", "xprod", "cfop", "vprod", "vdesc",
                  "voutro", "vfrete", "vseg", "qtd", "unid", "ncm", "cean",
+                 "cest",
                  "pis_cst", "pis_vbc", "pis_aliq", "pis_vpis",
                  "cofins_cst", "cofins_vbc", "cofins_aliq", "cofins_vcofins",
                  "icms_cst", "icms_vbc", "icms_aliq", "icms_vicms",
                  "icms_vbcst", "icms_aliqst", "icms_vicmsst", "icms_predbc",
+                 "icms_vfcpst",
                  "ipi_cst", "ipi_vbc", "ipi_aliq", "vipi")
 
     def __init__(self, **k):
@@ -245,6 +247,7 @@ def _nfe_de(root, caminho):
             qtd=_num(prod.findtext("qCom")), unid=prod.findtext("uCom"),
             ncm=prod.findtext("NCM"),
             cean=_gtin(prod.findtext("cEAN")),
+            cest=(prod.findtext("CEST") or "").strip(),
             icms_cst=icms_cst,
             icms_vbc=_num(icms.findtext("vBC")) if icms is not None else 0.0,
             # percentual de redução da base (ICMS20/70/51…): é o que sobra
@@ -259,6 +262,10 @@ def _nfe_de(root, caminho):
                          if icms is not None else None),
             icms_vicmsst=(_num(icms.findtext("vICMSST"))
                           if icms is not None else 0.0),
+            # Fundo de Combate à Pobreza retido por ST: vem junto com o ICMS-ST
+            # no custo da entrada
+            icms_vfcpst=(_num(icms.findtext("vFCPST"))
+                         if icms is not None else 0.0),
             ipi_cst=ipi_cst, ipi_vbc=ipi_vbc, ipi_aliq=ipi_aliq, vipi=vipi,
             pis_cst=(pis.findtext("CST") if pis is not None else None),
             pis_vbc=_num(pis.findtext("vBC")) if pis is not None else 0.0,

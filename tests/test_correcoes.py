@@ -10,7 +10,8 @@ import datetime
 import os
 import unittest
 
-from sped_tables.dominio import validacao
+from sped_tables.dominio import referencias, revisao, validacao
+from sped_tables.dominio.sped_layouts import CAMPOS_CONTRIB
 from sped_tables.dominio.sped_model import CamposInvalidos, SpedDocument
 from tests.fabrica import PastaTemporaria, contrib_basico, icms_basico
 
@@ -157,6 +158,57 @@ class TestC190EmMassa(Base):
         self.assertEqual(c190.valor(doc._ix("C190", "VL_RED_BC")), "4,00")
         self.assertBemFormado(doc)
 
+    def test_duplicado_sem_c170_e_fundido_e_c100_acerta(self):
+        """A NFC-e não tem C170: até a 1.1.0-dev.12 o recálculo pulava o
+        documento, e os C190 de mesma chave ficavam (10 num arquivo real).
+        Agora são fundidos, e o C100 passa a ter a base e o ICMS do C190 —
+        com ST e IPI vazios continuando vazios (`MSG_NFE_CONSUMIDOR`)."""
+        m = icms_basico()
+        m.linhas[:] = [c for c in m.linhas if c[0] != "C170"]
+        i = next(n for n, c in enumerate(m.linhas) if c[0] == "C190")
+        m.linhas.insert(i + 1, list(m.linhas[i]))
+        _alterar(m, "C100", VL_ICMS="999,00", VL_BC_ICMS_ST="",
+                 VL_ICMS_ST="")
+        doc = _doc(m)
+        c190 = [r for r in doc.registros if r.reg == "C190"]
+        self.assertEqual(len(c190), 2)
+        n = doc._ix("C190", "VL_ICMS")
+        icms = sum(float(r.valor(n).replace(",", ".")) for r in c190)
+        opr = c190[0].valor(doc._ix("C190", "VL_OPR"))
+        self.assertEqual(len(doc.documentos_c190_duplicados()), 1)
+
+        res = doc.consolidar_c190_em_massa()
+        self.assertEqual((res["fundidos"], res["c100"]), (1, 1))
+        self.assertEqual(doc.documentos_c190_duplicados(), [])
+        c190 = [r for r in doc.registros if r.reg == "C190"]
+        self.assertEqual(len(c190), 1)
+        self.assertEqual(
+            float(c190[0].valor(doc._ix("C190", "VL_OPR")).replace(",", ".")),
+            2 * float(opr.replace(",", ".")))
+        c100 = next(r for r in doc.registros if r.reg == "C100")
+        self.assertEqual(c100.valor(doc._ix("C100", "VL_ICMS")),
+                         ("%.2f" % icms).replace(".", ","))
+        self.assertEqual(c100.valor(doc._ix("C100", "VL_ICMS_ST")), "")
+        self.assertBemFormado(doc)
+        # a segunda passada não acha mais nada
+        antes = doc.gerar_texto()
+        doc.consolidar_c190_em_massa()
+        self.assertEqual(doc.gerar_texto(), antes)
+
+    def test_com_c170_o_c100_segue_o_c190_refeito(self):
+        m = icms_basico()
+        _alterar(m, "C100", VL_ICMS="999,00")
+        i = next(n for n, c in enumerate(m.linhas) if c[0] == "C190")
+        m.linhas.insert(i + 1, list(m.linhas[i]))
+        doc = _doc(m)
+        doc.consolidar_c190_em_massa()
+        self.assertEqual(doc.documentos_c190_duplicados(), [])
+        c100 = next(r for r in doc.registros if r.reg == "C100")
+        c190 = next(r for r in doc.registros if r.reg == "C190")
+        self.assertEqual(c100.valor(doc._ix("C100", "VL_ICMS")),
+                         c190.valor(doc._ix("C190", "VL_ICMS")))
+        self.assertBemFormado(doc)
+
 
 class TestAlterarDatas(Base):
 
@@ -300,6 +352,136 @@ class TestNumerosInvalidos(Base):
         self.assertEqual(doc.numeros_invalidos(doc.registros), [])
         c100 = next(r for r in doc.registros if r.reg == "C100")
         self.assertIsNotNone(doc.consolidar_c190(c100))
+
+
+class FonteComChaves(referencias.Referencias):
+    """Leiaute de referência só com a chave do C175 e do C170, como o
+    descritor do Contribuições declara — o teste não depende de PVA."""
+
+    CHAVES = {"C175": "CFOP,CST_PIS,ALIQ_PIS,CST_COFINS,ALIQ_COFINS,"
+                      "ALIQ_PIS_QUANT,ALIQ_COFINS_QUANT,COD_CTA",
+              "C170": "NUM_ITEM"}
+
+    def estrutura(self, layout, versao=None):
+        if layout != "CONTRIB":
+            return {}, {"descritor": None}
+        numerico = ("VL_", "ALIQ_", "QUANT_", "QTD", "NUM_ITEM")
+        return {reg: {"chave": chave, "campos": {
+            n: {"n": pos, "tipo": "N" if n.startswith(numerico) else "C",
+                "tamanho": "", "decimais": "", "obrigatorio": "0",
+                "valores": None, "datasource": None, "referencia": None}
+            for pos, n in enumerate(CAMPOS_CONTRIB[reg], 1)}}
+            for reg, chave in self.CHAVES.items()}, {"descritor": "teste"}
+
+
+def _nfce_com_c175(*c175):
+    """Contribuições com uma NFC-e cujos C175 são os dados (cada um um
+    dicionário que completa o padrão)."""
+    m = contrib_basico(bloco_m=False)
+    m.reg("C100", IND_OPER="1", IND_EMIT="0", COD_MOD="65", COD_SIT="00",
+          SER="1", NUM_DOC="9", DT_DOC="05082026", VL_DOC="15,00",
+          IND_PGTO="0", VL_MERC="15,00", IND_FRT="9")
+    for valores in c175:
+        m.reg("C175", **dict(dict(
+            CFOP="5102", VL_OPR="10,00", CST_PIS="01", VL_BC_PIS="10,00",
+            ALIQ_PIS="1,65", VL_PIS="0,17", CST_COFINS="01",
+            VL_BC_COFINS="10,00", ALIQ_COFINS="7,6", VL_COFINS="0,76"),
+            **valores))
+    return m
+
+
+class TestChavesRepetidas(Base):
+    """Registros de totais com a mesma chave no mesmo documento — o PVA
+    recusa (`MSG_CHAVE_EXISTE_NO_REGISTRO_ITEM`). Até a 1.1.0-dev.14 só o
+    C190 tinha conserto; o C175 do Contribuições ficava na grade."""
+
+    def setUp(self):
+        self._antes = referencias.definir(FonteComChaves())
+        self.addCleanup(referencias.definir, self._antes)
+
+    def _c175(self, doc):
+        return [r for r in doc.registros if r.reg == "C175"]
+
+    def _val(self, doc, r, campo):
+        return r.valor(doc._ix(r.reg, campo))
+
+    def test_c175_repetido_e_fundido(self):
+        # a alíquota escrita de outro jeito é a mesma chave
+        doc = _doc(_nfce_com_c175(
+            {}, {"VL_OPR": "5,00", "VL_BC_PIS": "5,00", "VL_PIS": "0,08",
+                 "VL_BC_COFINS": "5,00", "VL_COFINS": "0,38",
+                 "ALIQ_PIS": "1,6500", "INFO_COMPL": "OBS"}))
+        grupos = doc.chaves_repetidas()
+        self.assertEqual([(g.reg, len(g.registros), g.motivo)
+                          for g in grupos], [("C175", 2, None)])
+        self.assertEqual(len(revisao.verificar_chave_duplicada(doc)), 1)
+
+        self.assertEqual(doc.fundir_chaves_repetidas(), 1)
+        (c175,) = self._c175(doc)
+        self.assertEqual(
+            [self._val(doc, c175, c) for c in (
+                "VL_OPR", "VL_BC_PIS", "VL_PIS", "VL_BC_COFINS", "VL_COFINS",
+                "ALIQ_PIS", "VL_DESC", "INFO_COMPL")],
+            ["15,00", "15,00", "0,25", "15,00", "1,14", "1,65", "", "OBS"])
+        self.assertEqual(doc.chaves_repetidas(), [])
+        self.assertEqual(revisao.verificar_chave_duplicada(doc), [])
+        self.assertBemFormado(doc)
+        antes = doc.gerar_texto()
+        self.assertEqual(doc.fundir_chaves_repetidas(), 0)
+        self.assertEqual(doc.gerar_texto(), antes)
+
+    def test_texto_diferente_nao_funde(self):
+        doc = _doc(_nfce_com_c175({"INFO_COMPL": "A"}, {"INFO_COMPL": "B"}))
+        (g,) = doc.chaves_repetidas()
+        self.assertIn("INFO_COMPL", g.motivo)
+        self.assertEqual(doc.fundir_chaves_repetidas(), 0)
+        self.assertEqual(len(self._c175(doc)), 2)
+        (p,) = revisao.verificar_chave_duplicada(doc)
+        self.assertIn("não dá para fundir", p.descricao)
+
+    def test_registro_que_nao_e_de_totais_nao_funde(self):
+        """Dois C170 com o mesmo NUM_ITEM são itens diferentes mal
+        numerados, não metades de um total: somar seria inventar."""
+        m = contrib_basico(bloco_m=False)
+        i = next(n for n, c in enumerate(m.linhas) if c[0] == "C170")
+        m.linhas.insert(i + 1, list(m.linhas[i]))
+        doc = _doc(m)
+        (g,) = doc.chaves_repetidas()
+        self.assertEqual(g.reg, "C170")
+        self.assertIn("não é registro de totais", g.motivo)
+        antes = doc.gerar_texto()
+        self.assertEqual(doc.fundir_chaves_repetidas(), 0)
+        self.assertEqual(doc.gerar_texto(), antes)
+
+    def test_valor_invalido_recusa_sem_mexer(self):
+        doc = _doc(_nfce_com_c175({}, {"QUANT_BC_PIS": "1.5"}))
+        antes = doc.gerar_texto()
+        with self.assertRaises(CamposInvalidos):
+            doc.fundir_chaves_repetidas()
+        self.assertEqual(doc.gerar_texto(), antes)
+
+    def test_documentos_diferentes_nao_sao_repetidos(self):
+        m = _nfce_com_c175({})
+        m.reg("C100", IND_OPER="1", IND_EMIT="0", COD_MOD="65",
+              COD_SIT="00", SER="1", NUM_DOC="10", DT_DOC="05082026",
+              VL_DOC="10,00", IND_PGTO="0", VL_MERC="10,00", IND_FRT="9")
+        m.linhas.append(list(next(c for c in m.linhas if c[0] == "C175")))
+        self.assertEqual(_doc(m).chaves_repetidas(), [])
+
+    def test_sem_leiaute_de_referencia_se_abstem(self):
+        referencias.definir(None)
+        doc = _doc(_nfce_com_c175({}, {}))
+        self.assertEqual(doc.chaves_repetidas(), [])
+        self.assertEqual(doc.fundir_chaves_repetidas(), 0)
+
+    def test_diagnostico_aponta_a_fusao(self):
+        from sped_tables.dominio import diagnostico
+        achados, _info = diagnostico.verificar(
+            _doc(_nfce_com_c175({}, {})))
+        (a,) = [a for a in achados if a.tipo.startswith("chave")]
+        self.assertEqual((a.tipo, a.quantidade), ("chave", 1))
+        self.assertEqual(diagnostico.MODULOS["chave"],
+                         diagnostico.FUNDIR_CHAVES)
 
 
 if __name__ == "__main__":

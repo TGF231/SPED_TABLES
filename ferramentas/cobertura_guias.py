@@ -4,7 +4,8 @@ validadores do PVA o programa reproduz, registro a registro.
 
     py ferramentas/cobertura_guias.py
 
-Precisa dos PVAs instalados (os validadores vêm do descritor de cada um).
+Usa a base de referência em uso (os validadores vêm do descritor da versão
+mais recente do leiaute que ela guarda); não precisa dos PVAs instalados.
 O arquivo gerado não tem dado de cliente — só leiaute, guia e regras — e
 vai para o repositório: é a resposta honesta a "o programa valida tudo?".
 """
@@ -18,14 +19,13 @@ sys.path.insert(0, RAIZ)
 
 from sped_tables.aplicacao import montagem  # noqa: E402
 from sped_tables.dominio import diagnostico, referencias, regras_guia  # noqa
-from sped_tables.infra import descritor_pva  # noqa: E402
 
 NOMES = {"ICMS": "EFD ICMS/IPI", "CONTRIB": "EFD Contribuições"}
 
 
 def _linhas_do_leiaute(layout):
     guia = referencias.atual().guia(layout)
-    est, info = descritor_pva.carregar(layout)
+    est, info = referencias.atual().estrutura(layout)
     reproduzidos = diagnostico.validadores_reproduzidos()
     linhas = []
     tot = {"val_guia": 0, "pva": set(), "repro": set()}
@@ -50,7 +50,7 @@ def main():
     out = ["# Cobertura das regras de validação",
            "",
            "Gerado por `ferramentas/cobertura_guias.py` em %s, a partir dos "
-           "guias práticos (`recursos/`) e do descritor dos PVAs instalados."
+           "guias práticos e do descritor da base de referência."
            % datetime.date.today().strftime("%d/%m/%Y"),
            "",
            "* **Validações do guia**: parágrafos *Validação* dos campos mais a "

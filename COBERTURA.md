@@ -1,6 +1,6 @@
 # Cobertura das regras de validação
 
-Gerado por `ferramentas/cobertura_guias.py` em 07/10/2026, a partir dos guias práticos (`recursos/`) e do descritor dos PVAs instalados.
+Gerado por `ferramentas/cobertura_guias.py` em 18/10/2026, a partir dos guias práticos e do descritor da base de referência.
 
 * **Validações do guia**: parágrafos *Validação* dos campos mais a *Validação do Registro*, por registro.
 * **Validadores do PVA**: regras compostas (`REGRA_…`) que o descritor declara para o registro; as declarativas (tipo, tamanho, obrigatoriedade, domínio, referência) o programa reproduz todas, pelo próprio descritor, e não entram na conta.

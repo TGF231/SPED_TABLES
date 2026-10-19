@@ -404,8 +404,9 @@ def dominios_do_documento(doc):
     falso positivo do `CST_ICMS` no EFD Contribuições: a regra global cobrava
     um domínio que aquele PVA não cobra.
 
-    Devolve `(dominios, info)`; `({}, info)` quando o PVA não está instalado —
-    aí a varredura cai nos domínios embutidos.
+    Devolve `(dominios, info)`; `({}, info)` quando a base de referência não
+    tem o leiaute do arquivo — aí a varredura cai nos domínios embutidos.
+    `info["versao"]` é a versão do leiaute que valeu.
 
     O descritor e as tabelas vêm da porta `referencias`.
     """
@@ -419,7 +420,8 @@ def dominios_do_documento(doc):
             dt = (r.valor(i_fin) or "").strip() if i_fin is not None else ""
             break
 
-    estrutura, info_desc = fonte.estrutura(doc.layout)
+    estrutura, info_desc = fonte.estrutura(
+        doc.layout, referencias.versao_do_leiaute(doc))
     if not estrutura:
         return {}, {"descritor": None, "erro": info_desc.get("erro"),
                     "por_tabela": 0, "por_enum": 0, "por_formato": 0,
@@ -449,6 +451,7 @@ def dominios_do_documento(doc):
                                                  c["tamanho"], c["decimais"])
                 n_fmt += 1
     return dominios, {"descritor": info_desc.get("descritor"),
+                      "versao": info_desc.get("versao"),
                       "registros": info_desc.get("registros"),
                       "por_enum": n_enum, "por_tabela": n_tab,
                       "por_formato": n_fmt, "faltando": faltando,

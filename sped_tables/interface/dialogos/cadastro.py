@@ -13,9 +13,11 @@ from sped_tables.interface.formulario_empresa import FormularioEmpresa
 from sped_tables.interface.comum import exportar_csv
 from sped_tables.infra import cadastro
 from sped_tables.dominio import empresas as emp_mod
+from sped_tables.dominio import referencias
 from sped_tables.dominio import rotinas
-from sped_tables.infra import tabelas_rfb as trfb
 from sped_tables.interface import tema
+from sped_tables.interface.comum import (calcular, definir_papel,
+                                         informar)
 
 
 class DialogoItensNaoUsados(QDialog):
@@ -55,8 +57,10 @@ class DialogoItensNaoUsados(QDialog):
                                 key=lambda x: -x[1]))
         proc = QLabel(
             "Referências encontradas em: %s.<br>Os campos que apontam para o "
-            "0200 vêm do <b>descritor do PVA</b> (28 registros no EFD "
-            "ICMS/IPI, 14 no Contribuições) — não de uma lista escrita à mão."
+            "0200 vêm do <b>leiaute da versão do arquivo</b> na base de "
+            "referência (28 registros no EFD ICMS/IPI, 14 no Contribuições, "
+            "no leiaute atual) — não de uma lista escrita à mão. Sem o "
+            "leiaute da versão, vale a varredura pelo valor do COD_ITEM."
             % (onde or "nenhum"))
         proc.setWordWrap(True)
         proc.setProperty("role", "info")
@@ -145,7 +149,7 @@ class DialogoItensNaoUsados(QDialog):
                 jan._marcar_alterado()
             if hasattr(jan, "_montar_abas"):
                 jan._montar_abas()
-        QMessageBox.information(
+        informar(
             self, "Remover itens sem referência",
             "%d item(ns) removido(s) do 0200 — %d registro(s) ao todo, "
             "contando os filhos." % (res["itens"], res["registros"]))
@@ -322,7 +326,7 @@ class DialogoCodCta(QDialog):
                 jan._marcar_alterado()
             if hasattr(jan, "_montar_abas"):
                 jan._montar_abas()
-        QMessageBox.information(
+        informar(
             self, "Conta contábil",
             "%d registro(s) %s preenchidos com a conta %s.%s"
             % (res["registros"], res["tipo"], res["cod_cta"],
@@ -353,10 +357,9 @@ class DialogoEmpresa(QDialog):
     COLS = ["Escopo", "Doc.", "Item", "Tributo", "Campo", "Atual",
             "Esperado", "Detalhe"]
 
-    def __init__(self, doc, parent=None, cfg_rfb=None):
+    def __init__(self, doc, parent=None):
         super().__init__(parent)
         self.doc = doc
-        self.cfg_rfb = cfg_rfb or {}
         self.setWindowTitle("Configuração da empresa e rotinas")
         self.resize(980, 700)
         self._ocorrencias = []
@@ -423,7 +426,7 @@ class DialogoEmpresa(QDialog):
         self.lbl_divergencia.setText(divergencia or "")
         self.lbl_divergencia.setVisible(bool(divergencia))
         self._listar_rotinas()
-        QMessageBox.information(self, "Cadastro", "Gravado em:\n%s" % caminho)
+        informar(self, "Cadastro", "Gravado em:\n%s" % caminho)
 
     # ------------------------------------------------------------- rotinas
     def _montar_rotinas(self):
@@ -494,9 +497,6 @@ class DialogoEmpresa(QDialog):
         if r is None:
             return
         texto = r.descricao
-        if r.requer == "tabelas_rfb":
-            texto += ("  Requer as tabelas da RFB configuradas em "
-                      "Ferramentas → Verificar CST por NCM.")
         if r.corrigir is None:
             texto += "  (sem correção automática)"
         self.lbl_desc.setText(texto)
@@ -512,7 +512,7 @@ class DialogoEmpresa(QDialog):
         if self._coletar() is None:
             return
         extra = {}
-        if r.requer == "tabelas_rfb":
+        if r.requer == "tabelas_ncm":
             clf = self._classificador()
             if clf is None:
                 return
@@ -525,24 +525,21 @@ class DialogoEmpresa(QDialog):
         self._rotina_atual = r
         self._preencher(ocorrencias)
         self.lbl_res.setText("%d ocorrência(s)." % len(ocorrencias))
-        self.lbl_res.setProperty("role", "ok" if not ocorrencias else "erro")
-        self.lbl_res.style().unpolish(self.lbl_res)
-        self.lbl_res.style().polish(self.lbl_res)
+        definir_papel(self.lbl_res, "ok" if not ocorrencias else "erro")
         self.b_corrigir.setEnabled(bool(ocorrencias) and r.corrigir is not None)
         if r.corrigir is not None:
             self.b_corrigir.setText("Corrigir %d…" % len(ocorrencias))
 
     def _classificador(self):
-        """Monta o classificador de NCM com a mesma API do diálogo de CST."""
-        try:
-            clf, _achados = trfb.classificador(self.cfg_rfb or None)
-            return clf
-        except Exception as exc:  # noqa: BLE001
+        """O classificador de NCM da base de referência (a mesma fonte das
+        outras regras), ou None com o aviso."""
+        clf = referencias.atual().classificador_ncm()
+        if clf is None:
             QMessageBox.warning(
-                self, "Tabelas da RFB",
-                "Não foi possível carregar as tabelas da RFB:\n%s\n\n"
-                "Configure em Ferramentas → Verificar CST por NCM." % exc)
-            return None
+                self, "Tabelas de NCM",
+                "A base de referência não tem as tabelas de alíquota zero e "
+                "de monofásicos: esta rotina não pode rodar.")
+        return clf
 
     def _preencher(self, ocorrencias):
         # a ordenação só é ligada depois de preencher (ver CLAUDE.md)
@@ -576,11 +573,14 @@ class DialogoEmpresa(QDialog):
             QMessageBox.StandardButton.No)
         if resp != QMessageBox.StandardButton.Yes:
             return
-        n = r.corrigir(self.doc, self.empresa, self._ocorrencias)
+        ok, n = calcular(self, r.nome, r.corrigir, self.doc,
+                         self.empresa, self._ocorrencias)
+        if not ok:
+            return
         janela = self.parent()
         if janela is not None and hasattr(janela, "_marcar_alterado"):
             janela._marcar_alterado()
-        QMessageBox.information(
+        informar(
             self, r.nome,
             "%d registro(s) alterado(s).\n\nO arquivo ainda NÃO foi salvo — "
             "revise e use Salvar como." % n)

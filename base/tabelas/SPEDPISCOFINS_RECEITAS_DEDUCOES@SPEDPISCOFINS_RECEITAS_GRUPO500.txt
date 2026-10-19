@@ -1,0 +1,18 @@
+versão=1 CODIGO, DESCRICAO, DT_INI, DT_FIM, IND_ATIV, IND_AJUSTE, GRUPO, SUBGRUPO, IND_OUTROS
+R0501010|Contraprestações emitidas / prêmios emitidos de assistência médico-hospitalar|01012014||05;06|P|500|R0501|N
+R0501020|Contraprestações emitidas / prêmios emitidos de assistência odontológica|01012014||05;06|P|500|R0501|N
+R0502010|Variação das provisões técnicas de assistência médico-hospitalar|01012014||05;06|P|500|R0502|N
+R0502020|Variação das provisões técnicas de assistência odontológica|01012014||05;06|P|500|R0502|N
+R0503010|Taxa de administração médico-hospitalar|01012014||05;06|P|500|R0503|N
+R0503020|Taxa de administração de planos odontológicos|01012014||05;06|P|500|R0503|N
+R0512010|Outras receitas operacionais de assistência médico-hospitalar|01012014||05;06|P|500|R0512|S
+R0512020|Outras receitas operacionais de assistência odontológica|01012014||05;06|P|500|R0512|S
+R0512030|Outras receitas operacionais de prestação serviços|01012014||05;06|P|500|R0512|S
+R0505010|Receitas com Sinistros|01012014||05;06|P|500|R0505|N
+R0505020|Outras receitas com resseguro|01012014||05;06|P|500|R0505|S
+R0506010|Receitas Financeiras|01012014||05;06|P|500|R0506|N
+R0507010|Receitas Patrimoniais|01012014||05;06|P|500|R0507|N
+R0508010|Receitas não operacionais decorrentes da venda de bens do ativo permanente (não circulante)|01012014||05;06|P|500|R0508|N
+R0508020|Outras receitas não operacionais|01012014||05;06|P|500|R0508|S
+R0598100|Ajustes negativos de receitas|01012014||05;06|N|500|R0598|N
+R0599100|Ajustes positivos de receitas|01012014||05;06|P|500|R0599|N

@@ -1,0 +1,15 @@
+versão=7 COD_SIT, DESC_SIT, DT_INI, DT_FIM
+00|Documento regular|01012009|
+01|Documento regular extemporâneo|01012009|
+02|Documento cancelado|01012009|
+03|Documento cancelado extemporâneo|01012009|
+04|NFe ou CT-e denegada|01012009|31122022
+05|NFe ou CT-e Numeração inutilizada|01012009|31122022
+06|Documento Fiscal Complementar|01012009|31122022
+06|Documento Fiscal Complementar|01012023|
+07|Documento Fiscal Complementar extemporâneo|01012009|
+08|Documento Fiscal emitido com base em Regime Especial ou Norma Específica|01012009|
+09|09 Documento Fiscal Substiuído|01012018|02012018
+09|Documento Fiscal Substituído|03012018|04012018
+09|Documento fiscal emitido com redução de valores ou quantidades|01012027|
+10|Escrituração extemporânea de Documento fiscal emitido com redução de valores ou quantidades|01012027|

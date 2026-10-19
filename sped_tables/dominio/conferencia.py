@@ -20,14 +20,14 @@ Este módulo orquestra xml_fiscal (parsing/vínculo) + o SpedDocument (índices 
 campo por layout); não depende de PyQt.
 """
 
-from sped_tables.dominio.sped_model import (_fmt_val, _to_num,
+from sped_tables.dominio.sped_model import (_fmt_aliq, _fmt_val, _to_num,
                                             data_aaaammdd, so_digitos)
 from sped_tables.dominio import xml_fiscal as xf
 
 
 class Divergencia:
     __slots__ = ("mod", "serie", "nnf", "nitem", "escopo", "campo",
-                 "valor_xml", "valor_sped", "obs", "uid")
+                 "valor_xml", "valor_sped", "obs", "uid", "sugestao")
 
     def __init__(self, **k):
         for s in self.__slots__:
@@ -155,7 +155,7 @@ def acessorios_do_item(it):
 
 
 def valor_item_xml(it, somar_acessorios=True, somar_ipi=False,
-                   somar_st=False):
+                   somar_st=False, tirar_desconto=False):
     """Valor do item do XML no critério do C170.
 
     O C170 não tem campo de despesa acessória por item, então o que a NF-e traz
@@ -173,7 +173,9 @@ def valor_item_xml(it, somar_acessorios=True, somar_ipi=False,
 
     O mesmo vale para os **impostos cobrados por fora** do produto — IPI e
     ICMS-ST: muitos ERPs gravam o custo da entrada, `vProd + vIPI + vICMSST`,
-    no VL_ITEM. Quem decide também é o documento (`criterio_valor_item`).
+    no VL_ITEM — com o **FCP retido por ST** junto do ST, que é como ele é
+    cobrado —, e alguns gravam o valor já **líquido do desconto**. Quem
+    decide também é o documento (`criterio_valor_item`).
     """
     v = it.vprod or 0.0
     if somar_acessorios:
@@ -181,45 +183,60 @@ def valor_item_xml(it, somar_acessorios=True, somar_ipi=False,
     if somar_ipi:
         v += it.vipi or 0.0
     if somar_st:
-        v += it.icms_vicmsst or 0.0
+        v += (it.icms_vicmsst or 0.0) + (getattr(it, "icms_vfcpst", 0.0)
+                                         or 0.0)
+    if tirar_desconto:
+        v -= it.vdesc or 0.0
     return v
 
 
-# composições do VL_ITEM tentadas, na ordem de preferência:
-# (despesas acessórias, IPI, ICMS-ST)
-COMPOSICOES_VL_ITEM = (
-    (False, False, False), (True, False, False), (False, True, True),
-    (True, True, True), (False, True, False), (True, True, False),
-    (False, False, True), (True, False, True))
+# composições do VL_ITEM tentadas, na ordem de preferência — a mais simples
+# primeiro: (despesas acessórias, IPI, ICMS-ST + FCP-ST, líquido do desconto)
+COMPOSICOES_VL_ITEM = tuple(sorted(
+    ((a, i, s, d) for d in (False, True) for s in (False, True)
+     for i in (False, True) for a in (False, True)),
+    key=lambda c: (sum(c), c[3], not (c[1] and c[2]), c)))
 
 
 def criterio_valor_item(doc, c100, nfe, pares, tol=0.01):
-    """Como o documento compôs o VL_ITEM: `(acessórios, IPI, ICMS-ST)`.
+    """Como o documento compôs o VL_ITEM: `(acessórios, IPI, ICMS-ST,
+    líquido do desconto)`.
 
     `pares` são `(item do XML, C170)` do documento. Vale a composição que
     explica **mais itens** (VL_ITEM igual ao do XML assim composto); no
-    empate, a primeira de `COMPOSICOES_VL_ITEM`. Item a item, e não pela
-    soma, para que um item errado não esconda a composição dos outros.
-    Nenhuma explicando item algum, fica a regra das despesas acessórias
-    pelo C100, sem impostos."""
+    empate, a de menor diferença somada, e depois a mais simples. Item a
+    item, e não pela soma, para que um item errado não esconda a composição
+    dos outros. Nenhuma explicando item algum — centavos de arredondamento
+    do custo, por exemplo —, vale a que **mais se aproxima**: assim o valor
+    do XML mostrado já tem os impostos que o ERP somou, e a diferença que
+    sobra é a de verdade."""
     i_vl = doc._ix("C170", "VL_ITEM")
-    melhor, acertos = None, 0
-    if i_vl is not None:
-        escrit = [(it, _to_num(c.valor(i_vl))) for it, c in pares]
-        for comp in COMPOSICOES_VL_ITEM:
-            n = sum(1 for it, vs in escrit
-                    if abs(valor_item_xml(it, *comp) - vs) <= tol)
-            if n > acertos:
-                melhor, acertos = comp, n
-    if melhor is None:
-        return (not acessorios_no_documento(doc, c100, nfe), False, False)
+    if i_vl is None or not pares:
+        return (not acessorios_no_documento(doc, c100, nfe), False, False,
+                False)
+    escrit = [(it, _to_num(c.valor(i_vl))) for it, c in pares]
+    melhor, chave_melhor = None, None
+    for ordem, comp in enumerate(COMPOSICOES_VL_ITEM):
+        difs = [abs(valor_item_xml(it, *comp) - vs) for it, vs in escrit]
+        acertos = sum(1 for d in difs if d <= tol)
+        chave = (-acertos, round(sum(difs), 2), ordem)
+        if chave_melhor is None or chave < chave_melhor:
+            melhor, chave_melhor = comp, chave
+    if chave_melhor[0] == 0 and chave_melhor[1] >= sum(
+            abs(valor_item_xml(it) - vs) for it, vs in escrit):
+        # nada explica nem aproxima melhor que o padrão: regra do C100
+        return (not acessorios_no_documento(doc, c100, nfe), False, False,
+                False)
     return melhor
 
 
 def _descrever_composicao(comp):
-    partes = [n for n, ok in zip(("despesas acessórias", "IPI", "ICMS-ST"),
-                                 comp) if ok]
-    return ("VL_ITEM com " + " + ".join(partes)) if partes else ""
+    nomes = ("despesas acessórias", "IPI", "ICMS-ST/FCP-ST")
+    partes = [n for n, ok in zip(nomes, comp) if ok]
+    texto = ("VL_ITEM com " + " + ".join(partes)) if partes else ""
+    if len(comp) > 3 and comp[3]:
+        texto = (texto or "VL_ITEM") + " líquido do desconto"
+    return texto
 
 
 def acessorios_no_documento(doc, c100, nfe, tol=0.02):
@@ -247,6 +264,51 @@ def _num_xml(s):
         return float(str(s).strip()) if s not in (None, "") else 0.0
     except ValueError:
         return 0.0
+
+
+def corrigir_pelo_xml(doc, divergencias):
+    """Grava no C170 o valor do XML das divergências de item escolhidas.
+
+    Corrige os valores conferidos (VL_ITEM na composição que o documento
+    usa, desconto, bases, alíquotas e impostos) e o CFOP quando a
+    correlação aponta **um** CFOP de entrada. O CST não: o do XML é o do
+    fornecedor, e o de entrada é decisão da escrituração.
+
+    Não refaz C190 nem totais do C100 — num ERP que soma IPI e ST ao item,
+    o total recalculado contaria o imposto duas vezes; a pessoa decide com
+    *Recalcular C190 em massa* e a revisão. Devolve `{"campos": {campo:
+    quantos}, "documentos": [C100 alterados], "ignorados": [(divergência,
+    motivo)]}`."""
+    numericos = {rot for rot, _f, _c, _t in
+                 COMPARACOES_ICMS + COMPARACOES_PIS_COFINS}
+    c170 = {r.uid: r for r in doc.registros if r.reg == "C170"}
+    campos, docs, ignorados = {}, [], []
+    for d in divergencias:
+        reg = c170.get(d.uid) if d.escopo == "item" else None
+        if reg is None:
+            ignorados.append((d, "não é divergência de item"))
+            continue
+        if d.campo in numericos:
+            if d.sugestao is None:
+                ignorados.append((d, "sem valor no XML"))
+                continue
+            valor = (_fmt_aliq(d.sugestao) if d.campo.startswith("ALIQ_")
+                     else _fmt_val(d.sugestao))
+        elif d.campo == "CFOP" and d.sugestao:
+            valor = d.sugestao
+        else:
+            ignorados.append((d, "CST e CFOP sem correlação única são "
+                                 "decisão da escrituração"))
+            continue
+        i = doc._ix("C170", d.campo)
+        if i is None or i >= len(reg.campos):
+            ignorados.append((d, "campo fora do leiaute"))
+            continue
+        reg.set_valor(i, valor)
+        campos[d.campo] = campos.get(d.campo, 0) + 1
+        if reg.pai is not None and all(reg.pai is not c for c in docs):
+            docs.append(reg.pai)
+    return {"campos": campos, "documentos": docs, "ignorados": ignorados}
 
 
 # comparações item XML ↔ C170:
@@ -436,7 +498,7 @@ def conferir_itens_xml(doc, nfes, movimento="entrada", tributo="ICMS",
                 divergencias.append(Divergencia(
                     mod=nfe.mod, serie=nfe.serie, nnf=nfe.nnf, nitem=it.nitem, uid=c170.uid,
                     escopo="item", campo=rot, valor_xml=vx, valor_sped=vs,
-                    obs=obs))
+                    obs=obs, sugestao=vx))
 
         # correlação de CFOP (saída do fornecedor -> entrada do comprador)
         if correl is not None and i170_cfop is not None:
@@ -450,7 +512,10 @@ def conferir_itens_xml(doc, nfes, movimento="entrada", tributo="ICMS",
                         nitem=it.nitem, uid=c170.uid, escopo="item", campo="CFOP",
                         valor_xml=cfop_x, valor_sped=cfop_s,
                         obs="entrada deveria ser: %s"
-                            % " ou ".join(sorted(validos))))
+                            % " ou ".join(sorted(validos)),
+                        # só há o que corrigir quando a correlação é única
+                        sugestao=(next(iter(validos)) if len(validos) == 1
+                                  else None)))
             elif avisar_cfop_sem_regra and cfop_x:
                 divergencias.append(Divergencia(
                     mod=nfe.mod, serie=nfe.serie, nnf=nfe.nnf,

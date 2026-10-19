@@ -1,0 +1,14 @@
+versão=5 COD_REC, DESC_COD, DT_INI, DT_FIM
+101|ICMS - Imposto normal e diferencial de alíquota|01022022|
+109|ICMS - Termo de Verificação de Irregularidade e Infração Fiscal  TVIF|01022022|
+110|Fundo Maranhense de Combate a Pobreza - FUMACOP|01022022|
+115|ICMS - Importação|01022022|
+200|Taxa de Fiscalização de Transporte de Grãos|01042023|
+240|Taxa de Controle e Monitoramento Ambiental da Atividade de Transporte Ferroviário de Recursos Minerais|01042023|
+419|Fundo Estadual de Desenvolvimento Industrial - FDI|01022022|
+435|Fundo Estadual de Programa de Desenvolvimento - Mais IDH|01022022|
+601|ICMS - Substituição Tributária de Entrada|01022022|
+602|ICMS - Substituição Tributária de Saída|01022022|
+604|ICMS - Diferencial de Alíquota Consumidor Final_ EC 87/15|01022022|
+340|Taxa de Controle e Monitoramento da Atividade Portuária|01042023|
+459|Contribuição Especial de Grãos|01012025|

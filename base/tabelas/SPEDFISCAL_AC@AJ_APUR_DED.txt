@@ -1,0 +1,85 @@
+versão=5 COD_AJUR, DESC_AJUR, DT_INI, DT_FIM
+AC000001|Apuração do ICMS; Outros débitos; Débitos transferidos do Difal Origem (E300=AC) para apuração do ICMS OP (E110) por meio do ajuste AC230001|01122016|
+AC000002|Apuração do ICMS; Outros débitos; Transferência de saldo credor para outro estabelecimento do mesmo sujeito passivo dentro do Estado|01122016|
+AC000003|Apuração do ICMS; Outros débitos; Débito de diferença de recebimentos informados na Declaração de Informações de Meios de Pagamento  DIMP, mediante autorregularização|01062024|
+AC009999|Apuração do ICMS; Outros débitos para ajuste de apuração do ICMS não especificados anteriormente|01122016|
+AC010001|Apuração do ICMS; Estorno de créditos; determinados por ato administrativo ou judicial|01122016|
+AC010002|Apuração do ICMS; Estorno de créditos, Estorno do imposto anteriormente creditado quando a mercadoria for utilizada, consumida ou destinada a fim alheio à atividade do estabelecimento (RICMS, art. 48, III)|01122016|
+AC019999|Apuração do ICMS; Estorno de créditos para ajuste de apuração do ICMS não especificados anteriormente|01122016|
+AC020001|Apuração do ICMS; Outros créditos; determinados por ato administrativo ou judicial|01122016|
+AC020002|Apuração do ICMS; Outros créditos; referente à apropriação de crédito do CIAP|01122016|
+AC020003|Apuração do ICMS; Outros créditos; Crédito do imposto corretamente destacado em documento fiscal, previamente escriturado, e não aproveitado na época própria|01122016|
+AC020004|Apuração do ICMS; Outros Créditos; Créditos transferidos do Difal Origem (E300=AC) para apuração do ICMS OP (E110) por meio do ajuste AC210001|01122016|
+AC020005|Apuração do ICMS; Outros créditos; Restituição de ST por creditamento autorizado em procedimento fiscal referente saída isenta de material hospitalar fornecido à administração pública direta estadual (Decreto 2.401/2008, art. 1º-B)|01122016|
+AC020006|Apuração do ICMS; Outros créditos; Restituição de ST por creditamento|01122016|
+AC020007|Apuração do ICMS; Outros créditos; Restituição de ST em razão de retirada da mercadoria do regime de ST|01122016|
+AC020008|Apuração do ICMS; Outros créditos; ICMS antecipação parcial do período (RICMS, art. 96, § 3º)|01122016|
+AC020009|Apuração do ICMS; Outros créditos; Crédito correspondente ao desconto na antecipação do ICMS concedido a contribuinte regular (RICMS, art. 96-A, § 6º)|01122016|
+AC020010|Apuração do ICMS; Outros créditos; ICMS antecipação parcial creditamento extemporâneo (RICMS, art. 96, § 3º)|01122016|
+AC020011|Apuração do ICMS; Outros créditos; Crédito presumido referente ICMS transporte (Convênio 106/96)|01122016|
+AC020012|Apuração do ICMS; Outros créditos; recebimento de saldo credor transferido por outro estabelecimento do mesmo sujeito passivo localizado no Estado do Acre|01122016|
+AC029999|Apuração do ICMS; Outros créditos para ajuste de apuração ICMS não especificados anteriormente|01122016|
+AC030001|Apuração do ICMS; Estorno de débitos; determinados por ato administrativo ou judicial|01122016|
+AC030002|Apuração do ICMS; Estorno de débitos; referente ao CT-e emitido pelo transportador, com ICMS de responsabilidade do remetente/alienante (TARE)|01122016|
+AC039999|Apuração do ICMS; Estorno de débitos; outros estornos para ajuste de apuração ICMS não especificados anteriormente|01122016|
+AC040001|Apuração do ICMS; Dedução do imposto apurado; Regime Especial atividade sucroalcooleira (Lei 2.445/2011)|01122016|
+AC040002|Apuração do ICMS; Dedução do imposto apurado; Regime Especial COPIAI (Lei 1.358/2000)|01122016|
+AC049999|Apuração do ICMS; Dedução do imposto apurado; Outras deduções não especificadas anteriormente|01122016|
+AC050001|Apuração do ICMS; Débito Especial; ICMS destacado a menor, apurado após o vencimento|01122016|
+AC050002|Apuração do ICMS; Débito Especial; escrituração de documento fiscal extemporâneo|01122016|
+AC059999|Apuração do ICMS; Débito Especial; outros débitos especiais do ICMS não especificados anteriormente|01122016|
+AC100001|Apuração do ICMS ST; Outros débitos; Debito decorrente da entrada da mercadoria no regime de ST|01122016|
+AC109999|Apuração do ICMS ST; Outros débitos para ajuste de apuração ICMS ST não especificados anteriormente|01122016|
+AC119999|Apuração do ICMS ST; Estorno de créditos para ajuste de apuração ICMS ST|01122016|
+AC129999|Apuração do ICMS ST; Outros créditos; Outros créditos para ajuste de apuração ICMS ST|01122016|
+AC139999|Apuração do ICMS ST; Estorno de débitos para ajuste de apuração ICMS ST|01122016|
+AC149999|Apuração do ICMS ST; Deduções do imposto apurado na apuração ICMS ST para a AC AC|01122016|
+AC159999|Apuração do ICMS ST; Débito Especial; ICMS ST  Outros|01122016|
+AC209999|Apuração do DIFAL EC 87/15; Outros débitos para ajuste de apuração ICMS Difal para o AC|01012017|
+AC210001|Apuração do DIFAL EC 87/15; Estorno de crédito; Créditos transferidos do Difal Origem (E300=AC) para apuração do ICMS (E110) por meio do ajuste AC020004|01122016|
+AC219999|Apuração do DIFAL EC 87/15; Estorno de créditos para ajuste de apuração ICMS Difal para o AC não especificados anteriormente|01012017|
+AC229999|Apuração do DIFAL EC 87/15; Outros créditos para ajuste de apuração ICMS Difal para o AC|01012017|
+AC230001|Apuração do DIFAL EC 87/15; Estorno de débitos; Débitos transferidos do Difal Origem (E300=AC) para apuração do ICMS OP (E110) por meio do ajuste AC000001|01122016|
+AC239999|Apuração do DIFAL EC 87/15; Estorno de débitos para ajuste de apuração ICMS Difal para o AC não especificados anteriormente|01012017|
+AC249999|Deduções do imposto apurado na apuração ICMS Difal para o AC|01012017|
+AC259999|Débito especial de ICMS Difal para o AC|01012017|
+AC009999|Outros débitos para ajuste de apuração ICMS para|01012009|30112016
+AC109999|Outros débitos para ajuste de apuração ICMS ST para|01012009|30112016
+AC019999|Estorno de créditos para ajuste de apuração ICMS para|01012009|30112016
+AC119999|Estorno de créditos para ajuste de apuração ICMS ST para|01012009|30112016
+AC029999|Outros créditos para ajuste de apuração ICMS para|01012009|30112016
+AC129999|Outros créditos para ajuste de apuração ICMS ST para|01012009|30112016
+AC039999|Estorno de débitos para ajuste de apuração ICMS para|01012009|30112016
+AC139999|Estorno de débitos para ajuste de apuração ICMS ST para|01012009|30112016
+AC049999|Deduções do imposto apurado na apuração ICMS para|01012009|30112016
+AC149999|Deduções do imposto apurado na apuração ICMS ST para|01012009|30112016
+AC059999|Débito especial de ICMS para|01012009|30112016
+AC159999|Débito especial de ICMS ST para|01012009|30112016
+AC099999|Controle do ICMS extra-apuração para|01012013|30112016
+AC209999|Outros débitos para ajuste de apuração ICMS Difal/FCP para o AC|01012016|31122016
+AC219999|Estorno de créditos para ajuste de apuração ICMS Difal/FCP para a AC|01012016|31122016
+AC229999|Outros créditos para ajuste de apuração ICMS Difal/FCP para o AC|01012016|31122016
+AC239999|Estorno de débitos para ajuste de apuração ICMS Difal/FCP para o AC|01012016|31122016
+AC249999|Deduções do imposto apurado na apuração ICMS Difal/FCP para o AC|01012016|31122016
+AC259999|Débito especial de ICMS Difal/FCP para o AC|01012016|31122016
+AC309999|Outros débitos para ajuste de apuração ICMS FCP para o AC|01012017|
+AC319999|Estorno de créditos para ajuste de apuração ICMS FCP para o AC|01012017|
+AC329999|Outros créditos para ajuste de apuração ICMS FCP para o AC|01012017|
+AC339999|Estorno de débitos para ajuste de apuração ICMS FCP para o AC|01012017|
+AC349999|Deduções do imposto apurado na apuração ICMS FCP para o Ac|01012017|
+AC359999|Débito especial de ICMS FCP para o AC|01012017|
+AC050003|Apuração do ICMS; Débito Especial, Depósito ao FEFAC relativo a 10% do incentivo ou benefício utilizado no período (Lei 3.216/2016, Art. 3º, § 1º)|01052017|
+AC020013|Apuração do ICMS; Outros créditos; Restituição de ST por creditamento extemporâneo|01122019|
+AC020014|Apuração do ICMS; Outros créditos; Ressarcimento de ST - creditamento extemporâneo|01122019|
+AC020015|Apuração do ICMS; Outros créditos; Ressarcimento de ST decorrente de exportação para o exterior|01122019|
+AC020016|Apuração do ICMS; Outros créditos; Ressarcimento de ST decorrente de exportação para o exterior  creditamento extemporâneo|01122019|
+AC020017|Apuração do ICMS; Outros créditos; Ressarcimento/Restituição solicitada em Processo administrativo fiscal extinto sem apreciação do mérito (Decreto 4.864/2019, art. 4º)|01122019|
+AC020018|Apuração do ICMS; Outros créditos; Crédito presumido sobre o ICMS devido por estabelecimentos industriais dispensados de apresentação de projeto (Incentivo da Lei 3.495/2019, Regulamento instituído pelo Decreto nº 4.698/2019, art. 2º, I)|01012020|
+AC020019|Apuração do ICMS; Outros créditos; Crédito presumido sobre do ICMS debitado no período, no caso de projeto em implantação (Incentivo da Lei 3.495/2019, Regulamento instituído pelo Decreto nº 4.698/2019, art. 2º, II)|01012020|
+AC020020|Apuração do ICMS; Outros créditos; Crédito presumido da parcela do ICMS a recolher, incrementada no período em função do projeto, no caso de ampliação ou modernização (Incentivo da Lei 3.495/2019, Regulamento instituído pelo Decreto nº 4.698/2019, art. 2º, III)|01012020|
+AC050004|Contribuição para FDS - Atividade indicada no inciso I do art. 2º da Lei 3.495/2019|01082022|
+AC050005|Contribuição para FUNAGRO - Atividade indicada no inciso II do art. 2º da Lei 3.495/2019|01082022|
+AC050006|Contribuição para FDS - Atividade indicada no inciso III do art. 2º da Lei 3.495/2019|01082022|
+AC050007|Contribuição para FDS - Atividade indicada no inciso IV do art. 2º da Lei 3.495/2019|01082022|
+AC050008|Contribuição para FDS - Atividade indicada no inciso V do art. 2º da Lei 3.495/2019|01082022|
+AC050009|Contribuição para FDS - Atividade indicada no inciso VI do art. 2º da Lei 3.495/2019|01082022|

@@ -1,0 +1,9 @@
+versão=2 COD_AJUR, DESC_AJUR, DT_INI, DT_FIM
+ES000|Não se aplica restituição ou complementação de ICMS/ST|01012020|
+ES100|Restituição de ICMS/ST, em razão do valor de saída da mercadoria final ser inferior ao da BC/ST|01012020|
+ES200|Restituição de ICMS/ST, em razão da não ocorrência do fato gerador presumido|01012020|
+ES300|Complementação de ICMS/ST, em razão do valor de saída da mercadoria aconsumidor final ser superior ao da BC/ST|01012020|
+ES400|Devolução de entradas|01012020|
+ES500|Devolução de saídas em que não se aplicou restituição, ressarcimento ou complemento|01012020|
+ES600|Estorno da restituição/ressarcimento do imposto, calculado com base no valor saída inferior ao valor da BC ICMS ST|01012020|
+ES800|Estorno do complemento do imposto, calculado com base no valor de saída da mercadoria superior ao valor da BC ICMS ST|01012020|

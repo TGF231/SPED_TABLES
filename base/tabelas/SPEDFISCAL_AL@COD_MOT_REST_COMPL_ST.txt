@@ -1,0 +1,11 @@
+versão=1 COD_AJUR, DESC_AJUR, DT_INI, DT_FIM
+AL000|Não se aplica restituição ou complementação de ICMS ST|01062025|
+AL100|Restituição de ICMS ST em razão do valor de saída da mercadoria a consumidor final ser inferior ao da base de cálculo do ICMS ST|01062025|
+AL200|Restituição de ICMS ST em razão da não ocorrência do fato gerador presumido|01062025|
+AL220|Ressarcimento de ICMS ST em razão da saída interestadual da mercadoria já alcançada pela ST|01062025|
+AL300|Complementação de ICMS ST em razão do valor de saída da mercadoria a consumidor final ser superior ao da base de cálculo do ICMS ST|01062025|
+AL400|Devolução de entradas|01062025|
+AL500|Devolução de saídas em que não se aplicou restituição, ressarcimento ou complementação|01062025|
+AL600|Estorno da restituição/ressarcimento do imposto, calculado com base no valor de saída inferior ao valor da base de cálculo do ICMS ST|01062025|
+AL620|Estorno do ressarcimento de ICMS ST em razão da saída interestadual da mercadoria já alcançada pela ST|01062025|
+AL800|Estorno do complemento do imposto, calculado com base no valor de saída da mercadoria superior ao valor da base de cálculo do ICMS ST|01062025|

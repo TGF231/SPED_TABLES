@@ -1,0 +1,608 @@
+versão=86 COD_AJUR, DESC_AJUR, DT_INI, DT_FIM
+RN000002|Outros débitos - estabelecimentos com atividade de fornecimento de refeições, bebidas e outras mercadorias realizado em bares, hotéis, lanchonetes, restaurantes, e estabelecimentos similares|01082011|
+RN000020|Outros débitos - Débito ICMS sobre o estoque na inclusão de mercadorias no regime de substituição tributária. Art. 675, caput, V, Decreto nº 31.825/2022|01082023|
+RN000025|Outros débitos - Débito de ICMS relativo a diferença devida pela seguradora relativamente às saídas reais ou simbólicas das peças ou partes|01082023|
+RN000036|Regime CD Dec. 28.881/19 - adicional saídas internas PF 18% - Art. 4º Inc. I|01082019|
+RN000037|Regime CD Dec. 28.881/19 - adicional saídas internas PF demais alíquotas - Art. 4º Inc. II|01082019|
+RN000040|Regime Atacadista - Saídas internas Art. 16-B, inciso III, alínea c|01102020|30062026
+RN000041|Regime Atacadista - Saídas internas à alíquota de 25% ou 27%, Art. 16-B, inciso IV|01102019|30062026
+RN000042|Regime Atacadista - Saídas interestaduais, Art. 16-B, inciso I|01102019|30062026
+RN000043|Regime Atacadista - Adicional PF, Art. 16-B, inciso I|01102019|30062026
+RN000044|Regime Atacadista - Adicional PF, Art. 16-B, inciso II|01102019|30062026
+RN000045|Regime Atacadista - Adicional excedente 20% PF, Art. 16-B, Parágrafo Único|01102019|30062026
+RN000046|Regime Atacadista - Adicional saída em transferência 18%, Art. 16-D, incisos I|01102019|30062026
+RN000047|Regime Atacadista - Adicional saída em transferência 25% ou 27%, Art. 16-D, incisos II|01102019|30062026
+RN000048|Regime Atacadista - Adicional excedente 20% saída em transferência, Art. 16-D, Parágrafo Único|01102019|30062026
+RN000049|Regime Atacadista - Adicional saída interestadual de resíduos e sucatas, Art. 16-E|01102019|30062026
+RN000050|Regime Atacadista Medicamentos - Saídas interestaduais, Art. 16-P, inciso I|01012020|30062026
+RN000051|Regime Atacadista Medicamentos - Saídas internas Art. 16-P, inciso II|01012020|30062026
+RN000052|Outros Débitos  Referente à emissão de documentos fiscais para o transporte dutoviário nos termos do Ajuste Sinief 03/2018.|01082018|
+RN000053|Regime Atacadista Higiene e Limpeza - Saídas internas Art. 16-P, inciso II-B|01012020|30062026
+RN000054|Regime Atacadista - Saídas internas Art. 16-B, inciso III, alínea a|01102020|30062026
+RN000055|Regime Atacadista - Saídas internas Art. 16-B, inciso III, alínea b|01102020|30062026
+RN000056|Outros Débitos - Complementação de Alíquotas destacadas a menor decorrentes do MONITORAMENTO dos documentos fiscais eletrônicos.|01012016|
+RN000417|Outros débitos - Regime especial - Produtor de álcool - recebido de outro estabelecimento do mesmo contribuinte detentor do regime especial|01012009|
+RN000720|Outros Débitos - IMPORT-RN 1210  Aquisições do Exterior  Lei 9.592/2011  incisos I a IV do art. 6º|01072014|
+RN000721|Outros Débitos - IMPORT-RN 1210  Saídas Internas  Lei 9.592/2011  § 5º do art. 6º|01072014|
+RN001818|Outros Débitos - Complementação de Alíquotas|01012017|
+RN001819|Outros Débitos - Complementação de ICMS-ST|01012017|
+RN002045|Outros Débitos - Débito relativo à emissão de notas fiscais sem destaque do imposto para empresas desenquadradas ou excluídas do Simples Nacional com efeito retroativo|01012019|
+RN005560|Outros Débitos  Débito espontâneo referente a venda/saídas com documento fiscal denegado pelo Fisco|01012017|
+RN008715|Outros Débitos - Débito ICMS EC 87/15 transferido da apuração específica|01012016|
+RN009999|Outros débitos - não especificados|01012009|
+RN011001|Estorno crédito - Mercadorias objeto de saída ou prestação de serviço não tributada ou isenta, sendo essa circunstância imprevisível na data da entrada da mercadoria ou da utilização do serviço -  Art. 44, I do Dec. nº 31.825/2022|01082023|
+RN011002|Estorno crédito - Mercadorias objeto de saída ou prestação de serviço não tributada ou isenta, sendo essa circunstância imprevisível na data da entrada da mercadoria ou da utilização do serviço -  Art. 44, I do Dec. nº 31.825/2022|01082023|01082023
+RN011003|Estorno crédito - Mercadorias objeto de operação ou prestação subsequente com redução de base de cálculo ou de alíquota, hipótese em que o valor do estorno será proporcional à redução  Art. 44, III do Dec. nº 31.825/2022|01082023|
+RN011004|Estorno crédito - Mercadorias que vierem a ser utilizadas em fim alheio à atividade do estabelecimento  Art. 44, IV do Dec. nº 31.825/2022|01082023|
+RN011005|Estorno crédito - Mercadorias que perecerem, forem sinistradas, deteriorarem-se ou forem objeto de quebra, furto, roubo ou extravio, inclusive no caso de tais ocorrências com os produtos resultantes da industrialização, produção, extração ou geração - Art. 44, V do Dec. nº 31.825/2022|01082023|
+RN011006|Estorno crédito - Mercadorias que forem objeto de locação ou arrendamento a terceiros - Art. 44, VI do Dec. nº 31.825/2022|01082023|
+RN011007|Estorno crédito - Mercadorias que entrarem no estabelecimento para fins de comercialização, industrialização, produção, geração ou extração, sendo, depois, destinadas ao ativo permanente do estabelecimento - Art. 44, VII do Dec. 31.825/2022|01082023|
+RN011008|Estorno crédito - Mercadorias que saírem por preço inferior ao seu custo, hipótese em que o estorno será proporcional à diferença entre o preço de custo e o valor referente à sua saída - Art. 44, VIII do Dec.  31.825/2022|01082023|
+RN011009|Estorno crédito - Do saldo credor existente na data da opção do crédito presumido no Art. 40, §2º, III e Anexo 003 do Dec. Nº 31.825/2022|01082023|
+RN011010|Estorno de créditos - Regime Especial Atacadista - Dec. 22.199/2011 - Estorno dos créditos resultantes da sistemática normal de apuração|01052011|30062026
+RN011011|Estorno de Créditos  Do saldo credor de ICMS existente em conta gráfica quando da opção pelo Regime Simplificado (Simples Nacional) - Art. 556 do Dec. Nº 31.825/2022|01082023|
+RN011012|Estorno do crédito pelo tomador do serviço em caso de emissão de CT-e substituto referenciando o CT-e emitido com erro  Somente créditos extemporâneos. Anexo 11, art. 127, III do Dec. nº 31.825/2022|01042023|
+RN011112|Estorno crédito - Estorno de crédito referente ao Crédito Presumido - Art. 40 e Anexo 003 do Dec. Nº 31.825/2022|01082023|
+RN011154|Estorno de Créditos - Operações com sal marinho, nos termos do Art. 32, inciso V do Anexo 004 do Dec. Nº 31.825/2022|01082023|
+RN011164|Estorno crédito - Contribuinte optante do benefício previsto (operações com castanha) no Art. 14 do Anexo 002 do Dec. Nº 31.825/2022|01082023|
+RN011413|Estorno crédito - Regime especial - Produtor de álcool - transferido, pelo detentor do regime especial, a outro estabelecimento do mesmo contribuinte - Dec. 18.312/05 - art. 2º- III, § 3º|01012009|
+RN011415|Estorno crédito - Regime especial - Produtor de álcool - créditos resultante da sistemática normal de apuração - Dec. 18.312/05 - art. 3º - § 2º|01012009|
+RN011720|Estorno de créditos - IMPORT-RN - dos créditos resultante da sistemática normal de apuração - Lei 9.592/2011|01072014|
+RN011801|Estorno de crédito da apuração do ICMS Normal - Art. 893-B, §13º, I|01042022|
+RN011954|Estorno de créditos  saída de mercadorias por preço inferior ao seu custo, hipótese em que o estorno proporcional à diferença entre o preço de custo e o valor referente à sua saída. Art. 44, VIII Dec. Nº 31.825/2022|01082023|
+RN012007|Estorno de créditos - Referente a porcentagem que não deve ser aproveitada do crédito de energia conforme laudo apresentado por estabelecimento industrial|01112017|
+RN012008|Estorno de Créditos - Operações com isca para pesca, Art. 7º, § 7º do anexo 001 do Dec. Nº 31.825/2022|01082023|
+RN013838|Estorno crédito - Estorno de crédito referente ao Crédito Presumido- Art. 6º do anexo 003  Dec. Nº 31.825/2022|01082023|
+RN018502|Estorno de Créditos - referente à diferença entre os débitos e créditos nas operações interestaduais, relativas às transferências entre estabelecimentos da mesma empresa, de bens integrados ao ativo imobilizado ou de material de uso ou consumo, conforme previsto no Inc. II do parágrafo único do Art. 26 do Dec. Nº 31.825/2022|01082023|
+RN019999|Estorno de Crédito - não especificados|01012009|
+RN020001|Regime Atacadista - Ajuste na carga saída Cesta Básica e Produtos Indústria RN - 18%|01102019|01082024
+RN020002|Regime Atacadista - Ajuste na carga saída Produtos Indústria RN - 25 ou 27%|01102019|01082024
+RN020003|Regime Atacadista - Crédito Presumido - 3,50% sobre o valor das mercadorias tributadas do estoque apurado em 30/09/2019 - Art. 3º Dec. 29.155/2019|01102019|31102023
+RN020004|Regime Atacadista Medicamentos - Crédito Presumido - 8% sobre o valor das mercadorias em estoque.|01012020|30062026
+RN020005|Outros Créditos  Referente à emissão de documentos fiscais para o transporte dutoviário nos termos do Ajuste Sinief 03/2018.|01082018|
+RN020006|Outros Créditos  Relativo à apropriação do crédito fiscal de combustíveis, lubrificantes, óleos, aditivos e fluidos, na proporção do valor das prestações iniciadas no território do RN, nos termos do art. 36, I, d e § 10, I e III do Decreto Nº 31.825/22|01082023|
+RN020007|Outros Créditos  Crédito do valor do ICMS efetivamente recolhido nos termos do art. 28, VI, alínea a § 4º, III, do Anexo 002 do Decreto Nº 31.825/22|01082023|30062026
+RN020008|Crédito presumido - Regime Especial Atacadista - Dec. 22.199/2011  3,41% sobre o valor das mercadorias em estoque - Art. 16-B, §16º, inciso I|01052020|30062026
+RN020009|Crédito presumido - Regime Especial Atacadista - Dec. 22.199/2011  4,40% sobre o valor das mercadorias em estoque - Art. 16-B, §16º, inciso II|01052020|30062026
+RN020011|Crédito autorizado em processo administrativo de ressarcimento de ICMS-ST|01012016|
+RN020720|Outros créditos - IMPORT-RN  crédito/compensação relativo ao recolhimento sobre devolução/retorno de vendas internas  §8º do art. 5º do Decreto 22.567/2012|01072014|
+RN020721|Outros créditos - IMPORT-RN  crédito/compensação relativo ao recolhimento sobre devolução de importação  §8º do art. 5º do Decreto 22.567/2012|01072014|
+RN022001|Regime Atacadista - Crédito Presumido - 2,00% sobre o valor das mercadorias tributadas do estoque apurado - Dec. 22.199/2011|01102019|31102023
+RN022002|Outros créditos - Crédito extemporâneo não apropriado no momento do registro do documento fiscal|01082011|18102023
+RN022004|Outros créditos - Crédito autorizado em processo administrativo regular da SET, exceto de restituição de ICMS-ST|01012009|
+RN022006|Outros Créditos  FECOP  5410  Op. Direta Consumo|01082011|
+RN022009|Outros créditos - Antecipação Tributária com direito a crédito (1240)|01052013|
+RN022010|Outros Créditos - ICMS lançado antecipadamente sob importações (1230)|01012017|
+RN022011|Outros créditos - Crédito referente a pagamento efetuado por denúncia espontânea (Cód. Ajuste RN050010), nos casos que o crédito for permitido|01022014|
+RN022012|Outros créditos - Antecipação Tributária Álcool - Entrada (1255)|01012020|
+RN022018|Outros créditos - Crédito recuperado por decisão judicial|01012009|31052026
+RN022021|Outros Créditos - Compensação de ICMS recolhido indevidamente cujo valor seja inferior a R$ 10.000,00|01012017|
+RN022033|Outros créditos - Crédito de 1/48 avos referente ao ativo permanente - Art. 31, § 5º do Dec. Nº 31.825/2022|01082023|
+RN022035|Outros créditos - Crédito de serviço de comunicação proporcional à exportação|01012009|
+RN022036|Outros créditos - Crédito do estoque na exclusão de mercadoria do regime de substituição tributária|01012009|31052026
+RN022037|Outros créditos - Crédito do estoque no desenquadramento do simples nacional|01012009|
+RN022038|Outros créditos - Crédito do ICMS de mercadoria sujeita à substituição tributária|01012009|
+RN022044|Crédito presumido  Referente à aquisição de mercadoria, em operação interna, para utilização como matéria-prima ou insumo, cujo imposto já tenha sido pago por substituição tributária. Art. 673, § 2º do Decreto Nº 31.825/22|01082023|
+RN022045|Outros créditos - Crédito relativo a recolhimentos no código de receita 1245 para empresas desenquadradas ou excluídas do Simples Nacional com efeito retroativo|01012019|
+RN022052|Outros créditos - Crédito Relativo aos Serviços de Transporte CIF do imposto retido por substituição tributária, cobrado sobre o serviço de transporte efetuado por transportador autônomo  Art. 39, I, a Dec. Nº 31.825/2022|01082023|
+RN022053|Outros créditos - Crédito relativo a serviços de empresas prestadoras de serviços não medidos de televisão por assinatura, via satélite ou de provimento de acesso à internet, cujo preço do serviço seja cobrado por períodos definidos a tomadores localizados em outro Estado  Art. 133 Dec. Nº 31.825/2022|01082023|
+RN022054|Outros créditos - Crédito relativo à diferença entre o valor do imposto destacado na nota fiscal e o valor recolhido, quando encerrada a fase de diferimento pelo optante da sistemática prevista no Art. 14 do anexo 002  Art. 15, II do Anexo 002 - Dec. Nº 31.825/2022|01082023|30092024
+RN022056|Outros créditos - Crédito do estoque previsto no Decreto Estadual 22.199/2011 - Art. 16-K, § 2º|01102019|30062026
+RN022112|Outros créditos - Crédito relativo ao ICMS antecipado com código de receita (1240) decorrente de parcelamento|01052011|
+RN022401|Outros créditos - Crédito relativo ao ICMS recolhido antecipadamente antes da saída AEHC e álcool para fins não-combustíveis, promovida por estabelecimento industrial ou comercial  Art. 59, § 6º, III  Dec. Nº 31.825/2022|01082023|
+RN022951|Outros créditos - Referente ao ICMS debitado na saída da mercadoria nos casos de devolução ou de retorno, total ou parcial, remetida por contribuinte optante pela utilização de crédito presumido e/ou da redução da base de cálculo em substituição à sistemática normal de apuração. Art. 36, IX - Dec. Nº 31.825/2022|01082023|
+RN023131|Outros Créditos - Referente às operações de importação, COM DIFERIMENTO DO PAGAMENTO DO ICMS, conforme previsto no parágrafo 11 do art. 36 - Dec. Nº 31.825/2022|01082023|
+RN025959|Outros Créditos - Contribuinte optante do benefício previsto no Art. 14 do anexo 002 (operações com castanha) Art. 14, Parágrafo único do anexo 002 - Dec. Nº 31.825/2022|01082023|31052026
+RN026003|Outros créditos - Crédito presumido - Indústrias ceramistas  Art. 19, caput e Parágrafo único do Anexo 003  Dec. Nº 31.825/2022|01082023|
+RN026005|Crédito presumido - Nas transferências interestaduais entre estabelecimentos da mesma empresa, de bens integrados ao ativo imobilizado ou de material de uso ou consumo - Art. 44, § 4º  Dec. Nº 31.825/2022|01082023|30092024
+RN026006|Crédito presumido - Saídas de obras de arte recebidas diretamente do autor com isenção do imposto - Art. 14 do anexo 003  Dec. Nº 31.825/2022|01082023|
+RN026007|Crédito presumido - Aos prestadores de serviços de transporte, como opção do contribuinte - Art. 17 do Anexo 003  Dec. Nº 31.825/2022|01082023|
+RN026010|Crédito presumido - Aos distribuidores de cervejas e/ou refrigerantes, de 1,5%, a cada operação, do valor total do ICMS retido por substituição tributária - Dec. 13.640/ 97  - Art. 112 ,  X|01012009|31072023
+RN026011|Crédito presumido - Nas entradas de cana-de-açúcar, equivalente a 2,5% sobre as respectivas entradas, desde que adquiridas de produtor deste Estado e destinada à produção de açúcar, álcool e aguardente de cana - Art. 8º do Anexo 003  Dec. Nº 31.825/2022|01082023|
+RN026013|Crédito presumido - Operações efetuadas por avicultor inscrito no CCE - Art. 7º, Inciso II do Anexo 003  Dec. nº 31.825/2022|01082023|
+RN026015|Crédito presumido - Aos estabelecimentos com atividade de fornecimento de refeições, bebidas e outras mercadorias realizado em bares, hotéis, lanchonetes, restaurantes, e estabelecimentos similares - Art. 12 do Anexo 003  Dec. nº 31.825/2022|01082023|
+RN026016|Crédito presumido - Nas operações realizadas por empresas exclusivamente preparadoras de refeições coletivas, decorrentes de contrato que envolva repetidos fornecimentos - Art. 13 do Anexo 003  Dec. nº 31.825/2022|01082023|
+RN026018|Crédito presumido - Nas operações interestaduais com mel de abelha efetuadas por produtor localizado neste Estado, inscrito no CCE - Art. 9º do Anexo 003  Dec. nº 31.825/2022|01082023|
+RN026021|Crédito presumido - Nas aquisições de farinha de trigo, por estabelecimentos beneficiários do PROEDI - Art. 22 do Anexo 003  Dec. nº 31.825/2022|01082023|
+RN026022|Crédito presumido - À indústria de boné, rede, pano de prato, jogo americano, jogo de cozinha, manta, tapete, toalha de mesa, banho e rosto, colcha de cama, cobertor, flanela, almofada, sacaria, e outros produtos similares, cuja matéria-prima principal seja o fio de algodão  Art. 23, I e II  do Anexo 003  Dec. nº 31.825/2022|01082023|
+RN026023|Crédito presumido - referente às aquisições de serviços de industrialização por encomenda ou de mercadorias, sujeitas à incidência do ICMS, efetuadas à empresa industrial enquadrada no Simples Nacional, localizada neste Estado - Art. 15 do Anexo 003  Dec. nº 31.825/2022|01082023|28022026
+RN026024|Crédito presumido - referente às operações que realizarem com algas marinhas  Art. 10 do Anexo 003  Dec. nº 31.825/2022|01082023|
+RN026027|Crédito presumido -  referente às vendas de mercadorias destinadas a Órgãos da administração Pública direta e indireta federal, estadual e municipal - Dec. 13.640/ 97  - Art. 112 , XXVII|01012017|31072023
+RN026028|Crédito presumido - referente às operações com gasolina de aviação (GAV) destinada a abastecer aeronaves nos aeroportos localizados nos aeroportos de Caicó e Mossoró  Art. 24 do Anexo 003  Dec. nº 31.825/2022|01082023|
+RN026029|Crédito presumido - referente às aquisições de peixe, molusco, ou crustáceo, capturados ou criados em viveiros neste estado, desde que adquiridos de produtores, beneficiadores ou cooperativas de produtores ou pescadores, optantes pelo Simples Nacional  Art. 16 do Anexo 003  Dec. nº 31.825/2022|01082023|
+RN026030|Crédito presumido - referente às saídas de produtos derivados de leite produzidos neste Estado, efetuadas por indústria inscrita no CCE sob o código CNAE 1052-0/00 - Art. 11, I e II do Anexo 003  Dec. nº 31.825/2022|01082023|
+RN026031|Crédito presumido - equivalente a 1% do valor dos débitos de ICMS, aos contribuintes prestadores de serviços de telecomunicação, cujo documento fiscal seja emitido em via única nos termos do Convênio 115/03 - Art. 18 do Anexo 003  Dec. nº 31.825/2022|01082023|
+RN026033|Crédito presumido - equivalente a 61,11% do valor do ICMS incidente nas respectivas saídas internas dos produtos de informática relacionados no § 5º do art. 17 do Anexo 007 - Art. 25 do Anexo 003  Dec. nº 31.825/2022|01082023|
+RN026034|Crédito presumido referente ao ICMS incidente nas respectivas saídas internas de câmaras fotográficas e filmadoras classificadas no código 8525.80.2 da NCM - Art. 26 do Anexo 003  Dec. nº 31.825/2022|01082023|
+RN026035|Crédito presumido Regime CD Dec. 28.881/19 - saídas de mercadorias a 12% - Art. 3º Inc. I|01082019|
+RN026036|Crédito presumido Regime CD Dec. 28.881/19 - saídas de mercadorias a 18% - Art. 3º Inc. II|01082019|
+RN026037|Crédito presumido Regime CD Dec. 28.881/19 - demais saídas internas - Art. 3º Inc. III|01082019|
+RN026038|Crédito presumido Regime CD Dec. 28.881/19 - saídas de mercadorias a 4% - Art. 3º Inc. IV|01082019|
+RN026040|Crédito Presumido - às empresas fornecedoras de energia elétrica, no percentual de até 3% - Art. 27 do Anexo 003  Dec. nº 31.825/2022|01082023|
+RN026063|Outros créditos - referente ao efetivo recolhimento do ICMS devido nas operações de importação quando do encerramento do diferimento - §3º do art. 25 do Anexo 002 - Dec. nº 31.825/2022|01082023|
+RN026104|Crédito presumido - Nas saídas internas de álcool etílico hidratado combustível - AEHC, no valor correspondente ao percentual de 4% (quatro por cento), a ser utilizado exclusivamente, para fins de compensação do ICMS devido nas operações com aguardente de cana ou de melaço - Dec. 18.312/05 - art. 2º - § 4º - I|01032010|
+RN026105|Crédito presumido - Nas saídas internas de álcool etílico hidratado combustível - AEHC, no valor correspondente ao percentual de 5% (cinco por cento), a ser utilizado, exclusivamente, para fins de compensação do ICMS devido nas operações com açúcar - Dec. 18.312/05 - art. 2º - § 4º - II|01032010|
+RN026150|Crédito presumido  Aos estabelecimentos produtores ou beneficiadores de peixe, molusco ou crustáceo, capturados ou criados em viveiros neste Estado, bem como às cooperativas de produtores ou pescadores  Art. 1º do Anexo 003 - Dec. nº 31.825/2022|01082023|
+RN026151|Crédito presumido aos PRODUTORES de camarão (carga 1,5%) - Art. 2º do Anexo 003 - Dec. nº 31.825/2022|01082023|
+RN026152|Crédito presumido aos BENEFICIADORES de camarão (carga 1,0%) - Art. 4º do Anexo 003 - Dec. nº 31.825/2022|01082023|
+RN026401|Crédito presumido - Regime especial - Produtor de álcool - nas saídas internas de álcool etílico hidratado combustível  AEHC - Dec. 18.312/05 - art. 2º- I, "a"|01012009|
+RN026402|Crédito presumido - Regime especial - Produtor de álcool - nas saídas internas de álcool etílico para outros fins AEOF - Dec. 18.312/05 - art. 2º- I, "b"|01012009|
+RN026403|Crédito presumido - Regime especial - Produtor de álcool - nas saídas internas de álcool etílico anidro combustível  AEAC - Dec. 18.312/05 - art. 2º- I, "c"|01012009|
+RN026404|Crédito presumido - Regime especial - Produtor de álcool - nas saídas internas de açúcar - Dec. 18.312/05 - art. 2º- I, "d"|01012009|
+RN026405|Crédito presumido - Regime especial - Produtor de álcool - nas saídas interestaduais de álcool etílico hidratado combustível  AEHC - Dec. 18.312/05 - art. 2º- II, "a"|01012009|
+RN026406|Crédito presumido - Regime especial - Produtor de álcool - nas saídas interestaduais de álcool etílico para outros fins AEOF - Dec. 18.312/05 - art. 2º- II, "b"|01012009|
+RN026407|Crédito presumido - Regime especial - Produtor de álcool - nas saídas interestaduais de álcool etílico anidro combustível  AEAC - Dec. 18.312/05 - art. 2º- II, "c"|01012009|
+RN026408|Crédito presumido - Regime especial - Produtor de álcool - nas saídas interestaduais de açúcar - Dec. 18.312/05 - art. 2º- II, "d"|01012009|
+RN026409|Crédito presumido - Regime especial - Produtor de álcool - nas saídas destinadas a exportação interestaduais de álcool etílico hidratado combustível  AEHC - Dec. 18.312/05 - art. 2º- III, "a"|01012009|
+RN026410|Crédito presumido - Regime especial - Produtor de álcool - nas saídas destinadas a exportação de álcool etílico para outros fins AEOF - Dec. 18.312/05 - art. 2º- III, "b"|01012009|
+RN026411|Crédito presumido - Regime especial - Produtor de álcool - nas saídas destinadas a exportação de álcool etílico anidro combustível  AEAC - Dec. 18.312/05 - art. 2º- III, "c"|01012009|
+RN026412|Crédito presumido - Regime especial - Produtor de álcool - nas saídas destinadas a exportação de açúcar - Dec. 18.312/05 - art. 2º- III, "d"|01012009|
+RN026414|Crédito presumido - Regime especial - Produtor de álcool - recebido de outro estabelecimento do mesmo contribuinte detentor do regime especial  - Dec. 18.312/05 - art. 2º- III, § 3º|01012009|
+RN026418|Crédito presumido - Regime especial - Produtor de álcool - nas saídas destinadas a exportação de açúcar - Dec. 18.312/05 - art. 2º- I, "e"|01012010|
+RN026419|Crédito presumido - Regime especial - Produtor de álcool - nas saídas destinadas a exportação de açúcar - Dec. 18.312/05 - art. 2º- II, "e"|01012010|
+RN026420|Crédito presumido - Regime especial - Produtor de álcool - nas saídas destinadas a exportação de açúcar - Dec. 18.312/05 - art. 2º- III, "e"|01012010|
+RN026464|Outros Créditos - referente ao efetivo recolhimento do ICMS devido nas aquisições interestaduais quando do encerramento do diferimento, conforme previsto no §3º do Art. 26 Anexo 002 -  Dec. nº 31.825/2022|01082023|
+RN028501|Crédito presumido - referente a diferença apurada nos termos do Art. 20 do Anexo 003 do Dec. nº 31.825/2022|01082023|
+RN028585|Outros Créditos - relativas às transferências entre estabelecimentos da mesma empresa, de bens integrados ao ativo imobilizado ou de material de uso ou consumo, de acordo com o  Art. 26, I, a e b do Dec. nº 31.825/2022|01082023|30092024
+RN029030|Crédito presumido PROEDI - Dec. 29.030/2019|01082019|
+RN029090|Outros Créditos - Referente ao pagamento proveniente de Regime Especial de Fiscalização|01102019|
+RN029999|Outros créditos - não especificados|01012009|
+RN031001|Estorno de débito ref. a ajustes após o faturamento - convênio 17/2013|01042013|
+RN031002|Estorno de débito - devoluções de compras dos optantes do Regime CD Dec. 28.881/19|01082019|
+RN031003|Estorno de débito - devoluções de vendas dos optantes do Regime CD Dec. 28.881/19|01082019|
+RN031015|Estorno de Débito - Referente ao DIFERIMENTO nas operações realizadas por empresas exclusivamente preparadoras de refeições coletivas, decorrentes de contrato que envolva repetidos fornecimentos  dos Art. 28, I do Anexo 002|01082023|
+RN033001|Estorno de débitos - Regime Especial Atacadista - Dec. 22.199/2011 - Estorno dos débitos resultantes da sistemática normal de apuração|01052011|30062026
+RN033002|Estorno de débitos  Emissão de nota fiscal de devolução/transferência com destaque de IMCS quando não houve crédito de ICMS na entrada da mercadoria|01012017|
+RN033003|Estorno de débitos - Operações com sal marinho, nos termos do Art. 186 Dec. nº 31.825/2022|01082023|31052026
+RN033004|Estorno de débitos - Referente à exclusão da gorjeta da base de cálculo do ICMS, limitado a 10%, conforme previsto no Inc. IV do Art. 10 Dec. nº 31.825/2022|01082023|
+RN033005|Estorno de débitos - Referente as prestação de serviço de transporte iniciada em outra unidade da Federação|01012017|
+RN033006|Estorno de débito nas operações internas realizadas por Abatedouros - Art. 591 do Decreto nº 31.825/22.|01082023|31052026
+RN033007|Estorno de débitos - Diferimento para saída subsequente - Art. 28, inciso V e § 3º do Anexo 002 do Decreto nº 31.825/22|01082023|
+RN033008|Estorno de débitos - Ajuste Alíquota ICMS Próprio Decreto 31.656/2022|01062022|30112025
+RN033009|Estorno de Débito -  Operações com isca para pesca, Art. 7º § 5º do Anexo 001 - Dec. nº 31.825/2022|01082023|
+RN033010|Estorno de débito pelo prestador do serviço em caso de emissão de CT-e substituto referenciando o CT-e emitido com erro.  Somente débitos extemporâneos. Anexo 11, art. 127, III do Dec. nº 31.825/2022|01042023|
+RN033015|Estorno de débitos - Aos estabelecimentos com atividade de fornecimento de refeições, bebidas e outras mercadorias realizado em bares, hotéis, lanchonetes, restaurantes, e estabelecimentos similares -  Art. 12 do Anexo 003 do Dec. nº 31.825/2022|01082023|
+RN033416|Estorno de débitos - Regime especial - Produtor de álcool - transferido, pelo detentor do regime especial, a outro estabelecimento do mesmo contribuinte|01012009|
+RN033534|Estorno de débitos - Referente aos bilhetes de passagem cancelados conforme o §3° do Art. 534 do RICMS-RN|01012017|31072023
+RN038715|Estorno de Débito de ICMS normal destacado em operações com mercadoria sujeita à substituição tributária retida em operações anteriores - saída interestadual|01012016|
+RN039999|Estorno de débitos - não especificados|01012009|
+RN040002|Dedução no valor do ICMS a recolher, decorrente das devoluções de compras ou de vendas, para os contribuintes que adotam sistemática de apuração diferente da sistemática Normal|01012017|
+RN040003|Dedução no valor do ICMS a recolher, referente ao crédito outorgado de ICMS aos produtores de etanol hidratado combustível Dec. 31.850/2022|01082022|31122025
+RN040004|Dedução do ICMS referente ao Programa de Incentivo RN+ Esporte e Lazer (Decreto 30.901/2021)|01112022|
+RN040720|Deduções do imposto a pagar - IMPORT-RN  dedução decorrente da Carta de Crédito  Art. 3º da Lei 9.592/2011|01072014|
+RN041212|Deduções do Imposto a Pagar - Regime Mensal de Apuração - 1ª parcela|01012016|
+RN047799|Deduções - Dedução do ICMS referente a Lei 7799/1999 (Lei Câmara Cascudo)|01012017|
+RN049999|Deduções do Imposto apurado - não especificados|01012009|
+RN050001|ICMS recolhido antecipado referente ao diferencial de alíquota do Ativo imobilizado|01062013|
+RN050002|ICMS recolhido antecipado referente ao diferencial de alíquota de uso e consumo|01062013|
+RN050003|ICMS recolhido antecipado referente ao diferencial de alíquota de Serv. de Transporte (ativo imobilizado)|01122015|
+RN050004|ICMS a recolher referente ao diferencial de alíquota do Ativo Imobilizado|01062013|
+RN050005|ICMS a recolher referente ao diferencial de alíquota de material de uso e consumo|01062013|
+RN050006|ICMS a recolher referente ao diferencial de alíquota de Serviço de Transporte(ativo imbilizado)|01122015|
+RN050007|ICMS recolhido antecipado referente ao diferencial de alíquota de Serv. de Transporte (uso e consumo)|01122015|
+RN050008|ICMS a recolher referente ao diferencial de alíquota de Serviço de Transporte(uso e consumo)|01122015|
+RN050010|Débito Especial - ICMS a recolher referente a Denúncia Espontânea nos casos de falta de recolhimento/crédito indevido - Art. 185 - PAT|01012014|
+RN050011|Débito Especial - Atualização Monetária do débito de ICMS lançado extemporaneamente|01062017|
+RN050012|Débito Especial - Complementação de Alíquotas destacadas a menor decorrentes do MONITORAMENTO dos documentos fiscais eletrônicos.|01012016|
+RN051212|Débito Especial - Regime Mensal de Apuração - 1ª parcela|01012016|
+RN053131|Débito Especial - Referente às operações de importação, COM DIFERIMENTO DO PAGAMENTO DO ICMS, conforme previsto nos Art. 24, inc. I e §§1º e 2º do Anexo 002 do Dec. nº 31.825/2022|01082023|
+RN055001|Débito Especial de ICMS antecipado referente a documento fiscal escriturado em outro período|01082011|
+RN055184|Débito Especial - ICMS devido a título de FECOP referente a operações diretas para consumo final (5410) - Dec. Nº 31.825/22 - art. 134, §1º.|01082023|
+RN055555|Débito Especial - ICMS a recolher referente a vendas no cartão de crédito sem documentos fiscais emitidos|01012014|
+RN055900|Débito Especial - recolhimento relativo a antecipação tributária, codigo de receita 1240.|01102010|
+RN055901|Débito Especial - recolhimento relativo a antecipação tributária, codigo de receita 1241.|01102010|
+RN055902|Débito Especial - recolhimento relativo a antecipação tributária, codigo de receita 1250.|01102010|
+RN055903|Débito Especial - recolhimento relativo a antecipação tributária, codigo de receita 1255.|01102010|
+RN055910|Débito Especial - Débito referente a contribuição do FUNDERN|01062017|
+RN056060|Débito Especial - Referente às operações de importação SEM DIFERIMENTO pago por GRI, conforme previsto no § 1º do Art. 459 do Dec. nº 31.825/2022|01082023|
+RN056061|Débito Especial - Referente às operações de importação SEM DIFERIMENTO pago por GNRE, conforme previsto no §1º do Art. 459 do Dec. nº 31.825/2022|01082023|
+RN056062|Débito Especial - ICMS a recolher referente a desincorporação do ativo fixo dos bens importados do exterior com diferimento do pagamento do ICMS, Código de Receita 9002 - ICMS ATIVO PERMANENTE DIFERIMENTO|01102019|
+RN056464|Débito Especial - ICMS a recolher referente a transferência interestadual dos bens importados do exterior com diferimento do pagamento do ICMS, Código de Receita 9001- ICMS IMPORTAÇÃO DIFERIMENTO|01102019|
+RN059999|Débito especial - não especificados|01012009|
+RN090005|Crédito Outorgado aos produtores de etanol hidratado combustível (EHC) Dec. 31.850/2022|01072022|
+RN099999|Controle de Créditos Fiscais de ICMS extra-apuração, exclusivo do Reg. 1200|01012013|
+RN109999|Outros débitos - não especificados|01012009|
+RN119999|Estorno de Crédito - não especificados|01012009|
+RN122001|Outros Créditos  FECOP  5415  Op. Interna S.T.|01082011|
+RN122002|Outros Créditos  FECOP  5420  Op. Interest. S.T.|01082011|
+RN127777|Outros Créditos ST - ICMS ST pago selo fiscal de controle (1221)|01052017|
+RN129090|Outros Créditos - Referente ao pagamento proveniente de Regime Especial de Fiscalização Mercadorias ST|01012017|
+RN129999|Outros créditos - não especificados|01012009|
+RN130001|Estorno de débitos - Substituto pelas saídas - prestação de serviços de transportes - ART. 649 IV e VI do Decreto 31.825/22 (1225)|01082023|
+RN130002|Estorno do ICMS-ST retido na NFe nas operações com as mercadorias relacionadas no Protocolo ICMS 58/18 constantes no quadro integrante do art. 16 do Anexo 007 do Decreto 31.825/22.|01082023|
+RN133008|Estorno de débitos - Ajuste Alíquota ICMS ST Decreto 31.656/2022|01062022|30112025
+RN139999|Estorno de débitos - não especificados|01012009|
+RN140001|Dedução do ICMS-ST distribuidora combustíveis - Art. 893-B, §13º, II|01042022|31072023
+RN149999|Deduções do Imposto apurado - não especificados|01012009|
+RN150001|Débito Especial - substituto pelas saídas - Nas saídas internas de produtos derivados de farinha de trigo realizada por estabelecimentos beneficiários do PROEDI (1225) - Art. 1º,  , § 5º e 6º , do Anexo 009 - Dec. nº 31.825/2022|01082023|
+RN150002|Débito Especial - Substituto pelas saídas - prestação de serviços de transportes - Art. 649, incisos  IV e VI do Dec. nº 31.825/2022 (1225)|01082023|
+RN150003|Débito Especial - ICMS devido referente às operações sujeitas à substituição tributária, a ser recolhido pelo próprio adquirente, por não ter sido retido pelo remetente, exceto os valores recolhidos ou a recolher através de TADF (1241). Art. 649, incisos X e XI do Dec. nº 31.825/2022|01082023|
+RN150167|Débito Especial - Substituto pelas entradas - ICMS retido de terceiros em operações de entrada de mercadorias (1220) - Dec. Nº 31.825/2022, art. 58, inciso V, alínea c.|01082023|
+RN155174|Débito Especial - ICMS retido a título de FECOP referente a operações sujeitas à substituição tributária interna (5415) - Art. 30 - Dec. nº 31.825/2022|01082023|
+RN155175|Débito Especial - FECOP  5420  Op. Interest. S.T.|01082011|
+RN159999|Débito especial - não especificados|01012009|
+RN209999|Outros débitos para ajuste de apuração ICMS Difal/FCP para a UF|01012016|
+RN219999|Estorno de créditos para ajuste de apuração ICMS Difal/FCP para a UF|01012016|
+RN229999|Outros créditos para ajuste de apuração ICMS Difal/FCP para a UF|01012016|
+RN238715|Estorno de Débito de Difal ICMS EC 87/15 destacado em operações com mercadoria sujeita à substituição tributária retida em operações anteriores|01012017|
+RN239999|Estorno de débitos para ajuste de apuração ICMS Difal/FCP para a UF|01012016|
+RN249999|Deduções do imposto apurado na apuração ICMS Difal/FCP para a UF|01012016|
+RN259999|Débito especial de ICMS Difal/FCP para a UF|01012016|
+RN309999|Outros Débitos FECOP ICMS para a UF RN|01012017|
+RN319999|estorno de créditos FECOP ICMS para a UF RN|01012017|
+RN329999|outros créditos FECOP ICMS para a UF RN|01012017|
+RN339999|estorno de débitos FECOP ICMS para a UF RN|01012017|
+RN349999|Deduções do imposto FECOP ICMS para a UF RN|01012017|
+RN359999|Débito especial FECOP ICMS para a UF RN|01012017|
+RN000001|Outros débitos - Regime Especial Atacadista - Dec. 22.199/2011 - Saídas internas p/ não contribuintes de ICMS em percentual superior a 20% sobre o total das saídas internas - art. 4º, VI|01082011|01012017
+RN000003|Regime Atacadista - Cesta Básica - Art. 3º, § 2º, inciso II do Dec. 22.199/2011|01052013|01012017
+RN000005|Regime Atacadista - Ent. Interestadual S/SE - Art. 4º, inciso II, alínea "a" do Dec. 22.199/2011|01052013|01012017
+RN000006|Regime Atacadista - Ent. Interestadual N/NE/CO e ES - Art. 4º, inciso II, alínea "b" do Dec. 22.199/2011|01052013|01012017
+RN000026|Regime Atacadista - Ent. Interestadual por Transferência oriundas dos Estados das Regiões Norte, Nordeste e Centro-Oeste, inclusive Espirito Santo - Art. 4º, inciso IX, alínea "b" do Dec. 22.199/2011|01122016|01012017
+RN000032|Regime Atacadista - Ent. Interestadual por Transferência oriundas dos Estados das Regiões Sul e Sudeste, exceto Espirito Santo - Art. 4º, inciso IX, alínea "a" do Dec. 22.199/2011|01122016|01012017
+RN022008|Regime Atacadista - ICMS lançado antecipadamente sob as entradas interestaduais, sem direito a crédito (1242)|01052013|01012017
+RN100167|Outros débitos - ICMS retido de terceiros em operações de entrada de mercadorias (1220) - Dec. Nº 13.640/97 - art. 578 parágrafo 1º,d, 6|01012010|01042010
+RN100206|Outros débitos - Regime Especial - drogas e medicamentos  Mercadorias sujeitas à tributação normal - Dec. 17.034/03 Art 7 § I|01012009|01042010
+RN020010|Crédito autorizado em processo administrativo de ressarcimento de ICMS-ST|01012021|28022021
+RN000015|Outros débitos - Aos estabelecimentos com atividade de fornecimento de refeições, bebidas e outras mercadorias realizado em bares, hotéis, lanchonetes, restaurantes, e estabelecimentos similares - Dec. 13.640/ 97  - Art. 112 ,  § 37, V|01012009|30042011
+RN000112|Outros débitos - Débito recebibo pela inscrição centralizadora de estabelecimentos do mesmo sujeito passivo localizados neste Estado - Dec. 13.640/ 97  - Art. 106-A|01012009|30042011
+RN000169|Crédito presumido - Saídas de obras de arte recebidas diretamente do autor com isenção do imposto - Dec. 13.640/ 97  - Art. 112 ,  VI|01012010|30042011
+RN000170|Crédito presumido - Aos prestadores de serviços de transporte, como opção do contribuinte - Dec. 13.640/ 97  - Art. 112 ,  VII|01012010|30042011
+RN000171|Crédito presumido - Aos distribuidores de cervejas e/ou refrigerantes, de 1,5%, a cada operação, do valor total do ICMS retido por substituição tributária - Dec. 13.640/ 97  - Art. 112 ,  X|01012010|30042011
+RN000172|Crédito presumido - Nas entradas de cana-de-açúcar, equivalente a 2,5% sobre as respectivas entradas, desde que adquiridas de produtor deste Estado e destinada a produção de açúcar, álcool e aguardente de cana - Dec. 13.640/ 97  - Art. 112 ,  XI|01012010|30042011
+RN000173|Crédito presumido - Operações efetuadas por avicultor inscrito no CCE - Dec. 13.640/ 97  - Art. 112 ,  XIII|01012010|30042011
+RN000174|Crédito presumido - Na aquisição de equipamento Emissor de Cupom Fiscal - ECF com requisito de MFD para fins de substituição de ECF sem requisito de MFD - Dec. 13.640/ 97  - Art. 112 ,  XIV|01012010|30042011
+RN000180|Outros débitos - ICMS devido a título de diferencial de alíquotas decorrente das aquisições para o ativo imobilizado exceto os valores recolhidos ou a recolher através de TADF (1245) - Dec. Nº 13.640/97 - art. 578 parágrafo 1º,d,7|01012010|30042011
+RN000181|Outros débitos - ICMS devido a título de diferencial de alíquotas decorrente das aquisições para uso ou consumo exceto os valores recolhidos ou a recolher através de TADF (1245) - Dec. Nº 13.640/97 - art. 578 parágrafo 1º,d,8|01012010|30042011
+RN000182|Outros débitos - ICMS  devido a título de diferencial de alíquotas sobre o serviço de transporte relativo às aquisições para o ativo imobilizado exceto os valores recolhidos ou a recolher através de TADF (1245) - Dec. Nº 13.640/97 - art. 578 parágrafo 1º,d,9|01012010|30042011
+RN000183|Outros débitos - ICMS devido a título de diferencial de alíquotas sobre o serviço de transporte relativo às aquisições para uso e consumo exceto os valores recolhidos ou a recolher através de TADF (1245) - Dec. Nº 13.640/97 - art. 578 parágrafo 1º,d,10|01012010|30042011
+RN000184|Outros débitos - ICMS devido a título de FECOP referente a operações diretas para consumo final (5410) - Dec. Nº 13.640/97 - art. 578 parágrafo 1º,d,13|01012010|30042011
+RN000201|Outros débitos - Regime Especial - drogas e medicamentos - Dec. 17.034/03 Art 3 ,  I|01012009|30042011
+RN000202|Outros débitos - Regime Especial - drogas e medicamentos - Dec. 17.034/03 Art 3 ,  III|01012009|30042011
+RN000203|Outros débitos - Regime Especial - drogas e medicamentos - Dec. 17.034/03 Art 3 ,  IV|01012009|30042011
+RN000204|Outros débitos - Regime Especial - drogas e medicamentos - Dec. 17.034/03 Art 3 ,  V|01012009|30042011
+RN000205|Outros débitos - Regime Especial - drogas e medicamentos - Dec. 17.034/03 Art 3 ,  VI|01012009|30042011
+RN000206|Outros débitos - Regime Especial - drogas e medicamentos - Dec. 17.034/03 Art 3 ,  VI, "b"|01042010|30042011
+RN000207|Outros débitos - Regime Especial - drogas e medicamentos  Mercadorias sujeitas à Substituição tributária - Dec. 17.034/03 Art 7 § I|01012009|30042011
+RN000208|Outros Débitos - Regime Especial - drogas e medicamentos - Dec. 17.034/03 Art 3 ,  VII|01102010|30042011
+RN000301|Outros débitos - Regime especial - Alimentos - Aquisições interestaduais (1242) - Dec. 17.987/04 - art. 3º-A, I, a|01012009|30042011
+RN000302|Outros débitos - Regime especial - Alimentos - Aquisições interestaduais (1242) - Dec. 17.987/04 - art. 3º-A, I, b|01012009|30042011
+RN000303|Outros débitos - Regime especial - Alimentos - Aquisições do exterior 1230 (s/ diferimento) - Dec. 17.987/04 - art. 3º-A, II.|01012009|30042011
+RN000304|Outros débitos - Regime especial - Alimentos - Aquisições do exterior 9001 (c/ diferimento) - Dec. 17.987/04 - art. 3º-A, II, b|01012009|30042011
+RN000305|Outros débitos - Regime especial - Alimentos - Saídas internas - Dec. 17.987/04 - art. 3º-A, III, a|01012009|30042011
+RN000306|Outros débitos - Regime especial - Alimentos - Saídas internas - Dec. 17.987/04 - art. 3º-A, III, b,1|01012009|30042011
+RN000307|Outros débitos - Regime especial - Alimentos - Saídas internas - Dec. 17.987/04 - art. 3º-A, III, b,2|01012009|30042011
+RN000308|Outros débitos - Regime especial - Alimentos - Saídas internas - Dec. 17.987/04 - art. 3º-A, III, b,3|01012009|30042011
+RN000309|Outros débitos - Regime especial - Alimentos - Saídas internas p/ pessoa física - produtos tributados a 17% 1210 - Dec. 17.987/04 - art. 3º-A, IV, a|01012009|30042011
+RN000310|Outros débitos - Regime especial - Alimentos - Saídas internas p/ pessoa física - produtos tributados a 25% 1210 - Dec. 17.987/04 - art. 3º-A, IV, b|01012009|30042011
+RN000311|Outros débitos - Regime especial - Alimentos - Saídas internas p/ pessoa física em percentual superior a 30% 1210 - Dec. 17.987/04 - art. 3º-A, V|01012009|30042011
+RN000312|Outros débitos - Regime especial - Alimentos - Saídas internas p/ mesmo contribuinte em percentual superior a 20% 1210 - Dec. 17.987/04 - art. 3º-A, VI|01012009|30042011
+RN000313|Outros débitos - Regime especial - Alimentos - Saídas internas das mercadorias indicadas no art. 898-I 1210 - Dec. 17.987/04 - art. 3º-A, VII|01012009|30042011
+RN000314|Outros débitos - Regime especial - Alimentos - Saídas interestaduais p/ contribuintes -  Dec. 17.987/04 - art. 3º-A, VIII, a|01012009|30042011
+RN000315|Outros débitos - Regime especial - Alimentos - Saídas interestaduais p/ pessoa física  Dec. 17.987/04 - art. 3º-A, VIII, b|01012009|30042011
+RN000316|Outros débitos - Regime especial - Alimentos - FECOP - 5410|01012009|30042011
+RN000317|Outros débitos - Regime especial - Alimentos - FECOP - 5415|01012009|30042011
+RN000318|Outros débitos - Regime especial - Alimentos - Saídas internas das mercadorias indicadas no art. 898-I 1210 - Dec. 17.987/04 - art. 3º-A, VII, b|01102010|30042011
+RN000601|Outros débitos - Regime especial - material de construção - aquisições interestaduais - Dec.  19.228/2006 - art. 3º, I, a|01012009|30042011
+RN000602|Outros débitos - Regime especial - material de construção - aquisições interestaduais - Dec.  19.228/2006 - art. 3º, I, b|01012009|30042011
+RN000603|Outros débitos - Regime especial - material de construção - aquisições do exterior - Dec.  19.228/2006|01012009|30042011
+RN000604|Outros débitos - Regime especial - material de construção - saídas internas paras pessoas jurídicas - Dec.  19.228/2006 - art. 3º, III, exceto as excedentes a 20%|01012009|30042011
+RN000605|Outros débitos - Regime especial - material de construção  - saídas internas para pessoas não inscritas no CNPJ - Dec.  19.228/2006 - art. 3º, IV|01012009|30042011
+RN000606|Outros débitos - Regime especial - material de construção - saídas internas para contribuinte excedentes aos 20% - Dec.  19.228/2006 - art. 3º, §1º|01012009|30042011
+RN000607|Outros débitos - Regime especial - material de construção - saídas interestaduais para contribuintes - Dec.  19.228/2006 - art. 3º, V, a|01012009|30042011
+RN000608|Outros débitos - Regime especial - material de construção - saídas interestaduais para não contribuintes - Dec.  19.228/2006 - art. 3º, V, b|01012009|30042011
+RN000701|Outros débitos - Regime especial - Importador - Aquisições do Exterior 6% - Dec.  18.032/2004 - art. 3º, I|01012009|30042011
+RN000702|Outros débitos - Regime especial - Importador - Saídas Internas 3% - Dec.  18.032/2004 - art. 3º, II|01012009|30042011
+RN000703|Outros débitos - Regime especial - Importador -Saídas interestaduais p/ contribuintes 1% - Dec.  18.032/2004 - art. 3º, III, "a"|01012009|30042011
+RN000704|Outros débitos - Regime especial - Importador -Saídas interestaduais p/ não contribuintes 3% - Dec.  18.032/2004 - art. 3º, III, "b"|01012009|30042011
+RN000705|Outros débitos - Regime especial - Importador - Saídas internas p/ pessoa física - produtos tributados a 17% - 2,55% - Dec.  18.032/2004 - art. 3º, IV, "a"|01012009|30042011
+RN000706|Outros débitos - Regime especial - Importador - Saídas internas p/ pessoa física - produtos tributados a 25% - 3,75% - Dec.  18.032/2004 - art. 3º, IV, "b"|01012009|30042011
+RN000707|Outros débitos - Regime especial - Importador - Saídas internas p/ pessoa física em percent. superior a 20% - 2,00% - Dec.  18.032/2004 - art. 3º, V|01012009|30042011
+RN000708|Outros débitos - Regime especial - Importador - Saídas internas p/ mesmo contribuinte em percent. superior a 20% - 3% - Dec.  18.032/2004 - art. 3º, VI|01012009|30042011
+RN000709|Outros débitos - Regime especial - Importador - Saídas internas das mercadoris indicadas no art. 898-I - Dec.  18.032/2004 - art. 3º, VII|01012009|30042011
+RN000710|Outros débitos - Regime especial - Importador - FECOP 5410|01012009|30042011
+RN000711|Outros débitos - Regime especial - Importador - FECOP 5415|01012009|30042011
+RN000801|Outros débitos - Regime especial - Construtora - Aquisições Interestaduais 3% - Dec.  17.104/2003 - art 2º, I|01012009|30042011
+RN000802|Outros débitos - Regime especial - Eletro-eletronicos, informatica e móveis - Aquisições do exterior, 6%  art. 3º, II do Dec. 21.540/2010 - Código Recolhimento: 9001 (com diferimento)|01102010|30042011
+RN000803|Outros débitos - Regime especial - Eletro-eletronicos, informatica e móveis - Aquisições do exterior, 6%  art. 3º, II do Dec. 21.540/2010 - Código Recolhimento: 1230 (sem diferimento)|01102010|30042011
+RN000804|Outros débitos - Regime especial - Eletro-eletronicos, informatica e móveis - Saídas internas, exceto as destinadas a órgãos da Administração Publica e suas fundações públicas, 3% - art. 3º, III  do Dec. 21.540/2010- Código Recolhimento. 1210|01102010|30042011
+RN000805|Outros débitos - Regime especial - Eletro-eletronicos, informatica e móveis - Saídas internas destinadas a órgãos da Administração Publica e suas fundações, 1% - art. 3º, IV do Dec. 21.540/2010 - Código Recolhimento. 1210|01102010|30042011
+RN000806|Outros débitos - Regime especial - Eletro-eletronicos, informatica e móveis - Saídas internas destinadas a pessoa física em percentual superior a 20% - art. 3º, VI  do Dec. 21.540/2010 - Código Recolhimento. 1210|01102010|30042011
+RN000807|Outros débitos - Regime especial - Eletro-eletronicos, informatica e móveis - Saídas interestaduais, inclusive às destinadas a não contribuintes - art. 3º, V do Dec. 21.540/2010 - Código Recolhimento. 1210|01102010|30042011
+RN000808|Outros débitos - Regime especial - Eletro-eletronicos, informatica e móveis - COMPLEMENTO - BASE LEGAL: ART. 3º, § 4º  do Dec. 21.540/2010 - Código Recolhimento. 1210|01102010|30042011
+RN000809|Outros débitos - Regime especial - Eletro-eletronicos, informatica e móveis - COMPLEMENTO - BASE LEGAL: ART. 2º, § 8º - Código Recolhimento. 1210|01102010|30042011
+RN000810|Crédito presumido - Regime especial - Eletro-eletronicos, informatica e móveis -Crédito presumido, 4% art. 4º, I do Dec. 21.540/2010|01102010|30042011
+RN000811|Crédito presumido - Regime especial - Eletro-eletronicos, informatica e móveis -Crédito presumido, 3,9% art. 4º, II do Dec. 21.540/2010|01102010|30042011
+RN000812|Estorno crédito -  Regime especial - Eletro-eletronicos, informatica e móveis - referente aos créditos resultante da sistemática normal de apuração - Dec.  21.540/2010|01102010|30042011
+RN000813|Estorno débito -  Regime especial - Eletro-eletronicos, informatica e móveis - referente aos débitos resultante da sistemática normal de apuração - Dec.  21.540/2010|01102010|30042011
+RN000814|Outros débitos - Regime especial - Eletro-eletronicos, informatica e móveis - Aquisições interestaduais, 6% - art. 3º, I do Dec. 21.540/2010 - Código Recolhimento. 1242|01102010|30042011
+RN011112|Estorno crédito - Crédito transferido para inscrição centralizadora de estabelecimentos do mesmo sujeito passivo localizados neste Estado - Dec. 13.640/ 97  - Art. 106-A|01012009|30042011
+RN011200|Estorno crédito - Regime Especial - drogas e medicamentos - Estorno dos créditos resultante da sistemática normal de apuração - Dec. 17.034/03|01012009|30042011
+RN011209|Estorno crédito  Drogas e medicamentos  Saldo credor existente na escrita fiscal à data da opção pelo Regime EspeciaI  Dec. 17.034/03. Art 8º, III.|01102010|30042011
+RN011300|Estorno crédito - Regime Especial - Alimentos - Estorno dos créditos resultante da sistemática normal de apuração - Dec. 17.987/04. Art. 6º, I.|01012009|30042011
+RN011318|Estorno crédito  Alimentos  - Saldo credor existente na escrita fiscal à data da opção pelo Regime EspeciaI  Dec.17.987/04. Art. 7º, V.|01102010|30042011
+RN011500|Estorno crédito - Regime especial construção civil  - dos créditos resultantes da sistemática normal de apuração - Dec.  17.104/2003 - art.2º|01012009|30042011
+RN011600|Estorno crédito - Regime especial material de construção - dos créditos resultante da sistemática normal de apuração - Dec.  19.228/2006 - art. 3º § 3º|01012009|30042011
+RN011609|Estorno crédito   Regime especial - material de construção - Saldo credor existente na escrita fiscal à data da opção pelo Regime EspeciaI  Dec.19.222/2006.|01102010|30042011
+RN011700|Estorno crédito - Regime especial Importador - dos créditos resultante da sistemática normal de apuração - Dec.  18.032/2004|01012009|30042011
+RN011800|Estorno crédito - Regime especial - Construtora - dos créditos resultante da sistemática normal de apuração - Dec.  17.104/2003|01012009|30042011
+RN022030|Outros créditos - Operações efetuadas a preço FOB, a utilização do crédito fiscal pelo estabelecimento comercial ou industrial, relativamente ao imposto anteriormente cobrado sobre o serviço de transporte - Dec. 13.640/ 97  - Art. 110|01012009|30042011
+RN022031|Outros créditos - Operações efetuadas a preço CIF, a utilização do crédito fiscal pelo estabelecimento comercial ou industrial remetente, relativamente ao imposto cobrado sobre o serviço de transporte - Dec. 13.640/ 97  - Art. 111|01012009|30042011
+RN022034|Outros créditos - Crédito de ICMS nos casos de furto, roubo, extravio ou deterioração das mercadorias sujeita à substituição tributária.|01012009|30042011
+RN022040|Outros créditos - Crédito extemporâneo não apropriado no momento do registro do documento fiscal.|01012009|30042011
+RN022041|Outros créditos - Crédito na transferência de propriedade do estabelecimento.|01012009|30042011
+RN022043|Outros créditos - Crédito proporcional à saída tributada de mercadoria inicialmente prevista para ocorrer sem débito|01012009|30042011
+RN022050|Outros créditos - Crédito FECOP 5410 - Dec. 13.640/ 97  - Art. 621-A § 3º|01012009|30042011
+RN022051|Outros créditos - Crédito FECOP 5415 - Dec. 13.640/ 97  - Art. 621-A § 3º|01012009|30042011
+RN022052|Outros créditos - Crédito Relativo aos Serviços de Transporte CIF do imposto retido por substituição tributária , cobrado sobre o serviço de transporte efetuado por transportador autônomo - Dec. 13.640/ 97  - Art. 111 inc.I "a"|01012009|30042011
+RN022055|Outros créditos - Crédito relativo a diferença entre o valor do imposto destacado na nota fiscal e o valor recolhido, quando encerrada a fase de diferimento pelo optante da sistemática prevista no art. 59  B - Dec. 13.640/ 97  - Art. 59-C, inc.II|01012009|30042011
+RN022111|Outros créditos - Crédito relativo ao ICMS antecipado|01012009|30042011
+RN022112|Outros créditos - Crédito recebibo pela inscrição centralizadora de estabelecimentos do mesmo sujeito passivo localizados neste Estado - Dec. 13.640/ 97  - Art. 106-A|01012009|30042011
+RN022175|Outros débitos - Regime especial - Alimentos - Saídas internas das mercadorias indicadas no art. 898-I 1210 - Dec. 17.987/04 - art. 3º-A, VII|01012010|30042011
+RN022176|Outros débitos - Regime especial - Alimentos - Saídas interestaduais p/ contribuintes - art. 3º-A, VIII, a  - Dec. 17.987/04 - art. 3º-A, VIII, a|01012010|30042011
+RN026019|Crédito presumido - Ao adquirente do gado bovino oriundo de produtor inscrito no CCE, destinado ao abate - Dec. 13.640/ 97  - Art. 112 ,  XIX|01012009|30042011
+RN026301|Crédito presumido - Regime especial - Alimentos - Dec. 17.987/04 - art. 3º-B, I, c|01012009|30042011
+RN026302|Crédito presumido - Regime especial - Alimentos - Dec. 17.987/04 - art. 3º-B, I, d,1|01012009|30042011
+RN026303|Crédito presumido - Regime especial - Alimentos - Dec. 17.987/04 - art. 3º-B, I, d,2|01012009|30042011
+RN026304|Crédito presumido - Regime especial - Alimentos - Dec. 17.987/04 - art. 3º-B, I, d,3|01012009|30042011
+RN026305|Crédito presumido - Regime especial - Alimentos - Dec. 17.987/04 - art. 3º-B, II, c|01012009|30042011
+RN026306|Crédito presumido - Regime especial - Alimentos - Dec. 17.987/04 - art. 3º-B, II, d|01012009|30042011
+RN026307|Crédito presumido - Regime especial - Alimentos - Dec. 17.987/04 - art. 3º-B, II, e,1|01012009|30042011
+RN026308|Crédito presumido - Regime especial - Alimentos - Dec. 17.987/04 - art. 3º-B, II, e,2|01012009|30042011
+RN026309|Crédito presumido - Regime especial - Alimentos - Dec. 17.987/04 - art. 3º-B, II, e,3|01012009|30042011
+RN026310|Crédito presumido - Regime especial - Alimentos - Dec. 17.987/04 - art. 3º-B, III, a|01012009|30042011
+RN026311|Crédito presumido - Regime especial - Alimentos - Dec. 17.987/04 - art. 3º-B, III, b|01012009|30042011
+RN026312|Crédito presumido - Regime especial - Alimentos - Dec. 17.987/04 - art. 3º-B, III, c|01012009|30042011
+RN026313|Crédito presumido - Regime especial - Alimentos - Dec. 17.987/04 - art. 3º-F, I|01012009|30042011
+RN026314|Crédito presumido - Regime especial - Alimentos - Dec. 17.987/04 - art. 3º-F, II|01012009|30042011
+RN026315|Crédito presumido - Regime especial - Alimentos - Dec. 17.987/04 - art. 3º-F, III|01012009|30042011
+RN033112|Estorno de débitos - Débito transferido para inscrição centralizadora de estabelecimentos do mesmo sujeito passivo localizados neste Estado - Dec. 13.640/ 97  - Art. 106-A|01012009|30042011
+RN033200|Estorno de débitos - Regime Especial - drogas e medicamentos - Estorno dos débitos resultante da sistemática normal de apuração - Dec. 17.034/03|01012009|30042011
+RN033500|Estorno de débitos - Regime especial construção civil  - dos débitos resultante da sistemática normal de apuração - Dec.  17.104/2003 - art.2º|01012009|30042011
+RN033600|Estorno de débitos - Regime especial material de construção - dos débitos resultante da sistemática normal de apuração - Dec.  19.228/2006 - art. 3º § 3º|01012009|30042011
+RN033700|Estorno de débitos - Regime especial Importador - dos débitos resultante da sistemática normal de apuração - Dec.  18.032/2004|01012009|30042011
+RN033800|Estorno de débitos - Regime especial - Construtora - dos débitos resultante da sistemática normal de apuração - Dec.  17.104/2003|01012009|30042011
+RN100166|Outros débitos - ICMS devido referente às operações sujeitas à substituição tributária, a ser recolhido pelo próprio adquirente, por não ter sido retido pelo remetente, exceto os valores recolhidos ou a recolher através de TADF (1241) - Dec. Nº 13.640/97 - art. 578 parágrafo 1º,d, 5|01012010|30042011
+RN100168|Outros débitos - ICMS devido a título de diferencial de alíquotas decorrente das aquisições para o ativo imobilizado exceto os valores recolhidos ou a recolher através de TADF (1245) - Dec. Nº 13.640/97 - art. 578 parágrafo 1º,d, 7|01012010|30042011
+RN100174|Outros débitos - ICMS retido a título de FECOP referente a operações sujeitas à substituição tributária interna (5415) - Dec. Nº 13.640/97 - art. 578 parágrafo 1º,d, 14|01012010|30042011
+RN100186|Outros débitos - ICMS devido referente às operações sujeitas à substituição tributária, a ser recolhido pelo próprio adquirente, por não ter sido retido pelo remetente, exceto os valores recolhidos ou a recolher através de TADF (1241) - Dec. Nº 13.640/97|01012010|30042011
+RN100187|Outros débitos - ICMS retido de terceiros em operações de entrada de mercadorias (1220) - Dec. Nº 13.640/97 - art. 578 parágrafo 1º,d, 6|01012010|30042011
+RN000003|Regime Atacadista - Cesta Básica - Art. 3º, § 2º, inciso II|01052011|30042013
+RN000004|Regime Atacadista - Ent. Interna - Art. 4º, inciso I|01052011|30042013
+RN000005|Regime Atacadista - Ent. Interestadual S/SE - Art. 4º, inciso II, alínea "a"|01052011|30042013
+RN000006|Regime Atacadista - Ent. Interestadual N/NE/CO e ES - Art. 4º, inciso II, alínea "b"|01052011|30042013
+RN000007|Regime Atacadista - Ent. Exterior - Art. 4º, inciso III|01052011|30042013
+RN000008|Regime Atacadista - Saída Interna 17% - Art. 4º, inciso IV, alínea "a"|01052011|30042013
+RN000009|Regime Atacadista - Saída Interna 25% - Art. 4º, inciso IV, alínea "b"|01052011|30042013
+RN000010|Regime Atacadista - Adicional PF 17% - Art. 4º, inciso V, alínea "a"|01052011|30042013
+RN000011|Regime Atacadista - Adicional PF 25% - Art. 4º, inciso V, alínea "b"|01052011|30042013
+RN000012|Regime Atacadista - Adicional Saídas Não Contribuintes - Art. 4º, inciso VI|01052011|30042013
+RN000013|Regime Atacadista - Prod. Quimioterápicos - Art. 4º, inciso VII, alínea "a"|01052011|30042013
+RN000014|Regime Atacadista - Prod. do Anexo 114 - Art. 4º, inciso VII, alínea "b.1"|01052011|30042013
+RN000016|Regime Atacadista - Prod. do Anexo 114 - Art. 4º, inciso VII, alínea "b.2"|01052011|30042013
+RN000017|Regime Atacadista - Saída Interest. Contribuintes - Art. 4º, inciso VIII, alínea "a"|01052011|30042013
+RN000018|Regime Atacadista - Saída Interest. Não Contribuintes - Art. 4º, inciso VIII, alínea "b"|01052011|30042013
+RN000021|Regime Atacadista  Frete FOB origem S/SE - Art. 4º, inciso II, alínea "a"|01052011|30042013
+RN000022|Regime Atacadista  Frete FOB origem N/NE/CO/ES - Art. 4º, inciso II, alínea "b"|01052011|30042013
+RN000020|Outros débitos - Débito ICMS sobre o estoque na inclusão de mercadorias no regime de substituição tributária. Art. 875 caput, V|01012009|30042017
+RN022003|Outros créditos de ICMS antecipado referentes a documento fiscal escriturado em outro período|01082011|30042017
+RN026160|Crédito presumido - Nas operações internas com camarão - Dec. Nº 13.640/97 - art. 44-B, I|01012009|30062010
+RN026161|Crédito presumido - Nas operações interestaduais com camarão industrializado - Dec. Nº 13.640/97 - art. 44-B, II|01012009|30062010
+RN026001|Crédito presumido - Nas operações com sal marinho - Dec. 13.640/ 97  - Art. 112 ,  I|01012009|30092010
+RN026150|Crédito presumido - Nas operações com lagosta, molúsculo e pescado - Dec. Nº 13.640/97 - art. 35|01012009|30092010
+RN000004|Regime Atacadista - Ent. Interna - Art. 4º, inciso I do Dec. 22.199/2011|01052013|30092019
+RN000008|Regime Atacadista - Saída Interna alíquota prevista no inciso I, alínea a, do art. 104 do Regulamento do ICMS - Art. 4º, inciso IV, alínea "a" do Dec. 22.199/2011|01062016|30092019
+RN000009|Regime Atacadista - Saída Interna alíquotas previstas no inciso I, alíneas b, c e d, do art. 104 do Regulamento do ICMS - Art. 4º, inciso IV, alínea "b" do Dec. 22.199/2011|01062016|30092019
+RN000010|Regime Atacadista - Adicional PF mercadorias sujeitas à alíquota no inciso I, alínea a, do art. 104 - Art. 4º, inciso V, alínea "a" do Dec. 22.199/2011|01062016|30092019
+RN000011|Regime Atacadista - Adicional PF mercadorias sujeitas às alíquotas prevista no inciso I, alíneas b, c e d, do art. 104 do Regulamento do ICMS - Art. 4º, inciso V, alínea "b" do Dec. 22.199/2011|01062016|30092019
+RN000012|Regime Atacadista - Adicional Saídas Não Contribuintes - Art. 4º, inciso VI do Dec. 22.199/2011|01052013|30092019
+RN000013|Regime Atacadista - Prod. Quimioterápicos - Art. 4º, inciso VII, alínea "a" do Dec. 22.199/2011|01052013|30092019
+RN000014|Regime Atacadista - Prod. do Anexo 114 - Art. 4º, inciso VII, alínea "b.1" do Dec. 22.199/2011|01052013|30092019
+RN000016|Regime Atacadista - Prod. do Anexo 114 - Art. 4º, inciso VII, alínea "b.2" do Dec. 22.199/2011|01052013|30092019
+RN000017|Regime Atacadista - Saída Interest. Contribuintes - Art. 4º, inciso VIII, alínea "a" do Dec. 22.199/2011|01052013|30092019
+RN000018|Regime Atacadista - Saída Interest. Não Contribuintes - Art. 4º, inciso VIII, alínea "b" do Dec. 22.199/2011|01052013|30092019
+RN000021|Regime Atacadista - Frete FOB origem S/SE - Art. 4º, inciso II, alínea "a"|01052013|30092019
+RN000022|Regime Atacadista - Frete FOB origem N/NE/CO/ES - Art. 4º, inciso II, alínea "b"|01052013|30092019
+RN000023|Regime Atacadista - Ent. Exterior - Art. 4º, inciso III, alínea "a" do Dec. 22.199/2011|01022016|30092019
+RN000024|Regime Atacadista - Ent. Exterior - Art. 4º, inciso III, alínea "b" do Dec. 22.199/2011|01022016|30092019
+RN000027|Regime Atacadista - Saída Interna por Transferência para outro estabelecimento da mesma empresa. Art. 4º, inciso X, alínea "a" do Dec. 22.199/2011|01122016|30092019
+RN000028|Regime Atacadista - Saída Interna por Transferência para outro estabelecimento da mesma empresa. Art. 4º, inciso X, alínea "b" do Dec. 22.199/2011|01122016|30092019
+RN000029|Regime Atacadista - Saída Interna por Transferência para outro estabelecimento da mesma empresa. Art. 4º, inciso XI do Dec. 22.199/2011|01122016|30092019
+RN000031|Regime Atacadista - Saída Interna Exceto Transferência para outro estabelecimento da mesma empresa. Art. 4º, inciso XII do Dec. 22.199/2011|01122016|30092019
+RN000033|Regime Atacadista - Saída Interestaduais venda em licitação pública - Art. 4º, § 3º  do Dec. 22.199/2011|01122016|30092019
+RN000034|Regime Atacadista - Saída Interna alíquota prevista no inciso I, alínea a, do art. 104 do Regulamento do ICMS - Art. 4º, inciso IV, alínea "a" do Dec. 22.199/2011 - Venda em licitação pública|01122016|30092019
+RN000035|Regime Atacadista - Saída Interna alíquotas previstas no inciso I, alíneas b, c e d, do art. 104 do Regulamento do ICMS - Art. 4º, inciso IV, alínea "b" do Dec. 22.199/2011 - Venda em licitação pública|01122016|30092019
+RN022001|Outros créditos - crédito presumido - Regime Especial Atacadista - Dec. 22.199/2011 - 2,00% sobre o valor das mercadorias tributadas do estoque apurado - art. 9º, I|01082011|30092019
+RN026062|Débito Especial - Referente às operações de importação, COM DIFERIMENTO DO PAGAMENTO DO ICMS, de máquinas e equipamentos destinados ao ativo fixo de estabelecimento industrial, agropecuário, aquícola, de empresa jornalística, de televisão por assinatura, de radiodifusão, estabelecimento gráfico ou editorial - Art. 60 do Dec 13.640/97|01012017|30092019
+RN026464|Outros Créditos - Referente às operações de importação, COM DIFERIMENTO DO PAGAMENTO DO ICMS, de partes e peças de reposição para máquinas têxteis e de confecção de artigos do vestuário, cama, mesa e banho, e seus respectivos acessórios, conforme previsto no Art. 66-A do Dec. 13.640/97|01012017|30092019
+RN029090|Outros Créditos - Referente ao pagamento proveniente de Regime Especial de Fiscalização (1290)|01012017|30092019
+RN040001|Dedução no valor do ICMS a recolher, decorrente das devoluções de compras e/ou de vendas ocorridas após o  período de apuração das respectivas entradas ou saídas, para os contribuintes detentores do Regime Especial do Decreto 21.999/2011|01102011|30092019
+RN050009|ICMS a recolher referente desincorporação do ativo fixo/transferência interestadual dos bens importados do exterior com diferimento Art. 31|01082019|30092019
+RN050021|Débito Especial - Regime Atacadista  Frete FOB origem S/SE - Art. 4º, inciso II, alínea "a"|01012015|30092019
+RN050022|Debito Especial - Regime Atacadista - Frete FOB origem N/NE/CO/ES - Art. 4º, inciso II, alínea "b"|01012015|30092019
+RN055905|Regime Atacadista - Ent. Interestadual S/SE - Art. 4º, inciso II, alínea "a" do Dec. 22.199/2011|01122016|30092019
+RN055906|Regime Atacadista - Ent. Interestadual N/NE/CO e ES - Art. 4º, inciso II, alínea "b" do Dec. 22.199/2011|01122016|30092019
+RN055907|Regime Atacadista - Ent. Interestadual por Transferência oriundas dos Estados das Regiões Sul e Sudeste, exceto Espirito Santo - Art. 4º, inciso IX, alínea "a" do Dec. 22.199/2011|01122016|30092019
+RN055908|Regime Atacadista - Ent. Interestadual por Transferência oriundas dos Estados das Regiões Norte, Nordeste e Centro-Oeste, inclusive Espirito Santo - Art. 4º, inciso IX, alínea "b" do Dec. 22.199/2011|01122016|30092019
+RN056062|Débito Especial - Referente às operações de importação, COM DIFERIMENTO DO PAGAMENTO DO ICMS, de máquinas e equipamentos destinados ao ativo fixo de estabelecimento industrial, agropecuário, aquícola, de empresa jornalística, de televisão por assinatura, de radiodifusão, estabelecimento gráfico ou editorial - Art. 60 do Dec. 13.640/97|01012017|30092019
+RN056464|Débito Especial - Referente às operações de importação, COM DIFERIMENTO DO PAGAMENTO DO ICMS, de partes e peças de reposição para máquinas têxteis e de confecção de artigos do vestuário, cama, mesa e banho, e seus respectivos acessórios, conforme previsto no Art. 64 do Dec. 13.640/97|01012017|30092019
+RN000040|Regime Atacadista - Saídas internas à alíquota de 18%, Art. 16-B, inciso III|01102019|30092020
+RN033300|Estorno de débitos - Regime Especial - Alimentos - Estorno dos débitos resultante da sistemática normal de apuração - Dec. 17.034/03|01012009|30112009
+RN026101|Crédito presumido - Nas saídas internas de álcool etílico hidratado combustível - AEHC, promovidas pelo produtor, no percentual de 13% (treze por cento) - Dec. 13.640/ 97  - Art. 112 - A ,  I|01012009|30112015
+RN026102|Crédito presumido - Nas saídas internas de álcool para fins não-combustíveis  AEOF, promovidas pelo produtor, no percentual de 13% (treze por cento) - Dec. 13.640/ 97  - Art. 112 - A ,  II|01012009|30112015
+RN026103|Crédito presumido - Nas saídas interestaduais de álcool etílico hidratado combustível  AEHC ou de álcool para fins não-combustíveis - AEOF, promovidas pelo produtor, no percentual de 4% (quatro por cento) - Dec. 13.640/ 97  - Art. 112 - A ,  III|01012009|30112015
+RN050003|ICMS recolhido antecipado referente ao diferencial de alíquota de Serv. de Transporte|01062013|30112015
+RN050006|ICMS a recolher referente ao diferencial de alíquota de Serviço de Transporte|01062013|30112015
+RN055904|Regime Atacadista - ICMS recolhido ou a recolher sob o código de receita 1242|01052013|30112016
+RN020109|Outros Créditos  Crédito de ICMS incidente sobre as aquisições de mercadorias de ME ou EPP optante pelo Simples Nacional, desde que destinadas à comercialização ou industrialização, conforme previsto no Art. 109-B do Dec. 13.640/97|01012017|30112019
+RN023037|Outros créditos - Crédito referente a aquisição de mercadorias ou serviços de ME ou EPP optantes pelo SIMPLES NACIONAL conforme Art. 251-AB do Dec. 13640/97|01012017|30112019
+RN022011|Outros créditos - Crédito referente a pagamento efetuado por denúncia espontânea (Cód. Ajuste RN050009), nos casos que o crédito for permitido.|01012014|31012014
+RN050720|Débitos especiais - IMPORT-RN 1210  Aquisições do Exterior  Lei 9.592/2011  incisos I a IV do art. 6º|01072014|31012016
+RN050721|Débitos especiais - IMPORT-RN 1210  Saídas Internas  Lei 9.592/2011  § 5º do art. 6º|01072014|31012016
+RN022111|Outros créditos - Crédito relativo ao ICMS antecipado com CÓDIGO DE RECEITA (1240)|01052011|31052011
+RN000007|Regime Atacadista - Ent. Exterior - Art. 4º, inciso III do Dec. 22.199/2011|01052013|31052016
+RN000008|Regime Atacadista - Saída Interna 17% - Art. 4º, inciso IV, alínea "a" do Dec. 22.199/2011|01052013|31052016
+RN000009|Regime Atacadista - Saída Interna 25% - Art. 4º, inciso IV, alínea "b" do Dec. 22.199/2011|01052013|31052016
+RN000010|Regime Atacadista - Adicional PF 17% - Art. 4º, inciso V, alínea "a" do Dec. 22.199/2011|01052013|31052016
+RN000011|Regime Atacadista - Adicional PF 25% - Art. 4º, inciso V, alínea "b" do Dec. 22.199/2011|01052013|31052016
+RN020711|Outros Créditos - Referente a ressarcimento de ICMS Próprio nas operações com Subistuição tributária relativas às vendas a bordo de aeronaves em voos domésticos. Art. 282 do RIMCS-RN do Dec. 13.640/97|01012018|31072018
+RN033006|Estorno de débitos - Referente ao percentual de 50% devido ao estado de origem, relativamente aos serviços não-medidos de televisão por assinatura, via satélite|01012017|31072019
+RN033900|Estorno de débitos  Simples Nacional - débitos referentes a emissão de nota(s) fiscal(is) de devolução de mercadorias por empresas do Simples Nacional destinadas a contribuinte do tipo Normal|01012014|31072020
+RN000020|Outros débitos - Débito ICMS sobre o estoque na inclusão de mercadorias no regime de substituição tributária. Art. 878 caput, V|01052017|31072023
+RN000025|Outros débitos - Débito de ICMS realativo a diferença devida pela seguradora relativamente às saídas reais ou simbólicas das peças ou partes referidas no inciso III art. 178    - Dec. 13.640/ 97  - Art. 178|01012009|31072023
+RN011001|Estorno crédito - Mercadorias objeto de saída ou prestação de serviço não tributada ou isenta, sendo essa circunstância imprevisível na data da entrada da mercadoria ou da utilização do serviço - Dec. 13.640/ 97  - Art. 115,  I|01012009|31072023
+RN011002|Estorno crédito - Mercadorias objeto de integração, consumo ou emprego em processo de industrialização, produção, geração ou extração, quando a operação subseqüente com o produto resultante não for tributada ou estiver isenta do imposto - Dec. 13.640/ 97  - Art. 115 ,  II|01012009|31072023
+RN011003|Estorno crédito - Mercadorias objeto de operação ou prestação subseqüente com redução da base de cálculo, hipótese em que o valor do estorno será proporcional à redução - Dec. 13.640/ 97  - Art. 115 ,  III|01012009|31072023
+RN011004|Estorno crédito - Mercadorias que vierem a ser utilizadas em fim alheio à atividade do estabelecimento - Dec. 13.640/ 97  - Art. 115 ,  IV|01012009|31072023
+RN011005|Estorno crédito - Mercadorias que perecerem, forem sinistradas, deteriorarem-se ou forem objeto de quebra, furto, roubo ou extravio, inclusive no caso de tais ocorrências com os produtos resultantes da industrialização, produção, extração ou geração - Dec. 13.640/ 97  - Art. 115 ,  V|01012009|31072023
+RN011006|Estorno crédito - Mercadorias que forem objeto de locação ou arrendamento a terceiros - Dec. 13.640/ 97  - Art. 115 ,  VI|01012009|31072023
+RN011007|Estorno crédito - Mercadorias que entrarem no estabelecimento para fins de comercialização, industrialização, produção, geração ou extração, sendo, depois, destinadas ao ativo permanente do estabelecimento - Dec. 13.640/ 97  - Art. 115 ,  VII, "a"|01012009|31072023
+RN011008|Estorno crédito - Mercadorias que saírem por preço inferior ao seu custo, hipótese em que o estorno será proporcional à diferença entre o preço de custo e o valor referente à sua saída - Dec. 13.640/ 97  - Art. 115 ,  VIII|01012009|31072023
+RN011009|Estorno crédito - Do saldo credor existente na data da opção do crédito presumido no Art. 112 - Dec. 13.640/ 97  - Art. 112 ,  § 10, III|01012009|31072023
+RN011011|Estorno de Créditos  Do saldo credor de ICMS existente em conta gráfica quando da opção pelo Regime Simplificado (Simples Nacional)  RICMS/RN - art. 251-AA.|01012020|31072023
+RN011112|Estorno crédito - Estorno de crédito referente ao Crédito Presumido - Dec. 13.640/ 97  - Art. 112|01012017|31072023
+RN011154|Estorno de Créditos - Operações com sal marinho, nos termos do art. 154-D do Decreto 13.640/97|01012017|31072023
+RN011164|Estorno crédito - Contribuinte optante do benefício previsto no Art 59-B (operações com castanha) - Dec. Nº 13.640/97 - art. 59-B § único|01012009|31072023
+RN011954|Estorno de créditos  saída de mercadorias  por preço inferior ao seu custo, hipótese em  que o estorno  proporcional à diferença entre o preço de custo e o valor referente à sua saída.Dec. 13.640/97, art. 115, VIII|01102010|31072023
+RN012008|Estorno de Créditos - Operações com isca para pesca, art. 43-A do Decreto 13.640/97|01052022|31072023
+RN013838|Estorno crédito - Estorno de crédito referente ao Crédito Presumido- Dec. 13.640/ 97  - Art. 38|01012017|31072023
+RN018502|Estorno de Créditos - referente a diferença entre os débitos e créditos nas operações  interestaduais,  relativas às transferências entre estabelecimentos da mesma empresa, de bens integrados ao ativo imobilizado ou de material de uso ou consumo , conforme previsto no Inc. I do parágrafo único do Art. 85 do Dec. 13.640/97|01012017|31072023
+RN020006|Outros Créditos  Relativo à apropriação do crédito fiscal de combustíveis, lubrificantes, óleos, aditivos e fluidos, na proporção do valor das prestações iniciadas no território do RN, nos termos do art. 109-A, I, d e § 8º, I e III.|01012020|31072023
+RN020007|Outros Créditos  Crédito do valor do ICMS efetivamente recolhido nos termos do art. 31, § 44, III, do RICMS/RN.|01092019|31072023
+RN022033|Outros créditos - Crédito de 1/48 avos referente ao ativo permanente - Dec. 13.640/ 97  - Art. 105 § 5|01012009|31072023
+RN022044|Crédito presumido  Referenta à aquisição de mercadoria, em operação interna, para utilizaçãocomo matéria-prima ou insumo, cujo imposto já tenha sido pago por substituição tributária. Dec. 13.640/97. Art. 862, § 2º.|01112010|31072023
+RN022052|Outros créditos - Crédito Relativo aos Serviços de Transporte CIF do imposto retido por substituição tributária , cobrado sobre o serviço de transporte efetuado por transportador autônomo - Dec. 13.640/ 97  - Art. 111 inc.I "a"|01052011|31072023
+RN022053|Outros créditos - Crédito relativo a serviços de empresas prestadoras de serviços não medidos de televisão por assinatura, via satélite ou de provimento de acesso à internet, cujo preço do serviço seja cobrado por períodos definidos a tomadores localizados em outro Estado - Dec. 13.640/ 97  - Art. 621 § 8º "a"|01012009|31072023
+RN022054|Outros créditos - Crédito relativo a diferença entre o valor do imposto destacado na nota fiscal e o valor recolhido, quando encerrada a fase de diferimento pelo optante da sistemática prevista no art. 59  B - Dec. 13.640/ 97  - Art. 59-C, inc.II|01012009|31072023
+RN022401|Outros créditos - Crédito relativo ao ICMS recolhido antecipadamente antes da saída AEHC e álcool para fins não-combustíveis, promovida por estabelecimento industrial ou comercial - Dec. 13.640/ 97  - Art. 945 § 6º IV|01012009|31072023
+RN022951|Outros créditos -  Referente ao ICMS debitado na saída da mercadoria nos casos de devolução ou de retorno, total ou parcial, remetida por contribuinte optante pela utilização de crédito presumido e/ou da redução da base de cálculo em substituição à sistemática normal de apuração. Art. 109-A, IX do Decreto 13.640/97|01102010|31072023
+RN023131|Outros Créditos - Referente às operações de importação, COM DIFERIMENTO DO PAGAMENTO DO ICMS, conforme previsto no parágrafo 9º do Art. 109-A do Dec. 13.640/97|01012017|31072023
+RN025959|Outros Créditos - Contribuinte optante do benefício previsto no Art 59-B (operações com castanha) - Dec. Nº 13.640/97 - art. 59-B § único|01012009|31072023
+RN026003|Outros créditos - Crédito presumido - Indústriais ceramistas - Dec. 13.640/ 97  - Art. 112 ,  III|01012009|31072023
+RN026005|Crédito presumido - Nas transferências interestaduais entre estabelecimentos da mesma empresa, de bens integrados ao ativo imobilizado ou de material de uso ou consumo - Dec. 13.640/ 97  - Art. 112 ,  V|01012009|31072023
+RN026006|Crédito presumido - Saídas de obras de arte recebidas diretamente do autor com isenção do imposto - Dec. 13.640/ 97  - Art. 112 ,  VI|01012009|31072023
+RN026007|Crédito presumido - Aos prestadores de serviços de transporte, como opção do contribuinte - Dec. 13.640/ 97  - Art. 112 ,  VII|01012009|31072023
+RN026011|Crédito presumido - Nas entradas de cana-de-açúcar, equivalente a 2,5% sobre as respectivas entradas, desde que adquiridas de produtor deste Estado e destinada a produção de açúcar, álcool e aguardente de cana - Dec. 13.640/ 97  - Art. 112 ,  XI|01012009|31072023
+RN026013|Crédito presumido - Operações efetuadas por avicultor inscrito no CCE - Dec. 13.640/ 97  - Art. 112 ,  XIII|01012009|31072023
+RN026015|Crédito presumido - Aos estabelecimentos com atividade de fornecimento de refeições, bebidas e outras mercadorias realizado em bares, hotéis, lanchonetes, restaurantes, e estabelecimentos similares - Dec. 13.640/ 97  - Art. 112 ,  XV|01012009|31072023
+RN026016|Crédito presumido - Nas operações realizadas por empresas exclusivamente preparadoras de refeições coletivas, decorrentes de contrato que envolva repetidos fornecimentos - Dec. 13.640/ 97  - Art. 112 ,  XVI|01012009|31072023
+RN026018|Crédito presumido - Nas operações interestaduais com mel de abelha efetuadas por produtor localizado neste Estado, inscrito no CCE - Dec. 13.640/ 97  - Art. 112 ,  XVIII|01012009|31072023
+RN026021|Crédito presumido - Nas aquisições de farinha de trigo, por estabelecimentos beneficiários do PROADI - Dec. 13.640/ 97  - Art. 112 ,  XXI|01012009|31072023
+RN026022|Crédito presumido -  À indústria de boné, rede, pano de prato, jogo americano, jogo de cozinha, manta, tapete, toalha de mesa, banho e rosto, colcha de cama, cobertor, flanela, almofada, sacaria, e outros produtos similares, cuja matéria-prima principal seja o fio de algodão - Dec. 13.640/ 97  - Art. 112 ,  XXII, "a" e"b"|01012009|31072023
+RN026023|Crédito presumido -  referente às aquisições de serviços de industrialização por encomenda ou de mercadorias, sujeitas à incidência do ICMS, efetuadas à empresa industrial enquadrada no Simples Nacional, localizada neste Estado - Dec. 13.640/ 97  - Art. 112 , XXIII|01012017|31072023
+RN026024|Crédito presumido -  referente às operações que realizarem com algas marinhas - Dec. 13.640/ 97  - Art. 112 , XXIV|01012017|31072023
+RN026028|Crédito presumido -  referente às operações com gasolina de aviação (GAV) destinada a abastecer aeronaves nos aeroportos localizados nos aeroportos de Caicó e Mossoró - Dec. 13.640/ 97  - Art. 112 , XXVIII|01012017|31072023
+RN026029|Crédito presumido -  referente às aquisições de peixe, molusco, ou crustáceo, capturados ou criados em viveiros neste estado, desde que adquiridos de produtores, beneficiadores ou cooperativas de produtores ou pescadores, optantes pelo Simples Nacional - Dec. 13.640/ 97  - Art. 112 , XXIX|01012017|31072023
+RN026030|Crédito presumido -  referente às saídas de produtos derivados de leite produzidos neste Estado, efetuadas por indústria inscrita no CCE sob o código CNAE 1052-0/00 - Dec. 13.640/ 97  - Art. 112 , XXX|01012017|31072023
+RN026031|Crédito presumido -  referente ao equivalente a 1% do valor dos débitos de ICMS, aos contribuintes prestadores de serviços de telecomunicação, cujo documento fiscal seja emitido em via única nos termos do Convênio 115/03 - Dec. 13.640/ 97  - Art. 112 , XXXI|01012017|31072023
+RN026033|Crédito presumido -  referente ao equivalente a 61,11% do valor do ICMS incidente nas respectivas saídas internas dos produtos de informática relacionados no $8 do art. 18 do Anexo 191 - Dec. 13.640/ 97  - Art. 112 , XXXIII|01012017|31072023
+RN026034|Crédito presumido -  referente ao equivalente a 28% do valor do ICMS incidente nas respectivas saídas internas de câmaras fotográficas e filmadoras classificadas classificadas no código 8525.80.2 do NCM - Dec. 13.640/ 97  - Art. 112 , XXXIV|01012017|31072023
+RN026040|Crédito Presumido - às empresas fornecedoras de energia elétrica, no percentual de até 3% - Dec. 13.640/ 97  - Art. 112 , XXXV|01092019|31072023
+RN026063|Outros créditos - referente ao efetivo recolhimento do ICMS devido nas operações de importação quando do encerramento do diferimento - Art. 63 §1º do Dec 13.640/97|01102019|31072023
+RN026150|Crédito presumido  Aos estabelecimentos produtores ou beneficiadores de peixe, molusco ou crustáceo, capturados ou criados em viveiros neste Estado, bem como às cooperativas de produtores ou pescadores - Dec. Nº 13.640/97 - art. 35-A|01102010|31072023
+RN026151|Crédito presumido aos PRODUTORES de camarão (carga 1,5%) - Art. 35-B|01082019|31072023
+RN026152|Crédito presumido aos BENEFICIADORES de camarão (carga 1,0%) - Art. 35-C|01082019|31072023
+RN026464|Outros Créditos -  referente ao efetivo recolhimento do ICMS devido nas operações de importação quando do encerramento do diferimento, conforme previsto no Art. 66-A do Dec. 13.640/97|01102019|31072023
+RN028501|Outros Créditos - Crédito presumido referente a diferença entre os débitos e créditos nas operações  interestaduais,  relativas às transferências entre estabelecimentos da mesma empresa, de bens integrados ao ativo imobilizado ou de material de uso ou consumo , conforme previsto no Inc. I do parágrafo único do Art. 85 do Dec. 13.640/97|01012017|31072023
+RN028585|Outros Créditos - créditos fiscais originários cobrados, a qualquer título, sobre o respectivo bem ou material de consumo nas operações  interestaduais,  relativas às transferências entre estabelecimentos da mesma empresa, de bens integrados ao ativo imobilizado ou de material de uso ou consumo , de acordo com o Inc. I do Art. 85 do Dec. 13.640/97|01012017|31072023
+RN031015|Estorno de Débito - Referente ao DIFERIMENTO nas operações realizadas por empresas exclusivamente preparadoras de refeições coletivas, decorrentes de contrato que envolva repetidos fornecimentos - Dec. 13.640/ 97  - Art. 31 ,  XV|01012009|31072023
+RN033003|Estorno de débitos - Operações com sal marinho, nos termos do art. 154-A do Decreto 13.640/97|01012017|31072023
+RN033004|Estorno de débitos - Referente à exclusão da gorjeta da base de cálculo do ICMS, limitado a 10%, conforme previsto no Inc. IV e  parágrafo 15, ambos do Art. 69 do Dec. 13640/97|01012017|31072023
+RN033006|Estorno de débito nas operações internas realizadas por Abatedouros - Art. 268-C|01082019|31072023
+RN033007|Estorno de débitos - Diferimento para saída subsequente - Art. 31, XXXVI e § 43|01012020|31072023
+RN033009|Estorno de Débito -  Operações com isca para pesca, art. 43-A do Decreto 13.640/97|01052022|31072023
+RN033015|Estorno de débitos - Aos estabelecimentos com atividade de fornecimento de refeições, bebidas e outras mercadorias realizado em bares, hotéis, lanchonetes, restaurantes, e estabelecimentos similares - Dec. 13.640/ 97  - Art. 112 ,  § 37, III|01012009|31072023
+RN053131|Débito Especial - Referente às operações de importação, COM DIFERIMENTO DO PAGAMENTO DO ICMS, conforme previsto no inc. XIV do Art. 31 do Dec. 13.640/97|01012017|31072023
+RN055184|Débito Especial - ICMS devido a título de FECOP referente a operações diretas para consumo final (5410) - Dec. Nº 13.640/97 - art. 578 parágrafo 1º,d,13|01102010|31072023
+RN056060|Débito Especial - Referente às operações de importação SEM DIFERIMENTO pago por GRI, conforme previsto no parágrafo 1º do Art. 316 do Dec. 13.640/97|01012017|31072023
+RN056061|Débito Especial - Referente às operações de importação SEM DIFERIMENTO pago por GNR, conforme previsto no parágrafo 1º do Art. 316 do Dec. 13.640/97|01012017|31072023
+RN130001|Estorno de débitos - Substituto pelas saídas - prestação de serviços de transportes - ART. 850 IV e VI do RICMS/RN (1225) -|01112015|31072023
+RN130002|Estorno do ICMS-ST retido na NFe nas operações com as mercadorias relacionadas no Protocolo ICMS 58/18 constantes no quadro integrante do art. 15 do Anexo 191 do RICMS|01012020|31072023
+RN150001|Débito Especial - substituto pelas saídas - Nas saídas internas de produtos derivados de farinha de trigo realizada por estabelecimentos beneficiários do PROADI (1225) - Dec. 13.640/ 97 - Art. 903 -B , § 5º e 6º|01012009|31072023
+RN150002|Débito Especial - Substituto pelas saídas - prestação de serviços de transportes - ART. 850 IV e VI do RICMS/RN (1225) -|01012011|31072023
+RN150003|Débito Especial - ICMS devido referente às operações sujeitas à substituição tributária, a ser recolhido pelo próprio adquirente, por não ter sido retido pelo remetente, exceto os valores recolhidos ou a recolher através de TADF (1241).Dec. Nº 13.640/88|01112015|31072023
+RN150167|Débito Especial - substituto pelas entradas - ICMS retido de terceiros em operações de entrada de mercadorias (1220) - Dec. Nº 13.640/97 - art. 578 parágrafo 1º,d, 6|01012011|31072023
+RN155174|Débito Especial - ICMS retido a título de FECOP referente a operações sujeitas à substituição tributária interna (5415) - Dec. Nº 13.640/97  Art. 104-A c/c art. 578 parágrafo 1º,d, 14|01102010|31072023
+RN011015|Estorno crédito - Aos estabelecimentos com atividade de fornecimento de refeições, bebidas e outras mercadorias realizado em bares, hotéis, lanchonetes, restaurantes, e estabelecimentos similares - Dec. 13.640/ 97  - Art. 112 ,  § 37, III|01012009|31082017
+RN011117|Estorno crédito - Mercadorias que entrarem no estabelecimento para fins de comercialização, industrialização, produção, geração ou extração, sendo, depois, destinadas a uso ou consumo do estabelecimento - Dec. 13.640/ 97  - Art. 112 ,  VII, "b"|01012009|31082017
+RN011162|Estorno crédito - Contribuinte optante do crédito presumido do Art 44-B - Dec. Nº 13.640/97 - art. 44-F, I|01012009|31082017
+RN011163|Estorno crédito - Contribuinte optante do crédito presumido do Art 44-B - Dec. Nº 13.640/97 - art. 44-F, II|01012009|31082017
+RN000030|Outros débitos - Débito relativo a diferença de alíquotas dos estabelecimentos agropecuários e aquícolas que poderão compensar com o saldo credor acumulado em virtude de suas exportações - Dec. 13.640/ 97  - Art. 107-A|01012009|31082019
+RN000113|Outros débitos - Lançamento a débito do estabelecimento centralizado, a fim de zerar seu saldo credor, que será transferido para o estabelecimento centralizador|01052011|31082019
+RN000500|Outros débitos - Regime especial construção civil - Dec.  17.104/2003 - art.2º, I|01012009|31082019
+RN011014|Estorno crédito - Na cessação de uso do equipamento em prazo inferior a 48 meses - Dec. 13.640/ 97  - Art. 112 ,  § 55|01012009|31082019
+RN011044|Estorno crédito - Crédito tributário apurado mediante ação fiscal - Dec. 13.640/97 - art. 109 § 22|01012009|31082019
+RN022005|Crédito presumido - outros créditos - aquisição de ECF com MFD - Regime Especial bares, hotéis, lanchonetes, restaurantes, e estabelecimentos similares|01082011|31082019
+RN022032|Outros créditos - Utilização dos Créditos Acumulados na Exportação - Dec. 13.640/ 97  - Art. 117|01012009|31082019
+RN022039|Outros créditos - Crédito do imposto pago indevidamente por erro no registro dos documentos ou preenchimento do documento de arrecadação.|01012009|31082019
+RN022042|Outros créditos - Crédito proporcional à saída tributada de mercadoria cuja entrada se destinava às atividades sujeitas ao ISS|01012009|31082019
+RN022190|Outros créditos - Crédito relativo a saída interna ou interestadual de AEHC ou de álcool para fins não-combustíveis do imposto destacado na Nota Fiscal relativa à operação de saída. Protocolo ICMS 17/2004. Dec. 13.640/97  art. 945, §6º, IV|01012010|31082019
+RN022955|Outros créditos - O saldo credor do ICMS existente na data do encerramento da atividade de estabelecimento que resultar de aquisição de estabelecimento ou fundo de comércio, transformação, fusão, incorporação ou cisão. Dec. 13.640/97, art. 149 § 1º.  612.|01102010|31082019
+RN026014|Crédito presumido - Na aquisição de equipamento Emissor de Cupom Fiscal - ECF com requisito de MFD para fins de substituição de ECF sem requisito de MFD - Dec. 13.640/ 97  - Art. 112 ,  XIV|01012009|31082019
+RN026316|Outros créditos  Crédito presumidoart. 8º-B, III  8%|01102010|31082019
+RN026317|Outros créditos  Crédito presumido art.8º-C-FECOP  2%|01102010|31082019
+RN026318|Outros créditos  Crédito presumidoart. 8º-E, III, a  8%|01102010|31082019
+RN026319|Outros créditos  Crédito presumidoart. 8º-E, III, b  6%|01102010|31082019
+RN026320|Outros créditos  Crédito presumidoart. 8º-E, III, c 5%|01102010|31082019
+RN026321|Outros créditos  Crédito presumidoart. 8º-E, III, d 3%|01102010|31082019
+RN026322|Outros créditos  Crédito presumidoart. 8º-E, §1º - FECOP|01102010|31082019
+RN027777|Outros Créditos - Crédito ref. aquisição do Selo Fiscal de Controle (Dec. 26.596/17 - Art. 7º, § 3º e 4º)|01052017|31082019
+RN028715|Outros Créditos - Crédito ICMS EC 87/15 transferido da apuração específica|01012016|31082019
+RN033300|Estorno débitos - Regime Especial - Alimentos - Estorno dos créditos resultante da sistemática normal de apuração - Dec. 17.987/04. Art. 6º, I.|01122009|31082019
+RN090001|EXPORTAÇÃO - Demonstrativo do crédito exportação em fase de acumulação|01102013|31082019
+RN090002|EXPORTAÇÃO  Demonstrativo de Utilização de créditos exportação reconhecidos/homologados|01102013|31082019
+RN090003|EXPORTAÇÃO - Controle de créditos exportação provisionados|01102013|31082019
+RN090004|EXPORTAÇÃO - Controle de créditos exportação recebidos|01102013|31082019
+RN100165|Outros débitos - ICMS retido de terceiros na condição de contribuinte substituto em operações internas de saída de mercadorias (1225) - Dec. Nº 13.640/97 - art. 578 parágrafo 1º,d, 4|01012010|31082019
+RN100185|Outros débitos - ICMS retido de terceiros na condição de contribuinte substituto em operações internas de saída de mercadorias (1225) - Dec. Nº 13.640/97 - art. 578 parágrafo 1º,d, 4|01012010|31082019
+RN122953|Crédito presumido - às empresas produtoras de discos fonográficos e de outros suportes com sons gravados, relativamente ao valor dos direitos autorais, artísticos e conexos, comprovadamente pagos aos autores ou artistas nacionais ou a empresas que os representem, dos quais sejam titulares ou sócios majoritários. Dec. 13.640/97, art. 112,  II.|01102010|31082019
+RN218715|Outros Débitos - Débito Difal ICMS EC 87/15 transferido para apuração normal|01012017|31082019
+RN228715|Outros Créditos - Crédito Difal ICMS EC 87/15 transferido para apuração normal|01012017|31082019
+RN022044|Crédito presumido  Referenta à aquisição de mercadoria, em operação interna, para utilizaçãocomo matéria-prima ou insumo, cujo imposto já tenha sido pago por substituição tributária. Dec. 13.640/97. Art. 868, § 2º.|01102010|31102010
+RN026952|Outros créditos -  Crédito presumido nas saídas interestaduais com sal marinho, nos termos do art. 87, XXVI, alíneas a e b do Decreto 13.640/97.|01102010|31102010
+RN022007|Aproveitamento de crédito relativo a aquisição de energia elétrica por estabelecimento industrial|01032012|31102017
+RN026017|Crédito presumido - Nas remessas dos veículos automotores relacionados no Anexo 115 - Dec. 13.640/ 97  - Art. 112 ,  XVII|01012009|31122013
+RN022010|Regime Atacadista - ICMS lançado antecipadamente sob importações (1230)|01052013|31122016
+RN022019|Outros créditos - Créditos recebidos em transferência de outros contribuintes ou utilizados na compensação com "saldos devedores próprios"|01012009|31122016
+RN022020|Outros créditos - Lançamento a crédito do estabelecimento centralizado, a fim de zerar seu saldo devedor, que será transferido para o estabelecimento centralizador|01052011|31122016
+RN026023|Crédito presumido - crédito presumido que resulte em carga tributária de 8%, nas prestações internas de serviço de transporte aéreo e nas prestações interestaduais de serviço de transporte aéreo tomadas por não contribuinte do imposto   - Dec. 13.640/ 97  - Art. 270|01012009|31122016
+RN218715|Outros Débitos - Débito ICMS EC 87/15 transferido para apuração normal|01012016|31122016
+RN228715|Outros Créditos - Crédito ICMS EC 87/15 transferido para apuração normal|01012016|31122016
+RN238715|Estorno de Débito de ICMS EC 87/15 destacado em operações com mercadoria sujeita à substituição tributária retida em operações anteriores|01012016|31122016
+RN005555|Outros Débitos  Débito referente a vendas no cartão de crédito sem documentos fiscais emitidos|01062017|31122019
+RN011002|Estorno crédito - Mercadorias objeto de integração, consumo ou emprego em processo de industrialização, produção, geração ou extração, quando a operação subsequente com o produto resultante não for tributada ou estiver isenta do imposto -  Art. 44, II do Dec. nº 31.825/2022|02082023|
+RN026041|Crédito presumido - Operações efetuadas por avicultor inscrito no CCE - Art. 7º, Inciso I do Anexo 003  Dec. nº 31.825/2022|01082023|
+RN011113|Estorno de Créditos  referente à parcela não reconhecida do saldo credor acumulado nas exportações, nos termos do art. 47, §5º, inciso I, do Dec. 31.825/2022|01072023|
+RN140002|Deduções do Imposto a Pagar - Regime Mensal de Apuração - 1ª parcela|01072023|
+RN140001|Dedução do ICMS-ST distribuidora combustíveis - Art. 2º, §8º, Anexo 8 do RICMS|01082023|
+RN033534|Estorno de débito em função de não embarque, cancelamento após o mês de emissão ou substituição de BP-e regularmente escriturado com débito|01082023|
+RN022013|Crédito nas aquisições de farinha de trigo ou mistura de farinha de trigo por estabelecimentos industriais beneficiários do PROEDI - Dec. 32.903/23|01092023|
+RN000057|Regime Atacadista - Saídas interestaduais  Não Contribuinte - Bebidas Quentes, Art. 16-B, inciso I, § 17|01102023|30062026
+RN000058|Regime Atacadista - Adicional quando o faturamento for menor que R$ 400.000,00, Art. 16-Q|01102023|30062026
+RN122003|Crédito autorizado em processo administrativo de ressarcimento de ICMS-ST|01082016|
+RN022001|Regime Atacadista  Crédito Presumido Estoque  Art. 16-J do Dec. 22.199/2011|01112023|30062026
+RN055911|Regime de CD - Débito Relativo às Saídas Interestaduais - Apuração em Separado - Dec. 28.881/2019|01022024|
+RN000059|Regime Atacadista - Saídas internas Art. 16-B, inciso III, alínea c (Carnes)|01072024|30062026
+RN026008|Outros créditos - Crédito presumido para Indústrias - Operações com Castanha de Caju e Pedúnculo, quando encerrada a fase de diferimento - Operações Internas  Art. 7º do Anexo 002 e Art. 11-C,I do Anexo 003  Dec. Nº 31.825/2022|01092024|
+RN026009|Outros créditos - Crédito presumido para Indústrias - Operações com Castanha de Caju e Pedúnculo, quando encerrada a fase de diferimento - Operações Interestaduais  Art. 7º do Anexo 002 e Art. 11-C,II do Anexo 003  Dec. Nº 31.825/2022|01092024|
+RN001820|Outros Débitos - Compensação diferença recolhida a maior - Art. 58, § 17 do Dec. nº 31.825/2022|01012024|
+RN000060|Regime Atacadista - Compensação ICMS-ST transferido para compensação com ICMS recolhido a título de antecipação, art. Art. 16-P, §2º Dec. 22.199/2011|01102019|
+RN130003|Regime Atacadista - Dedução do ICMS-ST apurado e transferido para apuração própria para compensação com ICMS recolhido a título de antecipação, art. Art. 16-P, §2º Dec. 22.199/2011|01102019|
+RN000061|Regime Atacadista - Saídas internas Art. 16-B, inciso III, alínea e (Cesta Básica)|01042025|30062026
+RN040005|Dedução do ICMS a recolher, relativo ao imposto retido por substituição tributária referente ao Frete CIF.|01072025|
+RN040006|Dedução do ICMS a recolher, relativo ao imposto recolhido por transportadora  Frete CIF  empresas salineiras beneficiárias do PROEDI.|01072025|
+RN001821|Outros Débitos - Compensação ICMS Difal com saldo credor existente - Art. 59, § 9º do Dec. nº 31.825/2022|01112025|
+RN001822|Outros Débitos - Recolhimento de ICMS relativo a nota fiscal emitida no mês seguinte a ocorrência do fato gerador (energia, petróleo e gás natural)|01012020|
+RN033016|Estorno de Débito - Nota fiscal emitida no mês seguinte a ocorrência do fato gerador (energia, petróleo e gás natural)|01102025|
+RN040007|Dedução do ICMS a recolher, referente ao cheque moradia do Programa RN + Moradia (Decreto 34.769/2025)|01012026|
+RN055185|Débito Especial -  ICMS sobre o estoque de mercadorias no regime de substituição tributária do FECOP. (5415) - Art. 24, Anexo 07, Decreto nº 31.825/2022|01012026|
+RN000062|Regime Atacadista - Complementação de carga referente ao benefício fiscal  Dec. 22.199/2011|01042026|
+RN026042|Regime Atacadista - Crédito presumido referente ao benefício fiscal  Dec. 22.199/2011|01042026|
+RN056063|ICMS a recolher referente a alienação de bem do ativo imobilizado (Cod. Receita 9004)|01042026|
+RN033011|Estorno de débitos - Substituto pelas saídas - prestação de serviços de transportes - Art. 526, §§  1º e 3º do Decreto 31.825/22|01062026|
+RN000064|Dec. 28.881/2019 - Regime CD - Saídas interestaduais, Art. 14-A, inciso I, a|01072026|
+RN000065|Dec. 28.881/2019 - Regime CD - Saídas internas Art. 14-A, inciso I, b|01072026|
+RN000066|Dec. 28.881/2019 - Regime CD - Saídas interestaduais Art. 14-A, inciso II, a|01072026|
+RN000067|Dec. 28.881/2019 - Regime CD - Saídas internas Art. 14-A, inciso II, b|01072026|
+RN033012|Dec. 28.881/2019 - Regime CD - Estorno dos débitos Art. 14-A|01072026|
+RN012009|Dec. 28.881/2019 - Regime CD - Estorno dos créditos resultantes da sistemática normal de apuração (Art. 3º, §1º)|01072026|

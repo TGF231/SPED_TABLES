@@ -1,5 +1,399 @@
 # Changelog
 
+## [1.1.0-dev.16] — 2026-10-18
+
+### Adicionado
+- **Base de referência.** O leiaute de cada versão, as tabelas oficiais
+  (CST, CFOP, códigos de ajuste e de receita por UF, naturezas da receita,
+  monofásicos e alíquota zero…) e os guias práticos passam a vir de uma base
+  compilada na geração do programa (`base/` → `recursos/base_referencia.db`,
+  1,8 MB), e não mais da instalação do PVA na máquina de quem usa. Com PVA
+  antigo ou sem PVA nenhum, a pré-validação é a mesma — o que antes dependia
+  da versão que a pessoa tinha instalado, e desligava metade das
+  verificações quando não havia nenhuma. O PVA da máquina só serve ao *Abrir
+  no PVA*. Fontes em texto em `base/`, revisáveis por diff; a compilação é
+  reproduzível (mesmas fontes, mesmo banco, byte a byte); a versão é
+  `AAAA.MM.n` (esta, `2026.10.1`). **A base entregue não traz a Tabela NCM
+  Vigente** (`origem.ncm` do manifesto é `null`): a conferência de NCM
+  vigente da classificação fica desligada (`vigente_ncm` volta `None`) até
+  alguém extrair com `py -m consolidador extrair --ncm planilha.xlsx`.
+- **Leiaute pela versão do arquivo.** Cada arquivo é conferido com a
+  estrutura do `COD_VER` que declara no 0000 (ICMS/IPI 015 a 020,
+  Contribuições 006), e não com a mais recente: um campo que só existe na
+  versão nova não é cobrado de arquivo da antiga. Guardam-se as versões com
+  vigência nos últimos 5 anos mais a atual (e as futuras que já tenham
+  descritor). Versão fora da base é **avisada** e nada é acusado por
+  estrutura de outra; a geração do SPED pelos XMLs usa a versão do período
+  que gera. A porta `dominio.referencias` ganhou `estrutura(layout,
+  versao=None)`, `versao_vigente` e `descricao`, e o helper
+  `referencias.versao_do_leiaute(doc)` tira o `COD_VER` do 0000.
+- **Configurações → Base de referência…** mostra a base em uso (versão,
+  data, origem, leiautes e impressão digital SHA-256) e importa um pacote
+  mais novo (`base_referencia-AAAA.MM.n.zip`) sem trocar de programa. A
+  impressão digital é mostrada antes de aceitar, para comparar com a
+  publicada; o pacote adulterado, igual ou mais antigo que a base em uso ou
+  feito para um programa mais novo é recusado, dizendo o motivo. Vale a
+  mais nova entre a embutida no executável e a importada (guardada na pasta
+  de dados); a ilegível é ignorada, nunca apagada.
+- **Consolidador** (`py -m consolidador extrair|guia|compilar|publicar`),
+  pacote novo na raiz que roda na máquina de **quem compila**: `extrair`
+  lê os PVAs instalados (e, com `--ncm`, a planilha de NCM vigente) e
+  regrava `base/` (a revisão é o `git diff base/`); `guia` extrai o guia
+  prático de um PDF e avança a versão da base no manifesto; `compilar`
+  gera o banco; `publicar` gera o pacote para importação. Recusa
+  extrair sem PVA e nunca grava base parcial. O `sped_tables` não o
+  importa — `tests/test_arquitetura.py` confere.
+- **Teste de equivalência** (`tests/test_equivalencia_base.py`): na máquina
+  com PVA, a base compilada responde igual à instalação — versões,
+  estrutura, tabelas e cada método da porta. Falhou depois de o PVA ser
+  atualizado: a base ficou para trás, rode `py -m consolidador extrair`.
+- **Autoteste do executável** (`--autoteste`): o item *base de referência*
+  confere que a base embutida carrega e mostra versão, origem, registros e
+  guia de cada leiaute; substitui *tabelas do PVA* e *guias práticos*. O
+  `ferramentas/gerar_executavel.py` compila a base de `base/` antes do
+  PyInstaller (nunca a que estiver por acaso em `recursos/`).
+
+### Alterado
+- **Nada do programa lê a instalação do PVA para validar, diagnosticar ou
+  corrigir.** Saíram `infra/referencias_pva.py`, `infra/descritor_pva.py` e
+  `infra/guias.py`; `tabelas_pva` virou `tabelas_oficiais` e `tabelas_rfb`
+  virou `tabelas_ncm` (a interpretação passou a receber o texto das
+  tabelas, não uma pasta); o parser do descritor
+  e o `banco_pva` moveram-se para o `consolidador`; o extrator de guias
+  saiu de `ferramentas/` para `consolidador/guias.py`, e os guias, de
+  `recursos/guia_*.json` para `base/guias/`. `config` perdeu as funções de
+  tabelas e descritor e guarda só onde está o PVA para o *Abrir no PVA*;
+  `SPED_TABLES_PVA`, quando definida, é a raiz mesmo sem PVA dentro.
+- **A suíte roda com a pasta do PVA apontada para um diretório vazio**,
+  como o programa na máquina de quem não tem PVA, e liga a base de
+  referência: o `compilar_se_preciso` recompila `recursos/base_referencia.db`
+  (fora do git) quando ele falta ou quando `base/` é mais nova. Os testes de
+  `test_guias` e `test_regras_guia` leem a base e deixaram de pular sem PVA;
+  só o de equivalência precisa da instalação (`tests.PVA_REAL`).
+- **Diagnóstico sem a base não aprova.** O cabeçalho do diálogo e a barra de
+  status do diagnóstico automático diziam "nenhum problema nas verificações"
+  também quando a base faltava ou a versão do arquivo estava fora dela — ou
+  seja, aprovavam o que não foi conferido. Agora dizem o que rodou e o que
+  faltou ("nenhum problema nas regras embutidas; a versão XXX do leiaute
+  não está na base de referência"), e o cabeçalho do diálogo sai como aviso,
+  não em verde.
+- **Arquivo de leiaute mais novo que a base diz o remédio.** A base
+  `2026.10.1` vai do ICMS/IPI 015 ao 020: a partir de 2027, todo arquivo
+  com `COD_VER` 021 perderia as verificações de leiaute com uma mensagem
+  que sugeria arquivo velho ("a base guarda os últimos 5 anos") e não dizia
+  o que fazer. O adaptador marca `info["mais_nova_que_a_base"]` quando a
+  versão do arquivo passa da maior guardada (comparação numérica; `COD_VER`
+  que não é número nunca levanta); o Diagnóstico, no diálogo e na barra do
+  automático, diz que a versão X é mais nova que a base em uso, que valeram
+  só as regras embutidas e que é preciso **importar uma base mais nova em
+  Configurações → Base de referência…**. Versão antiga demais mantém o texto
+  dos 5 anos.
+- **Geração pelos XMLs aponta período que a base não cobre.** Sem versão de
+  leiaute vigente no período (`versao_vigente` devolve `None`) a geração
+  continua na versão mais recente, como antes, mas agora registra um
+  apontamento de revisão — que não bloqueia a gravação — dizendo que o
+  leiaute do período não está na base e que valeu a mais recente.
+- **Abrir no PVA avisa quando a pré-checagem não rodou.** Sem a estrutura do
+  leiaute (base ausente ou sem a versão do arquivo) os achados que o PVA
+  recusa na importação nem existem, e a lista vazia passava em silêncio.
+  `envio_pva.pre_checagem_com_aviso` devolve também o aviso, e a pergunta
+  que já existe antes de abrir o PVA o mostra — sem impedir o envio, que o
+  PVA valida de qualquer jeito.
+- **Itens do 0200 sem referência** diz a origem verdadeira dos campos que
+  apontam para o 0200: o leiaute da versão do arquivo na base de
+  referência, e, sem ele, a varredura pelo valor do `COD_ITEM`.
+- **Base ilegível dá um aviso só, com a causa** (arquivo truncado, esquema
+  mais novo, manifesto ruim): sobrando uma base legível, a ilegível é
+  avisada e ignorada; sobrando nenhuma, a montagem dá a única mensagem, em
+  vez de dois modais seguidos. O título dos avisos de dados deixou de ser
+  "Arquivo de dados ilegível" (servia só para JSON do usuário) e virou
+  "Aviso".
+- **Pasta dos PVAs (para o Abrir no PVA)…** diz no rótulo que só serve ao
+  *Abrir no PVA*.
+
+### Removido
+- A configuração *Tabelas da RFB* (pasta e arquivos do CST por NCM): as
+  tabelas de alíquota zero e de monofásicos vêm da base, e o diálogo *CST
+  por NCM* deixou de pedir caminho. **A Tabela NCM Vigente do Siscomex**,
+  que antes a pessoa podia ligar apontando a planilha, passa a ser entregue
+  ao consolidador (`py -m consolidador extrair --ncm planilha.xlsx`), não ao
+  programa — e como a base `2026.10.1` foi extraída sem ela, a conferência de
+  NCM vigente está **desligada** até a próxima extração com `--ncm`.
+
+### Corrigido
+- **`consolidador guia` regrava o manifesto.** O comando refazia
+  `base/guias/*.json` sem tocar em `base/manifesto.json`: a versão da base e
+  o `origem.guias` ficavam os antigos, o pacote saía com o mesmo `AAAA.MM.n`
+  e conteúdo diferente, quem tinha a base embutida recebia "não é mais
+  nova" ao importar, e duas bases distintas passavam a ter a mesma
+  identidade (a impressão digital publicada deixava de identificá-la). Agora,
+  depois de gravar o guia, registra `origem.guias` do layout e avança a
+  `versao` pela regra do `extrair`; aceita `--data` e `--versao` com o mesmo
+  sentido.
+- **Importar uma base não vira exceção quando a gravação falha.** Disco
+  cheio, antivírus ou pasta de rede ao gravar o temporário ou trocá-lo pelo
+  destino são recusados com "Não foi possível gravar a base na pasta de
+  dados (…). A base em uso continua valendo."; a limpeza do arquivo
+  temporário não mascara mais o motivo.
+- **Pacote de base ruim é recusa, não queda.** Fluxo `deflate` estragado,
+  membro cifrado, compressão desconhecida e banco truncado em menos de uma
+  página (o SQLite abria sem reclamar e só falhava na primeira leitura) são
+  detectados antes de a base entrar em uso. A base numa unidade de rede
+  mapeada abre (a URI não passa mais por `Path.resolve()`, que a trocava
+  pelo caminho de rede).
+
+### Notas
+- **O que foi medido:** a suíte passa com a pasta do PVA vazia. Nos 7
+  arquivos reais disponíveis (todos em ICMS/IPI 020 e Contribuições 006), os
+  números do `gabarito.json` — revisão por regra e diagnóstico — deram
+  **idênticos** aos do código anterior, que lia o PVA instalado, agora com a
+  pasta do PVA vazia. Arquivo de versão anterior do leiaute passa a ser
+  conferido pela própria versão, o que pode mudar o resultado dele **de
+  propósito** (critério 3 da spec). O teste de equivalência garante que a
+  base dá ao programa as mesmas respostas que o PVA de onde saiu.
+- Um teste confere a versão por arquivo **sobre a base entregue**
+  (`tests/test_versao_leiaute.py`): a mesma linha de `C120.COD_DOC_IMP` (que
+  aceita 0 e 1 na 019 e 0, 1 e 2 na 020) e do `1310` (10 campos na 019, 11
+  na 020) é acusada no arquivo 019 e não no 020.
+- O `COBERTURA.md` foi regenerado a partir da base (guias e descritor): os
+  números não mudaram.
+- `tests/fabrica.py` declara `COD_VER` `020` (ICMS/IPI) e `006`
+  (Contribuições) **de propósito**: são versões que a base guarda, e é
+  contra elas que os arquivos sintéticos são conferidos.
+
+## [1.1.0-dev.15] — 2026-10-15
+
+### Adicionado
+- **Fundir registros de chave repetida** (*Ferramentas → Corrigir*). Até
+  aqui só o C190 tinha conserto para a chave repetida no mesmo documento
+  (`MSG_CHAVE_EXISTE_NO_REGISTRO_ITEM`); o C175 da NFC-e no EFD
+  Contribuições, o C181/C185, o D190 e os demais registros de totais ficavam
+  para a grade. A fusão vale para todo registro cuja chave o leiaute declara
+  e que só tem valores fora dela: o primeiro fica com a soma dos valores e
+  das quantidades, os outros saem, e os totais do documento e da apuração
+  não mudam. A prévia mostra cada grupo; o que não pode ser fundido diz por
+  quê — registro que não é de totais (dois C170 com o mesmo `NUM_ITEM` são
+  itens mal numerados), registro com filhos (M210) ou texto complementar
+  diferente entre os repetidos (`INFO_COMPL`). O *Diagnóstico* e a revisão
+  apontam para ela.
+
+### Alterado
+- **A chave compara número como número** também fora do C190: `1,65` e
+  `1,6500` na alíquota do C175 são a mesma chave, como o PVA trata.
+  Detecção, fusão e o *Recalcular C190* passam pelo mesmo agrupamento
+  (`SpedDocument.chaves_repetidas`); a fusão de C190 da rotina do CSOSN,
+  que era uma cópia à parte, saiu.
+- **Fusão que encontra valor que não é número recusa antes de mexer**, como
+  os demais cálculos que gravam — inclusive a rotina do CSOSN, que trocava o
+  CST e depois somava lixo como zero. Campo de valor vazio em todos os
+  repetidos continua vazio (antes virava `0,00`).
+
+## [1.1.0-dev.14] — 2026-10-14
+
+### Alterado
+- **Nova assinatura visual.** O acento passa do cobre ao **vinho**
+  (`#7D0E0E`) da família de ferramentas, com as regras de contraste dela:
+  borda de foco de 2 px em campos, botões, abas e grades (antes o foco do
+  teclado mal aparecia); célula e item selecionados com linha de acento
+  além do fundo suave; limite de campo num cinza que passa 3:1; dicas em
+  texto secundário legível (antes no tom restrito a desabilitado); dica de
+  ferramenta em fundo invertido. Fonte por densidade em px.
+- O resumo do arquivo e a prévia do inventário tinham **cores fixas no
+  HTML** (azul, cinzas, laranja) que sumiam no tema escuro; saem agora da
+  paleta. `tests/test_tema.py` reprova cor literal fora de `tema.py`.
+- **Botão dentro de tabela** (as correções do *Diagnóstico* e da revisão)
+  usava o padding de um botão comum e transbordava a linha; agora é
+  compacto, com folga em volta da célula.
+- `comum.definir_papel` e `comum.marcar_erro` substituem o
+  `setProperty` + unpolish/polish repetido nos diálogos.
+
+## [1.1.0-dev.13] — 2026-10-14
+
+### Corrigido
+- **Recalcular C190 não tirava a chave duplicada da NFC-e.** O recálculo
+  refaz o analítico pelos C170, e o documento sem C170 (a NFC-e
+  consolidada) era pulado — num arquivo real ficavam os 10 documentos com
+  C190 repetido que o PVA recusa. Agora, sem C170, os C190 de mesma chave
+  (CST + CFOP + alíquota) são **fundidos**, somando os valores.
+- **O C100 acompanha o C190 refeito.** Base e impostos do C100
+  (`VL_BC_ICMS`, `VL_ICMS`, `VL_BC_ICMS_ST`, `VL_ICMS_ST`, `VL_IPI`)
+  passam a ser a soma dos C190 do documento, no recálculo em massa e no
+  botão do documento na grade; campo vazio com soma zero continua vazio
+  (a NFC-e deixa ST e IPI em branco). *Zerar ICMS próprio das compras com
+  ST* usa o mesmo cálculo.
+
+## [1.1.0-dev.12] — 2026-10-14
+
+### Alterado
+- **Menu por etapa do trabalho, sem funções repetidas.** O botão
+  *Ferramentas* deixou de ter um submenu por leiaute (*EFD ICMS/IPI*, *EFD
+  Contribuições*, *Gerais*) e passou a ter **Conferir**, **Corrigir**,
+  **Recalcular**, **Gerar** e **Configurações**; a função que não vale para
+  o leiaute aberto some do menu, em vez de ficar cinza. Saíram as
+  duplicatas: *Conferir itens com XMLs* existia uma vez por tributo (agora
+  pega o do leiaute), *Conferir entradas (NF-e 55)* era a mesma conferência
+  sem o botão de corrigir, e *Revisar erros* repetia o *Diagnóstico* —
+  que agora fica na barra e abre a revisão pelo botão *Revisar
+  ocorrências…*. *Abrir no PVA* também foi para a barra.
+- **Todas as janelas são soltas.** Conferências, prévias (regenerar
+  entradas, cadastro pelo ERP, inventário), diagnóstico, rotinas, trocar
+  alíquotas, alterar datas, a geração pelos XMLs e a decisão de produto
+  abrem sem bloquear o programa: a janela principal e as outras ferramentas
+  continuam clicáveis, e cada uma tem minimizar e maximizar. Os avisos de
+  resultado não esperam o OK. Só as perguntas que precisam de resposta na
+  hora continuam esperando.
+- **XMLs lidos uma vez por arquivo.** A primeira função que usa XMLs
+  pergunta de onde vêm (pasta ou banco do ERP); as seguintes reaproveitam o
+  mesmo lote, sem pedir a pasta de novo. *Ferramentas → XMLs do período*
+  troca a origem ou relê. Todas as funções passaram a ler as subpastas e a
+  contar uma vez o XML repetido.
+- **O aviso de resultado traz a etapa seguinte**: *Recalcular bloco M*
+  depois de trocar alíquotas; *Recalcular C190* e *Diagnóstico* depois de
+  corrigir pelo XML; a apuração depois de regenerar as entradas; *Remover
+  C170 fictícios* e *Recalcular E110* depois do C190 em massa.
+- Gerar pelos XMLs: *Abrir no editor* abre o arquivo na hora, com a janela
+  da geração ainda aberta ao lado (antes só abria depois de fechá-la).
+
+## [1.1.0-dev.11] — 2026-10-13
+
+### Corrigido
+- **Gerar SPED pelos XMLs não cadastrava no 0200 os produtos vendidos.**
+  Só os itens das entradas iam para o 0200; os das NF-e e NFC-e emitidas
+  pela empresa ficavam de fora (a NFC-e não leva C170, e o gerador só
+  cadastrava o que passava pelo C170 de entrada). Agora todo produto
+  movimentado entra, nos dois leiautes, com a unidade no 0190: o cadastro
+  que a empresa declarou no SPED entregue (memória) e, para produto que a
+  memória não conhece, o do XML — descrição, código de barras, unidade,
+  NCM e **CEST** (agora lido do XML) e tipo 00, apontados numa linha só na
+  revisão com a lista dos códigos.
+
+## [1.1.0-dev.10] — 2026-10-13
+
+### Corrigido
+- **Regenerar C175 (modelo 65) fechava o programa** com `NameError:
+  pendentes` — regressão da revisão de qualidade da 1.0.0-rc.2, que tirou a
+  contagem e deixou o uso na mensagem. O teste das ações não pegou porque,
+  sem C170 fictícios no arquivo, a ação sai antes de chegar à linha.
+- Dois testes novos: a ação com fictícios presentes, e
+  `test_nenhum_nome_indefinido` em `tests/test_estrutura.py`, que lê a
+  tabela de símbolos do Python em todo arquivo do projeto e reprova nome
+  usado e nunca definido — o erro que só aparece rodando.
+
+## [1.1.0-dev.9] — 2026-10-13
+
+### Corrigido
+- **Gerar SPED pelos XMLs (EFD Contribuições) não criava o M400/M410 nem o
+  M800/M810** — obrigatórios quando há receita com CST 04 a 09 (monofásico,
+  ST, alíquota zero, isenção, sem incidência, suspensão). Agora:
+  - um M400/M800 por CST, com o total da receita do CST pelo mesmo
+    somatório que a conferência e o PVA usam (`receita_por_cst`);
+  - a **natureza da receita** (M410/M810) sai do NCM de cada item do XML
+    pela tabela do CST no PVA (4.3.10 a 4.3.16, o prefixo mais longo,
+    respeitando o EX da TIPI); sem casamento — a 918 das bebidas frias, por
+    exemplo, não tem NCM na tabela —, vale a natureza que a empresa usou
+    naquele CST no SPED entregue (aprendida na memória), e é apontada; sem
+    nenhuma das duas, **bloqueia** a gravação;
+  - o total do CST é repartido entre as naturezas pela proporção dos itens,
+    com o rateio de sempre: o M410 fecha com o M400 ao centavo;
+  - a conta contábil (COD_CTA) do M400/M410 é a que a empresa usou, se
+    estiver no 0500 do arquivo gerado.
+- A memória da empresa passa a guardar a natureza de cada CST e as contas
+  do M400/M410 e M800/M810 do SPED entregue: **aprenda de novo** com um
+  SPED do Contribuições para preencher.
+
+## [1.1.0-dev.8] — 2026-10-13
+
+### Adicionado
+- **EFD ICMS/IPI → Zerar ICMS próprio das compras com ST (1403/2403, CST
+  x10/x70).** Na compra para revenda com ICMS retido por substituição
+  tributária, o imposto da cadeia já foi recolhido: não há crédito do ICMS
+  próprio a apurar. A função acha os C170 de **entrada** com CFOP 1403 ou
+  2403, CST terminado em 10 ou 70 e base, alíquota ou valor de ICMS
+  preenchidos, mostra quantos itens, notas, base e crédito, e, confirmado:
+  zera base, alíquota e valor do item; refaz o C190 das notas tocadas (o
+  `consolidar_c190` de sempre); põe no C100 a base e o ICMS somados do
+  C190; e tira do `VL_TOT_CREDITOS` do E110 o crédito retirado,
+  recalculando os saldos (`SpedDocument.zerar_credito_icms_st`). CST 60 e
+  saídas não são tocados.
+- Num arquivo real (cliente A): 593 itens em 77 notas com a alíquota
+  preenchida e base e valor zerados — corrigidos sem mudar crédito, com o
+  C190 continuando a fechar com os itens.
+
+## [1.1.0-dev.7] — 2026-10-13
+
+### Corrigido
+- **Gerar SPED pelos XMLs descartava sozinho o que tinha data de outro
+  mês.** Cupom em contingência transmitido no mês seguinte é documento
+  extemporâneo e precisa entrar — mas só a pessoa sabe quais são. Agora os
+  documentos fora do período aparecem na aba *Documentos*, **desmarcados** e
+  destacados ("fora do período: marque se extemporâneo"). Marcado, entra:
+  - com **COD_SIT 01** (07 no complementar);
+  - no ICMS/IPI, com a data real do XML, e o ICMS da saída vai para o
+    **DEB_ESP** do E110 (não para os débitos do período) e para o E116 — o
+    mesmo que o *Recalcular apuração do ICMS* calcula;
+  - no EFD Contribuições, com o primeiro dia do período (o PVA de lá recusa
+    data de outro mês mesmo com COD_SIT 01).
+  Sem marcar, continua de fora e listado em *Fora do período e ignorados*.
+
+## [1.1.0-dev.6] — 2026-10-09
+
+### Corrigido (geração do executável)
+- `ferramentas/gerar_executavel.py` reaproveitava um `.venv-exe` cujo
+  Python de base (o do uv) não existia mais e o PyInstaller morria com
+  "did not find executable at …". Agora o ambiente é conferido rodando o
+  Python dele e, quebrado, é recriado; o Python do uv é procurado pelo
+  `uv python find`, pela pasta versionada e, faltando, instalado.
+
+### Adicionado
+- **Corrigir pelo XML** na tela *Conferir itens com XMLs* (antes só havia
+  *Exportar CSV*). Grava no C170 o valor do XML das linhas selecionadas —
+  ou de todas, sem seleção —: VL_ITEM na composição que o documento usa,
+  desconto, bases, alíquotas, impostos, e o CFOP quando a correlação aponta
+  um único CFOP de entrada. O CST não é corrigido (o do XML é o do
+  fornecedor). C190 e totais do C100 não são refeitos ali: num ERP que soma
+  IPI e ST ao item, o total recalculado contaria o imposto duas vezes; a
+  tela diz para rodar a revisão (`conferencia.corrigir_pelo_xml`). Depois
+  de corrigir, a conferência é refeita na hora.
+- **MySQL no executável** (PyMySQL 1.2.3). O adaptador agora fala com o
+  MySQL 5.1 dos ERPs antigos: charset padrão `utf8` (o 5.1 não conhece o
+  `utf8mb4`) e transação comum quando o servidor não tem `START
+  TRANSACTION READ ONLY` (antes do 5.6.5). MySQL 8 com
+  `caching_sha2_password` recebe a explicação de como criar o usuário de
+  leitura.
+
+### Corrigido
+- **Valor do XML na conferência de itens ainda sem os impostos.** A
+  1.1.0-dev.3 reconhecia IPI e ICMS-ST somados ao VL_ITEM só quando o valor
+  batia ao centavo, e sem o **FCP retido por ST** (`vFCPST`, agora lido do
+  XML), que o ERP soma ao custo junto do ST. Sem composição exata, a
+  conferência voltava ao `vProd` puro e acusava todo item. Agora:
+  - o FCP-ST entra junto do ICMS-ST, e o VL_ITEM **líquido do desconto**
+    também é uma composição reconhecida;
+  - vale a composição que explica mais itens e, no empate, a de menor
+    diferença; **sem nenhuma exata, a que mais se aproxima** — o *Valor
+    XML* mostrado já traz os impostos, e a diferença que sobra (centavos de
+    custo, por exemplo) é a de verdade.
+
+## [1.1.0-dev.5] — 2026-10-09
+
+### Alterado
+- **Executável enxuto, gerado de um ambiente mínimo do uv:** de 64 MB para
+  **24,4 MB**, com o `--autoteste` inteiro passando.
+  - `ferramentas/gerar_executavel.py` cria `.venv-exe` com o Python do uv,
+    instala só `requirements-executavel.txt` (versões fixas; o `uv pip
+    sync` tira o que não está na lista), roda o PyInstaller e o autoteste.
+    Do Python do sistema, o PyInstaller arrastava tudo o que estivesse
+    instalado lá (41 MB só pela troca de ambiente).
+  - O `SPED Tables.spec` tira o que o programa não carrega: o
+    `opengl32sw.dll` (20 MB — a interface é Widgets, desenha sem OpenGL),
+    `Qt6Pdf`, `Qt6Network`, `Qt6Svg`, os plugins do Qt salvo `qwindows`,
+    `qmodernwindowsstyle` e `qico`, as traduções do Qt em ~40 línguas (a
+    pt-BR vai à parte), e do Python `ssl`/`libssl`, `_hashlib`/`libcrypto`
+    (o SHA-1/SHA-256 do login do Firebird vem do próprio Python), `lzma`,
+    `bz2` e `zstd`. Saíram 36,6 MB, listados em
+    `build/manifesto_executavel.txt` a cada geração.
+  - UPX desligado: corrompe plugin do Qt e dispara antivírus.
+
 ## [1.1.0-dev.4] — 2026-10-08
 
 ### Adicionado

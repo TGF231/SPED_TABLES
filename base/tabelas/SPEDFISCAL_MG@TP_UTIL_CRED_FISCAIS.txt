@@ -1,0 +1,28 @@
+versão=5 TIPO_UTIL, DESC_TIPO, DT_INI, DT_FIM
+MG01|Dedução|01012009|31122014
+MG02|Utilização de crédito limitado para abatimento de saldo devedor|01082014|
+MG03|Utilização de crédito para abatimento de saldo devedor sem limitação|01082014|30062015
+MG03|Utilização de crédito para abatimento de saldo devedor na apuração de ICMS operações próprias|01072015|31122017
+MG03|Utilização de crédito para abatimento de saldo devedor na apuração de ICMS|01012018|
+MG04|Utilização de crédito para abatimento de saldo devedor - FEM Operações Próprias|01092016|
+MG05|Utilização de crédito para abatimento de saldo devedor - FEM Substituição Tributária|01092016|
+MG21|Compensação|01012009|31122014
+MG22|Utilização de crédito para pagamento de crédito tributário|01082014|
+MG23|Utilização de crédito para pagamento de ICMS importação de ativo permanente|01082014|
+MG24|Utilização de crédito para pagamento de ICMS dif. alíquota de mercadoria p/ ativo permanente|01082014|
+MG41|Transferência|01012009|31122014
+MG42|Crédito transferido para pagamento de cotas / ações|01082014|
+MG43|Crédito transferido para aquisição de ativo permanente|01082014|
+MG44|Crédito transferido para aquisição de material de construção|01082014|
+MG45|Crédito transferido para aquisição de mercadoria|01082014|
+MG46|Crédito transferido para distribuidor de energia/comunicação ou consorciado|01082014|
+MG47|Crédito transferido para estabelecimento de mesma titularidade situado no Estado|01082014|
+MG48|Crédito transferido para outro contribuinte mineiro|01082014|
+MG49|Crédito transferido para contribuinte mineiro p/ instalação ou expansão do estabelecimento|01082014|
+MG50|Crédito transferido para estabelecimento de mesma titularidade p/ pgto. de créd. tributário|01082014|
+MG51|Crédito transferido para outro contribuinte mineiro para pgto. de crédito tributário|01082014|
+MG52|Crédito transferido para outro contribuinte mineiro para pgto. de ICMS importação|01082014|
+MG53|Crédito transferido para contribuinte paulista - Prot. ICMS 12/84|01082014|31072017
+MG61|Restituição|01012009|31122014
+MG81|Estorno|01012009|
+MG99|Outros|01012009|31122014

@@ -30,10 +30,22 @@ os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 if not os.environ.get("SPED_TABLES_DADOS"):
     os.environ["SPED_TABLES_DADOS"] = tempfile.mkdtemp(prefix="sped_dados_")
 
+# a suíte roda como o programa na máquina de quem não tem PVA: a pasta do
+# PVA aponta para um diretório vazio e tudo vem da base de referência. A
+# instalação de verdade fica guardada em PVA_REAL para o teste de
+# equivalência, que confere que a base reproduz o PVA desta máquina.
+from sped_tables.infra import config  # noqa: E402
+
+_raiz = config.raiz_pva()
+PVA_REAL = _raiz if any(os.path.isdir(config.pasta_pva(_l, _raiz))
+                        for _l in config.PVAS) else None
+os.environ[config.VARIAVEL] = tempfile.mkdtemp(prefix="sped_sem_pva_")
+config.esquecer()
+
 # as regras fiscais consultam as tabelas oficiais pela porta
-# `dominio.referencias`; a suíte liga a mesma fonte que o programa (o PVA
-# instalado — sem ele, a fonte fica vazia e os testes que dependem dela se
-# pulam). Teste que precisa de tabela própria troca a fonte e restaura.
+# `dominio.referencias`; a suíte liga a mesma fonte que o programa: a base
+# de referência compilada de `base/`. Teste que precisa de tabela própria
+# troca a fonte e restaura.
 from sped_tables.aplicacao import montagem  # noqa: E402
 
 montagem.configurar()

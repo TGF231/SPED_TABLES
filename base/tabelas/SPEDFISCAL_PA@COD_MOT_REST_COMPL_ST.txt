@@ -1,0 +1,5 @@
+versão=1 COD_AJUR, DESC_AJUR, DT_INI, DT_FIM
+PA000|Não se aplica restituição ou complementação de ICMS-ST|01072022|
+PA100|Ressarcimento de ICMS-ST, em razão do valor de saída da mercadoria final ser inferior ao da BC-ST|01072022|
+PA200|Ressarcimento de ICMS-ST, em razão da não ocorrência do fato gerador presumido|01072022|
+PA300|Complementação de ICMS-ST, em razão do valor de saída da mercadoria a consumidor final ser superior ao da BC-ST|01072022|

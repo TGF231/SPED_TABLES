@@ -1,0 +1,173 @@
+versão=13 COD_AJUR, DESC_AJUR, DT_INI, DT_FIM
+TO001000|ICMS, OUTROS DÉBITOS, OUTROS DÉBITOS ICMS|01012009|
+TO001010|ICMS, OUTROS DÉBITOS, DIFERENCIAL DE ALÍQUOTA|01012009|31102010
+TO001010|ICMS, OUTROS DÉBITOS, DIFERENCIAL DE ALÍQUOTA, diferencial de alíquota compensado com crédito originário de cheque moradia, nos termos do RICMS, Dec. 2.912/06, artigo 35, incisos IV e V|01112010|
+TO001020|ICMS, OUTROS DÉBITOS, DESTAQUE A MENOR|01012009|
+TO001030|ICMS, OUTROS DÉBITOS, TRANSFERÊNCIA DE CRÉDITOS|01012009|31102010
+TO001030|ICMS, OUTROS DÉBITOS, TRANSFERÊNCIA DE CRÉDITOS, débito por transferência de saldo credor do ICMS, conforme arts. 20 a 27 do RICMS, Dec. 2.912/06.|01112010|
+TO001031|ICMS, OUTROS DÉBITOS, TRANSFERÊNCIA DE CRÉDITO CHEQUE MORADIA|01012009|
+TO101000|ICMS - ST, OUTROS DÉBITOS, OUTROS DÉBITOS ST|01012009|
+TO012000|ICMS, ESTORNO DE CRÉDITO, ESTORNO CRÉDITO ICMS|01012009|
+TO012010|ICMS, ESTORNO DE CRÉDITO, ESTORNO DE CRÉDITO POR RESTITUIÇÃO DE BEM ARRENDADO|01012009|
+TO012100|ICMS, ESTORNO DE CRÉDITO, POR ENTRADAS COM REDUÇÃO BASE DE CALCULO NA SAÍDA|01012009|
+TO012200|ICMS, ESTORNO DE CRÉDITO, ENTRADAS C/ SAIDA POSTERIOR ISENTA|01012009|
+TO012220|ICMS, ESTORNO DE CRÉDITO, OPERAÇÕES ANTERIORES CUJA SAÍDAS SERÁ BENEFICIADAS C/ CRÉDITO PRESUMIDO|01012009|
+TO112000|ICMS - ST, ESTORNO DE CRÉDITO, ESTORNO DE CRÉDITO ST|01012009|
+TO023000|ICMS, OUTROS CRÉDITOS, OUTROS CRÉDITOS ICMS|01012009|
+TO023010|ICMS, OUTROS CRÉDITOS ICMS, CRÉDITO FISCAL PRESUMIDO, OPERAÇÃO INTERESTADUAL, SAÍDAS DE ABELHA RAINHA, MEL, GELÉIA REAL, CERA E PRÓPOLIS, INDUSTRIALIZADOS OU NÃO, REALIZADAS POR PRODUTORES INSCRITOS NO ESTADO, 50% DO VALOR DO ICMS DEVIDO|01012009|31102010
+TO023010|ICMS, OUTROS CRÉDITOS ICMS, CRÉDITO FISCAL PRESUMIDO, 50% do valor do ICMS devido nas operações interestaduais de saídas de abelha rainha, mel, geléia real, cera e própolis, industrializados ou não, realizadas por produtores inscritos no estado. Lei 1.086/99, art. 2º.|01112010|
+TO023020|100% do ICMS nas saídas de óleo extraído da amêndoa, do babaçu, no estado bruto, clarificado e refinado para fins industriais, realizadas por estabelecimento industrial, conforme condições do Art. 9, XVIII do Dec. 2.912/07|01012009|31102010
+TO023020|ICMS, OUTROS CRÉDITOS, CRÉDITO FISCAL PRESUMIDO, 100% do ICMS nas saídas de óleo do babaçu, no estado bruto, clarificado e refinado para fins ind., realizadas por estab.  Industrial. Art. 9, XVIII do Dec. 2.912/07|01112010|
+TO023030|100% do ICMS nas oper. Interest. de estabelec. industrial, com resultantes da industrialização, (...) de papel usado, aparas de papel, papelão, sucatas de metais ferrosos ou não, resíduos de plásticos, vidros,(...) conforme.  Art. 9, XIV - Dec. 2.912/07|01012009|31102010
+TO023030|ICMS, OUTROS CRÉDITOS, CRÉDITO FISCAL PRESUMIDO, 100% do ICMS nas oper. Interest. de estab. industrial, com resultantes da industrialização, (...) de papel usado, aparas de papel, papelão, sucatas de metais ferrosos ou não, resíduos de plásticos, vidros. Lei 1095/99, art. 2º.|01112010|
+TO023040|Crédito fiscal presumido, operação interna, comércio atacadista, carga tributária 2% do valor da operação, sem prejuízo das reduções art. 8º, XIX (70,59%) e XX (41,18%) do RICMS, exceto a produto industrializado pelo próprio estabelecimento|01012009|31102010
+TO023040|ICMS, OUTROS CRÉDITOS, CRÉDITO FISCAL PRESUMIDO, nas operações internas referentes a comércio atacadista, de forma que a carga tributária efetiva do ICMS resulte da aplicação do percentual de 2%.  Lei 1.201/01, inc. I, alínea a.|01112010|21122012
+TO023050|Crédito fiscal presumido, operação interestadual, comércio atacadista, carga tributária 1% do valor da operação, sem prejuízo das reduções Art. 8º, XIX (70,59%) e XX (41,18%) do RICMS, não se aplica a produto industrializado pelo próprio estabelecimento.|01012009|31102010
+TO023050|ICMS, OUTROS CRÉDITOS, CRÉDITO FISCAL PRESUMIDO, nas operações interestaduais referentes a comércio atacadista, de forma que a carga tributária efetiva do ICMS resulte da aplicação do percentual de 1%.  Lei 1.201/01, inc. I,  alínea b.|01112010|31122012
+TO023051|ICMS, OUTROS CRÉDITOS, CRÉDITO FISCAL PRESUMIDO, aquisição de mercadoria sujeita a substituição tributária,  6% da base de calculo, originadas das regiões Sul e Sudeste, exceto Espírito Santo. Lei 1.201/01, inc. III,  alínea a.|01092010|31122017
+TO023052|ICMS, OUTROS CRÉDITOS, CRÉDITO FISCAL PRESUMIDO, aquisição de mercadoria sujeita a substituição tributária,  1% da base de calculo, originadas das regiões Norte, Nordeste, Centro-oeste e Espírito Santo. Lei 1.201/01, inc. III, alínea b.|01092010|31122017
+TO023055|ICMS, OUTROS CRÉDITOS, CRÉDITO FISCAL PRESUMIDO, 14% nas operações internas, facultado ao contribuinte com atividade econômica no comércio atacadista de medicamentos. Lei n.º 1.790/2007 - art. 1º, inc. I, alínea "a".|01092010|17052013
+TO023056|ICMS, OUTROS CRÉDITOS, CRÉDITO FISCAL PRESUMIDO, 11% nas operações interestaduais, facultado ao contribuinte com atividade econômica no comércio atacadista de medicamentos. Lei n.º 1.790/2007 - art. 1º, inc. I, alínea "b".|01092010|31122012
+TO023057|ICMS, CRÉDITO FISCAL PRESUMIDO (Lei 1.790/07, art. 1º, inc. I, c), de forma que a carga tributária efetiva do ICMS resulte da aplicação dos percentuais de 3% nas operações internas.|01042025|
+TO023058|ICMS, CRÉDITO FISCAL PRESUMIDO (Lei 1.790/07, art. 1º, inc.	I, d), de forma que a carga  tributária	efetiva		do	ICMS  resulte  da aplicação dos percentuais de 1% nas operações interestaduais.|01042025|
+TO023059|ICMS, CRÉDITO FISCAL PRESUMIDO Lei 1.385/03, art. 4º-A, inc. I, ao estabelecimento industrial CNAE 1011-2/01, frigorífico - abate de bovinos, de forma que a carga tributária efetiva do ICMS resulte da aplicação dos percentuais de 2% para os estabelecimentos que geram de 50 a 150 empregos.|01042025|
+TO023060|3% do valor da oper., para estabelec. regularizado, quando adquirir de estabelec. abatedor, (...), carnes natural, resfriadas ou congeladas, e subprodutos comestíveis result.do abate de gado bovino, bufalino e suíno; conforme Art. 9, VII - Dec. 2.912/07|01012009|31102010
+TO023060|ICMS, OUTROS CRÉDITOS, CRÉDITO FISCAL PRESUMIDO, 7% do valor da oper., para estab. regular, quando adquirir de estab. abatedor, (...), carnes natural, resfriadas ou congeladas, e subprodutos comestíveis result. do abate de gado bovino, bufalino e suíno.  Lei 1.173/00, Art. 2°, inc. I.|01112010|
+TO023061|ICMS, CRÉDITO FISCAL PRESUMIDO Lei 1.385/03, art. 4º-A, inc. II, ao estabelecimento industrial CNAE 1011-2/01, frigorífico - abate de bovinos, de forma que a carga tributária efetiva do ICMS resulte da aplicação dos percentuais de 1% para os estabelecimentos que geram acima de 150 empregos.|01042025|
+TO023070|ICMS, OUTROS CRÉDITOS, CRÉDITO FISCAL PRESUMIDO, OPERAÇÃO INTERESTADUAL, SAÍDA DE GADO VIVO (BOVINO, BUFALINO E SUÍNO), PRATICADA POR ESTABELECIMENTO PRODUTOR CADASTRADO NO ESTADO, 5% DO VALOR DA OPERAÇÃO|01012009|31102010
+TO023070|ICMS, OUTROS CRÉDITOS, CRÉDITO FISCAL PRESUMIDO, 5% do valor da operação interestadual de saída de gado vivo (bovino, bufalino e suíno), praticada por estabelecimento produtor cadastrado no estado, 5% do valor da operação.  Lei 1.173/00, Art. 2°, inc. II.|01112010|11032020
+TO023080|ICMS, OUTROS CRÉDITOS, CRÉDITO FISCAL PRESUMIDO, OPERAÇÃO INTERESTADUAL, SAÍDA DE CARNE DE GADO (BOVINO, BUFALINO E SUINO) EM ESTADO NATURAL, RESFRIADAS OU CONGELADAS, REALIZADA POR ESTABELECIMENTO ABATEDOR, 12% DO VALOR DA OPERAÇÃO|01012009|31102010
+TO023080|ICMS, OUTROS CRÉDITOS, CRÉDITO FISCAL PRESUMIDO, 12% do valor da operação interestadual de saída de carne de gado (bovino, bufalino e suíno) em estado natural, resfriadas ou congeladas, realizada por estabelecimento abatedor.   Lei 1.173/00, Art. 2°, inc. IV.|01112010|
+TO023090|ICMS, OUTROS CRÉDITOS, CRÉDITO FISCAL PRESUMIDO, SAÍDA DE COURO CURTIDO (WET BLUE), SEBO, OSSO, MIÚDOS,CHIFRE, CASCO DE ANIMAIS E OUTROS SUBPRODUTOS OU RESÍDUOS NÃO COMESTÍVEIS, 75% DO IMPOSTO DEVIDO|01012009|31102010
+TO023090|ICMS, OUTROS CRÉDITOS, CRÉDITO FISCAL PRESUMIDO, 75% do imposto devido pelas saídas de couro curtido (wet blue), sebo, osso, miúdos, chifre, casco de animais e outros subprodutos ou resíduos não comestíveis.   Lei 1.173/00, Art. 2°, inc. V.|01112010|
+TO023100|ICMS, OUTROS CRÉDITOS, CRÉDITO FISCAL PRESUMIDO, OPERAÇÃO INTERESTADUAL, SAÍDA DE CARNE DESOSSADA RESULTANTE DO ABATE DE GADO (BOVINO, BUFALINO,SUÍNO), EMBALADA A VÁCUO E COM REGISTRO SIF, 9% DO VALOR DA OPERAÇÃO|01012009|31102010
+TO023100|ICMS, OUTROS CRÉDITOS, CRÉDITO FISCAL PRESUMIDO, 9% do valor da operação interestadual de saída de carne desossada resultante do abate de gado (bovino, bufalino, suíno), embalada a vácuo e com registro SIF.  Lei 1.173/00, Art. 2°, inc. VI.|01112010|
+TO023110|ICMS, OUTROS CRÉDITOS, CRÉDITO FISCAL PRESUMIDO, OPERAÇÃO INTERESTADUAL, COM ARROZ EM CASCA, POR PRODUTORES RURAIS CADASTRADOS NO ESTADO, 2% DA BASE DE CÁLCULO|01012009|31102010
+TO023110|ICMS, OUTROS CRÉDITOS, CRÉDITO FISCAL PRESUMIDO, 2% da base de cálculo da operação interestadual, com arroz em casca, por produtores rurais cadastrados no estado.  Lei 1.303/02, Art. 3°, inc. I.|01112010|31122015
+TO023120|ICMS, OUTROS CRÉDITOS, CRÉDITO FISCAL PRESUMIDO, OPERAÇÃO INTERESTADUAL, COM PESCADO DE ÁGUA DOCE, POR PRODUTORES RURAIS CADASTRADOS NO ESTADO, 5% DA BASE DE CÁLCULO|01012009|31102010
+TO023120|ICMS, OUTROS CRÉDITOS, CRÉDITO FISCAL PRESUMIDO, 5% da base de cálculo da operação interestadual, com pescado de água doce, por produtores rurais cadastrados no estado. Lei 1.303/02, Art. 3°, inc. II, alínea a.|01112010|25082011
+TO023130|2% da BC nas operações interest. com arroz em casca, realizadas por produtores estabelec. e cadastrados no TO; e 5% da base de cálculo, nas saídas interest. de prod. resultantes do beneficiamento do arroz em casca, conforme Art. 9, V e VI - Dec. 2.912/07|01012009|31102010
+TO023130|ICMS, OUTROS CRÉDITOS, CRÉDITO FISCAL PRESUMIDO, 2% da BC nas operações interest. com arroz em casca, realizadas por produtores estabelec. e cadastrados no TO; e 5% da base de cálculo, nas saídas interest. de prod. resultantes do beneficiamento do arroz em casca. Lei 1.303/02, Art. 3°, inc. II, alínea b.|01112010|31122015
+TO023140|5% da base de cálculo, nas saídas interestaduais de derivados do leite, desde que realizadas por estabelecimento industrial regularmente cadastrado neste Estado, conforme condições do Art. 9, VI  a  1 e 2 - Dec. 2.912/07|01012009|31102010
+TO023140|ICMS, OUTROS CRÉDITOS, CRÉDITO FISCAL PRESUMIDO, 5% da base de cálculo, nas saídas interestaduais de derivados do leite, desde que realizadas por estabelecimento industrial regularmente cadastrado neste Estado.  Lei 1.303/02, Art. 3°, inc. II, alínea c.|01112010|31122015
+TO023150|100% do ICMS devido, até 31/12/15, nas saídas interest. de algodão, amendoim, feijão, gergelim, girassol, hortifrutigranjeiros, mamona, mandioca, milho, sorgo, tomate e frutas frescas produzidas no TO, conforme condições do Art. 9, VII;a (Dec. 2.912/07)|01012009|31102010
+TO023150|ICMS, OUTROS CRÉDITOS, CRÉDITO FISCAL PRESUMIDO, 100% do ICMS devido, até 31/12/15, nas saídas interest. de algodão, amendoim, feijão, gergelim, girassol, hortifrutigranjeiros, mamona, mandioca, milho, sorgo, tomate e frutas frescas produzidas no TO.  Lei 1.303/02, Art. 3°, inc. III, alínea a.|01112010|31122015
+TO023160|100% do ICMS devido, até 31/12/15, nas saídas interest. de algodão, amendoim, feijão, gergelim, girassol, hortifrutigranjeiros, mamona, mandioca, milho, sorgo, tomate e frutas frescas produzidas no TO, conforme condições do Art. 9, VII;b (Dec. 2.912/07)|01012009|31102010
+TO023160|ICMS, OUTROS CRÉDITOS, CRÉDITO FISCAL PRESUMIDO, 100% do ICMS devido, até 31/12/15, nas saídas interest. de algodão, amendoim, feijão, gergelim, girassol, hortifrutigranjeiros, mamona, mandioca, milho, sorgo, tomate e frutas frescas produzidas no TO.  Lei 1.303/02, Art. 3°, inc. III, alínea b.|01112010|31122015
+TO023170|Operações internas e interest., onde a carga tributária efetiva seja 2%. Benef. concedido via TARE com a SEFAZ-TO e validado pelo Conselho Deliberativo do PROSPERAR; ainda, não haja vendas a consumidor final; conforme condições do Art. 9-XX -Dec. 2.912/07|01012009|31102010
+TO023170|ICMS, OUTROS CRÉDITOS, CRÉDITO FISCAL PRESUMIDO, nas operações internas e interestaduais com beneficio do PROINDÚTRIA, de forma que a carga tributária efetiva do ICMS resulte da aplicação do percentual de 2%.  Lei 1.385/03, art. 4º, inc. II,  alínea a.|01112010|31032025
+TO023180|100% sobre o valor do ICMS, nas prestações de serviços interestaduais com produtos industrializados por beneficiários do PROINDÚSTRIA, desde que as prestações sejam realizadas por transportadores constantes do Cadastro de contribuintes deste Estado,conforme condições do Art. 9-XX -Dec. 2.912/07|01012009|31102010
+TO023180|ICMS, OUTROS CRÉDITOS, CRÉDITO FISCAL PRESUMIDO, 100% sobre o valor do ICMS, nas prestações de serviços interestaduais com produtos industrializados por beneficiários do PROINDÚSTRIA, desde que as prestações sejam realizadas por transportadores constantes do Cadastro de contribuintes deste Estado.  Lei 1.385/03, art. 4º,  inc. II, alínea b.|01112010|01032020
+TO023190|Crédito presumido ref. atividade. comercial, exclusivamente, via Internet, de forma que a carga tributária efetiva resulte no percentual de 1% sobre vendas de bens ou mercadorias a consumidores de outras UF, conforme condições do Art. 9-XXV-Dec. 2.912/07|01012009|31102010
+TO023190|ICMS, OUTROS CRÉDITOS, CRÉDITO FISCAL PRESUMIDO, ref. atividade comercial, exclusivamente, via Internet, de forma que a carga tributária efetiva resulte no percentual de 1% sobre vendas de bens ou mercadorias a consumidores de outras UF. Lei 1.641/05, art. 1º, inc. I.|01112010|01112010
+TO023190|ICMS, OUTROS CRÉDITOS, CRÉDITO FISCAL PRESUMIDO, prática de atividade comercial, exclusivamente, via Internet ou de vendas por correspondência, de forma que a carga tributária efetiva resulte no percentual de 1% sobre vendas de bens ou mercadorias nas saídas para outras UFs. Lei 1.641/05, art. 1º, inc. I.|02112010|
+TO023200|Crédito presumido de 16,5% da BC, nas saídas internas de produtos resultantes do abate de aves e gado suíno, caprino e ovino, realizadas por complexos agroindustriais, conforme condições do Art. 9-XV a e b -Dec. 2.912/07|01012009|31102010
+TO023200|ICMS, OUTROS CRÉDITOS, CRÉDITO FISCAL PRESUMIDO, 16,5% da BC, nas saídas internas de produtos resultantes do abate de aves e gado suíno, caprino e ovino, realizadas por complexos agroindustriais. Lei 1.695/06, art. 3º, inc. I.|01112010|
+TO023210|Crédito presumido de 11,5% do valor da operação, nas saídas interestaduais de ovos, inclusive os férteis, pintos de um dia, produtos resultantes do abate de aves e gado suíno, caprino e ovino e ração, conforme condições do Art. 9; XVI - Dec. 2.912/07|01012009|31102010
+TO023210|ICMS, OUTROS CRÉDITOS, CRÉDITO FISCAL PRESUMIDO, 11,5% do valor da operação, nas saídas interestaduais de ovos, inclusive os férteis, pintos de um dia, produtos resultantes do abate de aves e gado suíno, caprino e ovino e ração.  Lei 1.695/06, art. 3º, inc. II.|01112010|
+TO023220|Crédito presumido de  11% do valor da operação, nas saídas interestaduais de aves vivas, realizadas por complexos agroindustriais, conforme condições do Art. 9; XVII - Dec. 2.912/07|01012009|31102010
+TO023220|ICMS, OUTROS CRÉDITOS, CRÉDITO FISCAL PRESUMIDO,  11% do valor da operação, nas saídas interestaduais de aves vivas, realizadas por complexos agroindustriais.  Lei 1.695/06, art. 3º, inc. III.|01112010|
+TO023230|ICMS, OUTROS CRÉDITOS, CRÉDITO FISCAL PRESUMIDO, OPERAÇÕES DE ARRENDAMENTO MERCANTIL, VALOR DO IMPOSTO PAGO PELO ESTABELECIMENTO ARRENDATÁRIO|01012009|31102010
+TO023230|ICMS, OUTROS CRÉDITOS, CRÉDITO FISCAL PRESUMIDO, valor do imposto pago pelo estabelecimento arrendatário nas operações de arrendamento mercantil.|01112010|
+TO023240|ICMS, OUTROS CRÉDITOS, CRÉDITO FISCAL PRESUMIDO, SAÍDA DE OBRA DE ARTE, DESDE QUE ADQUIRIDA DIRETAMENTE DO AUTOR COM A ISENÇÃO PREVISTA NO INC. XXIII DO ART. 2º DO RICMS, 50% DO VALOR DO ICMS|01012009|31102010
+TO023240|ICMS, OUTROS CRÉDITOS, CRÉDITO FISCAL PRESUMIDO, 50% do valor do ICMS na saída de obra de arte, desde que adquiridas diretamente do autor com a isenção prevista no inc. XXIII do art. 2º do RICMS, Dec. 2.912/06.|01112010|
+TO023250|Crédito presumido de 20% do ICMS devido na prestação de serviço de transporte aquaviário, intermunicipal e interestadual rodoviário de passageiros, inclusive alternativo e aéreo, conforme condições do Art. 9; III a,b e c - Dec. 2.912/07|01012009|31102010
+TO023250|ICMS, OUTROS CRÉDITOS, CRÉDITO FISCAL PRESUMIDO, 20% do ICMS devido na prestação de serviço de transporte aquaviário, intermunicipal e interestadual rodoviário de passageiros, inclusive alternativo e aéreo, conforme condições do Art. 9; III a,b e c, do  Dec. 2.912/07.|01112010|
+TO023260|Crédito presumido de 94,11% do ICMS devido ao estabelecimento que promover operação interna tributada antecedente à exportação com metais, pedras preciosas e semipreciosas, conforme condições no Art. 9; IV - Dec. 2.912/07|01012009|31102010
+TO023260|ICMS, OUTROS CRÉDITOS, CRÉDITO FISCAL PRESUMIDO, 94,11% do ICMS devido ao estabelecimento que promover operação interna tributada antecedente à exportação com metais, pedras preciosas e semipreciosas, conforme condições no Art. 9; inc. IV, do Dec. 2.912/07.|01112010|
+TO023270|Crédito presumido equivalente ao % da alíquota interestadual do ICMS, ao estabelecimento que receber de outra UF os produtos constantes nas alíneas do inciso XX do art. 2o, condicionada a saída interna tributado no TO, conforme Art. 9; XIX - Dec. 2.912/07|01012009|31102010
+TO023270|ICMS, OUTROS CRÉDITOS, CRÉDITO FISCAL PRESUMIDO, no percentual da alíquota interestadual do ICMS, ao estabelecimento que receber de outra UF os produtos constantes nas alíneas do inciso XX do art. 2º do RICMS, Dec. 2.912/06, condicionada a saída interna tributado no TO, conforme Art. 9; XIX - Dec. 2.912/07.|01112010|
+TO023280|ICMS, OUTROS CRÉDITOS, CRÉDITO FISCAL OUTORGADO, PRESTAÇÃO DE SERVIÇO DE TELECOMUNICAÇÃO, EM SUBSTITUIÇÃO AO ESTORNO DE DÉBITO DECORRENTE DE SITUAÇÕES EM QUE NÃO TENHA OCORRIDO O FATO GERADOR DO ICMS, 1% DO VALOR DO ICMS|01012009|31102010
+TO023280|ICMS, OUTROS CRÉDITOS, CRÉDITO FISCAL OUTORGADO, 1% do valor do ICMS na prestação de serviço de telecomunicação, em substituição ao estorno de débito decorrente de situações em que não tenha ocorrido o fato gerador do ICMS.|01112010|
+TO023290|ICMS, OUTROS CRÉDITOS, DESTAQUE A MAIOR|01012009|
+TO023300|ICMS, OUTROS CRÉDITOS, DESTAQUE A MENOR|01012009|
+TO023310|ICMS, OUTROS CRÉDITOS, CRÉDITOS ATIVO PERMANENTE|01012009|
+TO023320|ICMS, OUTROS CRÉDITOS, TRANSFERÊNCIA DE CRÉDITO|01012009|31102010
+TO023320|ICMS, OUTROS CRÉDITOS, TRANSFERÊNCIA DE CRÉDITO, crédito de ICMS recebido por transferência, conforme arts. 20 a 27, inc. II do  RICMS, Dec. 2.912/06.|01112010|
+TO023330|ICMS, OUTROS CRÉDITOS, TRANSFERÊNCIA DE CRÉDITO- CHEQUE-MORADIA|01012009|31102010
+TO023330|ICMS, OUTROS CRÉDITOS, TRANSFERÊNCIA DE CRÉDITO, crédito recebido por transferência do saldo credor do imposto remanescente do Programa Cheque-Moradia. Lei 1.532/04, art. 5º.|01112010|
+TO023340|ICMS, OUTROS CRÉDITOS, CRÉDITOS REFERENTE A ENTRADA C/ ST, CUJA SAÍDA INTERNA NÃO ESTÁ SUJEITA A ST|01012009|31102010
+TO023340|ICMS, OUTROS CRÉDITOS, CRÉDITOS REFERENTE A ENTRADA C/ ST, aquisição de mercadoria em operação interestadual sujeita a substituição tributária, cuja saída interna não está sujeita a substituição tributária.|01112010|
+TO023345|ICMS, OUTROS CRÉDITOS, CRÉDITOS REFERENTES A ENTRADA C/ ST E CUJA OPERAÇÃO SUBSEQUENTE FOR INTERESTADUAL|01012009|31102010
+TO023345|ICMS, OUTROS CRÉDITOS, CRÉDITOS REFERENTES A ENTRADA C/ ST, aquisição de mercadoria com substituição tributária com saída através de operação interestadual.|01112010|
+TO023350|ICMS, OUTROS CRÉDITOS, CRÉDITOS CHEQUE-MORADIA|01012009|
+TO023360|ICMS, OUTROS CRÉDITOS, CREDITOS AUTORIZADOS PELA SEFAZ|01012009|
+TO023370|ICMS, OUTROS CRÉDITOS, CREDITO OUTORGADO, ICMS nas operações internas com pedra, cascalho, brita e areia, destinados às obras constantes do Programa Cheque-Moradia. Lei 1.532/04, art. 2º, inc. I alínea a.|01092010|
+TO023371|ICMS, OUTROS CRÉDITOS, CREDITO OUTORGADO, ICMS nas operações internas com tijolos cerâmicos e blocos de concreto, destinados às obras constantes do Programa Cheque-Moradia. Lei 1.532/04, art. 2º, inc. I alínea b.|01092010|
+TO023372|ICMS, OUTROS CRÉDITOS, CREDITO OUTORGADO, ICMS nas operações internas com telhas, madeiras, cal e cimento, destinados às obras constantes do Programa Cheque-Moradia. Lei 1.532/04, art. 2º, inc. I alínea c.|01092010|
+TO023373|ICMS, OUTROS CRÉDITOS, CREDITO OUTORGADO, ICMS nas operações internas com ferragens, perfis metálicos e chapas dobradas, destinados às obras constantes do Programa Cheque-Moradia. Lei 1.532/04, art. 2º, inc. II alínea a.|01092010|
+TO023374|ICMS, OUTROS CRÉDITOS, CREDITO OUTORGADO, ICMS nas operações internas com portas de madeira, portas metálicas e acessórios, destinados às obras constantes do Programa Cheque-Moradia. Lei 1.532/04, art. 2º, inc. II alínea b.|01092010|
+TO023375|ICMS, OUTROS CRÉDITOS, CREDITO OUTORGADO, ICMS nas operações internas com esquadrias metálicas e vidros, destinados às obras constantes do Programa Cheque-Moradia. Lei 1.532/04, art. 2º, inc. II alínea c.|01092010|
+TO023376|ICMS, OUTROS CRÉDITOS, CREDITO OUTORGADO, ICMS nas operações internas com pré-moldados e artefatos de cimento, destinados às obras constantes do Programa Cheque-Moradia. Lei 1.532/04, art. 2º, inc. II alínea d.|01092010|
+TO023377|ICMS, OUTROS CRÉDITOS, CREDITO OUTORGADO, ICMS nas operações internas com hidráulicos, sanitários e elétricos, destinados às obras constantes do Programa Cheque-Moradia. Lei 1.532/04, art. 2º, inc. III alínea a.|01092010|
+TO023378|ICMS, OUTROS CRÉDITOS, CREDITO OUTORGADO, ICMS nas operações internas com louças, pias, tanques e metais hidrossanitários, destinados às obras constantes do Programa Cheque-Moradia. Lei 1.532/04, art. 2º, inc. III alínea b.|01092010|
+TO023379|ICMS, OUTROS CRÉDITOS, CREDITO OUTORGADO, ICMS nas operações internas com argamassa, azulejo e cerâmica, destinados às obras constantes do Programa Cheque-Moradia. Lei 1.532/04, art. 2º, inc. IV alínea a.|01092010|
+TO023380|ICMS, OUTROS CRÉDITOS, CREDITO OUTORGADO, ICMS nas operações internas com gesso, impermeabilizante, massa para pintura e tinta, destinadas às obras constantes do Programa Cheque-Moradia. Lei 1.532/04, art. 2º, inc. IV alínea b.|01092010|
+TO023381|ICMS, OUTROS CRÉDITOS, CREDITO OUTORGADO, ICMS nas operações internas com enxada, pá, cavadeira e colher de pedreiro, destinadas às obras constantes do Programa Cheque-Moradia. Lei 1.532/04, art. 2º, inc. V alínea a.|01092010|
+TO023382|ICMS, OUTROS CRÉDITOS, CREDITO OUTORGADO, ICMS nas operações internas com prumo e serrote, destinados às obras constantes do Programa Cheque-Moradia. Lei 1.532/04, art. 2º, inc. V alínea b.|01092010|
+TO023383|ICMS, OUTROS CRÉDITOS, CREDITO OUTORGADO, ICMS nas operações internas com materiais hidráulicos para rede de água potável, destinados às obras constantes do Programa Cheque-Moradia. Lei 1.532/04, art. 2º, inc. VI alínea a.|01092010|
+TO023384|ICMS, OUTROS CRÉDITOS, CREDITO OUTORGADO, ICMS nas operações internas com materiais elétricos e equipamentos para rede de energia elétrica, destinados às obras constantes do Programa Cheque-Moradia. Lei 1.532/04, art. 2º, inc. VI alínea b.|01092010|
+TO023385|ICMS, OUTROS CRÉDITOS, CREDITO OUTORGADO, ICMS nas operações internas com materiais para construção de reservatórios de água, destinados às obras constantes do Programa Cheque-Moradia. Lei 1.532/04, art. 2º, inc. VI alínea c.|01092010|
+TO023390|ICMS, OUTROS CRÉDITOS, CRÉDITOS DE ICMS, relativo às entradas provenientes de contribuintes optantes pelo Simples Nacional, nos termos do art. 23 da LC 123/06 e art. 2º da resolução CGSN nº 53/08.|01092010|
+TO023400|ICMS, OUTROS CRÉDITOS, CRÉDITOS DO ICMS, referentes ao optante pelo Simples Nacional que por qualquer razão deixar a opção ao referido regime, correspondente à aquisição da mercadoria existente em seu estoque na mudança do regime, observadas as regras da legislação tributária|01092010|
+TO123000|ICMS - ST, OUTROS CRÉDITOS, OUTROS CRÉDITOS ST|01012009|
+TO034000|ICMS, ESTORNO DE DÉBITO, ESTORNO DE DÉBITO ICMS|01012009|
+TO034010|ICMS, ESTORNO DE DÉBITO, DEVOLUÇÃO DE MERCADORIA|01012009|
+TO134000|ICMS-ST, ESTORNO DE DÉBITO, ESTORNO DE DÉBITO ST|01012009|
+TO045000|ICMS, DEDUÇÕES, DEDUÇÕES ICMS|01012009|31102010
+TO045000|ICMS, DEDUÇÕES, DEDUÇÕES ICMS|01112010|
+TO045010|ICMS, DEDUÇÕES, PARCELA DEDUÇÃO PROSPERAR|01012009|31102010
+TO045010|ICMS, DEDUÇÕES, PARCELA DEDUÇÃO PROSPERAR, 75% do valor do ICMS devido no período da concessão a projetos de implantação e revitalização. Lei nº 1.355/02, art. 9º, inc. I, alínea a.|01112010|
+TO045020|ICMS, DEDUÇÕES, PARCELA DEDUÇÃO PROSPERAR, 75% do valor do ICMS resultante do incremento econômico oriundo da execução de projeto de expansão. Lei nº 1.355/02, art. 9º, inc. I, alínea b.|01092010|
+TO045030|ICMS, DEDUÇÕES, SUBVENÇÃO, 85% sobre o valor do ICMS devido pela indústria automotiva instalada no Estado. Lei 1.349/02, art. 1º.|01092010|
+TO145000|ICMS-ST, DEDUÇÕES, DEDUÇÕES ICMS ST|01012009|
+TO055000|ICMS, DÉBITOS ESPECIAS|01092010|
+TO055010|ICMS, DÉBITO ESPECIAL, DIF. DE ALÍQUOTA, aquisição de material de consumo proveniente de outra unidade da federação, recolhido em documento de arrecadação distinto conforme determinação do art. 35, caput e incisos III e IV, do Dec. 2.912/06.|01092010|
+TO055020|ICMS, DÉBITO ESPECIAL, DIF. DE ALÍQUOTA, aquisição de ativo imobilizado proveniente de outra unidade da federação, recolhido em documento de arrecadação distinto conforme determinação do art. 35, caput e incisos III e IV, do Dec. 2.912/06.|01092010|
+TO055030|ICMS, DÉBITO ESPECIAL, PARCELA INCENTIVADA PROSPERAR, recolhimento de parcela incentivada com até 95% de redução do valor, para liquidação antecipada, a título de subvenção para investimentos, na conformidade do regulamento. Lei nº 1.355/02, art. 9º, inc. III alínea b.|01092010|
+TO155000|ICMS SUBSTITUIÇÃO TRIBUTÁRIA, DÉBITO ESPECIAL ICMS SUBSTITUIÇÃO TRIBUTÁRIA|01092010|
+TO001005|ICMS, OUTROS DÉBITOS, Remessa fora do estabelecimento, conforme art.386,§1º do RICMS,Dec.2912/06|01012009|
+TO023005|ICMS, OUTROS CRÉDITOS ICMS, Crédito ref. imposto recolhido em outro Estado, relativamente a mercadorias remetidas para venda fora do estabelecimento nas operações realizadas fora do território do Tocantins, conforme art. 386, §§ 8º e 9º do RICMS, DEC.2.912/06|01012009|
+TO023041|ICMS, OUTROS CRÉDITOS, CRÉDITO FISCAL PRESUMIDO, nas operaçoes referentes a comércio atacadista, de forma que a carga tributária efetiva do ICMS resulte da aplicação dos percentuais de: 2% nas operações internas e 1% nas operações interestaduais. Lei 1.201/01, art.1º, inc.I, redação dada pela Lei 2.938/2014|21122012|31122017
+TO023053|ICMS, OUTROS CRÉDITOS, CRÉDITO FISCAL PRESUMIDO, o contribuinte beneficiário da Lei 2.697/2012, apropria-se dos creditos do ICMS das operações anteriores relativos ao estoque de mercadorias tributadas existentes em 31.12.2012, em 06 parcelas iguais e consecutivas"(NR)" Art. 3º-B da Lei 2.697/2012|01012013|01012013
+TO023105|ICMS, OUTROS CRÉDITOS, CRÉDITO FISCAL PRESUMIDO, 8,25% do valor da operação até 30.06.2013, nas saídas interestaduais de gado bovino destinado ao abate, praticadas por produtor rural.Lei 1.173/00, Art. 2º, 	Inc 8º. Redação dada pela Lei 2711/13.|16052013|30062013
+TO023185|ICMS, OUTROS CRÉDITOS, CRÉDITO FISCAL PRESUMIDO, 0,5% das saídas internas e interrestaduais de produtos industrializados, para os estabelecimentos industriais, com CNAE 1011-2/01, frigorífico-abate de bovinos que gerem 601 a 680 empregos. Lei 1.385/03, Art. 4º, Inc II, alínea "e" ítem 1.(revogada Lei 2.675/12)|01012009|19122012
+TO023186|ICMS, OUTROS CRÉDITOS, CRÉDITO FISCAL PRESUMIDO, 0,5% das saídas internas e interrestaduais de produtos industrializados, para os estabelecimentos industriais, com CNAE 1011-2/01, frigorífico-abate de bovinos que gerem 681 a 770 empregos. Lei 1.385/03, Art. 4º, Inc II, alínea "e" ítem 2.(revogada Lei 2.675/12)|01012009|19122012
+TO023187|ICMS, OUTROS CRÉDITOS, CRÉDITO FISCAL PRESUMIDO, 1,90% das saídas internas e interrestaduais de produtos industrializados, para os estabelecimentos industriais, com Classificação Nacional de Atividades Econômicas- CNAE 1011-2/01, frigorífico-abate de bovinos que gerem acima 770 empregos. Lei 1.385/03, Art. 4º, Inc II, alínea "e" ítem 3.|01012009|19122012
+TO023285|ICMS, OUTROS CRÉDITOS, CRÉDITO FISCAL PRESUMIDO, 75% nas prestações internas e interrestadual, para empresa operadora de logística e de transporte aéreo de carga, sobre saldo devedordo ICMS apurado em escrituração fiscal própria. Lei 2.679/12, Art. 4º Inciso I.|26122012|07032016
+TO023285|ICMS, OUTROS CRÉDITOS, CRÉDITO FISCAL PRESUMIDO, 75%, nas prestações interna e interestadual, para empresa de logística, transporte aéreo, estocagem e distribuição de produtos sujeitos ao controle de Agências Reguladoras, sobre o saldo devedor do ICMS apurado em escrituração fiscal própria.Lei 2.679/12, art.4º, inc.I.|08032016|
+TO023410|ICMS, OUTROS CRÉDITOS, CRÉDITO FISCAL PRESUMIDO, 100% sobre o valor do ICMS nas prestações interrestaduais deserviços de transporte com produtos industrializados pela industria automotiva e de fertilizantes instalada no Estado.Lei  1349/02, Art. 1° Inc III|01012009|
+TO055040|ICMS, SIMPLES NACIONAL, parcela proporcional do ICMS dos contribuintes opantes do simples nacional. Lei complementar 123/06|20032014|
+TO055050|ICMS, SIMPLES NACIONAL, comlementação de alíquota dos contribuintes optantes do simples nacional. Lei 1303/02, Art. 1º,Inciso I e II, redação da Lei 2.694/12.|21122012|
+TO209999|Outros débitos para ajuste de apuração ICMS Difal/FCP para TO|01012016|31122016
+TO219999|Estorno de créditos para ajuste de apuração ICMS Difal/FCP para TO|01012016|31122016
+TO229999|Outros créditos para ajuste de apuração ICMS Difal/FCP para TO|01012016|31122016
+TO239999|Estorno de débitos para ajuste de apuração ICMS Difal/FCP para TO|01012016|31122016
+TO249999|Deduções do imposto apurado na apuração ICMS Difal/FCP para TO|01012016|31122016
+TO259999|Débito especial de ICMS Difal/FCP para TO|01012016|31122016
+TO209999|Outros débitos para ajuste de apuração ICMS Difal para TO|01012017|
+TO219999|Estorno de créditos para ajuste de apuração ICMS Difal para TO|01012017|
+TO229999|Outros créditos para ajuste de apuração ICMS Difal para TO|01012017|
+TO239999|Estorno de débitos para ajuste de apuração ICMS Difal para TO|01012017|
+TO249999|Deduções do imposto apurado na apuração ICMS Difal para TO|01012017|
+TO259999|Débito especial de ICMS Difal para TO|01012017|
+TO309999|OUTROS DÉBITOS PARA AJUSTE DE APURAÇÃO ICMS FCP (FECOEP) PARA A UF TO|01012017|
+TO319999|ESTORNO DE CRÉDITOS PARA AJUSTE DE APURAÇÃO ICMS FCP (FECOEP) PARA A UF TO|01012017|
+TO329999|OUTROS CRÉDITOS PARA AJUSTE DE APURAÇÃO ICMS FCP (FECOEP) PARA A UF TO|01012017|
+TO339999|ESTORNO DE DÉBITOS PARA AJUSTE DE APURAÇÃO ICMS FCP (FECOEP) PARA A UF TO|01012017|
+TO349999|DEDUÇÕES DO IMPOSTO APURADO NA APURAÇÃO ICMS FCP (FECOEP) PARA A UF TO|01012017|
+TO359999|DÉBITO ESPECIAL DE ICMS FCP (FECOEP) PARA A UF TO|01012017|
+TO012230|ICMS, ESTORNO DE CRÉDITO, estorno do imposto creditado no percentual de 14% nas operações com produtos importados do exterior nas saídas interestaduais de mercadorias adquiridas pelo beneficiários da Lei 1201/00 (art. 3ºF, inc.I red. Lei 3.345/2017)|01012018|
+TO012240|ICMS, ESTORNO DE CRÉDITO, estorno do imposto creditado no percentual de 6%, exceto operações com produtos importados do exterior, nas saídas interestaduais de mercadorias adquiridas pelo beneficiários da Lei 1201/00 (art. 3ºF, inc. II red. Lei 3.345/2017)|01012018|
+TO045040|ICMS, DEDUÇÕES, dedução de 80% sobre o valor apurado do ICMS, nas operações referentes a comércio atacadista, Lei 1.201/00, art. 1º, inc. I (red. Lei 3.345/2017)|01012018|17032020
+TO045040|ICMS, DEDUÇÕES, dedução de 75% sobre o valor apurado do ICMS, nas operações referentes ao comércio atacadista, Lei 1.201/00, art. 1º, inc. I (red. Lei 3.618/2019)|18032020|
+TO023042|ICMS, OUTROS CRÉDITOS, CRÉDITO FISCAL PRESUMIDO, nas operações de importação de mercadorias do exterior, de forma que a carga tributária efetiva do ICMS resulte da aplicação dos percentuais de 1% para revenda Lei 1.201/00, art. 1º, inc. II, alínea "a"|01012018|
+TO023043|ICMS, OUTROS CRÉDITOS, CRÉDITO FISCAL PRESUMIDO, nas operações de importação de mercadorias do exterior, de forma que a carga tributária efetiva do ICMS resulte da aplicação dos percentuais de 2% por conta e ordem de terceiros. Lei 1.201/00, art. 1º, inc.II, alínea"b"|01012018|
+TO045050|ICMS, DEDUÇÕES, dedução de 50% sobre o valor apurado do ICMS, na operação própria com autopeças, pneumáticos, câmaras de ar e protetores de borracha, relacionados no Anexo XXI do Regulamento do ICMS. Lei 1.201/00, art. 1º,inc.III (red. Lei 3.345/17).|01012018|31072019
+TO045050|ICMS, DEDUÇÕES, dedução de 80% sobre o valor apurado do ICMS, na operação própria com autopeças, pneumáticos, câmaras de ar e protetores de borracha, relacionados no Anexo XXI do Regulamento do ICMS. Lei 1.201/00, art. 1º,inc.III (red. Lei 3.497/19).|01082019|17032020
+TO045050|ICMS, DEDUÇÕES, dedução de 75% sobre o valor apurado do ICMS, na operação própria com autopeças, pneumáticos, câmaras de ar e protetores de borracha, relacionados no Anexo XXI do Regulamento do ICMS. Lei 1.201/00, art. 1º, inc. III (red. Lei 3.618/2019)|18032020|
+TO045060|ICMS, DEDUÇÕES, Lei 1.385/2003, art. 4º,inc. II, a (red. Lei 2.675/2012), redução de 75% sobre o valor apurado do ICMS, nas operações próprias.|01042025|
+TO045070|ICMS, DEDUÇÕES, Dec. 2.845/2006, art. 6º e 7°, assistência financeira de 50% do ICMS mensal apurado.|01042025|
+TO045080|ICMS, DEDUÇÕES, Lei 4.632/2025, art 2º, de até 85% (oitenta e cinco por cento) do valor do imposto devido pela saída interestadual de mercadoria importada do exterior.|17012025|
+TO055060|ICMS, DÉBITO ESPECIAL, débito de ICMS verificado a partir do confronto de valores declarados pelo contribuinte com a DIMP e apurado em procedimento de análise de conformidade.|01102025|
+TO034020|ICMS, ESTORNO DE DÉBITO, prestação de serviços de comunicação|01112025|

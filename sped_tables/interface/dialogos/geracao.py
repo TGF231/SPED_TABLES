@@ -27,6 +27,8 @@ from sped_tables.interface import tema
 from sped_tables.infra.paralelo import Cancelado
 from sped_tables.interface.comum import (_br, _num_celula,
                                          em_segundo_plano)
+from sped_tables.interface.comum import (abrir_janela, definir_papel,
+                                         informar)
 
 NOMES = {"ICMS": "EFD ICMS/IPI", "CONTRIB": "EFD Contribuições"}
 MOVIMENTO = {"entradas": "Entrada", "saidas": "Saída",
@@ -145,7 +147,7 @@ class DialogoDecisao(QDialog):
             QMessageBox.warning(self, "Decidir", str(exc))
             return
         if not self.valores:
-            QMessageBox.information(self, "Decidir", "Nada foi informado.")
+            informar(self, "Decidir", "Nada foi informado.")
             return
         self.accept()
 
@@ -170,6 +172,7 @@ class DialogoGerarDeXml(QDialog):
         self.geracao = None
         self.pasta_lida = None
         self.excluir = set()
+        self.incluir = set()
         self.revisao = []            # [(leiaute, apontamento)]
         self.abrir_depois = None     # caminho que a janela abre ao fechar
         lay = QVBoxLayout(self)
@@ -286,6 +289,7 @@ class DialogoGerarDeXml(QDialog):
         self.geracao = GeracaoXml(cnpj) if len(cnpj) == 14 else None
         self.pasta_lida = None
         self.excluir = set()
+        self.incluir = set()
         self.b_aprender.setEnabled(self.geracao is not None)
         self._mostrar_memoria()
         self._limpar()
@@ -309,8 +313,7 @@ class DialogoGerarDeXml(QDialog):
                             % (r["produtos"], r["cadastro"],
                                r["participantes"], per))
                 lbl.setProperty("role", "ok")
-        lbl.style().unpolish(lbl)
-        lbl.style().polish(lbl)
+        definir_papel(lbl, lbl.property("role"))
         sabe = self.geracao.leiautes_aprendidos() if self.geracao else ()
         for lay_, c in self.chk.items():
             c.setEnabled(lay_ in sabe)
@@ -341,7 +344,7 @@ class DialogoGerarDeXml(QDialog):
             QMessageBox.warning(self, "Aprender", str(exc))
             return
         self._mostrar_memoria()
-        QMessageBox.information(
+        informar(
             self, "Aprender",
             "Itens casados com o XML: %d\nItens sem XML: %d\nNotas de "
             "entrada sem XML na pasta: %d\n\nA memória tem %d produto(s)."
@@ -398,12 +401,14 @@ class DialogoGerarDeXml(QDialog):
                 return
             self.pasta_lida = pasta
             self.excluir = set()
+            self.incluir = set()
         QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
         try:
             grupos, previa = self.geracao.documentos(periodo)
             self.geracao.gerar(periodo, leiautes, excluir=self.excluir,
                                saldo_credor_anterior=saldo,
-                               correlacoes=self.correlacoes)
+                               correlacoes=self.correlacoes,
+                               incluir=self.incluir)
         except Exception as exc:  # noqa: BLE001
             QApplication.restoreOverrideCursor()
             QMessageBox.warning(self, "Gerar", str(exc))
@@ -423,7 +428,33 @@ class DialogoGerarDeXml(QDialog):
         # documentos: todos os do período, os desmarcados também (a
         # classificação não recebe o `excluir`), para poder voltar atrás
         self.t_doc.blockSignals(True)
-        linhas, chaves = [], []
+        linhas, chaves, fora = [], [], set()
+        # fora do período: listados aqui, **desmarcados**. Só entram se a
+        # pessoa marcar — é o cupom em contingência transmitido no mês
+        # seguinte (extemporâneo), e quem sabe disso é ela
+        lote = self.geracao.lote
+        por_chave = {d.chave: d for d in lote.nfes + lote.ctes}
+        cnpj = self.geracao.cnpj
+        for chave, data in previa.fora_periodo:
+            d = por_chave.get(chave)
+            if d is None:
+                continue
+            cte = hasattr(d, "nct")
+            saida = ((d.emit.documento if d.emit else "") == cnpj)
+            outro = d.dest if saida else (d.toma if cte else d.emit)
+            linhas.append(["", "%s — fora do período (%s/%s/%s): marque se "
+                               "extemporâneo" % ("Saída" if saida
+                                                 else "Entrada",
+                                                 data[:2], data[2:4],
+                                                 data[4:]),
+                           d.mod or "", "%s/%s" % (d.serie,
+                                                   d.nct if cte else d.nnf),
+                           _data_iso(d.dhemi),
+                           (outro.nome if outro else "") or "",
+                           _br(d.vtprest if cte else d.vnf),
+                           d.situacao, d.chave])
+            chaves.append(d.chave)
+            fora.add(d.chave)
         for grupo, docs in grupos.items():
             for d in docs:
                 cte = hasattr(d, "nct")
@@ -441,9 +472,18 @@ class DialogoGerarDeXml(QDialog):
         for i, chave in enumerate(chaves):
             it = self.t_doc.item(i, 0)
             it.setFlags(it.flags() | Qt.ItemFlag.ItemIsUserCheckable)
-            it.setCheckState(Qt.CheckState.Unchecked if chave in self.excluir
-                             else Qt.CheckState.Checked)
+            if chave in fora:
+                marcado = chave in self.incluir
+                for j in range(1, self.t_doc.columnCount()):
+                    c = self.t_doc.item(i, j)
+                    if c is not None:
+                        c.setForeground(QColor(pal.warn))
+            else:
+                marcado = chave not in self.excluir
+            it.setCheckState(Qt.CheckState.Checked if marcado
+                             else Qt.CheckState.Unchecked)
             it.setData(Qt.ItemDataRole.UserRole, chave)
+            it.setData(Qt.ItemDataRole.UserRole + 1, chave in fora)
         self.t_doc.blockSignals(False)
 
         # revisão: bloqueios primeiro
@@ -459,8 +499,11 @@ class DialogoGerarDeXml(QDialog):
 
         # fora do período, ignorados e o que não foi lido
         lote = self.geracao.lote
-        fora = ([[c, "fora do período (%s)" % ("%s/%s/%s" % (
-            d[:2], d[2:4], d[4:]) if d else "sem data")]
+        fora = ([[c, "fora do período (%s) — %s" % (
+            "%s/%s/%s" % (d[:2], d[2:4], d[4:]) if d else "sem data",
+            "incluído como extemporâneo" if c in self.incluir
+            else "não incluído: marque na aba Documentos se for "
+                 "extemporâneo")]
             for c, d in previa.fora_periodo]
             + [[c, m] for c, m in previa.ignorados]
             + [[os.path.basename(a), m] for a, m in lote.erros]
@@ -488,24 +531,24 @@ class DialogoGerarDeXml(QDialog):
             if lay_ not in self.geracao.resultados:
                 b.setEnabled(False)
         self.lbl_estado.setText(" · ".join(partes))
-        self.lbl_estado.setProperty("role", "erro" if bloqueado else "ok")
-        self.lbl_estado.style().unpolish(self.lbl_estado)
-        self.lbl_estado.style().polish(self.lbl_estado)
+        definir_papel(self.lbl_estado, "erro" if bloqueado else "ok")
         self._habilitar()
 
     def _marcar(self, item):
         if item.column() != 0:
             return
         chave = item.data(Qt.ItemDataRole.UserRole)
-        if item.checkState() == Qt.CheckState.Checked:
+        marcado = item.checkState() == Qt.CheckState.Checked
+        if item.data(Qt.ItemDataRole.UserRole + 1):
+            # fora do período: marcar = incluir como extemporâneo
+            (self.incluir.add if marcado else self.incluir.discard)(chave)
+        elif marcado:
             self.excluir.discard(chave)
         else:
             self.excluir.add(chave)
         self.lbl_estado.setText("Documentos alterados — clique em Gerar "
                                 "para refazer.")
-        self.lbl_estado.setProperty("role", "aviso")
-        self.lbl_estado.style().unpolish(self.lbl_estado)
-        self.lbl_estado.style().polish(self.lbl_estado)
+        definir_papel(self.lbl_estado, "aviso")
         for b in self.b_salvar.values():
             b.setEnabled(False)
 
@@ -539,14 +582,16 @@ class DialogoGerarDeXml(QDialog):
             atual["COD_ITEM"] = cod
         dlg = DialogoDecisao(r, "CONTRIB" in self.geracao.resultados, atual,
                              self)
-        if dlg.exec() != QDialog.DialogCode.Accepted:
-            return
-        try:
-            self.geracao.decidir(r, **dlg.valores)
-        except ValueError as exc:
-            QMessageBox.warning(self, "Decidir", str(exc))
-            return
-        self._gerar()
+
+        def aplicar():
+            try:
+                self.geracao.decidir(r, **dlg.valores)
+            except ValueError as exc:
+                QMessageBox.warning(self, "Decidir", str(exc))
+                return
+            self._gerar()
+        # sem bloquear: a pessoa consulta a grade e o XML enquanto decide
+        abrir_janela(self, dlg, ao_aceitar=aplicar)
 
     # ------------------------------------------------------------- salvar
     def _salvar(self, layout):
@@ -578,5 +623,14 @@ class DialogoGerarDeXml(QDialog):
         caixa.addButton("Continuar aqui", QMessageBox.ButtonRole.RejectRole)
         caixa.exec()
         if caixa.clickedButton() is abrir:
-            self.abrir_depois = caminho
+            # abre já, na janela principal: esta continua aberta ao lado
+            # para gerar o outro leiaute (até a 1.1.0-dev.11 o arquivo só
+            # abria depois de fechar a geração)
+            jan = self.parent()
+            if jan is not None and hasattr(jan, "abrir_caminho"):
+                jan.abrir_caminho(caminho)
+                jan.raise_()
+                jan.activateWindow()
+            else:
+                self.abrir_depois = caminho
             self.accept()

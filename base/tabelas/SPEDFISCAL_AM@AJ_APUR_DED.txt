@@ -1,0 +1,299 @@
+versão=51 COD_AJUR, DESC_AJUR, DT_INI, DT_FIM
+AM009999|Outros débitos para ajuste de apuração ICMS  Operações Próprias|01012009|31122013
+AM109999|Outros débitos para ajuste de apuração ICMS  Substituição Tributária|01012009|31122013
+AM019999|Estorno de créditos para ajuste de apuração ICMS  Operações Próprias|01012009|31122013
+AM119999|Estorno de créditos para ajuste de apuração ICMS  Substituição Tributária|01012009|31122013
+AM029999|Outros créditos para ajuste de apuração ICMS  Operações Próprias|01012009|31122013
+AM129999|Outros créditos para ajuste de apuração ICMS  Substituição Tributária|01012009|31122013
+AM039999|Estorno de débitos para ajuste de apuração ICMS  Operações Próprias|01012009|31122013
+AM139999|Estorno de débitos para ajuste de apuração ICMS  Substituição Tributária|01012009|31122013
+AM049999|Deduções do imposto apurado na apuração ICMS  Operações Próprias|01012009|31122013
+AM149999|Deduções do imposto apurado na apuração ICMS  Substituição Tributária|01012009|31122013
+AM059999|Débito especial de ICMS  Operações Próprias|01012009|31122013
+AM159999|Débito especial de ICMS  Substituição Tributária|01012009|31122013
+AM000001|Transferência de saldo credor para o estabelecimento centralizador do sujeito passivo localizado no Estado  Decreto Estadual nº 20.686/1999, art. 102|01012014|30042014
+AM000002|Transferência de saldo devedor de outro estabelecimento do sujeito passivo localizado no Estado  Decreto Estadual nº 20.686/1999, art. 102|01012014|30042014
+AM000003|Regime de Estimativa  saldo devedor a recolher apurado até o mês anterior  Decreto Estadual nº 20.686/1999, art. 46, caput e § 1º|01012014|30042014
+AM009999|Outros débitos para ajuste de apuração do ICMS  operações próprias|01012014|30042014
+AM010001|Estorno de crédito  Decreto Estadual nº 20.686/1999, arts. 31 e 32|01012014|30042014
+AM010002|Estorno de crédito  Diferimento  Lei Estadual nº 2.826/2003, art. 14, §§ 5º e 6º|01012014|30042014
+AM019999|Outros estornos de créditos para ajuste de apuração do ICMS  operações próprias|01012014|30042014
+AM020001|Transferência de saldo devedor para o estabelecimento centralizador do sujeito passivo localizado no Estado  Decreto Estadual nº 20.686/1999, art. 102|01012014|30042014
+AM020002|Transferência de saldo credor de outro estabelecimento do sujeito passivo localizado no Estado  Decreto Estadual nº 20.686/1999, art. 102|01012014|30042014
+AM020003|Antecipação tributária  mercadoria nacional  Decreto Estadual nº 20.686/1999, art. 20, X, e art. 118|01012014|30042014
+AM020004|CIAP  Ativo Permanente  Decreto Estadual nº 20.686/1999, art. 20, IX|01012014|30042014
+AM020005|Parcela mensal da Estimativa Fixa  Decreto Estadual nº 20.686/1999, art. 46|01012014|30042014
+AM020006|Repetição de Indébito  Decreto Estadual nº 20.686/1999, art. 20, VI|01012014|30042014
+AM020007|Importação de mercadoria estrangeira  Decreto Estadual nº 20.686/1999, art. 20, XI|01012014|30042014
+AM020008|Despesas Aduaneiras  Decreto Estadual nº 20.686/1999, art. 13, V e § 1º, e art. 98, IV|01012014|30042014
+AM020009|Crédito Presumido  Lei Estadual nº 2.390/1996, art. 7º, V|01012014|30042014
+AM020010|Recuperação de crédito de mercadoria considerada já tributada  Decreto Estadual nº 20.686/1999, art. 20, § 11|01012014|30042014
+AM020011|Parcelamento  direito a crédito do imposto recolhido|01012014|30042014
+AM020012|AINF  direito a crédito do imposto lançado e recolhido|01012014|30042014
+AM020013|Crédito Fiscal Presumido  atividade comercial  saídas para outra unidade da Federação de mercadorias importadas do exterior  Lei Estadual nº 2.826/2003, art. 24, § 3º|01012014|30042014
+AM020014|Crédito Fiscal Presumido  atividade comercial  saídas para outra unidade da Federação de mercadorias importadas do exterior  Lei Estadual nº 2.826/2003, art. 24, § 9º, II|01012014|30042014
+AM020015|Adicional de 20 pontos percentuais ao Crédito Estímulo de 55% - Lei Estadual nº 2.826/2003, art. 13, § 4º|01012014|30042014
+AM020016|Adicional de Regionalização ao Crédito Estímulo de 75% - Lei Estadual nº 2.826/2003, art. 13, §§ 5º, 6º, 7º e 8º|01012014|30042014
+AM020017|Adicional de Regionalização ao Crédito Estímulo de 55%  Lei Estadual nº 2.826/2003, art. 13, §§ 9º, 10, 11 e 12|01012014|30042014
+AM020018|Adicional de 5 pontos percentuais ao Crédito Estímulo de 55%  Lei Estadual nº 2.826/2003, art. 13, § 14|01012014|30042014
+AM029999|Outros créditos para ajuste de apuração do ICMS  operações próprias|01012014|30042014
+AM039999|Estornos de débitos para ajuste de apuração do ICMS  operações próprias|01012014|30042014
+AM040001|Crédito Estímulo do ICMS  90,25%  Lei Estadual nº 2.826/2003, art. 13.|01012014|30042014
+AM040002|Crédito Estímulo do ICMS  75%  Lei Estadual nº 2.826/2003, art. 13.|01012014|30042014
+AM040003|Crédito Estímulo do ICMS  55%  Lei Estadual nº 2.826/2003, art. 13.|01012014|30042014
+AM040004|Crédito Estímulo do ICMS  100%  Lei Estadual nº 2.826/2003, art. 13.|01012014|30042014
+AM049999|Outras deduções do imposto apurado  operações próprias|01012014|30042014
+AM050001|Cesta Básica  mercadorias procedentes de outra Unidade da Federação  Decreto Estadual nº 23.994/2003, art. 38, caput e § 1º, I|01012014|30042014
+AM050002|ICMS Antecipação Tributária  Mercadoria Nacional  Decreto Estadual nº 20.686/1999, art. 118|01012014|30042014
+AM050003|ICMS Antecipação Tributária com encerramento da tributação  gado em pé destinado ao abate, as carnes, vísceras, frango e produtos de sua matança, in natura  Decreto Estadual nº 20.686/1999, art. 118, § 4º|01012014|30042014
+AM050004|ICMS Antecipação Tributária com encerramento da tributação  bebidas alcóolicas de posições NCM 2204 e 2208, farinha de trigo ou semolina  Decreto Estadual nº 20.686/1999, art. 118, § 5º|01012014|30042014
+AM050005|ICMS Antecipação Tributária com encerramento da tributação  café  Decreto Estadual nº 20.686/1999, art. 118, § 5º|01012014|30042014
+AM050006|ICMS Antecipação Tributária com encerramento da tributação  mercadorias sujeitas ao regime de substituição tributária provenientes de Estado não signatário de Convênio  Decreto Estadual nº 20.686/1999, art. 120|01012014|30042014
+AM050007|ICMS Mercadoria Importada do Exterior  Insumo Industrial  Decreto Estadual nº 20.686/1999, art. 2º, § 1º, I, e art. 107, I, a|01012014|30042014
+AM050008|ICMS Mercadorias Importada do Exterior  Comercialização  Decreto Estadual nº 20.686/1999, art. 2º, § 1º, I, e art. 107, I, a|01012014|30042014
+AM050009|ICMS Mercadorias ou Bens importados do exterior  uso e consumo  Decreto Estadual nº 20.686/1999, art. 2º, § 1º, I, e art. 107, I, a|01012014|30042014
+AM050010|ICMS Mercadorias ou bens importados do exterior  Ativo Permanente  Decreto Estadual nº 20.686/1999, art. 2º, § 1º, I, e art. 107, I, a|01012014|30042014
+AM050011|ICMS sobre Despesas Aduaneiras  insumos industriais  Decreto Estadual nº 20.686/1999, art. 13, V, e, e art. 107, § 1º, I|01012014|30042014
+AM050012|ICMS sobre Despesas Aduaneiras  outras importações  Decreto Estadual nº 20.686/1999, art. 13, V, e, e art. 107, § 1º, II, b|01012014|30042014
+AM050013|ICMS Diferencial de alíquotas  mercadorias ou bens para uso e consumo  Decreto Estadual nº 20.686/1999, art. 3º, XIV|01012014|30042014
+AM050014|ICMS Diferencial de alíquotas  bens para o ativo permanente do contribuinte  Decreto Estadual nº 20.686/1999, art. 3º, XIV|01012014|30042014
+AM050015|ICMS Diferido a Recolher  Produtos Agrícolas  Decreto Estadual nº 20.686/1999, art. 109, § 4º, II, b|01012014|30042014
+AM050016|ICMS Estorno de Crédito  Entrada Incentivada  Decreto Estadual nº 20.686/1999, art. 31, art. 35 e art. 107, V|01012014|30042014
+AM050017|ICMS Estorno de Crédito  Saída Incentivada  Decreto Estadual nº 20.686/1999, art. 13, V, e, e art. 107, § 1º, I|01012014|30042014
+AM050018|ICMS Estorno de Crédito  Álcool Anidro e Biodiesel  Conv. ICMS nº 110/2007, cláusula vigésima primeira, § 10, e Decreto Estadual nº 20.686/1999, art. 13, V, e, e art. 107, § 1º, I|01012014|30042014
+AM050019|ICMS Estorno de Crédito  Outros  Decreto Estadual nº 20.686/1999, art. 13, V, e, e art. 107, § 1º, I|01012014|30042014
+AM050020|ICMS Excesso Cota LCD  Decreto Estadual nº 32.297/2012, art. 3º, § 4º|01012014|30042014
+AM050021|ICMS Energia Elétrica  Produção Própria  Decreto Estadual nº 20.686/1999, art. 2º, § 3º, II, f|01012014|30042014
+AM051001|Contribuição à UEA|01012014|30042014
+AM051002|Contribuição ao FTI|01012014|30042014
+AM051003|Contribuição ao FMPES|01012014|30042014
+AM059999|Outros débitos especiais  operações próprias|01012014|30042014
+AM090001|Créditos Fiscais  Operações Incentivadas|01012014|30042014
+AM090002|Créditos Fiscais  Demais operações|01012014|30042014
+AM109999|Outros débitos para ajuste de apuração do ICMS-ST|01012014|30042014
+AM119999|Estorno de créditos para ajuste de apuração do ICMS-ST|01012014|30042014
+AM129999|Outros créditos para ajuste de apuração do ICMS-ST|01012014|30042014
+AM139999|Estorno de débitos para ajuste de apuração do ICMS-ST|01012014|30042014
+AM149999|Deduções do ICMS-ST apurado|01012014|30042014
+AM150001|Retenção de ICMS-ST pela aquisição de serviço de transporte interestadual e intermunicipal iniciado no Estado  Decreto Estadual nº 20.686/1999, art. 110, III|01012014|30042014
+AM150002|Retenção de ICMS-ST pela aquisição de serviço de transporte interestadual e intermunicipal por transportador autônomo  Decreto Estadual nº 20.686/1999, art. 3º, XVII|01012014|30042014
+AM159999|Débito especial do ICMS-ST|01012014|30042014
+AM000001|Transferência de saldo credor para o estabelecimento centralizador do sujeito passivo localizado no Estado  Decreto Estadual nº 20.686/1999, art. 102|01052014|31122014
+AM000002|Recebimento de saldo devedor transferido por outro estabelecimento do sujeito passivo localizado no Estado  Decreto Estadual nº 20.686/1999, art. 102|01052014|31122014
+AM000003|Regime de Estimativa  saldo devedor a recolher apurado até o mês anterior  Decreto Estadual nº 20.686/1999, art. 46, caput e § 1º|01052014|31122014
+AM009999|Débito para ajuste de apuração do ICMS - operações próprias - descrever no registro E111|01052014|31122014
+AM010001|Estorno de crédito  Decreto Estadual nº 20.686/1999, arts. 31 e 32|01052014|31122014
+AM010002|Estorno de crédito  Diferimento  Lei Estadual nº 2.826/2003, art. 14, §§ 5º e 6º|01052014|31122014
+AM019999|Estorno de crédito  operações próprias - descrever no registro E111|01052014|31122014
+AM020001|Transferência de saldo devedor para o estabelecimento centralizador do sujeito passivo localizado no Estado  Decreto Estadual nº 20.686/1999, art. 102|01052014|31122014
+AM020002|Recebimento de saldo credor transferido por outro estabelecimento do sujeito passivo localizado no Estado  Decreto Estadual nº 20.686/1999, art. 102|01052014|31122014
+AM020003|Antecipação tributária  mercadoria nacional  Decreto Estadual nº 20.686/1999, art. 20, X, e art. 118|01052014|31122014
+AM020004|CIAP  Ativo Permanente  Decreto Estadual nº 20.686/1999, art. 20, IX|01052014|31122014
+AM020005|Parcela mensal da Estimativa Fixa  Decreto Estadual nº 20.686/1999, art. 46|01052014|31122014
+AM020006|Repetição de Indébito  Decreto Estadual nº 20.686/1999, art. 20, VI|01052014|31122014
+AM020007|Importação de mercadoria estrangeira  Decreto Estadual nº 20.686/1999, art. 20, XI|01052014|31122014
+AM020008|Despesas Aduaneiras  Decreto Estadual nº 20.686/1999, art. 13, V e § 1º, e art. 98, IV|01052014|31122014
+AM020009|Crédito Presumido  Lei Estadual nº 2.390/1996, art. 7º, V|01052014|31122014
+AM020010|Recuperação de crédito de mercadoria considerada já tributada  Decreto Estadual nº 20.686/1999, art. 20, § 11|01052014|31122014
+AM020011|Parcelamento  direito a crédito do imposto recolhido|01052014|31122014
+AM020012|AINF  direito a crédito do imposto lançado e recolhido|01052014|31122014
+AM020013|Energia Elétrica - Decreto Estadual nº 20.686/1999, art. 20, VIII|01052014|31122014
+AM029999|Crédito para ajuste de apuração do ICMS  operações próprias - descrever no registro E111|01052014|31122014
+AM039999|Estorno de débito - operações próprias - descrever no registro E111|01052014|31122014
+AM040001|Crédito Estímulo do ICMS  90,25%  Lei Estadual nº 2.826/2003, art. 13, I|01052014|31122014
+AM040002|Crédito Estímulo do ICMS  75%  Lei Estadual nº 2.826/2003, art. 13, II|01052014|31122014
+AM040003|Crédito Estímulo do ICMS  55%  Lei Estadual nº 2.826/2003, art. 13, III|01052014|31122014
+AM040004|Crédito Estímulo do ICMS  100%  Lei Estadual nº 2.826/2003, art. 13, § 3º|01052014|31122014
+AM040005|Crédito Estímulo do ICMS  55%  Adicional de 20%  Lei Estadual nº 2.826/2003, art. 13, § 4º|01052014|31122014
+AM040006|Crédito Estímulo do ICMS  75%  Adicional de regionalização  Lei Estadual nº 2.826/2003, art. 13, §§ 5º, 6º, 7º e 8º|01052014|31122014
+AM040007|Crédito Estímulo do ICMS  55%  Adicional de regionalização  Lei Estadual nº 2.826/2003, art. 13, §§ 9º, 10, 11 e 12|01052014|31122014
+AM040008|Crédito Estímulo do ICMS  100%  Lei Estadual nº 2.826/2003, art. 13, § 13|01052014|31122014
+AM040009|Crédito Estímulo do ICMS  55%  Adicional de 5% Lei Estadual nº 2.826/2003, art. 13, § 14|01052014|31122014
+AM040010|Crédito Estímulo do ICMS  75%  Lei Estadual nº 2.826/2003, art. 13, § 15|01052014|31122014
+AM040011|Crédito Estímulo do ICMS  100%  Lei Estadual nº 2.826/2003, art. 13, § 18|01052014|31122014
+AM040012|Crédito Estímulo do ICMS  nível concedido na forma da Lei Estadual nº 2.826/2003, art. 16|01052014|31122014
+AM040013|Regime de Estimativa  saldo devedor apurado a transportar para o mês seguinte do trimestre de apuração  Decreto Estadual nº 20.686/1999, art. 46, caput e § 1º|01052014|31122014
+AM049999|Dedução do imposto apurado  operações próprias - descrever no registro E111|01052014|31122014
+AM050001|Cesta Básica|01052014|31122014
+AM050002|ICMS Antecipação Tributária  Mercadoria Nacional  Decreto Estadual nº 20.686/1999, art. 118|01052014|31122014
+AM050003|ICMS Antecipação Tributária com encerramento da tributação  gado em pé destinado ao abate, as carnes, vísceras, frango e produtos de sua matança, in natura  Decreto Estadual nº 20.686/1999, art. 118, § 4º|01052014|31122014
+AM050004|ICMS Antecipação Tributária com encerramento da tributação  bebidas alcóolicas de posições NCM 2204 e 2208, farinha de trigo ou semolina  Decreto Estadual nº 20.686/1999, art. 118, § 5º|01052014|31122014
+AM050005|ICMS Antecipação Tributária com encerramento da tributação  café  Decreto Estadual nº 20.686/1999, art. 118, § 5º|01052014|31122014
+AM050006|ICMS Antecipação Tributária com encerramento da tributação  mercadorias sujeitas ao regime de substituição tributária provenientes de Estado não signatário de Convênio  Decreto Estadual nº 20.686/1999, art. 120|01052014|31122014
+AM050007|ICMS Mercadoria Importada do Exterior  Insumo Industrial  Decreto Estadual nº 20.686/1999, art. 2º, § 1º, I, e art. 107, I, a|01052014|31122014
+AM050008|ICMS Mercadorias Importada do Exterior  Comercialização  Decreto Estadual nº 20.686/1999, art. 2º, § 1º, I, e art. 107, I, a|01052014|31122014
+AM050009|ICMS Mercadorias ou Bens importados do exterior  uso e consumo  Decreto Estadual nº 20.686/1999, art. 2º, § 1º, I, e art. 107, I, a|01052014|31122014
+AM050010|ICMS Mercadorias ou bens importados do exterior  Ativo Permanente  Decreto Estadual nº 20.686/1999, art. 2º, § 1º, I, e art. 107, I, a|01052014|31122014
+AM050011|ICMS sobre Despesas Aduaneiras  insumos industriais  Decreto Estadual nº 20.686/1999, art. 13, V, e, e art. 107, § 1º, I|01052014|31122014
+AM050012|ICMS sobre Despesas Aduaneiras  outras importações  Decreto Estadual nº 20.686/1999, art. 13, V, e, e art. 107, § 1º, II, b|01052014|31122014
+AM050013|ICMS Diferencial de alíquotas  mercadorias ou bens para uso e consumo  Decreto Estadual nº 20.686/1999, art. 3º, XIV|01052014|31122014
+AM050014|ICMS Diferencial de alíquotas  bens para o ativo permanente do contribuinte  Decreto Estadual nº 20.686/1999, art. 3º, XIV|01052014|31122014
+AM050015|ICMS Diferido a Recolher  Produtos Agrícolas  Decreto Estadual nº 20.686/1999, art. 109, § 4º, II, b|01052014|31122014
+AM050016|ICMS Estorno de Crédito  Entrada Incentivada  Decreto Estadual nº 20.686/1999, art. 31, art. 35 e art. 107, V|01052014|31122014
+AM050017|ICMS Estorno de Crédito  Saída Incentivada  Decreto Estadual nº 20.686/1999, art. 13, V, e, e art. 107, § 1º, I|01052014|31122014
+AM050018|ICMS Estorno de Crédito  Álcool Anidro e Biodiesel  Conv. ICMS nº 110/2007, cláusula vigésima primeira, § 10, e Decreto Estadual nº 20.686/1999, art. 13, V, e, e art. 107, § 1º, I|01052014|31122014
+AM050019|ICMS Estorno de Crédito  Outros  Decreto Estadual nº 20.686/1999, art. 13, V, e, e art. 107, § 1º, I|01052014|31122014
+AM050020|ICMS Excesso Cota LCD  Decreto Estadual nº 32.297/2012, art. 3º, § 4º|01052014|31122014
+AM050021|ICMS Energia Elétrica  Produção Própria  Decreto Estadual nº 20.686/1999, art. 2º, § 3º, II, f|01052014|31122014
+AM050022|Simples Nacional  valor do ICMS a recolher apurado no Programa Gerador do Documento de Arrecadação do Simples Nacional  Declaratório  PGDAS-D|01052014|31122014
+AM051001|Contribuição à UEA|01052014|31122014
+AM051002|Contribuição ao FTI|01052014|31122014
+AM051003|Contribuição ao FMPES|01052014|31122014
+AM059999|Débito especial  operações próprias - descrever no registro E111|01052014|31122014
+AM090001|Crédito Fiscal - Operações Incentivadas  produtos com características definidas na Lei Estadual nº 2.828/2003, art. 10, incisos I, IV e VII|01052014|31122014
+AM090002|Crédito Fiscal - Operações Incentivadas  produtos com características definidas na Lei Estadual nº 2.828/2003, art. 10, incisos II, III, V e VI|01052014|31122014
+AM090003|Crédito Fiscal - Operações Incentivadas  produtos com características definidas na Lei Estadual nº 2.828/2003, art. 10, inciso VIII|01052014|31122014
+AM090004|Crédito Fiscal - Operações Não Incentivadas - Indústria|01052014|31122014
+AM090005|Crédito Fiscal - Demais operações - Comércio e Serviço|01052014|31122014
+AM109999|Débito de operações com ICMS-ST - descrever no registro E111|01052014|31122014
+AM119999|Estorno de crédito - operações com ICMS-ST - descrever no registro E111|01052014|31122014
+AM129999|Crédito de operações com ICMS-ST - descrever no registro E111|01052014|31122014
+AM139999|Estorno de débito - operações com ICMS-ST - descrever no registro E111|01052014|31122014
+AM149999|Dedução do ICMS-ST apurado - descrever no registro E111|01052014|31122014
+AM159999|Débito especial - operações com ICMS-ST - descrever no registro E111|01052014|31122014
+AM050023|Regime de estivativa - parcela mensal fixa - Decreto Estadual n. 20.686/1999, art. 107, II, "b", 1|01052014|31122014
+AM000001|Transferência de saldo credor para o estabelecimento centralizador do sujeito passivo localizado no Estado  Decreto Estadual nº 20.686/1999, art. 102|01012015|31122015
+AM000002|Recebimento de saldo devedor transferido por outro estabelecimento do sujeito passivo localizado no Estado  Decreto Estadual nº 20.686/1999, art. 102|01012015|
+AM000003|Regime de Estimativa  saldo devedor a recolher apurado até o mês anterior  Decreto Estadual nº 20.686/1999, art. 46, caput e § 1º|01012015|31122015
+AM009999|Outros débitos para ajuste de apuração do ICMS - operações próprias - descrever no registro E111 ou 1921|01012015|
+AM010001|Estorno de crédito  Decreto Estadual nº 20.686/1999, arts. 31 e 32|01012015|
+AM010002|Estorno de crédito  Diferimento  Lei Estadual nº 2.826/2003, art. 14, §§ 5º e 6º|01012015|
+AM010003|Estorno de crédito  saída de bem de consumo final incentivado com carga tributária reduzida de 7% - Decreto Estadual nº 23.994/2003, art. 22, § 20|01012015|
+AM019999|Outros estornos de crédito  operações próprias - descrever no registro E111 ou 1921|01012015|
+AM020001|Transferência de saldo devedor para o estabelecimento centralizador do sujeito passivo localizado no Estado  Decreto Estadual nº 20.686/1999, art. 102|01012015|31122015
+AM020002|Recebimento de saldo credor transferido por outro estabelecimento do sujeito passivo localizado no Estado  Decreto Estadual nº 20.686/1999, art. 102|01012015|
+AM020003|Antecipação tributária  aquisição de mercadoria em outra unidade da federação  Decreto Estadual nº 20.686/1999, art. 20, X, e art. 118|01012015|
+AM020004|CIAP  Ativo Permanente  Decreto Estadual nº 20.686/1999, art. 20, IX|01012015|
+AM020005|Parcela mensal da Estimativa Fixa  Decreto Estadual nº 20.686/1999, art. 46|01012015|
+AM020006|Repetição de Indébito  Decreto Estadual nº 20.686/1999, art. 20, VI|01012015|
+AM020007|Importação de mercadoria estrangeira  Decreto Estadual nº 20.686/1999, art. 20, XI|01012015|
+AM020008|Despesas Aduaneiras  Decreto Estadual nº 20.686/1999, art. 13, V e § 1º, e art. 98, IV|01012015|31122019
+AM020009|Crédito Presumido  Lei Estadual nº 2.390/1996, art. 7º, V|01012015|31032019
+AM020010|Recuperação de crédito de mercadoria considerada já tributada  Decreto Estadual nº 20.686/1999, art. 20, § 11|01012015|30042018
+AM020011|Parcelamento  direito a crédito do imposto recolhido|01012015|
+AM020012|AINF  direito a crédito do imposto lançado e recolhido|01012015|
+AM020013|Energia Elétrica  Decreto Estadual nº 20.686/1999, art. 20, VIII|01012015|
+AM029999|Outros créditos para ajuste de apuração do ICMS - operações próprias - descrever no registro E111 ou 1921|01012015|
+AM039999|Outros estornos de débito  operações próprias - descrever no registro E111 ou 1921|01012015|
+AM040001|Crédito Estímulo do ICMS  90,25%  Lei Estadual nº 2.826/2003, art. 13, I|01012015|
+AM040002|Crédito Estímulo do ICMS  75%  Lei Estadual nº 2.826/2003, art. 13, II|01012015|
+AM040003|Crédito Estímulo do ICMS  55%  Lei Estadual nº 2.826/2003, art. 13, III|01012015|
+AM040004|Crédito Estímulo do ICMS  100%  Lei Estadual nº 2.826/2003, art. 13, § 3º|01012015|
+AM040005|Crédito Estímulo do ICMS  55%  Adicional de 20%  Lei Estadual nº 2.826/2003, art. 13, § 4º|01012015|
+AM040006|Crédito Estímulo do ICMS  75%  Adicional de regionalização  Lei Estadual nº 2.826/2003, art. 13, §§ 5º, 6º, 7º e 8º|01012015|
+AM040007|Crédito Estímulo do ICMS  55%  Adicional de regionalização  Lei Estadual nº 2.826/2003, art. 13, §§ 9º, 10, 11 e 12|01012015|
+AM040008|Crédito Estímulo do ICMS  100%  Lei Estadual nº 2.826/2003, art. 13, § 13|01012015|
+AM040009|Crédito Estímulo do ICMS  55%  Adicional de 5%  Lei Estadual nº 2.826/2003, art. 13, § 14|01012015|
+AM040010|Crédito Estímulo do ICMS  75%  Lei Estadual nº 2.826/2003, art. 13, § 15|01012015|
+AM040011|Crédito Estímulo do ICMS  100%  Lei Estadual nº 2.826/2003, art. 13, § 18|01012015|
+AM040012|Crédito Estímulo do ICMS  nível concedido na forma da Lei Estadual nº 2.826/2003, art. 16|01012015|
+AM040013|Regime de Estimativa  saldo devedor apurado a transportar para o mês seguinte do trimestre de apuração  Decreto Estadual nº 20.686/1999, art. 46, caput e § 1º|01012015|
+AM049999|Outras deduções do ICMS apurado  operações próprias - descrever no registro E111 ou 1921|01012015|
+AM050001|Cesta Básica  mercadorias procedentes de outra Unidade da Federação  Decreto Estadual nº 23.994/2003, art. 38, caput e § 1º, I|01012015|
+AM050002|ICMS Antecipação Tributária  Mercadoria Nacional  Decreto Estadual nº 20.686/1999, art. 118|01012015|
+AM050003|ICMS Antecipação Tributária com encerramento da tributação  gado em pé destinado ao abate, as carnes, vísceras, frango e produtos de sua matança, in natura  Decreto Estadual nº 20.686/1999, art. 118, § 4º|01012015|
+AM050004|ICMS Antecipação Tributária com encerramento da tributação  bebidas alcóolicas de posições NCM 2204 e 2208, farinha de trigo ou semolina  Decreto Estadual nº 20.686/1999, art. 118, § 5º|01012015|
+AM050005|ICMS Antecipação Tributária com encerramento da tributação  café  Decreto Estadual nº 20.686/1999, art. 118, § 5º|01012015|
+AM050006|ICMS Antecipação Tributária com encerramento da tributação  mercadorias sujeitas ao regime de substituição tributária provenientes de Estado não signatário de Convênio  Decreto Estadual nº 20.686/1999, art. 120|01012015|
+AM050007|ICMS Mercadoria Importada do Exterior  Insumo Industrial  Decreto Estadual nº 20.686/1999, art. 2º, § 1º, I, e art. 107, I, a|01012015|
+AM050008|ICMS Mercadorias Importada do Exterior  Comercialização  Decreto Estadual nº 20.686/1999, art. 2º, § 1º, I, e art. 107, I, a|01012015|
+AM050009|ICMS Mercadorias ou Bens importados do exterior  uso e consumo  Decreto Estadual nº 20.686/1999, art. 2º, § 1º, I, e art. 107, I, a|01012015|
+AM050010|ICMS Mercadorias ou bens importados do exterior  Ativo Permanente  Decreto Estadual nº 20.686/1999, art. 2º, § 1º, I, e art. 107, I, a|01012015|
+AM050011|ICMS sobre Despesas Aduaneiras  insumos industriais  Decreto Estadual nº 20.686/1999, art. 13, V, e, e art. 107, § 1º, I|01012015|
+AM050012|ICMS sobre Despesas Aduaneiras  outras importações  Decreto Estadual nº 20.686/1999, art. 13, V, e, e art. 107, § 1º, II, b|01012015|
+AM050013|ICMS Diferencial de alíquotas  mercadorias ou bens para uso e consumo  Decreto Estadual nº 20.686/1999, art. 3º, XIV|01012015|
+AM050014|ICMS Diferencial de alíquotas  bens para o ativo permanente do contribuinte  Decreto Estadual nº 20.686/1999, art. 3º, XIV|01012015|
+AM050015|ICMS Diferido a Recolher  Produtos Agrícolas  Decreto Estadual nº 20.686/1999, art. 109, § 4º, II, b|01012015|
+AM050016|ICMS Estorno de Crédito  Entrada Incentivada  Decreto Estadual nº 20.686/1999, art. 31, art. 35 e art. 107, V|01012015|
+AM050017|ICMS Estorno de Crédito  Saída Incentivada  Decreto Estadual nº 20.686/1999, art. 13, V, e, e art. 107, § 1º, I|01012015|
+AM050018|ICMS Estorno de Crédito  Álcool Anidro e Biodiesel  Conv. ICMS nº 110/2007, cláusula vigésima primeira, § 10, e Decreto Estadual nº 20.686/1999, art. 13, V, e, e art. 107, § 1º, I|01012015|
+AM050019|ICMS Estorno de Crédito  Outros  Decreto Estadual nº 20.686/1999, art. 13, V, e, e art. 107, § 1º, I|01012015|
+AM050020|ICMS Excesso Cota LCD  Decreto Estadual nº 32.297/2012, art. 3º, § 4º|01012015|
+AM050021|ICMS Energia Elétrica  Produção Própria  Decreto Estadual nº 20.686/1999, art. 2º, § 3º, II, f|01012015|
+AM050022|Simples Nacional  valor do ICMS a recolher apurado no Programa Gerador do Documento de Arrecadação do Simples Nacional  Declaratório  PGDAS-D|01012015|
+AM050023|Regime de estimativa - parcela mensal fixa  Decreto Estadual nº 20.686/1999, art. 107, II, b, 1|01012015|
+AM050024|ICMS Diferido a Recolher  refeições prontas adquiridas por estabelecimento industrial  Decreto Estadual nº 20.686/1999, art. 109, § 4º, II, c|01012015|
+AM051001|Contribuição à UEA|01012015|
+AM051002|Contribuição ao FTI|01012015|
+AM051003|Contribuição ao FMPES|01012015|
+AM059999|Outros débitos especiais  operações próprias - descrever no registro E111 ou 1921|01012015|
+AM099999|Controle do ICMS extra-apuração|01012015|
+AM109999|Outros débitos - operações com ICMS-ST - descrever no registro E220|01012015|
+AM119999|Outros estornos de crédito - operações com ICMS-ST - descrever no registro E220|01012015|
+AM129999|Outros créditos - operações com ICMS-ST - descrever no registro E220|01012015|
+AM139999|Outros estornos de débito - operações com ICMS-ST - descrever no registro E220|01012015|
+AM149999|Outras deduções do ICMS-ST apurado - descrever no registro E220|01012015|
+AM159999|Outros débitos especiais - operações com ICMS-ST - descrever no registro E220|01012015|
+AM000001|Transferência de saldo credor para o estabelecimento centralizador pelo estabelecimento não centralizador do sujeito passivo localizado no Estado  Decreto Estadual nº 20.686/1999, art. 102|01012016|
+AM000003|Regime de Estimativa  saldo devedor apurado até o mês anterior  Decreto Estadual nº 20.686/1999, art. 46, caput e § 1º|01012016|
+AM020001|Transferência de saldo devedor para o estabelecimento centralizador pelo estabelecimento não centralizador do sujeito passivo localizado no Estado  Decreto Estadual nº 20.686/1999, art. 102|01012016|
+AM000004|Recebimento de saldo devedor do DIFAL  operação não incentivada|01012016|
+AM000005|Recebimento de saldo devedor do DIFAL  operação incentivada|01012016|
+AM000006|Recebimento de saldo devedor pelo estabelecimento centralizador do sujeito passivo  Decreto Estadual nº 35.756/2015, art. 2º, II, a|01012016|
+AM000007|Transferência de saldo credor para o estabelecimento centralizador pelo o estabelecimento não centralizador do sujeito passivo  Decreto Estadual nº 35.756/2015, art. 2º, I b|01012016|
+AM020014|Recebimento de saldo credor do DIFAL  operação não incentivada|01012016|
+AM020015|Recebimento de saldo credor do DIFAL  operação incentivada|01012016|
+AM020016|Transferência de saldo devedor para o estabelecimento centralizador pelo o estabelecimento não centralizador do sujeito passivo  Decreto Estadual nº 35.756/2015, art. 2º, I, a|01012016|
+AM020017|Recebimento de saldo credor pelo o estabelecimento centralizador do sujeito passivo  Decreto Estadual nº 35.756/2015, art. 2º, II, b|01012016|
+AM200001|Transferência de saldo credor do DIFAL  operação não incentivada|01012016|
+AM200002|Transferência de saldo credor do DIFAL  operação incentivada|01012016|
+AM209999|Outros débitos para ajuste de apuração ICMS Difal/FCP para a UF AM|01012016|31122016
+AM219999|Estorno de créditos para ajuste de apuração ICMS Difal/FCP para a UF AM|01012016|31122016
+AM220001|Transferência de saldo devedor do DIFAL  operação não incentivada|01012016|
+AM220002|Transferência de saldo devedor do DIFAL  operação incentivada|01012016|
+AM220003|Recolhimento antecipado do DIFAL|01012016|
+AM229999|Outros créditos para ajuste de apuração ICMS Difal/FCP para a UF AM|01012016|31122016
+AM239999|Estorno de débitos para ajuste de apuração ICMS Difal/FCP para a UF AM|01012016|31122016
+AM249999|Deduções do imposto apurado na apuração ICMS Difal/FCP para a UF AM|01012016|31122016
+AM259999|Débito especial de ICMS Difal/FCP para a UF AM|01012016|31122016
+AM209999|Outros débitos para ajuste de apuração ICMS Difal para a UF AM|01012017|
+AM219999|Estorno de créditos para ajuste de apuração ICMS Difal para a UF AM|01012017|
+AM229999|Outros créditos para ajuste de apuração ICMS Difal para a UF AM|01012017|
+AM239999|Estorno de débitos para ajuste de apuração ICMS Difal para a UF AM|01012017|
+AM249999|Deduções do imposto apurado na apuração ICMS Difal para a UF AM|01012017|
+AM259999|Débito especial de ICMS Difal para a UF AM|01012017|
+AM309999|Outros débitos para ajuste de apuração ICMS FCP para a UF AM|01012017|
+AM319999|Estorno de créditos para ajuste de apuração ICMS FCP para a UF AM|01012017|
+AM329999|Outros créditos para ajuste de apuração ICMS FCP para a UF AM|01012017|
+AM339999|Estorno de débitos para ajuste de apuração ICMS FCP para a UF AM|01012017|
+AM349999|Deduções do imposto apurado na apuração ICMS FCP para a UF AM|01012017|
+AM359999|Débito especial de ICMS FCP para a UF AM|01012017|
+AM020018|Crédito presumido de até 3% sobre faturamento das empresas prestadoras de serviço de comunicação - Decreto 37.464/2016|01012017|
+AM050025|FPS- Entrada de Mercadoria Nacional|01072017|31122019
+AM050026|FPS- Mercadoria Importada do Exterior|01072017|31122019
+AM050027|FPS- Serviço de Comunicação de Televisão por Assinatura|01072017|31122019
+AM150001|FPS- Operação Interestadual Substituição Tributária|01072017|31122019
+AM020019|Crédito Presumido de 20% na prestação de serviço de transporte - Decreto Estadual nº 20.686/199, art. 20, § 17|01072017|
+AM050028|FPS - artigo 2º, inciso III do Decreto Estadual nº 36.306/2015|01012018|
+AM020020|Antecipação tributária - aquisição de mercadoria em outra unidade da federação - Decreto Estadual nº 20.686/1999, art. 20, X, e art. 118 - Crédito Extemporâneo|01052018|
+AM020021|Importação de mercadoria estrangeira - Decreto Estadual nº 20.686/1999, art. 20, XI - Crédito Extemporâneo|01052018|
+AM020022|Crédito presumido de 1% do valor dos débitos de ICMS relacionados à prestação de serviços de telecomunicação - Conv. ICMS 56/2012 e Decreto nº 32.775/2012|01052018|
+AM020010|Recuperação de crédito de ICMS Substituição Tributária.|01052018|31122019
+AM020023|Crédito fiscal presumido - operação de transferência interestadual ou saída para comercialização de mercadorias provenientes de outras unidades da Federação adquiridas para emprego em virtude de garantia - Decreto Estadual nº 20.686/99, art. 310-F, § 1º|01012014|
+AM020024|Retenção de ICMS Fornecedores do Estado - Decreto Estadual nº 22.061/2001, art. 3º|01012014|
+AM020025|Retenção de ICMS Fonecedores da Prefeitura de Manaus - Decreto Estadual nº 22.361/2001, at. 2º.|01012014|
+AM050029|ICMS Substituição Tributária sobre estoque de mercadorias - Regulamento do ICMS, art. 117-A, II, "a".|01012014|
+AM020008|Despesas Aduaneiras  Decreto Estadual nº 20.686/1999, Regulamento do ICMS, art. 13, V e § 1º, e art. 98, VI|01012020|
+AM020010|Recuperação de crédito de ICMS de mercadoria considerada já tributada  Pedido de Ressarcimento  Decreto Estadual nº 20.686/1999, Regulamento do ICMS, art. 373|01012020|
+AM050025|FPS Entrada de Mercadoria Nacional  Decreto Estadual nº 38.006/17, art. 3º, I|01012020|
+AM050026|FPS Mercadoria Importada do Exterior  Decreto Estadual nº 38.006/17, art. 3º, II|01012020|
+AM150001|FPS  Operação Interestadual Substituição Tributária - Decreto Estadual nº 38.006/17, art. 3º, IV|01012020|
+AM050027|FPS  Serviço de Comunicação de Televisão por Assinatura  Decreto Estadual nº 38.006/17, art. 3º, VII|01012020|
+AM020026|Recuperação de crédito de ICMS de mercadoria considerada já tributada  levantamento de estoque  Decreto Estadual nº 20.686/1999, Regulamento do ICMS, art. 117-A, II, b|01012014|
+AM020027|Recuperação de crédito de ICMS de mercadoria considerada já tributada  entrada de mercadoria (documento fiscal)  Decreto Estadual nº 20.686/1999, Regulamento do ICMS, art. 20, § 11|01012014|
+AM020028|Crédito pelo pagamento de ICMS não diferido nos termos do Decreto 20.686/1999, Regulamento do ICMS, § 21, do art.109|01012014|
+AM020029|Crédito pelo pagamento de ICMS não diferido  Decreto Estadual nº 20.686/1999, Regulamento do ICMS, art. 109, § 25|01012014|
+AM020030|Crédito de ICMS relativo à mercadoria em estoque na data da exclusão de contribuinte do Simples Nacional, exceto mercadoria adquirida com substituição tributária ou com pagamento antecipado do imposto com encerramento de fase de tributação  Decreto Estadual nº 20.686/1999, Regulamento do ICMS, art. 20, caput, incisos I e II e art. 112|01012014|
+AM040014|Crédito Estímulo do ICMS  75%  Lei Estadual nº 2.826/2003, art. 13, caput, inciso III, combinado com Decreto Estadual nº 32.297/12, art. 3º, inciso II|01012014|
+AM150002|ICMS Substituição Tributária sobre estoque de mercadorias  Decreto Estadual nº 20.686/1999, Regulamento do ICMS, art. 117-A, II, "a"|01052014|
+AM020033|Ajuste a crédito decorrente de Regimes Especiais concedidos pelo Poder Executivo Estadual ou, de Convênios e Protocolos celebrados no âmbito do Confaz.|01012014|
+AM010004|Estorno de crédito  optante pelo crédito presumido da Lei Complementar Estadual nº 202/2019|01012020|
+AM020031|Crédito Presumido  extração de petróleo e gás natural e processamento de gás natural  Lei Complementar Estadual nº 202/2019, Art. 1º, § 1º, I|01012020|
+AM020032|Crédito Presumido  fabricação de produtos do refino de petróleo e de gás natural  Lei Complementar Estadual nº 202/2019, Art. 1º, § 1º, II|01012020|
+AM020034|Crédito de ICMS relativo à regularização de estoque (exceto mercadoria sujeita à substituição tributária), de acordo com o Decreto Estadual nº 20.686/1999, Regulamento do ICMS, art. 225, inciso VI e §3º|01052022|
+AM040015|Cesta Básica  Lei nº 6.107/22  dedução de 5% do ICMS que seria devido para apuração da contrapartida ao FPS a recolher|01032023|
+AM020035|Crédito de ICMS relativo ao excesso de cota de LCD (Liquid Crystal Display), nos termos do Decreto 32.297/12, art. 3º, § 4°, inciso I; § 6º e § 7º|01012014|
+AM030001|Estorno de débito de CT-e decorrente de emissão de CT-e substituto, nos termos do Ajuste Sinief 09/07, cláusula décima sétima, inciso III, alínea c.|03042023|
+AM020036|Crédito de ICMS relativo a operações com álcool etílico hidratado combustível - AEHC e álcool para fins não-combustíveis nos termos do Protocolo ICMS 17/04, cláusula segunda.|01012014|
+AM020037|Crédito pelo pagamento de ICMS relativo ao desembaraço não notificado, com permissão legal de crédito.|01062022|
+AM020038|Crédito fiscal presumido conforme artigo 5º da Lei nº 6257/2023 e Resolução GSEFAZ nº 22/2023|01082023|

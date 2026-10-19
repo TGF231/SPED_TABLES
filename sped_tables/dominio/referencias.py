@@ -2,14 +2,16 @@
 """Porta: o que o domínio precisa das **tabelas oficiais**.
 
 Parte das regras fiscais depende de dados que não são do arquivo nem do
-programa — são do PVA instalado na máquina: o descritor de validação de
-cada versão de leiaute, as tabelas de códigos válidos com vigência, a tabela
-de CFOP com direito a crédito, o prazo de entrega de cada período.
+programa: a estrutura declarada de cada versão de leiaute, as tabelas de
+códigos válidos com vigência, a tabela de CFOP com direito a crédito, o
+prazo de entrega de cada período.
 
-O domínio não sabe **onde** isso está nem **como** se lê: pede a esta porta.
-Quem liga a porta a uma implementação é a montagem da aplicação
+O domínio não sabe **onde** isso está nem **como** se lê: pede a esta porta,
+e a versão do leiaute que pede é a do arquivo (`versao_do_leiaute`). Quem
+liga a porta a uma implementação é a montagem da aplicação
 (`sped_tables.aplicacao.montagem`), no início do programa; a implementação
-de verdade, que lê a instalação do PVA, é `sped_tables.infra.referencias_pva`.
+de verdade é a base de referência (`sped_tables.infra.referencias_base`). A
+porta em si não lê instalação nenhuma.
 
 Sem nada ligado vale `Referencias` desta página, que não tem tabela
 nenhuma: cada regra que depende dela se abstém, como já fazia quando o PVA
@@ -23,10 +25,28 @@ class Referencias:
 
     nome = "nenhuma"
 
-    def estrutura(self, layout):
-        """Descritor do leiaute: `(estrutura, info)`; ver `descritor_pva`."""
+    def estrutura(self, layout, versao=None):
+        """Estrutura do leiaute: `(estrutura, info)`.
+
+        `versao` é a versão que o arquivo declara (`versao_do_leiaute`);
+        `None` pede a mais recente da fonte — é o que vale para arquivo sem
+        COD_VER legível. Versão que a fonte não guarda devolve estrutura
+        vazia e `info["fora_da_base"]` (a versão pedida): nada se cobra por
+        estrutura de outra versão. Quando a versão pedida é **maior** que a
+        maior que a fonte guarda, `info["mais_nova_que_a_base"]` também vem
+        `True` — o arquivo é de um leiaute posterior à base, e o remédio é
+        uma base mais nova; sem a chave, a versão saiu da retenção."""
         return {}, {"descritor": None,
-                    "erro": "nenhuma fonte de tabelas oficiais configurada"}
+                    "erro": "nenhuma base de referência ligada"}
+
+    def versao_vigente(self, layout, data):
+        """COD_VER vigente na data (DDMMAAAA), entre as versões que a fonte
+        guarda; None quando nenhuma cobre a data."""
+        return None
+
+    def descricao(self):
+        """De onde vêm as referências, numa linha, para as telas."""
+        return "nenhuma base de referência"
 
     def dominios_por_datasource(self, estrutura, layout, uf=None,
                                 data_ref=None):
@@ -59,6 +79,11 @@ class Referencias:
         se refere, pelas tabelas 4.3.10 a 4.3.16."""
         return set()
 
+    def tabela_natureza_receita(self, cst):
+        """`[(código, [prefixos de NCM], ex_ipi)]` das naturezas da receita
+        do CST (tabelas 4.3.10 a 4.3.16), ou vazio."""
+        return []
+
     def classificador_ncm(self):
         """`ncm.ClassificadorNCM` com as tabelas de alíquota zero e
         monofásico do PVA, ou None."""
@@ -71,7 +96,7 @@ class Referencias:
 
     def guia(self, layout):
         """O **guia prático** do leiaute, já extraído (ver
-        `ferramentas/extrair_guias.py`): `{"guia", "versao", "atualizacao",
+        `consolidador/guias.py`): `{"guia", "versao", "atualizacao",
         "registros": {reg: {"titulo", "objetivo", "validacao_registro",
         "observacoes", "nivel", "ocorrencia", "campos": {"n": {"nome",
         "valores", "preenchimento", "validacao"}}}}}`. Vazio quando não há."""
@@ -92,6 +117,20 @@ def texto_do_campo(guia, reg, n, nome=""):
     if nome and nome_guia and nome_guia != nome:
         return {}
     return c
+
+
+def versao_do_leiaute(doc):
+    """A versão do leiaute que o arquivo declara (COD_VER do 0000, ex.:
+    "020"), ou None quando falta ou não tem três dígitos — aí vale a mais
+    recente da fonte, como antes de a versão contar."""
+    i = doc._ix("0000", "COD_VER")
+    if i is None:
+        return None
+    for r in doc.registros:
+        if r.reg == "0000":
+            v = (r.valor(i) or "").strip()
+            return v if len(v) == 3 and v.isdigit() else None
+    return None
 
 
 _atual = [Referencias()]

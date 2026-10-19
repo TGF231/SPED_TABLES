@@ -1,0 +1,728 @@
+versão=138 INF_ADIC, DESC_INF, DT_INI, DT_FIM
+RJ000001|Valor do aporte de recursos conforme artigo 2º do DECRETO Nº 45.333, DE 5 DE AGOSTO DE 2015|01122015|
+RJ000002|Metas de arrecadação do ICMS fixada no  Termo de Acordo previsto na Lei 4.173/03|01012017|
+RJ000003|Desobrigado ao depósito no FEEF conforme Art. 3º da Lei 7.428/2016|01012017|25082017
+RJ000004|Desobrigado ao depósito no FEEF por Decisão judicial|01012017|29022020
+RJ000004|Informativo - Desobrigado ao depósito no FOT por decisão judicial|01042020|30042020
+RJ000004|Informativo - Desobrigado ao depósito no FOT por decisão judicial|01052020|19062024
+RJ000005|Informativo - Não foi apurado valor a ser depositado no FOT no período|01042020|30042020
+RJ000005|Informativo - Não foi apurado valor a ser depositado no FOT no período|01052020|
+RJ000005|Não foi apurado valor a ser depositado no FEEF no período|01012017|29022020
+RJ000006|Valor compensado em função de depósito a maior de FEEF em período anterior|01052017|29022020
+RJ000007|Depósito de FEEF com opção por um dos regimes dispostos no Anexo I da Lei 7.428/2016|01052017|29022020
+RJ000008|Valor compensado em função de depósito de outras receitas destinadas ao FEEF|01052017|29022020
+RJ000009|Informativo - Desobrigado por decisão judicial do pagamento de imposto extra apuração|01052022|19062024
+RJ000010|Informativo - Restituição do ICMS-ST: saídas realizadas com valor inferior ao considerado para retenção da ST  Art. 4º, § 3º, III, a, da Resolução SEFAZ n° 578/23|01012024|
+RJ000011|Informativo - Restituição do ICMS-ST: não realização do fato gerador subsequente|01012024|
+RJ000012|Informativo - Retificação de EFD de período com débito inscrito em dívida ativa - Art. 6º, § 3º, Anexo VII da Parte II da Resolução SEFAZ n° 720/2014|01012012|31122019
+RJ000012|Informativo - Retificação de EFD de período com débito inscrito em dívida ativa - Art. 6º, § 3º, Anexo VII da Parte II da Resolução SEFAZ n° 720/2014|01012020|25022024
+RJ000012|Informativo - Retificação de EFD de período com débito inscrito em dívida ativa - Art. 6º, § 3º, Anexo VII da Parte II da Resolução SEFAZ n° 720/2014|26022024|
+RJ000013|Informativo - Cassação ou extinção dos efeitos de decisão suspensiva da exigibilidade do ICMS|19062024|
+RJ000014|Informativo - Cassação ou extinção dos efeitos de decisão suspensiva da exigibilidade do ICMS-ST nas operações internas|19062024|
+RJ000015|Informativo - Cassação ou extinção dos efeitos de decisão suspensiva da exigibilidade do ICMS extra apuração|19062024|
+RJ000016|Informativo - Informativo - Credenciado ao ROT/ST|01082024|
+RJ000017|Informativo - Cassação ou extinção dos efeitos de decisão suspensiva da exigibilidade do FOT|03102024|
+RJ000019|Informativo - Opção pela equiparação das transferências a fato gerador do ICMS - Cláusula 6ª do Convênio ICMS 109/24|01122024|
+RJ050004|Informativo - Valor Contábil da operação ou prestação sem cobertura de documento fiscal ou outra forma de omissão de receita. Lançamento conjunto com débitos especiais|01012020|
+RJ800000|RJ800000 - Devolução interestadual - Benefício fiscal aplicado em outra UF|01042019|01042019
+RJ800000|RJ800000 - Devolução interestadual - Benefício fiscal aplicado em outra UF|01092019|01092019
+RJ801001|Convênio AE 5 de 1972 - Isenção|01042019|
+RJ823002|Convênio AE 15 de 1974 - Suspensão|01042019|
+RJ801003|Convênio do Rio de Janeiro I de 1967 - Isenção|01042019|
+RJ801004|Convênio do Rio de Janeiro V de 1968 - Isenção|01042019|
+RJ801005|Convênio ICM 01 de 1975 - Isenção|01042019|
+RJ801006|Convênio ICM 10 de 1975 - Isenção|01042019|
+RJ801007|Convênio ICM 12 de 1975 - Isenção|01042019|
+RJ802008|Convênio ICM 15 de 1981 - Redução de Base de Cálculo|01042019|
+RJ808009|Convênio ICM 24 de 1975 - Ampliação de prazo de pagamento|01042019|01042019
+RJ801010|Convênio ICM 26 de 1975 - Isenção|01042019|
+RJ803010|Convênio ICM 26 de 1975 - Inexigibilidade de estorno de crédito|01042019|
+RJ801011|Convênio ICM 32 de 1975 - Isenção|01042019|
+RJ801012|Convênio ICM 33 de 1977 - Isenção|01042019|
+RJ801013|Convênio ICM 35 de 1977 - Isenção|01042019|31122022
+RJ801014|Convênio ICM 38 de 1982 - Isenção|01042019|
+RJ801015|Convênio ICM 40 de 1975 - Isenção|01042019|
+RJ801016|Convênio ICM 44 de 1975 - Isenção|01042019|
+RJ801017|Convênio ICM 65 de 1988 - Isenção|01042019|
+RJ803017|Convênio ICM 65 de 1988 - Inexigibilidade de estorno de crédito|01042019|
+RJ801018|Convênio ICMS 1 de 1991 - Isenção|01042019|
+RJ801019|Convênio ICMS 1 de 1999 - Isenção|01042019|31122024
+RJ801019|Convênio ICMS 1 de 1999 - Isenção|01012025|31072025
+RJ801019|Convênio ICMS 1 de 1999 - Isenção|01082025|
+RJ803019|Convênio ICMS 1 de 1999 - Inexigibilidade de estorno de crédito|01042019|31122024
+RJ803019|Convênio ICMS 1 de 1999 - Inexigibilidade de estorno de crédito|01012025|31072025
+RJ803019|Convênio ICMS 1 de 1999 - Inexigibilidade de estorno de crédito|01082025|
+RJ801020|Convênio ICMS 1 de 2013 - Isenção|01042019|
+RJ802020|Convênio ICMS 1 de 2013 - Redução de Base de Cálculo|01042019|
+RJ801021|Convênio ICMS 3 de 1990 - Isenção|01042019|
+RJ801022|Convênio ICMS 3 de 2006 - Isenção|01042019|
+RJ801023|Convênio ICMS 3 de 2010 - Isenção|01042019|
+RJ801024|Convênio ICMS 3 de 2018 - Isenção|01042019|
+RJ802024|Convênio ICMS 3 de 2018 - Redução de Base de Cálculo|01042019|
+RJ803024|Convênio ICMS 3 de 2018 - Inexigibilidade de estorno de crédito|01042019|
+RJ823024|Convênio ICMS 3 de 2018 - Suspensão|01042019|
+RJ818024|Convênio ICMS 3 de 2018 - Diferimento|01072020|
+RJ801025|Convênio ICMS 4 de 1997 - Isenção|01042019|
+RJ821025|Convênio ICMS 4 de 1997 - Repasse do Crédito Fiscal|01042019|
+RJ801026|Convênio ICMS 4 de 1998 - Isenção|01042019|
+RJ801027|Convênio ICMS 5 de 1993 - Isenção|01042019|
+RJ801028|Convênio ICMS 5 de 2000 - Isenção|01042019|
+RJ801029|Convênio ICMS 5 de 2008 - Isenção|01042019|
+RJ801030|Convênio ICMS 8 de 1989 - Isenção|01042019|
+RJ805031|Convênio ICMS 8 de 2003 - Crédito Presumido|01042019|
+RJ823032|Convênio ICMS 8 de 2005 - Suspensão|01042019|
+RJ823033|Convênio ICMS 9 de 2005 - Suspensão|01042019|
+RJ801033|Convênio ICMS 9 de 2005 - Isenção|01042019|
+RJ803034|Convênio ICMS 9 de 2006 - Inexigibilidade de estorno de crédito|01042019|
+RJ801034|Convênio ICMS 9 de 2006 - Isenção|01042019|
+RJ801035|Convênio ICMS 10 de 2002 - Isenção|01042019|
+RJ801036|Convênio ICMS 10 de 2007 - Isenção|01042019|
+RJ801037|Convênio ICMS 11 de 1993 - Isenção|01042019|
+RJ801038|Convênio ICMS 12 de 1993 - Isenção|01042019|
+RJ803428|Convenio ICMS 12 de 1975 - Inexigibilidade de estorno de crédito|25062022|
+RJ802039|Convênio ICMS 13 de 1994 - Redução de Base de Cálculo|01042019|31122020
+RJ801040|Convênio ICMS 14 de 2003 - Isenção|01042019|
+RJ803041|Convênio ICMS 15 de 2000 - Inexigibilidade de estorno de crédito|01042019|
+RJ801041|Convênio ICMS 15 de 2000 - Isenção|01042019|
+RJ801042|Convênio ICMS 16 de 2015 - Isenção|01042019|
+RJ801043|Convênio ICMS 17 de 2000 - Isenção|01042019|
+RJ801044|Convênio ICMS 17 de 2002 - Isenção|01042019|
+RJ801045|Convênio ICMS 17 de 2013 - Isenção|01042019|31102021
+RJ802046|Convênio ICMS 18 de 1992 - Redução de Base de Cálculo|01042019|
+RJ801047|Convênio ICMS 18 de 1995 - Isenção|01042019|
+RJ801048|Convênio ICMS 18 de 1997 - Isenção|01042019|
+RJ801049|Convênio ICMS 18 de 2003 - Isenção|01042019|
+RJ823050|Convênio ICMS 19 de 1991 - Suspensão|01042019|
+RJ801051|Convênio ICMS 20 de 1989 - Isenção|01042019|
+RJ803052|Convênio ICMS 23 de 2007 - Inexigibilidade de estorno de crédito|01042019|
+RJ801052|Convênio ICMS 23 de 2007 - Isenção|01042019|
+RJ801053|Convênio ICMS 24 de 1989 - Isenção|01042019|
+RJ821054|Convênio ICMS 26 de 2003 - Repasse do Crédito Fiscal|01042019|
+RJ803054|Convênio ICMS 26 de 2003 - Inexigibilidade de estorno de crédito|01042019|
+RJ801054|Convênio ICMS 26 de 2003 - Isenção|01042019|
+RJ801055|Convênio ICMS 27 de 1990 - Isenção|01042019|
+RJ803056|Convênio ICMS 27 de 2005 - Inexigibilidade de estorno de crédito|01042019|
+RJ801056|Convênio ICMS 27 de 2005 - Isenção|01042019|
+RJ805057|Convênio ICMS 27 de 2006 - Crédito Presumido|01042019|
+RJ801058|Convênio ICMS 27 de 2007 - Isenção|01042019|
+RJ818059|Convênio ICMS 28 de 2005 - Diferimento|01042019|01042019
+RJ803059|Convênio ICMS 28 de 2005 - Inexigibilidade de estorno de crédito|01042019|
+RJ801059|Convênio ICMS 28 de 2005 - Isenção|01042019|
+RJ801060|Convênio ICMS 29 de 1990 - Isenção|01042019|
+RJ801061|Convênio ICMS 30 de 1996 - Isenção|01042019|
+RJ803062|Convênio ICMS 30 de 2000 - Inexigibilidade de estorno de crédito|01042019|
+RJ801062|Convênio ICMS 30 de 2000 - Isenção|01042019|
+RJ801063|Convênio ICMS 30 de 2006 - Isenção|01042019|
+RJ801064|Convênio ICMS 32 de 2006 - Isenção|01042019|
+RJ802065|Convênio ICMS 33 de 1993 - Redução de Base de Cálculo|01042019|
+RJ802066|Convênio ICMS 33 de 1996 - Redução de Base de Cálculo|01042019|
+RJ801067|Convênio ICMS 33 de 2001 - Isenção|01042019|
+RJ801068|Convênio ICMS 33 de 2010 - Isenção|01042019|
+RJ801069|Convênio ICMS 34 de 1992 - Isenção|01042019|
+RJ803069|Convênio ICMS 34 de 1992 - Inexigibilidade de estorno de crédito|01042019|
+RJ803070|Convênio ICMS 34 de 2006 - Inexigibilidade de estorno de crédito|01042019|
+RJ802070|Convênio ICMS 34 de 2006 - Redução de Base de Cálculo|01042019|
+RJ801071|Convênio ICMS 35 de 1992 - Isenção|01042019|
+RJ801072|Convênio ICMS 35 de 1993 - Isenção|01042019|
+RJ801073|Convênio ICMS 37 de 1989 - Isenção|01042019|
+RJ803074|Convênio ICMS 38 de 2001 - Inexigibilidade de estorno de crédito|01042019|
+RJ801074|Convênio ICMS 38 de 2001 - Isenção|01042019|
+RJ801075|Convênio ICMS 38 de 2009 - Isenção|01042019|
+RJ803075|Convênio ICMS 38 de 2009 - Inexigibilidade de estorno de crédito|01042019|
+RJ801076|Convênio ICMS 38 de 2012 - Isenção|01042019|
+RJ803076|Convênio ICMS 38 de 2012 - Inexigibilidade de estorno de crédito|01042019|
+RJ801077|Convênio ICMS 41 de 1991 - Isenção|01042019|
+RJ802078|Convênio ICMS 41 de 2005 - Redução de Base de Cálculo|01042019|
+RJ801079|Convênio ICMS 42 de 1995 - Isenção|01042019|
+RJ801080|Convênio ICMS 42 de 2001 - Isenção|01042019|
+RJ801081|Convênio ICMS 42 de 2006 - Isenção|01042019|
+RJ801082|Convênio ICMS 43 de 1999 - Isenção|01042019|
+RJ801083|Convênio ICMS 43 de 2010 - Isenção|01042019|
+RJ801084|Convênio ICMS 47 de 1998 - Isenção|01042019|
+RJ801085|Convênio ICMS 48 de 1993 - Isenção|01042019|
+RJ803086|Convênio ICMS 49 de 1994 - Inexigibilidade de estorno de crédito|01042019|
+RJ801086|Convênio ICMS 49 de 1994 - Isenção|01042019|
+RJ801087|Convênio ICMS 49 de 2001 - Isenção|01042019|
+RJ802088|Convênio ICMS 50 de 1992 - Redução de Base de Cálculo|01042019|
+RJ802089|Convênio ICMS 50 de 1993 - Redução de Base de Cálculo|01042019|
+RJ803090|Convênio ICMS 52 de 1991 - Inexigibilidade de estorno de crédito|01042019|
+RJ802090|Convênio ICMS 52 de 1991 - Redução de Base de Cálculo|01042019|
+RJ801091|Convênio ICMS 52 de 1992 - Isenção|01042019|
+RJ801092|Convênio ICMS 52 de 2003 - Isenção|01042019|
+RJ803093|Convênio ICMS 53 de 2007 - Inexigibilidade de estorno de crédito|01042019|31122020
+RJ801093|Convênio ICMS 53 de 2007 - Isenção|01042019|31122020
+RJ801094|Convênio ICMS 55 de 1989 - Isenção|01042019|
+RJ801095|Convênio ICMS 55 de 1992 - Isenção|01042019|
+RJ801096|Convênio ICMS 55 de 2012 - Isenção|01042019|
+RJ803097|Convênio ICMS 57 de 1998 - Inexigibilidade de estorno de crédito|01042019|
+RJ801097|Convênio ICMS 57 de 1998 - Isenção|01042019|
+RJ802098|Convênio ICMS 57 de 1999 - Redução de Base de Cálculo|01042019|01042019
+RJ801099|Convênio ICMS 58 de 1996 - Isenção|01042019|
+RJ802100|Convênio ICMS 58 de 1999 - Redução de Base de Cálculo|01042019|
+RJ801100|Convênio ICMS 58 de 1999 - Isenção|01042019|
+RJ803101|Convênio ICMS 60 de 1992 - Inexigibilidade de estorno de crédito|01042019|
+RJ801101|Convênio ICMS 60 de 1992 - Isenção|01042019|
+RJ801102|Convênio ICMS 61 de 1997 - Isenção|01042019|
+RJ803103|Convênio ICMS 62 de 2003 - Inexigibilidade de estorno de crédito|01042019|
+RJ801103|Convênio ICMS 62 de 2003 - Isenção|01042019|
+RJ818104|Convênio ICMS 63 de 1998 - Diferimento|01042019|
+RJ801105|Convênio ICMS 63 de 2000 - Isenção|01042019|
+RJ801106|Convênio ICMS 64 de 1995 - Isenção|01042019|
+RJ803107|Convênio ICMS 65 de 2005 - Inexigibilidade de estorno de crédito|01042019|
+RJ801107|Convênio ICMS 65 de 2005 - Isenção|01042019|
+RJ801108|Convênio ICMS 69 de 2001 - Isenção|01042019|
+RJ801109|Convênio ICMS 69 de 2006 - Isenção|01042019|
+RJ801110|Convênio ICMS 70 de 1990 - Isenção|01042019|
+RJ801111|Convênio ICMS 70 de 1992 - Isenção|01042019|
+RJ801112|Convênio ICMS 73 de 2010 - Isenção|01042019|
+RJ801113|Convênio ICMS 74 de 2000 - Isenção|01042019|
+RJ823114|Convênio ICMS 75 de 1990 - Suspensão|01042019|
+RJ802114|Convênio ICMS 75 de 1990 - Redução de Base de Cálculo|01042019|
+RJ802115|Convênio ICMS 75 de 1991 - Redução de Base de Cálculo|01042019|
+RJ803116|Convênio ICMS 75 de 1997 - Inexigibilidade de estorno de crédito|01042019|30042019
+RJ801116|Convênio ICMS 75 de 1997 - Isenção|01042019|30042019
+RJ802117|Convênio ICMS 77 de 1995 - Redução de Base de Cálculo|01042019|01042019
+RJ801118|Convênio ICMS 77 de 2000 - Isenção|01042019|
+RJ803119|Convênio ICMS 78 de 1992 - Inexigibilidade de estorno de crédito|01042019|
+RJ801119|Convênio ICMS 78 de 1992 - Isenção|01042019|
+RJ801120|Convênio ICMS 79 de 2005 - Isenção|01042019|
+RJ801121|Convênio ICMS 80 de 1995 - Isenção|01042019|
+RJ801122|Convênio ICMS 80 de 2005 - Isenção|01042019|
+RJ801123|Convênio ICMS 81 de 2008 - Isenção|01042019|
+RJ803124|Convênio ICMS 82 de 1995 - Inexigibilidade de estorno de crédito|01042019|
+RJ801124|Convênio ICMS 82 de 1995 - Isenção|01042019|
+RJ801125|Convênio ICMS 84 de 1990 - Isenção|01042019|25062022
+RJ803126|Convênio ICMS 84 de 1997 - Inexigibilidade de estorno de crédito|01042019|
+RJ801126|Convênio ICMS 84 de 1997 - Isenção|01042019|
+RJ805127|Convênio ICMS 85 de 2011 - Crédito Presumido|01042019|
+RJ802128|Convênio ICMS 86 de 1999 - Redução de Base de Cálculo|01042019|
+RJ803129|Convênio ICMS 87 de 2002 - Inexigibilidade de estorno de crédito|01042019|
+RJ801129|Convênio ICMS 87 de 2002 - Isenção|01042019|
+RJ801130|Convênio ICMS 88 de 1991 - Isenção|01042019|
+RJ823131|Convênio ICMS 88 de 2012 - Suspensão|01042019|
+RJ802132|Convênio ICMS 89 de 2005 - Redução de Base de Cálculo|01042019|
+RJ801133|Convênio ICMS 89 de 2010 - Isenção|01042019|
+RJ801134|Convênio ICMS 91 de 1991 - Isenção|01042019|
+RJ803134|Convênio ICMS 91 de 1991 - Inexigibilidade de estorno de crédito|01042019|
+RJ802135|Convênio ICMS 91 de 2012 - Redução de Base de Cálculo|01042019|30062019
+RJ801136|Convênio ICMS 93 de 1998 - Isenção|01042019|
+RJ801137|Convênio ICMS 94 de 2005 - Isenção|01042019|
+RJ801138|Convênio ICMS 94 de 2012 - Isenção|01042019|
+RJ803138|Convênio ICMS 94 de 2012 - Inexigibilidade de estorno de crédito|01042019|
+RJ801139|Convênio ICMS 95 de 1998 - Isenção|01042019|
+RJ802140|Convênio ICMS 95 de 2012 - Redução de Base de Cálculo|01042019|
+RJ801141|Convênio ICMS 98 de 2008 - Isenção|01042019|
+RJ801142|Convênio ICMS 99 de 1989 - Isenção|01042019|
+RJ801143|Convênio ICMS 100 de 1997 - Isenção|01042019|
+RJ802143|Convênio ICMS 100 de 1997 - Redução de Base de Cálculo|01042019|
+RJ805143|Convênio ICMS 100 de 1997 - Crédito Presumido|01042019|
+RJ803143|Convênio ICMS 100 de 1997 - Inexigibilidade de estorno de crédito|01042019|31122021
+RJ801144|Convênio ICMS 101 de 1997 - Isenção|01042019|
+RJ803144|Convênio ICMS 101 de 1997 - Inexigibilidade de estorno de crédito|01042019|
+RJ801145|Convênio ICMS 103 de 2011 - Isenção|01042019|
+RJ801146|Convênio ICMS 104 de 1989 - Isenção|01042019|
+RJ801147|Convênio ICMS 105 de 1995 - Isenção|01042019|
+RJ801148|Convênio ICMS 105 de 2003 - Isenção|01042019|
+RJ805149|Convênio ICMS 106 de 1996 - Crédito Presumido|01042019|
+RJ801150|Convênio ICMS 106 de 2010 - Isenção|01042019|
+RJ801151|Convênio ICMS 107 de 1995 - Isenção|01042019|
+RJ818152|Convênio ICMS 110 de 2007 - Diferimento|01042019|
+RJ819152|Convênio ICMS 110 de 2007 - Não incidência|01082019|31082019
+RJ802153|Convênio ICMS 112 de 1989 - Redução de Base de Cálculo|01042019|
+RJ801154|Convênio ICMS 112 de 1998 - Isenção|01042019|
+RJ802155|Convênio ICMS 113 de 2006 - Redução de Base de Cálculo|01042019|30042024
+RJ803156|Convênio ICMS 114 de 2009 - Inexigibilidade de estorno de crédito|01042019|
+RJ802156|Convênio ICMS 114 de 2009 - Redução de Base de Cálculo|01042019|
+RJ801157|Convênio ICMS 116 de 1998 - Isenção|01042019|
+RJ803157|Convênio ICMS 116 de 1998 - Inexigibilidade de estorno de crédito|01042019|
+RJ801158|Convênio ICMS 120 de 2002 - Isenção|01042019|
+RJ801159|Convênio ICMS 122 de 2003 - Isenção|01042019|
+RJ803159|Convênio ICMS 122 de 2003 - Inexigibilidade de estorno de crédito|01042019|
+RJ801160|Convênio ICMS 123 de 1992 - Isenção|01042019|
+RJ801161|Convênio ICMS 123 de 1997 - Isenção|01042019|31122020
+RJ801162|Convênio ICMS 125 de 2001 - Isenção|01042019|
+RJ801163|Convênio ICMS 126 de 2010 - Isenção|01042019|
+RJ803163|Convênio ICMS 126 de 2010 - Inexigibilidade de estorno de crédito|01042019|
+RJ803164|Convênio ICMS 128 de 1994 - Inexigibilidade de estorno de crédito|01042019|
+RJ802164|Convênio ICMS 128 de 1994 - Redução de Base de Cálculo|01042019|
+RJ801165|Convênio ICMS 129 de 2006 - Isenção|01042019|
+RJ801166|Convênio ICMS 129 de 2012 - Isenção|01042019|
+RJ820167|Convênio ICMS 130 de 1994 - Redução de alíquota|01042019|31102022
+RJ801167|Convênio ICMS 130 de 1994 - Isenção|01042019|
+RJ803167|Convênio ICMS 130 de 1994 - Inexigibilidade de estorno de crédito|01042019|
+RJ821168|Convênio ICMS 130 de 2007 - Transferência de saldo credor acumulado|01042019|
+RJ801168|Convênio ICMS 130 de 2007 - Isenção|01042019|
+RJ802168|Convênio ICMS 130 de 2007 - Redução de Base de Cálculo|01042019|
+RJ802169|Convênio ICMS 132 de 1993 - Redução de Base de Cálculo|01042019|
+RJ801170|Convênio ICMS 132 de 2004 - Isenção|01042019|
+RJ803171|Convênio ICMS 133 de 2002 - Inexigibilidade de estorno de crédito|01042019|
+RJ802171|Convênio ICMS 133 de 2002 - Redução de Base de Cálculo|01042019|
+RJ823172|Convênio ICMS 136 de 1993 - Suspensão|01042019|
+RJ801173|Convênio ICMS 136 de 1994 - Isenção|01042019|
+RJ801174|Convênio ICMS 138 de 2005 - Isenção|01042019|
+RJ801175|Convênio ICMS 140 de 2001 - Isenção|01042019|
+RJ803175|Convênio ICMS 140 de 2001 - Inexigibilidade de estorno de crédito|01042019|
+RJ803176|Convênio ICMS 141 de 2007 - Inexigibilidade de estorno de crédito|01042019|
+RJ801176|Convênio ICMS 141 de 2007 - Isenção|01042019|
+RJ805177|Convênio ICMS 141 de 2011 - Crédito Presumido|01042019|
+RJ801178|Convênio ICMS 142 de 1992 - Isenção|01042019|
+RJ801179|Convênio ICMS 144 de 2006 - Isenção|01042019|
+RJ803180|Convênio ICMS 147 de 2007 - Inexigibilidade de estorno de crédito|01042019|31122020
+RJ801180|Convênio ICMS 147 de 2007 - Isenção|01042019|31122020
+RJ801181|Convênio ICMS 150 de 2013 - Isenção|01042019|
+RJ802182|Convênio ICMS 153 de 2004 - Redução de Base de Cálculo|01042019|
+RJ801183|Convênio ICMS 158 de 1994 - Isenção|01042019|
+RJ801184|Convênio ICMS 162 de 1994 - Isenção|01042019|
+RJ801185|Convênio ICMS 165 de 1992 - Isenção|01042019|
+RJ802186|Convênio ICMS  45 de 2014 - Redução de Base de Cálculo|01042019|
+RJ818187|Decreto 14.236 de 1989 - Diferimento|01042019|
+RJ818188|Decreto 16.358 de 1991 - Diferimento|01042019|
+RJ808189|Decreto 21.550 de 1995 - Ampliação de prazo de pagamento|01042019|01042019
+RJ805189|Decreto 21.550 de 1995 - Crédito Presumido|01042019|01042019
+RJ818190|Decreto 22.266 de 1996 - Diferimento|01042019|01042019
+RJ818191|Decreto 23.082 de 1997 - Diferimento|01042019|
+RJ805192|Decreto 25.404 de 1999 - Crédito Presumido|01042019|
+RJ818193|Decreto 25.665 de 1999 - Diferimento|01042019|
+RJ808193|Decreto 25.665 de 1999 - Ampliação de prazo de pagamento|01042019|
+RJ805194|Decreto 25.666 de 1999 - Crédito Presumido|01042019|
+RJ802195|Decreto 26.004 de 2000 - Redução de Base de Cálculo|01042019|
+RJ802196|Decreto 26.116 de 2000 - Redução de Base de Cálculo|01042019|
+RJ802197|Decreto 26.140 de 2000 - Redução de Base de Cálculo|01042019|
+RJ801198|Decreto 26.260 de 2000 - Isenção|01042019|31122020
+RJ808199|Decreto 26.274 de 2000 - Ampliação de prazo de pagamento|01042019|
+RJ818199|Decreto 26.274 de 2000 - Diferimento|01042019|
+RJ805200|Decreto 26.788 de 2000 - Crédito Presumido|01042019|
+RJ821201|Decreto 27.091 de 2000 - Transferência de saldo credor acumulado|01042019|
+RJ801202|Decreto 27.159 de 2000 - Isenção|01042019|
+RJ802203|Decreto 27.308 de 2000 - Redução de Base de Cálculo|01042019|
+RJ801204|Decreto 27.815 de 2001 - Isenção|01042019|
+RJ808205|Decreto 27.857 de 2001 - Ampliação de prazo de pagamento|01042019|
+RJ802206|Decreto 28.494 de 2001 - Redução de Base de Cálculo|01042019|
+RJ802207|Decreto 28.940 de 2001 - Redução de Base de Cálculo|01042019|30042019
+RJ805208|Decreto 29.042 de 2001 - Crédito Presumido|01042019|
+RJ803208|Decreto 29.042 de 2001 - Inexigibilidade de estorno de crédito|01042019|
+RJ802209|Decreto 29.366 de 2001 - Redução de Base de Cálculo|01042019|
+RJ802210|Decreto 29.722 de 2001 - Redução de Base de Cálculo|01042019|
+RJ802211|Decreto 29.882 de 2001 - Redução de Base de Cálculo|01042019|
+RJ818211|Decreto 29.882 de 2001 - Diferimento|01042019|
+RJ818212|Decreto 30.853 de 2002 - Diferimento|01042019|
+RJ805212|Decreto 30.853 de 2002 - Crédito Presumido|01042019|
+RJ818213|Decreto 31.175 de 2002 - Diferimento|01042019|
+RJ808214|Decreto 32.701 de 2003 - Ampliação de prazo de pagamento|01042019|31122020
+RJ818215|Decreto 33.934 de 2003 - Diferimento|01042019|
+RJ801215|Decreto 33.934 de 2003 - Isenção|01042019|
+RJ805216|Decreto 33.967 de 2003 - Crédito Presumido|01042019|30042019
+RJ805216|Convênio 23 de 1990 - Crédito Presumido|01052019|31032021
+RJ818217|Decreto 34.169 de 2003 - Diferimento|01042019|
+RJ818218|Decreto 34.170 de 2003 - Diferimento|01042019|
+RJ818219|Decreto 34.171 de 2003 - Diferimento|01042019|
+RJ801220|Decreto 35.220 de 2004 - Isenção|01042019|
+RJ818220|Decreto 35.220 de 2004 - Diferimento|01042019|
+RJ802221|Decreto 35.418 de 2004 - Redução de Base de Cálculo|01042019|
+RJ818221|Decreto 35.418 de 2004 - Diferimento|01042019|
+RJ821221|Decreto 35.418 de 2004 - Transferência de saldo credor acumulado|01042019|
+RJ805222|Decreto 35.419 de 2004 - Crédito Presumido|01042019|
+RJ818223|Decreto 35.985 de 2004 - Diferimento|01042019|01042019
+RJ805224|Decreto 36.111 de 2004 - Crédito Presumido|01042019|
+RJ818225|Decreto 36.279 de 2004 - Diferimento|01042019|
+RJ803226|Decreto 36.297 de 2004 - Inexigibilidade de estorno de crédito|01042019|01042019
+RJ802226|Decreto 36.297 de 2004 - Redução de Base de Cálculo|01042019|01042019
+RJ821227|Decreto 36.324 de 2004 - Transferência de saldo credor acumulado|01042019|31122020
+RJ818228|Decreto 36.376 de 2004 - Diferimento|01042019|31102024
+RJ818228|Decreto 36.376 de 2004 - Diferimento|10012025|
+RJ805228|Decreto 36.376 de 2004 - Crédito Presumido|01042019|31102024
+RJ805228|Decreto 36.376 de 2004 - Crédito Presumido|10012025|
+RJ803229|Decreto 36.448 de 2004 - Inexigibilidade de estorno de crédito|01042019|
+RJ818229|Decreto 36.448 de 2004 - Diferimento|01042019|
+RJ802229|Decreto 36.448 de 2004 - Redução de Base de Cálculo|01042019|
+RJ818230|Decreto 36.449 de 2004 - Diferimento|01042019|
+RJ805230|Decreto 36.449 de 2004 - Crédito Presumido|01042019|
+RJ803231|Decreto 36.450 de 2004 - Inexigibilidade de estorno de crédito|01042019|
+RJ821231|Decreto 36.450 de 2004 - Transferência de saldo credor acumulado|01042019|
+RJ802231|Decreto 36.450 de 2004 - Redução de Base de Cálculo|01042019|
+RJ805231|Decreto 36.450 de 2004 - Crédito Presumido|01042019|
+RJ818231|Decreto 36.450 de 2004 - Diferimento|01042019|
+RJ802232|Decreto 36.451 de 2004 - Redução de Base de Cálculo|01042019|
+RJ818232|Decreto 36.451 de 2004 - Diferimento|01042019|
+RJ803232|Decreto 36.451 de 2004 - Inexigibilidade de estorno de crédito|01042019|
+RJ805233|Decreto 36.452 de 2004 - Crédito Presumido|01042019|
+RJ818234|Decreto 36.453 de 2004 - Diferimento|01042019|31122020
+RJ802234|Decreto 36.453 de 2004 - Redução de Base de Cálculo|01042019|31122020
+RJ818234|Decreto 36.453 de 2004 - Diferimento|01012021|31122022
+RJ802234|Decreto 36.453 de 2004 - Redução de Base de Cálculo|01012021|31122022
+RJ818235|Decreto 36.458 de 2004 - Diferimento|01042019|
+RJ818236|Decreto 36.460 de 2004 - Diferimento|01042019|
+RJ818237|Decreto 36.461 de 2004 - Diferimento|01042019|
+RJ818238|Decreto 36.463 de 2004 - Diferimento|01042019|31122025
+RJ818239|Decreto 36.468 de 2004 - Diferimento|01042019|31122025
+RJ818240|Decreto 36.474 de 2004 - Diferimento|01042019|
+RJ818241|Decreto 36.478 de 2004 - Diferimento|01042019|31122025
+RJ818242|Decreto 36.489 de 2004 - Diferimento|01042019|
+RJ818243|Decreto 37.149 de 2005 - Diferimento|01042019|
+RJ818244|Decreto 37.152 de 2005 - Diferimento|01042019|01042019
+RJ818245|Decreto 37.154 de 2005 - Diferimento|01042019|
+RJ818246|Decreto 37.159 de 2005 - Diferimento|01042019|
+RJ818247|Decreto 37.168 de 2005 - Diferimento|01042019|
+RJ818248|Decreto 37.170 de 2005 - Diferimento|01042019|
+RJ818249|Decreto 37.172 de 2005 - Diferimento|01042019|
+RJ818250|Decreto 37.177 de 2005 - Diferimento|01042019|31122025
+RJ818251|Decreto 37.179 de 2005 - Diferimento|01042019|31122025
+RJ818252|Decreto 37.198 de 2005 - Diferimento|01042019|
+RJ818253|Decreto 37.207 de 2005 - Diferimento|01042019|
+RJ818254|Decreto 37.210 de 2005 - Diferimento|01042019|
+RJ818255|Decreto 37.256 de 2005 - Diferimento|01042019|
+RJ818256|Decreto 37.257 de 2005 - Diferimento|01042019|31122025
+RJ818257|Decreto 37.260 de 2005 - Diferimento|01042019|
+RJ818258|Decreto 37.261 de 2005 - Diferimento|01042019|
+RJ818259|Decreto 37.263 de 2005 - Diferimento|01042019|
+RJ818260|Decreto 37.590 de 2005 - Diferimento|01042019|31122025
+RJ818261|Decreto 37.598 de 2005 - Diferimento|01042019|
+RJ818262|Decreto 37.599 de 2005 - Diferimento|01042019|
+RJ818263|Decreto 37.600 de 2005 - Diferimento|01042019|
+RJ818264|Decreto 37.888 de 2005 - Diferimento|01042019|
+RJ818265|Decreto 38.231 de 2005 - Diferimento|01042019|
+RJ802266|Decreto 38.938 de 2006 - Redução de Base de Cálculo|01042019|
+RJ805266|Decreto 38.938 de 2006 - Crédito Presumido|01042019|
+RJ818266|Decreto 38.938 de 2006 - Diferimento|01042019|
+RJ801266|Decreto 38.938 de 2006 - Isenção|01042019|
+RJ818267|Decreto 39.116 de 2006 - Diferimento|01042019|
+RJ803268|Decreto 39.565 de 2006 - Inexigibilidade de estorno de crédito|01042019|01042019
+RJ803269|Decreto 39.566 de 2006 - Inexigibilidade de estorno de crédito|01042019|
+RJ818270|Decreto 39.784 de 2006 - Diferimento|01042019|
+RJ805270|Decreto 39.784 de 2006 - Crédito Presumido|01042019|31102020
+RJ801271|Decreto 40.435 de 2006 - Isenção|01042019|
+RJ818271|Decreto 40.435 de 2006 - Diferimento|01042019|
+RJ803272|Decreto 40.442 de 2006 - Inexigibilidade de estorno de crédito|01042019|01042019
+RJ821272|Decreto 40.442 de 2006 - Transferência de saldo credor acumulado|01042019|01042019
+RJ802272|Decreto 40.442 de 2006 - Redução de Base de Cálculo|01042019|01042019
+RJ801272|Decreto 40.442 de 2006 - Isenção|01042019|01042019
+RJ820272|Decreto 40.442 de 2006 - Redução de alíquota|01042019|01042019
+RJ818272|Decreto 40.442 de 2006 - Diferimento|01042019|01042019
+RJ818273|Decreto 40.456 de 2006 - Diferimento|01042019|
+RJ805274|Decreto 40.478 de 2006 - Crédito Presumido|01042019|
+RJ818274|Decreto 40.478 de 2006 - Diferimento|01042019|
+RJ808275|Decreto 40.562 de 2007 - Ampliação de prazo de pagamento|01042019|01042019
+RJ818276|Decreto 41.244 de 2008 - Diferimento|01042019|
+RJ802277|Decreto 41.483 de 2008 - Redução de Base de Cálculo|01042019|
+RJ821277|Decreto 41.483 de 2008 - Transferência de saldo credor acumulado|01042019|
+RJ822277|Decreto 41.483 de 2008 - Tributação sobre saída|01042019|
+RJ805277|Decreto 41.483 de 2008 - Crédito Presumido|01042019|
+RJ818277|Decreto 41.483 de 2008 - Diferimento|01042019|
+RJ818278|Decreto 41.557 de 2008 - Diferimento|01042019|
+RJ802278|Decreto 41.557 de 2008 - Redução de Base de Cálculo|01042019|
+RJ805279|Decreto 41.596 de 2008 - Crédito Presumido|01042019|30042019
+RJ805280|Decreto 41.681 de 2009 - Crédito Presumido|01042019|31122019
+RJ818280|Decreto 41.681 de 2009 - Diferimento|01042019|31122019
+RJ821281|Decreto 41.766 de 2009 - Transferência de saldo credor acumulado|01042019|
+RJ818282|Decreto 41.858 de 2009 - Diferimento|01042019|
+RJ805283|Decreto 41.860 de 2009 - Crédito Presumido|01042019|01042019
+RJ802283|Decreto 41.860 de 2009 - Redução de Base de Cálculo|01042019|01042019
+RJ801284|Decreto 42.042 de 2009 - Isenção|01042019|
+RJ801285|Decreto 42.109 de 2009 - Isenção|01042019|01042019
+RJ818286|Decreto 42.139 de 2009 - Diferimento|01042019|31122025
+RJ823287|Decreto 42.398 de 2010 - Suspensão|01042019|
+RJ818288|Decreto 42.565 de 2010 - Diferimento|01042019|31122020
+RJ805289|Decreto 42.569 de 2010 - Crédito Presumido|01042019|31122020
+RJ818289|Decreto 42.569 de 2010 - Diferimento|01042019|31122020
+RJ805290|Decreto 42.588 de 2010 - Crédito Presumido|01042019|
+RJ818290|Decreto 42.588 de 2010 - Diferimento|01042019|
+RJ805291|Decreto 42.643 de 2010 - Crédito Presumido|01042019|01042019
+RJ818292|Decreto 42.647 de 2010 - Diferimento|01042019|
+RJ805293|Decreto 42.649 de 2010 - Crédito Presumido|01042019|
+RJ818293|Decreto 42.649 de 2010 - Diferimento|01042019|
+RJ818294|Decreto 42.683 de 2010 - Diferimento|01042019|
+RJ805295|Decreto 42.771 de 2010 - Crédito Presumido|01042019|31122020
+RJ802296|Decreto 42.897 de 2011 - Redução de Base de Cálculo|01042019|08052025
+RJ820297|Decreto 43.066 de 2011 - Redução de alíquota|01042019|01042019
+RJ818298|Decreto 43.128 de 2011 - Diferimento|01042019|31122025
+RJ801298|Decreto 43.128 de 2011 - Isenção|01042019|31122025
+RJ818299|Decreto 43.209 de 2011 - Diferimento|01042019|30092019
+RJ818300|Decreto 43.210 de 2011 - Diferimento|01042019|
+RJ818301|Decreto 43.457 de 2012 - Diferimento|01042019|
+RJ805301|Decreto 43.457 de 2012 - Crédito Presumido|01042019|
+RJ802302|Decreto 43.502 de 2012 - Redução de Base de Cálculo|01042019|
+RJ805303|Decreto 43.503 de 2012 - Crédito Presumido|01042019|
+RJ818303|Decreto 43.503 de 2012 - Diferimento|01042019|
+RJ821304|Decreto 43.603 de 2012 - Repasse do Crédito Fiscal|01042019|
+RJ818304|Decreto 43.603 de 2012 - Diferimento|01042019|
+RJ805304|Decreto 43.603 de 2012 - Crédito Presumido|01042019|
+RJ818305|Decreto 43.709 de 2012 - Diferimento|01042019|06082022
+RJ805305|Decreto 43.709 de 2012 - Crédito Presumido|01042019|06082022
+RJ818306|Decreto 43.739 de 2012 - Diferimento|01042019|
+RJ822306|Decreto 43.739 de 2012 - Tributação sobre saída|01042019|
+RJ818307|Decreto 43.751 de 2012 - Diferimento|01042019|
+RJ818308|Decreto 43.771 de 2012 - Diferimento|01042019|
+RJ802308|Decreto 43.771 de 2012 - Redução de Base de Cálculo|01042019|
+RJ805308|Decreto 43.771 de 2012 - Crédito Presumido|01042019|
+RJ818309|Decreto 43.879 de 2012 - Diferimento|01042019|
+RJ802310|Decreto 43.922 de 2012 - Redução de Base de Cálculo|01042019|
+RJ802311|Decreto 44.418 de 2013 - Redução de Base de Cálculo|01042019|
+RJ818311|Decreto 44.418 de 2013 - Diferimento|01042019|
+RJ805311|Decreto 44.418 de 2013 - Crédito Presumido|01042019|
+RJ802312|Decreto 44.498 de 2013 - Redução de Base de Cálculo|01042019|31102020
+RJ802312|Decreto 44.498 de 2013 - Redução de Base de Cálculo|01112020|31122022
+RJ818312|Decreto 44.498 de 2013 - Diferimento|01042019|31102020
+RJ818312|Decreto 44.498 de 2013 - Diferimento|01112020|31122022
+RJ802313|Decreto 44.550 de 2014 - Redução de Base de Cálculo|01042019|
+RJ818314|Decreto 44.607 de 2014 - Diferimento|01042019|
+RJ805314|Decreto 44.607 de 2014 - Crédito Presumido|01042019|
+RJ803315|Decreto 44.608 de 2014 - Inexigibilidade de estorno de crédito|01042019|01042019
+RJ802316|Decreto 44.615 de 2014 - Redução de Base de Cálculo|01042019|29022024
+RJ805316|Decreto 44.615 de 2014 - Crédito Presumido|01042019|29022024
+RJ818316|Decreto 44.615 de 2014 - Diferimento|01042019|29022024
+RJ818317|Decreto 44.629 de 2014 - Diferimento|01042019|
+RJ802317|Decreto 44.629 de 2014 - Redução de Base de Cálculo|01042019|
+RJ818318|Decreto 44.636 de 2014 - Diferimento|01042019|
+RJ805318|Decreto 44.636 de 2014 - Crédito Presumido|01042019|
+RJ802319|Decreto 44.677 de 2014 - Redução de Base de Cálculo|01042019|
+RJ818320|Decreto 44.868 de 2014 - Diferimento|01042019|
+RJ822320|Decreto 44.868 de 2014 - Tributação sobre saída|01042019|
+RJ818321|Decreto 44.900 de 2014 - Diferimento|01042019|01042019
+RJ818321|Decreto 44.900 de 2014 - Diferimento|02042019|
+RJ818322|Decreto 44.901 de 2014 - Diferimento|01042019|01042019
+RJ818322|Decreto 44.901 de 2014 - Diferimento|02042019|
+RJ802323|Decreto 44.945 de 2014 - Redução de Base de Cálculo|01042019|31122020
+RJ805323|Decreto 44.945 de 2014 - Crédito Presumido|01042019|31122020
+RJ802324|Decreto 45.047 de 2014 - Redução de Base de Cálculo|01042019|
+RJ818324|Decreto 45.047 de 2014 - Diferimento|01042019|
+RJ818325|Decreto 45.072 de 2014 - Diferimento|01042019|
+RJ818326|Decreto 45.308 de 2015 - Diferimento|01042019|16072024
+RJ801326|Decreto 45.308 de 2015 - Isenção|01042019|16072024
+RJ818327|Decreto 45.339 de 2015 - Diferimento|01042019|
+RJ802328|Decreto 45.417 de 2015 - Redução de Base de Cálculo|01042019|
+RJ805328|Decreto 45.417 de 2015 - Crédito Presumido|01042019|
+RJ818328|Decreto 45.417 de 2015 - Diferimento|01042019|
+RJ818329|Decreto 45.446 de 2015 - Diferimento|01042019|
+RJ805330|Decreto 45.450 de 2015 - Crédito Presumido|01042019|
+RJ818331|Decreto 45.586 de 2016 - Diferimento|01042019|
+RJ802332|Decreto 45.607 de 2016 - Redução de Base de Cálculo|01042019|31082022
+RJ805333|Decreto 45.631 de 2016 - Crédito Presumido|01042019|
+RJ818333|Decreto 45.631 de 2016 - Diferimento|01042019|
+RJ805334|Decreto 45.777 de 2016 - Crédito Presumido|01042019|31122020
+RJ803334|Decreto 45.777 de 2016 - Inexigibilidade de estorno de crédito|01042019|31122020
+RJ818335|Decreto 45.780 de 2016 - Diferimento|01042019|
+RJ805335|Decreto 45.780 de 2016 - Crédito Presumido|01042019|
+RJ818336|Decreto 45.781 de 2016 - Diferimento|01042019|
+RJ822337|Decreto 45782 de 2016 - Tributação sobre saída|01042019|04102026
+RJ818337|Decreto 45782 de 2016 - Diferimento|01042019|04102026
+RJ801337|Decreto 45782 de 2016 - Isenção|01042019|04102026
+RJ823338|Decreto 27.427/00, Livro I, Título IX, Art. 52, I de 2000 - Suspensão|01042019|01042019
+RJ823339|Decreto 27.427/00, Livro I, Título IX, Art. 52, inc. II de 2000 - Suspensão|01042019|01042019
+RJ818340|Decreto 27.427/00, Livro IV, Título VIII de 2000 - Diferimento|01042019|
+RJ822341|Decreto 27.427/00, Livro V, Título VA de 2000 - Tributação sobre Receita|01042019|
+RJ818342|Decreto 27.427/00, Livro XII, Título I de 2000 - Diferimento|01042019|
+RJ802343|Decreto 27.427/00, Livro XIII, Título I, Capítulo I de 2000 - Redução de Base de Cálculo|01042019|01042019
+RJ805344|Decreto 27.427/00, Livro XIII, Título II, Art. 14 de 2000 - Crédito Presumido|01042019|01042019
+RJ802344|Decreto 27.427/00, Livro XIII, Título II, Art. 14 de 2000 - Redução de Base de Cálculo|01042019|01042019
+RJ818345|Decreto 27.427/00, Livro XV, Título I, Capítulo I de 2000 - Diferimento|01042019|
+RJ818346|Decreto 27.427/00, Livro XV, Título I, Capítulo II de 2000 - Diferimento|01042019|
+RJ801347|Decreto 27.427/00, Livro XV, Título III de 2000 - Isenção|01042019|01042019
+RJ818347|Decreto 27.427/00, Livro XV, Título III de 2000 - Diferimento|01042019|
+RJ821348|Decreto 27.427/00, Livro XV, Título IV, Art. 31 de 2000 - Repasse do Crédito Fiscal|01042019|
+RJ823348|Decreto 27.427/00, Livro XV, Título IV, Art. 31 de 2000 - Suspensão|01042019|01042019
+RJ818348|Decreto 27.427/00, Livro XV, Título IV, Art. 31 de 2000 - Diferimento|01042019|
+RJ822349|Lei 2.804 de 1997 - Tributação sobre saída|01042019|
+RJ822350|Lei 2.869 de 1997 - Tributação sobre saída|01042019|
+RJ818351|Lei 3.578 de 2001 - Diferimento|01042019|04062025
+RJ820352|Lei 3.916 de 2002 - Redução de alíquota|01042019|
+RJ818353|Lei 4.164 de 2003 - Diferimento|01042019|
+RJ801354|Lei 4.166 de 2003 - Isenção|01042019|
+RJ820355|Lei 4.169 de 2003 - Redução de alíquota|01042019|
+RJ818355|Lei 4.169 de 2003 - Diferimento|01042019|
+RJ805355|Lei 4.169 de 2003 - Crédito Presumido|01042019|
+RJ808355|Lei 4.169 de 2003 - Ampliação de prazo de pagamento|01042019|
+RJ818356|Lei 4.170 de 2003 - Diferimento|01042019|
+RJ818357|Lei 4.173 de 2003 - Diferimento|01042019|31102020
+RJ818357|Lei 4.173 de 2003 - Diferimento|01112020|31122022
+RJ805357|Lei 4.173 de 2003 - Crédito Presumido|01042019|31102020
+RJ805357|Lei 4.173 de 2003 - Crédito Presumido|01112020|31122022
+RJ802358|Lei 4.174 de 2003 - Redução de Base de Cálculo|01042019|
+RJ818358|Lei 4.174 de 2003 - Diferimento|01042019|
+RJ805358|Lei 4.174 de 2003 - Crédito Presumido|01042019|
+RJ818359|Lei 4.177 de 2003 - Diferimento|01042019|
+RJ801359|Lei 4.177 de 2003 - Isenção|01042019|31122020
+RJ802359|Lei 4.177 de 2003 - Redução de Base de Cálculo|01042019|
+RJ805359|Lei 4.177 de 2003 - Crédito Presumido|01042019|
+RJ822359|Lei 4.177 de 2003 - Tributação sobre Receita|01042019|
+RJ802360|Lei 4.178 de 2003 - Redução de Base de Cálculo|01042019|
+RJ818360|Lei 4.178 de 2003 - Diferimento|01042019|
+RJ805360|Lei 4.178 de 2003 - Crédito Presumido|01042019|
+RJ805361|Lei 4.183 de 2003 - Crédito Presumido|01042019|
+RJ818362|Lei 4.184 de 2003 - Diferimento|01042019|31122025
+RJ818363|Lei 4.189 de 2003 - Diferimento|01042019|
+RJ805363|Lei 4.189 de 2003 - Crédito Presumido|01042019|
+RJ802364|Lei 4.344 de 2004 - Redução de Base de Cálculo|01042019|
+RJ801365|Lei 4.485 de 2004 - Isenção|01042019|01042019
+RJ818366|Lei 4.529 de 2005 - Diferimento|01042019|
+RJ803366|Lei 4.529 de 2005 - Inexigibilidade de estorno de crédito|01042019|
+RJ801366|Lei 4.529 de 2005 - Isenção|01042019|25062022
+RJ820366|Lei 4.529 de 2005 - Redução de alíquota|01042019|25062022
+RJ802366|Lei 4.529 de 2005 - Redução de Base de Cálculo|01042019|25062022
+RJ821366|Lei 4.529 de 2005 - Transferência de saldo credor acumulado|01042019|
+RJ818367|Lei 4.531 de 2005 - Diferimento|01042019|30042019
+RJ822367|Lei 4.531 de 2005 - Tributação sobre saída|01042019|30042019
+RJ818367|Lei 4.531 de 2005 - Diferimento|01052019|
+RJ822367|Lei 4.531 de 2005 - Tributação sobre saída|01052019|
+RJ818368|Lei 5.592 de 2009 - Diferimento|01042019|
+RJ821368|Lei 5.592 de 2009 - Transferência de saldo credor acumulado|01042019|
+RJ821369|Lei 6.078 de 2011 - Transferência de saldo credor acumulado|01042019|
+RJ818369|Lei 6.078 de 2011 - Diferimento|01042019|
+RJ818370|Lei 6.108 de 2011 - Diferimento|01042019|
+RJ821370|Lei 6.108 de 2011 - Transferência de saldo credor acumulado|01042019|
+RJ803371|Lei 6.331 de 2012 - Inexigibilidade de estorno de crédito|01042019|
+RJ822371|Lei 6.331 de 2012 - Tributação sobre saída|01042019|02102025
+RJ818371|Lei 6.331 de 2012 - Diferimento|01042019|
+RJ802372|Lei 6.648 de 2013 - Redução de Base de Cálculo|01042019|
+RJ818373|Lei 6.662 de 2014 - Diferimento|01042019|
+RJ821373|Lei 6.662 de 2014 - Transferência de saldo credor acumulado|01042019|
+RJ802374|Lei 6.821 de 2014 - Redução de Base de Cálculo|01042019|
+RJ803375|Lei 6.868 de 2014 - Inexigibilidade de estorno de crédito|01042019|
+RJ818375|Lei 6.868 de 2014 - Diferimento|01042019|
+RJ822375|Lei 6.868 de 2014 - Tributação sobre Faturamento|01042019|
+RJ821376|Lei 6.953 de 2015 - Transferência de saldo credor acumulado|01042019|
+RJ818376|Lei 6.953 de 2015 - Diferimento|01042019|
+RJ822377|Lei 6.979 de 2015 - Tributação sobre saída|01042019|
+RJ818377|Lei 6.979 de 2015 - Diferimento|01042019|
+RJ823377|Lei 6.979 de 2015 - Suspensão|01042019|
+RJ801377|Lei 6.979 de 2015 - Isenção|01042019|
+RJ820377|Lei 6.979 de 2015 - Redução de alíquota|01072022|
+RJ801378|Lei 7.122 de 2015 - Isenção|01042019|30062020
+RJ820379|Lei 2.657/1996, art.14, inciso IX de 1996 - Redução de alíquota|01042019|31032020
+RJ803379|Lei 2.657/1996, art.14, inciso IX de 1996 - Inexigibilidade de estorno de crédito|01042019|01042019
+RJ820380|Lei 2.657/1996, art.14, inciso VI, alínea d de 1996 - Redução de alíquota|01042019|
+RJ820381|Lei 2.657/1996, art.14, inciso XIII, alínea b de 1996 - Redução de alíquota|01042019|
+RJ803382|Lei 2.657/1996, art.14, inciso XVI de 1996 - Inexigibilidade de estorno de crédito|01042019|01042019
+RJ820382|Lei 2.657/1996, art.14, inciso XVI de 1996 - Redução de alíquota|01042019|30092019
+RJ820383|Lei 2.657/1996, art.14, inciso XXV de 1996 - Redução de alíquota|01042019|
+RJ802384|Lei 2.657/96, Art. 4º de 1996 - Redução de Base de Cálculo|01042019|
+RJ823385|Protocolo ICMS 22 de 1999 - Suspensão|01042019|31122019
+RJ823385|Protocolo ICMS 22 de 1999 - Suspensão|01062020|31122024
+RJ818386|Resolução SEEF 2.286 de 1993 - Diferimento|01042019|
+RJ818387|Resolução SEEF 2.397 de 1994 - Diferimento|01042019|
+RJ823388|Resolução SEF 1.606 de 1989 - Suspensão|01042019|
+RJ818389|Resolução SEF 1.607 de 1989 - Diferimento|01042019|
+RJ818390|Resolução SEF 1.610 de 1989 - Diferimento|01042019|
+RJ818391|Resolução SEF 1.649 de 1989 - Diferimento|01042019|
+RJ818392|Resolução SEF 6.484 de 2002 - Diferimento|01042019|
+RJ818393|Resolução SEFAZ 726 de 2014 - Diferimento|01042019|30112019
+RJ818393|Resolução SEFAZ 726 de 2014 - Diferimento|01122019|29022020
+RJ818394|Resolução SER 84 de 2004 - Diferimento|01042019|
+RJ818395|Resolução SER 319 de 2006 - Diferimento|01042019|31072019
+RJ801396|Convênio ICMS 63 de 2008 - Isenção|01042019|
+RJ818397|Decreto 43.117 de 2011 - Diferimento|01042019|30092019
+RJ801397|Decreto 43.117 de 2011 - Isenção|01042019|30092019
+RJ801398|Lei 3.266 de 1999 - Isenção|01042019|30092019
+RJ802399|Convênio 5  de 2018 - Redução de Base de Cálculo|01042019|
+RJ803399|Convênio 5  de 2018 - Inexigibilidade de estorno de crédito|01042019|
+RJ805400|Convênio 64 de 2006 - Crédito Presumido|01042019|
+RJ819401|Convênio 83 de 2000 - Não incidência|01082019|31082019
+RJ805402|Lei 8.489 de 2019 - Crédito Presumido|01072019|01072019
+RJ805402|Lei 8.484 de 2019 - Crédito Presumido|02072019|
+RJ802402|Lei 8.489 de 2019|01072019|01072019
+RJ802402|Lei 8.484 de 2019 - Redução de Base de Cálculo|02072019|30092020
+RJ820402|Lei 8.484 de 2019 - Redução de alíquota|01092020|
+RJ818403|Decreto  38.501/2005, §§ 2º e 3º do art. 3º. de 2005 - Diferimento|01042019|31122020
+RJ823404|Ajuste SINIEF 2 de 2018 - Suspensão|01042019|
+RJ818405|Decreto 46.079 de 2017 - Diferimento|01042019|31072019
+RJ805406|Lei 8.482/2019, art. 1º inciso V de 2019 - Crédito Presumido|01072019|30062020
+RJ805406|Lei 8.482/2019, art. 1º incisos I, II, II e V de 2019 - Crédito Presumido|01072020|31072020
+RJ802406|Lei 8.482/2019, art. 1º incisos I, II, II e V de 2019 - Redução de Base de Cálculo|01072020|31072020
+RJ805406|Lei 8.482/2019, art. 1º incisos I, II, III e V de 2019 - Crédito Presumido|01082020|31122020
+RJ802406|Lei 8.482/2019, art. 1º incisos I, II, III e V de 2019 - Redução de Base de Cálculo|01082020|31122020
+RJ818407|Decreto  46.629 de 2019 - Diferimento|01042019|30062019
+RJ818407|Decreto  46.629 de 2019 - Diferimento|01072019|
+RJ802408|Decreto  46.680 de 2019 - Redução de Base de Cálculo|01062019|30062019
+RJ802408|Decreto  46.680 de 2019 - Redução de Base de Cálculo|01072019|
+RJ802409|Convênio 6 de 2009 - Redução de Base de Cálculo|01042019|
+RJ818410|Ajuste SINIEF 13 de 2017 - Diferimento|01042019|
+RJ818411|Decreto 46793 de 2019 - Diferimento|01112019|31102020
+RJ805411|Decreto 46793 de 2019 - Crédito Presumido|01112019|31102020
+RJ802411|Decreto 46793 de 2019 - Redução de Base de Cálculo|01112019|31102020
+RJ818412|Decreto 46.781 de 2019 - Diferimento|01122019|
+RJ818413|Decreto 46.799 de 2019 - Diferimento|01122019|
+RJ802414|Convênio ICMS 188 de 2017 - Redução de Base de Cálculo|01122019|31122025
+RJ802415|Convênio ICMS 61 de 2012 - Redução de Base de Cálculo|01012020|
+RJ801416|Convênio ICMS 194 de 2019 - Isenção|01012020|31122022
+RJ801417|Convênio ICMS 66 de 2019 - Isenção|01012020|
+RJ818418|Decreto 46.944 de 2020 - Diferimento|01022020|26022020
+RJ801418|Decreto 46.944 de 2020 - Isenção|01022020|26022020
+RJ802419|Convênio ICMS 78 de 2015 - Redução de Base de Cálculo|01022020|
+RJ805420|Lei 8.792, art. 1º, inciso VI, de 2020 - Crédito Presumido|01052020|31122020
+RJ805420|Lei 8.792 de 2020 - Crédito Presumido|01012021|
+RJ802420|Lei 8.792 de 2020 - Redução de Base de Cálculo|01012021|
+RJ808421|Convênio ICMS 169 de 2017 - Ampliação de prazo de pagamento|01062020|
+RJ824422|Lei 2.778 de 1997 - Estimativa|01072020|
+RJ801423|Lei 8.922 de 2020 - Isenção|01072020|
+RJ801424|Convênio ICM 4 de 1979 - Isenção|01082020|
+RJ803424|Convênio ICM 4 de 1979 - Inexigibilidade de estorno de crédito|01082020|
+RJ803425|Convênio ICM 25 de 1983 - Inexigibilidade de estorno de crédito|01082020|
+RJ801425|Convênio ICM 25 de 1983 - Isenção|01082020|
+RJ802425|Convênio ICM 25 de 1983 - Redução de Base de Cálculo|01082020|
+RJ818426|Decreto 39.729 de 2006 - Diferimento|01082020|31122020
+RJ801427|Convênio ICMS 81 de 2020 - Isenção|01092020|30112020
+RJ803427|Convênio ICMS 81 de 2020 - Inexigibilidade de estorno de crédito|01092020|30112020
+RJ802428|Convênio ICMS 51 de 2020 - Redução de Base de Cálculo|01102020|
+RJ801429|Convênio ICMS 26 de 2009 - Isenção|01042019|
+RJ801430|Lei 9.162, art. 2º de 2020 - Isenção|29122020|
+RJ801431|Convênio ICMS 52 de 2020 - Isenção|30122020|
+RJ805432|Lei 9.025 de 2020 - Crédito Presumido|30122020|
+RJ818432|Lei 9.025 de 2020 - Diferimento|30122020|
+RJ820432|Lei 9.025 de 2020 - Redução de alíquota|30122020|
+RJ801433|Convênio ICMS 20 de 1992 - Isenção|01042019|
+RJ805434|Lei 8.960 de 2020 - Crédito Presumido|27112020|24022021
+RJ805434|Lei 8.960 de 2020 - Crédito Presumido|25022021|
+RJ818434|Lei 8.960 de 2020 - Diferimento|27112020|24022021
+RJ818434|Lei 8.960 de 2020 - Diferimento|25022021|
+RJ802434|Lei 8.960 de 2020 - Redução de Base de Cálculo|27112020|24022021
+RJ802434|Lei 8.960 de 2020 - Redução de Base de Cálculo|25022021|
+RJ801435|Convênio ICMS 63 de 2020 - Isenção|01042021|30042024
+RJ801436|Convênio ICMS 15 de 2021 - Isenção|01042021|28022026
+RJ801437|Convênio ICMS 13 de 2021 - Isenção|01042021|30042024
+RJ801438|Lei 9.391 de 2021 - Isenção|01112021|30092022
+RJ801438|Convênio ICMS 224 de 2017 - Isenção|01102022|31072023
+RJ801438|Convênio ICMS 83 de 2023 - Isenção|01082023|31012026
+RJ801438|Convênio ICMS 224 de 2017 - Isenção|01022026|
+RJ801439|Convênio ICMS 17 de 2013 - Diferimento|01112021|01112021
+RJ818439|Convênio ICMS 17 de 2013 - Diferimento|01112021|
+RJ802440|Lei 5.147 de 2007 - Redução de Base de Cálculo|01122007|31102022
+RJ818441|Lei 9.214 de 2021 - Diferimento|21092021|16072024
+RJ801441|Lei 9.214 de 2021 - Isenção|21092021|16072024
+RJ818442|Lei 9.289 de 2021 - Diferimento|21092021|16072024
+RJ805443|Lei 9.355 de 2021 - Crédito Presumido|01122021|
+RJ820444|Lei 2.657/1996, art.14, inciso VI, alínea a.1 de 1996 - Redução de alíquota|01122021|
+RJ801445|Convenio ICMS 76 de 1991 - Isenção|01032022|
+RJ801446|Convenio ICMS 12 de 2022 - Isenção|01042022|23082022
+RJ808446|Convenio ICMS 12 de 2022 - Ampliação de prazo de pagamento|01042022|23082022
+RJ802447|Convenio ICMS 112 de 2013 - Redução de Base de Cálculo|07042022|
+RJ820449|Decreto  45.607, art 4° de 2016 - Redução de alíquota|12082022|
+RJ802450|Decreto 45.446, art 4 de 2015 -Redução de Base de Cálculo|13102022|
+RJ823451|Protocolo ICMS 2 de 2014 - Suspensão|01112022|
+RJ823452|Protocolo ICMS 5 de 2014 - Suspensão|01112022|
+RJ823453|Protocolo ICMS 64 de 2015 - Suspensão|01112022|
+RJ820454|Lei 2.657/1996, art. 14, inciso XV de 1996 - Redução de alíquota|01112022|01112022
+RJ823455|Protocolo ICMS 28 de 2008 - Suspensão|01112022|
+RJ823456|Protocolo ICMS 4 de 2011 - Suspensão|01112022|
+RJ801457|Convênio ICMS 88 de 2012 - Isenção|01112022|
+RJ820458|Lei 5.147, art. 2 de 2007 - Redução de alíquota|01112022|
+RJ802459|Convênio ICMS 130 de 1994 - Redução de Base de Cálculo|01112022|
+RJ805460|Convênio ICMS 21 DE 2023 - Crédito Presumido|01052023|
+RJ805461|Convênio ICMS 29 de 2023 - Crédito Presumido|01092023|
+RJ805462|Convênio ICMS 63 de 2023 - Crédito Presumido|01052023|31032024
+RJ805463|Convênio ICMS 27 de 2023 - Crédito Presumido|01052023|
+RJ822464|Lei 10.067 de 2023 - Tributação sobre Receita|16022024|16022024
+RJ822464|Lei 10.067 de 2023 - Tributação sobre a saída|17022024|31122024
+RJ805465|Lei 10.068 de 2023 - Crédito Presumido|21052024|31122024
+RJ805466|Lei 10.329 de 2024 - Crédito Presumido|03062024|
+RJ818466|Lei 10.329 de 2024 - Diferimento|03062024|
+RJ802467|Lei 10.335 de 2024 - Redução de Base de Cálculo|03062024|
+RJ805467|Lei 10.335 de 2024 - Crédito Presumido|03062024|
+RJ818467|Lei 10.335 de 2024 - Diferimento|03062024|
+RJ801468|Lei 10.456 de 2024 - Isenção|09082024|
+RJ818468|Lei 10.456 de 2024 - Diferimento|09082024|
+RJ801469|Lei 10.431 de 2024 - Isenção|12082024|
+RJ818469|Lei 10.431 de 2024 - Diferimento|12082024|
+RJ805470|Lei 10.638 de 2024 - Crédito Presumido|10012025|
+RJ818470|Lei 10.638 de 2024 - Diferimento|10012025|
+RJ801471|Convênio ICMS 56 de 2024 - Isenção|16052024|30042026
+RJ805472|Lei 6.331 de 2012 - Crédito presumido|03102025|
+RJ805473|Convênio ICMS 22 de 2023 - Crédito Presumido|01072026|

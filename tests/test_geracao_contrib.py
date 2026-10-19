@@ -111,6 +111,84 @@ class TestContribuicoes(unittest.TestCase):
         r = r or next(x for x in doc.registros if x.reg == reg)
         return r.valor(doc._ix(reg, campo))
 
+    def test_periodo_fora_da_base_e_apontado_sem_bloquear(self):
+        """A 006 vale desde 2020: um período de 2019 não tem leiaute na
+        base. A geração segue na versão mais recente e aponta, sem
+        bloquear; no período coberto não há apontamento."""
+        tipo = "leiaute do período fora da base"
+        coberto = geracao.gerar_contrib(
+            self.memoria, xf.ler_pasta_fiscal(self.xmls), "202608")
+        self.assertEqual([r for r in coberto.revisar if r["tipo"] == tipo],
+                         [])
+        res = geracao.gerar_contrib(
+            self.memoria, xf.ler_pasta_fiscal(self.xmls), "201908")
+        apontados = [r for r in res.revisar if r["tipo"] == tipo]
+        self.assertEqual(len(apontados), 1)
+        self.assertFalse(apontados[0]["bloqueia"])
+        self.assertIn("08/2019", apontados[0]["detalhe"])
+        self.assertIn("006", apontados[0]["detalhe"])
+        self.assertEqual(res.bloqueios, [])
+
+    def test_m400_m410_e_m800_m810(self):
+        """Receita com CST 06 gera M400/M410 e M800/M810: total pela
+        receita do CST, natureza pelo NCM na tabela do CST (leite → 121) ou,
+        sem casamento, pela que a empresa usa (bebida fria → 918, apontado);
+        o M410 fecha com o M400 ao centavo."""
+        from unittest import mock
+        from sped_tables.dominio import referencias
+        pc = {"pis": ("06", "0", "0", "0"), "cofins": ("06", "0", "0", "0")}
+        self._grava("nfce.xml", nfe_xml(
+            mod="65", chave=CHAVE_NFCE, nnf="1",
+            emit=(CNPJ_TESTE, "EMPRESA TESTE LTDA"), dest=None,
+            itens=[dict(pc, cProd="P1", NCM="04012010", vProd="10.00"),
+                   dict(pc, cProd="P1", NCM="22021000", vProd="5.01")]))
+        self.memoria["naturezas_receita"] = {"06": {"918": 3}}
+        fonte = referencias.atual()
+        with mock.patch.object(
+                fonte, "tabela_natureza_receita",
+                lambda cst: [("121", ["0401"], "")] if cst == "06" else []):
+            res = geracao.gerar_contrib(self.memoria,
+                                        xf.ler_pasta_fiscal(self.xmls),
+                                        "202608")
+        doc = res.doc
+        for pai, filho in (("M400", "M410"), ("M800", "M810")):
+            (m400,) = [r for r in doc.registros if r.reg == pai]
+            self.assertEqual(m400.campos[1], "06")
+            total = _to_num(self.val(doc, pai, "VL_TOT_REC", m400))
+            self.assertAlmostEqual(total, 15.01)
+            nats = {f.valor(doc._ix(filho, "NAT_REC")):
+                    _to_num(f.valor(doc._ix(filho, "VL_REC")))
+                    for f in m400.filhos}
+            self.assertEqual(nats, {"121": 10.0, "918": 5.01})
+        self.assertIn("natureza da receita pela prática",
+                      {r["tipo"] for r in res.revisar})
+        self.assertEqual(res.bloqueios, [])
+        self.assertEqual(doc.conferir_receitas_isentas(), [])
+        # ordem do leiaute: M400 antes do M500/M600, M800 depois do M600
+        ordem = [r.reg for r in doc.registros if r.reg.startswith("M")]
+        self.assertLess(ordem.index("M400"), ordem.index("M600"))
+        self.assertGreater(ordem.index("M800"), ordem.index("M600"))
+
+    def test_extemporaneo_marcado_fica_no_mes(self):
+        """No Contribuições o PVA recusa data de outro mês: o cupom
+        extemporâneo marcado entra com COD_SIT 01 e o primeiro dia."""
+        self._grava("nfce.xml", nfe_xml(
+            mod="65", chave=CHAVE_NFCE, nnf="1",
+            emit=(CNPJ_TESTE, "EMPRESA TESTE LTDA"), dest=None,
+            dhemi="2026-07-31T23:50:00-03:00",
+            itens=[{"cProd": "P1", "vProd": "200.00"}]))
+        lote = xf.ler_pasta_fiscal(self.xmls)
+        res = geracao.gerar_contrib(self.memoria, lote, "202608")
+        self.assertEqual(res.fora_periodo, [(CHAVE_NFCE, "31072026")])
+        res = geracao.gerar_contrib(self.memoria, lote, "202608",
+                                    incluir={CHAVE_NFCE})
+        doc = res.doc
+        nfce = next(r for r in doc.registros if r.reg == "C100"
+                    and self.val(doc, "C100", "COD_MOD", r) == "65")
+        self.assertEqual((self.val(doc, "C100", "COD_SIT", nfce),
+                          self.val(doc, "C100", "DT_DOC", nfce)),
+                         ("01", "01082026"))
+
     def test_nfce_com_a_aliquota_do_regime(self):
         res, doc = self.gerar()
         self.assertIn("alíquota do XML trocada",
@@ -143,8 +221,8 @@ class TestContribuicoes(unittest.TestCase):
                          0.0)
         self.assertTrue(any(r.reg == "0500" for r in doc.registros))
         # a largura aprendida do "entregue" (13, do leiaute do programa) é
-        # limitada pela do descritor do PVA quando ele está instalado
-        larg = geracao._larguras(self.memoria, "CONTRIB").get(
+        # limitada pela do descritor da base de referência
+        larg = geracao._larguras(self.memoria, "CONTRIB", "31082026").get(
             "0200", self.memoria["larguras"]["CONTRIB"]["0200"])
         self.assertEqual(len(next(r for r in doc.registros
                                   if r.reg == "0200").campos), larg)

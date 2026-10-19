@@ -1,0 +1,89 @@
+versão=2 CODIGO, DESCRICAO, DT_INI, DT_FIM, IND_ATIV, IND_AJUSTE, GRUPO, SUBGRUPO, IND_OUTROS
+D0101010|Despesas de depósito de poupança|01012014||01;06|P|100|D0101|N
+D0101020|Despesas de títulos e valores mobiliários no exterior|01012014||01;06|P|100|D0101|N
+D0101030|Despesas de depósitos interfinanceiros|01012014||01;06|P|100|D0101|N
+D0101040|Despesas de depósitos de aviso prévio|01012014||01;06|P|100|D0101|N
+D0101050|Despesas de depósito a prazo|01012014||01;06|P|100|D0101|N
+D0101060|Despesas de depósitos a prazo de reaplicação automática|01012014||01;06|P|100|D0101|N
+D0101070|Despesas de depósitos judiciais|01012014||01;06|P|100|D0101|N
+D0101080|Despesas de depósitos especiais|01012014||01;06|P|100|D0101|N
+D0101090|Despesas de depósitos de fundos e programas|01012014||01;06|P|100|D0101|N
+D0101100|Despesas de depósitos do FGTS|01012014||01;06|P|100|D0101|N
+D0101110|Despesas de operações compromissadas - carteira própria|01012014||01;06|P|100|D0101|N
+D0101120|Despesas de operações compromissadas - carteira de terceiros|01012014||01;06|P|100|D0101|N
+D0101130|Despesas de operações compromissadas - carteira livre movimentação|01012014||01;06|P|100|D0101|N
+D0101140|Despesas de contratos de assunção de obrigações - vinculados a operações realizadas no país|01012014||01;06|P|100|D0101|N
+D0101150|Despesas de contratos de assunção de obrigações - vinculados a operações realizadas com o exterior|01012014||01;06|P|100|D0101|N
+D0101160|Despesas de aceites cambiais|01012014||01;06|P|100|D0101|N
+D0101170|Despesas de letras de credito do agronegocio|01012014||01;06|P|100|D0101|N
+D0101180|Despesas de letras de credito imobiliário|01012014||01;06|P|100|D0101|N
+D0101190|Despesas de letras hipotecárias|01012014||01;06|P|100|D0101|N
+D0101200|Despesas de letras financeiras|01012014||01;06|P|100|D0101|N
+D0101210|Despesas de letras - Outras|01012014||01;06|P|100|D0101|S
+D0101220|Despesas de contribuição ao fundo garantidor de créditos - FGC|01012014||01;06|P|100|D0101|N
+D0101230|Despesas de debêntures em moeda estrangeira|01012014||01;06|P|100|D0101|N
+D0101240|Despesas de debêntures em moeda nacional|01012014||01;06|P|100|D0101|N
+D0101250|Despesas/cedulas pignoraticias de debentures|01012014||01;06|P|100|D0101|N
+D0101260|APE - despesas de depositos especiais|01012014||01;06|P|100|D0101|N
+D0102010|Despesas de empréstimos - SFH|01012014||01;06|P|100|D0102|N
+D0102020|Despesas de assistência financeira - Banco Central|01012014||01;06|P|100|D0102|N
+D0102030|Despesas de empréstimos  BNCC|01012014||01;06|P|100|D0102|N
+D0102040|Despesas de redescontos|01012014||01;06|P|100|D0102|N
+D0102050|Despesas de refinanciamentos - Banco Central - área bancária|01012014||01;06|P|100|D0102|N
+D0102060|Despesas de refinanciamentos - Tesouro Nacional - área rural e industrial|01012014||01;06|P|100|D0102|N
+D0102070|Despesas de refinanciamentos - recursos do SFH|01012014||01;06|P|100|D0102|N
+D0102080|Despesas de empréstimos no país - outras instituições|01012014||01;06|P|100|D0102|N
+D0102090|Despesas de obrigações por empréstimos de ouro|01012014||01;06|P|100|D0102|N
+D0102100|Despesas de empréstimos no exterior|01012014||01;06|P|100|D0102|N
+D0102110|Despesas de repasses - Tesouro Nacional|01012014||01;06|P|100|D0102|N
+D0102120|Despesas de repasses - Banco do Brasil|01012014||01;06|P|100|D0102|N
+D0102130|Despesas de repasses  BNDES|01012014||01;06|P|100|D0102|N
+D0102140|Despesas de repasses  CEF|01012014||01;06|P|100|D0102|N
+D0102150|Despesas de repasses  FINAME|01012014||01;06|P|100|D0102|N
+D0102160|Despesas de repasses - FINEP|01012014||01;06|P|100|D0102|N
+D0102170|Despesas de repasses - outras instituições oficiais|01012014||01;06|P|100|D0102|S
+D0102180|Despesas de repasses - interfinanceiros|01012014||01;06|P|100|D0102|N
+D0102190|Despesas de repasses do exterior|01012014||01;06|P|100|D0102|N
+D0102200|Despesas de obrigações com banqueiros no exterior|01012014||01;06|P|100|D0102|N
+D0102210|Despesas de obrigações com banqueiros no exterior - taxas flutuantes|01012014||01;06|P|100|D0102|N
+D0103010|Despesas de operações de câmbio - exportação|01012014||01;06|P|100|D0103|N
+D0103020|Despesas de operações de câmbio - importação|01012014||01;06|P|100|D0103|N
+D0103030|Despesas de operações de câmbio - financeiro|01012014||01;06|P|100|D0103|N
+D0103040|Despesas de operações de câmbio - outras|01012014||01;06|P|100|D0103|S
+D0103050|Despesas de operações de câmbio - taxas flutuantes|01012014||01;06|P|100|D0103|N
+D0103060|Despesas de variações e diferenças de taxas|01012014||01;06|P|100|D0103|N
+D0103070|Despesas de variações e diferenças de taxas - taxas flutuantes|01012014||01;06|P|100|D0103|N
+D0103080|Despesas com moedas estrangeiras em espécie, limitadas as receitas correspondentes|01012014||01;06|P|100|D0103|N
+D0104010|Despesas de arrendamentos financeiros|01012014||01;06|P|100|D0104|N
+D0104020|Despesas de arrendamentos operacionais|01012014||01;06|P|100|D0104|N
+D0104030|Despesas de obrigações por subarrendamentos|01012014||01;06|P|100|D0104|N
+D0104040|Prejuízos na alienação de bens arrendados|01012014||01;06|P|100|D0104|N
+D0105010|Despesas de operações especiais por conta e ordem do tesouro nacional|01012014||01;06|P|100|D0105|N
+D0106010|Deságio na colocação de títulos|01012014||01;06|P|100|D0106|N
+D0107010|Prejuízos com títulos de renda fixa|01012014||01;06|P|100|D0107|N
+D0107020|Prejuízos com títulos de renda variável|01012014||01;06|P|100|D0107|N
+D0107040|TVM - ajuste negativo ao valor de mercado  Títulos para negociação|01012014||01;06|P|100|D0107|N
+D0107045|TVM - ajuste negativo ao valor de mercado  Títulos disponíveis para venda|01012014||01;06|P|100|D0107|N
+D0107050|Perdas permanentes|01012014||01;06|P|100|D0107|N
+D0108020|Prejuizos em operações com mercadorias|01012014||01;06|P|100|D0108|N
+D0108030|Prejuizos em aplicações em ouro|01012014||01;06|P|100|D0108|N
+D0108060|Despesas em operações com derivativos  Swap (ajuste negativo ao valor de mercado)|01012014||01;06|P|100|D0108|N
+D0108065|Despesas em operações com derivativos  Swap (demais despesas)|01012014||01;06|P|100|D0108|N
+D0108070|Despesas em operações com derivativos  Termo (ajuste negativo ao valor de mercado)|01012014||01;06|P|100|D0108|N
+D0108075|Despesas em operações com derivativos  Termo (demais despesas)|01012014||01;06|P|100|D0108|N
+D0108080|Despesas em operações com derivativos  Futuro (ajuste negativo ao valor de mercado)|01012014||01;06|P|100|D0108|N
+D0108085|Despesas em operações com derivativos  futuro (demais despesas)|01012014||01;06|P|100|D0108|N
+D0108090|Despesas em operações com derivativos  Opções (ajuste negativo ao valor de mercado)|01012014||01;06|P|100|D0108|N
+D0108095|Despesas em operações com derivativos  Opções (demais despesas)|01012014||01;06|P|100|D0108|N
+D0108100|Despesas em operações com derivativos  Outros (ajuste negativo ao valor de mercado)|01012014||01;06|P|100|D0108|N
+D0108105|Despesas em operações com derivativos  Outros (demais despesas)|01012014||01;06|P|100|D0108|N
+D0109010|Despesas de captação em operações realizadas no mercado interfinanceiro, inclusive com títulos públicos, não relacionadas no grupo D0101|01012014||01;06|P|100|D0109|N
+D0110010|Valor devido em cada período de apuração como remuneração pelos serviços de arrecadação de receitas federais (Exclusão específica da base de cálculo da Cofins)|01012014||01;06|P|100|D0110|N
+D0190010|Despesas de obrigações p/fundos financiamento e de desenvolvimento|01012014||01;06|P|100|D0190|N
+D0190020|Despesas de operacoes especiais|01012014||01;06|P|100|D0190|N
+D0190040|Despesas com captacao em titulos de desenvimento economico|01012014||01;06|P|100|D0190|N
+D0190060|Dispênios de depósitos intercooperativos|01012014||01;06|P|100|D0190|N
+D0190090|Outras deduções admitidas na legislação|01012014||01;06|P|100|D0190|N
+D0198010|Ajustes negativos das deduções e exclusões de caráter específico|01012014||01;06|N|100|D0198|N
+D0199010|Ajustes positivos das deduções e exclusões de caráter especifico|01012014||01;06|P|100|D0199|N
+D0101270|A remuneração, os encargos, as despesas e demais custos,  referentes a instrumentos de capital ou de dívida subordinada, emitidos pela pessoa jurídica, exceto na forma de ações|01012014||01;06|P|100|D0101|N

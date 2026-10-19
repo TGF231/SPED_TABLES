@@ -1,0 +1,2 @@
+versão=1 INF_ADIC, DESC_INF, DT_INI, DT_FIM
+SE000001|Apoio Fiscal PSDI Importação|01012023|

@@ -1,0 +1,10 @@
+versão=1 CODIGO, DESCRICAO, DT_INI, DT_FIM, IND_ATIV, IND_AJUSTE, GRUPO, SUBGRUPO, IND_OUTROS
+D0705010|Receitas de juros e encargos recebidas diretamente dos associados|01012014||01;06|P|700|D0705|N
+D0705020|Receitas da prestação de serviços realizados aos associados e recebidas diretamente dos mesmos|01012014||01;06|P|700|D0705|N
+D0705030|Receitas financeiras recebidas de aplicações efetuadas em confederação, federação e cooperativa singular de que seja associada|01012014||01;06|P|700|D0705|N
+D0705040|Valores arrecadados com a venda de bens móveis e imóveis recebidos de associados para pagamento de empréstimo contraído junto à cooperativa|01012014||01;06|P|700|D0705|N
+D0705050|Valores recebidos de órgãos públicos ou de seguradoras para a liquidação parcial ou total de empréstimos contraídos por associados, em decorrência de perda de produção agropecuária, no caso de cooperativas de crédito rural|01012014||01;06|P|700|D0705|N
+D0710010|Sobras líquidas apuradas na Demonstração do Resultado do Exercício, antes da destinação para a constituição do Fundo de Reserva e do Fundo de Assistência Técnica, Educacional e Social (Fates), previstos no art. 28 da Lei nº 5.764, de 1971.|01012014||01;06|P|700|D0710|N
+D0790010|Outras deduções e exclusões de caráter específico|01012014||01;06|P|700|D0790|S
+D0798010|Ajustes Negativos das deduções e exclusões de caráter específico|01012014||01;06|N|700|D0798|N
+D0799010|Ajustes Positivos das deduções e exclusões de caráter específico|01012014||01;06|P|700|D0799|N

@@ -3,19 +3,18 @@
 (0200, 0150) pelo banco do ERP — com a mesma prévia campo a campo da
 correção pela planilha."""
 
-from PyQt6.QtWidgets import QDialog, QMessageBox
-
 from sped_tables.aplicacao import erp as caso
 from sped_tables.dominio import participantes
 from sped_tables.interface.dialogos.erp import (DialogoSistemasERP,
                                                 escolher_conexao, no_banco)
 from sped_tables.interface.dialogos.inventario import DialogoAtualizar0200
+from sped_tables.interface.comum import abrir_janela, informar
 
 
 class ControladorERP:
 
     def sistemas_erp(self):
-        DialogoSistemasERP(self, doc=self.doc).exec()
+        abrir_janela(self, DialogoSistemasERP(self, doc=self.doc))
 
     def atualizar_0200_erp(self):
         self._cadastro_pelo_erp("produtos", "0200")
@@ -42,27 +41,29 @@ class ControladorERP:
             previa = participantes.previa(self.doc, linhas)
             avisos = participantes.avisos(previa)
         if not previa:
-            QMessageBox.information(
+            informar(
                 self, titulo, "O %s do arquivo já está igual ao cadastro do "
                 "ERP (%d registro(s) lido(s) de \"%s\")."
                 % (registro, len(linhas), conexao.nome))
             return
+        doc = self.doc
         dlg = DialogoAtualizar0200(
             previa, avisos, self, registro=registro, sujeito="O ERP",
             titulo=titulo, botao="Aplicar")
-        if dlg.exec() != QDialog.DialogCode.Accepted:
-            return
-        campos = dlg.escolhidos()
-        if not campos:
-            return
-        if entidade == "produtos":
-            contagem, _itens = self.doc.atualizar_0200(linhas, campos)
-        else:
-            contagem = participantes.atualizar(self.doc, linhas, campos)
-        if contagem:
-            self._marcar_alterado()
-            self._montar_abas()
-        self.statusBar().showMessage(
-            "%s pelo ERP: %s." % (registro, ", ".join(
-                "%s (%d)" % (c, n) for c, n in sorted(contagem.items()))
-                or "nada mudou"), 15000)
+
+        def aplicar():
+            campos = dlg.escolhidos()
+            if not campos or self.doc is not doc:
+                return
+            if entidade == "produtos":
+                contagem, _itens = doc.atualizar_0200(linhas, campos)
+            else:
+                contagem = participantes.atualizar(doc, linhas, campos)
+            if contagem:
+                self._marcar_alterado()
+                self._montar_abas()
+            self.statusBar().showMessage(
+                "%s pelo ERP: %s." % (registro, ", ".join(
+                    "%s (%d)" % (c, n) for c, n in sorted(contagem.items()))
+                    or "nada mudou"), 15000)
+        abrir_janela(self, dlg, ao_aceitar=aplicar, chave="erp:" + registro)

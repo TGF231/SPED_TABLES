@@ -1,0 +1,8 @@
+versão=2 TIPO_UTIL, DESC_TIPO, DT_INI, DT_FIM
+PB01|Dedução|01012009|31122020
+PB01|Dedução do saldo do excedente do ICMS garantido para abatimento do mínimo variável|01012021|
+PB21|Compensação|01012009|
+PB41|Transferência|01012009|
+PB61|Restituição|01012009|
+PB81|Estorno|01012009|
+PB99|Outros|01012009|

@@ -34,9 +34,9 @@ pip install -r requirements.txt
 
 - **PyQt6** — interface gráfica (obrigatório);
 - **openpyxl** — leitura de planilhas **XLSX** (importação do inventário do
-  bloco H e Tabela NCM Vigente do Siscomex). Sem ele o programa abre
-  normalmente; apenas as funções de XLSX ficam indisponíveis (CSV continua
-  funcionando).
+  bloco H; o consolidador também o usa para a planilha de NCM vigente do
+  Siscomex). Sem ele o programa abre normalmente; apenas as funções de XLSX
+  ficam indisponíveis (CSV continua funcionando).
 
 > **Antes de usar em produção:** trabalhe sempre sobre uma **cópia** do arquivo
 > SPED e valide o resultado no **PVA** antes de transmitir. A `1.0.0-rc.1` é a
@@ -57,9 +57,33 @@ python sped_editor.py  caminho/para/SPED_ICMS_IPI_xxxx.txt
 ```
 
 Depois, use o botão **Abrir** da barra de ferramentas (ou **Ctrl+O**) para
-escolher o `.txt` do SPED. O programa não tem barra de menus: as ações ficam na
-barra de ferramentas e as rotinas de correção/conferência no botão
-**Ferramentas**.
+escolher o `.txt` do SPED. O programa não tem barra de menus: a barra de
+ferramentas segue o caminho do arquivo — **Abrir**, **Salvar**, **Empresas**,
+**Diagnóstico**, **Ferramentas** e **Abrir no PVA** — e o botão **Ferramentas**
+agrupa as rotinas pela etapa do trabalho:
+
+| Submenu | O que tem |
+|---|---|
+| *XMLs do período* | escolhe (ou relê) a pasta ou o banco do ERP com os XMLs do mês |
+| **Conferir** | itens e C190 com os XMLs, C175 da NFC-e, CST por NCM, itens do 0200 sem referência |
+| **Corrigir** | rotinas da empresa, datas, redução de base, ICMS próprio nas compras com ST, alíquotas, COD_GEN/COD_CTA, registros de chave repetida, cadastro pelo ERP, inventário |
+| **Recalcular** | ICMS dos itens, C190 em massa, E110, bloco M |
+| **Gerar** | SPED a partir dos XMLs, regenerar entradas, C170 fictícios e C175 da NFC-e |
+| **Configurações** | correlações de CFOP, sistemas ERP, base de referência, pasta dos PVAs (só para o *Abrir no PVA*) |
+
+A função que não vale para o leiaute aberto **some** do menu, em vez de ficar
+cinza. Os **XMLs são lidos uma vez por arquivo**: a primeira função que precisa
+deles pergunta de onde vêm, e as seguintes reaproveitam o mesmo lote — para
+trocar de pasta, *Ferramentas → XMLs do período*.
+
+**Todas as janelas são soltas.** Conferências, prévias, diagnóstico, rotinas e
+avisos de resultado abrem sem bloquear o resto: dá para clicar na grade, abrir
+outra ferramenta ou consultar um registro com a janela aberta ao lado, e cada
+uma tem minimizar e maximizar. Só as perguntas que precisam de resposta na
+hora (salvar antes de fechar, confirmar uma gravação) esperam o clique. O aviso
+de resultado traz o botão da **etapa seguinte** — *Recalcular bloco M* depois de
+trocar alíquotas, *Recalcular C190* depois de corrigir pelo XML —, sem ir ao
+menu.
 
 ## 3. Como usar
 
@@ -139,7 +163,7 @@ correspondente.
 > **Em desenvolvimento.** Falta o ensaio no PVA do arquivo gerado pela tela
 > e um mês real com CT-e — ver ROADMAP 4.4.
 
-**Ferramentas → Gerais → Gerar SPED a partir dos XMLs…** gera o **EFD
+**Ferramentas → Gerar → SPED a partir dos XMLs…** gera o **EFD
 ICMS/IPI** e o **EFD Contribuições** de um período só com os XMLs de
 entradas e saídas (NF-e 55, NFC-e 65, CT-e 57 e eventos de cancelamento).
 Funciona sem arquivo aberto.
@@ -165,9 +189,30 @@ por empresa, gravada na pasta de dados (`memoria/<CNPJ>.json`):
 Limites: os textos complementares (C110/C195) não são montados; o saldo
 credor anterior do ICMS vem da memória ou do campo da tela.
 
+### ICMS próprio nas compras com ST
+
+*Ferramentas → Corrigir → Zerar ICMS próprio das compras com ST* trata as entradas com
+CFOP 1403/2403 e CST x10/x70 que trazem base, alíquota ou valor de ICMS: o
+ICMS dessa mercadoria já foi retido por substituição tributária, e crédito
+não cabe. A função mostra quantos itens e quanto de crédito; confirmado,
+zera os três campos, refaz o C190 das notas, os totais de ICMS do C100 e o
+crédito do E110.
+
+### Conferir itens com XMLs e corrigir
+
+*Conferir itens com XMLs* (ICMS/IPI ou PIS/COFINS) compara cada C170 com o
+item da nota pelo número do item. O *Valor XML* do VL_ITEM segue o jeito
+como o ERP escriturou a nota: com ou sem despesas acessórias, IPI, ICMS-ST
+(com o FCP-ST) e desconto — o programa reconhece a composição nota a nota.
+O botão **Corrigir pelo XML** grava no C170 o valor do XML das linhas
+selecionadas (ou de todas): valores, bases, alíquotas, impostos e o CFOP
+quando a correlação aponta um só. CST não é corrigido. O aviso do
+resultado traz os botões *Recalcular C190…* e *Diagnóstico*, para refazer
+o analítico e conferir o que a soma não fechar.
+
 ### Regenerar entradas pelos XMLs
 
-*Gerais → Regenerar entradas pelos XMLs* refaz as notas de entrada do arquivo
+*Ferramentas → Gerar → Regenerar entradas pelos XMLs* refaz as notas de entrada do arquivo
 aberto (C100, C170 e C190) a partir dos XMLs, de uma pasta ou do banco do
 ERP. Quantidades, valores e impostos vêm do XML; **como** a empresa
 escritura cada produto (código próprio, CFOP de entrada, CST, crédito,
@@ -185,7 +230,7 @@ Depois, recalcule a apuração (*Recalcular apuração do ICMS (E110)* ou
 
 ### Integração com o ERP (Firebird, SQL Server, MySQL, DBF)
 
-*Gerais → Sistemas ERP* liga o SPED Tables ao banco do sistema de gestão
+*Ferramentas → Configurações → Sistemas ERP* liga o SPED Tables ao banco do sistema de gestão
 da empresa, **só para leitura**. A configuração tem duas partes:
 
 1. **Sistema (perfil do ERP):** escolha o tipo de banco e, em cada aba
@@ -204,7 +249,7 @@ da empresa, **só para leitura**. A configuração tem duas partes:
 
 Com a conexão pronta:
 
-- *Gerais → Atualizar 0200 (produtos) pelo ERP* e *Atualizar 0150
+- *Ferramentas → Corrigir → Atualizar 0200 (produtos) pelo ERP* e *Atualizar 0150
   (participantes) pelo ERP* mostram o que mudaria, campo a campo, antes de
   gravar;
 - *Importar inventário* ganha o botão *Ler do ERP…* (estoque na data);
@@ -230,7 +275,7 @@ use `"trabalhadores": N` no `configuracao.json` da pasta de dados.
 > pelo PVA (faltam os XMLs de um mês real), então ela não entra numa versão de
 > release até isso acontecer — ver ROADMAP.
 
-**Ferramentas → EFD Contribuições → Importar XMLs → consolidar C175…** lê uma pasta de XMLs de
+**Ferramentas → Gerar → C175 consolidado pelos XMLs…** lê uma pasta de XMLs de
 NFC-e (modelo 65) e gera os registros **C175** dos documentos correspondentes:
 
 - **Vínculo** XML ↔ C100 pelas tags **mod + série + nNF** (lidas de dentro de
@@ -249,7 +294,7 @@ do fornecedor e a entrada do comprador, mas a ordem do item se mantém).
 
 ### Trocar alíquotas de PIS/COFINS
 
-**Ferramentas → EFD Contribuições → Trocar alíquotas PIS/COFINS…** substitui as
+**Ferramentas → Corrigir → Trocar alíquotas PIS/COFINS…** substitui as
 alíquotas de PIS e/ou COFINS e recalcula **VL_PIS** e **VL_COFINS** (base ×
 alíquota ÷ 100), atualizando os totais dos **C100**. Um seletor de **escopo**
 define onde aplicar:
@@ -267,7 +312,7 @@ são corrigidos, deixando os demais intactos.
 
 ### Datas e extemporâneos pelos XMLs
 
-**Ferramentas → Gerais → Datas e extemporâneos pelos XMLs…** confere a
+**Ferramentas → Corrigir → Datas e extemporâneos pelos XMLs…** confere a
 `DT_DOC` (e, na saída, a `DT_E_S`) de cada C100 com o XML de mesma chave —
 a pasta escolhida entra com as subpastas. A NFC-e emitida em contingência e
 autorizada no mês seguinte é o caso típico: o ERP a escritura no mês da
@@ -288,7 +333,7 @@ que é apuração e o que é extra-apuração — confira o E116.
 
 ### Alterar datas de emissão/saída (C100)
 
-**Ferramentas → Gerais → Alterar datas emissão/saída (C100)…** seleciona documentos por
+**Ferramentas → Corrigir → Alterar datas emissão/saída (C100)…** seleciona documentos por
 um **intervalo de datas** (avaliado sobre a data de entrada/saída *DT_E_S* ou a
 de emissão *DT_DOC*), podendo restringir por **tipo de movimento** (entrada/saída)
 e por **modelo** (campo *Somente modelos*, ex.: `55, 65`; em branco, todos). Nos
@@ -296,9 +341,9 @@ documentos filtrados, altera a **DT_DOC**, a **DT_E_S** ou **ambas**, para uma
 **data específica** (DDMMAAAA) ou **deslocando N dias** (aceita negativos, ex.:
 `-3`). As datas seguem o formato do arquivo (DDMMAAAA).
 
-### Conferir entradas (NF-e modelo 55) com os XMLs
+### Conferir itens (NF-e modelo 55) com os XMLs
 
-**Ferramentas → Gerais → Conferir entradas (NF-e 55) com XMLs…** compara cada item dos
+**Ferramentas → Conferir → Itens com XMLs…** compara cada item dos
 XMLs de compra com o **C170** correspondente do SPED, usando o mesmo motor de
 vínculo (`xml_fiscal.vincular`) — aqui no nível de item, pela chave
 **mod + série + nNF + nItem**.
@@ -337,7 +382,7 @@ compra lançado como **1102** é apontado, indicando que o correto seria **1401*
 ou **1403**.
 
 A lista de correlações válidas é **editável na interface** em **Ferramentas →
-Gerais → Correlações de CFOP (entradas)…**: uma tabela *CFOP de saída → CFOPs de entrada
+Configurações → Correlações de CFOP (entradas)…**: uma tabela *CFOP de saída → CFOPs de entrada
 válidos* (separados por vírgula), com botões para adicionar, remover, restaurar o
 padrão e salvar. As correlações ficam em **`correlacoes_cfop.json`**, na pasta
 de dados (ver 3A); o aplicativo já vem com um conjunto inicial que cobre os casos mais
@@ -345,7 +390,7 @@ comuns e pode ser ajustado à realidade da empresa.
 
 ### Conferir C190 (ICMS) com os XMLs
 
-**Ferramentas → EFD ICMS/IPI → Conferir C190 (ICMS) com XMLs…** compara o
+**Ferramentas → Conferir → C190 (ICMS) com XMLs…** compara o
 analítico **C190** com os XMLs, tanto nas entradas quanto nas saídas.
 
 O ponto delicado é o agrupamento: numa compra, o CFOP do XML é o de **saída do
@@ -375,7 +420,7 @@ documentos com itens.
 
 ### Recalcular ICMS dos itens (C170)
 
-**Ferramentas → EFD ICMS/IPI → Recalcular ICMS dos itens…** fecha o fluxo de
+**Ferramentas → Recalcular → ICMS dos itens…** fecha o fluxo de
 correção pelo **Modo Relatório**: você corrige alíquota, base ou CST direto na
 grade — que já grava no registro — e pede o recálculo para os campos derivados
 voltarem a bater.
@@ -416,6 +461,22 @@ correta dentro do C100 (entre os itens e os C195).
 
 Assim, depois de alterar qualquer C170, basta um clique para deixar o C190
 coerente, sem somar grupo por grupo na mão.
+
+### Fundir registros de chave repetida (C175, C181, C190, D190…)
+
+Dois registros de totais com a mesma chave no mesmo documento — dois C175
+da mesma NFC-e com o mesmo CFOP, CST e alíquotas, por exemplo — o PVA
+recusa. **Ferramentas → Corrigir → Fundir registros de chave repetida…**
+mostra cada grupo e funde os que podem ser fundidos: o primeiro fica com a
+soma dos valores e das quantidades, os outros saem, e os totais do
+documento e da apuração não mudam. A chave é a que o leiaute declara para
+cada registro; alíquota escrita de outro jeito (`1,65` e `1,6500`) conta
+como a mesma.
+
+Não é fundido, e a prévia diz por quê: registro que não é de totais (dois
+C170 com o mesmo `NUM_ITEM` são itens mal numerados — corrija na grade),
+registro com filhos e repetidos com texto complementar diferente
+(`INFO_COMPL`). O *Diagnóstico* aponta para esta função.
 
 ### Contagens / totais (C990, 9900, 9990, 9999)
 
@@ -462,7 +523,7 @@ documento; nas demais (ex.: **0200**, **H010**) pesquisa em **todas as colunas**
 útil para localizar um item, um produto ou um saldo entre milhares de linhas.
 
 ### Revisão de erros
-**Ferramentas → Gerais → Revisar erros…** abre um **painel de resumo**: uma linha por
+O botão **Revisar ocorrências…** do Diagnóstico abre um **painel de resumo**: uma linha por
 verificação, com quantos erros ela achou e o **atalho para a função que
 corrige**. Verificação sem correção automática traz *Ver ocorrências*, que
 abre a lista item a item para corrigir na grade.
@@ -509,7 +570,7 @@ As regras implementadas hoje:
 13. **M400/M800 sem lastro nos documentos** — receita isenta declarada num
     CST que nenhum documento usa. Para o PVA, o registro não deveria existir.
 14. **Registro 0900 ausente fora do prazo** — escrituração sem o 0900 cujo
-    prazo de entrega, na tabela do PVA, já venceu.
+    prazo de entrega, na tabela da base de referência, já venceu.
 
 A revisão **não substitui o PVA** — é uma triagem rápida antes dele.
 
@@ -522,22 +583,24 @@ poucas linhas.
 
 ### Verificar CST por NCM — as duas tabelas de monofásico
 
-O PVA distribui **duas** listas de produtos monofásicos, e o programa carrega
-as duas:
+O PVA distribui **duas** listas de produtos monofásicos, e a base de
+referência guarda as duas:
 
-| Arquivo na pasta do PVA | Tabela | O que traz |
+| Tabela na base | Tabela do guia | O que traz |
 |---|---|---|
 | `PROD_MONO_ALIQ_UNID` | 4.3.11 | combustíveis, bebidas frias (alíquota por unidade) |
 | `PROD_MONO_ALIQ_DIFER` | 4.3.10 | perfumaria, higiene pessoal, medicamentos, veículos, autopeças (Lei 10.147/2000) |
 
-Apontar a **pasta** das tabelas resolve as duas automaticamente; os campos de
-caminho direto existem para quando os arquivos estão fora dela. Se a 4.3.10
-não for encontrada, o programa avisa — sem ela, produtos como o sabonete
-(NCM `34011190`) passam despercebidos enquanto o PVA os acusa.
+Não há pasta nem arquivo para apontar: as tabelas vêm da **base de
+referência** (ver *Base de referência*, adiante): o consolidador as extrai
+das pastas dos PVAs para `base/`, e o programa leva a base já compilada. Sem
+as tabelas na base, a verificação diz que não
+tem com o que comparar — sem a 4.3.10, produtos como o sabonete (NCM
+`34011190`) passariam despercebidos enquanto o PVA os acusa.
 
 ### Corrigir CST de entrada pelo NCM (EFD Contribuições)
 
-No diálogo **Ferramentas → EFD Contribuições → Verificar CST por NCM (tabelas
+No diálogo **Ferramentas → Conferir → CST por NCM (tabelas
 RFB)…**, o botão **Corrigir entradas sem crédito** retira o crédito dos itens
 de **entrada** cujo NCM não o admite — monofásicos e alíquota zero não geram
 crédito na revenda.
@@ -557,7 +620,7 @@ de rotinas por regime, com a mesma implementação.
 
 ### Recalcular C190 com redução de base zerada (em massa)
 
-**Ferramentas → EFD ICMS/IPI → Recalcular C190 (analítico) em massa…**
+**Ferramentas → Recalcular → C190 (analítico) em massa…**
 refaz o analítico dos documentos em que algum C190 tem CST terminado em **20**
 ou **70** e o `VL_RED_BC` em branco — erro que o PVA acusa. Só esses documentos
 são tocados: refazer o analítico que já está certo seria substituir registro
@@ -570,15 +633,15 @@ tem **base de PIS/COFINS**, ela é usada no lugar para achar a parcela reduzida
 das duas bases, a redução fica em zero e o caso é apontado para conferência
 manual, em vez de chutado.
 
-O mesmo conserto é oferecido como botão dentro de **Revisar erros**, junto da
-lista que o apontou.
+O mesmo conserto é oferecido como botão dentro do **Diagnóstico**, junto do
+grupo que o apontou.
 
 ### Redução de base do C190 pelos XMLs de compra
 
 Na **entrada com CST 070** o ICMS veio por substituição e a empresa não
 escritura base própria: a redução de base não sai do arquivo, e o
 recálculo em massa a deixa zerada (o PVA acusa `MSG_CST_ICMS_RED_BC`).
-**Ferramentas → EFD ICMS/IPI → Redução de base do C190 pelos XMLs de
+**Ferramentas → Corrigir → Redução de base do C190 pelos XMLs de
 compra…** lê os XMLs das compras, casa cada C170 com o item do XML pelo
 número (conferindo o valor) e grava no C190 o que não foi tributado: a
 operação menos a **base reduzida** do XML ou, quando a base vem zerada, a
@@ -593,8 +656,8 @@ quando um único C100 serve.
 > ensaio no PVA — ver ROADMAP.
 
 A NFC-e não tem C170 no EFD ICMS/IPI, e sem itens o recálculo em massa não
-tinha de onde refazer o analítico. O fluxo, em **Ferramentas → EFD
-ICMS/IPI**, tem três passos:
+tinha de onde refazer o analítico. O fluxo, em **Ferramentas → Gerar** e **Recalcular**, tem três passos
+(o aviso de cada um traz o botão do seguinte):
 
 1. **Gerar C170 fictícios da NFC-e (65) com XMLs…** — escolha a pasta com os
    XMLs das NFC-e (só ela, sem subpastas). Cada NFC-e do arquivo casada com o
@@ -613,7 +676,7 @@ antes de gravar.
 
 ### Itens do 0200 sem referência
 
-**Ferramentas → Gerais → Itens do 0200 sem referência…** aplica a regra do Guia
+**Ferramentas → Conferir → Itens do 0200 sem referência…** aplica a regra do Guia
 Prático: *"Não informar item, se não referenciado em pelo menos um dos demais
 blocos."* Varre o arquivo inteiro atrás de cada código do cadastro, lista os que
 ninguém cita e remove sob confirmação.
@@ -636,7 +699,7 @@ errar, feche o arquivo sem salvar.
 
 ### Preencher conta contábil (COD_CTA)
 
-**Ferramentas → Gerais → Preencher conta contábil (COD_CTA)…** resolve o erro
+**Ferramentas → Corrigir → Preencher conta contábil (COD_CTA)…** resolve o erro
 *"O campo é obrigatório para EFD ICMS/IPI com Perfil igual a 'A' ou 'B'"* no
 **H010** — e em qualquer outro registro que tenha o campo.
 
@@ -656,7 +719,7 @@ aparecem num seletor.
 
 ### Recalcular o bloco M (EFD Contribuições)
 
-**Ferramentas → EFD Contribuições → Recalcular bloco M (apuração)…** refaz a
+**Ferramentas → Recalcular → Bloco M (apuração PIS/COFINS)…** refaz a
 apuração a partir dos documentos: as contribuições (M200/M210 e
 M600/M610) pelas receitas tributadas de saída, e os **créditos** (M100/M105 e
 M500/M505) pelas entradas — um grupo por alíquota, com a natureza da base
@@ -669,7 +732,7 @@ documentos. Num arquivo real eram 8 erros, todos resolvidos pelo recálculo.
 
 Quando a divisão do crédito não sai dos documentos, ele **não mexe** e diz o
 motivo: incidência não exclusivamente não-cumulativa, ajustes de crédito
-(M110/M115/M510/M515), crédito fora do bloco C (D101, F100…) ou tabela do PVA
+(M110/M115/M510/M515), crédito fora do bloco C (D101, F100…) ou tabela da base
 ausente.
 
 O **regime** vem do **0110 (COD_INC_TRIB)**: no **cumulativo** a contribuição
@@ -682,7 +745,7 @@ não são usados nem criados; no **não-cumulativo** vai para os campos *NC*
 Ao salvar, a janela de confirmação oferece **Abrir no PVA e importar**: o
 programa abre o PVA do leiaute (ou traz para a frente o que já estiver
 aberto), manda o Ctrl+I que abre a importação e cola ali o caminho do arquivo
-recém-salvo. Também está em **Ferramentas → Gerais → Abrir no PVA**.
+recém-salvo. Também está no botão **Abrir no PVA** da barra.
 
 O PVA não recebe arquivo por linha de comando — o caminho usado é o acelerador
 que ele mesmo declara no menu. Se alguma coisa sair do lugar (o PVA demorando
@@ -758,14 +821,18 @@ Correção manual na grade                 26   campo obrigatório em branco
 
 Abaixo, o detalhe por registro e campo; duplo-clique leva ao registro. Se o
 arquivo estiver limpo, o painel não aparece — só uma mensagem na barra de
-status. Também dá para chamá-lo a qualquer momento em **Ferramentas → Gerais
-→ Diagnóstico do arquivo**.
+status. Também dá para chamá-lo a qualquer momento no botão **Diagnóstico** da
+barra.
 
 **O que ele verifica com fidelidade:** tudo o que o PVA declara no descritor —
 quantidade de campos do registro, obrigatoriedade de campo, tipo, tamanho,
 casas decimais, enumerações, tabelas externas, referências entre registros
 (`COD_ITEM` → 0200, `COD_PART` → 0150, `UNID` → 0190, `COD_CTA` → 0500) e
-bloco aberto sem encerramento.
+bloco aberto sem encerramento. Tudo isso pela estrutura da **versão do
+leiaute que o próprio arquivo declara** (`COD_VER` do 0000), não pela mais
+recente: um arquivo de 2025 é conferido com o leiaute de 2025. Arquivo de
+versão que a base não guarda recebe um **aviso** ("versão fora da base de
+referência") e não é cobrado por estrutura de outra versão.
 
 **As regras do guia prático, com as condições do PVA:** CFOP × operação,
 combinação CST/CFOP/alíquota entre C170 e C190, somas do C190 e do C100
@@ -810,14 +877,16 @@ contexto) abre a página do registro inteiro, rolada até a coluna em que
 você está.
 
 Os textos são dos guias oficiais — *Guia Prático EFD ICMS/IPI 3.2.4* e *EFD
-Contribuições 1.35* —, extraídos para `recursos/` por
-`ferramentas/extrair_guias.py`. Saiu guia novo: rode a ferramenta com o PDF
-e gere o executável de novo.
+Contribuições 1.35* —, extraídos para `base/guias/` e compilados na base de
+referência. Saiu guia novo: `py -m consolidador guia ICMS|CONTRIB arquivo.pdf`
+— que registra o guia no manifesto e **avança a versão da base**, como o
+`extrair` — e gere o executável de novo (ou publique o pacote da base, ver
+*Base de referência*).
 
 ### Crédito em CFOP que não dá direito (EFD Contribuições)
 
 Entre as rotinas de conferência de PIS/COFINS há uma que usa a tabela 4.3.7
-do PVA (`CFOP_CREDITO`, 89 CFOP de entrada que geram crédito): CST de
+(`CFOP_CREDITO`, 89 CFOP de entrada que geram crédito): CST de
 creditamento num CFOP fora dela é crédito indevido. Num arquivo real de
 supermercado eram 20 ocorrências, todas em CFOP 1910 (bonificação, doação ou
 brinde) e 1949 (outra entrada não especificada) — mercadoria que entrou sem
@@ -827,9 +896,11 @@ custo não gera crédito. A correção troca o CST e zera base, alíquota e valo
 
 Cada PVA embarca um **descritor de validação** — um XML, dentro do próprio
 `.jar`, com tipo, tamanho, casas decimais, obrigatoriedade, enumerações e
-referências entre registros, por versão de leiaute. O programa lê esse
-descritor e valida **na mesma granularidade**: por registro e campo, não por
-nome de campo.
+referências entre registros, por versão de leiaute. O consolidador extrai esse
+descritor para a **base de referência** (só os fatos, em texto), e o programa
+valida **na mesma granularidade**: por registro e campo, não por nome de
+campo. Quem usa o programa **não precisa ter o PVA instalado** — e um PVA
+antigo na máquina não muda o resultado.
 
 Isso corrige um excesso e uma falta:
 
@@ -848,25 +919,26 @@ adivinhar produziria divergência silenciosa com o validador oficial.
 Os nomes de campo do descritor nem sempre são os do guia (`ENDERECO` no
 lugar de `END`, `VL_OPER` no de `VL_OPR`): o programa os alinha **pela
 posição** no registro, e um teste confere que o leiaute dele tem a mesma
-estrutura do descritor instalado.
+estrutura do descritor da base.
 
-### Validação contra as tabelas dos PVAs
+### Validação contra as tabelas oficiais
 
-O **Diagnóstico** (e a tela *Corrigir campos pelo leiaute*, aberta por ele) usa, quando os PVAs
-estão instalados, **as mesmas tabelas que o fisco aplica** — as dos programas
-validadores do EFD ICMS/IPI e do EFD Contribuições. Assim a lista de códigos
-válidos acompanha a atualização do PVA sem depender de o programa ser
-atualizado.
+O **Diagnóstico** (e a tela *Corrigir campos pelo leiaute*, aberta por ele) usa
+**as mesmas tabelas que o fisco aplica** — as dos programas validadores do EFD
+ICMS/IPI e do EFD Contribuições, guardadas na base de referência. Assim a
+lista de códigos válidos acompanha a atualização do PVA quando se importa uma
+base mais nova, sem depender de o programa ser atualizado.
 
 Campos cobertos hoje: `CFOP`, `CST_ICMS`, `CST_IPI`, `CST_PIS`, `CST_COFINS`,
 `COD_MOD`, `COD_SIT`, `IND_EMIT`, `COD_MUN`, `COD_PAIS`, `CEST`, `COD_GEN`,
 `TP_CT-e`, `COD_AJ_APUR`, `COD_REC`, `COD_INF_ADIC` (ICMS/IPI) e `NAT_BC_CRED`,
 `COD_CRED`, `COD_AJ`, `IND_NAT_PROC` (Contribuições) — 16 e 12 domínios,
-respectivamente, lidos de 268 tabelas.
+respectivamente, lidos de 267 tabelas.
 
-O diálogo diz **de onde veio** cada verificação: quais campos foram validados
-por tabela oficial e quais tabelas não foram encontradas. Sem os PVAs
-instalados, valem as regras embutidas e o programa avisa.
+O diálogo diz **de onde veio** cada verificação: a versão da base de
+referência, quais campos foram validados por tabela oficial e quais tabelas
+não foram encontradas. Sem a base (executável danificado) ou com a versão do
+arquivo fora dela, valem as regras embutidas e o programa avisa.
 
 Três cuidados embutidos: a **vigência** de cada código é respeitada (a tabela
 única de CST do ICMS foi revogada em 2012 — hoje é origem + situação); os
@@ -907,7 +979,7 @@ informação fiscal, não formatação.
 
 ### Preencher COD_GEN pelo NCM (0200)
 
-**Ferramentas → EFD ICMS/IPI → Preencher COD_GEN pelo NCM (0200)…** preenche o
+**Ferramentas → Corrigir → Preencher COD_GEN pelo NCM (0200)…** preenche o
 gênero do item a partir do próprio NCM — são os **dois primeiros dígitos**
 (Tabela 4.2.1). Como é derivável, não depende de a planilha trazer a coluna, e
 não erra o zero à esquerda: o NCM é normalizado antes do corte.
@@ -965,7 +1037,7 @@ confrontado com a saída do mesmo relatório no banco.
 
 Como as NFC-e (modelo 65) são escrituradas de forma **consolidada** em C175 (sem
 itens), validar valor a valor exige um artifício. O fluxo, em **Ferramentas**
-(EFD Contribuições), tem três passos:
+(EFD Contribuições: *Conferir* e *Gerar*), tem três passos:
 
 1. **Validar C175 (modelo 65) com XMLs** — importa os XMLs das NFC-e e cria, em
    cada C100 modelo 65, registros **C170 fictícios** (um por item do XML), com
@@ -981,7 +1053,7 @@ itens), validar valor a valor exige um artifício. O fluxo, em **Ferramentas**
 
 ### Importar inventário (bloco H) de planilha
 
-**Ferramentas → EFD ICMS/IPI → Importar inventário (bloco H) de planilha…** lê
+**Ferramentas → Corrigir → Importar inventário (bloco H) de planilha ou ERP…** lê
 uma planilha **XLSX** ou **CSV** com o inventário e gera os registros do bloco H:
 **H001** (com movimento), **H005** (data, motivo e valor total), um **H010** por
 item — com unidade, quantidade, valor unitário, valor total, indicador de
@@ -1032,20 +1104,23 @@ descrição, unidade, tipo e NCM da planilha) e os existentes **não são
 duplicados**; unidades ainda não declaradas geram registros **0190**.
 
 ### Verificar CST por NCM (tabelas da RFB)
-**Ferramentas → EFD Contribuições → Verificar CST por NCM (tabelas RFB)…**
+**Ferramentas → Conferir → CST por NCM (tabelas RFB)…**
 classifica cada item **C170** pelo NCM e aponta CST de PIS/COFINS incoerentes,
 separando entradas e saídas. A classificação usa as tabelas oficiais do
 EFD-Contribuições: **produtos de alíquota zero** (CST 06) e **monofásicos**.
 
-As tabelas ficam na pasta de recursos do PVA
-(`C:\Arquivos de Programas RFB\Programas SPED\EFD-Contribuicoes\recursos\tabelas`);
-o programa localiza automaticamente a **maior versão** de cada uma (nomes como
-`…$SPEDPISCOFINS_PROD_ALIQ_ZERO$48$166`). Se o padrão de nome mudar, é possível
-**apontar o caminho de cada arquivo** manualmente no diálogo. A verificação
-respeita a **vigência** (DT_INI/DT_FIM) na data de referência — por padrão a
-DT_FIN do arquivo — e as exceções (NCM_EX); o **gênero** do item vem dos dois
-primeiros dígitos do NCM. Opcionalmente, a **Tabela NCM Vigente** (XLSX do portal
-Siscomex) pode ser informada para validar os NCMs.
+As tabelas vêm da **base de referência** (ver adiante): não há pasta nem
+arquivo para configurar, e o diálogo mostra a versão de cada tabela usada.
+A verificação respeita a **vigência** (DT_INI/DT_FIM) na data de referência —
+por padrão a DT_FIN do arquivo — e as exceções (NCM_EX); o **gênero** do item
+vem dos dois primeiros dígitos do NCM.
+
+**Tabela NCM Vigente (Siscomex).** Antes dava para apontar a planilha XLSX
+nesta tela; agora ela entra na base, entregue ao consolidador
+(`py -m consolidador extrair --ncm planilha.xlsx`). **A base entregue com
+esta versão (`2026.10.1`) foi extraída sem ela**, então a conferência de NCM
+vigente está **desligada** até alguém extrair de novo com `--ncm` e publicar
+a base.
 
 Exemplos de achados típicos: entrada de produto **monofásico** (bebidas) com CST
 50 — crédito indevido, quando o correto seria 73/98 — ou produto de **alíquota
@@ -1115,7 +1190,7 @@ clientes.
 
 ### Configuração por empresa e rotinas de correção
 
-**Ferramentas → Gerais → Empresa e rotinas…** abre o cadastro da empresa do
+**Ferramentas → Corrigir → Empresa e rotinas…** abre o cadastro da empresa do
 arquivo (identificada pelo **CNPJ do registro 0000**) e as rotinas que
 dependem dele — nos dois leiautes.
 
@@ -1200,27 +1275,73 @@ da barra de ferramentas alterna entre os dois — o rótulo anuncia o destino
 (*Tema escuro* quando você está no claro) — e a escolha é **gravada entre
 sessões**, por máquina.
 
-O acento é o **cobre**, o mesmo do Backup Maximus: os dois aplicativos são da
-mesma família de ferramentas. As cores de significado são separadas do acento —
+O acento é o **vinho** (`#7D0E0E`) da assinatura visual compartilhada pelas
+ferramentas da família. As cores de significado são separadas do acento —
 verde para "confere", âmbar para "atenção", vermelho para "divergência", azul
 para a coluna **REG** (a chave estrutural) —, de modo que a cor de ação nunca se
-confunde com a cor de estado. No tema escuro elas não são invertidas
-automaticamente: sobem de saturação para continuar legíveis sobre fundo escuro.
+confunde com a cor de estado; o erro vem sempre com texto, nunca só pela cor.
+O foco do teclado tem borda própria de 2 px em todo campo, botão e grade, e a
+célula selecionada ganha uma linha de acento além do fundo suave. No tema
+escuro as cores não são invertidas automaticamente: sobem de saturação para
+continuar legíveis sobre fundo escuro.
 
 A paleta e a folha de estilo ficam em **`sped_tables/interface/tema.py`**; os ícones do "✓" e da seta
 dos combos são desenhados em tempo de execução na cor da paleta ativa
 (**`interface/icones.py`**), porque o Qt Style Sheets não aceita imagem embutida.
 
+### Base de referência
+
+Tudo o que o programa sabe do SPED fora do próprio código — a estrutura do
+leiaute de cada versão, as tabelas oficiais (CST, CFOP, códigos de ajuste e de
+receita por UF, naturezas da receita, monofásicos e alíquota zero…) e os
+guias práticos — vem de uma **base de referência**, compilada quando o
+programa é gerado e **embutida no executável**. O PVA instalado na máquina
+**não é lido** para validar, diagnosticar nem corrigir: com PVA antigo, ou sem
+PVA nenhum, a pré-validação dá o mesmo resultado. A instalação só é usada pelo
+**Abrir no PVA**.
+
+- **Ver a versão em uso.** *Ferramentas → Configurações → Base de
+  referência…* mostra a versão (`AAAA.MM.n`), a data, de onde ela veio
+  (embutida no executável ou importada), os leiautes com as versões de cada
+  um que ela guarda (hoje ICMS/IPI 015 a 020 e Contribuições 006) e a
+  impressão digital (SHA-256).
+- **Atualizar sem trocar de programa.** Quando o PVA muda, quem compila o
+  programa refaz a base e publica um pacote `base_referencia-AAAA.MM.n.zip`.
+  Na mesma tela, *Importar base mais nova…* abre o pacote e mostra versão,
+  data e impressão digital — compare com a publicada — antes de importar. O
+  programa **recusa, dizendo o motivo**, o pacote cuja impressão digital não
+  confere com a do manifesto (adulterado ou corrompido), o que é igual ou mais
+  antigo que a base em uso e o feito para um programa mais novo ("atualize o
+  programa"). Vale a mais nova entre a embutida e a importada; a importada
+  fica na pasta de dados e já vale no próximo diagnóstico.
+- **Cada arquivo, pela sua versão.** O `COD_VER` do 0000 escolhe a estrutura
+  do leiaute. A base guarda as versões com vigência nos últimos 5 anos mais
+  a atual; arquivo de versão mais antiga é avisado como "fora da base" e as
+  verificações que dependem do leiaute se abstêm.
+- **Se a base faltar** (executável danificado), o programa abre e avisa; as
+  verificações que dependem do leiaute e das tabelas oficiais ficam
+  desligadas, e o Diagnóstico diz isso em vez de dizer "nenhum problema".
+- **Para quem compila o programa.** O pacote `consolidador/` roda na
+  máquina de quem gera o executável (nunca na de quem o usa):
+  `py -m consolidador extrair` lê os PVAs instalados nela (e, com `--ncm`, a
+  planilha de NCM vigente do Siscomex — a base `2026.10.1` foi extraída sem
+  ela) e regrava as fontes em `base/`, em texto, para revisar com
+  `git diff base/`; `guia` extrai um guia prático de um PDF e avança a
+  versão da base no manifesto (sem isso o pacote sairia com o mesmo número
+  de uma base diferente); `compilar` gera o banco; `publicar` gera o pacote
+  para importação. O `ferramentas/gerar_executavel.py` compila a base antes do
+  PyInstaller.
+
 ### Pasta dos PVAs
 
-As verificações que dependem das tabelas oficiais (validação de campos,
-crédito por CFOP, prazo do 0900, descritor do PVA) e o **Abrir no PVA**
-precisam saber onde os PVAs estão instalados. O programa procura sozinho na
-pasta padrão da Receita (`C:\Arquivos de Programas RFB\Programas SPED`) e
-nas de *Arquivos de Programas*. Se a instalação estiver noutro lugar, aponte
-em **Ferramentas → Gerais → Pasta dos PVAs…** — a pasta certa é a que contém
-`Fiscal` e/ou `EFD-Contribuicoes`. A escolha fica gravada; para voltar à
-detecção automática, escolha a pasta padrão de novo.
+Só o **Abrir no PVA** precisa saber onde os PVAs estão instalados — as
+verificações não leem a instalação (ver *Base de referência*). O programa
+procura sozinho na pasta padrão da Receita
+(`C:\Arquivos de Programas RFB\Programas SPED`) e nas de *Arquivos de
+Programas*. Se a instalação estiver noutro lugar, aponte em **Ferramentas →
+Configurações → Pasta dos PVAs (para o Abrir no PVA)…** — a pasta certa é a
+que contém `Fiscal` e/ou `EFD-Contribuicoes`. A escolha fica gravada; para
+voltar à detecção automática, escolha a pasta padrão de novo.
 
 ### Quando algo dá errado
 
@@ -1243,7 +1364,8 @@ e gravar ao lado do programa perderia tudo a cada fechamento.
 |---|---|
 | `empresas.json` | Cadastro das empresas (regime, alíquotas). |
 | `correlacoes_cfop.json` | Correlações de CFOP saída → entrada. |
-| `configuracao.json` | Pasta dos PVAs e caminhos das tabelas da RFB escolhidos. |
+| `configuracao.json` | A pasta dos PVAs escolhida (para o *Abrir no PVA*) e as preferências. |
+| `base_referencia.db` | A base de referência importada, quando houver (vale se for mais nova que a do executável). |
 | `arquivos\` | O acervo: uma cópia de cada SPED por empresa e período. |
 | `logs\` | Registro de erros (`sped_tables.log`) e de quedas nativas. |
 | `recuperacao\` | Cópias de emergência gravadas quando um erro acontece. |
@@ -1255,7 +1377,7 @@ para lá os padrões que vieram no pacote (sem sobrescrever nada que já seja
 seu) e oferece criar um **atalho na área de trabalho**.
 
 Para conferir se o executável está inteiro — tradução, ícone, pasta de
-dados, tabelas do PVA, registro de erros —, rode
+dados, base de referência, registro de erros —, rode
 `"SPED Tables.exe" --autoteste relatorio.json` (com um SPED no fim, testa
 também abrir e salvar). Ele trabalha numa pasta temporária, sem tocar no
 seu cadastro, e grava o resultado no `relatorio.json`.
@@ -1265,7 +1387,7 @@ Duas variáveis de ambiente mudam os caminhos:
 | Variável | Efeito |
 |---|---|
 | `SPED_TABLES_DADOS` | Usa outra pasta de dados (um disco de rede, por exemplo). |
-| `SPED_TABLES_PVA` | Força a raiz das instalações dos PVAs. |
+| `SPED_TABLES_PVA` | Força a raiz das instalações dos PVAs (só o *Abrir no PVA* a usa). |
 | `SPED_TABLES_BARRA_NATIVA=1` | Usa a barra de título do Windows. |
 
 ## 4. Estrutura do projeto
@@ -1278,13 +1400,15 @@ completa está em [ARQUITETURA.md](ARQUITETURA.md).
 | `sped_editor.py` | Lançador: `python sped_editor.py [arquivo.txt]`. |
 | `sped_tables/dominio/` | O documento SPED e as regras fiscais (sem tela, sem disco, sem PVA). |
 | `sped_tables/aplicacao/` | Casos de uso: o arquivo aberto (abrir/salvar/fechar), mandar ao PVA, a montagem. |
-| `sped_tables/infra/` | Configuração, pasta de dados, tabelas e automação do PVA, acervo, registro de falhas. |
+| `sped_tables/infra/` | Configuração, pasta de dados, base de referência e suas tabelas, automação do PVA, acervo, registro de falhas. |
 | `sped_tables/interface/` | A aplicação PyQt6: janela, tabela de ações, controladores, grades, diálogos, tema. |
+| `consolidador/` | `py -m consolidador extrair\|guia\|compilar\|publicar`: lê os PVAs e os guias na máquina de **quem compila** e regrava `base/`. O `sped_tables` não o importa. |
+| `base/` | As fontes da base de referência, em texto e versionadas: manifesto, leiaute por versão, tabelas oficiais, guias práticos e, quando extraído com `--ncm`, o NCM vigente (a `2026.10.1` não o traz). |
+| `recursos/base_referencia.db` | A base compilada de `base/` (o programa a recompila sozinho; não vai para o git); vai junto no executável. |
 | `tests/` | Suíte automática (ver [TESTES.md](TESTES.md)). |
 | `SPED Tables.spec` | Empacotamento (PyInstaller, arquivo único). |
 | `icon.ico`, `correlacoes_cfop.json` | Recursos que vão junto no executável. |
-| `recursos/guia_*.json` | Os guias práticos extraídos (ajuda F1 e texto das regras); vão junto no executável. |
-| `ferramentas/` | `extrair_guias.py` (PDF do guia → `recursos/`), `cobertura_guias.py` (gera o `COBERTURA.md`), `validar_no_pva.py` (roteiro 2.1 no PVA de ensaio). |
+| `ferramentas/` | `gerar_executavel.py` (executável, com a base compilada), `cobertura_guias.py` (gera o `COBERTURA.md`), `validar_no_pva.py` (roteiro 2.1 no PVA de ensaio). |
 | `COBERTURA.md` | Quanto das validações do guia e do PVA o programa reproduz, por registro. |
 | `ARQUITETURA.md` | Como o código se organiza e onde entra o que é novo. |
 | `ROADMAP.md` | Canais de versão, critério de aceite e o caminho até a 1.0.0. |
@@ -1301,8 +1425,9 @@ py -m unittest discover -s tests -t .
 
 A suíte monta arquivos SPED sintéticos na hora — nenhum dado de cliente entra
 no repositório — e roda também contra cópias de arquivos reais quando
-`SPED_TABLES_ARQUIVOS_REAIS` aponta para elas. Detalhes em
-[TESTES.md](TESTES.md).
+`SPED_TABLES_ARQUIVOS_REAIS` aponta para elas. Ela roda **sem PVA**, com a
+pasta dos PVAs apontada para um diretório vazio: tudo vem da base de
+referência, compilada de `base/`. Detalhes em [TESTES.md](TESTES.md).
 
 ## 5. Notas e limitações
 

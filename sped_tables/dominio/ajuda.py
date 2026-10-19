@@ -20,15 +20,16 @@ def citacao(layout):
     return "Guia Prático %s %s" % (g.get("guia", ""), g.get("versao", ""))
 
 
-def do_campo(layout, reg, n, nome, est=None, guia=None):
+def do_campo(layout, reg, n, nome, est=None, guia=None, versao=None):
     """Ajuda do campo `n` (1 = REG) do registro, chamado `nome` no leiaute.
 
     `{"nome", "rotulo", "descricao", "tipo", "tamanho", "decimais",
     "obrigatorio", "valores": [(código, significado)], "valores_guia",
     "preenchimento", "validacao"}` — o que não houver fica vazio. `est` e
-    `guia` poupam a consulta à fonte quando o chamador já os tem."""
+    `guia` poupam a consulta à fonte quando o chamador já os tem; `versao` é
+    a do leiaute do arquivo (`referencias.versao_do_leiaute`)."""
     if est is None:
-        est, _info = referencias.atual().estrutura(layout)
+        est, _info = referencias.atual().estrutura(layout, versao)
     if guia is None:
         guia = referencias.atual().guia(layout)
     c = ((est.get(reg) or {}).get("campos") or {}).get(nome) or {}
@@ -54,10 +55,10 @@ def do_campo(layout, reg, n, nome, est=None, guia=None):
     }
 
 
-def do_registro(layout, reg):
+def do_registro(layout, reg, versao=None):
     """Ajuda do registro inteiro: título, objetivo, validação do registro e a
-    ajuda de cada campo do leiaute."""
-    est, _info = referencias.atual().estrutura(layout)
+    ajuda de cada campo do leiaute, na versão do arquivo."""
+    est, _info = referencias.atual().estrutura(layout, versao)
     guia = referencias.atual().guia(layout)
     d = est.get(reg) or {}
     g = (guia.get("registros") or {}).get(reg) or {}

@@ -137,7 +137,8 @@ def _nfe_propria(doc, c100):
 def registros_com_validador(doc, ids, padrao=()):
     """Registros em que o descritor do PVA declara algum dos validadores
     `ids` — a regra vale onde o PVA a aplica. Sem descritor, `padrao`."""
-    est, _info = referencias.atual().estrutura(doc.layout)
+    est, _info = referencias.atual().estrutura(
+        doc.layout, referencias.versao_do_leiaute(doc))
     if not est:
         return tuple(padrao)
     ids = set(ids)
@@ -736,14 +737,14 @@ ICMS, CONTRIB, AMBOS = ("ICMS",), ("CONTRIB",), ("ICMS", "CONTRIB")
 # módulos que corrigem: `diagnostico.MODULOS` usa os mesmos, e a interface
 # liga o botão pelo rótulo — uma grafia só
 RECALCULAR_C190 = ("Recalcular C190 (analítico)",
-                   "Ferramentas → EFD ICMS/IPI → Recalcular C190")
+                   "Ferramentas → Recalcular → C190 em massa")
 RECALCULAR_TOTAIS = ("Recalcular totais do C100",
                      "Grade do C100 → 🔄 Recalcular totais")
 RECALCULAR_E110 = ("Recalcular apuração do ICMS (E110)",
-                   "Ferramentas → EFD ICMS/IPI → Recalcular apuração do ICMS "
+                   "Ferramentas → Recalcular → Apuração do ICMS "
                    "(E110)")
 ALTERAR_DATAS = ("Alterar datas emissão/saída (C100)",
-                 "Ferramentas → Gerais → Alterar datas")
+                 "Ferramentas → Corrigir → Alterar datas")
 
 REGRAS = [
     Regra("cfop_operacao", AMBOS, "CFOP",
@@ -820,7 +821,7 @@ REGRAS = [
                "REGRA_COMPARA_CNPJ_NFE_6001_V2",
                "REGRA_COMPARA_CNPJ_NFE_PARTICIPANTE_12001_V1"),
           modulo="Conferir com os XMLs",
-          onde="Ferramentas → Gerais → conferência pelos XMLs (a chave "
+          onde="Ferramentas → Conferir → Itens com XMLs (a chave "
                "certa vem do XML)"),
     Regra("bloco9", AMBOS, "QTD_REG_BLC",
           "Contagem de linhas/registros (X990, 9900, 9999)", _bloco9,

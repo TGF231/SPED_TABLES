@@ -1,0 +1,83 @@
+versão=10 INF_ADIC, DESC_INF, DT_INI, DT_FIM
+PI000001|Base de cálculo FUNEF - Regime Especial Atacadista|01122020|
+PI000002|Base de cálculo FUNEF - Regime Especial Medicamentoss|01122020|31122020
+PI000003|Base de cálculo FUNEF - Regime Especial Autopeças Veículos|01122020|
+PI000004|Base de cálculo FUNEF - Regime Especial Autopeças Motocicletas|01122020|
+PI000005|Base de cálculo FUNEF - Incentivo Fiscal Lei nº 4.859/96|01122020|
+PI000006|Base de cálculo FUNEF - Incentivo Fiscal Lei nº 6.146/11|01122020|
+PI000007|Base de cálculo COTAC - Incentivo Fiscal Lei nº 4.859/96|01122020|
+PI000008|Base de cálculo COTAC - Incentivo Fiscal Lei nº 6.146/11|01122020|
+PI000009|Base de cálculo FUNEF - Regime Especial Medicamentos Genéricos e Similares|01122020|
+PI000010|Base de cálculo FUNEF - Regime Especial Medicamentos e Instrum. e mat. de uso médico, cirúrgico, hosp. e de lab.|01122020|
+PI000011|Base de cálculo FUNEF - Regime Especial dos Prestadores de Serviço de Transporte Intermunicipal de Passageiros|01012021|
+PI000012|Número de Empregados - Média Anual|01012021|
+PI000013|Pró-Labore - Despesas Operacionais em 31/12|01012021|
+PI000014|Comissões, Salários, Ordenados - Despesas Operacionais em 31/12|01012021|
+PI000015|Combustíveis e Lubrificantes - Despesas Operacionais em 31/12|01012021|
+PI000016|Encargos Sociais - Despesas Operacionais em 31/12|01012021|
+PI000017|Tributos Federais - Despesas Operacionais em 31/12|01012021|
+PI000018|Tributos Estaduais - Despesas Operacionais em 31/12|01012021|
+PI000019|Tributos Municipais - Despesas Operacionais em 31/12|01012021|
+PI000020|Água, Luz, Telefone - Despesas Operacionais em 31/12|01012021|
+PI000021|Aluguéis - Despesas Operacionais em 31/12|01012021|
+PI000022|Serviços Profissionais - Despesas Operacionais em 31/12|01012021|
+PI000023|Seguros - Despesas Operacionais em 31/12|01012021|
+PI000024|Fretes e Carretos - Despesas Operacionais em 31/12|01012021|
+PI000025|Despesas Financeiras - Despesas Operacionais em 31/12|01012021|
+PI000026|Outras Despesas - Despesas Operacionais em 31/12|01012021|
+PI000027|Total Despesas Operacionais em 31/12|01012021|
+PI000028|Caixa Inicial em 01/01 - Disponibilidade Financeira|01012021|
+PI000029|Caixa Final em 31/12 - Disponibilidade Financeira|01012021|
+PI000030|Banco Inicial em 01/01 - Disponibilidade Financeira|01012021|
+PI000031|Banco Final em 31/12 - Disponibilidade Financeira|01012021|
+PI000032|Outras Inicial em 01/01 - Disponibilidade Financeira|01012021|
+PI000033|Outras Final em 31/12 - Disponibilidade Financeira|01012021|
+PI000034|Total Inicial em 01/01 - Disponibilidade Financeira|01012021|
+PI000035|Total Final em 31/12 - Disponibilidade Financeira|01012021|
+PI000036|Tributadas Inicial em 01/01 - Estoque de Mercadorias|01012021|
+PI000037|Tributadas Final em 31/12 - Estoque de Mercadorias|01012021|
+PI000038|Não Tributadas Inicial em 01/01 - Estoque de Mercadorias|01012021|
+PI000039|Não Tributadas Final em 31/12 - Estoque de Mercadorias|01012021|
+PI000040|Outras Inicial em 01/01 - Estoque de Mercadorias|01012021|
+PI000041|Outras Final em 31/12 - Estoque de Mercadorias|01012021|
+PI000042|Total Inicial em 01/01 - Estoque de Mercadorias|01012021|
+PI000043|Total Final em 31/12 - Estoque de Mercadorias|01012021|
+PI000044|Total de Receita não Sujeita ao ICMS|01012021|
+PI000045|Base de cálculo FUNEF - Outros|01122020|
+PI000046|Base de cálculo COTAC - Outros|01122020|
+PI000047|Base de cálculo adicional de suspensão - Regime Especial Atacadista|01112021|
+PI000048|Base de cálculo adicional de suspensão - Regime Especial Autopeças Veículos|01112021|
+PI000049|Base de cálculo adicional de suspensão - Regime Especial Autopeças Motocicletas|01112021|
+PI000050|Base de cálculo adicional de suspensão - Regime Especial Medicamentos Genéricos e Similares|01112021|
+PI000051|Base de cálculo adicional de suspensão - Regime Especial Medicamentos e Instrum. e mat. de uso médico, cirúrgico, hosp. e de lab.|01112021|
+PI000052|Base de cálculo adicional de suspensão - Regime Especial dos Prestadores de Serviço de Transporte Intermunicipal de Passageiros|01112021|
+PI000053|Base de cálculo adicional de suspensão - Regime Especial Produtos Farmacêuticos|01112021|
+PI000054|Base de cálculo FUNEF - Regime Especial Produtos Farmacêuticos|01112021|
+PI000055|Base de Cálculo FUNEF - Regime Especial de Tributação Aplicável às Operações com Milho, Milheto, Soja e Sorgo|01122022|
+PI010001|Base de cálculo FECOP Saídas Operações Próprias - 1%|01012022|
+PI010002|Base de cálculo FECOP Saídas Operações Próprias - 2%|01012022|
+PI010003|Base de cálculo FECOP Entradas Interestaduais ST - 1%|01012022|
+PI010004|Base de cálculo FECOP Entradas Interestaduais ST - 2%|01012022|
+PI010005|Base de cálculo FECOP Saídas Internas ST - 1%|01012022|
+PI010006|Base de cálculo FECOP Saídas Internas ST - 2%|01012022|
+PI020001|Crédito pelas entradas das mercadorias fora do Regime Especial|01012022|
+PI020002|Crédito da antecipação parcial paga nas mercadorias fora do Regime Especial|01012022|
+PI020003|Débito pelas saídas das mercadorias fora do Regime Especial|01012022|
+PI020004|Saldo credor do período anterior relativo às mercadorias fora do Regime Especial|01012022|
+PI020005|Saldo devedor|01012022|
+PI020006|Saldo credor a ser aproveitado no período seguinte|01012022|
+PI030001|Diferencial de alíquota apurado no período para contribuinte portador de Regime Especial|01062025|
+PI030002|Crédito para abatimento de DIFAL conforme Regime Especial|01062025|
+PI030003|Saldo devedor de diferencial de alíquota a pagar conforme Regime Especial|01062025|
+PI040001|FDI calculado no período|01092025|
+PI040002|Crédito referente ao recolhimento indevido para compensação do FDI|01092025|
+PI040003|Crédito referente à devolução para abatimento do FDI|01092025|
+PI040004|Saldo credor do período anterior relativo ao recolhimento indevido ou à devolução em operações sujeitas ao FDI|01092025|
+PI040005|Saldo devedor de FDI a pagar|01092025|
+PI040006|Saldo credor a ser aproveitado no período seguinte relativo a crédito de recolhimento indevido ou à devolução em operações sujeitas ao FDI|01092025|
+PI050001|Crédito pelas entradas das mercadorias fora do Incentivo Fiscal|01012022|
+PI050002|Crédito da antecipação parcial paga nas mercadorias fora do Incentivo Fiscal|01012022|
+PI050003|Débito pelas saídas das mercadorias fora do Incentivo Fiscal|01012022|
+PI050004|Saldo credor do período anterior relativo às mercadorias fora do Incentivo Fiscal|01012022|
+PI050005|Saldo devedor das mercadorias fora do Incentivo Fiscal|01012022|
+PI050006|Saldo credor a ser aproveitado no período seguinte (mercadorias fora do Incentivo Fiscal)|01012022|

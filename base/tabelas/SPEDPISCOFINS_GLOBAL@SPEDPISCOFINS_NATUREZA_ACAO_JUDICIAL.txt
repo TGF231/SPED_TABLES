@@ -1,0 +1,18 @@
+versão=4 CODIGO, DESCRICAO, DT_INI, DT_FIM
+01|Decisão Judicial Transitada em Julgado, a favor da Pessoa Jurídica|01012017|
+02|Decisão Judicial Não Transitada em Julgado, a favor da Pessoa Jurídica|01012017|
+03|Decisão Judicial oriunda de Liminar em Mandado de Segurança|01012017|
+04|Decisão Judicial oriunda de Liminar em Medida Cautelar|01012017|
+05|Decisão Judicial oriunda de Antecipação de Tutela|01012017|
+06|Decisão Judicial Vinculada a Depósito Administrativo ou Judicial em Montante Integral|01012017|
+07|Medida Judicial em que a Pessoa Jurídica não é o autor|01012017|
+08|Sumula Vinculante aprovada pelo STF ou STJ|01012017|
+09|Decisão Judicial oriunda de Liminar em Mandado de Segurança coletivo|01012017|
+12|Decisão judicial não transitada em julgado, a favor da pessoa jurídica - Exigibilidade suspensa de contribuição|01012017|
+13|Decisão judicial oriunda de liminar em mandado de segurança - Exigibilidade suspensa de contribuição|01012017|
+14|Decisão judicial oriunda de liminar em medida cautelar - Exigibilidade suspensa de contribuição|01012017|
+15|Decisão judicial oriunda de antecipação de tutela - Exigibilidade suspensa de contribuição|01012017|
+16|Decisão judicial vinculada a depósito administrativo ou judicial em montante integral - Exigibilidade suspensa de contribuição|01012017|
+17|Medida judicial em que a pessoa jurídica não é o autor - Exigibilidade suspensa de contribuição|01012017|
+19|Decisão judicial oriunda de liminar em mandado de segurança coletivo - Exigibilidade suspensa de contribuição|01012017|
+99|Outros|01012017|

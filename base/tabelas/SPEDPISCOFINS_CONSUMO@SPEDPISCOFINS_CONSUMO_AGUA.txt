@@ -1,0 +1,27 @@
+versão=1.0 cod|desc|dt_ini|dt_fin - Tabela de Classes de Consumo de Água Canalizada
+00|01 registro consolidando os documentos de consumo residencial até R$ 50,00|01012009|
+01|01 registro consolidando os documentos de consumo residencial de R$ 50,01 a R$ 100,00|01012009|
+02|01 registro consolidando os documentos de consumo residencial de R$ 100,01 a R$ 200,00|01012009|
+03|01 registro consolidando os documentos de consumo residencial de R$ 200,01 a R$ 300,00|01012009|
+04|01 registro consolidando os documentos de consumo residencial de R$ 300,01 a R$ 400,00|01012009|
+05|01 registro consolidando os documentos de consumo residencial de R$ 400,01 a R$ 500,00|01012009|
+06|01 registro consolidando os documentos de consumo residencial de R$ 500,01 a R$ 1000,00|01012009|
+07|01 registro consolidando os documentos de consumo residencial acima de R$ 1.000,01|01012009|
+20|01 registro consolidando os documentos de consumo comercial/industrial até R$ 50,00|01012009|
+21|01 registro consolidando os documentos de consumo comercial/industrial de R$ 50,01 a R$ 100,00|01012009|
+22|01 registro consolidando os documentos de consumo comercial/industrial de R$ 100,01 a R$ 200,00|01012009|
+23|01 registro consolidando os documentos de consumo comercial/industrial de R$ 200,01 a R$ 300,00|01012009|
+24|01 registro consolidando os documentos de consumo comercial/industrial de R$ 300,01 a R$ 400,00|01012009|
+25|01 registro consolidando os documentos de consumo comercial/industrial de R$ 400,01 a R$ 500,00|01012009|
+26|01 registro consolidando os documentos de consumo comercial/industrial de R$ 500,01 a R$ 1.000,00|01012009|
+27|01 registro por documento fiscal de consumo comercial/industrial acima de R$ 1.000,01|01012009|
+80|01 registro consolidando os documentos de consumo de órgão público|01012009|
+90|01 registro consolidando os documentos de outros tipos de consumo até R$ 50,00|01012009|
+91|01 registro consolidando os documentos de outros tipos de consumo de R$ 50,01 a R$ 100,00|01012009|
+92|01 registro consolidando os documentos de outros tipos de consumo de R$ 100,01 a R$ 200,00|01012009|
+93|01 registro consolidando os documentos de outros tipos de consumo de R$ 200,01 a R$ 300,00|01012009|
+94|01 registro consolidando os documentos de outros tipos de consumo de R$ 300,01 a R$ 400,00|01012009|
+95|01 registro consolidando os documentos de outros tipos de consumo de R$ 400,01 a R$ 500,00|01012009|
+96|01 registro consolidando os documentos de outros tipos de consumo de R$ 500,01 a R$ 1.000,00|01012009|
+97|01 registro consolidando os documentos de outros tipos de consumo acima de R$ 1.000,01|01012009|
+99|01 registro por documento fiscal emitido|01012009|

@@ -1,0 +1,68 @@
+versão=4 INF_ADIC, DESC_INF, DT_INI, DT_FIM
+AM001321|ICMS Vendas a prazo  base de cálculo  cód. de tributo 1321|01012014|31122014
+AM001330|ICMS Diferença de alíquota não notificada  base de cálculo  cód. de tributo 1330|01012014|31122014
+AM001341|ICMS Diferido a recolher (Produtos Agrícolas)  base de cálculo  cód. de tributo 1341|01012014|31122014
+AM001350|ICMS Subst. Tributária Operações Internas (fonte)  base de cálculo  cód. de tributo 1350|01012014|31122014
+AM001351|ICMS Estorno de Crédito Entrada Incentivada  base de cálculo  cód. de tributo 1351|01012014|31122014
+AM001360|ICMS Estorno de Crédito Álcool Anidro e Biodiesel  base de cálculo  cód. de tributo 1360|01012014|31122014
+AM001374|ICMS Despesas Aduaneiras (Comércio)  base de cálculo  cód. de tributo 1374|01012014|31122014
+AM001375|ICMS Despesas Aduaneiras (Indústria)  base de cálculo  cód. de tributo 1375|01012014|31122014
+AM001385|ICMS Energia Elétrica (produção própria)  base de cálculo  cód. de tributo 1385|01012014|31122014
+AM001394|ICMS Estorno de Crédito Saída Incentivada  base de cálculo  cód. de tributo 1394|01012014|31122014
+AM106401|Base de Cálculo  Contribuição à UEA  P & D  cód. tributo 6401|01012014|31122014
+AM106402|Base de Cálculo  Contribuição à UEA (Lei Estadual nº 1.939/1989)  sobre ICMS restituível  cód. tributo 6402|01012014|31122014
+AM106403|Base de Cálculo  Contribuição à UEA  sobre crédito presumido  cód. tributo 6403|01012014|31122014
+AM106404|Base de Cálculo  Contribuição à UEA  sobre crédito estímulo de 100%  cód. tributo 6404|01012014|31122014
+AM106405|Base de Cálculo  Contribuição à UEA  sobre faturamento bruto  bens intermediários  cód. tributo 6405|01012014|31122014
+AM106406|Base de Cálculo  Contribuição à UEA  sobre crédito estímulo inferior a 100%  cód. tributo 6406|01012014|31122014
+AM109851|Base de Cálculo  Contribuição ao FTI  sobre faturamento bruto industrial  cód. tributo 9851|01012014|31122014
+AM109852|Base de Cálculo  Contribuição ao FTI  sobre faturamento bruto industrial  expansão e diversificação  cód. tributo 9852|01012014|31122014
+AM109855|Base de Cálculo  Contribuição ao FTI  sobre faturamento bruto  bem intermediário  diferimento  cód. tributo 9855|01012014|31122014
+AM109856|Base de Cálculo  Contribuição ao FTI  aquisição de insumos nacionais  bem final  cód. tributo 9856|01012014|31122014
+AM109857|Base de Cálculo  Contribuição ao FTI  projetos agropecuários  cód. tributo 9857|01012014|31122014
+AM109858|Base de Cálculo  Contribuição ao FTI  concentrados  cód. tributo 9858|01012014|31122014
+AM109859|Base de Cálculo  Contribuição ao FTI  LCD  cód. tributo 9859|01012014|31122014
+AM109861|Base de Cálculo  Contribuição ao FTI  faturamento bruto industrial  duas rodas  0,25%  cód. tributo 9861|01012014|31122014
+AM109885|Base de Cálculo  Contribuição ao FMPES  sobre crédito estímulo  cód. tributo 9885|01012014|31122014
+AM282601|Custo das matérias-primas regionais  CMR  Lei Estadual nº 2.826/2003, art. 13, § 6º|01012014|31122014
+AM282602|Custo dos demais componentes  CDC  Lei Estadual nº 2.826/2003, art. 13, § 6º|01012014|31122014
+AM282603|Custo da mão de obra  MO  Lei Estadual nº 2.826/2003, art. 13, § 6º|01012014|31122014
+AM282604|Custo dos componentes locais  CCL  Lei Estadual nº 2.826/2003, art. 13, § 10|01012014|31122014
+AM282605|Custo dos componentes nacionais  CCN  Lei Estadual nº 2.826/2003, art. 13, § 10|01012014|31122014
+AM282606|Custo dos componentes importados  CCL  Lei Estadual nº 2.826/2003, art. 13, § 10|01012014|31122014
+AM001321|ICMS Vendas a prazo  base de cálculo  cód. de tributo 1321|01012015|
+AM001324|ICMS Diferido Alimentação  base de cálculo  cód. de tributo 1324|01012015|
+AM001330|ICMS Diferença de alíquota não notificada  base de cálculo  cód. de tributo 1330|01012015|
+AM001341|ICMS Diferido a recolher (Produtos Agrícolas)  base de cálculo  cód. de tributo 1341|01012015|
+AM001350|ICMS Subst. Tributária Operações Internas (fonte)  base de cálculo  cód. de tributo 1350|01012015|
+AM001351|ICMS Estorno de Crédito Entrada Incentivada  base de cálculo  cód. de tributo 1351|01012015|
+AM001360|ICMS Estorno de Crédito Álcool Anidro e Biodiesel  base de cálculo  cód. de tributo 1360|01012015|
+AM001374|ICMS Despesas Aduaneiras (Comércio)  base de cálculo  cód. de tributo 1374|01012015|
+AM001375|ICMS Despesas Aduaneiras (Indústria)  base de cálculo  cód. de tributo 1375|01012015|
+AM001385|ICMS Energia Elétrica (produção própria)  base de cálculo  cód. de tributo 1385|01012015|
+AM001394|ICMS Estorno de Crédito Saída Incentivada  base de cálculo  cód. de tributo 1394|01012015|
+AM106401|Base de Cálculo  Contribuição à UEA  P & D  cód. tributo 6401|01012015|
+AM106402|Base de Cálculo  Contribuição à UEA (Lei Estadual nº 1.939/1989)  sobre ICMS restituível  cód. tributo 6402|01012015|
+AM106403|Base de Cálculo  Contribuição à UEA  sobre crédito presumido  cód. tributo 6403|01012015|
+AM106404|Base de Cálculo  Contribuição à UEA  sobre crédito estímulo de 100%  cód. tributo 6404|01012015|
+AM106405|Base de Cálculo  Contribuição à UEA  sobre faturamento bruto  bens intermediários  cód. tributo 6405|01012015|
+AM106406|Base de Cálculo  Contribuição à UEA  sobre crédito estímulo inferior a 100%  cód. tributo 6406|01012015|
+AM109850|Base de Cálculo  Contribuição ao FTI  saídas de mercadoria importada com aplicação de alíquota de 7% - cód. tributo 9850|01012015|
+AM109851|Base de Cálculo  Contribuição ao FTI  sobre faturamento bruto industrial  cód. tributo 9851|01012015|
+AM109852|Base de Cálculo  Contribuição ao FTI  sobre faturamento bruto industrial  expansão e diversificação  cód. tributo 9852|01012015|
+AM109854|Base de Cálculo  Contribuição ao FTI  importação de insumos industriais de bem final (2% do valor FOB)  cód. tributo 9854|01012015|
+AM109855|Base de Cálculo  Contribuição ao FTI  sobre faturamento bruto  bem intermediário  diferimento  cód. tributo 9855|01012015|
+AM109856|Base de Cálculo  Contribuição ao FTI  aquisição de insumos nacionais  bem final  cód. tributo 9856|01012015|
+AM109857|Base de Cálculo  Contribuição ao FTI  projetos agropecuários  cód. tributo 9857|01012015|
+AM109858|Base de Cálculo  Contribuição ao FTI  concentrados  cód. tributo 9858|01012015|
+AM109859|Base de Cálculo  Contribuição ao FTI  LCD  cód. tributo 9859|01012015|
+AM109861|Base de Cálculo  Contribuição ao FTI  faturamento bruto industrial  duas rodas  0,25%  cód. tributo 9861|01012015|
+AM109880|Base de Cálculo  Contribuição ao FMPES  sobre crédito estímulo  cód. tributo 9880|01012015|
+AM282601|Custo das matérias-primas regionais  CMR  Lei Estadual nº 2.826/2003, art. 13, § 6º|01012015|
+AM282602|Custo dos demais componentes  CDC  Lei Estadual nº 2.826/2003, art. 13, § 6º|01012015|
+AM282603|Custo da mão de obra  MO  Lei Estadual nº 2.826/2003, art. 13, § 6º|01012015|
+AM282604|Custo dos componentes locais  CCL  Lei Estadual nº 2.826/2003, art. 13, § 10|01012015|
+AM282605|Custo dos componentes nacionais  CCN  Lei Estadual nº 2.826/2003, art. 13, § 10|01012015|
+AM282606|Custo dos componentes importados  CCL  Lei Estadual nº 2.826/2003, art. 13, § 10|01012015|
+AM000001|	 Valor total das operações de saída  base de cálculo do crédito presumido concedido pela Lei Complementar Estadual nº 202/2019, Art. 1º, § 1º, I|01012020|
+AM000002|Valor total do imposto debitado nas operações de saída  base de cálculo do crédito presumido concedido pela Lei Complementar Estadual nº 202/2019, Art. 1º, § 1º, II|01012020|

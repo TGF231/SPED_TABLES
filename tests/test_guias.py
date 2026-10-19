@@ -1,23 +1,18 @@
 # -*- coding: utf-8 -*-
-"""Os guias práticos como fonte: o extrator, os JSON de `recursos/`, o
+"""Os guias práticos como fonte: o extrator, os JSON de `base/guias/`, o
 descritor do PVA alinhado ao leiaute e a ajuda de campo."""
 
 import os
 import shutil
-import sys
 import tempfile
 import unittest
 import zipfile
 
-from sped_tables import RAIZ_PROJETO
+from consolidador import descritor
+from consolidador import guias as extrair_guias
 from sped_tables.dominio import ajuda
 from sped_tables.dominio import referencias
 from sped_tables.dominio import sped_layouts
-from sped_tables.infra import descritor_pva
-from sped_tables.infra import guias
-
-sys.path.insert(0, os.path.join(RAIZ_PROJETO, "ferramentas"))
-import extrair_guias  # noqa: E402
 
 # trecho no formato do texto que o pdftotext -layout devolve do guia
 TEXTO_GUIA = """Guia Prático EFD-ICMS/IPI – Versão 9.9.9
@@ -115,19 +110,19 @@ class TestRecursos(unittest.TestCase):
         for layout, tabela, minimo in (
                 ("ICMS", sped_layouts.CAMPOS_ICMS, 265),
                 ("CONTRIB", sped_layouts.CAMPOS_CONTRIB, 200)):
-            g = guias.carregar(layout)
+            g = referencias.atual().guia(layout)
             self.assertTrue(g["versao"])
             self.assertGreaterEqual(len(g["registros"]), minimo, layout)
             self.assertFalse(set(g["registros"]) - set(tabela), layout)
 
     def test_textos_conhecidos(self):
-        g = guias.carregar("ICMS")
+        g = referencias.atual().guia("ICMS")
         c190 = g["registros"]["C190"]
         self.assertIn("soma", c190["campos"]["6"]["validacao"])
         self.assertIn("CST_ICMS, CFOP e ALIQ_ICMS",
                       c190["validacao_registro"])
         self.assertIn("000", g["registros"]["E116"]["campos"]["2"]["valores"])
-        gc = guias.carregar("CONTRIB")
+        gc = referencias.atual().guia("CONTRIB")
         self.assertIn("VL_PIS", gc["registros"]["C175"]["campos"]["10"]
                       ["validacao"])
 
@@ -148,7 +143,8 @@ class TestRecursos(unittest.TestCase):
         }
         for layout, tabela in (("ICMS", sped_layouts.CAMPOS_ICMS),
                                ("CONTRIB", sped_layouts.CAMPOS_CONTRIB)):
-            for reg, d in guias.carregar(layout)["registros"].items():
+            guia = referencias.atual().guia(layout)
+            for reg, d in guia["registros"].items():
                 for n, c in d["campos"].items():
                     nome = c.get("nome_no_paragrafo")
                     if (reg, n) in divergentes:
@@ -198,7 +194,8 @@ class TestDescritor(unittest.TestCase):
         with zipfile.ZipFile(self.jar, "w") as z:
             z.writestr("descritor/escrituracao/ato001/v1/descritor.xml",
                        DESCRITOR)
-        self.est, _info = descritor_pva._ler(self.jar)
+        self.est = descritor.ler(
+            self.jar, "descritor/escrituracao/ato001/v1/descritor.xml")
 
     def test_campo_comentado_nao_existe(self):
         self.assertEqual(list(self.est["0150"]["campos"]),
@@ -225,21 +222,23 @@ class TestDescritor(unittest.TestCase):
         self.assertEqual(al["C100"]["chave"], "COD_PART,IND_OPER")
 
 
-@unittest.skipUnless(descritor_pva.disponivel(), "PVA não instalado")
 class TestLeiauteContraPVA(unittest.TestCase):
-    """O leiaute do programa tem a **estrutura** do descritor do PVA
-    instalado: mesma largura e nenhum campo em outra posição. Nomes podem
-    diferir (o guia diz `END`, o PVA `ENDERECO`) — o alinhamento cuida —,
-    mas campo deslocado é coluna errada na grade e validação no campo
-    vizinho (era o caso do C870, do C181 e do E310)."""
+    """O leiaute do programa tem a **estrutura** do descritor do PVA que a
+    base de referência guarda: mesma largura e nenhum campo em outra
+    posição. Nomes podem diferir (o guia diz `END`, o PVA `ENDERECO`) — o
+    alinhamento cuida —, mas campo deslocado é coluna errada na grade e
+    validação no campo vizinho (era o caso do C870, do C181 e do E310)."""
 
     # largura que o programa mantém diferente de propósito
     LARGURA_PROPRIA = {("CONTRIB", "0200")}    # CEST, ver CLAUDE.md
 
     def test_estrutura(self):
+        from sped_tables.infra import base_referencia
+        base, _origem = base_referencia.em_uso()
         for layout, tabela in (("ICMS", sped_layouts.CAMPOS_ICMS),
                                ("CONTRIB", sped_layouts.CAMPOS_CONTRIB)):
-            est, _info = descritor_pva.carregar(layout)
+            versao = max(base.versoes(layout), key=int)
+            est = base.estrutura(layout, versao)
             for reg, d in est.items():
                 if reg not in tabela:
                     continue
@@ -257,7 +256,7 @@ class TestLeiauteContraPVA(unittest.TestCase):
 
 class FonteComGuia(referencias.Referencias):
 
-    def estrutura(self, layout):
+    def estrutura(self, layout, versao=None):
         return {"C190": {"campos": {
             "REG": {"tipo": "C", "tamanho": "[4]", "obrigatorio": "1"},
             "CST_ICMS": {"tipo": "N", "tamanho": "[3]", "obrigatorio": "1",
@@ -307,6 +306,10 @@ class TestAjuda(unittest.TestCase):
                                       "CST_ICMS")
         self.assertIn('name="campo_CST_ICMS"', pagina)
         self.assertIn("◀", pagina)
+        # a fonte é a base de referência, não a instalação do PVA
+        self.assertIn("Fonte: Guia Prático EFD ICMS/IPI 9.9 e o leiaute da "
+                      + referencias.atual().descricao(), pagina)
+        self.assertNotIn("PVA instalado", pagina)
 
 
 if __name__ == "__main__":

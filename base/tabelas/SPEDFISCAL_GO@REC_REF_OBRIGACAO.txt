@@ -1,0 +1,42 @@
+versão=10 COD_REC, DESC_COD, DT_INI, DT_FIM
+108|ICMS normal|01012013|
+116|ICMS Substituição pela Operação Anterior (entrada)|01012013|
+124|ICMS Substituição pela Operação Posterior (saída)|01012013|
+132|ICMS Substituição pelo Serviço de Transporte|01012013|
+140|ICMS Substituição pelo Serviço de Comunicação|01012013|31122014
+159|ICMS Diferencial de Alíquota|01012013|30092014
+167|ICMS Importação|01012013|
+175|Fomentar parte incentivada (leilão)|01012013|
+201|Pagamento antecipado do ICMS nas aquisições das mercadorias especificadas no Decreto nº 6.716/08|01012013|31032021
+201|Pagamento antecipado do ICMS nas aquisições das mercadorias especificadas no Decreto nº 6.716/08 ou Ap.XXVI do Anexo VIII|01042021|
+202|ICMS a pagar, antes da saída do Estado de Goiás, nos termos da IN nº 598/03-GSF|01012013|
+301|Produzir ICMS Média|01012013|
+302|Produzir ICMS Não Industrial|01012013|
+303|Produzir ICMS Industrial - 1|01012013|
+304|Produzir ICMS Industrial - 2|01012013|30062020
+307|Fomentar ICMS Média|01012013|
+308|Fomentar ICMS Não Industrial|01012013|
+309|Fomentar ICMS Industrial - 30% (trinta por cento) parte não incentivada|01012013|
+311|ICMS Energia Elétrica Contratação Livre|01012013|
+4351|ICMS Crédito Especial para Investimento (liquidação)|01012013|
+4146|Adicional ICMS 2% - Lei 15.505/2005|01012013|30092014
+045|Adicional ICMS 2% Normal - Fundo de Proteção Social do Estado de Goiás|01012013|
+046|Adicional ICMS 2% Substituição Tributária - Fundo de Proteção Social do Estado de Goiás|01012013|
+049|Adicional ICMS 2% Substituição Tributária  Energia Elétrica Contratação Livre - Fundo de Proteção Social do Estado de Goiás|01012013|
+224|ICMS ST sobre estoque|01122014|
+4405|ICMS Diferencial de alíquotas não contribuinte UF Origem - Convênio ICMS 93/15|01012016|
+051|Adicional ICMS 2% referente ao Diferencial de Alíquotas - Convênio ICMS 93/15 - por apuração|01012016|
+050|Adicional ICMS 2% referente ao Diferencial de Alíquotas - Convênio ICMS 93/15 - por operação|01012016|
+400|ICMS Complementar|01102016|
+4402|CONTRIBUIÇÃO 4% DO FOMENTAR/PRODUZIR - LEI Nº 18.360/13|01122013|
+065|Contribuição ao PROTEGE referente ao programa PROGOIÁS|01102020|
+067|Contribuição ao PROTEGE referente ao programa PROGOIÁS RURAL|01092021|
+041|Contribuição PROTEGE, relativo à fruição de benefícios fiscal condicionado|01052016|
+061|PROTEGE - FOMENTAR/PRODUZIR LEI Nº. 20.367/2018 - ART. 3º, I E II|01042019|
+062|PROTEGE - Crédito outorgado do álcool anidro LEI Nº. 20.367/2018 - ART. 3º, I E II|01042019|
+119|FUNDEINFRA - ST_anterior na saída do substituto|01012023|
+120|FUNDEINFRA - ST_Anterior na apuração englobada|01012023|
+121|FUNDEINFRA - Fruição de benefício fiscal condicionado|01012023|
+122|FUNDEINFRA - Regime especial de controle de exportação|01012023|
+5071|ICMS Diferencial de Alíquotas não contribuinte- Destino Goiás|01032023|
+5079|Complemento de meta de arrecadação|01032023|

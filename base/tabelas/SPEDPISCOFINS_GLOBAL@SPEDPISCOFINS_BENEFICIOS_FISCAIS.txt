@@ -1,0 +1,4 @@
+versão=4 COD_BEN_FIS, DESC_BEN_FIS, DT_INI, DT_FIM, CST_PIS, CST_COFINS, NAT_REC, INF_COMP
+060|PERSE - Programa Emergencial de Retomada do Setor de Eventos|01052024|28022027|06|06|920|101
+060|PERSE - Programa Emergencial de Retomada do Setor de Eventos|01052024|28022027|06|06|920|102
+060|PERSE - Programa Emergencial de Retomada do Setor de Eventos|01052024|28022027|06|06|920|103

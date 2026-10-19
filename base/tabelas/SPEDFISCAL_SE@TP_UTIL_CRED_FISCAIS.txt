@@ -1,0 +1,15 @@
+versão=1.0
+SE01|Dedução|01012009|
+SE21|Compensação|01012009|
+SE41|Transferência|01012009|
+SE42|Transferência de saldo credor Acumulado para o livro apuração II|01012009|
+SE43|Transf. Crédito fiscal acumulado para o livro apuração I|01012009|
+SE44|Transf. Crédito fiscal acumulado para outro contribuinte|01012009|
+SE45|Centralizada:Transf. de saldo credor|01012009|
+SE46|Crédito fiscal acumulado do mês transferido do livro apuração I|01012009|
+SE61|Restituição|01012009|
+SE81|Estorno|01012009|
+SE91|Crédito fiscal acumulado utilizado na aquisição de bens|01012009|
+SE92|Crédito fiscal acumulado utilizado na aquisição de insumo e matéria-prima|01012009|
+SE93|Crédito fiscal acumulado utilizado no pagamento de débitos|01012009|
+SE99|Outros|01012009|

@@ -1,0 +1,46 @@
+versão=15 INF_ADIC, DESC_INF, DT_INI, DT_FIM
+PB100000|DIFERENCIAL DE ALÌQUOTA- Valor Declarátorio do pagamento total do mês|01012009|30052009
+PB100000|DIFERENCIAL DE ALÌQUOTA- Valor Declarátorio do pagamento total do mês|01012013|31122013
+PB200000|FUNCEP - PB - DIFERENCIAL DE ALÍQUOTA - Valor delaratório recolhido|01012009|30052009
+PB200000|FUNCEP - PB - DIFERENCIAL DE ALÍQUOTA - Valor delaratório recolhido|01012013|31122013
+PB300000|Operações com veículos automotores usados nos termos do Decreto no. 30.106/2008|01012013|31122013
+PB310001|Simples Nacional - Faturamento do mês|01012014|01102022
+PB310002|Simples Nacional - Alíquota do ICMS|01012014|01102022
+PB320001|FAIN - Créditos apropriados para apuração incentivada|01012014|
+PB320002|FAIN - Débitos de operações incentivadas|01012014|
+PB320003|FAIN - Saldo devedor|01012014|
+PB320004|FAIN - Saldo credor|01012014|
+PB320005|FAIN - Percentual utilizado para cálculo do crédito presumido|01012014|
+PB320006|FAIN - Valor do crédito presumido|01012014|
+PB320007|FAIN - Diferença a Recolher  Código 1205|01012014|
+PB320008|FAIN - Diferença a Recolher  Código 1210|01012014|
+PB330001|Outros Incentivos - Créditos apropriados para apuração incentivada|01012014|
+PB330002|Outros Incentivos - Débitos de operações incentivadas|01012014|
+PB330003|Outros Incentivos - Saldo devedor|01012014|
+PB330004|Outros Incentivos - Saldo credor|01012014|
+PB330005|Outros Incentivos - Percentual utilizado para cálculo do crédito presumido|01012014|
+PB330006|Outros Incentivos - Valor do crédito presumido|01012014|
+PB340001|Indústria - Valor Garantido Apurado Mês|01052014|31052014
+PB340001|Indústria - Valor Garantido Apurado Mês|01062014|
+PB340002|Indústria - Valor Diferencial de Alíquota Apurado Mês|01052014|31052014
+PB340002|Indústria - Valor Diferencial de Alíquota Apurado Mês|01062014|
+PB340003|Indústria - Valor Substituição por Entradas Apurado Mês|01052014|31052014
+PB340003|Indústria - Valor Substituição por Entradas Apurado Mês|01062014|
+PB350001|Regime Especial  Comércio   Valor Garantido Apurado Mês|01102014|
+PB350002|Regime Especial  Comércio  Valor Diferencial de Alíquota Apurado Mês|01102014|
+PB350003|Regime  Especial  Comércio - Valor Substituição por Entradas Apurado Mês|01102014|
+PB360001|TARE IMPORTAÇÃO - Valor Recolhido na Operação de Importação - ICMS IMPORTAÇÃO|01102016|
+PB360002|TARE  Saldo Acumulado Excedente de Garantido para abater do recolhimento mínimo variável|01082019|30042021
+PB360003|TARE  Valor excedente de ICMS-GARANTIDO do mês|01082019|30042021
+PB360004|TARE  Valor do saldo excedente de ICMS-GARANTIDO utilizado no mês|01082019|30042021
+PB360005|TARE  Valor de Complemento de recolhimento mínimo apurado no mês|01012021|
+PB410000|FEEF - Valor a recolher no período|01102016|
+PB410001|FEEF - Valor apurado no período|01102016|31102017
+PB410001|FEEF - Apuração Normal - Valor apurado no Período|01112017|
+PB410002|FEEF - Valor do incremento de recolhimento|01102016|
+PB410004|FEEF - Substituição Tributária - Valor apurado no período|01112017|
+PB990001|Diversos - Diferencial de Alíquota - Pagamento total do mês|01012014|
+PB990002|Diversos - FUNCEP-PB  Diferencial de Alíquota - Valor recolhido|01012014|
+PB990003|Diversos - Operações com veículos automotores usados, nos termos do Decreto Nº 30.106/2008|01012014|
+PB990004|ICMS Veículos Usados|01012016|
+PB990005|Valor pago no mês referente ICMS ST  Complemento TARE (1132)|01012016|

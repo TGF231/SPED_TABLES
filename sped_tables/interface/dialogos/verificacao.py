@@ -11,6 +11,7 @@ from PyQt6.QtWidgets import (
 from sped_tables.dominio import diagnostico
 from sped_tables.dominio import validacao
 from sped_tables.interface import tema
+from sped_tables.interface.comum import abrir_janela, informar
 
 
 class DialogoValidacao(QDialog):
@@ -193,13 +194,13 @@ class DialogoValidacao(QDialog):
         self.achados = validacao.validar(self.doc, dominios_pva=dom)
         self._montar_combo_campos()
         self._repovoar()
-        QMessageBox.information(
+        informar(
             self, "Normalizar campos",
             "%d campo(s) corrigido(s).\n\n%s"
             % (res["campos"],
                "\n".join("• %s: %d" % (c, n)
                          for c, n in sorted(res["por_campo"].items(),
-                                            key=lambda x: -x[1]))))
+                             key=lambda x: -x[1]))))
 
     def _ir(self, row, _col):
         it = self.tab.item(row, 0)
@@ -226,7 +227,8 @@ class DialogoDiagnostico(QDialog):
     COLS = ["", "O que corrige", "Problemas", "Onde fica"]
     DET = ["Registro", "Campo", "Problema", "Quantidade"]
 
-    def __init__(self, achados, info, acoes, ir_callback, parent=None):
+    def __init__(self, achados, info, acoes, ir_callback, parent=None,
+                 ao_revisar=None):
         super().__init__(parent)
         self.achados = achados
         self.acoes = acoes or {}
@@ -237,22 +239,54 @@ class DialogoDiagnostico(QDialog):
 
         pal = tema.atual()
         total = sum(a.quantidade for a in achados)
-        cab = QLabel("<b>%d</b> problema(s) em %d tipo(s) de verificação."
-                     % (total, len(achados)) if total else
-                     "Nenhum problema nas verificações automáticas.")
-        cab.setProperty("role", "erro" if total else "ok")
+        # sem o leiaute do arquivo na base valeram só as regras embutidas:
+        # "nenhum problema" não pode soar como aprovação (nem sair em verde)
+        parcial = bool(info.get("fora_da_base") or info.get("sem_base"))
+        if total:
+            texto_cab, papel_cab = (
+                "<b>%d</b> problema(s) em %d tipo(s) de verificação."
+                % (total, len(achados)), "erro")
+        elif parcial:
+            texto_cab, papel_cab = (
+                "Nenhum problema nas regras embutidas — a conferência pelo "
+                "leiaute não rodou.", "aviso")
+        else:
+            texto_cab, papel_cab = (
+                "Nenhum problema nas verificações automáticas.", "ok")
+        cab = QLabel(texto_cab)
+        cab.setProperty("role", papel_cab)
         lay.addWidget(cab)
 
-        origem = QLabel(
-            "Verificado com o descritor do PVA (%s registros) — o mesmo que o "
-            "validador usa: tipo, tamanho, obrigatoriedade, enumerações, "
-            "tabelas e referências entre registros."
-            % info.get("registros_descritor", "?")
-            if not info.get("sem_pva") else
-            "PVA não encontrado nesta máquina: valeram apenas as regras "
-            "embutidas no programa, que cobrem menos que o validador oficial.")
+        if info.get("fora_da_base") and info.get("mais_nova_que_a_base"):
+            # o remédio é outro: não é arquivo velho, é base velha
+            texto_origem = (
+                "A versão %s do leiaute deste arquivo é mais nova que a base "
+                "de referência em uso%s: valeram apenas as regras embutidas, "
+                "que cobrem menos que o validador oficial. Importe uma base "
+                "mais nova em Configurações → Base de referência…"
+                % (info["fora_da_base"],
+                   " (%s)" % info["base"] if info.get("base") else ""))
+        elif info.get("fora_da_base"):
+            texto_origem = (
+                "A versão %s do leiaute deste arquivo não está na base de "
+                "referência (ela guarda os últimos 5 anos): valeram apenas "
+                "as regras embutidas, que cobrem menos que o validador "
+                "oficial." % info["fora_da_base"])
+        elif info.get("sem_base"):
+            texto_origem = (
+                "Base de referência indisponível: valeram apenas as regras "
+                "embutidas no programa, que cobrem menos que o validador "
+                "oficial.")
+        else:
+            texto_origem = (
+                "Verificado com o leiaute da versão %s (%s registros) — o "
+                "que o validador declara: tipo, tamanho, obrigatoriedade, "
+                "enumerações, tabelas e referências entre registros."
+                % (info.get("versao") or "?",
+                   info.get("registros_descritor", "?")))
+        origem = QLabel(texto_origem)
         origem.setWordWrap(True)
-        origem.setProperty("role", "info")
+        origem.setProperty("role", "aviso" if parcial else "info")
         lay.addWidget(origem)
 
         self.resumo = QTableWidget(0, len(self.COLS))
@@ -310,6 +344,14 @@ class DialogoDiagnostico(QDialog):
             lay.addWidget(nota)
 
         rod = QHBoxLayout()
+        if ao_revisar is not None:
+            # a lista ocorrência a ocorrência, para a correção manual; era
+            # o item de menu *Revisar erros*, ao lado deste
+            b_rev = QPushButton("Revisar ocorrências…")
+            b_rev.setToolTip("Cada verificação com a lista das ocorrências "
+                             "— para corrigir à mão, na grade.")
+            b_rev.clicked.connect(lambda _=False: ao_revisar())
+            rod.addWidget(b_rev)
         rod.addStretch(1)
         b = QPushButton("Fechar")
         b.clicked.connect(self.close)
@@ -478,9 +520,8 @@ class DialogoRevisao(QDialog):
 
     def _ver(self, titulo, problemas):
         if not problemas:
-            QMessageBox.information(self, titulo,
-                                    "Sem ocorrências para listar.")
+            informar(self, titulo,
+                     "Sem ocorrências para listar.")
             return
-        self._dlg = DialogoOcorrencias(titulo, problemas, self.ir_callback,
-                                       self)
-        self._dlg.show()
+        self._dlg = abrir_janela(self, DialogoOcorrencias(
+            titulo, problemas, self.ir_callback, self))

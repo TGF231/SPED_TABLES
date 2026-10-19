@@ -41,6 +41,12 @@ from sped_tables.dominio import validacao
 log = logging.getLogger("sped_tables")
 
 
+# registros de totais (C175, C181, D190…) com a chave repetida: somados
+# num só pela fusão (`SpedDocument.fundir_chaves_repetidas`)
+FUNDIR_CHAVES = ("Fundir registros de chave repetida",
+                 "Ferramentas → Corrigir → Fundir registros de chave "
+                 "repetida")
+
 # Achado -> módulo que corrige. O texto é o nome do item de menu, para a
 # pessoa saber exatamente onde clicar.
 MODULOS = {
@@ -59,13 +65,13 @@ MODULOS = {
                        "linha sem o | final: lida inteira, e o | é "
                        "acrescentado ao salvar — confira o último campo"),
     "item_orfao": ("Itens do 0200 sem referência",
-                   "Ferramentas → Gerais → Itens do 0200 sem referência"),
+                   "Ferramentas → Conferir → Itens do 0200 sem referência"),
     "ref_ausente": ("Correção manual na grade",
                     "o código citado não existe no cadastro correspondente"),
     "cod_cta": ("Preencher conta contábil (COD_CTA)",
-                "Ferramentas → Gerais → Preencher conta contábil"),
+                "Ferramentas → Corrigir → Preencher conta contábil"),
     "cod_gen": ("Preencher COD_GEN pelo NCM",
-                "Ferramentas → EFD ICMS/IPI → Preencher COD_GEN pelo NCM"),
+                "Ferramentas → Corrigir → Preencher COD_GEN pelo NCM"),
     "municipio": ("Cadastro do participante no ERP",
                   "corrija a cidade no cadastro do participante no ERP "
                   "(o município do CNPJ está na consulta pública do "
@@ -76,11 +82,13 @@ MODULOS = {
     "num_campos": ("Correção manual na grade",
                    "o registro tem mais ou menos campos que o leiaute"),
     "chave_c190": regras_guia.RECALCULAR_C190,
-    "chave": ("Correção manual na grade", "chave repetida no mesmo nível"),
+    "chave": FUNDIR_CHAVES,
+    "chave_manual": ("Correção manual na grade",
+                     "chave repetida no mesmo nível"),
     "data_periodo": regras_guia.ALTERAR_DATAS,
     "bloco": ("Correção manual na grade", "bloco aberto sem encerramento"),
     "cst_aliq_02": ("Empresa e rotinas",
-                    "Ferramentas → Gerais → Empresa e rotinas → CSOSN do "
+                    "Ferramentas → Corrigir → Empresa e rotinas → CSOSN do "
                     "Simples no CST do ICMS (a conversão é configurada no "
                     "cadastro da empresa)"),
     # x02 que a rotina do CSOSN não toca: saída, ou combustível de verdade
@@ -88,25 +96,25 @@ MODULOS = {
                            "CST x02 (monofásico de combustível) sem "
                            "alíquota: informe a alíquota ou corrija o CST"),
     "nat_rec": ("Empresa e rotinas",
-                "Ferramentas → Gerais → Empresa e rotinas → Natureza da "
+                "Ferramentas → Corrigir → Empresa e rotinas → Natureza da "
                 "receita fora da tabela do CST (bebida fria do varejista → "
                 "918; o resto, conferir o CST no ERP/PDV)"),
     "data_es": ("Datas e extemporâneos pelos XMLs",
-                "Ferramentas → Gerais → Datas e extemporâneos pelos XMLs "
+                "Ferramentas → Corrigir → Datas e extemporâneos pelos XMLs "
                 "(ou Alterar datas)"),
     "credito_ncm": ("Empresa e rotinas",
-                    "Ferramentas → Gerais → Empresa e rotinas → CST "
+                    "Ferramentas → Corrigir → Empresa e rotinas → CST "
                     "incoerente com o NCM (retira o crédito das entradas)"),
     "apuracao_icms": regras_guia.RECALCULAR_E110,
     "ind_emit": ("Correção manual na grade",
                  "saída escriturada como documento de terceiro"),
     "cfop_credito": ("Empresa e rotinas",
-                     "Ferramentas → Gerais → Empresa e rotinas → Crédito em "
+                     "Ferramentas → Corrigir → Empresa e rotinas → Crédito em "
                      "CFOP que não dá direito"),
     "apuracao_m": ("Recalcular bloco M (apuração PIS/COFINS)",
-                   "Ferramentas → EFD Contribuições → Recalcular bloco M"),
+                   "Ferramentas → Recalcular → Bloco M"),
     "credito_m": ("Recalcular bloco M (apuração PIS/COFINS)",
-                  "Ferramentas → EFD Contribuições → Recalcular bloco M"),
+                  "Ferramentas → Recalcular → Bloco M"),
     "m400": ("Correção manual na grade",
              "M400/M800 sem receita correspondente nos documentos"),
     "reg_0900": ("Correção manual na grade",
@@ -218,11 +226,20 @@ def verificar(doc):
     `achados` é uma lista de `Achado` já **agregada por tipo/registro/campo**:
     o objetivo é dizer o que fazer, não repetir a mesma frase mil vezes.
     """
-    estrutura, info_desc = referencias.atual().estrutura(doc.layout)
+    estrutura, info_desc = referencias.atual().estrutura(
+        doc.layout, referencias.versao_do_leiaute(doc))
     achados = []
     info = {"descritor": info_desc.get("descritor"),
             "registros_descritor": info_desc.get("registros", 0),
-            "sem_pva": not estrutura}
+            "versao": info_desc.get("versao"),
+            "fora_da_base": (info_desc.get("versao")
+                             if info_desc.get("fora_da_base") else None),
+            # arquivo de leiaute posterior ao da base: a tela manda importar
+            # uma base mais nova, não fala em arquivo velho
+            "mais_nova_que_a_base": bool(
+                info_desc.get("mais_nova_que_a_base")),
+            "base": info_desc.get("base"),
+            "sem_base": not estrutura}
 
     # ---- o que a leitura não conseguiu ler como registro ------------------
     # vem antes de tudo e não depende do PVA: é o arquivo que está quebrado
@@ -437,13 +454,20 @@ def _achados_proprios(doc):
             achados.append(Achado(
                 tipo, reg or ps[0].reg, campo, texto, len(ps), ps[0].uid,
                 grav or getattr(ps[0], "gravidade", "erro")))
-    # chave repetida: o C190 vai para o recálculo, o resto é manual
-    dup = tentar(revisao.verificar_chave_duplicada)
-    for reg, n in Counter(x.reg for x in dup).items():
-        achados.append(Achado(
-            "chave_c190" if reg == "C190" else "chave", reg, "",
-            "chave repetida no mesmo registro-pai", n,
-            next(x.uid for x in dup if x.reg == reg)))
+    # chave repetida: o C190 vai para o recálculo (refaz pelos itens ou
+    # funde), o registro de totais para a fusão, o resto é manual
+    repetidos = {}
+    for g in tentar(type(doc).chaves_repetidas):
+        tipo = ("chave_c190" if g.reg == "C190" else
+                "chave" if g.motivo is None else "chave_manual")
+        texto = "chave repetida no mesmo registro-pai"
+        if tipo == "chave_manual":
+            texto += " (não dá para fundir: %s)" % g.motivo
+        n, uid, _t = repetidos.get((tipo, g.reg),
+                                   (0, g.registros[1].uid, texto))
+        repetidos[(tipo, g.reg)] = (n + len(g.registros) - 1, uid, texto)
+    for (tipo, reg), (n, uid, texto) in repetidos.items():
+        achados.append(Achado(tipo, reg, "", texto, n, uid))
     # gênero diferente do NCM é erro; vazio, só aviso — o PVA não o cobra
     # (num arquivo real, 1.355 vazios e nenhuma mensagem)
     gen = tentar(revisao.verificar_cod_gen_0200)

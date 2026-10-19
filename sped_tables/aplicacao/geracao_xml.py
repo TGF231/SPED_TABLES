@@ -100,7 +100,9 @@ class GeracaoXml:
         return grupos, previa
 
     def gerar(self, periodo, leiautes=LEIAUTES, excluir=(),
-              saldo_credor_anterior=None, correlacoes=None):
+              saldo_credor_anterior=None, correlacoes=None, incluir=()):
+        """`incluir`: chaves de fora do período que a pessoa marcou como
+        extemporâneas."""
         if self.lote is None:
             raise ValueError("Leia a pasta de XMLs primeiro.")
         if correlacoes is None:
@@ -111,7 +113,7 @@ class GeracaoXml:
             res = geracao.gerar_icms(
                 memoria, self.lote, periodo,
                 saldo_credor_anterior=saldo_credor_anterior,
-                correlacoes=correlacoes, excluir=excluir)
+                correlacoes=correlacoes, excluir=excluir, incluir=incluir)
             self.resultados["ICMS"] = res
             # o participante novo tem o mesmo código nos dois leiautes
             memoria = dict(memoria, participantes=dict(
@@ -119,7 +121,7 @@ class GeracaoXml:
         if "CONTRIB" in leiautes:
             self.resultados["CONTRIB"] = geracao.gerar_contrib(
                 memoria, self.lote, periodo, correlacoes=correlacoes,
-                excluir=excluir)
+                excluir=excluir, incluir=incluir)
         return self.resultados
 
     def bloqueios(self):

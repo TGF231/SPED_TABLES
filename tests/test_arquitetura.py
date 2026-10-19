@@ -36,7 +36,8 @@ PROIBIDO = {
 }
 # a raiz de composição é o único ponto da aplicação que nomeia a
 # implementação concreta de uma porta
-EXCECOES = {("aplicacao", "montagem.py", "sped_tables.infra.referencias_pva")}
+EXCECOES = {("aplicacao", "montagem.py",
+             "sped_tables.infra.referencias_base")}
 
 
 def _imports(caminho):
@@ -67,12 +68,81 @@ class TestRegraDeDependencia(unittest.TestCase):
                                          % (camada, nome, linha, mod))
         self.assertEqual(violacoes, [])
 
+    def test_sped_tables_nunca_importa_o_consolidador(self):
+        """O consolidador roda na máquina de quem compila e pode usar o
+        `sped_tables`; o contrário prenderia o programa a uma ferramenta
+        que ele não leva (nem lê o PVA de quem o usa)."""
+        violacoes = []
+        for raiz, _d, nomes in os.walk(PACOTE):
+            for nome in nomes:
+                if not nome.endswith(".py"):
+                    continue
+                caminho = os.path.join(raiz, nome)
+                for linha, mod in _imports(caminho):
+                    if mod.split(".")[0] == "consolidador":
+                        violacoes.append("%s:%d importa %s" % (
+                            os.path.relpath(caminho, RAIZ), linha, mod))
+        self.assertEqual(violacoes, [])
+
     def test_ninguem_importa_o_lancador(self):
         for raiz, _d, nomes in os.walk(PACOTE):
             for nome in nomes:
                 if nome.endswith(".py"):
                     for _l, mod in _imports(os.path.join(raiz, nome)):
                         self.assertNotEqual(mod, "sped_editor", nome)
+
+
+class TestSemPvaNoPrograma(unittest.TestCase):
+    """O programa não lê a instalação do PVA para validar; só o Abrir no
+    PVA a usa. (Que o `sped_tables` nunca importa o consolidador já está em
+    `TestRegraDeDependencia`.)"""
+
+    # quem pode citar a raiz/pasta do PVA: o Abrir no PVA e quem a escolhe
+    PODEM = {os.path.join("infra", "pva.py"),
+             os.path.join("infra", "config.py"),
+             os.path.join("aplicacao", "envio_pva.py"),
+             os.path.join("interface", "controladores", "gerais.py")}
+    NOMES = ("raiz_pva", "pasta_pva", "pasta_tabelas", "jar_descritor",
+             "PVAS")
+
+    def test_so_o_abrir_no_pva_le_a_instalacao(self):
+        violacoes = []
+        for raiz, _d, nomes in os.walk(PACOTE):
+            for nome in nomes:
+                if not nome.endswith(".py"):
+                    continue
+                caminho = os.path.join(raiz, nome)
+                rel = os.path.relpath(caminho, PACOTE)
+                if rel in self.PODEM:
+                    continue
+                with open(caminho, encoding="utf-8") as fh:
+                    arvore = ast.parse(fh.read())
+                for no in ast.walk(arvore):
+                    if (isinstance(no, ast.Attribute)
+                            and no.attr in self.NOMES
+                            and isinstance(no.value, ast.Name)
+                            and no.value.id == "config"):
+                        violacoes.append("%s:%d config.%s"
+                                         % (rel, no.lineno, no.attr))
+        self.assertEqual(violacoes, [])
+
+    def test_sem_base_a_montagem_liga_a_fonte_vazia(self):
+        from unittest import mock
+        from sped_tables.infra import base_referencia, dados
+        avisos = []
+        dados.ao_avisar(avisos.append)
+        anterior = referencias.atual()
+        try:
+            with mock.patch.object(base_referencia, "em_uso",
+                                   lambda: (None, "nenhuma legível")), \
+                    self.assertLogs("sped_tables", "WARNING"):
+                montagem.configurar()
+            self.assertEqual(type(referencias.atual()),
+                             referencias.Referencias)
+            self.assertTrue(avisos)
+        finally:
+            dados.ao_avisar(None)
+            referencias.definir(anterior)
 
 
 class FonteDeTeste(referencias.Referencias):
@@ -138,6 +208,11 @@ class TestPorta(unittest.TestCase):
         montagem.configurar(fonte)
         self.assertIs(referencias.atual(), fonte)
 
+    def test_montagem_liga_a_base_de_referencia(self):
+        from sped_tables.infra.referencias_base import ReferenciasBase
+        montagem.configurar()
+        self.assertIsInstance(referencias.atual(), ReferenciasBase)
+
 
 class TestSessao(unittest.TestCase):
     """O caso de uso do arquivo aberto, sem tela nenhuma."""
@@ -199,6 +274,37 @@ class TestEnvioPva(unittest.TestCase):
 
     def test_pre_checagem_nunca_levanta(self):
         self.assertEqual(envio_pva.pre_checagem(object()), [])
+        self.assertEqual(envio_pva.pre_checagem_com_aviso(object()), ([], ""))
+
+    def test_pre_checagem_diz_quando_nao_conferiu_pelo_leiaute(self):
+        """Sem a estrutura do leiaute (base ausente ou sem a versão do
+        arquivo) os achados que o PVA recusa nem existem, e a pré-checagem
+        passaria em silêncio: ela devolve também o aviso de que não rodou.
+        Com a estrutura, o aviso é vazio."""
+        from unittest import mock
+        casos = (
+            ({"sem_base": True}, ("base de referência está indisponível",)),
+            ({"fora_da_base": "015", "base": "2026.10.1"},
+             ("015", "não está na base de referência")),
+            ({"fora_da_base": "021", "mais_nova_que_a_base": True,
+              "base": "2026.10.1"},
+             ("021", "mais nova que a base de referência", "2026.10.1",
+              "importe uma base mais nova em Configurações → Base de "
+              "referência…")),
+            ({"versao": "020", "registros_descritor": 10}, ()),
+        )
+        for info, trechos in casos:
+            with self.subTest(info=info), mock.patch.object(
+                    envio_pva.diagnostico, "verificar",
+                    lambda doc, info=info: ([], info)):
+                impedem, aviso = envio_pva.pre_checagem_com_aviso(object())
+                self.assertEqual(impedem, [])
+                if not trechos:
+                    self.assertEqual(aviso, "")
+                for t in trechos:
+                    self.assertIn(t, aviso)
+                if trechos:
+                    self.assertIn("não rodou", aviso)
 
 
 class TestCanal(unittest.TestCase):

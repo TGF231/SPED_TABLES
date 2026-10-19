@@ -1,0 +1,6 @@
+versão=3 TIPO_UTIL, DESC_TIPO, DT_INI, DT_FIM
+MS01|Utilização de crédito para abatimento de saldo devedor FUNDERSUL|01072019|
+MS02|Utilização de crédito para abatimento de saldo devedor FUNDEMS|01102020|
+MS03|Utilização de crédito para abatimento de saldo devedor da apuração normal do ICMS|01032022|
+MS04|Utilização de crédito para abatimento de saldo devedor da apuração do ICMS da Substituição Tributária|01032022|
+MS05|Transferência de crédito originados do Convênio 206/2021.|01012022|

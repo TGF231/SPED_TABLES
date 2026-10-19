@@ -1,0 +1,64 @@
+versão=4 INF_ADIC, DESC_INF, DT_INI, DT_FIM
+AC000001|Número de empregados no último dia do período de apuração|01122016|
+AC000002|Valor da folha de pagamento do período de apuração|01122016|
+AC100001|Número de empregados alocados ao setor produtivo (COPIAI)|01122016|
+AC100002|Valor da folha de pagamento do setor produtivo (COPIAI)|01122016|
+AC100003|Valor do incentivo aprovado na COPIAI|01122016|
+AC100004|Reavaliação do valor do incentivo aprovado no período pela COPIAI|01122016|
+AC100005|Montante do financiamento da COPIAI utilizado até o mês anterior|01122016|
+AC100006|Data de início da fruição do benefício da COPIAI (dd/mm/aaaa)|01122016|
+AC100007|Saldo do financiamento da COPIAI no início do período de apuração|01122016|
+AC100008|Total das saídas das operações incentivadas pela COPIAI no período de apuração|01122016|
+AC100009|Total das saídas no período de apuração|01122016|
+AC100010|Percentual das saídas com incentivo da COPIAI em relação ao total das saídas no período [(AC100008/AC100009)*100]|01122016|
+AC100011|Percentual máximo de dedução aprovado pela COPIAI para o período de apuração|01122016|
+AC100012|Valor do ICMS financiado por incentivo da  COPIAI no período de apuração|01122016|
+AC100013|Saldo do financiamento da COPIAI no final do período de apuração|01122016|
+AC200001|Quantidade de bois recebidos para abate no período de apuração (em cabeças)|01122016|
+AC200002|Quantidade de vacas recebidas para abate no período de apuração (em cabeças)|01122016|
+AC200003|Quantidade de suínos recebidos para abate no período de apuração (em cabeças)|01122016|
+AC200004|Quantidade de ovinos recebidos para abate no período de apuração (em cabeças)|01122016|
+AC200005|Quantidade de caprinos recebidos para abate no período de apuração (em cabeças)|01122016|
+AC200006|Quantidade de aves recebidas para abate no período de apuração (em cabeças)|01122016|
+AC200007|Peso total dos bois recebidos para abate no período de apuração (em kg)|01122016|
+AC200008|Peso total das vacas recebidas para abate no período de apuração (em kg)|01122016|
+AC200009|Peso total dos suínos recebidos para abate no período de apuração (em kg)|01122016|
+AC200010|Peso total dos ovinos recebidos para abate no período de apuração (em kg)|01122016|
+AC200011|Peso total dos caprinos recebidos para abate no período de apuração (em kg)|01122016|
+AC200012|Peso total das aves recebidas para abate no período de apuração (em kg)|01122016|
+AC200013|Total das saídas de carne bovina com osso no período de apuração (em kg)|01122016|
+AC200014|Total das saídas de carne bovina desossada no período de apuração (em kg)|01122016|
+AC200015|Total das saídas de carne suína no período de apuração (em kg)|01122016|
+AC200016|Total das saídas de carne ovina no período de apuração (em Kg)|01122016|
+AC200017|Total das saídas de carne caprina no período de apuração (em kg)|01122016|
+AC200018|Total de saídas de aves abatidas, inteira ou em corte, no período de apuração (kg)|01122016|
+AC200019|Total das saídas de subprodutos comestíveis no período de apuração (em kg)|01122016|
+AC200020|Total das saídas de couro no período de apuração na unidade especificada no código AC200021|01122016|
+AC200021|Unidade de medida (m2, pç, ou kg) adotada na informação do código AC200020|01122016|
+AC200022|Total das saídas de outros produtos não comestíveis no período de apuração (em kg)|01122016|
+AC200023|Total das saídas de carne bovina com osso no período de apuração (em R$)|01122016|
+AC200024|Total das saídas de carne bovina desossada no período de apuração (em R$)|01122016|
+AC200025|Total das saídas de carne suína no período de apuração (em R$)|01122016|
+AC200026|Total das saídas de carne ovina no período de apuração (em R$)|01122016|
+AC200027|Total das saídas de carne caprina no período de apuração (em R$)|01122016|
+AC200028|Total de saídas de aves abatidas, inteira ou em corte, no período de apuração (em R$)|01122016|
+AC000029|Total das saídas de subprodutos comestíveis no período de apuração (em R$)|01122016|30052017
+AC000030|Total das saídas de couro no período de apuração (em R$)|01122016|30052017
+AC000031|Total das saídas de outros produtos não comestíveis no período de apuração (em R$)|01122016|30052017
+AC200029|Total das saídas de subprodutos comestíveis no período de apuração (em R$)|01052017|
+AC200030|Total das saídas de couro no período de apuração (em R$)|01052017|
+AC200031|Total das saídas de outros produtos não comestíveis no período de apuração (em R$)|01052017|
+AC100014|Valor total das Guias de recolhimento de FGTS (GFIP) do mês anterior referente aos beneficiários do incentivo da Lei 3.495/2019|01082022|
+AC100015|Quantidade de empregados da relação do FGTS (GFIP) do mês anterior refrente aos beneficiários do incentivo da Lei 3.495/2019|01082022|
+AC100016|Valor total de pagamento de plano de saúde dos empregados beneficiados referentes aos contribuintes incentivados pela Lei 3.495/2019|01082022|
+AC100017|Quantidade de empregados beneficados do plano de saúde dos contribuintes incentivados pela Lei 3.495/2019|01082022|
+AC100018|Valor total de pagamento da apólice de seguro de vida da relação de empregados|01082022|
+AC100019|Quantidade de empregados segurados em apólice de seguro de vida dos beneficiários referente aos contribuintes incentivados da Lei 3.495/2019|01082022|
+AC100020|Valor do crédito presumido utilizado pelos beneficiários do incentivo da Lei 3.495/2019|01082022|
+AC100021|Valor do ICMS  a recolher no mês de referência pelos beneficiários do incentivo da Lei 3.495/2019|01082022|
+AC100022|Valor da contribuição para o fundo no mês de referência pelos beneficiários do incetivo da Lei 3.495/2019|01082022|
+AC100023|Percentual de crédito presumido outorgado pelo COPIAI para utilização dos beneficiários do incentivo da Lei 3.495/2019|01082022|
+AC100024|Valor do faturamento total referente às saídas da produção própria dos estabelecimentos beneficiários do incentivo da Lei 3.495/2019|01082022|
+AC100025|Valor total dos investimentos fixos e financeiros realizados no ano anterior pelos beneficiários do incentivo da Lei 3.495/2019|01082022|
+AC020021|Apuração do ICMS; Outros créditos; Crédito outorgado aos distribuidores de etanol hidratado combustível - EHC para assegurar o diferencial competitivo de que trata a EC no 123/2022 (Decreto no 11.110/2022, Portaria no 447/2022)|01082022|
+AC120001|Apuração do ICMS ST; Outros créditos; Crédito outorgado aos distribuidores de etanol hidratado combustível - EHC para assegurar o diferencial competitivo de que trata a EC no 123/2022 (Decreto no 11.110/2022, Portaria no 447/2022)|01082022|

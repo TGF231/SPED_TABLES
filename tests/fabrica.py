@@ -94,7 +94,7 @@ def icms_basico(itens=None, frete="0", uf="MG"):
     são três itens de R$ 10,00 com CST 000, CFOP 1102 e 18%.
     """
     m = Montador("ICMS")
-    m.reg("0000", COD_VER="019", COD_FIN="0", DT_INI="01082026",
+    m.reg("0000", COD_VER="020", COD_FIN="0", DT_INI="01082026",
           DT_FIN="31082026", NOME="EMPRESA TESTE LTDA", CNPJ=CNPJ_TESTE,
           UF=uf, IE="0012345670012", COD_MUN="3106200", IND_PERFIL="A",
           IND_ATIV="1")

@@ -131,7 +131,7 @@ def main():
         sys.exit(autoteste.executar(app, sys.argv[2:]))
     # antes de qualquer janela: exceção num slot, sem isto, encerra o processo
     falhas.instalar(avisar=avisar_erro)
-    # liga as regras fiscais às tabelas oficiais do PVA instalado
+    # liga as regras fiscais à base de referência
     montagem.configurar()
     from PyQt6.QtCore import qInstallMessageHandler
     qInstallMessageHandler(_mensagens_do_qt)
@@ -152,11 +152,11 @@ def main():
     # e troca o tema para a densidade compacta
     janela.dimensionar_para_a_tela()
     janela.show()
-    # arquivo de dados ilegível (cadastro, acervo, configuração) é guardado à
-    # parte pela infra; aqui a pessoa fica sabendo — inclusive dos achados
-    # antes de a janela existir
+    # os avisos da infra (arquivo de dados ilegível, base de referência
+    # indisponível) chegam aqui — inclusive os achados antes de a janela
+    # existir. O título é genérico: o texto de cada aviso diz o que houve
     dados.ao_avisar(lambda texto: QMessageBox.warning(
-        janela, "Arquivo de dados ilegível", texto))
+        janela, "Aviso", texto))
     primeira_instalacao(janela)
     # abre direto se um caminho for passado na linha de comando. Pelo mesmo
     # caminho do histórico: montar as abas à mão deixava o menu desabilitado,

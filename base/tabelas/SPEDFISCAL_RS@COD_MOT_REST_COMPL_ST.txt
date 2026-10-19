@@ -1,0 +1,75 @@
+versão=3 COD_AJUR, DESC_AJUR, DT_INI, DT_FIM
+RS000|saída sem RESSARCIMENTO-ST ou COMPLEMENTO-ST - saída a destinatário deste Estado que não seja consumidor final, ao abrigo da exclusão da responsabilidade prevista no RICMS, Livro III, art. 11 (IN DRP 45/98, subitem 19.3-A.1.13). Exemplo: saída em transferência entre estabelecimentos. Não deve ser utilizado nas saídas a consumidor final|01042021|
+RS001|saída com RESSARCIMENTO-ST pela sistemática do RICMS, Livro III, arts. 24 e 24-A|01012021|
+RS011|baixa sem RESSARCIMENTO-ST - Furto ou Roubo - mercadoria recebida de contribuinte substituído|01012021|
+RS012|baixa sem RESSARCIMENTO-ST - Perda, extravio ou Deterioração - mercadoria recebida de contribuinte substituído|01012021|
+RS015|baixa sem RESSARCIMENTO-ST - Mercadoria destinada para uso e Consumo ou para fim alheio à atividade do estabelecimento - mercadoria recebida de contribuinte substituído|01012021|
+RS100|saída com RESSARCIMENTO-ST - calculado com base no valor de saída inferior ao valor da BC ICMS ST - RICMS, Livro III, art. 25-B. Operação sem redução de Base de Cálculo. Este código também pode ser utilizado quando o cálculo do Ajuste-ST para o item resultar neutro (nem complemento/nem ressarcimento)|01012023|
+RS101|saída com RESSARCIMENTO-ST - calculado com base no valor de saída inferior ao valor da BC ICMS ST - RICMS, Livro III, art. 25-B. Operação com alíquota efetiva de 7% prevista no art.23, II, XXIV, XXX, LIV, LV, LXIX|01012023|
+RS102|saída com RESSARCIMENTO-ST - calculado com base no valor de saída inferior ao valor da BC ICMS ST - RICMS, Livro III, art. 25-B. Operação com alíquota efetiva de 5,6% prevista no art.23, XIV|01012023|
+RS103|saída com RESSARCIMENTO-ST - calculado com base no valor de saída inferior ao valor da BC ICMS ST - RICMS, Livro III, art. 25-B. Operação com alíquota efetiva de 4% prevista no art.23, XV|01012023|
+RS104|saída com RESSARCIMENTO-ST - calculado com base no valor de saída inferior ao valor da BC ICMS ST - RICMS, Livro III, art. 25-B. Operação com alíquota efetiva de 12% prevista no art.23, XXI, XXV, LXVI, LXXXV|01012023|
+RS105|saída com RESSARCIMENTO-ST - calculado com base no valor de saída inferior ao valor da BC ICMS ST - RICMS, Livro III, art. 25-B. Operação com alíquota efetiva prevista de no mínimo 2% no art.23, LXVII - b)|01012023|
+RS151|saída com RESSARCIMENTO-ST - calculado com base no valor de saída inferior ao valor da BC ICMS ST - RICMS, Livro III, art. 25-B. Operação com Redução de Base de Cálculo de 70,588% prevista no art.23, XVII|01012023|
+RS152|saída com RESSARCIMENTO-ST - calculado com base no valor de saída inferior ao valor da BC ICMS ST - RICMS, Livro III, art. 25-B. Operação com Redução de Base de Cálculo de 53,847% prevista no art.23 XVIII - a,1|01012023|
+RS153|saída com RESSARCIMENTO-ST - calculado com base no valor de saída inferior ao valor da BC ICMS ST - RICMS, Livro III, art. 25-B. Operação com Redução de Base de Cálculo de 58,333% prevista no art.23 XVIII - a,2 - b,3, LX - b|01012023|
+RS154|saída com RESSARCIMENTO-ST - calculado com base no valor de saída inferior ao valor da BC ICMS ST - RICMS, Livro III, art. 25-B. Operação com Redução de Base de Cálculo de 38,889% prevista no art.23 XVIII - b,1|01012023|
+RS155|saída com RESSARCIMENTO-ST - calculado com base no valor de saída inferior ao valor da BC ICMS ST - RICMS, Livro III, art. 25-B. Operação com Redução de Base de Cálculo de 41,176% prevista no art.23 XVIII - b,2, LX - a|01012023|
+RS156|saída com RESSARCIMENTO-ST - calculado com base no valor de saída inferior ao valor da BC ICMS ST - RICMS, Livro III, art. 25-B. Operação com Redução de Base de Cálculo de 40% prevista no art.23 XVIII - b,4|01012023|
+RS211|baixa com RESSARCIMENTO-ST - Furto ou Roubo - mercadoria recebida de contribuinte substituto - RICMS, Livro III, art. 22|01012021|
+RS212|baixa com RESSARCIMENTO-ST - Perda, extravio ou Deterioração - mercadoria recebida de contribuinte substituto - RICMS, Livro III, art. 22|01012021|
+RS213|saída com RESSARCIMENTO-ST - Saída para outra UF (RICMS, Livro III, art.23, I)|01042021|
+RS214|saída com RESSARCIMENTO-ST - Exportação - RICMS, Livro III, art. 23, I|01012021|
+RS215|baixa com RESSARCIMENTO-ST - Mercadoria destinada para uso e consumo ou para fim alheio à atividade do estabelecimento - mercadoria recebida de contribuinte substituto - RICMS, Livro III, art.22|01012021|
+RS217|saída com RESSARCIMENTO-ST - Saída Interna com nova ST - RICMS, Livro III, art.23, III|01012021|
+RS219|saída com RESSARCIMENTO-ST - Saída de mercadorias beneficiadas com a isenção de que trata o art. 9º, CXX ou CLXIV, do Livro I - RICMS, Livro III, art.23, V|01012021|
+RS300|saída com COMPLEMENTO-ST - calculado com base no valor de saída da mercadoria superior ao valor da BC ICMS ST - RICMS, Livro III, art. 25-B. Operação sem redução de Base de Cálculo. Este código também pode ser utilizado quando o cálculo do Ajuste-ST para o item resultar neutro (nem complemento/nem ressarcimento)|01012023|
+RS301|saída com COMPLEMENTO-ST - calculado com base no valor de saída da mercadoria superior ao valor da BC ICMS ST - RICMS, Livro III, art. 25-B. Operação com alíquota efetiva de 7% prevista no art.23, II, XXIV, XXX, LIV, LV, LXIX|01012023|
+RS302|saída com COMPLEMENTO-ST - calculado com base no valor de saída da mercadoria superior ao valor da BC ICMS ST - RICMS, Livro III, art. 25-B. Operação com alíquota efetiva de 5,6% prevista no art.23, XIV|01012023|
+RS303|saída com COMPLEMENTO-ST - calculado com base no valor de saída da mercadoria superior ao valor da BC ICMS ST - RICMS, Livro III, art. 25-B. Operação com alíquota efetiva de 4% prevista no art.23, XV|01012023|
+RS304|saída com COMPLEMENTO-ST - calculado com base no valor de saída da mercadoria superior ao valor da BC ICMS ST - RICMS, Livro III, art. 25-B. Operação com alíquota efetiva de 12% prevista no art.23, XXI, XXV, LXVI, LXXXV|01012023|
+RS305|saída com COMPLEMENTO-ST - calculado com base no valor de saída da mercadoria superior ao valor da BC ICMS ST - RICMS, Livro III, art. 25-B. Operação com alíquota efetiva prevista de no mínimo 2% no art.23, LXVII - b)|01012023|
+RS351|saída com COMPLEMENTO-ST - calculado com base no valor de saída da mercadoria superior ao valor da BC ICMS ST - RICMS, Livro III, art. 25-B. Operação com Redução de Base de Cálculo de 70,588% prevista no art.23, XVII|01012023|
+RS352|saída com COMPLEMENTO-ST - calculado com base no valor de saída da mercadoria superior ao valor da BC ICMS ST - RICMS, Livro III, art. 25-B. Operação com Redução de Base de Cálculo de 53,847% prevista no art.23 XVIII - a,1|01012023|
+RS353|saída com COMPLEMENTO-ST - calculado com base no valor de saída da mercadoria superior ao valor da BC ICMS ST - RICMS, Livro III, art. 25-B. Operação com Redução de Base de Cálculo de 58,333% prevista no art.23 XVIII - a,2 - b,3, LX - b|01012023|
+RS354|saída com COMPLEMENTO-ST - calculado com base no valor de saída da mercadoria superior ao valor da BC ICMS ST - RICMS, Livro III, art. 25-B. Operação com Redução de Base de Cálculo de 38,889% prevista no art.23 XVIII - b,1|01012023|
+RS355|saída com COMPLEMENTO-ST - calculado com base no valor de saída da mercadoria superior ao valor da BC ICMS ST - RICMS, Livro III, art. 25-B. Operação com Redução de Base de Cálculo de 41,176% prevista no art.23 XVIII - b,2, LX - a|01012023|
+RS356|saída com COMPLEMENTO-ST - calculado com base no valor de saída da mercadoria superior ao valor da BC ICMS ST - RICMS, Livro III, art. 25-B. Operação com Redução de Base de Cálculo de 40% prevista no art.23 XVIII - b,4|01012023|
+RS400|saída sem RESSARCIMENTO-ST ou COMPLEMENTO-ST - saída em devolução|01012021|
+RS413|saída sem RESSARCIMENTO-ST ou COMPLEMENTO-ST - saída em devolução para OUF, quando a retenção inicial foi realizada pelo próprio remente da devolução, nos moldes do RICMS, Livro III, art. 53-A (RICMS, Livro III, art. 25)|01012021|
+RS500|entrada sem estorno de RESSARCIMENTO-ST ou de COMPLEMENTO-ST - entrada em devolução ou retorno de mercadoria não entregue que na saída teve registro no código RS000|01012021|
+RS501|entrada em devolução ou retorno de mercadoria não entregue que na saída teve registro no código RS001|01012021|
+RS600|entrada com estorno do RESSARCIMENTO-ST - entrada em devolução ou retorno de mercadoria não entregue que na saída teve registro no código RS100|01012021|
+RS601|Entrada com estorno do RESSARCIMENTO-ST - entrada em devolução ou retorno de mercadoria não entregue que na saída teve registro no código RS101|01012023|
+RS602|Entrada com estorno do RESSARCIMENTO-ST - entrada em devolução ou retorno de mercadoria não entregue que na saída teve registro no código RS102|01012023|
+RS603|Entrada com estorno do RESSARCIMENTO-ST - entrada em devolução ou retorno de mercadoria não entregue que na saída teve registro no código RS103|01012023|
+RS604|Entrada com estorno do RESSARCIMENTO-ST - entrada em devolução ou retorno de mercadoria não entregue que na saída teve registro no código RS104|01012023|
+RS605|Entrada com estorno do RESSARCIMENTO-ST - entrada em devolução ou retorno de mercadoria não entregue que na saída teve registro no código RS105|01012023|
+RS651|Entrada com estorno do RESSARCIMENTO-ST - entrada em devolução ou retorno de mercadoria não entregue que na saída teve registro no código RS151|01012023|
+RS652|Entrada com estorno do RESSARCIMENTO-ST - entrada em devolução ou retorno de mercadoria não entregue que na saída teve registro no código RS152|01012023|
+RS653|Entrada com estorno do RESSARCIMENTO-ST - entrada em devolução ou retorno de mercadoria não entregue que na saída teve registro no código RS153|01012023|
+RS654|Entrada com estorno do RESSARCIMENTO-ST - entrada em devolução ou retorno de mercadoria não entregue que na saída teve registro no código RS154|01012023|
+RS655|Entrada com estorno do RESSARCIMENTO-ST - entrada em devolução ou retorno de mercadoria não entregue que na saída teve registro no código RS155|01012023|
+RS656|Entrada com estorno do RESSARCIMENTO-ST - entrada em devolução ou retorno de mercadoria não entregue que na saída teve registro no código RS156|01012023|
+RS713|entrada com estorno do RESSARCIMENTO-ST - entrada em devolução ou retorno de mercadoria não entregue que na saída teve registro no código RS213|01012021|
+RS714|entrada com estorno do RESSARCIMENTO-ST - entrada em devolução ou retorno de mercadoria não entregue que na saída teve registro anterior no código RS214|01012021|
+RS717|entrada com estorno do RESSARCIMENTO-ST - entrada em devolução ou retorno de mercadoria não entregue que na saída teve registro anterior no código RS217|01012021|
+RS719|entrada com estorno do RESSARCIMENTO-ST - entrada em devolução ou retorno de mercadoria não entregue que na saída teve registro anterior no código RS219|01012021|
+RS800|entrada com estorno do COMPLEMENTO-ST - entrada em devolução ou retorno de mercadoria não entregue que na saída teve registro no código RS300|01012021|
+RS801|Entrada com estorno do COMPLEMENTO-ST - entrada em devolução ou retorno de mercadoria não entregue que na saída teve registro no código RS301|01012023|
+RS802|Entrada com estorno do COMPLEMENTO-ST - entrada em devolução ou retorno de mercadoria não entregue que na saída teve registro no código RS302|01012023|
+RS803|Entrada com estorno do COMPLEMENTO-ST - entrada em devolução ou retorno de mercadoria não entregue que na saída teve registro no código RS303|01012023|
+RS804|Entrada com estorno do COMPLEMENTO-ST - entrada em devolução ou retorno de mercadoria não entregue que na saída teve registro no código RS304|01012023|
+RS805|Entrada com estorno do COMPLEMENTO-ST - entrada em devolução ou retorno de mercadoria não entregue que na saída teve registro no código RS305|01012023|
+RS851|Entrada com estorno do COMPLEMENTO-ST - entrada em devolução ou retorno de mercadoria não entregue que na saída teve registro no código RS351|01012023|
+RS852|Entrada com estorno do COMPLEMENTO-ST - entrada em devolução ou retorno de mercadoria não entregue que na saída teve registro no código RS352|01012023|
+RS853|Entrada com estorno do COMPLEMENTO-ST - entrada em devolução ou retorno de mercadoria não entregue que na saída teve registro no código RS353|01012023|
+RS854|Entrada com estorno do COMPLEMENTO-ST - entrada em devolução ou retorno de mercadoria não entregue que na saída teve registro no código RS354|01012023|
+RS855|Entrada com estorno do COMPLEMENTO-ST - entrada em devolução ou retorno de mercadoria não entregue que na saída teve registro no código RS355|01012023|
+RS856|Entrada com estorno do COMPLEMENTO-ST - entrada em devolução ou retorno de mercadoria não entregue que na saída teve registro no código RS356|01012023|
+RS000|saída sem RESSARCIMENTO-ST ou COMPLEMENTO-ST, tal como a saída de mercadoria com ST não destinada a consumidor final deste Estado - RICMS, Livro III, art. 11|01012021|31032021
+RS100|saída com RESSARCIMENTO-ST - calculado com base no valor de saída inferior ao valor da BC ICMS ST - RICMS, Livro III, art. 25-B|01012021|31032021
+RS100|saída com RESSARCIMENTO-ST - calculado com base no valor de saída inferior ao valor da BC ICMS ST - RICMS, Livro III, art. 25-B. Este código também pode ser utilizado quando o cálculo do Ajuste-ST para o item resultar neutro (nem complemento/nem ressarcimento)|01042021|31122022
+RS213|saída com RESSARCIMENTO-ST - Saída para outra UF (RICMS, Livro III, art.23, I) ou devolução para fornecedor de outra UF, quando a retenção inicial foi realizada pelo próprio remente da devolução, nos moldes do RICMS, Livro III, art. 53-A (RICMS, Livro III, art. 25)|01012021|31032021
+RS300|saída com COMPLEMENTO-ST - calculado com base no valor de saída da mercadoria superior ao valor da BC ICMS ST- RICMS, Livro III, art. 25-B|01012021|31032021
+RS300|saída com COMPLEMENTO-ST - calculado com base no valor de saída da mercadoria superior ao valor da BC ICMS ST- RICMS, Livro III, art. 25-B. Este código também pode ser utilizado quando o cálculo do Ajuste-ST para o item resultar neutro (nem complemento/nem ressarcimento)|01042021|31122022

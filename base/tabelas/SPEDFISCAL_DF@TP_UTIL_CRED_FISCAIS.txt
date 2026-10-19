@@ -1,0 +1,7 @@
+versão=2 TIPO_UTIL, DESC_TIPO, DT_INI, DT_FIM
+DF01|Dedução|01072019|
+DF21|Compensação|01072019|
+DF41|Transferência|01072019|
+DF61|Restituição|01072019|
+DF81|Estorno|01072019|
+DF99|Outros|01072019|

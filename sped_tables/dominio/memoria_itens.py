@@ -410,6 +410,32 @@ def _aprender_modelos(memoria, doc):
             cst: dict(zip(("ALIQ_PIS", "CST_COFINS", "ALIQ_COFINS"),
                           _mais_frequente(c).split("|")))
             for cst, c in cont.items()}
+        # receitas sem contribuição (M400/M410 e M800/M810): a natureza que
+        # a empresa usa em cada CST e a conta de cada registro — o que não
+        # se acha pelo NCM do produto sai daqui
+        nats, contas = {}, {}
+        for pai, filho, campo in (("M400", "M410", "CST_PIS"),
+                                  ("M800", "M810", "CST_COFINS")):
+            i_cst = doc._ix(pai, campo)
+            i_nat = doc._ix(filho, "NAT_REC")
+            i_cp, i_cf = doc._ix(pai, "COD_CTA"), doc._ix(filho, "COD_CTA")
+            for r in doc.registros:
+                if r.reg != pai:
+                    continue
+                cst = (r.valor(i_cst) or "").strip()
+                conta = (r.valor(i_cp) or "").strip()
+                if conta:
+                    contas["%s|%s" % (pai, cst)] = conta
+                for f in r.filhos:
+                    if f.reg != filho:
+                        continue
+                    nat = (f.valor(i_nat) or "").strip()
+                    _conta(nats.setdefault(cst, {}), nat)
+                    conta = (f.valor(i_cf) or "").strip()
+                    if conta:
+                        contas["%s|%s|%s" % (filho, cst, nat)] = conta
+        memoria["naturezas_receita"] = nats
+        memoria["contas_receita"] = contas
     if doc.layout == "ICMS":
         i = doc._ix("E110", "VL_SLD_CREDOR_TRANSPORTAR")
         e110 = next((r for r in doc.registros if r.reg == "E110"), None)

@@ -1,0 +1,9 @@
+versão=6 INF_ADIC, DESC_INF, DT_INI, DT_FIM
+MG000001|Número de empregados no último dia do período.|01012009|28022022
+MG000002|Valor da Folha de Pagamento.|01012009|28022022
+MG000003|Valor devido de Cofins.|01012009|01102012
+MG000004|Energia elétrica consumida no período (em kWh).|01012009|31122019
+MG000005|Certificado de Incentivo à Cultura|01012015|
+MG000006|Certificado de Incentivo ao Esporte|01012015|
+MG000007|Valor contábil de frete não utilizado na atividade principal|01102015|
+MG000008|Certificado de Incentivo à Cultura limitado a 5%. Parágrafo 3º, Art. 118, Decreto nº 48.819/2024|01062024|

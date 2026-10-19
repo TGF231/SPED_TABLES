@@ -1,0 +1,15 @@
+versão=3 TIPO_UTIL, DESC_TIPO, DT_INI, DT_FIM
+PR01|Dedução; Crédito extra-apuração biodisel - alínea a, do inciso III, do §2º, do art. 60-B, do Anexo IX do RICMS/2017|01012022|31012022
+PR01|Dedução; Crédito extra-apuração biodisel - alínea a, do inciso III, do §2º, do art. 60-B, do Anexo IX do RICMS/2017|01022022|01022022
+PR21|Compensação|01012022|31012022
+PR21|Compensação|01022022|
+PR41|Transferência|01012022|31012022
+PR41|Transferência|01022022|
+PR61|Restituição - Ressarcimento; Ressarcimento biodisel - alínea "b", do inciso III, do §2º, do art. 60-B, do Anexo IX do RICMS/2017|01012022|31012022
+PR61|Restituição - Ressarcimento; Ressarcimento biodisel - alínea "b", do inciso III, do §2º, do art. 60-B, do Anexo IX do RICMS/2017|01022022|01022022
+PR81|Estorno|01012022|31012022
+PR81|Estorno|01022022|
+PR99|Outros|01012022|31012022
+PR99|Outros|01022022|
+PR01|Dedução; Dedução do saldo devedor apurado|02022022|
+PR61|Restituição - Ressarcimento; Ressarcimento biodisel|02022022|

@@ -1,0 +1,10 @@
+versão=1.0
+000|ICMS a recolher|01012009|
+001|ICMS da substituição tributária pelas entradas|01012009|
+002|ICMS da substituição tributária pelas saídas para o Estado|01012009|
+003|Antecipação do diferencial de alíquotas do ICMS|01012009|
+004|Antecipação do ICMS da importação|01012009|
+005|Antecipação tributária|01012009|
+006|ICMS resultante da alíquota adicional dos itens incluídos no Fundo de Combate à Pobreza|01012009|
+090|Outras obrigações do ICMS|01012009|
+999|ICMS da substituição tributária pelas saídas para outro Estado|01012009|

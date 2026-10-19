@@ -1,0 +1,2 @@
+versão=1 COD_IPM, DESC_COD, DT_INI, DT_FIM
+RJVAF30001|Revendedor autônomo - venda porta a porta|01012024|

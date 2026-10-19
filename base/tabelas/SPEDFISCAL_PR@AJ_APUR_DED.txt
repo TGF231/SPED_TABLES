@@ -1,0 +1,489 @@
+versão=50 COD_AJUR, DESC_AJUR, DT_INI, DT_FIM
+PR020021|ICMS; Outros créditos; Ativo imobilizado - CIAP|01012009|
+PR010022|ICMS; Estorno de créditos; Ativo imobilizado|01012009|
+PR020041|ICMS; Outros créditos; Material de uso e consumo|01012009|
+PR010042|ICMS; Estorno de créditos; Material de uso e consumo|01012009|
+PR020061|ICMS; Outros créditos; Transferencia entre centralizado/centralizador|01012009|
+PR000062|ICMS; Outros débitos; Transferencia entre centralizado/centralizador|01012009|
+PR020071|ICMS; Outros créditos; Transferencia recebida de saldo acumulado|01012009|30092018
+PR000072|ICMS; Outros débitos; Transferencia realizada de saldo acumulado|01012009|
+PR000081|ICMS; Outros débitos; Diferencial de aliquota|01012009|30092016
+PR009999|ICMS; Outros débitos; Demais casos|01012009|
+PR059999|ICMS; Débito especial; Demais casos|01012009|
+PR109999|ICMS ST; Outros débitos; Demais casos|01012009|
+PR019999|ICMS; Estorno de créditos; Demais casos|01012009|
+PR119999|ICMS ST; Estorno de créditos; Demais casos|01012009|
+PR029999|ICMS; Outros créditos; Demais casos|01012009|
+PR129999|ICMS ST; Outros créditos; Demais casos|01012009|30062024
+PR039999|ICMS; Estorno de débitos; Demais casos|01012009|
+PR139999|ICMS ST; Estorno de débitos; Demais casos|01012009|
+PR049999|ICMS; Deduções do imposto apurado; Demais casos|01012009|
+PR149999|ICMS ST; Deduções do imposto apurado; Demais casos|01012009|
+PR159999|ICMS ST; Débito especial; Demais casos|01012009|
+PR023050|ICMS: Ajuste a crédito referente ao valor do ICMS incremental a ser transportado para a GIA/ICMS da inscrição auxiliar|01012013|04072018
+PR020168|ICMS; Outros créditos; Imposto postergado|01012014|
+PR000158|ICMS; Outros débitos; Imposto postergado|01012014|
+PR020068|ICMS; Outros créditos; Imposto recolhido antecipadamente|01012014|
+PR000031|ICMS; Outros débitos; Mudança de forma de tributação da Mercadoria|01092014|31122016
+PR000032|ICMS; Outros débitos; Mudança de forma de tributação da Mercadoria|01092014|01052017
+PR000033|ICMS; Outros débitos; Mudança de forma de tributação da Mercadoria|01092014|01052017
+PR000034|ICMS; Outros débitos; Mudança de forma de tributação da Mercadoria|01092014|01052017
+PR000035|ICMS; Outros débitos; Mudança de forma de tributação da Mercadoria|01092014|01052017
+PR000036|ICMS; Outros débitos; Mudança de forma de tributação da Mercadoria|01092014|01052017
+PR000037|ICMS; Outros débitos; Mudança de forma de tributação da Mercadoria|01092014|01052017
+PR000038|ICMS; Outros débitos; Transporte para FACC|01032015|
+PR020001|ICMS; Outros créditos; Crédito presumido previsto no item 1 do Anexo III do RICMS|01032015|01102017
+PR020002|ICMS; Outros créditos; Crédito presumido previsto no item 2 do Anexo III do RICMS|01032015|31122015
+PR020003|ICMS; Outros créditos; Crédito presumido previsto no item 3 do Anexo III do RICMS|01032015|31122015
+PR020004|ICMS; Outros créditos; Crédito presumido previsto no item 4 do Anexo III do RICMS|01032015|01102017
+PR020005|ICMS; Outros créditos; Crédito presumido previsto no item 5 do Anexo III do RICMS|01032015|01102017
+PR020006|ICMS; Outros créditos; Crédito presumido previsto no item 6 do Anexo III do RICMS|01032015|01102017
+PR020007|ICMS; Outros créditos; Crédito presumido previsto no item 7 do Anexo III do RICMS|01032015|01102017
+PR020008|ICMS; Outros créditos; Crédito presumido previsto no item 8 do Anexo III do RICMS|01032015|01102017
+PR020009|ICMS; Outros créditos; Crédito presumido previsto no item 9 do Anexo III do RICMS|01032015|01102017
+PR020010|ICMS; Outros créditos; Crédito presumido previsto no item 10 do Anexo III do RICMS|01032015|01102017
+PR020011|ICMS; Outros créditos; Crédito presumido previsto no item 11 do Anexo III do RICMS|01032015|01102017
+PR020012|ICMS; Outros créditos; Crédito presumido previsto no item 12 do Anexo III do RICMS|01032015|01102017
+PR020013|ICMS; Outros créditos; Crédito presumido previsto no item 12-A do Anexo III do RICMS|01032015|31122015
+PR020014|ICMS; Outros créditos; Crédito presumido previsto no item 13 do Anexo III do RICMS|01032015|01102017
+PR020015|ICMS; Outros créditos; Crédito presumido previsto no item 14 do Anexo III do RICMS|01032015|01102017
+PR020016|ICMS; Outros créditos; Crédito presumido previsto no item 15 do Anexo III do RICMS|01032015|01102017
+PR020017|ICMS; Outros créditos; Crédito presumido previsto no item 16 do Anexo III do RICMS|01032015|30062015
+PR020018|ICMS; Outros créditos; Crédito presumido previsto no item 16-A do Anexo III do RICMS|01032015|31122015
+PR020019|ICMS; Outros créditos; Crédito presumido previsto no item 17 do Anexo III do RICMS|01032015|31122015
+PR020020|ICMS; Outros créditos; Crédito presumido previsto no item 18 do Anexo III do RICMS|01032015|31122015
+PR020022|ICMS; Outros créditos; Crédito presumido previsto no item 19 do Anexo III do RICMS|01032015|01102017
+PR020023|ICMS; Outros créditos; Crédito presumido previsto no item 20 do Anexo III do RICMS|01032015|01102017
+PR020024|ICMS; Outros créditos; Crédito presumido previsto no item 21 do Anexo III do RICMS|01032015|31122015
+PR020025|ICMS; Outros créditos; Crédito presumido previsto no item 22 do Anexo III do RICMS|01032015|30062015
+PR020026|ICMS; Outros créditos; Crédito presumido previsto no item 22-A do Anexo III do RICMS|01032015|01102017
+PR020027|ICMS; Outros créditos; Crédito presumido previsto no item 23 do Anexo III do RICMS|01032015|01102017
+PR020028|ICMS; Outros créditos; Crédito presumido previsto no item 24 do Anexo III do RICMS|01032015|01102017
+PR020029|ICMS; Outros créditos; Crédito presumido previsto no item 25 do Anexo III do RICMS|01032015|01102017
+PR020030|ICMS; Outros créditos; Crédito presumido previsto no item 26 do Anexo III do RICMS|01032015|01102017
+PR020031|ICMS; Outros créditos; Crédito presumido previsto no item 27 do Anexo III do RICMS|01032015|01102017
+PR020032|ICMS; Outros créditos; Crédito presumido previsto no item 28 do Anexo III do RICMS|01032015|01102017
+PR020033|ICMS; Outros créditos; Crédito presumido previsto no item 29 do Anexo III do RICMS|01032015|30062015
+PR020034|ICMS; Outros créditos; Crédito presumido previsto no item 29-A do Anexo III do RICMS|01032015|01102017
+PR020035|ICMS; Outros créditos; Crédito presumido previsto no item 30 do Anexo III do RICMS|01032015|01102017
+PR020036|ICMS; Outros créditos; Crédito presumido previsto no item 30-A do Anexo III do RICMS|01032015|01102017
+PR020037|ICMS; Outros créditos; Crédito presumido previsto no item 31 do Anexo III do RICMS|01032015|01102017
+PR020038|ICMS; Outros créditos; Crédito presumido previsto no item 32 do Anexo III do RICMS|01032015|01102017
+PR020039|ICMS; Outros créditos; Crédito presumido previsto no item 33 do Anexo III do RICMS|01032015|01102017
+PR020040|ICMS; Outros créditos; Crédito presumido previsto no item 34 do Anexo III do RICMS|01032015|31122015
+PR020042|ICMS; Outros créditos; Crédito presumido previsto no item 36 do Anexo III do RICMS|01032015|31122015
+PR020043|ICMS; Outros créditos; Crédito presumido previsto no item 37 do Anexo III do RICMS|01032015|01102017
+PR020044|ICMS; Outros créditos; Crédito presumido previsto no item 38 do Anexo III do RICMS|01032015|31122015
+PR020045|ICMS; Outros créditos; Crédito presumido previsto no item 39 do Anexo III do RICMS|01032015|01102017
+PR020046|ICMS; Outros créditos Crédito presumido previsto no item 40 do Anexo III do RICMS|01032015|01102017
+PR020047|ICMS; Outros créditos; Crédito presumido previsto no item 40-B do Anexo III do RICMS|01032015|01012017
+PR020048|ICMS; Outros créditos; Crédito presumido previsto no item 41 do Anexo III do RICMS|01032015|01102017
+PR020049|ICMS; Outros créditos; Crédito presumido previsto no item 42 do Anexo III do RICMS|01032015|01102017
+PR020050|ICMS; Outros créditos; Crédito presumido previsto no item 43 do Anexo III do RICMS|01032015|01102017
+PR020051|ICMS; Outros créditos; Crédito presumido previsto no item 44 do Anexo III do RICMS|01032015|31122015
+PR020052|ICMS; Outros créditos; Crédito presumido previsto no item 45 do Anexo III do RICMS|01032015|01102017
+PR020053|ICMS; Outros créditos; Crédito presumido previsto no item 45-A do Anexo III do RICMS|01032015|31122015
+PR020054|ICMS; Outros créditos; Crédito presumido previsto no item 46 do Anexo III do RICMS|01032015|30042017
+PR020055|ICMS; Outros créditos; Crédito presumido previsto no item 47 do Anexo III do RICMS|01032015|01012017
+PR020056|ICMS; Outros créditos; Crédito presumido previsto no item 47-A do Anexo III do RICMS|01032015|01102017
+PR020057|ICMS; Outros créditos; Crédito presumido previsto no item 47-B do Anexo III do RICMS|01032015|01102017
+PR020058|ICMS; Outros créditos; Crédito presumido previsto no item 48 do Anexo III do RICMS|01032015|01102017
+PR020059|ICMS; Outros créditos; Crédito presumido previsto no item 49 do Anexo III do RICMS|01032015|01102017
+PR020060|ICMS; Outros créditos; Crédito presumido previsto no item 49-A do Anexo III do RICMS|01032015|01102017
+PR020062|ICMS; Outros créditos; Crédito presumido previsto no item 50 do Anexo III do RICMS|01032015|01102017
+PR020063|ICMS; Outros créditos; Crédito presumido previsto no item 50-A do Anexo III do RICMS|01032015|01102017
+PR020064|ICMS; Outros créditos; Crédito presumido previsto no item 51 do Anexo III do RICMS|01032015|31122015
+PR020065|ICMS; Outros créditos; Crédito presumido previsto no item 52 do Anexo III do RICMS|01032015|01102017
+PR020066|ICMS; Outros créditos; Crédito presumido previsto no item 52-A do Anexo III do RICMS|01032015|01102017
+PR020067|ICMS; Outros créditos; Crédito presumido previsto no item 53 do Anexo III do RICMS|01032015|01102017
+PR020069|ICMS; Outros créditos; Crédito presumido previsto no item 53-A do Anexo III do RICMS|01032015|01102017
+PR020070|ICMS; Outros créditos; Crédito presumido previsto no item 54 do Anexo III do RICMS|01032015|01102017
+PR020072|ICMS; Outros créditos; Crédito presumido previsto no item 55 do Anexo III do RICMS|01032015|01102017
+PR020073|ICMS; Outros créditos; Crédito presumido previsto no item 56 do Anexo III do RICMS|01032015|01102017
+PR020074|ICMS; Outros créditos; Crédito presumido previsto no Anexo III do RICMS e não previsto nos demais códigos de ajustes|01032015|30062016
+PR020075|ICMS; Outros créditos; Crédito presumido previsto no item 46-A do Anexo III do RICMS|01012016|01102017
+PR020076|ICMS; Outros créditos; Crédito presumido previsto no item 46-B do Anexo III do RICMS|01012016|01102017
+PR020077|ICMS; Outros créditos; Crédito presumido na Importação, autorizado|01012016|01012023
+PR020082|ICMS; Outros créditos monitorados pela SEFA/PR|01032015|30092016
+PR020083|ICMS; Outros créditos monitorados pela SEFA/PR|01032015|30092016
+PR020084|ICMS; Outros créditos monitorados pela SEFA/PR|01032015|30092016
+PR020085|ICMS; Outros créditos monitorados pela SEFA/PR|01032015|30092016
+PR020086|ICMS; Outros créditos monitorados pela SEFA/PR|01032015|30092016
+PR020087|ICMS; Outros créditos monitorados pela SEFA/PR|01032015|30092016
+PR020088|ICMS; Outros créditos monitorados pela SEFA/PR|01032015|30092016
+PR020089|ICMS; Outros créditos monitorados pela SEFA/PR|01032015|30092016
+PR020090|ICMS; Outros créditos monitorados pela SEFA/PR|01032015|30092016
+PR020091|ICMS; Outros créditos monitorados pela SEFA/PR|01032015|30092016
+PR000082|ICMS; Outros débitos monitorados pela SEFA/PR|01032015|30092016
+PR000083|ICMS; Outros débitos monitorados pela SEFA/PR|01032015|
+PR000084|ICMS; Outros débitos monitorados pela SEFA/PR|01032015|
+PR000085|ICMS; Outros débitos monitorados pela SEFA/PR|01032015|
+PR000086|ICMS; Outros débitos monitorados pela SEFA/PR|01032015|
+PR000087|ICMS; Outros débitos monitorados pela SEFA/PR|01032015|
+PR000088|ICMS; Outros débitos monitorados pela SEFA/PR|01032015|
+PR000089|ICMS; Outros débitos monitorados pela SEFA/PR|01032015|
+PR000090|ICMS; Outros débitos monitorados pela SEFA/PR|01032015|
+PR000091|ICMS; Outros débitos monitorados pela SEFA/PR|01032015|28022017
+PR020200|ICMS; Outros créditos; Prestação de Serviços de Comunicação (Lei 18.280/2014)|01122015|31072017
+PR020201|ICMS; Outros créditos; Fornecimento de Energia Elétrica (Lei 18.280/2014)|01122015|31072017
+PR020202|ICMS; Outros créditos; Luz Fraterna (Decreto 2789/2015)|01122015|31072017
+PR020203|ICMS; Outros créditos; Prestação de Serviços de Comunicação (Convênio ICMS 56/2012)|01122015|01102017
+PR020204|ICMS; Outros créditos; Prestação de Serviços de Comunicação (Convênios ICMS 146/2013 e 156/2013)|01122015|
+PR020205|ICMS; Outros créditos; Energia Elétrica; Demais Casos|01122015|
+PR020206|ICMS; Outros créditos; Prestação de Serviços de Comunicação; Demais Casos|01122015|
+PR209999|ICMS Difal; Outros débitos para ajuste de apuração ICMS Difal/FCP para a UF PR|01012016|31122016
+PR219999|ICMS Difal; Estorno de créditos para ajuste de apuração ICMS Difal/FCP para a UF PR|01012016|31122016
+PR229999|ICMS Difal; Outros créditos para ajuste de apuração ICMS Difal/FCP para a UF PR|01012016|31122016
+PR239999|ICMS Difal; Estorno de débitos para ajuste de apuração ICMS Difal/FCP para a UF PR|01012016|31122016
+PR249999|ICMS Difal; Deduções do imposto apurado na apuração ICMS Difal/FCP para a UF PR|01012016|31122016
+PR259999|ICMS Difal; Débito especial de ICMS Difal/FCP para a UF PR|01012016|31122016
+PR030300|ICMS; Estorno de Débito; Estorno de débitos referente ao  Fundo Estadual de Combate à Pobreza do Paraná|01022016|
+PR010300|ICMS; Estorno de Crédito; Estorno de créditos referente ao  Fundo Estadual de Combate à Pobreza do Paraná|01022016|
+PR000300|ICMS; Outros Débitos; Outros débitos referente ao  Fundo Estadual de Combate à Pobreza do Paraná|01022016|
+PR130300|ICMS ST; Estorno de Débito; Estorno de débitos referente ao Fundo Estadual de Combate à Pobreza do Paraná|01022016|
+PR110300|ICMS ST; Estorno de Crédito; Estorno de créditos referente ao  Fundo Estadual de Combate à Pobreza do Paraná|01022016|
+PR010302|ICMS; Estorno de créditos; Estorno de créditos decorrente de auto de infração|01072016|
+PR020078|ICMS; Outros créditos; Crédito presumido no item 18-A do Anexo III do RICMS/PR|01072016|01052017
+PR020079|ICMS; Outros créditos; Crédito presumido previsto no item 38-A do Anexo III do RICMS/PR|01072016|01052017
+PR020080|ICMS; Outros créditos; Crédito presumido previsto no item 49-B do Anexo III do RICMS|01082016|01102017
+PR020207|ICMS; Outros créditos; Crédito de aquisições de contribuintes do Simples Nacional, conforme § 13 do art. 23 do RICMS|01102016|01102017
+PR020208|ICMS; Outros créditos; Crédito decorrente de transferências de créditos do setor agropecuário conforme art. 36 do RICMS|01102016|01102017
+PR020209|ICMS; Outros créditos; Crédito decorrente de autorização judicial|01102016|31122016
+PR020210|ICMS; Outros créditos; Crédito decorrente de recuperação do imposto por substituição tributária conforme § 11 do art. 22 do RICMS|01102016|01102017
+PR020211|ICMS; Outros créditos; Crédito decorrente de recuperação do imposto por substituição tributária conforme art. 5º do Anexo X do RICMS|01102016|01102017
+PR020212|ICMS; Outros créditos; Crédito decorrente da diferença de alíquotas interna e interestadual conforme o § 3º do art. 1º do Decreto 442/2015|01102016|31122016
+PR020213|ICMS; Outros créditos; Crédito decorrente de ressarcimento do imposto por substituição tributária conforme art. 5º do Anexo X do RICMS|01102016|01052017
+PR020214|ICMS; Outros créditos; Crédito presumido conforme Decreto 1922/2011|01102016|01012023
+PR020215|ICMS; Outros créditos; Crédito Presumido previsto no item 22-B do Anexo III do RICMS|01082016|01102017
+PR000081|ICMS; Outros débitos; Débito decorrente da diferença de alíquotas interna e interestadual, conforme § 7º do art. 5º do RICMS|01102016|31122016
+PR000082|ICMS; Outros débitos; Débito de Regime Especial monitorado pelo IGF/SRE|01102016|
+PR020082|ICMS; Outros créditos; Crédito presumido de Regime Especial monitorado pelo IGF/SRE|01102016|30042017
+PR020083|ICMS; Outros créditos; Crédito presumido de Regime Especial monitorado pelo IGF/SRE|01102016|30042017
+PR020084|ICMS; Outros créditos; Crédito presumido de Regime Especial monitorado pelo IGF/SRE|01102016|01012023
+PR020085|ICMS; Outros créditos; Crédito presumido de Regime Especial monitorado pelo IGF/SRE|01102016|01012023
+PR020086|ICMS; Outros créditos; Crédito presumido de Regime Especial monitorado pelo IGF/SRE|01102016|01012023
+PR020087|ICMS; Outros créditos; Crédito presumido de Regime Especial monitorado pelo IGF/SRE|01102016|01012023
+PR020088|ICMS; Outros créditos; Crédito presumido de Regime Especial monitorado pelo IGF/SRE|01102016|01012023
+PR020089|ICMS; Outros créditos; Crédito presumido de Regime Especial monitorado pelo IGF/SRE|01102016|01012023
+PR020090|ICMS; Outros créditos; Crédito presumido de Regime Especial monitorado pelo IGF/SRE|01102016|30042017
+PR020091|ICMS; Outros créditos; Crédito presumido de Regime Especial monitorado pelo IGF/SRE|01102016|28022017
+PR020216|ICMS;Outros Créditos; Recuperação de ICMS  inciso V do art. 27 do RICMS|01012017|01102017
+PR020074|ICMS; Outros créditos; Crédito presumido previsto no § 1º do art. 6º da Lei n. 13.212/2001|01012017|01012023
+PR030301|ICMS; Estorno de Débito; Estorno de débito decorrente de ressarcimento do imposto por substituição tributária, conforme o art. 5º do Anexo X do RICMS|01012017|01102017
+PR000080|ICMS; Outros débitos; Débito decorrente da diferença de alíquotas interna e interestadual, conforme art. 13-A do RICMS|01012017|01102017
+PR020092|ICMS; Outros créditos; Crédito presumido previsto no item 46-C do Anexo III do RICMS|01012017|01102017
+PR020093|ICMS; Outros créditos; Crédito presumido previsto no item 54-A do Anexo III do RICMS|01012017|01102017
+PR020217|ICMS; Outros Créditos; Crédito decorrente de recuperação do imposto em relação as entradas anteriormente tributadas  art. 9º do Anexo VIII do RICMS|01012017|01102017
+PR020081|ICMS; Outros Créditos; Crédito decorrente da mudança de forma de tributação da mercadoria, conforme art. 12-G do Anexo X do RICMS|01012017|30042017
+PR309999|Outros Débitos; Outros débitos para ajuste de apuração ICMS FECOP para a UF PR|01012017|
+PR319999|Estorno de Créditos; Estorno de créditos para ajuste de apuração ICMS FECOP para a UF PR|01012017|
+PR329999|Outros Créditos; Outros créditos para ajuste de apuração ICMS FECOP para a UF PR|01012017|
+PR339999|Estorno de Débitos; Estorno de débitos para ajuste de apuração ICMS FECOP para a UF PR|01012017|
+PR349999|Deduções; Deduções do imposto apurado na apuração do ICMS FECOP para a UF PR|01012017|
+PR359999|Débito Especial; Débito especial de ICMS FECOP para a UF PR|01012017|
+PR000081|ICMS; Outros débitos; Diferencial de alíquota|01012017|
+PR020212|ICMS; Outros créditos; Crédito decorrente da diferença de alíquotas interna e interestadual, conforme o § 3º do art. 13-A do RICMS|01012017|01102017
+PR000031|ICMS; Outros Débitos; Imposto devido na mudança de forma de tributação da mercadoria, conforme art. 12-G do Anexo X do RICMS|01012017|30042017
+PR209999|Outros Débitos; Outros débitos para ajuste de apuração ICMS Difal para a UF PR|01012017|
+PR219999|Estorno de Créditos; Estorno de créditos para ajuste de apuração ICMS Difal para a UF PR|01012017|
+PR229999|Outros Créditos; Outros créditos para ajuste de apuração ICMS Difal para a UF PR|01012017|
+PR239999|Estorno de Débitos; Estorno de débitos para ajuste de apuração ICMS Difal para a UF PR|01012017|
+PR249999|Deduções; Deduções do imposto apurado na apuração do ICMS Difal para a UF PR|01012017|
+PR259999|Débito Especial; Débito especial de ICMS Difal para a UF PR|01012017|
+PR020209|ICMS; Outros Créditos; Crédito decorrente de autorização judicial ou administrativa|01012017|
+PR000091|ICMS; Outros débitos; débito originário de ajuste no cálculo do IMCS/ST, resultante da aplicação do PMPF previsto em Regime Especial|01032017|
+PR020091|ICMS; Outros créditos; créditos originários de ajustes no cálculo do ICMS/ST, resultantes da aplicação do PMPF previsto em Regime Especial|01032017|
+PR010001|ICMS; Estorno de Crédito; Estorno de crédito decorrente de indeferimento do pedido de restituição, conforme § 2º do art. 95 do RICMS|01052017|01102017
+PR010023|ICMS; Estorno de crédito; Estorno de crédito presumido excedente, conforme art. 69-B do RICMS|01052017|01102017
+PR010024|ICMS; Estorno de crédito; Estorno de crédito previsto no inciso IV do § 4º e inciso II do § 14, do art. 22 do RICMS|01052017|01102017
+PR020218|ICMS; Outros Créditos; Crédito extemporâneo, conforme inciso I do § 5º do art. 23 do RICMS|01052017|01102017
+PR020219|ICMS; Outros Créditos; Crédito decorrente de crédito presumido estornado, conforme inciso II do § 2º do art. 69-B do RICMS|01052017|01102017
+PR020220|ICMS; Outros Créditos; Crédito decorrente da contratação de transportador autônomo ou transportadora de outras UFs,  sem inscrição neste Estado, conforme previsão do parágrafo único do art. 143 do Anexo X do RICMS|01052017|01102017
+PR020221|ICMS; Outros Créditos; Crédito decorrente inutilização de mercadoria ST, conforme art. 7º do Anexo X do RICMS|01052017|01102017
+PR020222|ICMS; Outros créditos; Crédito decorrente de recuperação do imposto ST, conforme art. 14 do Anexo X do RICMS|01052017|01102017
+PR020223|ICMS; Outros créditos; Crédito decorrente de recolhimento antecipado do frete, conforme § 1º do art. 231 do RICMS|01052017|01102017
+PR020224|ICMS; Outros créditos; Crédito decorrente de documento fiscal eletrônico que perdeu o prazo de cancelamento, conforme inciso VII do art. 216 do RICMS|01052017|01102017
+PR020081|ICMS; Outros Créditos; Crédito decorrente da mudança de forma de tributação da mercadoria, conforme art. 18 do Anexo X do RICMS|01052017|01102017
+PR020013|ICMS; Outros créditos; Crédito presumido previsto no art. 24A da Lei 11.580/1996|01052017|01012023
+PR000031|ICMS; Outros Débitos; Imposto devido na mudança de forma de tributação da mercadoria, conforme art. 18 do Anexo X do RICMS|01052017|01102017
+PR020082|ICMS; Outros créditos; Recuperação de crédito de ICMS-ST, monitorado pelo Setor de Regimes Especiais da IGF|01052017|
+PR020083|ICMS; Outros créditos monitorados pelo Setor de Regimes Especiais da IGF|01052017|
+PR020090|ICMS; Outros créditos monitorados pelo Setor de Regimes Especiais da IGF|01052017|10052025
+PR020094|ICMS; Outros Créditos; Crédito presumido previsto no item 40-C do Anexo III do RICMS|01082017|23092017
+PR020095|ICMS; Outros Créditos; Crédito presumido previsto no item 47-C do Anexo III do RICMS|01082017|31122017
+PR020096|ICMS; Outros Créditos; Crédito presumido previsto no art. 11-A do Decreto 6.434/2017|01082017|01012023
+PR020200|ICMS; Outros Créditos; Crédito presumido de serviço de comunicação previsto no item 21-A do Anexo III do RICMS|01082017|31122017
+PR020201|ICMS; Outros Créditos; Crédito presumido de energia elétrica  3% -  previsto no item 21-A do Anexo III do RICMS|01082017|31122017
+PR020202|ICMS; Outros Créditos; Crédito presumido de energia elétrica  5% - previsto no item 21-B do Anexo III do RICMS|01082017|31122017
+PR020097|ICMS; Outros Créditos; Crédito presumido previsto no art. 39-A do RICMS/PR|01122017|04072018
+PR020098|ICMS; Outros Créditos; Crédito presumido - item 34-A do Anexo VII do RICMS|01062018|01012023
+PR000031|ICMS;Outros Débitos;Imposto devido na mudança de forma de tributação da mercadoria, conforme art. 19 do Anexo IX do RICMS/2017|02102017|
+PR000080|ICMS;Outros Débitos;Débito decorrente da diferença de alíquotas interna e interestadual, conforme art. 16 do RICMS/2017|02102017|
+PR010001|ICMS;Estorno de Crédito;Estorno de crédito decorrente de indeferimento do pedido de restituição, conforme § 2º do art. 90 do RICMS/2017|02102017|
+PR010023|ICMS;Estorno de Crédito;Estorno de crédito presumido excedente, conforme art. 69 do RICMS/2017|02102017|01012023
+PR010024|ICMS;Estorno de Crédito;Estorno de crédito previsto no inciso IV do § 4º e inciso II do § 14, do art. 25 do RICMS/2017|02102017|
+PR020001|ICMS;Outros Créditos;Crédito presumido previsto no item 1 do Anexo VII do RICMS/2017|02102017|01012023
+PR020004|ICMS;Outros Créditos;Crédito presumido previsto no item 2 do Anexo VII do RICMS/2017|02102017|01012023
+PR020005|ICMS;Outros Créditos;Crédito presumido previsto no item 3 do Anexo VII do RICMS/2017|02102017|01012023
+PR020006|ICMS;Outros Créditos;Crédito presumido previsto no item 4 do Anexo VII do RICMS/2017|02102017|01012023
+PR020007|ICMS;Outros Créditos;Crédito presumido previsto no item 5 do Anexo VII do RICMS/2017|02102017|01012023
+PR020008|ICMS;Outros Créditos;Crédito presumido previsto no item 6 do Anexo VII do RICMS/2017|02102017|01012023
+PR020009|ICMS;Outros Créditos;Crédito presumido previsto no item 7 do Anexo VII do RICMS/2017|02102017|01012023
+PR020010|ICMS;Outros Créditos;Crédito presumido previsto no item 8 do Anexo VII do RICMS/2017|02102017|01012023
+PR020011|ICMS;Outros Créditos;Crédito presumido previsto no item 9 do Anexo VII do RICMS/2017|02102017|01012023
+PR020012|ICMS;Outros Créditos;Crédito presumido previsto no item 10 do Anexo VII do RICMS/2017|02102017|01012023
+PR020014|ICMS;Outros Créditos;Crédito presumido previsto no item 11 do Anexo VII do RICMS/2017|02102017|01012023
+PR020015|ICMS;Outros Créditos;Crédito presumido previsto no item 12 do Anexo VII do RICMS/2017|02102017|01012023
+PR020016|ICMS;Outros Créditos;Crédito presumido previsto no item 13 do Anexo VII do RICMS/2017|02102017|01012023
+PR020022|ICMS;Outros Créditos;Crédito presumido previsto no item 14 do Anexo VII do RICMS/2017|02102017|01012023
+PR020023|ICMS;Outros Créditos;Crédito presumido previsto no item 15 do Anexo VII do RICMS/2017|02102017|01012023
+PR020026|ICMS;Outros Créditos;Crédito presumido previsto no item 18 do Anexo VII do RICMS/2017|02102017|01012023
+PR020027|ICMS;Outros Créditos;Crédito presumido previsto no item 20 do Anexo VII do RICMS/2017|02102017|01012023
+PR020028|ICMS;Outros Créditos;Crédito presumido previsto no item 21 do Anexo VII do RICMS/2017|02102017|01012023
+PR020029|ICMS;Outros Créditos;Crédito presumido previsto no item 22 do Anexo VII do RICMS/2017|02102017|01012023
+PR020030|ICMS;Outros Créditos;Crédito presumido previsto no item 23 do Anexo VII do RICMS/2017|02102017|01012023
+PR020031|ICMS;Outros Créditos;Crédito presumido previsto no item 24 do Anexo VII do RICMS/2017|02102017|01012023
+PR020032|ICMS;Outros Créditos;Crédito presumido previsto no item 25 do Anexo VII do RICMS/2017|02102017|01012023
+PR020034|ICMS;Outros Créditos;Crédito presumido previsto no item 26 do Anexo VII do RICMS/2017|02102017|01012023
+PR020035|ICMS;Outros Créditos;Crédito presumido previsto no item 27 do Anexo VII do RICMS/2017|02102017|01012023
+PR020036|ICMS;Outros Créditos;Crédito presumido previsto no item 28 do Anexo VII do RICMS/2017|02102017|01012023
+PR020037|ICMS;Outros Créditos;Crédito presumido previsto no item 29 do Anexo VII do RICMS/2017|02102017|01012023
+PR020038|ICMS;Outros Créditos;Crédito presumido previsto no item 30 do Anexo VII do RICMS/2017|02102017|01012023
+PR020039|ICMS;Outros Créditos;Crédito presumido previsto no item 31 do Anexo VII do RICMS/2017|02102017|01012023
+PR020043|ICMS;Outros Créditos;Crédito presumido previsto no item 32 do Anexo VII do RICMS/2017|02102017|01012023
+PR020045|ICMS;Outros Créditos;Crédito presumido previsto no item 33 do Anexo VII do RICMS/2017|02102017|01012023
+PR020046|ICMS;Outros Créditos;Crédito presumido previsto no item 34 do Anexo VII do RICMS/2017|02102017|01012023
+PR020048|ICMS;Outros Créditos;Crédito presumido previsto no item 36 do Anexo VII do RICMS/2017|02102017|01012023
+PR020049|ICMS;Outros Créditos;Crédito presumido previsto no item 37 do Anexo VII do RICMS/2017|02102017|01012023
+PR020050|ICMS;Outros Créditos;Crédito presumido previsto no item 38 do Anexo VII do RICMS/2017|02102017|01012023
+PR020052|ICMS;Outros Créditos;Crédito presumido previsto no item 39 do Anexo VII do RICMS/2017|02102017|01012023
+PR020056|ICMS;Outros Créditos;Crédito presumido previsto no item 43 do Anexo VII do RICMS/2017|02102017|01012023
+PR020057|ICMS;Outros Créditos;Crédito presumido previsto no item 44 do Anexo VII do RICMS/2017|02102017|01012023
+PR020058|ICMS;Outros Créditos;Crédito presumido previsto no item 46 do Anexo VII do RICMS/2017|02102017|01012023
+PR020059|ICMS;Outros Créditos;Crédito presumido previsto no item 47 do Anexo VII do RICMS/2017|02102017|01012023
+PR020060|ICMS;Outros Créditos;Crédito presumido previsto no item 48 do Anexo VII do RICMS/2017|02102017|01012023
+PR020062|ICMS;Outros Créditos;Crédito presumido previsto no item 50 do Anexo VII do RICMS/2017|02102017|01012023
+PR020063|ICMS;Outros Créditos;Crédito presumido previsto no item 51 do Anexo VII do RICMS/2017|02102017|01012023
+PR020065|ICMS;Outros Créditos;Crédito presumido previsto no item 52 do Anexo VII do RICMS/2017|02102017|01012023
+PR020066|ICMS;Outros Créditos;Crédito presumido previsto no item 53 do Anexo VII do RICMS/2017|02102017|01012023
+PR020067|ICMS;Outros Créditos;Crédito presumido previsto no item 54 do Anexo VII do RICMS/2017|02102017|01012023
+PR020069|ICMS;Outros Créditos;Crédito presumido previsto no item 55 do Anexo VII do RICMS/2017|02102017|01012023
+PR020070|ICMS;Outros Créditos;Crédito presumido previsto no item 56 do Anexo VII do RICMS/2017|02102017|01012023
+PR020072|ICMS;Outros Créditos;Crédito presumido previsto no item 58 do Anexo VII do RICMS/2017|02102017|01012023
+PR020073|ICMS;Outros Créditos;Crédito presumido previsto no item 59 do Anexo VII do RICMS/2017|02102017|01012023
+PR020075|ICMS;Outros Créditos;Crédito presumido previsto no item 40 do Anexo VII do RICMS/2017|02102017|01012023
+PR020076|ICMS;Outros Créditos;Crédito presumido previsto no item 41 do Anexo VII do RICMS/2017|02102017|01012023
+PR020080|ICMS;Outros Créditos;Crédito presumido previsto no item 49 do Anexo VII do RICMS/2017|02102017|01012023
+PR020081|ICMS;Outros Créditos;Crédito decorrente da mudança de forma de tributação da mercadoria, conforme art. 19 do Anexo IX do RICMS/2017|02102017|
+PR020092|ICMS;Outros Créditos;Crédito presumido previsto no item 42 do Anexo VII do RICMS/2017|02102017|01012023
+PR020093|ICMS;Outros Créditos;Crédito presumido previsto no item 57 do Anexo VII do RICMS/2017|02102017|01012023
+PR020097|ICMS;Outros Créditos;Crédito presumido previsto no at. 39-A do Anexo VII do RICMS/2017|05072018|01012023
+PR020099|ICMS;Outros Créditos;Créidto presumito  item 43-A do Anexo VII do RICMS/2017|05072018|26042020
+PR020207|ICMS;Outros Créditos;Crédito de aquisições de contribuintes do Simples Nacional, conforme § 16 do art. 26 do RICMS/2017|02102017|01082026
+PR020208|ICMS;Outros Créditos;Crédito decorrente de transferências de créditos do setor agropecuário conforme art. 39 do RICMS/2017|02102017|
+PR020210|ICMS;Outros Créditos;Crédito decorrente de recuperação do imposto por substituição tributária conforme § 11 do art. 25 do RICMS/2017|02102017|01082026
+PR020211|ICMS;Outros Créditos;Crédito decorrente de recuperação do imposto por substituição tributária conforme art. 6º do Anexo IX do RICMS/2017|02102017|04022020
+PR020212|ICMS;Outros Créditos;Crédito decorrente da diferença de alíquotas interna e interestadual, conforme o § 3º do art. 16 do RICMS/2017|02102017|
+PR020215|ICMS;Outros Créditos;Crédito Presumido previsto no item 19 do Anexo VII do RICMS/2017|02102017|01012023
+PR020216|ICMS;Outros Créditos;Recuperação de ICMS  inciso V do art. 29 do RICMS/2017|02102017|
+PR020217|ICMS;Outros Créditos;Crédito decorrente de recuperação do imposto em relação as entradas anteriormente tributadas  art. 9º do Anexo XI do RICMS/2017|02102017|
+PR020218|ICMS;Outros Créditos;Crédito extemporâneo, conforme inciso I do § 5º do art. 26 do RICMS/2017|02102017|
+PR020219|ICMS;Outros Créditos;Crédito decorrente de crédito presumido estornado, conforme inciso II do § 2º do art. 69 do RICMS/2017|02102017|01012023
+PR020220|ICMS;Outros Créditos;Crédito decorrente da contratação de transportador autônomo ou transportadora de outras UFs,  sem inscrição neste Estado, conforme previsão do parágrafo único do art. 144 do Anexo IX do RICMS/2017|02102017|
+PR020221|ICMS;Outros Créditos;Crédito decorrente inutilização de mercadoria ST, conforme art. 8º do Anexo IX do RICMS/2017|02102017|
+PR020222|ICMS;Outros Créditos;Crédito decorrente de recuperação do imposto ST, conforme art. 15 do Anexo IX do RICMS/2017|02102017|04022020
+PR020223|ICMS;Outros Créditos;Crédito decorrente de recolhimento antecipado do frete, conforme § 1º do art. 314 do RICMS/2017|02102017|
+PR020224|ICMS;Outros Créditos;Crédito decorrente de documento fiscal eletrônico que perdeu o prazo de cancelamento, conforme inciso VII do art. 298 do RICMS/2017|02102017|
+PR023050|ICMS;Outros Créditos;Ajuste a crédito referente ao valor do ICMS incremental a ser transportado para a GIAICMS da inscrição auxiliar|05072018|
+PR030301|ICMS;Estorno de Débito;Estorno de débito decorrente de ressarcimento do imposto por substituição tributária, conforme §2º do art. 6º do Anexo IX do RICMS/2017|02102017|04022020
+PR010002|ICMS;Estorno de Crédito;Estorno de crédito decorrente da anulação do crédito do imposto previsto na nota 1.2, do item 21 do Anexo V do RICMS/2017|01102018|
+PR020071|ICMS;Outros Créditos;Transferência recebida de saldo acumulado  SISCRED|01102018|
+PR050001|ICMS;Débito Especial;Débito Especial de ICMS, referente ao art. 37 do RICMS/2017|01102018|09092019
+PR020169|ICMS;Outros créditos;Crédito decorrente de recuperação do imposto, previsto na nota 3 do item 21 do Anexo V do RICMS/2017|01092019|
+PR000092|ICMS;Outros débitos;Débito decorrente de complementação do imposto retido por substituição tributária conforme previsto no art. 6º-A do Anexo IX do RICMS/2017|01012020|
+PR020170|ICMS;Outros créditos;Crédito decorrente de recuperação do imposto retido por substituição tributária conforme art. 6º-A do Anexo IX do RICMS/2017|01012020|
+PR020171|ICMS;Outros créditos;Crédito decorrente de recuperação do imposto retido por substituição tributária conforme art. 119 do Anexo IX do RICMS/2017|01012020|
+PR020211|ICMS;Outros Créditos;Crédito decorrente de recuperação do imposto retido por substituição tributária conforme art. 6º do Anexo IX do RICMS/2017|05022020|
+PR020222|ICMS;Outros Créditos;Crédito decorrente de recuperação do imposto retido por substituição tributária conforme art. 15 do Anexo IX do RICMS/2017|05022020|
+PR030301|ICMS;Estorno de Débito;Estorno de débito decorrente de recuperação e ressarcimento do imposto retido por substituição tributária,conforme §2º do art. 6º do Anexo IX do RICMS/2017|05022020|
+PR020100|ICMS;Outros Créditos;Crédito presumido previsto no  item 34-B do Anexo VII do RICMS/2017|16042020|01012023
+PR020099|ICMS;Outros Créditos;Crédito presumido  item 43-A do Anexo VII do RICMS/2017|27042020|01012023
+PR020172|ICMS;Outros Créditos;Crédito proveniente da sucessão|01092020|
+PR020101|ICMS;Outros Créditos;Crédito presumido previsto no art. 11-C do Decreto 6.434/2017|08042020|01012023
+PR000039|ICMS;Outros débitos;Débito previsto na alínea a, do inciso I, do artigo 60-B, do Anexo IX do RICMS/2017|01012022|
+PR040001|ICMS;Deduções do imposto apurado;Utilização do crédito previsto na alínea a, do inciso III, do §2º, do art. 60-B, do Anexo IX do RICMS/2017|01012022|
+PR090001|ICMS;Controle do ICMS extra-apuração;Crédito previsto na alínea b, do inciso I, do art. 60-B, do Anexo IX do RICMS/2017|01012022|
+PR000040|ICMS;Outros débitos;Débito previsto no item 1, da alínea a, do inciso III, do art. 74 do RICMS/2017|01092022|
+PR000041|ICMS;Outros débitos;Débito previsto no item 2, da alínea a, do inciso III, do art. 74 do RICMS/2017|01092022|
+PR020094|ICMS;Outros créditos;Crédito presumido previsto no item 35 do Anexo VII do RICMS/2017|24092019|01012023
+PR020095|ICMS;Outros créditos;Crédito presumido previsto no item 45 do Anexo VII do RICMS/2017|01012018|01012023
+PR020102|ICMS;Outros créditos;Crédito presumido previsto na Lei n. 21.227/2022|01082022|01012023
+PR020200|ICMS;Outros créditos;Crédito presumido de serviço de comunicação previsto no item 16 do Anexo VII do RICMS/2017|01012018|01012023
+PR020201|ICMS;Outros créditos;Crédito presumido de energia elétrica previsto no item 16 do Anexo VII do RICMS/2017|01012018|01012023
+PR020202|ICMS;Outros créditos;Crédito presumido de energia elétrica previsto no item 17 do Anexo VII do RICMS/2017|01012018|01012023
+PR011001|ICMS;Estorno de créditos;Estorno de crédito presumido previsto na nota 3 do item 1 do Anexo VII do RICMS/2017|01012023|
+PR011002|ICMS;Estorno de créditos;Estorno de crédito presumido previsto na nota 2 do item 5 do Anexo VII do RICMS/2017|01012023|
+PR011003|ICMS;Estorno de créditos;Estorno de crédito presumido previsto na nota 9 do item 6 do Anexo VII do RICMS/2017|01012023|
+PR011004|ICMS;Estorno de créditos;Estorno de crédito presumido previsto na nota 2 do item 7 do Anexo VII do RICMS/2017|01012023|01052023
+PR011005|ICMS;Estorno de créditos;Estorno de crédito presumido previsto na nota 2 do item 10 do Anexo VII do RICMS/2017|01012023|
+PR011006|ICMS;Estorno de créditos;Estorno de crédito presumido previsto na nota 2 do item 12 do Anexo VII do RICMS/2017|01012023|
+PR011007|ICMS;Estorno de créditos;Estorno de crédito presumido previsto na nota 2 do item 14 do Anexo VII do RICMS/2017|01012023|
+PR011008|ICMS;Estorno de créditos;Estorno de crédito presumido previsto na nota 7 do item 18 do Anexo VII do RICMS/2017|01012023|
+PR011009|ICMS;Estorno de créditos;Estorno de crédito presumido previsto na nota 2 do item 21 do Anexo VII do RICMS/2017|01012023|
+PR011010|ICMS;Estorno de créditos;Estorno de crédito presumido previsto na nota 2 do item 22 do Anexo VII do RICMS/2017|01012023|
+PR011011|ICMS;Estorno de créditos;Estorno de crédito presumido previsto na nota 5 do item 23 do Anexo VII do RICMS/2017|01012023|
+PR011012|ICMS;Estorno de créditos;Estorno de crédito presumido previsto na nota 2 do item 24 do Anexo VII do RICMS/2017|01012023|
+PR011013|ICMS;Estorno de créditos;Estorno de crédito presumido previsto na nota 2 do item 26 do Anexo VII do RICMS/2017|01012023|
+PR011014|ICMS;Estorno de créditos;Estorno de crédito presumido previsto na nota 2 do item 29 do Anexo VII do RICMS/2017|01012023|
+PR011015|ICMS;Estorno de créditos;Estorno de crédito presumido previsto na nota 2 do item 32 do Anexo VII do RICMS/2017|01012023|
+PR011016|ICMS;Estorno de créditos;Estorno de crédito presumido previsto na nota 2 do item 33 do Anexo VII do RICMS/2017|01012023|
+PR011017|ICMS;Estorno de créditos;Estorno de crédito presumido previsto na nota 2 do item 38 do Anexo VII do RICMS/2017|01012023|
+PR011018|ICMS;Estorno de créditos;Estorno de crédito presumido previsto na nota 2 do item 48 do Anexo VII do RICMS/2017|01012023|
+PR011019|ICMS;Estorno de créditos;Estorno de crédito presumido previsto na nota 2 do item 52 do Anexo VII do RICMS/2017|01012023|02012023
+PR011020|ICMS;Estorno de créditos;Estorno de crédito presumido previsto na nota 2 do item 53 do Anexo VII do RICMS/2017|01012023|02012023
+PR011021|ICMS;Estorno de créditos;Estorno de crédito presumido previsto na nota 2 do item 59 do Anexo VII do RICMS/2017|01012023|
+PR011022|ICMS;Estorno de créditos;Estorno de crédito presumido previsto na nota 2 do item 40 do Anexo VII do RICMS/2017|01012023|
+PR011023|ICMS;Estorno de créditos;Estorno de crédito presumido previsto na nota 6 do item 40 do Anexo VII do RICMS/2017|01012023|
+PR011024|ICMS;Estorno de créditos;Estorno de crédito presumido previsto na nota 4 do item 41 do Anexo VII do RICMS/2017|01012023|
+PR011025|ICMS;Estorno de créditos;Estorno de crédito presumido previsto nota 5 do item 41 do Anexo VII do RICMS/2017|01012023|
+PR011064|ICMS;Estorno de créditos;Estorno de crédito presumido de Regime Especial monitorado pelo IGF/SRE|01012023|
+PR011065|ICMS;Estorno de créditos;Estorno de crédito presumido de Regime Especial monitorado pelo IGF/SRE|01012023|
+PR011066|ICMS;Estorno de créditos;Estorno de crédito presumido de Regime Especial monitorado pelo IGF/SRE|01012023|
+PR011067|ICMS;Estorno de créditos;Estorno de crédito presumido de Regime Especial monitorado pelo IGF/SRE|01012023|
+PR011068|ICMS;Estorno de créditos;Estorno de crédito presumido de Regime Especial monitorado pelo IGF/SRE|01012023|
+PR011069|ICMS;Estorno de créditos;Estorno de crédito presumido de Regime Especial monitorado pelo IGF/SRE|01012023|
+PR011026|ICMS;Estorno de créditos;Estorno de crédito presumido previsto na nota 2 do item 42 do Anexo VII do RICMS/2017|01012023|
+PR011027|ICMS;Estorno de créditos;Estorno de crédito presumido previsto na subnota 1.4 do item 35 do Anexo VII do RICMS/2017|01012023|
+PR011028|ICMS;Estorno de créditos;Estorno de crédito presumido previsto na subnota 1.6 do item 45 do Anexo VII do RICMS/2017|01012023|
+PR011029|ICMS;Estorno de créditos;Estorno de crédito presumido na nota 3 do item 34-A do Anexo VII do RICMS/2017|01012023|
+PR011030|ICMS;Estorno de créditos;Estorno de crédito presumido previsto na subnota 3.4 do item 34-B do Anexo VII do RICMS/2017|01012023|
+PR011031|ICMS;Estorno de créditos;Estorno de crédito presumido em atenção ao contido no §3º do art. 1º do Decreto 1.922/2011|01012023|
+PR011032|ICMS;Estorno de créditos;Estorno de crédito presumido previsto na nota 2 do item 19 do Anexo VII do RICMS/2017|01012023|
+PR011033|ICMS;Estorno de créditos;Estorno de crédito presumido previsto no inciso III do §2º do art. 69 do RICMS/2017|01012023|
+PR011078|ICMS;Estorno de créditos;Estorno de crédito presumido na devolução de mercadoria previsto no art. 447-A do RICMS/2017|01012023|
+PR021001|ICMS;Outros Créditos;Crédito presumido previsto no item 1 do Anexo VII do RICMS/2017|01012023|
+PR021002|ICMS;Outros Créditos;Crédito presumido previsto no item 5 do Anexo VII do RICMS/2017|01012023|
+PR021003|ICMS;Outros Créditos;Crédito presumido previsto no item 6 do Anexo VII do RICMS/2017|01012023|
+PR021004|ICMS;Outros Créditos;Crédito presumido previsto no item 7 do Anexo VII do RICMS/2017|01012023|01052023
+PR021005|ICMS;Outros Créditos;Crédito presumido previsto no item 10 do Anexo VII do RICMS/2017|01012023|
+PR021006|ICMS;Outros Créditos;Crédito presumido previsto no item 12 do Anexo VII do RICMS/2017|01012023|
+PR021007|ICMS;Outros Créditos;Crédito presumido previsto no item 14 do Anexo VII do RICMS/2017|01012023|
+PR021008|ICMS;Outros Créditos;Crédito presumido previsto no item 18 do Anexo VII do RICMS/2017|01012023|
+PR021009|ICMS;Outros Créditos;Crédito presumido previsto no item 21 do Anexo VII do RICMS/2017|01012023|
+PR021010|ICMS;Outros Créditos;Crédito presumido previsto no item 22 do Anexo VII do RICMS/2017|01012023|
+PR021011|ICMS;Outros Créditos;Crédito presumido previsto no item 23 do Anexo VII do RICMS/2017|01012023|
+PR021012|ICMS;Outros Créditos;Crédito presumido previsto no item 24 do Anexo VII do RICMS/2017|01012023|
+PR021013|ICMS;Outros Créditos;Crédito presumido previsto no item 26 do Anexo VII do RICMS/2017|01012023|
+PR021014|ICMS;Outros Créditos;Crédito presumido previsto no item 29 do Anexo VII do RICMS/2017|01012023|
+PR021015|ICMS;Outros Créditos;Crédito presumido previsto no item 32 do Anexo VII do RICMS/2017|01012023|
+PR021016|ICMS;Outros Créditos;Crédito presumido previsto no item 33 do Anexo VII do RICMS/2017|01012023|
+PR021017|ICMS;Outros Créditos;Crédito presumido previsto no item 38 do Anexo VII do RICMS/2017|01012023|
+PR021018|ICMS;Outros Créditos;Crédito presumido previsto no item 48 do Anexo VII do RICMS/2017|01012023|
+PR021019|ICMS;Outros Créditos;Crédito presumido previsto no item 52 do Anexo VII do RICMS/2017|01012023|02012023
+PR021020|ICMS;Outros Créditos;Crédito presumido previsto no item 53 do Anexo VII do RICMS/2017|01012023|02012023
+PR021021|ICMS;Outros Créditos;Crédito presumido previsto no item 59 do Anexo VII do RICMS/2017|01012023|
+PR021022|ICMS;Outros Créditos;Crédito presumido previsto no item 40 do Anexo VII do RICMS/2017|01012023|
+PR021024|ICMS;Outros Créditos;Crédito presumido previsto no item 41 do Anexo VII do RICMS/2017|01012023|
+PR021026|ICMS;Outros Créditos;Crédito presumido previsto no item 42 do Anexo VII do RICMS/2017|01012023|
+PR021027|ICMS;Outros Créditos;Crédito presumido previsto no item 35 do Anexo VII do RICMS/2017|01012023|
+PR021028|ICMS;Outros Créditos;Crédito presumido previsto no item 45 do Anexo VII do RICMS/2017|01012023|
+PR021029|ICMS;Outros Créditos;Crédito presumido - item 34-A do Anexo VII do RICMS/2017|01012023|
+PR021030|ICMS;Outros Créditos;Crédito presumido previsto no  item 34-B do Anexo VII do RICMS/2017|01012023|
+PR021031|ICMS;Outros Créditos;Crédito presumido conforme Decreto 1.922/2011|01012023|
+PR021032|ICMS;Outros Créditos;Crédito Presumido previsto no item 19 do Anexo VII do RICMS/2017|01012023|
+PR021033|ICMS;Outros Créditos;Crédito decorrente de crédito presumido estornado, conforme inciso II do § 2º do art. 69 do RICMS/2017|01012023|
+PR021034|ICMS;Outros Créditos;Crédito presumido previsto no item 2 do Anexo VII do RICMS/2017|01012023|02012023
+PR021035|ICMS;Outros Créditos;Crédito presumido previsto no item 3 do Anexo VII do RICMS/2017|01012023|
+PR021036|ICMS;Outros Créditos;Crédito presumido previsto no item 4 do Anexo VII do RICMS/2017|01012023|
+PR021037|ICMS;Outros Créditos;Crédito presumido previsto no item 8 do Anexo VII do RICMS/2017|01012023|
+PR021038|ICMS;Outros Créditos;Crédito presumido previsto no item 9 do Anexo VII do RICMS/2017|01012023|
+PR021039|ICMS;Outros Créditos;Crédito presumido previsto no item 11 do Anexo VII do RICMS/2017|01012023|
+PR021040|ICMS;Outros Créditos;Crédito presumido previsto no item 13 do Anexo VII do RICMS/2017|01012023|
+PR021041|ICMS;Outros Créditos;Crédito presumido previsto no item 15 do Anexo VII do RICMS/2017|01012023|02012023
+PR021042|ICMS;Outros Créditos;Crédito presumido previsto no item 20 do Anexo VII do RICMS/2017|01012023|
+PR021043|ICMS;Outros Créditos;Crédito presumido previsto no item 25 do Anexo VII do RICMS/2017|01012023|
+PR021044|ICMS;Outros Créditos;Crédito presumido previsto no item 27 do Anexo VII do RICMS/2017|01012023|
+PR021045|ICMS;Outros Créditos;Crédito presumido previsto no item 28 do Anexo VII do RICMS/2017|01012023|02012023
+PR021046|ICMS;Outros Créditos;Crédito presumido previsto no item 30 do Anexo VII do RICMS/2017|01012023|
+PR021047|ICMS;Outros Créditos;Crédito presumido previsto no item 31 do Anexo VII do RICMS/2017|01012023|
+PR021048|ICMS;Outros Créditos;Crédito presumido previsto no item 34 do Anexo VII do RICMS/2017|01012023|
+PR021049|ICMS;Outros Créditos;Crédito presumido previsto no item 36 do Anexo VII do RICMS/2017|01012023|
+PR021050|ICMS;Outros Créditos;Crédito presumido previsto no item 37 do Anexo VII do RICMS/2017|01012023|
+PR021051|ICMS;Outros Créditos;Crédito presumido previsto no item 39 do Anexo VII do RICMS/2017|01012023|
+PR021052|ICMS;Outros Créditos;Crédito presumido previsto no item 43 do Anexo VII do RICMS/2017|01012023|
+PR021053|ICMS;Outros Créditos;Crédito presumido previsto no item 44 do Anexo VII do RICMS/2017|01012023|
+PR021054|ICMS;Outros Créditos;Crédito presumido previsto no item 46 do Anexo VII do RICMS/2017|01012023|
+PR021055|ICMS;Outros Créditos;Crédito presumido previsto no item 47 do Anexo VII do RICMS/2017|01012023|
+PR021056|ICMS;Outros Créditos;Crédito presumido previsto no item 50 do Anexo VII do RICMS/2017|01012023|
+PR021057|ICMS;Outros Créditos;Crédito presumido previsto no item 51 do Anexo VII do RICMS/2017|01012023|
+PR021058|ICMS;Outros Créditos;Crédito presumido previsto no item 54 do Anexo VII do RICMS/2017|01012023|
+PR021059|ICMS;Outros Créditos;Crédito presumido previsto no item 55 do Anexo VII do RICMS/2017|01012023|
+PR021060|ICMS;Outros Créditos;Crédito presumido previsto no item 56 do Anexo VII do RICMS/2017|01012023|
+PR021061|ICMS;Outros Créditos;Crédito presumido previsto no item 58 do Anexo VII do RICMS/2017|01012023|
+PR021062|ICMS;Outros Créditos;Crédito presumido previsto no § 1º do art. 6º da Lei n. 13.212/2001|01012023|
+PR021063|ICMS;Outros Créditos;Crédito presumido previsto no item 49 do Anexo VII do RICMS/2017|01012023|
+PR021064|ICMS;Outros Créditos;Crédito presumido de Regime Especial monitorado pelo IGF/SRE|01012023|
+PR021065|ICMS;Outros Créditos;Crédito presumido de Regime Especial monitorado pelo IGF/SRE|01012023|
+PR021066|ICMS;Outros Créditos;Crédito presumido de Regime Especial monitorado pelo IGF/SRE|01012023|
+PR021067|ICMS;Outros Créditos;Crédito presumido de Regime Especial monitorado pelo IGF/SRE|01012023|
+PR021068|ICMS;Outros Créditos;Crédito presumido de Regime Especial monitorado pelo IGF/SRE|01012023|
+PR021069|ICMS;Outros Créditos;Crédito presumido de Regime Especial monitorado pelo IGF/SRE|01012023|
+PR021070|ICMS;Outros Créditos;Crédito presumido previsto no item 57 do Anexo VII do RICMS/2017|01012023|
+PR021071|ICMS;Outros Créditos;Crédito presumido previsto no art. 11-A do Decreto 6.434/2017|01012023|24102024
+PR021072|ICMS;Outros Créditos;Crédito presumido previsto no at. 39-A do Anexo VII do RICMS/2017|01012023|17012025
+PR021073|ICMS;Outros Créditos;Crédito presumido  item 43-A do Anexo VII do RICMS/2017|01012023|
+PR021074|ICMS;Outros Créditos;Crédito presumido previsto no art. 11-C do Decreto 6.434/2017|01012023|24102024
+PR021075|ICMS;Outros Créditos;Crédito presumido previsto no item 16 do Anexo VII do RICMS/2017 serviço de comunicação|01012023|
+PR021076|ICMS;Outros Créditos;Crédito presumido previsto no item 16 do Anexo VII do RICMS/2017  energia elétrica|01012023|
+PR021077|ICMS;Outros Créditos;Crédito presumido previsto no item 17 do Anexo VII do RICMS/2017|01012023|
+PR021079|ICMS;Outros Créditos;Crédito presumido previsto na Lei n. 21.227/2022|01012023|
+PR120068|ICMS ST;Outros créditos;Outros créditos de ICMS-ST|01012023|01012023
+PR300300|ICMS FCP;Outros débitos;Outros débitos referente ao ICMS-FECOP|01012023|01012023
+PR320068|ICMS FCP;Outros créditos;Outros créditos referente ao ICMS-FECOP|01012023|01012023
+PR320069|ICMS FCP;Outros créditos;Outros créditos referente ao ICMS-FECOP  Ressarcimento/Restituição|01012023|01012023
+PR320300|ICMS FCP;Outros créditos;Outros créditos referente ao ICMS-FECOP  Devoluções|01012023|01012023
+PR120068|ICMS ST;Outros créditos;Outro crédito de ICMS-ST|02012023|30042024
+PR300300|ICMS FCP;Outros débitos;Outro débito referente ao ICMS-FECOP|02012023|
+PR320068|ICMS FCP;Outros créditos;Outro crédito referente ao ICMS-FECOP|02012023|30042024
+PR320069|ICMS FCP;Outros créditos;Outro crédito referente ao ICMS-FECOP  Ressarcimento/Restituição|02012023|
+PR320300|ICMS FCP;Outros créditos;Outro crédito referente ao ICMS-FECOP  Devoluções|02012023|
+PR012000|ICMS;Estorno de créditos;Estorno de crédito em operações sujeitas ao regime de tributação monofásica (inciso IV do § 4º e inciso II do § 14, do art. 25 do RICMS/2017)|01052023|
+PR011080|ICMS;Estorno de créditos;Estorno de crédito presumido na devolução de combustível em operação relativo ao transporte de passageiros|01052023|
+PR011081|ICMS;Estorno de créditos;Estorno de crédito presumido na devolução de biodiesel|01052023|
+PR021080|ICMS;Outros Créditos;Crédito presumido em operação de aquisição de combustível relativo ao transporte de passageiros|01052023|
+PR021081|ICMS;Outros Créditos;Crédito presumido em operação relativo à produção de biodiesel|01052023|
+PR021082|ICMS;Outros Créditos;Crédito presumido previsto no item 15-A do Anexo VII do RICMS/2017|01012024|
+PR021083|ICMS;Outros Créditos;Crédito presumido previsto no item 7-A do Anexo VII do RICMS/2017|01012024|
+PR011084|ICMS;Estorno de créditos;Estorno de crédito presumido previsto no subitem 5.4 do item 15-B do Anexo VII do RICMS 2017|01042024|
+PR021084|ICMS;Outros Créditos;Crédito presumido previsto no subitem 5.5 do item 15-B do Anexo VII do RICMS/2017|01042024|
+PR120068|ICMS ST;Outros Créditos;Pagamento antecipado do ICMS  ST|01052024|02052024
+PR320068|ICMS FCP;Outros Créditos;Recolhimento antecipado ICMS  FECOP|01052024|02052024
+PR120068|ICMS ST;Outros Créditos;Recolhimento antecipado do ICMS  ST|03052024|04052024
+PR120068|ICMS ST;Outros Créditos;Pagamento antecipado do ICMS  ST|05052024|
+PR320068|ICMS FCP;Outros Créditos;Pagamento antecipado ICMS  FECOP|03052024|
+PR021071|ICMS;Outros Créditos;Crédito presumido, Paraná Competitivo, e-commerce|25102024|
+PR021074|ICMS;Outros Créditos;Crédito presumido, Paraná Competitivo, importações|25102024|
+PR023001|ICMS;Outros Créditos;Crédito previsto no item 18-B.5 da NPF 056/2015|15012025|
+PR103001|ICMS ST;Outros débitos;Débito previsto no item 18-B.1 da NPF 056/2015|15012025|
+PR103002|ICMS ST;Outros débitos;Débito previsto no item 18-B.4 da NPF 056/2015|15012025|
+PR103003|ICMS ST;Outros débitos;Débito previsto no item 18-B.4 da NPF 056/2015|15012025|
+PR123001|ICMS ST;Outros créditos;Débito previsto no item 18-B.2 da NPF 056/2015|15012025|
+PR123002|ICMS ST;Outros créditos;Débito previsto no item 18-B.3 da NPF 056/2015|15012025|
+PR153001|ICMS ST;Débito especial;Débito previsto no item 18-B.6 da NPF 056/2015|15012025|
+PR011085|ICMS;Estorno de créditos;Estorno de crédito presumido previsto no subitem 1.6 do item 18-A do Anexo VII do RICMS/2017|01012025|
+PR021072|ICMS;Outros créditos;Crédito presumido previsto no item 39-A do Anexo VII do RICMS/2017|18012025|
+PR021085|ICMS;Outros créditos;Crédito presumido previsto no subitem 1.5 do item 18-A do Anexo VII do RICMS/2017|01012025|
+PR000103|ICMS; Outros Débitos; Débito referente à transferência de crédito acumulado oriundo de diferimento, autorizado em Regime Especial monitorado pela REPR/IGF|01052025|
+PR000104|ICMS; Outros Débitos; Débito referente à transferência de crédito acumulado, autorizado em Regime Especial, monitorado pela REPR/IGF - Conta Gráfica|01052025|
+PR020103|ICMS; Outros créditos; Crédito recebidos por transferência de crédito acumulado oriundo de diferimento, autorizado em Regime Especial, monitorado pela REPR/IGF|01052025|
+PR020104|ICMS; Outros crédito; Crédito recebidos por transferência de crédito acumulado, autorizado em Regime Especial, monitorado pela REPR/IGF - Conta Gráfica|01052025|
+PR020090|ICMS;Outros créditos;Outros créditos monitorados pelo Setor de Regimes Especiais da IGF, oriundos do Paraná Competitivo|11052025|21082025
+PR010090|ICMS;Estorno de créditos;Estorno de créditos monitorados pela SEFA-PR, oriundos do Paraná Competitivo|11052025|21082025
+PR011071|ICMS;Estorno de créditos;Estorno de crédito presumido, Paraná Competitivo, e-comerce|11052025|
+PR011074|ICMS;Estorno de créditos;Estorno de crédito presumido, Paraná Competitivo, importações|11052025|
+PR020090|ICMS;Outros créditos;Crédito presumido de Regime Especial para o setor industrial -  Paraná Competitivo|22082025|
+PR010090|ICMS;Estorno de créditos;Estorno de créditos presumido destinado ao setor industrial, oriundos do Paraná Competitivo|22082025|
+PR011086|ICMS;Estorno de créditos;Estorno de crédito presumido destinado ao setor comercial, oriundos do Paraná Competitivo|04082025|
+PR021086|ICMS;Outros créditos;Crédito presumido de Regime Especial para o setor comercial  Paraná Competitivo|04082025|
+PR011087|ICMS;Estorno de créditos;Estorno de crédito presumido previsto no subitem 1.6 do item 43-B do Anexo VII do RICMS/2017|01012026|
+PR021087|ICMS;Outros créditos;Crédito presumido previsto no subitem 1.5 do item 43-B do Anexo VII do RICMS/2017|01012026|

@@ -1,0 +1,8 @@
+versão=3 COD_ORI_DED, DESC_ORI_DED, DT_INI, DT_FIM
+01|Créditos Presumidos - Medicamentos|01012011|
+02|Créditos Admitidos no Regime Cumulativo - Bebidas Frias|01012011|
+03|Contribuição Paga pelo Substituto Tributário - ZFM|01012011|
+04|Substituição Tributária - Não Ocorrência do Fato Gerador Presumido|01012011|
+05|Crédito presumido transporte coletivo de passageiros _ art. 2º-A da Lei N° 14.592/23|29102023|
+06|Ressarcimento de selo de controle e de controle de produção|01012012|
+99|Outras Deduções|01012011|

@@ -1,0 +1,28 @@
+versão=1 CODIGO, DESCRICAO, DT_INI, DT_FIM, PERIODICID
+0067|Produtos-Retenção em Pagamentos por Órgãos Públicos-Operações Intra Orçamentárias|01082015||Mensal
+0070|Transporte de Passageiros-Retenção em Pagamentos por Órgãos Públicos-Operações Intra Orçamentárias|01082015||Mensal
+0082|Financeiras-Retenção em Pagamentos por Órgãos Públicos-Operações Intra Orçamentárias|01082015||Mensal
+0095|Serviços-Retenção em Pagamentos por Órgãos Públicos-Operações Intra Orçamentárias|01082015||Mensal
+0123|Bens e serviços adquiridos de sociedades cooperativas e associações profissionais ou assemelhadas - Retido por órgão público - Operações Intra-orçamentárias|01082015||Mensal
+3316|COFINS - RET FONTE PAG PJ/PJ D PRIV -L OFICIO|01082015||Mensal
+3332|COFINS - RET PAGT ENT PUBL A PJ - L OFICIO|01082015||Mensal
+3359|PIS - RET FONTE PAG PJ/PJ DIR PRIV - L OFICIO|01082015||Mensal
+3360|PIS - RET FONTE PAGT ENT PUBL A PJ - L OFICIO|01082015||Mensal
+3746|COFINS - RETENÇÃO NA FONTE/AQUISIÇÃO DE AUTOPEÇAS|01082015||Mensal
+3770|PIS/PASEP - RETENÇÃO NA FONTE/AQUISIÇÃO DE AUTOPEÇAS|01082015||Mensal
+4085|RET CONTRIB PAGT EST/DF/MUNIC - BENS/SERVIÇOS - CSLL/COFINS/PIS|01082015||Mensal
+4166|Cofins - Regime Especial de Tributação do Patrimônio de Afetação|01082015||Mensal
+4407|COFINS - RET FONTE PAGT ESTADOS/DF/MUNICÍPIOS - BENS/SERVIÇOS|01082015||Mensal
+4409|PIS - RET FONTE PAGT ESTADOS/DF/MUNICÍPIOS - BENS/SERVIÇOS|01082015||Mensal
+5952|Retenção de Contribuições sobre Pagamentos de Pessoa Jurídica a Pessoa Jurídica de Direito Privado - CSLL, Cofins e PIS|01082015||Mensal
+5960|Cofins - Retenção sobre Pagamentos de Pessoa Jurídica a Pessoa Jurídica de Direito Privado (art. 30 da Lei nº 10.833/2003)|01082015||Mensal
+5979|PIS - Retenção sobre Pagamentos de Pessoa Jurídica a Pessoa Jurídica de Direito Privado|01082015||Mensal
+6147|Produtos - Retenção em Pagamentos por Órgão Público|01082015||Mensal
+6175|Transporte de Passageiros - Retenção em Pagamento por Órgão Público|01082015||Mensal
+6188|Financeiras - Retenção em Pagamento por Órgão Público|01082015||Mensal
+6190|Serviços - Retenção em Pagamento por Órgão Público|01082015||Mensal
+6215|Entidades Isentas - Retenção em Pagamento por Órgão Público|01082015||Mensal
+6230|PIS - Retenção na Fonte sobre Pagamento Efetuado por Órgão Público à Pessoa Jurídica|01082015||Mensal
+6243|Cofins - Retenção na Fonte sobre Pagamento à Pessoa Jurídica (art. 34 da Lei nº 10.833/2003)|01082015||Mensal
+8863|Bens ou Serviços Adquiridos de Sociedades Cooperativas e Associações Profissionais ou Assemelhadas - Retido por Órgão Público|01082015||Mensal
+9060|Querosene de Aviação Adquirido de Produtor ou Importador - Retido por Órgão Público|01082015||Mensal

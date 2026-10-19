@@ -127,6 +127,47 @@ class TestEntrada(Base):
         self.assertFalse(any(r.reg == "C100" for r in res.doc.registros))
 
 
+class TestLeiauteDoPeriodo(Base):
+    """Período que nenhuma versão da base cobre: a geração segue na versão
+    mais recente e **diz** isso, sem bloquear a gravação."""
+
+    TIPO = "leiaute do período fora da base"
+
+    def _apontamentos(self, periodo):
+        res = geracao.gerar_icms(self.memoria,
+                                 xf.ler_pasta_fiscal(self.xmls), periodo,
+                                 saldo_credor_anterior=0)
+        return res, [r for r in res.revisar if r["tipo"] == self.TIPO]
+
+    def test_periodo_coberto_nao_aponta(self):
+        _res, apontados = self._apontamentos("202608")
+        self.assertEqual(apontados, [])
+
+    def test_periodo_fora_da_base_aponta_sem_bloquear(self):
+        # a base entregue vai até o ICMS 020, que vale em 2026
+        res, apontados = self._apontamentos("202708")
+        self.assertEqual(len(apontados), 1)
+        a = apontados[0]
+        self.assertFalse(a["bloqueia"])
+        self.assertEqual(a["documento"], "0000")
+        self.assertIn("08/2027", a["detalhe"])
+        self.assertIn("mais recente", a["detalhe"])
+        self.assertIn("020", a["detalhe"])
+        self.assertIn("Configurações → Base de referência…", a["detalhe"])
+        self.assertEqual(res.bloqueios, [])
+
+    def test_sem_base_nenhuma_nao_aponta(self):
+        """Fonte vazia: não há "versão mais recente" que tenha valido, e a
+        geração sai como sempre saiu."""
+        from sped_tables.dominio import referencias
+        antes = referencias.definir(None)
+        try:
+            _res, apontados = self._apontamentos("202708")
+        finally:
+            referencias.definir(antes)
+        self.assertEqual(apontados, [])
+
+
 class TestSaidasECancelamento(Base):
 
     def test_nfce_sem_c170_com_st_e_ipi_vazios(self):
@@ -145,6 +186,65 @@ class TestSaidasECancelamento(Base):
         e110 = next(r for r in gerado.registros if r.reg == "E110")
         self.assertAlmostEqual(_to_num(e110.valor(
             gerado._ix("E110", "VL_TOT_DEBITOS"))), 3.60)
+
+    def test_0200_dos_produtos_vendidos(self):
+        """A NFC-e não leva C170, mas o produto vendido vai para o 0200: o
+        cadastro que a empresa declarou (P1) ou, produto novo, o do XML —
+        com NCM, código de barras e CEST — apontado uma vez só."""
+        _grava(self.xmls, "nfce.xml", nfe_xml(
+            mod="65", chave=CHAVE_NFCE, nnf="1", cfop="5102",
+            emit=(CNPJ_TESTE, "EMPRESA TESTE LTDA"), dest=None,
+            itens=[{"cProd": "P1"}, {"cProd": "V9", "NCM": "22021000"},
+                   {"cProd": "V9", "NCM": "22021000"}]).replace(
+            "<NCM>22021000</NCM>", "<NCM>22021000</NCM><CEST>0300700</CEST>"))
+        res = self.gerar()
+        gerado = self.reler(res)
+        i = {c: gerado._ix("0200", c) for c in ("COD_ITEM", "DESCR_ITEM",
+                                                 "COD_NCM", "CEST")}
+        cad = {r.valor(i["COD_ITEM"]): r for r in gerado.registros
+               if r.reg == "0200"}
+        self.assertEqual(sorted(cad), ["P1", "P2", "P3", "V9"])
+        self.assertEqual(cad["P1"].valor(i["DESCR_ITEM"]), "PRODUTO P1")
+        self.assertEqual((cad["V9"].valor(i["COD_NCM"]),
+                          cad["V9"].valor(i["CEST"])),
+                         ("22021000", "0300700"))
+        avisos = [r for r in res.revisar
+                  if r["tipo"] == "produtos vendidos fora do cadastro"]
+        self.assertEqual(len(avisos), 1)
+        self.assertIn("V9", avisos[0]["detalhe"])
+
+    def test_fora_do_periodo_so_entra_marcado_e_vai_extemporaneo(self):
+        """Cupom de julho transmitido em agosto: sem a escolha da pessoa
+        fica de fora (e é listado); marcado, entra com COD_SIT 01, a data do
+        XML, e o ICMS dele vai para o DEB_ESP — não para os débitos."""
+        _grava(self.xmls, "nfce.xml", nfe_xml(
+            mod="65", chave=CHAVE_NFCE, nnf="1", cfop="5102",
+            emit=(CNPJ_TESTE, "EMPRESA TESTE LTDA"), dest=None,
+            dhemi="2026-07-31T23:50:00-03:00",
+            itens=[{"cProd": "P1", "vProd": "20.00", "vBC": "20.00",
+                    "vICMS": "3.60"}]))
+        res = self.gerar()
+        self.assertEqual(res.fora_periodo, [(CHAVE_NFCE, "31072026")])
+        self.assertFalse(any(r.reg == "C100" and r.valor(
+            res.doc._ix("C100", "COD_MOD")) == "65"
+            for r in res.doc.registros))
+        res = self.gerar(incluir={CHAVE_NFCE})
+        self.assertEqual(res.fora_periodo, [])
+        self.assertEqual(res.extemporaneos, {CHAVE_NFCE})
+        gerado = self.reler(res)
+        ic = {c: gerado._ix("C100", c) for c in ("COD_MOD", "COD_SIT",
+                                                  "DT_DOC")}
+        nfce = next(r for r in gerado.registros if r.reg == "C100"
+                    and r.valor(ic["COD_MOD"]) == "65")
+        self.assertEqual((nfce.valor(ic["COD_SIT"]), nfce.valor(ic["DT_DOC"])),
+                         ("01", "31072026"))
+        e110 = next(r for r in gerado.registros if r.reg == "E110")
+        ie = {c: gerado._ix("E110", c) for c in ("VL_TOT_DEBITOS",
+                                                 "DEB_ESP")}
+        self.assertAlmostEqual(_to_num(e110.valor(ie["VL_TOT_DEBITOS"])), 0)
+        self.assertAlmostEqual(_to_num(e110.valor(ie["DEB_ESP"])), 3.60)
+        # o que o recálculo do botão espera é o que a geração gravou
+        self.assertEqual(gerado.recalcular_e110(), {})
 
     def test_cancelada_so_com_a_chave(self):
         _grava(self.xmls, "canc.xml",

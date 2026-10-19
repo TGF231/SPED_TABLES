@@ -48,17 +48,49 @@ def problema_do_arquivo(caminho):
     return ""
 
 
-def pre_checagem(doc):
-    """`[(tipo, quantidade)]` do que o PVA recusaria já na importação.
+def _aviso_sem_leiaute(info):
+    """O que a pré-checagem não conferiu, quando o diagnóstico rodou sem a
+    estrutura do leiaute do arquivo: os achados que o PVA recusa na
+    importação (tipo, tamanho, domínio, quantidade de campos) vêm todos dela,
+    e sem ela a lista vazia não quer dizer "nada a recusar". `""` quando a
+    estrutura valeu."""
+    if info.get("fora_da_base") and info.get("mais_nova_que_a_base"):
+        base = " (%s)" % info["base"] if info.get("base") else ""
+        return ("A versão %s do leiaute deste arquivo é mais nova que a base "
+                "de referência em uso%s: a conferência prévia pelo leiaute "
+                "não rodou. Para conferir antes de abrir o PVA, importe uma "
+                "base mais nova em Configurações → Base de referência…"
+                % (info["fora_da_base"], base))
+    if info.get("fora_da_base"):
+        return ("A versão %s do leiaute deste arquivo não está na base de "
+                "referência (ela guarda os últimos 5 anos): a conferência "
+                "prévia pelo leiaute não rodou." % info["fora_da_base"])
+    if info.get("sem_base"):
+        return ("A base de referência está indisponível: a conferência "
+                "prévia pelo leiaute não rodou.")
+    return ""
+
+
+def pre_checagem_com_aviso(doc):
+    """`([(tipo, quantidade)], aviso)`: o que o PVA recusaria já na
+    importação e, à parte, o aviso de que a conferência **não rodou** pelo
+    leiaute (`""` quando rodou). O aviso não impede nada — o PVA valida de
+    qualquer jeito —, só evita que a lista vazia soe como aprovação.
 
     Nunca levanta: se o diagnóstico falhar, o envio segue — a pré-checagem
     é para poupar uma volta, não para impedir o usuário de tentar.
     """
     try:
-        achados, _info = diagnostico.verificar(doc)
-        return diagnostico.impedem_importacao(achados)
+        achados, info = diagnostico.verificar(doc)
+        return (diagnostico.impedem_importacao(achados),
+                _aviso_sem_leiaute(info))
     except Exception:                                       # noqa: BLE001
-        return []
+        return [], ""
+
+
+def pre_checagem(doc):
+    """`[(tipo, quantidade)]` do que o PVA recusaria já na importação."""
+    return pre_checagem_com_aviso(doc)[0]
 
 
 def enviar(caminho, layout, progresso=None, cancelar=None):

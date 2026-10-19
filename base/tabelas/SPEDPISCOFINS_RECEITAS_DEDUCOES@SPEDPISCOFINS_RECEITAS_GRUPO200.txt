@@ -1,0 +1,7 @@
+versão=1 CODIGO, DESCRICAO, DT_INI, DT_FIM, IND_ATIV, IND_AJUSTE, GRUPO, SUBGRUPO, IND_OUTROS
+R0201010|Receitas de comissões|01012014||02;06|P|200|R0201|N
+R0201020|Outras receitas da atividade|01012014||02;06|P|200|R0201|S
+R0202010|Receita da venda de bens do ativo permanente|01012014||02;06|P|200|R0202|N
+R0202020|Outras receitas da venda de bens e serviços|01012014||02;06|P|200|R0202|S
+R0298100|Ajustes negativos de receitas|01012014||02;06|N|200|R0298|N
+R0299100|Ajustes positivos de receitas|01012014||02;06|P|200|R0299|N

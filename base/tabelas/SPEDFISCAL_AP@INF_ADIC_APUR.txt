@@ -1,0 +1,100 @@
+versão=7 INF_ADIC, DESC_INF, DT_INI, DT_FIM
+AP000001|Isenção do ICMS nas operações internas e interestaduais com polpa de cacau (Decreto nº39/1991)|01012018|
+AP000002|Isenção do ICMS nas operações com obras de arte (Decreto nº257/1991 CV 59/91)|01012018|
+AP000003|Isenção do ICMS na importação do exterior de reprodutores e matrizes caprinas (CV. ICMS 20/1992)|01012018|
+AP000004|Isenção do ICMS nas doações de mercadorias, por contribuintes do imposto à Secretaria da Educação (Decreto nº1252/1992 - CV ICMS 78/1992)|01012018|
+AP000005|Isenção do ICMS nas operações internas e interestaduais com pós-larva de camarão (Decreto nº1565/1992)|01012018|
+AP000006|Isenção do ICMS para indústrias instaladas no Amapá consideradas de interesse prioritário (Decreto nº2530/1994)|01012018|
+AP000007|Isenção do ICMS nas doações de mercadorias efetuadas ao Governo do Estado, para distribuição a pessoas necessitadas (Decreto nº68/1996)|01012018|
+AP000008|Isenção do ICMS nas operações que destinem equipamentos didáticos, científicos e médico-hospitalares ao MEC para atender ao "Programa de modernização e consolidação da infraestrutura acadêmica das instituições federais de ensino superior e hospitais universitários"" (Decreto nº5720/1997)"|01012018|
+AP000009|Isenção do ICMS nas saídas de bens do ativo imobilizado e de uso ou consumo de estabelecimento da EMBRAPA para outro estabelecimento da mesma ou para estabelecimento de empresa estadual integrante do sistema nacional de pesquisa agropecuária (Decreto nº2350/1998)|01012018|
+AP000010|Isenção do ICMS na importação de bens destinados a ensino, pesquisas e serviços médico-hospitalares. (Decreto nº1422/1999)|01012018|
+AP000011|Isenção do ICMS nas doações de microcomputadores usados (semi-novos) para escolas públicas especiais e profissionalizantes, associações destinadas a portadores de deficiência e comunidades carentes, efetuadas diretamente pelos fabricantes ou suas filiais (Decreto nº2578/1999)|01012018|
+AP000012|Isenção do ICMS nas operações com polpa de cupuaçu e açaí (Decreto nº3150/1999)|01012018|
+AP000013|Isenção do ICMS nas operações decorrentes de importação do exterior realizadas pela Universidade Federal do Amapá - UNIFAP (Decreto nº3152/1999)|01012018|
+AP000014|Isenção do ICMS nas operações internas com Castanha-do-brasil, quando comercializadas por cooperativas extrativas (Decreto nº1628/2000)|01012018|
+AP000015|Isenção do ICMS nas saídas de lubrificante usado ou contaminado (Decreto nº3010/2000)|01012018|
+AP000016|Isenção do ICMS nas operações com equipamentos e insumos destinados à prestação de serviços de saúde (Decreto nº6657/2002)|01012018|
+AP000017|Isenção do ICMS nas saídas internas ou interestaduais de produtos típicos de artesanato regional (Decreto nº6511/2003)|01012018|
+AP000018|Isenção do ICMS para produtores rurais, pescadores e extratores de produtos 'in natura' e agropecuários na venda para administração pública (Decreto nº7172/2003)|01012018|
+AP000019|Isenção do ICMS nas operações internas promovidas pelo instituto de pesquisas científicas e tecnológicas do estado do Amapá - IEPA (Decreto nº7726/2003)|01012018|
+AP000020|Isenção do ICMS nas operações com preservativos (Decreto nº231/2004)|01012018|
+AP000021|Isenção do ICMS nas saídas internas com os produtos comercializados pelas cooperativas de oleiros (Decreto nº3382/2004)|01012018|
+AP000022|Isenção do ICMS nas aquisições de equipamentos e acessórios destinados às instituições que atendam aos portadores de deficiência física, auditiva, mental, visual e múltipla (Decreto nº3058/2005)|01012018|
+AP000023|Isenção do ICMS nas operações relacionadas ao Programa Fome Zero (Decreto nº3063/2005)|01012018|
+AP000024|Isenção do ICMS na comercialização de equipamento de diagnóstico em imunohematologia, sorologia e coagulação destinados a órgão ou entidade da administração pública (Decreto nº4055/2005)|01012018|
+AP000025|Isenção do ICMS no desembaraço aduaneiro decorrente de importação de tratores agrícolas e colheitadeiras (Decreto nº4057/2005)|01012018|
+AP000026|Isenção do ICMS nas operações internas com os produtos: andiroba, copaíba, látex, cernambi prensado (CVP), folha semi-artefato (FSA), folha de defumação (fdl), couro vegetal (Decreto nº4094/2005)|01012018|
+AP000027|Isenção do ICMS nas operações internas e interestaduais com automóveis de passageiros, para utilização como táxi (Decreto nº4872/2005)|01012018|
+AP000028|Isenção do ICMS na importação de equipamento médico-hospitalar, realizada por clínica ou hospital, programados pela Secretaria de Estado da Saúde (Decreto nº247/2006)|01012018|
+AP000029|Isenção do ICMS nas saídas de pilhas e baterias usadas (Decreto nº1798/2006)|01012018|
+AP000030|Isenção do ICMS relativo à importação e saídas internas de bens destinados à modernização de zonas portuárias do Estado - reporto (Decreto nº1799/2006)|01012018|
+AP000031|Isenção do ICMS nas operações internas com quelônios criados em cativeiro (Decreto nº3414/2006)|01012018|
+AP000032|Isenção do ICMS na prestação de serviço de transporte intermunicipal de calcário destinado a produtor rural (Decreto nº3415/2006)|01012018|
+AP000033|Isenção do ICMS nas operações internas com veículos automotores adquiridos por Associação de Pais e Amigos dos Excepcionais - APAE (Decreto nº3417/2006)|01012018|
+AP000034|Isenção do ICMS nas operações internas e interestaduais com polpa de acerola (Decreto nº386/2007)|01012018|
+AP000035|Isenção do ICMS nas operações internas e interestaduais e na importação de medicamentos e equipamentos destinados à pesquisa (Decreto nº2151/2007)|01012018|
+AP000036|Isenção do ICMS nas operações internas com produtos de hortifrutigranjeiros, produzidos e comercializados por produtores rurais instalados do Estado, não destinados à industrialização (Decreto nº2436/2007, art. 6 e Decreto nº2269/1998, art. 61, § 1º)|01012018|
+AP000037|Isenção do ICMS na importação de máquinas, equipamentos, partes e acessórios destinados à empresa de radiodifusão sonora e de sons e imagens de recepção livre e gratuita (Decreto nº2541/2007)|01012018|
+AP000038|Isenção do ICMS na saída de reagente para diagnóstico da doença de chagas destinada a órgão ou entidade da administração pública direta, suas autarquias e fundações (Decreto nº2542/2007)|01012018|
+AP000039|Suspensão/Isenção do ICMS na importação de locomotiva e trilho para estrada de ferro (Decreto nº2767/2007)|01012018|
+AP000040|Suspensão/Isenção do ICMS diferencial de alíquotas incidente na aquisição interestadual dos produtos especificados, destinados a modernização de zonas portuárias (Decreto nº2768/2007)|01012018|
+AP000041|Isenção do ICMS nas operações com energia elétrica destinadas ao consumo da Companhia de Água e Esgoto do Amapá - CAESA (Decreto nº4902/2007)|01012018|
+AP000042|Isenção do ICMS para empresas de transporte aéreo instaladas no Amapá (Lei nº1185/2008)|01012018|
+AP000043|Isenção do ICMS nas prestações de serviço de comunicação no âmbito do Programa Governo Eletrônico de Serviço de Atendimento do Cidadão - GESAC (Decreto nº2726/2008)|01012018|
+AP000044|Isenção do ICMS nas prestações de serviço de comunicação referente ao acesso à internet e à conectividade em banda larga destinadas a escolas públicas e a doação de equipamentos (Decreto nº2731/2008)|01012018|
+AP000045|Isenção do ICMS nas importações realizadas pela Fundação Nacional de Saúde dos produtos imunobiológicos, medicamentos e inseticidas, relacionados no anexo deste Decreto, destinados as campanhas de vacinação e de combate a dengue, malária e febre amarela, promovidas pelo Governo Federal (Decreto nº3649/2008)|01012018|
+AP000046|Isenção do ICMS nas operações com medicamentos indicados (Decreto nº138/2009)|01012018|
+AP000047|Isenção do ICMS nas operações realizadas com os fármacos e medicamentos relacionados no anexo do Decreto 0141/09, destinados a órgãos da administração pública direta e indireta federal, estadual e municipal e suas fundações públicas. (Decreto nº141/2009)|01012018|
+AP000048|Isenção do ICMS nas operações com medicamentos destinados ao tratamento dos portadores do vírus da AIDS (Decreto nº143/2009)|01012018|
+AP000049|Isenção do ICMS as prestações internas e interestaduais - prestadores de serviços de transporte aéreo de carga (Decreto nº729/2010)|01012018|
+AP000050|Isenção do ICMS nas operações de entrada de mercadoria importada para industrialização de componentes e derivados de sangue (Decreto nº2643/2009 e 1026/2010)|01012018|
+AP000051|Isenção do ICMS nas operações com equipamentos e componentes para o aproveitamento das energias solar e eólica que especifica (Decreto nº2047/2010)|01012018|
+AP000052|Isenção do ICMS nas saídas de pneus usados com objetivo de reciclagem (Decreto nº2051/2010)|01012018|
+AP000053|Isenção do ICMS nas operações com medicamento destinado ao tratamento dos portadores de gripe A (H1N1) (Decreto nº2491/2010)|01012018|
+AP000054|Isenção do ICMS na importação de bens destinados a ensino e pesquisa científica (Decreto nº3040/2010)|01012018|
+AP000055|Isenção do ICMS nas operações com equipamentos ou acessórios destinados a portadores de deficiência física ou auditiva (Decreto nº4842/2010)|01012018|
+AP000056|Isenção do ICMS em operação com bens ou mercadorias destinadas às atividades de pesquisa, exploração ou produção de petróleo e gás natural (Decreto nº4942/2010)|01012018|
+AP000057|Isenção do ICMS nas operações relativas à saída de gêneros alimentícios produzidos por agricultores familiares (Decreto nº621/2011)|01012018|
+AP000058|Isenção do ICMS, no recebimento dos remédios  relacionados, sem similar nacional, importados do exterior diretamente pela APAE - Associação de Pais e Amigos dos Excepcionais (Decreto nº2725/2011)|01012018|
+AP000059|Isenção do ICMS nas operações internas com gêneros alimentícios regionais destinados à merenda escolar da rede pública de ensino (Decreto nº4344/2011)|01012018|
+AP000060|Isenção do ICMS nas saídas internas de briquete, pellet e matéria-prima, nas condições que especifica (Decreto nº5858/2011)|01012018|
+AP000061|Isenção do ICMS nas operações com fármacos e medicamentos derivados do plasma humano coletado nos hemocentros de todo o Brasil, efetuadas pela Hemobrás (Decreto nº869/2012)|01012018|
+AP000062|Isenção do ICMS nas operações internas com medicamentos destinados ao tratamento do câncer (Decreto nº1773/2012)|01012018|
+AP000063|Isenção do ICMS para as saídas de veículos destinados a pessoas portadoras de deficiência física, visual mental ou autista (Decreto nº7/2013)|01012018|
+AP000064|Isenção do ICMS diferencial de alíquotas e ICMS importação de bens destinados à modernização de zona portuária do Estado do Amapá (Decreto nº5769/2013)|01012018|
+AP000065|Isenção do ICMS nas operações com produtos farmacêuticos e fraldas geriátricas distribuídos por farmácias integrantes do programa Farmácia Popular do Brasil (Decreto nº2466/2014)|01012018|
+AP000066|Isenção do ICMS nas operações com produtos da cesta básica (Lei nº2326/2018)|01042018|
+AP000999|Outra Isenção do ICMS não especificada anteriormente (informar dispositivo legal descrição complementar)|01012018|
+AP001001|Redução na base de cálculo do ICMS para indústrias instaladas no Amapá consideradas de interesse prioritário (Decreto nº2530/1994)|01012018|
+AP001002|Redução na base de cálculo do ICMS nas saídas internas de gás liquefeito de petróleo (lei nº400/1997)|01012018|
+AP001003|Redução na base de cálculo do ICMS em saídas de bens e veículos usados pelos estabelecimentos revendedores de veículos e bens usados (art. 11, XV Decreto nº2269/1998)|01012018|
+AP001004|Redução na base de cálculo do ICMS nas saídas internas dos produtos produzidos por indústrias instaladas no estado do Amapá, e devidamente inscritas no cadastro do ICMS da SEFAZ/AP (Decreto nº2506/1998)|01012018|
+AP001005|Redução na base de cálculo do ICMS nas operações com equipamentos industriais e implementos agrícolas (Decreto nº2990/2000)|01012018|
+AP001006|Redução na base de cálculo do ICMS nas prestações de serviço de rádio chamada (Decreto nº2891/2001)|01012018|
+AP001007|Redução na base de cálculo do ICMS nas operações de saída interna e interestadual de determinados insumos agrícolas (Decreto nº2892/2001)|01012018|
+AP001008|Redução na base de cálculo do ICMS nas operações interestaduais realizadas por estabelecimento fabricante ou importador, sujeitos ao regime de cobrança monofásica do PIS/PASEP e COFINS (Decreto nº6902/2002)|01012018|
+AP001009|Redução na base de cálculo do ICMS nas operações com a industrialização da mandioca (Decreto nº4053/2005)|01012018|
+AP001010|Redução na base de cálculo do ICMS devido nas saídas de biodiesel (b-100) (Decreto nº3469/2006)|01012018|
+AP001011|Redução na base de cálculo do ICMS nas saídas internas com produtos essenciais à alimentação humana (Decreto nº2436/2007)|01012018|
+AP001012|Redução na base de cálculo do ICMS incidente sobre a importação do exterior e ICMS diferencial de alíquotas, por empresas do setor produtivo, de bens do ativo fixo (Decreto nº2766/2007)|01012018|
+AP001013|Redução na base de cálculo do ICMS nas saídas de aeronaves, peças, acessórios e outras mercadorias que especifica (Decreto nº2871/2007)|01012018|
+AP001014|Redução na base de cálculo do ICMS para empresas de transporte aéreo instaladas no Amapá (lei nº1185/2008)|01012018|
+AP001015|Redução na base de cálculo do ICMS nas prestações de serviço de comunicação por meio de veiculação de mensagens de publicidade e propaganda na televisão por assinatura (Decreto nº1797/2008)|01012018|
+AP001016|Redução na base de cálculo do ICMS em operação com bens ou mercadorias destinadas às atividades de pesquisa, exploração ou produção de petróleo e gás natural (Decreto nº4942/2010)|01012018|
+AP001017|Redução na base de cálculo do ICMS nas operações que especifica (Decreto nº5858/2011)|01012018|
+AP001018|Redução na base de cálculo do ICMS no fornecimento de refeição promovida por bares, restaurantes e estabelecimentos similares (Decreto nº4319/2012)|01012018|
+AP001019|Redução na base de cálculo do ICMS nas operações internas com pedra britada e de mão (Decreto nº1869/2013)|01012018|
+AP001020|Redução na base de cálculo do ICMS para indústria do segmento de colchões localizada no Estado do Amapá (Decreto nº5764/2013)|01012018|
+AP001021|Redução na base de cálculo do ICMS para indústria do segmento de café localizada no Estado do Amapá (Decreto nº5765/2013)|01012018|
+AP001022|Redução na base de cálculo do ICMS diferencial de alíquotas para aquisição de bens do ativo por empresas extratoras de pedra britada e de mão (Decreto nº5766/2013)|01012018|
+AP001023|Redução na base de cálculo do ICMS nas prestações de serviço de televisão por assinatura (Decreto nº2465/2014)|01012018|
+AP001024|Redução na base de cálculo do ICMS para indústria do segmento de fabricação de quadros e painéis elétricos e eletrônicos (Decreto nº2931/2014)|01012018|
+AP001025|Redução na base de cálculo do ICMS para indústria do segmento de fabricação de quadros e painéis elétricos e eletrônicos localizada no Estado do Amapá (Decreto nº2931/2014)|01012018|
+AP001026|Redução na base de cálculo do ICMS incidente nas operações de importação de mercadorias estrangeiras destinadas à comercialização na ALCMS (Decreto nº799/2016)|01012018|31122018
+AP001027|Redução na base de cálculo do ICMS incidente nas operações com produtos da cesta básica (Lei nº2326/2018)|01042018|
+AP001028|Redução na base de cálculo do ICMS incidente nas operações internas com óleo diesel e lubrificantes (Decreto nº2072/2018)|01062018|
+AP001999|Outra Redução na base de cálculo do ICMS não especificada anteriormente (informar dispositivo legal na descrição complementar)|01012018|
+AP000067|Isenção do ICMS nas importações do exterior sob o regime de drawback" (Decreto nº2960/2017 - Conv. ICMS 27/90)|01012018|
+AP002001|Crédito Presumido incidente nas operações com produtos alcóolicos classificados nos códigos 2204 a 2208 da NCM de empresas atacadistas e varejistas (Decreto nº251/2019)|01022019|
+AP001029|Redução de base de cálculo do ICMS na aquisição de óleo diesel ou biodiesel efetuada por empresa concessionária/permissionária de transporte coletivo público intermunicipal, urbano e metropolitano de passageiros (Decreto nº4665/2019)|01102019|

@@ -1,0 +1,17 @@
+versão=1 CODIGO, DESCRICAO, DT_INI, DT_FIM, IND_ATIV, IND_AJUSTE, GRUPO, SUBGRUPO, IND_OUTROS
+D0601010|Contraprestações de corresponsabilidade transferida de assistência médico-hospitalar|01012014||05;06|P|600|D0601|N
+D0601020|Contraprestações de corresponsabilidade transferida de assistência odontológica|01012014||05;06|P|600|D0601|N
+D0602010|Variação das provisões técnicas de assistência médico-hospitalar|01012014||05;06|P|600|D0602|N
+D0602020|Variação das provisões técnicas de assistência odontológica|01012014||05;06|P|600|D0602|N
+D0603010|Eventos/sinistro conhecidos ou avisados de assistência a saúde médico hospitalar|01012014||05;06|P|600|D0603|N
+D0603020|Eventos/sinistro conhecidos ou avisados de assistência odontológica|01012014||05;06|P|600|D0603|N
+D0603030|Despesas  operações de assistência médico hospitalar|01012014||05;06|P|600|D0603|N
+D0603040|Despesas  operações de assistência odontológica|01012014||05;06|P|600|D0603|N
+D0603050|Outras despesas operacionais|01012014||05;06|P|600|D0603|S
+D0603060|Despesa de resseguro (cobertura assistencial médico hospitalar)|01012014||05;06|P|600|D0603|N
+D0603070|Despesa de resseguro  (cobertura assistencial odontológica)|01012014||05;06|P|600|D0603|N
+D0603080|Outras despesas de resseguro|01012014||05;06|P|600|D0603|S
+D0603990|Indenizações efetivamente pagas|01012014||05;06|P|600|D0603|N
+D0690080|Sobras apuradas na DRE destinadas ao FATES e FUNDO de RESERVA(art 28 Lei 5764/71), previsto no art 10 da IN 635|01012014||05;06|P|600|D0690|N
+D0698010|Ajustes Negativos das deduções e exclusões de caráter específico|01012014||05;06|N|600|D0698|N
+D0699010|Ajustes Positivos das deduções e exclusões de caráter específico|01012014||05;06|P|600|D0699|N

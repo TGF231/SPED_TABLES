@@ -35,13 +35,14 @@ import time
 RAIZ = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, RAIZ)
 
+from consolidador import banco_pva  # noqa: E402
 from sped_tables.aplicacao import montagem  # noqa: E402
 from sped_tables.dominio import empresas as emp_mod  # noqa: E402
 from sped_tables.dominio import diagnostico, rotinas, validacao  # noqa: E402
+from sped_tables.dominio import referencias  # noqa: E402
 from sped_tables.dominio.sped_model import (  # noqa: E402
     TIPOS_ITEM_0200, SpedDocument, _fmt_aliq, _fmt_val, _to_num)
-from sped_tables.infra import banco_pva, config, pva  # noqa: E402
-from sped_tables.infra import tabelas_rfb  # noqa: E402
+from sped_tables.infra import config, pva  # noqa: E402
 
 if sys.platform == "win32":
     # declarado uma vez, no import (armadilha do ctypes: ver CLAUDE.md)
@@ -112,7 +113,7 @@ def _rotinas(doc):
 
 def _cst_ncm(doc):
     emp = _empresa_do_arquivo(doc)
-    clf, _c = tabelas_rfb.classificador()
+    clf = referencias.atual().classificador_ncm()
     ocs = rotinas.verificar_cst_ncm(doc, emp, classificador=clf,
                                     data_ref=doc.data_final())
     n = rotinas.corrigir_cst_ncm(doc, emp, ocs) if ocs else 0
@@ -285,7 +286,7 @@ def _injetar_credito_indevido(doc):
     corrigida. Devolve quantos itens ganharam o crédito indevido.
     """
     emp = _empresa_do_arquivo(doc)
-    clf, _c = tabelas_rfb.classificador()
+    clf = referencias.atual().classificador_ncm()
     ocs = [o for o in rotinas.verificar_cst_ncm(
         doc, emp, classificador=clf, data_ref=doc.data_final())
         if o.escopo == "entrada"]

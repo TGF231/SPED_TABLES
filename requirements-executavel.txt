@@ -1,0 +1,19 @@
+# Ambiente mínimo para gerar o executável (ferramentas/gerar_executavel.py):
+# só o que o programa importa em tempo de execução, mais o PyInstaller.
+# Versões fixas: o executável sai igual de uma máquina para outra.
+PyQt6==6.11.0
+PyQt6-Qt6==6.11.1
+PyQt6-sip==13.11.1
+openpyxl==3.1.5
+et-xmlfile==2.0.0
+firebirdsql==1.4.7
+pyodbc==5.3.0
+PyMySQL==1.2.3
+pyinstaller==6.22.3
+pyinstaller-hooks-contrib==2026.7
+# dependências do PyInstaller (o `uv pip sync` tira o que não está aqui)
+altgraph==0.17.5
+packaging==26.3
+pefile==2024.8.26
+pywin32-ctypes==0.2.3
+setuptools==84.0.0

@@ -1,0 +1,22 @@
+versão=2.0
+Tnnnn|Tributado ICMS; Valores de operações tributadas pelo ICMS, onde "nnnn" representa a carga tributária efetiva do imposto com duas casas decimais. Exemplo: T1800 (carga tributária efetiva = 18,00%)|01012009|
+Snnnn|Tributado ISSQN; Valores de operações tributadas pelo ISSQN, onde "nnnn" representa a carga tributária efetiva do imposto com duas casas decimais. Exemplo: S0500 (carga tributária efetiva = 5,00%)|01012009|
+Fn|Substituição Tributária  ICMS; Valores de operações sujeitas ao ICMS, tributadas por Substituição Tributária, onde "n" representa o número do totalizador.|01012009|
+In|Isento  ICMS; Valores de operações Isentas do ICMS, onde "n" representa o número do totalizador.|01012009|
+Nn|Não-incidência  ICMS; Valores de operações com Não Incidência do ICMS, onde "n" representa o número do totalizador.|01012009|
+FSn|Substituição Tributária  ISSQN; Valores de operações sujeitas ao ISSQN, tributadas por Substituição Tributária, onde "n" representa o número do totalizador.|01012009|
+ISn|Isento  ISSQN; Valores de operações Isentas do ISSQN, onde "n" representa o número do totalizador.|01012009|
+NSn|Não-incidência  ISSQN; Valores de operações com Não Incidência do ISSQN, onde "n" representa o número do totalizador.|01012009|
+OPNF|Operações Não Fiscais; Somatório dos valores acumulados nos totalizadores relativos às Operações Não Fiscais registradas no ECF.|01012009|
+DT|Desconto  ICMS; Valores relativos a descontos incidentes sobre operações sujeitas ao ICMS|01012009|
+DS|Desconto  ISSQN; Valores relativos a descontos incidentes sobre operações sujeitas ao ISSQN|01012009|
+DO|Desconto  Operações Não Fiscais; Valores relativos a descontos incidentes sobre Operações Não Fiscais|01012009|
+AT|Acréscimo  ICMS; Valores relativos a acréscimos incidentes sobre operações sujeitas ao ICMS|01012009|
+AS|Acréscimo  ISSQN; Valores relativos a acréscimos incidentes sobre operações sujeitas ao ISSQN|01012009|
+AO|Acréscimo  Operações Não Fiscais; Valores relativos a acréscimos incidentes sobre Operações Não Fiscais|01012009|
+CAN-T|Cancelamento  ICMS; Valores das operações sujeitas ao ICMS, canceladas.|01012009|
+CAN-S|Cancelamento  ISSQN; Valores das operações sujeitas ao ISSQN, canceladas.|01012009|
+CAN-O|Cancelamento  Operações Não Fiscais; Valores relativos a Operações Não Fiscais, canceladas.|01012009|
+IOF|Imposto sobre Operações Financeiras; Valores relativos ao Imposto sobre Operações Financeiras, acrescido ao valor das operações.|01012009|
+xxTnnnn|Tributado ICMS; Valores de operações tributadas pelo ICMS, onde xx representa o nº do totalizador, podendo variar de 01 a 30 e "nnnn" representa a carga tributária efetiva do imposto com duas casas decimais. Exemplo: 02T1800 (carga tributária efetiva = 18,00%)|01012009|
+xxSnnnn|Tributado ISSQN; Valores de operações tributadas pelo ISSQN, onde xx representa o nº do totalizador, podendo variar de 01 a 30 e "nnnn" representa a carga tributária efetiva do imposto com duas casas decimais. Exemplo: 02S1800 (carga tributária efetiva = 18,00%)|01012009|

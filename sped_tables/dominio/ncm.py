@@ -4,7 +4,7 @@ do CST de PIS/COFINS contra ela.
 
 É regra fiscal, e por isso mora no domínio. As tabelas que a alimentam — as
 da RFB que vêm com o PVA do EFD Contribuições — são lidas por
-`sped_tables.infra.tabelas_rfb`, que entrega um `ClassificadorNCM` pronto.
+`sped_tables.infra.tabelas_ncm`, que entrega um `ClassificadorNCM` pronto.
 """
 
 from sped_tables.dominio.sped_model import so_digitos
@@ -13,7 +13,7 @@ from sped_tables.dominio.sped_model import so_digitos
 
 def normalizar_ex(texto):
     """O "Ex" da TIPI com dois dígitos ("2" -> "02"), ou "". Quem lê a
-    tabela (`infra.tabelas_rfb`) e quem compara com o EX_IPI do 0200 usam
+    tabela (`infra.tabelas_ncm`) e quem compara com o EX_IPI do 0200 usam
     esta: se divergissem, o Ex deixaria de casar em silêncio."""
     d = so_digitos(texto)
     return d.zfill(2) if d else ""

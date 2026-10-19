@@ -232,7 +232,9 @@ class TestJanela(unittest.TestCase):
     def test_leitura_de_xmls_em_segundo_plano(self):
         """A ação que lê uma pasta de XMLs passa pela barra de andamento
         (leitura fora da thread da interface) e chega ao resultado; erro e
-        cancelamento do trabalho voltam para a thread da interface."""
+        cancelamento do trabalho voltam para a thread da interface. Os XMLs
+        ficam na sessão: a segunda função não pergunta a pasta de novo, e
+        *XMLs do período* pergunta."""
         from sped_tables.infra.paralelo import Cancelado
         from sped_tables.interface.comum import em_segundo_plano
         from tests.fabrica import nfe_xml
@@ -246,13 +248,26 @@ class TestJanela(unittest.TestCase):
             self.assertTrue(j.abrir_caminho(icms_basico().gravar(p)))
             _esperar()
             with mock.patch.object(QFileDialog, "getExistingDirectory",
-                                   staticmethod(lambda *a, **k: pasta)), \
-                    mock.patch("sped_tables.interface.controladores.gerais."
-                               "DialogoConferencia") as dlg:
-                j.conferir_entradas_55()
-            resultado = dlg.call_args[0][0]
+                                   staticmethod(lambda *a, **k: pasta)):
+                j.conferir_itens_xml()
+            resultado = j._dlg_conferencia.resultado
             self.assertEqual(resultado["resumo"]["itens_conferidos"], 3)
+            self.assertIn(pasta, j.sessao.origem_xmls)
+            # a segunda não pergunta (o diálogo de pasta devolveria "")
+            perguntas = []
+            with mock.patch.object(
+                    QFileDialog, "getExistingDirectory",
+                    staticmethod(lambda *a, **k: perguntas.append(1) or "")):
+                j.conferir_itens_xml()
+                self.assertEqual(perguntas, [])
+                self.assertEqual(j._dlg_conferencia.resultado["resumo"]
+                                 ["itens_conferidos"], 3)
+                j.escolher_xmls()
+                self.assertEqual(perguntas, [1])
+            # fechar o arquivo esquece os XMLs
             j.alterado = False
+            j.fechar_arquivo()
+            self.assertIsNone(j.sessao.xmls)
             j.close()
 
         def andando(progresso, cancelar):
@@ -272,6 +287,212 @@ class TestJanela(unittest.TestCase):
             em_segundo_plano(None, "t", "x", cancela)
         self.assertEqual(self.erros, [], self._falhas())
 
+    def test_janelas_soltas_nao_bloqueiam(self):
+        """Ferramentas abertas ao mesmo tempo, nenhuma modal: a janela
+        principal continua clicável. Reabrir substitui a anterior, e o aviso
+        de resultado leva à etapa seguinte pelo botão."""
+        from PyQt6.QtWidgets import QMessageBox as Caixa
+        from sped_tables.interface.comum import informar
+        with PastaTemporaria() as p:
+            j = self.ed.JanelaPrincipal()
+            self.assertTrue(j.abrir_caminho(icms_basico().gravar(p)))
+            _esperar()
+            j.diagnosticar()
+            j.configurar_empresa()
+            j.alterar_datas()
+            abertas = dict(j._janelas)
+            self.assertGreaterEqual(len(abertas), 3)
+            for dlg in abertas.values():
+                self.assertFalse(dlg.isModal(), type(dlg).__name__)
+                self.assertTrue(dlg.isVisible(), type(dlg).__name__)
+            self.assertIsNone(QApplication.activeModalWidget())
+            self.assertTrue(j.isEnabled())
+            # reabrir fecha a anterior em vez de empilhar duas
+            antigo = j._janelas["DialogoDiagnostico"]
+            j.diagnosticar()
+            self.assertIsNot(j._janelas["DialogoDiagnostico"], antigo)
+            self.assertFalse(antigo.isVisible())
+            # o botão da etapa seguinte no aviso
+            chamou = []
+            caixa = informar(j, "Feito", "ok",
+                             proximos=(("Seguir", lambda: chamou.append(1)),))
+            botao = next(b for b in caixa.buttons()
+                         if caixa.buttonRole(b)
+                         == Caixa.ButtonRole.ActionRole)
+            botao.click()
+            self.assertEqual(chamou, [1])
+            for dlg in list(j._janelas.values()):
+                dlg.close()
+            j.alterado = False
+            j.close()
+        self.assertEqual(self.erros, [], self._falhas())
+
+    def test_regenerar_c175_com_ficticios(self):
+        """Com C170 em documento modelo 65 a ação monta a prévia e regenera
+        (até a 1.1.0-dev.9 levantava NameError: o teste das ações nunca
+        chegava aqui, porque sem fictícios ela sai antes)."""
+        from PyQt6.QtWidgets import QMessageBox as Caixa
+        with PastaTemporaria() as p:
+            j = self.ed.JanelaPrincipal()
+            self.assertTrue(j.abrir_caminho(contrib_basico().gravar(p)))
+            _esperar()
+            i_mod = j.doc._ix("C100", "COD_MOD")
+            c100 = next(r for r in j.doc.registros if r.reg == "C100")
+            c100.set_valor(i_mod, "65")
+            self.assertEqual(len(j.doc.documentos_65_com_c170()), 1)
+            # clica em "Regenerar" (o primeiro botão da caixa)
+            with mock.patch.object(Caixa, "exec", lambda cx: 0), \
+                    mock.patch.object(Caixa, "clickedButton",
+                                      lambda cx: cx.buttons()[0]):
+                j.regenerar_c175_65()
+            self.assertEqual(j.doc.documentos_65_com_c170(), [])
+            self.assertTrue(any(r.reg == "C175" for r in c100.filhos))
+            j.alterado = False
+            j.close()
+        self.assertEqual(self.erros, [], self._falhas())
+
+    def test_corrigir_itens_pelo_xml_na_conferencia(self):
+        from tests.fabrica import nfe_xml
+        with PastaTemporaria() as p:
+            pasta = os.path.join(p, "xmls")
+            os.makedirs(pasta)
+            with open(os.path.join(pasta, "n.xml"), "w",
+                      encoding="utf-8") as fh:
+                fh.write(nfe_xml(itens=[{}, {"vICMS": "2.00"}, {}]))
+            j = self.ed.JanelaPrincipal()
+            self.assertTrue(j.abrir_caminho(icms_basico().gravar(p)))
+            _esperar()
+            with mock.patch.object(QFileDialog, "getExistingDirectory",
+                                   staticmethod(lambda *a, **k: pasta)):
+                j.conferir_itens_xml("ICMS")
+            dlg = j._dlg_conferencia
+            self.assertTrue(dlg._b_corr.isEnabled())
+            dlg.corrigir()
+            i = j.doc._ix("C170", "VL_ICMS")
+            self.assertEqual([r.valor(i) for r in j.doc.registros
+                              if r.reg == "C170"], ["1,80", "2,00", "1,80"])
+            self.assertEqual(dlg.resultado["resumo"]["divergencias"], 0)
+            self.assertTrue(j.alterado)
+            dlg.close()
+            j.alterado = False
+            j.close()
+        self.assertEqual(self.erros, [], self._falhas())
+
+    def test_fundir_chaves_repetidas_pela_acao(self):
+        """C175 repetido na NFC-e: a ação mostra a prévia e, aceita, funde."""
+        from sped_tables.dominio import referencias
+        from tests.test_correcoes import FonteComChaves, _nfce_com_c175
+        antes = referencias.definir(FonteComChaves())
+        try:
+            with PastaTemporaria() as p:
+                j = self.ed.JanelaPrincipal()
+                self.assertTrue(j.abrir_caminho(
+                    _nfce_com_c175({}, {}).gravar(p)))
+                _esperar()
+                j.act_fundir_chaves.trigger()
+                dlg = j._janelas["DialogoChavesRepetidas"]
+                self.assertEqual(dlg.tab.rowCount(), 1)
+                self.assertTrue(dlg.b_fundir.isEnabled())
+                dlg.accept()
+                self.assertEqual(len([r for r in j.doc.registros
+                                      if r.reg == "C175"]), 1)
+                self.assertTrue(j.alterado)
+                j.alterado = False
+                j.close()
+        finally:
+            referencias.definir(antes)
+        self.assertEqual(self.erros, [], self._falhas())
+
+    def test_cst_por_ncm_usa_a_fonte_de_referencias(self):
+        """O diálogo não pede mais pasta nem arquivos: o classificador vem
+        da porta, a mesma fonte das outras regras."""
+        from sped_tables.dominio import referencias
+        from sped_tables.dominio.ncm import ClassificadorNCM
+
+        class Fonte(referencias.Referencias):
+            def classificador_ncm(self):
+                return ClassificadorNCM()
+
+        antes = referencias.definir(Fonte())
+        try:
+            with PastaTemporaria() as p:
+                j = self.ed.JanelaPrincipal()
+                self.assertTrue(j.abrir_caminho(contrib_basico().gravar(p)))
+                _esperar()
+                j.verificar_cst_ncm()
+                dlg = j._janelas["DialogoVerificarCST"]
+                self.assertFalse(hasattr(dlg, "ed_pasta"))
+                dlg._verificar()
+                self.assertEqual(dlg.tab.rowCount(), 0)
+                j.close()
+        finally:
+            referencias.definir(antes)
+        self.assertEqual(self.erros, [], self._falhas())
+
+    def test_diagnostico_mostra_a_versao_do_leiaute_da_base(self):
+        """A base entrega a versão do leiaute que valeu para o arquivo: o
+        texto de origem do Diagnóstico a mostra (sem ela saía "versão ?")."""
+        from PyQt6.QtWidgets import QLabel
+        with PastaTemporaria() as p:
+            j = self.ed.JanelaPrincipal()
+            self.assertTrue(j.abrir_caminho(icms_basico().gravar(p)))
+            _esperar()
+            j.diagnosticar()
+            textos = [l.text() for l in
+                      j._janelas["DialogoDiagnostico"].findChildren(QLabel)]
+            self.assertTrue(any("leiaute da versão 020 (" in t
+                                for t in textos), textos)
+            self.assertFalse(any("versão ?" in t for t in textos), textos)
+            j.close()
+        self.assertEqual(self.erros, [], self._falhas())
+
+    def test_resumo_da_validacao_cita_a_versao_e_a_base(self):
+        """"Validar campos" diz de onde veio a validação: o leiaute da
+        versão do arquivo, na base de referência em uso. Sem o leiaute do
+        arquivo, diz que valeram só as regras embutidas."""
+        from sped_tables.dominio import validacao
+        from sped_tables.dominio.sped_model import SpedDocument
+        from sped_tables.interface.controladores.gerais import (
+            ControladorGerais)
+        with PastaTemporaria() as p:
+            doc = SpedDocument.carregar(icms_basico().gravar(p))
+        dominios, info = validacao.dominios_do_documento(doc)
+        self.assertEqual(info["versao"], "020")
+        texto = ControladorGerais._resumo_tabelas(dominios, info)
+        self.assertIn("leiaute da versão 020 (base de referência ", texto)
+        self.assertNotIn("PVA", texto)
+        self.assertIn("Base de referência sem o leiaute deste arquivo",
+                      ControladorGerais._resumo_tabelas({}, {}))
+
+    def test_cst_por_ncm_sem_tabelas_avisa_e_nao_acusa(self):
+        """Fonte sem classificador (`None`): o diálogo recusa com o aviso em
+        vez de comparar com uma tabela vazia, que tributaria todo NCM."""
+        from sped_tables.dominio import referencias
+
+        class FonteSemTabelas(referencias.Referencias):
+            def classificador_ncm(self):
+                return None
+
+        antes = referencias.definir(FonteSemTabelas())
+        try:
+            with PastaTemporaria() as p:
+                j = self.ed.JanelaPrincipal()
+                self.assertTrue(j.abrir_caminho(contrib_basico().gravar(p)))
+                _esperar()
+                j.verificar_cst_ncm()
+                dlg = j._janelas["DialogoVerificarCST"]
+                with mock.patch.object(QMessageBox, "warning") as aviso:
+                    dlg._verificar()
+                self.assertEqual(aviso.call_count, 1)
+                self.assertIn("base de referência", aviso.call_args[0][2])
+                self.assertEqual(dlg.tab.rowCount(), 0)
+                self.assertFalse(dlg.b_corrigir.isEnabled())
+                self.assertEqual(dlg.lbl.text(), "—")
+                j.close()
+        finally:
+            referencias.definir(antes)
+        self.assertEqual(self.erros, [], self._falhas())
+
     def test_regenerar_entradas_pela_tela(self):
         from tests.fabrica import nfe_xml
         with PastaTemporaria() as p:
@@ -286,6 +507,9 @@ class TestJanela(unittest.TestCase):
             with mock.patch.object(QFileDialog, "getExistingDirectory",
                                    staticmethod(lambda *a, **k: pasta)):
                 j.regenerar_entradas()
+            # a prévia é janela solta: nada muda até a pessoa confirmar
+            self.assertFalse(j.alterado)
+            j._janelas["DialogoRegenerarEntradas"].accept()
             i = j.doc._ix("C170", "VL_ITEM")
             valores = [r.valor(i) for r in j.doc.registros
                        if r.reg == "C170"]
@@ -329,25 +553,29 @@ class TestJanela(unittest.TestCase):
                 return r.valor(doc._ix(reg, campo))
 
             j.atualizar_0200_erp()
+            j._janelas["erp:0200"].accept()
             self.assertEqual(valor("0200", "P1", "COD_NCM"), "04012010")
             self.assertEqual(valor("0200", "P1", "CEST"), "0200400")
             j.atualizar_0150_erp()
+            j._janelas["erp:0150"].accept()
             self.assertEqual(valor("0150", "F1", "NOME"), "FORNECEDOR ERP")
             self.assertTrue(j.alterado)
 
             # as conferências leem os XMLs do banco, no período do arquivo
             with mock.patch.object(comum, "escolher_origem_xml",
-                                   lambda *a: cfg.conexoes[0]), \
-                    mock.patch("sped_tables.interface.controladores.gerais."
-                               "DialogoConferencia") as conf:
-                j.conferir_entradas_55()
-            self.assertEqual(
-                conf.call_args[0][0]["resumo"]["itens_conferidos"], 3)
+                                   lambda *a: cfg.conexoes[0]):
+                j.conferir_itens_xml()
+            self.assertEqual(j._dlg_conferencia.resultado["resumo"]
+                             ["itens_conferidos"], 3)
+            self.assertIn("ERP", j.sessao.origem_xmls)
 
             inv = DialogoImportarInventario(doc, "31082026", j)
             inv._do_erp()
             self.assertEqual(len(inv.linhas_brutas), 2)
             inv._importar()
+            previa = getattr(inv, "_janelas", {}).get("DialogoAtualizar0200")
+            if previa is not None:
+                previa.accept()
             self.assertEqual(sum(1 for r in doc.registros
                                  if r.reg == "H010"), 2)
 
@@ -360,14 +588,289 @@ class TestJanela(unittest.TestCase):
             ed.ler_colunas()
             self.assertIn("CLASFISCAL", ed._colunas)
             self.assertIn("ex.:", ed.exemplos["cod_ncm"].text())
-            with mock.patch.object(dlg_erp.DialogoPrevia, "exec") as prev:
-                ed.previsualizar()
-            prev.assert_called_once()
+            ed.previsualizar()
+            self.assertIn("DialogoPrevia", ed._janelas)
             d.novo_sistema()
             self.assertEqual(d.lst_sis.count(), 2)
             self.assertTrue(d.salvar())
             self.assertEqual(len(sistemas_erp.carregar().sistemas), 2)
             d.close()
+            j.alterado = False
+            j.close()
+        self.assertEqual(self.erros, [], self._falhas())
+
+    def test_base_de_referencia_mostra_a_versao_e_importa(self):
+        from sped_tables.dominio import referencias
+        from sped_tables.infra import base_referencia
+        from tests import base_teste
+        j = self.ed.JanelaPrincipal()
+        j.act_base_referencia.trigger()
+        dlg = j._janelas["DialogoBaseReferencia"]
+        base, _origem = base_referencia.em_uso()
+        self.assertIn(base.manifesto()["versao"], dlg.lbl.text())
+        with PastaTemporaria() as p:
+            pacote = base_referencia.empacotar(
+                base_teste.compilada(p, versao="2999.01.1"),
+                os.path.join(p, "pacote.zip"))
+            with mock.patch.object(
+                    QFileDialog, "getOpenFileName",
+                    staticmethod(lambda *a, **k: (pacote, ""))), \
+                    mock.patch.object(dlg, "_confirmar", lambda m, d: True):
+                dlg._importar()
+            try:
+                self.assertIn("2999.01.1", dlg.lbl.text())
+                self.assertIn("2999.01.1", referencias.atual().nome)
+            finally:
+                os.remove(base_referencia.caminho_importado())
+                from sped_tables.aplicacao import montagem
+                montagem.configurar()
+        j.close()
+        self.assertEqual(self.erros, [], self._falhas())
+
+    def test_diagnostico_sem_base_avisa_pela_acao(self):
+        """O último elo do "sem base": a fonte vazia chega à tela. Com a
+        fonte vazia, a ação do Diagnóstico (disparada pela tabela de ações,
+        não o diálogo montado à mão) mostra o rótulo "Base de referência
+        indisponível" com o papel `aviso` (não `info`), não mostra o texto
+        "Verificado com o leiaute" e não tem nenhum rótulo `ok` (verde)."""
+        from PyQt6.QtWidgets import QLabel
+        from sped_tables.dominio import referencias
+        antes = referencias.definir(None)              # fonte vazia: sem base
+        try:
+            with PastaTemporaria() as p:
+                j = self.ed.JanelaPrincipal()
+                self.assertTrue(j.abrir_caminho(icms_basico().gravar(p)))
+                _esperar()
+                j.act_diagnostico.trigger()
+                rotulos = j._janelas["DialogoDiagnostico"].findChildren(
+                    QLabel)
+                textos = [l.text() for l in rotulos]
+                indisponivel = [l for l in rotulos if
+                                "Base de referência indisponível" in l.text()]
+                self.assertEqual([l.property("role") for l in indisponivel],
+                                 ["aviso"], textos)
+                self.assertFalse(any("Verificado com o leiaute" in t
+                                     for t in textos), textos)
+                self.assertEqual([l.text() for l in rotulos
+                                  if l.property("role") == "ok"], [])
+                j.alterado = False
+                j.close()
+        finally:
+            referencias.definir(antes)
+        self.assertEqual(self.erros, [], self._falhas())
+
+    def test_diagnostico_sem_achados_nao_aprova_sem_a_base(self):
+        """Sem achados, mas sem a base (ou com a versão do arquivo fora
+        dela), valeram só as regras embutidas: o cabeçalho tem o papel
+        `aviso`, diz que a conferência pelo leiaute não rodou, a origem
+        também é `aviso` e nenhum rótulo é `ok`. Com a base e a versão nela,
+        nada muda: "Nenhum problema…" em `ok` e a origem em `info`."""
+        from PyQt6.QtWidgets import QLabel
+        from sped_tables.interface.controladores import gerais
+        casos = (
+            ({"sem_base": True}, "aviso"),
+            ({"fora_da_base": "015"}, "aviso"),
+            ({"versao": "020", "registros_descritor": 10}, "ok"),
+        )
+        with PastaTemporaria() as p:
+            j = self.ed.JanelaPrincipal()
+            self.assertTrue(j.abrir_caminho(icms_basico().gravar(p)))
+            _esperar()
+            for info, papel in casos:
+                with self.subTest(info=info), mock.patch.object(
+                        gerais.diagnostico, "verificar",
+                        lambda doc, info=info: ([], info)):
+                    j.act_diagnostico.trigger()
+                    rotulos = j._janelas["DialogoDiagnostico"].findChildren(
+                        QLabel)
+                    textos = [l.text() for l in rotulos]
+                    cab = [l for l in rotulos
+                           if l.text().startswith("Nenhum problema")]
+                    self.assertEqual(len(cab), 1, textos)
+                    self.assertEqual(cab[0].property("role"), papel, textos)
+                    origem = [l for l in rotulos if l.wordWrap()]
+                    self.assertEqual(len(origem), 1, textos)
+                    self.assertEqual(origem[0].property("role"),
+                                     "info" if papel == "ok" else "aviso",
+                                     textos)
+                    if papel == "aviso":
+                        self.assertIn("a conferência pelo leiaute não rodou",
+                                      cab[0].text())
+                        self.assertEqual(
+                            [l.text() for l in rotulos
+                             if l.property("role") == "ok"], [])
+                    else:
+                        self.assertEqual(
+                            cab[0].text(),
+                            "Nenhum problema nas verificações automáticas.")
+            j.alterado = False
+            j.close()
+        self.assertEqual(self.erros, [], self._falhas())
+
+    def test_diagnostico_de_arquivo_mais_novo_que_a_base_diz_o_remedio(self):
+        """Arquivo de leiaute posterior ao da base (ex.: COD_VER 021 numa
+        base que vai até a 020): o texto de origem do Diagnóstico não sugere
+        arquivo velho ("últimos 5 anos"), diz a versão do arquivo e a da
+        base e manda importar uma base mais nova. O papel continua `aviso`
+        e nenhum rótulo é `ok`. Com a versão mais antiga, o texto de sempre."""
+        from PyQt6.QtWidgets import QLabel
+        from sped_tables.interface.controladores import gerais
+        nova = {"fora_da_base": "021", "mais_nova_que_a_base": True,
+                "base": "2026.10.1"}
+        antiga = {"fora_da_base": "015", "base": "2026.10.1"}
+        with PastaTemporaria() as p:
+            j = self.ed.JanelaPrincipal()
+            self.assertTrue(j.abrir_caminho(icms_basico().gravar(p)))
+            _esperar()
+            for info in (nova, antiga):
+                with self.subTest(info=info), mock.patch.object(
+                        gerais.diagnostico, "verificar",
+                        lambda doc, info=info: ([], info)):
+                    j.act_diagnostico.trigger()
+                    rotulos = j._janelas["DialogoDiagnostico"].findChildren(
+                        QLabel)
+                    textos = [l.text() for l in rotulos]
+                    origem = [l for l in rotulos if l.wordWrap()]
+                    self.assertEqual(len(origem), 1, textos)
+                    self.assertEqual(origem[0].property("role"), "aviso")
+                    self.assertEqual([l.text() for l in rotulos
+                                      if l.property("role") == "ok"], [])
+                    texto = origem[0].text()
+                    if info is nova:
+                        self.assertIn("021", texto)
+                        self.assertIn("mais nova que a base de referência",
+                                      texto)
+                        self.assertIn("2026.10.1", texto)
+                        self.assertIn("regras embutidas", texto)
+                        self.assertIn(
+                            "Configurações → Base de referência…", texto)
+                        self.assertNotIn("últimos 5 anos", texto)
+                    else:
+                        self.assertIn("últimos 5 anos", texto)
+                        self.assertNotIn("mais nova", texto)
+            j.alterado = False
+            j.close()
+        self.assertEqual(self.erros, [], self._falhas())
+
+    def test_diagnostico_automatico_de_arquivo_mais_novo_que_a_base(self):
+        """A barra de status do Diagnóstico automático, sem achados, também
+        diz que o arquivo é mais novo que a base e o que fazer."""
+        from sped_tables.interface.controladores import gerais
+        info = {"fora_da_base": "021", "mais_nova_que_a_base": True,
+                "base": "2026.10.1"}
+        with PastaTemporaria() as p, mock.patch.object(
+                gerais.diagnostico, "verificar", lambda doc: ([], info)):
+            j = self.ed.JanelaPrincipal()
+            self.assertTrue(j.abrir_caminho(icms_basico().gravar(p)))
+            _esperar()
+            self.assertEqual(
+                j.statusBar().currentMessage(),
+                "Diagnóstico: nenhum problema nas regras embutidas; a "
+                "versão 021 do leiaute é mais nova que a base de "
+                "referência 2026.10.1 — importe uma base mais nova em "
+                "Configurações → Base de referência….")
+            self.assertNotIn("DialogoDiagnostico", getattr(j, "_janelas", {}))
+            j.alterado = False
+            j.close()
+        self.assertEqual(self.erros, [], self._falhas())
+
+    def test_diagnostico_automatico_sem_achados_diz_o_que_rodou(self):
+        """Ao abrir o arquivo o Diagnóstico roda sozinho e, sem achados, só
+        fala pela barra de status. Sem a base (ou com a versão do arquivo
+        fora dela) a barra não pode dizer "nenhum problema nas verificações
+        automáticas": diz que valeram só as regras embutidas e o que faltou.
+        Com a base e a versão nela, o texto de sempre."""
+        from sped_tables.interface.controladores import gerais
+        casos = (
+            ({"versao": "020", "registros_descritor": 10},
+             "Diagnóstico: nenhum problema nas verificações automáticas."),
+            ({"sem_base": True},
+             "Diagnóstico: nenhum problema nas regras embutidas; base de "
+             "referência indisponível."),
+            ({"fora_da_base": "015"},
+             "Diagnóstico: nenhum problema nas regras embutidas; a versão "
+             "015 do leiaute não está na base de referência."),
+        )
+        for info, esperado in casos:
+            with self.subTest(info=info), PastaTemporaria() as p, \
+                    mock.patch.object(gerais.diagnostico, "verificar",
+                                      lambda doc, info=info: ([], info)):
+                j = self.ed.JanelaPrincipal()
+                self.assertTrue(j.abrir_caminho(icms_basico().gravar(p)))
+                _esperar()
+                self.assertEqual(j.statusBar().currentMessage(), esperado)
+                # sem achados o diálogo não abre (só a barra de status fala)
+                self.assertNotIn("DialogoDiagnostico",
+                                 getattr(j, "_janelas", {}))
+                j.alterado = False
+                j.close()
+        self.assertEqual(self.erros, [], self._falhas())
+
+    def _abrir_no_pva(self, j, info, clicar):
+        """Dispara *Abrir no PVA* com o diagnóstico (`info`, sem achados) e a
+        pergunta prévia respondida com o botão de texto `clicar` (None: nenhum
+        clique). Devolve `(caixas, enviadas)`: as perguntas feitas e as vezes
+        que a automação do PVA foi chamada."""
+        from sped_tables.aplicacao import envio_pva
+        caixas, enviadas = [], []
+
+        def executa(cx):
+            caixas.append(cx)
+            return 0
+
+        def clicado(cx):
+            return next((b for b in cx.buttons() if b.text() == clicar), None)
+
+        def enviar(*a, **k):
+            enviadas.append(a)
+            return {"estado": "importado", "mensagem": "Importado."}
+
+        with mock.patch.object(envio_pva, "instalacao",
+                               lambda layout: {"nome": "PVA de teste"}), \
+                mock.patch.object(envio_pva.diagnostico, "verificar",
+                                  lambda doc: ([], info)), \
+                mock.patch.object(envio_pva, "enviar", enviar), \
+                mock.patch.object(QMessageBox, "exec", executa), \
+                mock.patch.object(QMessageBox, "clickedButton", clicado):
+            j.abrir_no_pva(j.caminho)
+        return caixas, enviadas
+
+    def test_abrir_no_pva_avisa_quando_a_conferencia_nao_rodou(self):
+        """Sem a estrutura do leiaute (arquivo mais novo que a base, versão
+        fora dela, base indisponível) a pré-checagem passaria em silêncio: a
+        pergunta que já existe diz que a conferência não rodou — e o envio
+        não é impedido (o PVA valida de qualquer jeito). Com a estrutura, o
+        envio segue direto, sem pergunta."""
+        casos = (
+            ({"fora_da_base": "021", "mais_nova_que_a_base": True,
+              "base": "2026.10.1"}, ("021", "mais nova", "2026.10.1")),
+            ({"fora_da_base": "015", "base": "2026.10.1"}, ("015",)),
+            ({"sem_base": True}, ("indisponível",)),
+        )
+        with PastaTemporaria() as p:
+            j = self.ed.JanelaPrincipal()
+            self.assertTrue(j.abrir_caminho(icms_basico().gravar(p)))
+            _esperar()
+            for info, trechos in casos:
+                with self.subTest(info=info):
+                    caixas, enviadas = self._abrir_no_pva(
+                        j, info, "Abrir o PVA")
+                    self.assertEqual(len(caixas), 1)
+                    texto = caixas[0].text()
+                    self.assertIn("não rodou", texto)
+                    for t in trechos:
+                        self.assertIn(t, texto)
+                    # não impede: a pessoa escolheu abrir e a automação rodou
+                    self.assertEqual(len(enviadas), 1)
+                    # e pode desistir
+                    caixas, enviadas = self._abrir_no_pva(j, info,
+                                                          "Cancelar")
+                    self.assertEqual(len(caixas), 1)
+                    self.assertEqual(enviadas, [])
+            caixas, enviadas = self._abrir_no_pva(
+                j, {"versao": "020", "registros_descritor": 10}, None)
+            self.assertEqual(caixas, [])
+            self.assertEqual(len(enviadas), 1)
             j.alterado = False
             j.close()
         self.assertEqual(self.erros, [], self._falhas())
@@ -426,8 +929,7 @@ class TestTabelaDeAcoes(unittest.TestCase):
 
     def test_toda_acao_visivel_esta_num_menu_ou_na_barra(self):
         alcancaveis = set()
-        for menu in (self.janela.menu_icms, self.janela.menu_contrib,
-                     self.janela.menu_gerais):
+        for menu in self.janela._menus.values():
             alcancaveis |= set(menu.actions())
         alcancaveis |= set(self.janela.toolbar.actions())
         for a in self.acoes.ACOES:
@@ -564,6 +1066,15 @@ class TestAutoteste(unittest.TestCase):
         self.assertIn("tradução pt-BR do Qt", nomes)
         self.assertIn("abrir, salvar e reabrir", nomes)
         self.assertIn("leitura paralela de XMLs", nomes)
+        # a base de referência substituiu as duas fontes antigas
+        self.assertNotIn("tabelas do PVA", nomes)
+        self.assertNotIn("guias práticos", nomes)
+        item = next(i for i in saida["itens"]
+                    if i["nome"] == "base de referência")
+        with open(os.path.join(raiz, "base", "manifesto.json"),
+                  encoding="utf-8") as fh:
+            versao = json.load(fh)["versao"]
+        self.assertEqual(item["detalhe"]["versao"], versao)
 
     def test_sem_pasta_indicada_isola_os_dados(self):
         from sped_tables.interface import autoteste

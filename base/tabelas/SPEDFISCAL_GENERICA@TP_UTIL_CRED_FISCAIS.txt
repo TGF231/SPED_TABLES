@@ -1,0 +1,7 @@
+versão=1.0
+UF01|Dedução|01012009|
+UF21|Compensação|01012009|
+UF41|Transferência|01012009|
+UF61|Restituição|01012009|
+UF81|Estorno|01012009|
+UF99|Outros|01012009|

@@ -1,0 +1,12 @@
+versão=1 COD_IPM, DESC_COD, DT_INI, DT_FIM
+PI001|Geradoras de energia solar ou eólica com geração em município(s) diverso(s) de sua sede|01122020|
+PI002|Distribuidoras de energia elétrica|01122020|
+PI003|Prestadores de serviços de comunicação e telecomunicação|01122020|
+PI004|Prestadores de serviço de transporte rodoviário intermunicipal e interestadual de passageiros e de cargas|01122020|
+PI005|Prestadores de serviços de transporte ferroviário intermunicipal e interestadual|01122020|
+PI006|Produtores e industriais que realizem operações com produtos agropecuários ou hortifrutigranjeiros adquiridos/recebidos de produtor rural sem a emissão da respectiva nota fiscal pelo remetente|01122020|
+PI007|Produtores rurais, extratores, ou industriais que efetuem, total ou parcialmente sua produção ou extração em município(s) diverso(s) de sua sede|01122020|
+PI008|Mineradoras, na hipótese de a jazida se estender por mais de um município piauiense|01122020|
+PI009|Contribuintes que realizem saídas de mercadorias em estabelecimento localizado em município diverso daquele onde ocorreu a efetiva comercialização|01122020|
+PI010|Contribuintes que realizem operações de marketing porta a porta a consumidor final|01122020|
+PI011|Cooperativas que realizem operações com mercadorias recebidas para depósito|01122020|

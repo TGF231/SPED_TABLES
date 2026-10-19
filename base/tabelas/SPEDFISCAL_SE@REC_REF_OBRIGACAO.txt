@@ -1,0 +1,44 @@
+versão=10 COD_REC, DESC_COD, DT_INI, DT_FIM
+0100|ICMS|01012009|31102016
+0116|Ação Fiscal|01012009|31102016
+0139|Alcool Anidro e/ou Biodiesel B100 (Estorno)|01012009|
+0107|Antecipação sem encerramento com agregação de 20%|01012009|31102016
+0108|Antecipação com encerramento de fase|01012009|
+0113|Antecipação sem encerramento com agregação de 10% Op. Interna|01012009|31102016
+0112|Antecipação sem encerramento com agregação de 10% op. Interestadual|01012009|31102016
+0124|Antecipação Tributária na Saída Interestadual|01012009|31102016
+0124|Antecipação Tributária nas Operações de Saída Interestadual|01112016|
+0129|Antecipação Tributária Outras (Alcool/Usina)|01012009|
+0133|Complementação de alíquota interestadual|01012009|
+0122|Complementação de Substituição tributária|01012009|
+0110|Diferencial de Alíquota ativo fixo|01012009|
+0111|Diferencial de Alíquota consumo|01012009|31102016
+0111|Diferencial de Alíquota uso/consumo|01112016|
+0115|ICMS Autoregularização|01012019|07042025
+0115|ICMS Autoregularização|08042025|13042025
+0158|ICMS Autoregularização|01012019|13042025
+0158|ICMS Autoregularização|14042025|
+0140|Importação|01012009|
+0135|Importação (Trigo em grão Art 716, I, do RICMS)|01012009|
+2900|Multa Fiscal do ICMS|01012009|
+2600|Multa formal do ICMS|01012009|
+0101|Normal|01012009|
+0136|Parcelamento de estoque|01012009|31102016
+0136|Apuração de Estoque de Produto da ST|01112016|
+0138|Simples Nacional no Ato|01012009|31102016
+0102|Substituição Interna|01012009|31102016
+0102|Substituição Tributária Interna|01112016|
+0103|Substituição Interna Transporte|01012009|
+0114|Substituição Tributária Externa|01012009|
+0142|Fundo de Combate a Pobreza - ICMS Normal|01012009|
+0143|Fundo de Combate a Pobreza - Substituição Tributária Interna|01012011|
+0144|Fundo de Combate a Pobreza - Substituição Tributaria Externa|01012011|
+0148|AQUISIÇÕES INTERESTADUAIS CONSUMIDOR FINAL - DIFAL|01012016|
+0149|VENDAS INTERESTADUAIS CONSUMIDOR FINAL - DIFAL|01012016|
+0145|Fundo de Combate à  Pobreza - Antecipação|01112016|
+0145|Fundo de Combate à  Pobreza - Antecipação|01012016|31102016
+0145|Fundo de Combate à  Pobreza - Antecipação|01052015|31122015
+0146|Antecipação Tributária Sem Encerramento de Fase|01112016|
+0151|Fundo de Equilíbrio Fiscal|01012017|
+0150|FUNDO DE COMBATE À POBREZA - DIFAL|01012016|
+0119|Fundo de Combate a Pobreza  Complementação de Alíquota Interestadual|01092023|

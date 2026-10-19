@@ -1,0 +1,164 @@
+versão=24 COD_AJ, DESC_AJ, DT_INI, DT_FIM
+PA00000999|Outros Créditos por Entrada.|01012009|30062022
+PA10000001|Crédito Presumido - Operações Interestaduais com gado bovino (Art. 19, § 1º, Anexo I, RICMS)|01012009|30062022
+PA10000002|Crédito Presumido - Saída de produtos comestíveis resultantes do abate de gado bovino com controle de abate - FILAX (Art. 22º, Anexo I, RICMS)|01012009|30042022
+PA10000002|Crédito Presumido - Saída de produtos comestíveis resultantes do abate de gado bovino com regime especial (Art. 22, Anexo I, RICMS)|01052022|
+PA10000003|Crédito Presumido - Saídas internas de gado bovino, sem controle de abate FILAX (Art. 25, Anexo I, RICMS)|01012009|30042022
+PA10000003|Crédito Presumido - Saídas internas de gado bovino, sem regime especial (Art. 25, Anexo I, RICMS)|01052022|
+PA10000004|Crédito Presumido - Saídas de charque, defumados, embutidos e outros derivados da verticalização industrial de carne (Art. 27, Anexo I, RICMS)|01012009|
+PA10000005|Crédito Presumido - Regime Especial Atacadista/Varejista (Art. 126, Anexo I, RICMS)|01012009|01012022
+PA10000006|Crédito Presumido - Regime Especial Atacadista/Varejista - Operações Cesta Básica (Art. 130, I, Anexo I, RICMS)|01012009|01012022
+PA10000007|Crédito Presumido - Regime Especial Atacadista/Varejista - Operações c/ Bebida Alcoólica (Art. 130, II, Anexo I, RICMS)|01012009|01012022
+PA10000008|Credito presumido - Regime especial Atacadista/Varejista - Operações p/ a Administração Direta e Indireta (Art. 129, § 2º, Anexo I, RICMS)|01012009|01012022
+PA10000009|Crédito Presumido - Saídas de produtos derivados do leite in natura (Art. 145, Anexo I, RICMS)|01012009|
+PA10000010|Crédito Presumido - Saídas de pescado submetido a processo de industrialização (Art. 153, Anexo I, RICMS)|01012009|
+PA10000011|Crédito Presumido - Saídas interestaduais de peixe, exceto a promovida por estabelecimento industrial (Art. 156, Anexo I, RICMS)|01012009|
+PA10000012|Crédito Presumido - Saídas de produtos fabricados pela Indústria oleiro-cerâmica (Art. 161, Anexo I, RICMS).|01012009|
+PA10000013|Crédito Presumido - Saída de castanha-do-pará promovida pelo estabelecimento industrial (Art. 167, Anexo I, RICMS)|01012009|
+PA10000014|Crédito Presumido - Saída de produtos de madeira, de fibras naturais e de madeira com metal promovida pelo estabelecimento industrial (Art. 170, Anexo I, RICMS)|01012009|
+PA10000015|Crédito Presumido - Saída interestadual de mel, demais produtos das abelhas e derivados apícolas, dotados de certificação da inspeção sanitária (Art. 187, Anexo I, RICMS)|01012009|
+PA10000016|Crédito Presumido - Saída de palmito promovida pelo estabelecimento industrial (Art. 198, Anexo I, RICMS)|01012009|
+PA10000017|Crédito Presumido - Fabricantes de sacaria de juta e malva (Art. 3º, Anexo IV, RICMS)|01012009|
+PA10000018|Crédito Presumido - Saídas internas de suco de laranja (Art. 8º, Anexo IV, RICMS)|01012009|
+PA10000019|Crédito Presumido - Fabricantes de açúcar deste Estado (Art. 9º, Anexo IV, RICMS)|01012009|
+PA10000020|Crédito Presumido - Saída interestadual com queijo promovida pelo fabricante deste Estado (Art. 10, Anexo IV, RICMS)|01012009|
+PA10000023|Antecipação Especial do Imposto (Art. 114-E, Anexo I, RICMS)|01012009|
+PA10000024|Antecipação de Imposto - Glosa de Crédito (Art. 114-J, Anexo I do RICMS)|01012009|31012022
+PA10000025|Ressarcimento de ICMS Antecipado (Art. 116, Anexo I, RICMS)|01012009|
+PA10000026|Antecipado por Saída (Art. 115, Anexo I, RICMS - Produtos do Apêndice II)|01012009|
+PA10000027|Crédito Presumido - Saídas do comércio atacadista mediante regime especial (Art. 363, I, Anexo I, RICMS)|01052022|
+PA10000028|Crédito presumido - Cesta Básica fornecido a Órgãos da Administração Pública Estadual Direta, Indireta e Fundacional 30% (art. 129,§ 2º, I,  Anexo I, RICMS-PA)|01052022|
+PA10000029|Crédito presumido - Operações de industrialização em território paraense com o produto bebida alcoólica, classificado nos códigos 2204 a 2208, da Nomenclatura Comum do Mercosul -NCM (art. 351, Anexo I, RICMS)|01052022|
+PA10000030|Crédito presumido - derivados da mandioca beneficiados e industrializados no Estado em operaçoes interestaduais (art. 180, Anexo I,  RICMS-PA)|01052022|
+PA10000031|Outros créditos - Ressarcimento de ICMS antecipado oriundos de saídas interestaduais (art. 116, III, RICMS/PA)|01052022|02052022
+PA10000032|Recebimento de Crédito Outorgado do ICMS, relativo a transferência de crédito de Cheque Moradia|01092015|31052024
+PA10000033|Crédito presumido - Cesta Básica (art. 126, Anexo I,  RICMS-PA)|01052022|
+PA10000034|Outros créditos  - Nas operações interestaduais de produtos farmacêuticos já alcançados pela antecipação, (art. 216, Anexo I, RICMS/PA)|01052022|
+PA10000035|Outros Créditos -Saldo devedor transferido para recolhimento único do mesmo grupo (Art. 95, 97 e 98, do RICMS-PA)|01052022|
+PA10000036|Saldo Credor Transferido entre Estabelecimento do mesmo Grupo (Art. 74, VI, RICMS)|01072023|
+PA10000037|Saldos Credores Transferido para outro Contribuinte (Art. 74, VI, RICMS)|01072023|
+PA10000038|Recebimento de Crédito Outorgado do ICMS, relativo a transferência de crédito do Programa Sua Casa (Cheque Moradia - IN 15/2015)|01072023|31052024
+PA10000039|Crédito relativo ao estoque de mercadorias existentes quando da exclusão da sistemática da substituição ou antecipação tributária (Art.4º, inciso IV, item "a", IN 15/2024)|01062024|
+PA10000996|Crédito Extemporâneo|01012009|30062022
+PA10000997|Outros Créditos Presumidos|01012009|30062022
+PA10000998|Outras Antecipações|01012009|30062022
+PA10000999|Outros Créditos.|01012009|30062022
+PA10001021|Crédito Presumido - Prestador de serviço de transporte (Art. 7º, Anexo IV, RICMS)|01012009|
+PA10001022|Crédito Presumido - Prestador de serviço de transporte aéreo (Art. 11º, Anexo IV, RICMS)|01012009|
+PA10009001|Crédito Presumido - Apoio aos projetos culturais aprovados pela Fundação Cultural do Pará (Art. 3º, IN 10/2025)|01072025|30042026
+PA11000031|Ressarcimento de imposto retido (Art. 648, II, e 657, RICMS)|01012009|
+PA11000032|Outros créditos - ICMS retido em operações de substituição tributária (Art. 664, RICMS)|01052022|
+PA12000027|Saldo Credor Transferido entre Estabelecimento do mesmo Grupo (Art. 74, VI, RICMS)|01012009|30062023
+PA12000028|Saldos Credores Transferido para outro Contribuinte (Art. 74, VI, RICMS)|01012009|30062023
+PA12000029|Recebimento de Crédito Outorgado do ICMS, relativo a transferência de crédito de Cheque Moradia - Outro estabelecimento do mesmo grupo (Art. 5°,§ 5º, II, IN 19/2003)|01012009|31082015
+PA12000030|Recebimento de Crédito Outorgado do ICMS, relativo a transferência de crédito de Cheque Moradia - Outro Contribuinte (Art. 5°,§ 5º, II, IN 19/2003)|01012009|31082015
+PA12000031|Recebimento de Crédito Outorgado do ICMS, relativo a transferência de crédito de Cheque Moradia|01092015|30042022
+PA12000031|Recebimento de Crédito Outorgado do ICMS, relativo a transferência de crédito do Programa Sua Casa (Cheque Moradia - IN 15/2015)|01052022|30062023
+PA20000001|Operações Interestaduais com Gado Bovino (Art. 19, §3º, Anexo I, RICMS)|01012009|
+PA20000002|Compras Governamentais (Art. 81, Anexo I, RICMS)|01012009|
+PA20000003|Remessa para venda em Feiras ou Eventos Similares (Art. 2º e 9º, VI, Anexo I, RICMS)|01012009|
+PA20000004|Diferença do Imposto (Art. 172, §3°, RICMS)|01012009|
+PA20000005|Diferença de Alíquotas - Mercadoria Devolvida (Art. 594, RICMS)|01012009|
+PA20000006|Remessa para fora do estabelecimento (Art. 16, VI, a, Anexo I, RICMS)|01012009|
+PA20000007|Compensação por Homologação (Art. 79°, §3°, RICMS)|01012009|30062022
+PA20000008|Estorno de Débito -  objetos de homologação de crédito fiscal (Art. 115,§ Único, Anexo I, RICMS - Produtos do Apêndice II)|01052022|
+PA20000009|Estorno de débit-o - operações interestaduais com pescados criados em cativeiro (Art. 329, § 3º, Anexo I, RICMS)|01052022|01052022
+PA20000009|Estorno de Débito - Operações interestaduais com pescados criados em cativeiro (Art. 329, § 3º, Anexo I, RICMS)|02052022|
+PA20000010|Estorno de Débito -  70% (setenta por cento) do imposto debitado de compras governamentais (Art. 81, anexo I, RICMS)|01052022|
+PA20000011|Estorno de Débito - Operação interestadual com trigo (Art. 123, N, Anexo I, RICMS)|01052022|
+PA20000012|Estorno de Débito - Devolução de mercadorias|01052022|
+PA20000013|Estorno de débito - Recolhimento Espontâneo (Art. 11-A da Lei 6.182/98)|01092025|
+PA20000999|Outros Estornos de Débitos|01012009|30062022
+PA21000001|Estorno de débito - Substituição Tributária EC 87/15|01072022|
+PA23000999|Estorno de débito; Apuração em Separado 1|01012011|
+PA24000999|Estorno de débito; Apuração em Separado 2|01012011|
+PA25000999|Estorno de débito; Apuração em Separado 3|01012011|
+PA30000999|Outros Débitos por Saída.|01012009|30062022
+PA40000001|ICMS diferencial de alíquota - aquisição de bens do ativo permanente (Art. 22, Parágrafo Único, do RICMS)|01012009|30092010
+PA40000002|ICMS diferencial de alíquota - aquisição de material de uso e consumo (Art. 22, Parágrafo Único, do RICMS)|01012009|30092010
+PA40000007|Venda fora do estabelecimento em outra UF - ICMS devido a este Estado (Art. 16, VI, b, Anexo I, RICMS)|01012009|
+PA40000008|Outros Débitos - Saldo credor transferido para recolhimento único do mesmo grupo (Art. 95, 97 e 98, do RICMS)|01052022|
+PA40000009|Saldo Credor transferido entre estabelecimentos do mesmo Grupo (Art. 74, VI, RICMS)|01072023|
+PA40000010|Saldo Credor transferido para outros Contribuintes (Art. 74, VI, RICMS)|01072023|
+PA40000999|Outros Débitos|01012009|30062022
+PA40001003|Diferença de Alíquota - Prestação de Serviços de Transporte (Art. 22, Parágrafo Único, do RICMS)|01012009|30092010
+PA40001004|Diferença de Alíquota - Prestação de Serviços de Comunicação (Art. 22, Parágrafo Único, do RICMS)|01012009|30092010
+PA40090008|Antecipação Especial do Imposto (Art. 114-E, Anexo I, RICMS)|01012009|01012009
+PA40090009|Antecipação de Imposto - Glosa de Crédito (Art. 114-J, Anexo I do RICMS)|01012009|01012009
+PA40090010|Antecipação de Imposto (Art. 107, Anexo I, RICMS - Produtos do Apêndice I, com exceção dos itens 1 a 9, 11 a 19, 38 e 39)|01012009|01012009
+PA40090011|Antecipação de Imposto Cesta Básica (ítens 1 a 9, 11 a 19, 38 e 39 do Apêndice I, Art. 107, Anexo I, RICMS)|01012009|01012009
+PA40090012|Antecipação de Produtos Farmacêuticos (Art 708, § 2º, RICMS e § 1º, Art. 709) - Lista Negativa|01012009|01012009
+PA40090013|Antecipação de Produtos Farmacêuticos(Art 708, § 2º, RICMS e § 1º, Art. 709) - Lista Positiva|01012009|01012009
+PA40090014|Antecipação de Produtos Farmacêuticos(Art 708, § 2º, RICMS e § 1º, Art. 709) - Lista Neutra|01012009|01012009
+PA40090015|Antecipação de Saídas (Art. 115, Anexo I, RICMS - Produtos do Apêndice II)|01012009|01012009
+PA40090998|Outras Antecipações|01012009|01012009
+PA41000005|Diferença de Alíquota - Substituição Tributária (Art. 22, Parágrafo Único, do RICMS)|01012009|30092010
+PA41000006|Remessa para venda em Feiras ou Eventos Similares (Art. 9º, VI, Anexo I, RICMS)|01012009|
+PA42000016|Saldo Credor transferido entre estabelecimentos do mesmo Grupo (Art. 74, VI, RICMS)|01012009|30062023
+PA42000017|Saldo Credor transferido para outros Contribuintes (Art. 74, VI, RICMS)|01012009|30062023
+PA50000004|Compensação por Homologação (Art. 79°, §3°, I, RICMS)|01012009|30062022
+PA50000005|Estorno de crédito quando for objeto de saída ou prestação de serviço não-tributada ou isenta, sendo esta circunstância imprevisível à data da entrada da mercadoria ou da utilização do serviço. (art. 68, I, RICMS)|01052022|
+PA50000006|"Estorno de Crédito - for integrada ou consumida em processo de industrialização, quando a saída do produto resultante não for tributada ou estiver isenta do imposto; (art. 68, II, RICMS)"|01052022|
+PA50000007|"Estorno de Crédito - for objeto de saída com redução de base de cálculo, sendo esta circunstância imprevisível à data da entrada da mercadoria ou da utilização do serviço, hipótese em que o estorno deverá ser proporcional à parcela correspondente à redução; (art. 68, III, RICMS)"|01052022|
+PA50000008|Estorno de Crédito - vier a perecer, deteriorar-se ou ser objeto de roubo, furto ou extravio. (art. 68, V, RICMS)|01052022|
+PA50000009|"Estorno de Crédito - inexistir, por qualquer motivo, operação posterior; (art. 68, V, RICMS)"|01052022|01052022
+PA50000009|"Estorno de Crédito - inexistir, por qualquer motivo, operação posterior; (art. 68, VI, RICMS)"|02052022|
+PA50000010|Estorno em razão de transferência de crédito de Cheque Moradia|01072023|
+PA50000011|Estorno para liquidação de Crédito Tributário - Compensação de Cheque Moradia|01072023|
+PA50000999|Outros Estornos de Créditos|01012009|30062022
+PA52000001|Estorno em razão de transferência de crédito de Cheque Moradia - Outro estabelecimento do mesmo grupo (Art. 5°, § 5º, VI, IN 19/2003)|01012009|31082015
+PA52000002|Estorno em razão de transferência de crédito de Cheque Moradia - Outro contribuinte (Art. 5°, § 5º, VI, IN 19/2003)|01012009|31082015
+PA52000003|Estorno para liquidação de Crédito Tributário - Compensação de Cheque Moradia (Art. 5°, § 7º, IN 19/2003)|01012009|31082015
+PA52000004|Estorno em razão de transferência de crédito de Cheque Moradia|01092015|30062023
+PA52000005|Estorno para liquidação de Crédito Tributário - Compensação de Cheque Moradia|01092015|30062023
+PA53000999|Estorno de Crédito; Apuração em Separado 1|01012011|
+PA54000999|Estorno de Crédito; Apuração em Separado 2|01012011|
+PA55000999|Estorno de Crédito; Apuração em Separado 3|01012011|
+PA60000999|Outras Deduções|01012009|30062022
+PA70000001|Outros Débitos Especiais|01012009|31032009
+PA70000001|ICMS Estoque|01042009|
+PA70000008|Antecipação Especial do Imposto (Art. 114-E, Anexo I, RICMS)|01012009|
+PA70000009|Antecipação de Imposto - Glosa de Crédito (Art. 114-J, Anexo I do RICMS)|01012009|01012022
+PA70000010|Antecipação de Imposto (Art. 107, Anexo I, RICMS - Produtos do Apêndice I, com exceção dos itens 1 a 9, 11 a 19, 38 e 39)|01012009|30042022
+PA70000010|Antecipação de Imposto (Art. 107, Anexo I, RICMS - Produtos do Apêndice I - exceto as consideradas cesta básica)|01052022|
+PA70000011|Antecipação de Imposto Cesta Básica (ítens 1 a 9, 11 a 19, 38 e 39 do Apêndice I, Art. 107, Anexo I, RICMS)|01012009|30042022
+PA70000011|Antecipação de Imposto Cesta Básica (Art 113, Anexo I, RICMS-PA)|01052022|
+PA70000012|Antecipação de Produtos Farmacêuticos (Art 708, § 2º, RICMS e § 1º, Art. 709) - Lista Negativa|01012009|30062022
+PA70000013|Antecipação de Produtos Farmacêuticos(Art 708, § 2º, RICMS e § 1º, Art. 709) - Lista Positiva|01012009|30062022
+PA70000014|Antecipação de Produtos Farmacêuticos(Art 708, § 2º, RICMS e § 1º, Art. 709) - Lista Neutra|01012009|30062022
+PA70000015|Antecipação de Saídas (Art. 115, Anexo I, RICMS - Produtos do Apêndice II)|01012009|
+PA70000016|ICMS diferencial de alíquota - aquisição de bens do ativo permanente (Art. 22, Parágrafo Único, do RICMS)|01012009|30062022
+PA70000017|ICMS diferencial de alíquota - aquisição de material de uso e consumo (Art. 22, Parágrafo Único, do RICMS)|01012009|30062022
+PA70000016|ICMS diferencial de alíquota - aquisição de bens do ativo permanente (Art. 22, do RICMS)|01072022|
+PA70000017|ICMS diferencial de alíquota - aquisição de material de uso e consumo (Art. 22, do RICMS)|01072022|
+PA70000018|Antecipação de Produtos Farmaceutico (Art. 708, § 2º, RICMS e § 1º, Art. 709)|01052022|
+PA70000019|Débito Especial - Antecipações de ICMS nas operações de saída (Art. 108)|01072022|
+PA70000020|Débito Especial - ICMS Importação|01072022|31082023
+PA70000021|Débito Especial - Antecipação AEHC (Art. 679-A, RICMS)|01072022|
+PA70000022|Débito especial - ICMS Complementação de imposto retido (Art. 640, § 1º, RICMS)|01012025|
+PA70000023|Débito Especial - Complemento de ICMS quando o valor da operação final for superior a base de cálculo da retenção (Art. 665-G do RICMS)|01072022|
+PA70000024|Débito Especial - Recolhimento Espontâneo (Art. 11-A da Lei 6.182/98)|01092025|
+PA70000998|Outras Antecipações|01012009|30062022
+PA70000999|Outros Débitos Especiais|01012009|30062022
+PA70001001|Diferença de Alíquota - Prestação de Serviços de Transporte (Art. 22, Parágrafo Único, do RICMS)|01012009|30062022
+PA70001001|Diferença de Alíquota - Prestação de Serviços de Transporte (Art. 22, Parágrafo Único, do RICMS)|01072022|01072022
+PA70001001|Diferença de Alíquota - Prestação de Serviços (Art. 22, do RICMS)|02072022|
+PA70001002|Diferença de Alíquota - Prestação de Serviços de Comunicação (Art. 22, Parágrafo Único, do RICMS)|01012009|30062022
+PA70001003|Débito Especial - Antecipação de ICMS na prestação de serviço de transporte(Art. 108)|01072022|
+PA70002001|Diferença de Alíquota - Prestação de Serviços de Comunicação (Art. 22, Parágrafo Único, do RICMS)|01072022|01072022
+PA70002001|Diferença de Alíquota - Prestação de Serviços de Comunicação (Art. 22, do RICMS)|02072022|
+PA70003001|Débito Especial - Energia Elétrica CCEE|01072022|
+PA70003002|Débito especial - Energia Elétrica. Tusd, Tust ou encargos setoriais|01012025|
+PA71000001|Diferença de Alíquota - Substituição Tributária (Art. 22, Parágrafo Único, do RICMS)|01012009|30062022
+PA71000001|Diferença de Alíquota - Substituição Tributária (Art. 22, Parágrafo Único, do RICMS)|01072022|01072022
+PA71000001|Diferença de Alíquota - Substituição Tributária (Art. 22, do RICMS)|02072022|
+PA71000002|Débito Especial - Substituição Tributária EC 87/15|01072022|
+PA71000003|Débito Especial - ICMS Importação - ST|01072022|
+PA71000999|Outros Débitos Especiais ST|01012009|30062022
+PA71001001|Diferença de Alíquota - Prestação de Serviço de Trasnporte - Substituição Tributária (Art. 22, Parágrafo Único, do RICMS)|01072022|01072022
+PA71001001|Diferença de Alíquota - Prestação de Serviço de Transporte - Substituição Tributária (Art. 22, do RICMS)|02072022|
+PA71001002|Débito Especial - Prestação de Serviço de Transporte - Substituição Tributária|01072022|
+PA90090001|Informativo - ICMS Importação|01092023|
+PA90090002|Informativo  Referente à utilização do crédito outorgado do Programa Sua Casa para dedução do ICMS Antecipado Especial (Art 7º, IV da IN 03/25)|01042025|
+PA90090003|Informativo  Referente à utilização do crédito outorgado do Programa Sua Casa para dedução do ICMS Antecipado de Entradas (Art 7º, IV da IN 03/25)|01042025|
+PA90090004|Informativo  Referente à utilização do crédito outorgado do Programa Sua Casa para dedução do ICMS Diferencial de Alíquotas (Art 7º, IV g da IN 03/25)|01042025|

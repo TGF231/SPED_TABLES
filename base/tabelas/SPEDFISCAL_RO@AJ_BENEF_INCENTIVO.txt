@@ -1,0 +1,299 @@
+versão=46 COD_AJ, DESC_AJ, DT_INI, DT_FIM
+RO99999001|Isenção  Item 1  Tabela I  Anexo I do RICMS  Informativo|01072012|
+RO99990002|Isenção  Item 2  Tabela I  Anexo I do RICMS  Informativo|01072012|
+RO99990003|Isenção  Item 3  Tabela I  Anexo I do RICMS  Informativo|01072012|
+RO99990004|Isenção  Item 4  Tabela I  Anexo I do RICMS  Informativo|01072012|
+RO99990005|Isenção  Item 5  Tabela I  Anexo I do RICMS  Informativo|01072012|
+RO99990007|Isenção  Item 7  Tabela I  Anexo I do RICMS  Informativo|01072012|
+RO99990008|Isenção  Item 8  Tabela I  Anexo I do RICMS  Informativo|01072012|
+RO99990009|Isenção  Item 9  Tabela I  Anexo I do RICMS  Informativo|01072012|
+RO99990010|Isenção  Item 10  Tabela I  Anexo I do RICMS  Informativo|01072012|
+RO99990011|Isenção  Item 11  Tabela I  Anexo I do RICMS  Informativo|01072012|
+RO99990012|Isenção  Item 12  Tabela I  Anexo I do RICMS  Informativo|01072012|
+RO99990013|Isenção  Item 13  Tabela I  Anexo I do RICMS  Informativo|01072012|
+RO99990015|Isenção  Item 15  Tabela I  Anexo I do RICMS  Informativo|01072012|
+RO99990016|Isenção  Item 16  Tabela I  Anexo I do RICMS  Informativo|01072012|
+RO99990017|Isenção  Item 17  Tabela I  Anexo I do RICMS  Informativo|01072012|
+RO99990018|Isenção  Item 18  Tabela I  Anexo I do RICMS  Informativo|01072012|
+RO99992019|Isenção  Item 15  Tabela I  Anexo I do RICMS  Informativo|01072012|
+RO99991020|Isenção  Item 15  Tabela I  Anexo I do RICMS  Informativo|01072012|
+RO99990021|Isenção  Item 21  Tabela I  Anexo I do RICMS  Informativo|01072012|
+RO99990022|Isenção  Item 22  Tabela I  Anexo I do RICMS  Informativo|01072012|
+RO99990023|Isenção  Item 23  Tabela I  Anexo I do RICMS  Informativo|01072012|
+RO99990024|Isenção  Item 15  Tabela I  Anexo I do RICMS  Informativo|01072012|
+RO99992025|Isenção  Item 25  Tabela I  Anexo I do RICMS  Informativo|01072012|
+RO99990027|Isenção  Item 27  Tabela I  Anexo I do RICMS  Informativo|01072012|
+RO99990028|Isenção  Item 28  Tabela I  Anexo I do RICMS  Informativo|01072012|
+RO99990030|Isenção  Item 30  Tabela I  Anexo I do RICMS  Informativo|01072012|
+RO99990031|Isenção  Item 31  Tabela I  Anexo I do RICMS  Informativo|01072012|
+RO99990032|Isenção  Item 32  Tabela I  Anexo I do RICMS  Informativo|01072012|
+RO99990033|Isenção  Item 33  Tabela I  Anexo I do RICMS  Informativo|01072012|
+RO99990034|Isenção  Item 34  Tabela I  Anexo I do RICMS  Informativo|01072012|
+RO99990036|Isenção  Item 36  Tabela I  Anexo I do RICMS  Informativo|01072012|
+RO99990037|Isenção  Item 37  Tabela I  Anexo I do RICMS  Informativo|01072012|
+RO99990039|Isenção  Item 39  Tabela I  Anexo I do RICMS  Informativo|01072012|
+RO99990040|Isenção  Item 40  Tabela I  Anexo I do RICMS  Informativo|01072012|
+RO99990041|Isenção  Item 41  Tabela I  Anexo I do RICMS  Informativo|01072012|
+RO99990043|Isenção  Item 43  Tabela I  Anexo I do RICMS  Informativo|01072012|
+RO99990044|Isenção  Item 44  Tabela I  Anexo I do RICMS  Informativo|01072012|
+RO99990045|Isenção  Item 45  Tabela I  Anexo I do RICMS  Informativo|01072012|
+RO99990046|Isenção  Item 46  Tabela I  Anexo I do RICMS  Informativo|01072012|
+RO99990047|Isenção  Item 47  Tabela I  Anexo I do RICMS  Informativo|01072012|
+RO99990048|Isenção  Item 48  Tabela I  Anexo I do RICMS  Informativo|01072012|
+RO99990049|Isenção  Item 49  Tabela I  Anexo I do RICMS  Informativo|01072012|
+RO99990050|Isenção  Item 50  Tabela I  Anexo I do RICMS  Informativo|01072012|
+RO99990051|Isenção  Item 51  Tabela I  Anexo I do RICMS  Informativo|01072012|
+RO99990052|Isenção  Item 52  Tabela I  Anexo I do RICMS  Informativo|01072012|
+RO99990053|Isenção  Item 53  Tabela I  Anexo I do RICMS  Informativo|01072012|
+RO99990054|Isenção  Item 54  Tabela I  Anexo I do RICMS  Informativo|01072012|
+RO99990055|Isenção  Item 55  Tabela I  Anexo I do RICMS  Informativo|01072012|
+RO99990056|Isenção  Item 56  Tabela I  Anexo I do RICMS  Informativo|01072012|
+RO99990057|Isenção  Item 57  Tabela I  Anexo I do RICMS  Informativo|01072012|
+RO99990058|Isenção  Item 58  Tabela I  Anexo I do RICMS  Informativo|01072012|
+RO99990059|Isenção  Item 59  Tabela I  Anexo I do RICMS  Informativo|01072012|
+RO99990060|Isenção  Item 60  Tabela I  Anexo I do RICMS  Informativo|01072012|
+RO99990062|Isenção  Item 62  Tabela I  Anexo I do RICMS  Informativo|01072012|
+RO99990065|Isenção  Item 65  Tabela I  Anexo I do RICMS  Informativo|01072012|
+RO99990067|Isenção  Item 67  Tabela I  Anexo I do RICMS  Informativo|01072012|
+RO99990068|Isenção  Item 68  Tabela I  Anexo I do RICMS  Informativo|01072012|
+RO99990069|Isenção  Item 69  Tabela I  Anexo I do RICMS  Informativo|01072012|
+RO99991070|Isenção  Item 70  Tabela I  Anexo I do RICMS  Informativo|01072012|
+RO99990072|Isenção  Item 72  Tabela I  Anexo I do RICMS  Informativo|01072012|
+RO99990075|Isenção  Item 75  Tabela I  Anexo I do RICMS  Informativo|01072012|
+RO99990076|Isenção  Item 76  Tabela I  Anexo I do RICMS  Informativo|01072012|
+RO99990077|Isenção  Item 77  Tabela I  Anexo I do RICMS  Informativo|01072012|
+RO99990078|Isenção  Item 78  Tabela I  Anexo I do RICMS  Informativo|01072012|
+RO99990079|Isenção  Item 79  Tabela I  Anexo I do RICMS  Informativo|01072012|
+RO99990080|Isenção  Item 80  Tabela I  Anexo I do RICMS  Informativo|01072012|
+RO99990081|Isenção  Item 81  Tabela I  Anexo I do RICMS  Informativo|01072012|
+RO99990082|Isenção  Item 82  Tabela I  Anexo I do RICMS  Informativo|01072012|
+RO99990083|Isenção  Item 83  Tabela I  Anexo I do RICMS  Informativo|01072012|
+RO99990084|Isenção  Item 84  Tabela I  Anexo I do RICMS  Informativo|01072012|
+RO99990085|Isenção  Item 85  Tabela I  Anexo I do RICMS  Informativo|01072012|
+RO99990086|Isenção  Item 86  Tabela I  Anexo I do RICMS  Informativo|01072012|
+RO99990087|Isenção  Item 87  Tabela I  Anexo I do RICMS  Informativo|01072012|
+RO99990088|Isenção  Item 88  Tabela I  Anexo I do RICMS  Informativo|01072012|
+RO99990089|Isenção  Item 89  Tabela I  Anexo I do RICMS  Informativo|01072012|
+RO99993090|Isenção  Item 90  Tabela I  Anexo I do RICMS  Informativo|01072012|
+RO99990092|Isenção  Item 92  Tabela I  Anexo I do RICMS  Informativo|01072012|
+RO99992093|Isenção  Item 93  Tabela I  Anexo I do RICMS  Informativo|01072012|
+RO99990094|Isenção  Item 94  Tabela I  Anexo I do RICMS  Informativo|01072012|
+RO99992095|Isenção  Item 95  Tabela I  Anexo I do RICMS  Informativo|01072012|
+RO99990096|Isenção  Item 96  Tabela I  Anexo I do RICMS  Informativo|01072012|
+RO99990097|Isenção  Item 97  Tabela I  Anexo I do RICMS  Informativo|01072012|
+RO99990098|Isenção  Item 98  Tabela I  Anexo I do RICMS  Informativo|01072012|
+RO99990099|Isenção  Item 99  Tabela I  Anexo I do RICMS  Informativo|01072012|
+RO99990100|Isenção  Item 100  Tabela I  Anexo I do RICMS  Informativo|01072012|
+RO99990101|Isenção  Item 101  Tabela I  Anexo I do RICMS  Informativo|01072012|
+RO99990102|Isenção  Item 102  Tabela I  Anexo I do RICMS  Informativo|01072012|
+RO99990103|Isenção  Item 103  Tabela I  Anexo I do RICMS  Informativo|01072012|
+RO99990104|Isenção  Item 104  Tabela I  Anexo I do RICMS  Informativo|01072012|
+RO99990105|Isenção  Item 105  Tabela I  Anexo I do RICMS  Informativo|01072012|
+RO99993106|Isenção  Item 106  Tabela I  Anexo I do RICMS  Informativo|01072012|
+RO99990107|Isenção  Item 107  Tabela I  Anexo I do RICMS  Informativo|01072012|
+RO99990108|Isenção  Item 108  Tabela I  Anexo I do RICMS  Informativo|01072012|
+RO99990110|Isenção  Item 110  Tabela I  Anexo I do RICMS  Informativo|01072012|
+RO99990111|Isenção  Item 111  Tabela I  Anexo I do RICMS  Informativo|01072012|
+RO99990112|Isenção  Item 112  Tabela I  Anexo I do RICMS  Informativo|01072012|
+RO99990113|Isenção  Item 2  Tabela 2  Anexo I do RICMS  Informativo|01072012|
+RO99990114|Isenção  Item 4  Tabela 2  Anexo I do RICMS  Informativo|01072012|
+RO99990115|Isenção  Item 6  Tabela 2  Anexo I do RICMS  Informativo|01072012|
+RO99990116|Isenção  Item 7  Tabela 2  Anexo I do RICMS  Informativo|01072012|
+RO99990117|Isenção  Item 9  Tabela 2  Anexo I do RICMS  Informativo|01072012|
+RO99990118|Isenção  Item 10  Tabela 2  Anexo I do RICMS  Informativo|01072012|
+RO99990119|Isenção  Item 11  Tabela 2  Anexo I do RICMS  Informativo|01072012|
+RO99991120|Isenção  Item 12  Tabela 2  Anexo I do RICMS  Informativo|01072012|
+RO99990121|Isenção  Item 13  Tabela 2  Anexo I do RICMS  Informativo|01072012|
+RO99990122|Isenção  Item 14  Tabela 2  Anexo I do RICMS  Informativo|01072012|
+RO99990123|Isenção  Item 16  Tabela 2  Anexo I do RICMS  Informativo|01072012|
+RO99990124|Isenção  Item 17  Tabela 2  Anexo I do RICMS  Informativo|01072012|
+RO99990125|Isenção  Item 18  Tabela 2  Anexo I do RICMS  Informativo|01072012|
+RO99990126|Isenção  Item 19  Tabela 2  Anexo I do RICMS  Informativo|01072012|
+RO99990127|Isenção  Item 21  Tabela 2  Anexo I do RICMS  Informativo|01072012|
+RO99990128|Isenção  Item 22  Tabela 2  Anexo I do RICMS  Informativo|01072012|
+RO99990129|Isenção  Item 23  Tabela 2  Anexo I do RICMS  Informativo|01072012|
+RO99990130|Isenção  Item 24  Tabela 2  Anexo I do RICMS  Informativo|01072012|
+RO99990131|Isenção  Item 29  Tabela 2  Anexo I do RICMS  Informativo|01072012|
+RO99990132|Isenção  Item 31  Tabela 2  Anexo I do RICMS  Informativo|01072012|
+RO99990133|Isenção  Item 35  Tabela 2  Anexo I do RICMS  Informativo|01072012|
+RO99990134|Isenção  Item 36  Tabela 2  Anexo I do RICMS  Informativo|01072012|
+RO99990135|Isenção  Item 37  Tabela 2  Anexo I do RICMS  Informativo|01072012|
+RO99990136|Isenção  Item 39  Tabela 2  Anexo I do RICMS  Informativo|01072012|
+RO99991137|Isenção  Item 40  Tabela 2  Anexo I do RICMS  Informativo|01072012|
+RO99990138|Isenção  Item 42  Tabela 2  Anexo I do RICMS  Informativo|01072012|
+RO99990139|Isenção  Item 43  Tabela 2  Anexo I do RICMS  Informativo|01072012|
+RO99990140|Isenção  Item 44  Tabela 2  Anexo I do RICMS  Informativo|01072012|
+RO99990141|Isenção  Item 45  Tabela 2  Anexo I do RICMS  Informativo|01072012|
+RO99990142|Isenção  Item 46  Tabela 2  Anexo I do RICMS  Informativo|01072012|
+RO99990143|Isenção  Item 47  Tabela 2  Anexo I do RICMS  Informativo|01072012|
+RO99990144|Isenção  Item 48  Tabela 2  Anexo I do RICMS  Informativo|01072012|
+RO99990145|Isenção  Item 49  Tabela 2  Anexo I do RICMS  Informativo|01072012|
+RO99990146|Isenção  Item 50  Tabela 2  Anexo I do RICMS  Informativo|01072012|
+RO99990147|Isenção  Item 51  Tabela 2  Anexo I do RICMS  Informativo|01072012|
+RO99990148|Isenção  Item 52  Tabela 2  Anexo I do RICMS  Informativo|01072012|01092016
+RO99990149|Isenção  Item 53  Tabela 2  Anexo I do RICMS  Informativo|01072012|
+RO99990150|Isenção  Item 54  Tabela 2  Anexo I do RICMS  Informativo|01072012|
+RO99990151|Isenção  Item 55  Tabela 2  Anexo I do RICMS  Informativo|01072012|
+RO99990152|Isenção  Item 56  Tabela 2  Anexo I do RICMS  Informativo|01072012|
+RO99990153|Isenção  Item 57  Tabela 2  Anexo I do RICMS  Informativo|01072012|
+RO99990154|Isenção  Item 58  Tabela 2  Anexo I do RICMS  Informativo|01072012|
+RO99990155|Isenção  Item 59  Tabela 2  Anexo I do RICMS  Informativo|01072012|
+RO99990156|Isenção  Item 60  Tabela 2  Anexo I do RICMS  Informativo|01072012|
+RO99990157|Isenção  Item 61  Tabela 2  Anexo I do RICMS  Informativo|01072012|
+RO99990158|Isenção  Item 62  Tabela 2  Anexo I do RICMS  Informativo|01072012|
+RO99990159|Isenção  Item 63  Tabela 2  Anexo I do RICMS  Informativo|01072012|01092016
+RO99990160|Isenção  Item 64  Tabela 2  Anexo I do RICMS  Informativo|01072012|
+RO99990161|Isenção  Item 65  Tabela 2  Anexo I do RICMS  Informativo|01072012|
+RO99990162|Redução de Base de Cálculo  Item 1  Tabela 1  Anexo II do RICMS  Informativo|01072012|
+RO99990163|Redução de Base de Cálculo  Item 3  Tabela 1  Anexo II do RICMS  Informativo|01072012|
+RO99990164|Redução de Base de Cálculo  Item 4  Tabela 1  Anexo II do RICMS  Informativo|01072012|
+RO99990165|Redução de Base de Cálculo  Item 5  Tabela 1  Anexo II do RICMS  Informativo|01072012|
+RO99990166|Redução de Base de Cálculo  Item 6  Tabela 1  Anexo II do RICMS  Informativo|01072012|
+RO99990167|Redução de Base de Cálculo  Item 9  Tabela 1  Anexo II do RICMS  Informativo|01072012|
+RO99990168|Redução de Base de Cálculo  Item 10  Tabela 1  Anexo II do RICMS  Informativo|01072012|
+RO99990169|Redução de Base de Cálculo  Item 11  Tabela 1  Anexo II do RICMS  Informativo|01072012|
+RO99990170|Redução de Base de Cálculo  Item 14  Tabela 1  Anexo II do RICMS  Informativo|01072012|
+RO99990171|Redução de Base de Cálculo  Item 15  Tabela 1  Anexo II do RICMS  Informativo|01072012|
+RO99990172|Redução de Base de Cálculo  Item 16  Tabela 1  Anexo II do RICMS  Informativo|01072012|
+RO99990173|Redução de Base de Cálculo  Item 18  Tabela 1  Anexo II do RICMS  Informativo|01072012|
+RO99990174|Redução de Base de Cálculo  Item 19  Tabela 1  Anexo II do RICMS  Informativo|01072012|
+RO99990175|Redução de Base de Cálculo  Item 20  Tabela 1  Anexo II do RICMS  Informativo|01072012|
+RO99990176|Redução de Base de Cálculo  Item 22  Tabela 1  Anexo II do RICMS  Informativo|01072012|
+RO99990177|Redução de Base de Cálculo  Item 23  Tabela 1  Anexo II do RICMS  Informativo|01072012|
+RO99992178|Redução de Base de Cálculo  Item 24  Tabela 1  Anexo II do RICMS  Informativo|01072012|
+RO99992179|Redução de Base de Cálculo  Item 25  Tabela 1  Anexo II do RICMS  Informativo|01072012|
+RO99990180|Redução de Base de Cálculo  Item 26  Tabela 1  Anexo II do RICMS  Informativo|01072012|
+RO99992181|Redução de Base de Cálculo  Item 28  Tabela 1  Anexo II do RICMS  Informativo|01072012|
+RO99992182|Redução de Base de Cálculo  Item 29  Tabela 1  Anexo II do RICMS  Informativo|01072012|
+RO99990183|Redução de Base de Cálculo  Item 30  Tabela 1  Anexo II do RICMS  Informativo|01072012|
+RO99992184|Redução de Base de Cálculo  Item 31  Tabela 1  Anexo II do RICMS  Informativo|01072012|
+RO99990185|Redução de Base de Cálculo  Item 32  Tabela 1  Anexo II do RICMS  Informativo|01072012|
+RO99992186|Redução de Base de Cálculo  Item 33  Tabela 1  Anexo II do RICMS  Informativo|01072012|
+RO99991187|Redução de Base de Cálculo  Item 34  Tabela 1  Anexo II do RICMS  Informativo|01072012|
+RO99990188|Redução de Base de Cálculo  Item 35  Tabela 1  Anexo II do RICMS  Informativo|01072012|
+RO99990189|Redução de Base de Cálculo  Item 36  Tabela 1  Anexo II do RICMS  Informativo|01072012|
+RO99990190|Redução de Base de Cálculo  Item 37  Tabela 1  Anexo II do RICMS  Informativo|01072012|
+RO99990191|Redução de Base de Cálculo  Item 38  Tabela 1  Anexo II do RICMS  Informativo|01072012|
+RO99990192|Redução de Base de Cálculo  Item 39  Tabela 1  Anexo II do RICMS  Informativo|01072012|30062016
+RO99990193|Redução de Base de Cálculo  Item 40  Tabela 1  Anexo II do RICMS  Informativo|01072012|
+RO99990194|Redução de Base de Cálculo  Item 41  Tabela 1  Anexo II do RICMS  Informativo|01072012|
+RO99990195|Redução de Base de Cálculo  Item 2  Tabela 2  Anexo II do RICMS  Informativo|01072012|
+RO99990196|Redução de Base de Cálculo  Item 3  Tabela 2  Anexo II do RICMS  Informativo|01072012|
+RO99990197|Redução de Base de Cálculo  Item 6  Tabela 2  Anexo II do RICMS  Informativo|01072012|
+RO99990198|Redução de Base de Cálculo  Item 7  Tabela 2  Anexo II do RICMS  Informativo|01072012|
+RO99992199|Redução de Base de Cálculo  Item 18  Tabela 2  Anexo II do RICMS  Informativo|01072012|
+RO99990200|Redução de Base de Cálculo  Item 21  Tabela 2  Anexo II do RICMS  Informativo|01072012|
+RO99990201|Redução de Base de Cálculo  Item 22  Tabela 2  Anexo II do RICMS  Informativo|01072012|
+RO99990202|Redução de Base de Cálculo  Item 23  Tabela 2  Anexo II do RICMS  Informativo|01072012|
+RO99990203|Redução de Base de Cálculo  Item 24  Tabela 2  Anexo II do RICMS  Informativo|01072012|
+RO10000001|Crédito Presumido  Item 1  Tabela 1  Anexo IV do RICMS  Valor a Crédito|01072012|30042018
+RO10000002|Crédito Presumido  Item 2  Tabela 1  Anexo IV do RICMS  Valor a Crédito|01072012|30042018
+RO10000003|Crédito Presumido  Item 6  Tabela 1  Anexo IV do RICMS  Valor a Crédito|01072012|30042018
+RO10000004|Crédito Presumido  Item 9  Tabela 1  Anexo IV do RICMS  Valor a Crédito|01072012|30042018
+RO10000005|Crédito Presumido  Item 10  Tabela 1  Anexo IV do RICMS  Valor a Crédito|01072012|30042018
+RO10000006|Crédito Presumido  Item 14  Tabela 1  Anexo IV do RICMS  Valor a Crédito|01072012|30042018
+RO10000007|Crédito Presumido  Item 15  Tabela 1  Anexo IV do RICMS  Valor a Crédito|01072012|30042018
+RO10000008|Crédito Presumido  Item 16  Tabela 1  Anexo IV do RICMS  Valor a Crédito|01072012|30042018
+RO10000009|Crédito Presumido  Item 18  Tabela 1  Anexo IV do RICMS  Valor a Crédito|01072012|30042018
+RO10000010|Crédito Presumido  Item 20  Tabela 1  Anexo IV do RICMS  Valor a Crédito|01072012|30042018
+RO10000011|Crédito Presumido  Item 21  Tabela 1  Anexo IV do RICMS  Valor a Crédito|01072012|30042018
+RO10000012|Crédito Presumido - CONSIT|01072012|30062016
+RO40000001|Valor a Débito - Diferença de Alíquota - Ativo Permanente|01072012|
+RO40000002|Valor a Débito - Diferença de Alíquota - Uso e Consumo|01072012|
+RO70010001|Débito especial - Importação - Recolhimento Espontâneo|01072012|
+RO90000001|Informativo - Valores de Ressarcimento de Substituição Tributária|01072012|
+RO90000002|Informativo - Diferença de Alíquota Recolhido fora da Conta Gráfica|01072012|
+RO20001001|Estorno de Débito - ICMS Transporte recolhido antecipado|01072012|
+RO20000002|Estorno de Débito - Produtos Primários - ICMS recolhido antecipadamente|01072012|
+RO10001013|Crédito Presumido  Item 4  Tabela 1  Anexo IV do RICMS  Valor a|01032013|30042018
+RO10001018|Crédito Presumido - Lei 1.473/2005|01042016|
+RO50000001|Estorno de Crédito Presumido (operações de devolução de vendas)|01042016|
+RO00000001|Crédito de ICMS pela aquisição de mercadoria de microempresa ou empresa de pequeno porte optante pelo Simples Nacional - Lei Complementar Federal nº 123/2006, art. 23, §§ 1º a 5º|01042016|
+RO40000003|Redução de Base de Cálculo - Item 39 - Tabela I - Anexo II do RICMS|01042016|
+RO20000003|Estorno de débito referente devolução de compra para utilização na prestação de serviço|01042016|
+RO99990000|Informativo - Valor do ICMS sujeito a homologação de crédito (mercadorias)|01042016|31032017
+RO99991000|Informativo - Valor do ICMS sujeito a homologação de crédito (transporte)|01042016|31032017
+RO10001014|Crédito Presumido - Item 17 - Tabela 1 - Anexo IV do RICMS  Valor a Crédito|01042016|30042018
+RO10001015|Crédito Presumido - Item 19 - Tabela 1 - Anexo IV do RICMS - Valor a Crédito|01042016|30042018
+RO10001016|Crédito Presumido  Item 23  Tabela 1  Anexo IV do RICMS  Valor a Crédito|01042016|30042018
+RO10001017|Crédito Presumido - Item 24 - Tabela 1 - Anexo IV do RICMS - Valor a Crédito|01042016|30042018
+RO99990204|Redução de Base de Cálculo - Item 42 - Tabela 1 - Anexo II do RICMS - Informativo|01042016|
+RO99990205|Redução de Base de Cálculo - Item 43 - Tabela 1 - Anexo II do RICMS - Informativo|01042016|
+RO99990206|Redução de Base de Cálculo - Item 44 - Tabela 1 - Anexo II do RICMS - Informativo|01042016|
+RO99990207|Redução de Base de Cálculo - Item 25 - Tabela 2 - Anexo II do RICMS - Informativo|01042016|
+RO99990208|Isenção - Item 113 - Tabela I - Anexo I do RICMS - Informativo|01042016|
+RO99990209|Isenção - Item 114 - Tabela I - Anexo I do RICMS - Informativo|01042016|
+RO99990210|Isenção - Item 115 - Tabela I - Anexo I do RICMS - Informativo|01042016|
+RO99990211|Isenção - Item 116 - Tabela I - Anexo I do RICMS - Informativo|01042016|
+RO99990212|Isenção - Item 117 - Tabela I - Anexo I do RICMS - Informativo|01042016|
+RO99990213|Isenção - Item 118 - Tabela I - Anexo I do RICMS - Informativo|01042016|
+RO20000004|Estorno de débito para ajuste de apuração do ICMS - Devolução ou transferência de mercadoria quando não houve aproveitamento do crédito na entrada|01042016|
+RO20000005|Estorno de débito para ajuste de apuração do ICMS - Alíquota destacada a maior nas operações destinadas a não contribuinte do ICMS|01042016|
+RO99990178|Isenção - Item 66 - Tabela 2 - Anexo I do RICMS -Informativo|01082016|
+RO99990179|Isenção - Item 67 - Tabela 2 - Anexo I do RICMS - Informativo|01082016|
+RO99990181|Isenção - Item 68 - Tabela 2 - Anexo I do RICMS - Informativo|01082016|
+RO99990182|Isenção - Item 69 - Tabela 2  Anexo I do RICMS  Informativo|01082016|
+RO99990214|Isenção - Item 118 - Tabela I - Anexo I do RICMS - Informativo|01082016|
+RO20010001|Estorno de débito  Denúncia Espontânea|02052016|31032017
+RO99990001|Informativo  Valor recolhido por denúncia espontânea|01012017|30042019
+RO00000002|Lei 1.473/2005  ICMS importação recolhido antecipadamente  Valor a crédito|01042017|
+RO00000003|ICMS recolhimento antecipado  álcool hidratado  Valor a crédito|01052017|
+RO10000019|Crédito Presumido - Item 2 - Parte 2 - Anexo IV do RICMS - Valor a Crédito|01052018|
+RO10000021|Crédito Presumido - Item 4 - Parte 2 - Anexo IV do RICMS - Valor a Crédito|01052018|
+RO10000022|Crédito Presumido - Item 5 - Parte 2 - Anexo IV do RICMS - Valor a Crédito|01052018|
+RO10000023|Crédito Presumido - Item 6 - Parte 2 - Anexo IV do RICMS - Valor a Crédito|01052018|
+RO10000024|Crédito Presumido - Item 7 - Parte 2 - Anexo IV do RICMS - Valor a Crédito|01052018|
+RO10000025|Crédito Presumido - Item 8 - Parte 2 - Anexo IV do RICMS - Valor a Crédito|01052018|
+RO10000026|Crédito Presumido - Item 9 - Parte 2 - Anexo IV do RICMS - Valor a Crédito|01052018|
+RO10000027|Crédito Presumido - Item 10 - Parte 2 - Anexo IV do RICMS - Valor a Crédito|01052018|
+RO10000028|Crédito Presumido - Item 11 - Parte 2 - Anexo IV do RICMS - Valor a Crédito|01052018|
+RO10000029|Crédito Presumido - Item 12 - Parte 2 - Anexo IV do RICMS - Valor a Crédito|01052018|
+RO10000030|Crédito Presumido - Item 16 - Parte 2 - Anexo IV do RICMS - Valor a Crédito|01052018|
+RO10000031|Crédito Presumido - Item 17 - Parte 2 - Anexo IV do RICMS - Valor a Crédito|01052018|
+RO10000032|Crédito Presumido - Item 18 - Parte 2 - Anexo IV do RICMS - Valor a Crédito|01052018|
+RO10000033|Crédito Presumido - Item 4 - Parte 3 - Anexo IV do RICMS - Valor a Crédito|01052018|
+RO10000034|Ressarcimento - Crédito referente à operação própria do substituto tributário|01052018|30062018
+RO10000035|Ressarcimento - Crédito referente ao ressarcimento do ICMS ST retido/pago|01052018|30062018
+RO10001020|Crédito Presumido - Item 3 - Parte 2 - Anexo IV do RICMS - Valor a Crédito|01052018|
+RO10000036|Crédito Presumido - Item I - Parte 2 - Anexo IV - Valor a crédito|01052018|
+RO20000006|Estorno de débito  NFE emitida em decorrência de emissão de NFC-e  CFOP 5929/6929|01052018|
+RO10000037|Crédito presumido Lei 2030/2009 - PROCAFÉ|01012018|
+RO40000004|Valor a Débito  Escrituração extemporânea de documento fiscal de saída|01042019|30042019
+RO23000001|TESTE_ED|01012020|
+RO53000002|TESTE_EC|01012020|
+RO10000038|Crédito Presumido - Item 19 - Parte 2 - Anexo IV - Valor a crédito|20032020|
+RO23000003|Estorno de débito - SA 1|01072020|
+RO53000003|Estorno de crédito - SA 1|01072020|
+RO24000003|Estorno de débito - SA 2|01072020|
+RO54000003|Estorno de crédito - SA 2|01072020|
+RO00000004|CRÉDITO  INSUMOS AGROPECUÁRIOS  CONVÊNIO ICMS 100/97  ESTABELECIMENTO INDUSTRIAL|01082020|
+RO20001010|ESTORNO DE DÉBITO BP-e SUBSTITUÍDO - ICMS TRANSPORTE|01112021|
+RO10009999|Ressarcimento de imposto retido por substituição tributária operações com gasolina, óleo diesel e álcool etílico hidratado carburante|01022022|01022022
+RO10009999|Ressarcimento de imposto retido por substituição tributária operações com gasolina, óleo diesel e álcool etílico hidratado combustivel|02022022|
+RO40009999|Complementação de imposto retido por substituição tributária operações com gasolina, óleo diesel e álcool etílico hidratado carburante|01022022|01022022
+RO40009999|Complementação de imposto retido por substituição tributária operações com gasolina, óleo diesel e álcool etílico hidratado combustivel|02022022|
+RO20009999|Estorno de Complementação de imposto retido por substituição tributária operações com gasolina, óleo diesel e álcool etílico hidratado carburante|01022022|01022022
+RO20009999|Estorno de Complementação de imposto retido por substituição tributária operações com gasolina, óleo diesel e álcool etílico hidratado combustivel|02022022|
+RO50009999|Estorno de Ressarcimento de imposto retido por substituição tributária operações com gasolina, óleo diesel e álcool etílico hidratado carburante|01022022|01022022
+RO50009999|Estorno de Ressarcimento de imposto retido por substituição tributária operações com gasolina, óleo diesel e álcool etílico hidratado combustivel|02022022|
+RO20009000|ESTORNO DE DÉBITO - TRANSFERÊNCIA DE CRÉDITOS FISCAIS  Art. 30 ANEXO IX|01092022|
+RO20003000|ESTORNO DE DÉBITO DE NOTA FISCAL DE ENERGIA ELÉTRICA ELETRÔNICA NF3E  SUBSTITUÍDA|01012022|
+RO10000039|Crédito Presumido - Item 5 - Parte 3  Anexo IV do RICMS/RO|01072021|
+RO20001011|ESTORNO DE DÉBITO CT-e SUBSTITUÍDO - ICMS TRANSPORTE|01062023|
+RO50001001|Estorno de Crédito Presumido CTe Substituído - Item 3 - Parte 2 - Anexo IV do RICMS|01062023|
+RO10001021|Crédito  ICMS destacado no CTe quando o serviço for iniciado em outra UF, diferente da UF do emitente/ transportador, sob cláusula FOB|01062023|
+RO10000040|Crédito Presumido  Item 20  Parte 2  Anexo IV|01052023|
+RO20000007|ESTORNO DE DÉBITO NA REMESSA SIMBÓLICA DE MERCADORIA PARA DEPÓSITO OU ARMAZEM GERAL DESTINADA A EXPORTAÇÃO - CONDER|27092023|
+RO50000002|ESTORNO DE CRÉDITO NO RETORNO SIMBÓLICO DE MERCADORIA LOCALIZADA EM DEPÓSITO OU ARMAZEM GERAL DESTINADA À EXPORTAÇÃO - CONDER|27092023|
+RO20000008|ESTORNO DE DÉBITO DE NF COMPLEMENTAR|01122022|31102023
+RO20000008|ESTORNO DE DÉBITO DE NF COMPLEMENTAR|01112023|
+RO70010002|DÉBITO ESPECIAL ENERGIA ELÉTRICA - RELATIVA À LIQUIDAÇÃO NO MERCADO DE CURTO PRAZO  POSIÇÃO DEVEDORA|01012024|
+RO10000041|CRÉDITO PRESUMIDO - LEI 5710/2023|01072024|
+RO20002000|ESTORNO DE DÉBITO - NFCOM SUBSTITUÍDA|01112025|
+RO20002001|ESTORNO DE DÉBITO - NFCOM SUBSTITUÍDA - quando a substituição ocorrer em período de apuração diferente do período de apuração do fato gerador|01112025|
+RO50002000|ESTORNO DO CRÉDITO - oriundo de NFCom substituída|01112025|
+RO20002002|ESTORNO DE DÉBITO - NFCOM - vinculado ao débito especial do ICMS a maior entre a NFCom de substituição e a NFCom substituída quando a substituição ocorrer em período de apuração diferente do período de apuração do fato gerador|01112025|
+RO70002000|DÉBITO ESPECIAL - diferença a maior entre a NFCom de substituição e a NFCom substituída quando a substituição ocorrer em período de apuração diferente do período de apuração do fato gerador|01112025|
+RO50000003|ESTORNO DE CRÉDITO - § 2° do Art. 3º - LEI 5598/2023|20122023|
+RO70010003|DÉBITO ESPECIAL - IMPORTAÇÃO - art. 2º, II e §§ 6º e 7º, da Lei 5.598/23|01012026|
+RO70010004|DÉBITO ESPECIAL - IMPORTAÇÃO - art. 2º, II e § 1º da Lei 5.710/23, c/c art. 7º, § 3º, III, do Decreto 29.232/24|01012026|

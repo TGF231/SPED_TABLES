@@ -2,5 +2,4 @@ PyQt6>=6.5
 openpyxl>=3.1  # leitura da Tabela NCM Vigente (XLSX Siscomex) — opcional
 firebirdsql>=1.4  # ERP em Firebird 2.5 a 5 (puro Python)
 pyodbc>=5.0  # ERP em SQL Server (com o driver ODBC da Microsoft)
-# pymysql>=1.1  # ERP em MySQL/MariaDB — opcional; sem ele o MySQL
-#               # fica indisponível e a tela diz como instalar
+pymysql>=1.1  # ERP em MySQL/MariaDB

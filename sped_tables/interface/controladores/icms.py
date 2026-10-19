@@ -7,12 +7,14 @@ from PyQt6.QtWidgets import QMessageBox
 from sped_tables.dominio import conferencia as cf
 from sped_tables.dominio import revisao as rev
 from sped_tables.dominio import xml_fiscal as xf
-from sped_tables.interface.comum import (calcular, ler_nfes_da_pasta,
+from sped_tables.interface.comum import (_br, calcular,
+                                         ler_nfes_da_pasta,
                                          ler_pasta_xml,
                                          lista_de_mudancas)
 from sped_tables.interface.dialogos.conferencia import DialogoConfC190
 from sped_tables.interface.dialogos.correcao import DialogoRecalcularICMS
 from sped_tables.interface.dialogos.inventario import DialogoImportarInventario
+from sped_tables.interface.comum import abrir_janela, informar
 
 
 class ControladorIcms:
@@ -22,6 +24,43 @@ class ControladorIcms:
     demais membros da janela.
     """
 
+    def zerar_credito_icms_st(self):
+        """Compra para revenda com ST retido (1403/2403) e CST x10/x70 não
+        dá crédito do ICMS próprio: zera base, alíquota e valor do item e
+        refaz C190, C100 e E110 (`SpedDocument.zerar_credito_icms_st`)."""
+        if not self.doc or self.doc.layout != "ICMS":
+            return
+        titulo = "ICMS próprio nas compras com ST"
+        p = self.doc.previa_credito_icms_st()
+        if not p["itens"]:
+            informar(
+                self, titulo, "Nenhum item de entrada com CFOP 1403/2403, "
+                "CST x10/x70 e ICMS próprio preenchido.")
+            return
+        r = QMessageBox.question(
+            self, titulo,
+            "%d item(ns) em %d nota(s) de compra com ST (CFOP 1403/2403, "
+            "CST x10/x70) trazem ICMS próprio:\n\n"
+            "• base: %s\n• ICMS (crédito): %s\n\n"
+            "O ICMS da mercadoria já foi recolhido por substituição "
+            "tributária; não há crédito a apurar. Zerar base, alíquota e "
+            "valor desses itens, refazer o C190 e os totais do C100 e "
+            "retirar o crédito do E110?"
+            % (p["itens"], p["documentos"], _br(p["vl_bc"]),
+               _br(p["vl_icms"])),
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
+        if r != QMessageBox.StandardButton.Yes:
+            return
+        ok, res = calcular(self, titulo, self.doc.zerar_credito_icms_st)
+        if not ok:
+            return
+        self._marcar_alterado()
+        self._montar_abas()
+        self.statusBar().showMessage(
+            "ICMS próprio zerado em %d item(ns) de %d nota(s); crédito "
+            "retirado: %s." % (res["itens"], res["documentos"],
+                               _br(res["vl_icms"])), 15000)
+
     def recalcular_icms(self):
         """Recalcula o ICMS dos itens, no escopo do Modo Relatório.
 
@@ -30,7 +69,7 @@ class ControladorIcms:
         inteiro.
         """
         if not self.doc or self.doc.layout != "ICMS":
-            QMessageBox.information(
+            informar(
                 self, "Recalcular ICMS",
                 "O recálculo de ICMS aplica-se ao EFD ICMS/IPI.")
             return
@@ -42,7 +81,7 @@ class ControladorIcms:
             por_uid = {r.uid: r for r in self.doc.registros}
             uids = [u for u in rel._uids
                     if getattr(por_uid.get(u), "reg", "") == "C170"]
-        DialogoRecalcularICMS(self.doc, uids, self).exec()
+        abrir_janela(self, DialogoRecalcularICMS(self.doc, uids, self))
 
     def conferir_c190_xml(self):
         """Compara os C190 (ICMS analítico) com os XMLs, agrupando os itens do
@@ -65,25 +104,23 @@ class ControladorIcms:
         self.statusBar().showMessage(
             "C190 × XML: %d documentos, %d grupos, %d divergência(s)."
             % (r["docs_casados"], r["grupos_conferidos"], r["divergencias"]))
-        DialogoConfC190(resultado, self).exec()
+        abrir_janela(self, DialogoConfC190(resultado, self))
 
     def importar_inventario(self):
         """Importa planilha e gera o inventário do bloco H (H005/H010),
         cadastrando no 0200 apenas os itens ainda inexistentes."""
         if not self.doc or self.doc.layout != "ICMS":
-            QMessageBox.information(
+            informar(
                 self, "Importar inventário",
                 "O bloco H (inventário) pertence ao EFD ICMS/IPI.")
             return
-        self._dlg_inv = DialogoImportarInventario(
-            self.doc, self._data_fin_doc(), self)
-        self._dlg_inv.exec()
+        self._dlg_inv = abrir_janela(self, DialogoImportarInventario(
+            self.doc, self._data_fin_doc(), self))
 
     def _corrigir_c190_da_revisao(self):
-        """Corrige e reabre o relatório, para o usuário ver o que restou."""
+        """Corrige e reabre o relatório, para o usuário ver o que restou
+        (a revisão nova substitui a anterior — `abrir_janela`)."""
         self.recalcular_c190_massa()
-        if getattr(self, "_dlg_revisao", None) is not None:
-            self._dlg_revisao.close()
         self.revisar_erros()
 
     def recalcular_c190_massa(self):
@@ -98,7 +135,7 @@ class ControladorIcms:
         alvos = self.doc.documentos_para_refazer_c190()
         docs = [c for lista in alvos.values() for c in lista]
         if not docs:
-            QMessageBox.information(
+            informar(
                 self, "Recalcular C190",
                 "Nenhum C190 com CST x20/x70 está com a redução de base "
                 "zerada ou com chave repetida, nenhuma NFC-e tem C170 "
@@ -120,7 +157,9 @@ class ControladorIcms:
         caixa.setText(
             texto
             + "O analítico desses documentos será <b>refeito a partir dos "
-            "itens (C170)</b>, o que recompõe o VL_RED_BC.<br><br>"
+            "itens (C170)</b>, o que recompõe o VL_RED_BC; sem C170 (NFC-e), "
+            "os C190 de mesma chave são <b>fundidos</b>. Base e impostos do "
+            "<b>C100</b> passam a ser a soma do C190.<br><br>"
             "Nos CST terminados em <b>70</b> o ICMS foi cobrado por "
             "substituição e não há base própria; quando o item tiver base de "
             "PIS/COFINS, ela é usada para achar a diferença.<br><br>"
@@ -143,18 +182,26 @@ class ControladorIcms:
         msg = ("%d documento(s) recalculados, %d grupo(s) C190 refeitos.\n\n"
                "• %d documento(s) tiveram a redução de base corrigida\n"
                "• %d grupo(s) usaram a base de PIS/COFINS (CST x70)\n"
-               "• %d grupo(s) continuam sem base de onde tirar a redução"
+               "• %d grupo(s) continuam sem base de onde tirar a redução\n"
+               "• %d C190 de mesma chave fundido(s) em documento(s) sem "
+               "C170\n"
+               "• %d C100 com base/impostos acertados pelo C190"
                % (res["documentos"], res["criados"], res["corrigidos"],
-                  res["base_pis_cofins"], res["sem_base"]))
+                  res["base_pis_cofins"], res["sem_base"], res["fundidos"],
+                  res["c100"]))
         if restantes:
             msg += ("\n\nAinda há %d C190 com redução zerada: são itens sem "
                     "base de ICMS e sem base de PIS/COFINS, que precisam de "
                     "conferência manual." % restantes)
+        proximos = []
         if self.doc.documentos_65_com_c170():
-            msg += ("\n\nFalta remover os C170 fictícios das NFC-e (*Remover "
-                    "C170 fictícios da NFC-e*): com eles o arquivo é recusado "
-                    "pelo PVA.")
-        QMessageBox.information(self, "Recalcular C190", msg)
+            msg += ("\n\nFalta remover os C170 fictícios das NFC-e: com "
+                    "eles o arquivo é recusado pelo PVA.")
+            proximos.append(("Remover C170 fictícios",
+                             self.remover_c170_ficticios_icms))
+        if self.doc.layout == "ICMS":
+            proximos.append(("Recalcular E110", self.recalcular_apuracao_icms))
+        informar(self, "Recalcular C190", msg, proximos=proximos)
 
     def reducao_c190_pelo_xml(self):
         """Redução de base dos C190 de entrada com CST x20/x70 zerada, pela
@@ -171,7 +218,7 @@ class ControladorIcms:
                                            lote.nfes + lote.sem_chave)
         faltam = len(rev.verificar_c190_reducao(self.doc))
         if not achados:
-            QMessageBox.information(
+            informar(
                 self, titulo,
                 "Nenhum C190 com redução zerada tem XML de compra com base "
                 "reduzida nesta pasta (%d C190 continuam com a redução "
@@ -186,7 +233,7 @@ class ControladorIcms:
         n = cf.corrigir_reducao_c190(self.doc, achados)
         self._marcar_alterado()
         self._montar_abas()
-        QMessageBox.information(
+        informar(
             self, titulo, "%d C190 com a redução gravada; %d continuam "
             "zerados." % (n, len(rev.verificar_c190_reducao(self.doc))))
 
@@ -201,15 +248,15 @@ class ControladorIcms:
         if not ok:
             return
         if mudou is None:
-            QMessageBox.information(self, titulo, "O arquivo não tem E110.")
+            informar(self, titulo, "O arquivo não tem E110.")
             return
         if not mudou:
-            QMessageBox.information(
+            informar(
                 self, titulo, "O E110 já confere com os analíticos.")
             return
         self._marcar_alterado()
         self._montar_abas()
-        QMessageBox.information(
+        informar(
             self, titulo, "E110 recalculado:\n" + lista_de_mudancas(mudou)
             + "\n\nConfira o E116: a soma dele tem de ser o ICMS a recolher "
               "mais o débito especial.")
@@ -244,12 +291,12 @@ class ControladorIcms:
             msg += ("\n\n%d item(ns) vieram com CSOSN (emitente do "
                     "Simples) no lugar do CST: confira antes de refazer o "
                     "C190." % res["csosn"])
-        msg += ("\n\nPróximos passos:\n"
-                "1. Recalcular C190 (analítico) em massa\n"
-                "2. Remover C170 fictícios da NFC-e (65)\n\n"
+        msg += ("\n\nPróximo passo: recalcular o C190 — o aviso dele traz o "
+                "botão para remover os fictícios.\n\n"
                 "NFC-e com C170 é estrutura inválida: o arquivo não deve ser "
                 "gravado com os fictícios.")
-        QMessageBox.information(self, titulo, msg)
+        informar(self, titulo, msg, proximos=(
+            ("Recalcular C190…", self.recalcular_c190_massa),))
 
     def remover_c170_ficticios_icms(self):
         """Devolve as NFC-e à forma consolidada (sem C170)."""
@@ -257,13 +304,13 @@ class ControladorIcms:
             return
         titulo = "Remover C170 fictícios"
         if not self.doc.documentos_65_com_c170():
-            QMessageBox.information(
+            informar(
                 self, titulo, "Nenhuma NFC-e (65) tem C170 no arquivo.")
             return
         res = self.doc.remover_c170_ficticios_65()
         self._marcar_alterado()
         self._montar_abas()
-        QMessageBox.information(
+        informar(
             self, titulo, "%d C170 removido(s) de %d NFC-e."
             % (res["itens"], res["docs"]))
 
@@ -275,7 +322,7 @@ class ControladorIcms:
             return
         div = self.doc.divergencias_cod_gen()
         if not div:
-            QMessageBox.information(
+            informar(
                 self, "COD_GEN pelo NCM",
                 "Todos os itens com NCM já têm o COD_GEN do capítulo "
                 "correspondente.")

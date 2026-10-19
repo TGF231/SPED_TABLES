@@ -1,0 +1,1 @@
+versÃ£o=1.0 cod|desc|dt_ini|dt_fin|desc_receita

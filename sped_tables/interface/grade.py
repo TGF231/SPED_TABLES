@@ -10,10 +10,11 @@ from PyQt6.QtWidgets import (
     QTableWidgetItem, QVBoxLayout, QWidget,
 )
 
-from sped_tables.dominio import ajuda
+from sped_tables.dominio import ajuda, referencias
 from sped_tables.interface import tema
 from sped_tables.interface.comum import _br, _num_celula, calcular
 from sped_tables.interface.dialogos.ajuda import DialogoAjuda, dica_html
+from sped_tables.interface.comum import abrir_janela, informar
 
 
 # ---------------------------------------------------------------------------
@@ -439,16 +440,17 @@ class MasterDetailWidget(QWidget):
             dica = self._dicas.get((j, nome))
             if dica is None:
                 dica = self._dicas[(j, nome)] = dica_html(ajuda.do_campo(
-                    self.doc.layout, self.tipo, j + 1, nome))
+                    self.doc.layout, self.tipo, j + 1, nome,
+                    versao=referencias.versao_do_leiaute(self.doc)))
             item.setToolTip(dica)
 
     def abrir_ajuda(self):
         """F1: a ajuda do registro desta grade, rolada até a coluna atual."""
         col = self.tabela.currentColumn()
         campo = self._colunas[col] if 0 <= col < len(self._colunas) else None
-        self._dlg_ajuda = DialogoAjuda(self.doc.layout, self.tipo, campo,
-                                       self)
-        self._dlg_ajuda.show()
+        self._dlg_ajuda = abrir_janela(self, DialogoAjuda(
+            self.doc.layout, self.tipo, campo, self,
+            versao=referencias.versao_do_leiaute(self.doc)))
 
     def _filtro_mudou(self, _idx):
         self._filtro = self.combo_filtro.currentData() or "TODOS"
@@ -868,8 +870,8 @@ class MasterDetailWidget(QWidget):
         linha = self.tabela.currentRow()
         r = self._registro_da_linha(linha)
         if r is None:
-            QMessageBox.information(self, "Remover",
-                                    "Selecione uma linha para remover.")
+            informar(self, "Remover",
+                     "Selecione uma linha para remover.")
             return
         n_filhos = len(r.filhos)
         msg = "Remover o registro %s" % r.reg
@@ -904,7 +906,7 @@ class MasterDetailWidget(QWidget):
                 self.recarregar()
                 if self.on_change:
                     self.on_change()
-                QMessageBox.information(
+                informar(
                     self, "Recalcular totais",
                     "Totais recalculados em %d documento(s) C100." % n)
             return
@@ -920,7 +922,7 @@ class MasterDetailWidget(QWidget):
         self.recarregar()
         if self.on_change:
             self.on_change()
-        QMessageBox.information(
+        informar(
             self, "Recalcular totais",
             "Totais do C100 recalculados a partir dos itens C170:\n\n"
             "• Mercadorias (VL_MERC): %s\n"
@@ -937,24 +939,35 @@ class MasterDetailWidget(QWidget):
         if self.pai is None:
             return
         ok, res = calcular(self, "Recalcular C190",
-                           self.doc.consolidar_c190, self.pai)
+                           self.doc.refazer_c190, self.pai)
         if not ok:
             return
         if res is None:
-            QMessageBox.information(
+            informar(
                 self, "Recalcular C190",
                 "O recálculo automático do C190 só se aplica ao bloco C do "
                 "EFD ICMS/IPI.")
             return
-        if res.get("sem_c170"):
+        if res.get("sem_c170") and not (res["fundidos"] or res["c100"]):
             QMessageBox.warning(
                 self, "Recalcular C190",
-                "Este documento (C100) não possui itens C170 para consolidar.")
+                "Este documento (C100) não possui itens C170 para consolidar "
+                "nem C190 repetido para fundir.")
             return
         self.recarregar()
         if self.on_change:
             self.on_change()
-        QMessageBox.information(
+        c100 = "".join("\n• %s: %s → %s" % (c, a or "(vazio)", d)
+                       for c, (a, d) in res["c100"].items())
+        if res.get("sem_c170"):
+            informar(self, "Recalcular C190",
+                     "Sem C170: %d C190 de mesma chave fundido(s).%s"
+                     % (res["fundidos"], ("\n\nC100 acertado pelo C190:"
+                                          + c100) if c100 else ""))
+            return
+        if self.on_change:
+            self.on_change()
+        informar(
             self, "Recalcular C190",
             "C190 recalculado a partir dos itens C170:\n\n"
             "• %d registro(s) C190 gerado(s), agrupados por "
@@ -963,8 +976,9 @@ class MasterDetailWidget(QWidget):
             "Os valores de imposto (VL_BC_ICMS, VL_ICMS, VL_ICMS_ST, VL_IPI) "
             "são a soma exata dos itens. O VL_OPR inclui o rateio de frete, "
             "seguro e outras despesas do C100.\n\n"
-            "Os totais C990 e 9900 foram atualizados."
-            % (res["criados"], res["removidos"]))
+            "Os totais C990 e 9900 foram atualizados.%s"
+            % (res["criados"], res["removidos"],
+               ("\n\nC100 acertado pelo C190:" + c100) if c100 else ""))
 
 
 # ---------------------------------------------------------------------------

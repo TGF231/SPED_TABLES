@@ -1,0 +1,24 @@
+versão=3 COD_REC, DESC_COD, DT_INI, DT_FIM
+1011|Registro E111 com código MG020007 sem registros E113.|01012025|
+1012|Registro E111 com código de sufixo MG03 sem registros E113.|01012025|
+1013|Registro E111 com código MG040001 sem registros E113.|01012025|
+1014|Registro E111 com código MG040002 sem registros E113.|01012025|
+1015|Registro E111 com código MG050001 sem registros E113.|01012025|
+1016|Registro E111 com código MG050099 sem registros E113.|01012025|
+1017|Registro E111 com código MG050299 sem registros E113.|01012025|
+1018|Registro E111 com código MG059998 sem registros E113.|01012025|
+1019|Registro E111 com código MG050101 sem registros E113.|01012025|
+1020|Registro E111 com código MG050199 sem registros E113.|01012025|
+1021|Registro E111 com código MG050399 sem registros E113.|01012025|
+1031|Registro E220 com código MG150699 sem registros E240.|01012025|
+1032|Registro E220 com código MG150101 sem registros E240.|01012025|
+1033|Registro E220 com código MG150399 sem registros E240.|01012025|
+1034|Registro E220 com código MG150502 sem registros E240.|01012025|
+1035|Registro E220 com código MG150599 sem registros E240.|01012025|
+1036|Registro E220 com código MG159998 sem registros E240.|01012025|
+1037|Registro E220 com código MG159999 sem registros E240.|01012025|
+1038|Registro E220 com código MG120007 sem registros E240.|01012025|
+1039|Registro E220 com código MG120008 sem registros E240.|01012025|
+1040|Não existe DAPI Virtual no período anterior.|01012026|
+1041|Campo 10 (Saldo credor do período anterior - ICMS OP) do registro E110 da EFD > Saldo Credor de ICMS OP para o Período Seguinte do conta corrente do período anterior.|01012026|
+1042|Campo 3 (Saldo credor do período anterior - ICMS ST) do registro E210 da EFD > Saldo Credor de ICMS ST no Período Seguinte do conta corrente do período anterior.|01012026|

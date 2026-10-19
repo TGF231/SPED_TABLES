@@ -1,0 +1,189 @@
+versão=29 COD_AJUR, DESC_AJUR, DT_INI, DT_FIM
+MA000001|Débitos pelas Saídas|14012009|08092009
+MA000002|Apuração ICMS/Outros Débitos/ Débitos de ICMS por exclusão extemporânea do Simples Nacional|01012023|
+MA000021|OUTROS DEBITOS|14012009|31032015
+MA000022|Transferência de Saldo Credor para a Centralizadora|01102011|31032015
+MA000023|Recebimento, por transferência, de saldo devedor de ICMS de outro estabelecimento da mesma empresa)|01102011|31032015
+MA000999|Apuração ICMS/Outros débitos-Outros|01042015|
+MA009999|Outros Débitos|14012009|08092009
+MA010001|Apuração ICMS/Estorno de créditos/determinados por ato administrativo ou judicial|01042015|
+MA010002|Apuração ICMS/Estorno de créditos/Operação ou prestação subsequente com redução de base de cálculo|01042015|
+MA010003|Apuração ICMS/Estorno de créditos/Operação ou prestação subsequente isenta ou não tributada Imprevisível na entrada|01042015|
+MA010004|Apuração ICMS/Estorno de créditos/Produtos que mudam de destinação após a entrada, sendo destinados ao uso, consumo, imobilizado|01042015|
+MA010021|ESTORNOS DE CREDITOS|14012009|31032015
+MA019999|Apuração ICMS/Estorno de créditos-Outros|01042015|
+MA020001|Restituição|14012009|08092009
+MA020002|Antecipação Total|14012009|08092009
+MA020003|Credito do Ativo Imobilizado|14012009|08092009
+MA020004|Saldo Credor do Mês Anterior|14012009|08092009
+MA020021|RESTITUICAO|14012009|31032015
+MA020022|OUTROS CREDITOS|14012009|31032015
+MA020023|CREDITO ATIVO IMOBILIZADO|14012009|31032015
+MA020024|CREDITO PRESUMIDO|14012009|31032015
+MA020025|Transferência de saldo devedor de ICMS para outro estabelecimento da mesma empresa|01102011|31032015
+MA020026|Recebimento, por transferência, de saldo credor de ICMS de outro estabelecimento da mesma empresa, para compensação de saldo devedor de ICMS)|01102011|31032015
+MA020030|Apuração ICMS/Outro créditos/Crédito presumido Indústrias ceramistas, RICMS/2003, anexo 1.5, art. 1º, inciso V|01042015|
+MA020031|Apuração ICMS/Outros créditos/Antecipação Parcial Interestadual|01042015|
+MA020032|Apuração ICMS/Outros créditos/Crédito do estoque na exclusão de mercadoria do regime de substituição tributária|01042015|
+MA020033|Apuração ICMS/Outros créditos/Crédito presumido/outros|01042015|
+MA020034|Apuração ICMS/Outros créditos/crédito presumido indústria de laticínio, RICMS/2003, anexo 1.5, art. 5º|01042015|
+MA020035|Apuração ICMS/Outros créditos/crédito presumido indústria de móveis, RICMS/2003, anexo 1.5, art. 6º|01042015|
+MA020036|Apuração ICMS/Outros créditos/Crédito presumido serviços de transporte, RICMS/2003, anexo 1.5, art. 1º, inciso IX|01042015|
+MA020037|Apuração ICMS/Outros créditos/crédito presumido serviços de telecomunicação, RICMS/2003, anexo 1.5, art. 7º|01042015|
+MA020038|Apuração ICMS/Outros créditos/Crédito presumido serviços de transporte aéreo, RICMS/2003, anexo 1.5, art. 1º, inciso X|01042015|
+MA020039|Apuração ICMS/Outros créditos/Crédito presumido transporte intermunicipal de passageiro, RICMS/2003, anexo 1.5, art. 1º, inciso XVI|01042015|
+MA020040|Apuração ICMS/Outros Créditos/Diferença de Alíquota/Devolução material de uso, consumo ou imobilizado/Imposto já recolhido|01042015|
+MA020041|Apuração ICMS/Outros créditos/Estoque de mercadorias/exclusão do simples nacional passando a apurar o imposto pelo regime normal/Recuperação de créditos/produtos tributados normalmente|01042015|
+MA020043|Apuração ICMS/Outros créditos/Crédito ativo imobilizado/apropriação de crédito do CIAP|01042015|
+MA020044|Apuração ICMS/Outros créditos/determinados por ato administrativo ou judicial|01042015|
+MA020121|Apuração ICMS/Outros créditos/Restituição|01042015|
+MA029999|Apuração ICMS/Outros créditos/Outros|01042015|
+MA030001|Apuração ICMS/Estorno de débitos/referente a CTRC e CTE emitido pelo transportador com ICMS de responsabilidade do remetente/alienante|01042015|
+MA030002|Apuração ICMS/Estorno de débitos/determinados por ato administrativo ou judicial|01042015|
+MA030021|ESTORNOS DE DEBITOS|14012009|31032015
+MA039999|Apuração ICMS/Estornos de Débitos/outros|01042015|
+MA040000|Apuração ICMS/Deduções/Crédito fiscal-SINCOEX|01042015|
+MA040001|Crédito por Entrada|14012009|08092009
+MA040002|Deduções|14012009|08092009
+MA040003|Crédito Fiscal e Financeiro|14012009|08092009
+MA040004|Crédito por Transferência/Ressarcimento|14012009|08092009
+MA040005|Crédito Presumido Setor Atacadista|14012009|08092009
+MA040006|Crédito Presumido|14012009|08092009
+MA040007|Antecipação Parcial|14012009|08092009
+MA040021|DEDUCOES - FUNDO DE POBREZA|14012009|31032015
+MA040022|CREDITO FISCAL E FINANCEIRO/SISCOMEX|14012009|31032015
+MA040023|CREDITO POR TRANSFERENCIA/RESSARCIMENTO|14012009|31032015
+MA040024|CREDITO PRESUMIDO SETOR ATACADISTA|14012009|31032015
+MA040025|CREDITO PRESUMIDO|14012009|31032015
+MA040030|Apuração ICMS/Deduções/Crédito Incentivo à Cultura-Lei nº 9.437/2011|01042015|
+MA040031|Apuração ICMS/Deduções/Crédito Incentivo ao Esporte-Lei nº 9.437/2011|01042015|
+MA040034|Apuração ICMS/Deduções/Crédito Fiscal Pró-Maranhão|01042015|
+MA040124|Apuração ICMS/Deduções/Crédito presumido atacadista|01042015|
+MA040999|apuração ICMS/Deduções/Outras|01042015|
+MA049999|DEDUCOES|14012009|31032015
+MA050000|Débito Especial/ICMS Diferença de Alíquota apurado após o vencimento|01042015|
+MA050001|Débito Especial/ICMS Diferença de Alíquota apurado em verificação fiscal|01042015|
+MA050099|Débito Especial/ICMS Diferença de Alíquota/outros|01042015|
+MA050100|Débito Especial/ICMS de importação pago no período, com emissão de Nota de entrada no período posterior|01042015|
+MA050199|Débito Especial/ICMS de importação/outros|01042015|
+MA050200|Débito Especial/ICMS referente ao diferimento, apurado por verificação fiscal|01042015|
+MA050201|Débito Especial/ICMS referente ao diferimento, apurado após o vencimento|01042015|
+MA050299|Débito Especial/ICMS referente a diferimento/outros|01042015|
+MA050300|Débito Especial/Antecipação Tributária, apurado em verificação fiscal nas operações e/ou prest serv irregular|01042015|31052026
+MA050301|Débito Especial/ICMS referente à Antecipação tributária, apurado após o vencimento|01042015|31052026
+MA050302|Débito Especial/ICMS referente à Antecipação tributária, apurado por verificação fiscal|01042015|31052026
+MA050399|Débito Especial/ICMS referente à Antecipação tributária/outros|01042015|
+MA050400|Débito Especial/ICMS destacado a menor, apurado em verificação fiscal|01042015|
+MA050401|Débito Especial/ICMS destacado a menor, apurado após o vencimento|01042015|
+MA050499|Débito Especial/ICMS destacado a menor/Outros|01042015|
+MA050999|Débito Especial/Outros|01042015|
+MA059999|DEBITO ESPECIAL|14012009|31032015
+MA100003|Débito de Substituição Tributária - ST|14012009|08092009
+MA100999|Apuração ICMS ST/Outros débitos/ICMS ST/Outros|01042015|
+MA109999|OUTROS DEBITOS DE ICMS ST|14012009|31032015
+MA110001|Dedução de Substituição Tributária - ST|14012009|08092009
+MA110002|Ressarcimento de Substituição Tributária - ST|14012009|08092009
+MA110021|TRANSFERENCIA DE CREDITO ACUMULADO OU RESSARCIMENTO|14012009|31032015
+MA110999|Apuração ICMS ST/Estorno de créditos -ICMS ST/Outros|01042015|
+MA119999|ESTORNO DE CREDITO|14012009|31032015
+MA120000|Apuração ICMS ST/Outros créditos/Devolução - Mercadoria substituída/Recuperação do ICMS normal e ST- recolhido pelo destinatário|01042015|
+MA120001|Apuração ICMS ST/Outros créditos/Venda interestadual - Conv. ou Protoc.- Mercadoria substituida anteriormente/Destaque do ICMS normal no doc. Fiscal/Recuperação crédito da NF Entrada|01042015|
+MA120002|Apuração ICMS ST/Outros créditos/Venda interestadual - Conv. ou Protoc.- Mercadoria substituida anteriormente/Recuperação do ICMS retido na entrada|01042015|
+MA120999|Apuração ICMS ST/Outros Créditos/ICMS ST/Outros|01042015|
+MA129999|OUTROS CREDITOS - ICMS ST|14012009|31032015
+MA130999|Apuração ICMS ST/Estornos de débitos -ICMS ST/Outros|01042015|
+MA139999|ESTORNOS DE DEBITOS - ICMS ST|14012009|31032015
+MA140999|Apuração ICMS ST/Deduções -ICMS ST/Outras|01042015|
+MA149999|OUTRAS DEDUCOES - ICMS ST|14012009|31032015
+MA150099|Débito Especial/ICMS ST de Diferença de Alíquota/Outros|01042015|
+MA150100|Débito Especial/ICMS ST de importação pago no período, com emissão de Nota de entrada no período posterior|01042015|
+MA150500|Débito Especial/Ajuste de estoque - Inclusão na substituição tributária interna|01042015|
+MA150501|Débito Especial/ICMS ST calculado com alíquota a menor, apurado após o vencimento|01042015|
+MA150502|Débito Especial/ICMS ST calculado com alíquota a menor, apurado em verificação fiscal|01042015|
+MA150503|Débito Especial/ICMS ST destacado a menor, apurado após o vencimento|01042015|
+MA150504|Débito Especial/ICMS ST destacado a menor, apurado em verificação fiscal|01042015|
+MA150505|Débito Especial/ICMS ST interna, apurado após o vencimento|01042015|
+MA150506|Débito Especial/ICMS ST interna, apurado por verificação fiscal|01042015|
+MA150599|Débito Especial/ICMS ST interna/outros|01042015|
+MA150600|Débito Especial/ICMS ST de transporte, apurado após o vencimento|01042015|
+MA150601|Débito Especial/ICMS ST de transporte, apurado por verificação fiscal|01042015|
+MA150699|Débito Especial/ICMS ST de transporte/Outros|01042015|
+MA150999|Débito Especial/ICMS ST Outros|01042015|
+MA159999|DEBITO ESPECIAL - ICMS ST|14012009|31032015
+MA209999|Outros débitos para ajuste de apuração ICMS Difal/FCP para o MA|01012016|31122016
+MA219999|Estorno de créditos para ajuste de apuração ICMS Difal/FCP para o MA|01012016|31122016
+MA229999|Outros créditos para ajuste de apuração ICMS Difal/FCP para o MA|01012016|31122016
+MA239999|Estorno de débitos para ajuste de apuração ICMS Difal/FCP para o MA|01012016|31122016
+MA249999|Deduções do imposto apurado na apuração ICMS Difal/FCP para o MA|01012016|31122016
+MA259999|Débito especial de ICMS Difal/FCP para o MA|01012016|31122016
+MA209999|Outros débitos para ajuste de apuração ICMS Difal para o MA|01012017|
+MA219999|Estorno de créditos para ajuste de apuração ICMS Difal para o MA|01012017|
+MA229999|Outros créditos para ajuste de apuração ICMS Difal para o MA|01012017|
+MA239999|Estorno de débitos para ajuste de apuração ICMS Difal para o MA|01012017|
+MA249999|Deduções do imposto apurado na apuração ICMS Difal para o MA|01012017|
+MA259999|Débito especial de ICMS Difal para o MA|01012017|
+MA020045|Apuração ICMS; Outros créditos -Crédito Presumido - Programa mais empregos - Lei nº 10.504/2016|01082016|
+MA020046|Apuração ICMS; Outros créditos -Crédito Presumido - Cheque minha casa - Lei nº 10.506/2016|01082016|31122023
+MA309999|Outros débitos para ajuste de apuração ICMS FCP para o MA|01012017|
+MA319999|Estorno de créditos para ajuste de apuração ICMS FCP para o MA|01012017|
+MA329999|Outros créditos para ajuste de apuração ICMS FCP para O MA|01012017|
+MA339999|Estorno de débitos para ajuste de apuração ICMS FCP para o MA|01012017|
+MA349999|Deduções do imposto apurado na apuração ICMS FCP para O MA|01012017|
+MA359999|Débito especial de ICMS FCP para O MA|01012017|
+MA010005|Apuração ICMS/Estorno de créditos/Biodiesel vendido para ZF de Manaus|01012019|
+MA010006|Apuração ICMS/Estorno de créditos/Estorno de crédito importação - Decreto nº 20.891/2004|01012019|
+MA020047|Apuração ICMS/Outros Créditos/Recebimento saldo credor ST a abater no ICMS próprio (Lei nº 8.778/2008)|01012019|31122020
+MA020047|Apuração ICMS/Outros créditos/operação interestadual com produto com débito retido por ICMS ST na operação anterior|01012021|
+MA040035|Apuração ICMS/Deduções/Crédito Presumido Mais Empresas e Subprogramas|01012019|
+MA050500|Débito Especial/Fundo Estadual de Desenvolvimento Industrial_FDI|01012019|
+MA050501|Débito Especial/Programa de Desenvolvimento mais IDH|01012019|
+MA100004|Apuração ICMS ST/Outros débitos/ Repasse Prot. 04/2014 - AXII - Q7 - L7.2|01012019|
+MA100005|Apuração ICMS ST/Outros débitos/Dedução tranferida para outro estabelecimento do suj.pass. Conv. 54/2002 - AVI - Q1 - L1.3.2|01012019|
+MA100006|Apuração ICMS ST/Outros débitos/Dedução tranferida para outro estabelecimento do suj.pass. Prot. 197/2010 - AXII - Q7 L7.5.2|01012019|
+MA100007|Apuração ICMS ST/Outros débitos/ICMS provisionado Conv. 54/2002 - AVI - Q2 - L2.4|01012019|
+MA100008|Apuração ICMS ST/Outros débitos/Oficio autorizativo Dec. 20.891/2004 conta vinculada|01012019|
+MA100009|Apuração ICMS ST/Outros débitos/Reversão do icms provisionado Conv. 54/2002 - AVI - Q2 - L2.4|01012019|
+MA100010|Apuração ICMS ST/Outros débitos/Soma repasses Conv. 54/2002 - AVI - Q1 - L1.1.2 a L1.1.5|01012019|
+MA110003|Apuração ICMS ST/Estorno de créditos-ICMS ST/Compensação de saldo credor ST no próprio (Lei 8.778 de 2008)|01012019|
+MA120003|Apuração ICMS ST/Outros créditos/Dedução Prot. 04/2014 - AXII - Q7 - L7.3|01012019|
+MA120004|Apuração ICMS ST/Outros créditos/Dedução tranferida de outro estabelecimento do suj.pass. Prot. 197/2010 - AXII - Q7 L7.5.1|01012019|
+MA120005|Apuração ICMS ST/Outros créditos/ICMS provisionado Conv. 54/2002 - AVI - Q2 - L2.4|01012019|
+MA120006|Apuração ICMS ST/Outros créditos/Subtotal deduções Conv. 54/2002 - AVI - Q1 - L1.2.8|01012019|
+MA120007|Apuração ICMS ST/Outros créditos/Subtotal ressarcimentos Conv. 110/2007|01012019|
+MA120008|Apuração ICMS ST/Outros créditos/Subtotal ressarcimentos Dec. 15.908/1997|01012019|
+MA030022|Apuração ICMS/Estornos de Débitos/Benefício Mais Empresas - Anidro|04022020|
+MA000024|Apuração ICMS/Ajuste de débito/ Benefício Mais empresas/ Anidro|04022020|
+MA010022|Apuração ICMS/Estorno de créditos/Benefício Mais empresas - Anidro|04022020|
+MA010030|Apuração ICMS/Estorno de créditos/Estorno de crédito Energia Elétrica - Setor Administrativo|01082020|
+MA010031|Apuração ICMS/Estorno de créditos/Estorno de crédito Energia Elétrica - Saídas Não Tributadas|01082020|
+MA020048|Apuração ICMS/Outros Créditos/Crédito Presumido - Lei nº 10.690/2017|01082020|
+MA020200|Apuração ICMS/Outros créditos/Crédito Energia Elétrica por Estabelecimento Industrial|01082020|
+MA020300|Apuração ICMS/Outros créditos/Crédito Oleo Diesel|01082020|
+MA030003|Apuração ICMS/Estorno de débitos/Distribuidora de Energia Elétrica - RICMS/2003, Anexo 7.2 (Conv. ICMS 30/04)|01082020|
+MA030004|Apuração ICMS/Estorno de débitos/Serviço de Telecomunicações - RICMS/2003, Art 415, § 3º (Conv ICMS 126/98)|01082020|
+MA040201|Apuração ICMS/Deduções/FUMACOP Operações Próprias/Serviço de Telecomunicações (NF mod 21/22)|01082020|
+MA040202|Apuração ICMS/Deduções/FUMACOP Operações Próprias/Distribuidora de Energia Elétrica (NF mod 6)|01082020|
+MA040203|Apuração ICMS/Deduções/FUMACOP Operações Próprias/NFCe|01082020|
+MA050601|Débito Especial/FUMACOP Operações Próprias/Serviço de Telecomunicações (NF mod 21/22)|01082020|
+MA050602|Débito Especial/FUMACOP Operações Próprias/Distribuidora de Energia Elétrica (NF mod 6)|01082020|
+MA050603|Débito Especial/FUMACOP Operações Próprias/NFCE|01082020|
+MA050604|Débito Especial/FUMACOP Operações Próprias/NFe|01082020|
+MA120009|Apuração ICMS ST/Outros Créditos/ICMS ST/Restituição|01082020|
+MA150700|Débito Especial/FUMACOP ST Entrada|01082020|
+MA150701|Débito Especial/FUMACOP ST Saída|01082020|
+MA050506|Apuração ICMS ST/Débito especial/débito de ICMS ST interno, apurado por verificação fiscal, com recolhimento no código 109|01012021|
+MA100011|Apuração ICMS ST/Outros débitos/débito de ICMS ST pela entrada quando não possuir débito de ICMS ST pela saída|01012021|
+MA092001|Apropriação de crédito "extra-apuração" por ato administrativo ou judicial|01022022|
+MA040008|Apuração ICMS/Deduções do imposto/Dedução referente a pagamento de DAS em razão de exclusão do Simples Nacional|01012023|31122023
+MA150001|Débito especial/ débito de operação com água mineral natural, natural ou adicionada de sais|01012023|
+MA050002|Débito Especial/ ICMS denúncia espontânea fiscal|01012019|
+MA150002|Débito Especial/ ICMS ST denúncia espontânea fiscal|01012019|
+MA040002|Apuração ICMS/ Deduções à título de Cheque Minha Casa - Lei nº 10.506/2016|01012024|
+MA050003|Débito Especial/ Fundo Maranhense de Combate à Pobreza  FUMACOP/ Outros|01012023|
+MA100002|Apuração ICMS ST/Outros débitos/ Credenciados bebidas frias|01062024|
+MA050005|Débito Especial/Taxa de Controle e Monitoramento Ambiental da Atividade Portuária com Recursos Minerais|01012024|
+MA020050|Apuração ICMS/Outros Débitos/ ICMS referente à Antecipação tributária/outros|01042015|
+MA140008|Apuração ICMS ST/ Dedução/ Restituição ICMS-ST Base de Cálculo Inferior|01012016|
+MA040009|Apuração ICMS/ Dedução/ Restituição ICMS-ST Base de Cálculo Inferior|01012016|
+MA020005|Apuração ICMS/ Crédito Presumido/ Atacadista de Medicamentos|01012015|
+MA020006|Apuração ICMS/ Crédito Presumido/ Benefício Conta Gráfica (Art. 9º, Anexo 1.5 do RICMS)|01012015|

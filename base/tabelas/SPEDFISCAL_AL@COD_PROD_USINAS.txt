@@ -1,0 +1,10 @@
+versão=1 COD_PROD, DESC_PROD, DT_INI, DT_FIM
+01|Álcool Etílico Hidratado Carburante|01012020|
+02|Álcool Etílico Anidro Carburante|01012020|
+03|Açúcar|01012020|31122021
+04|Açúcar Mascavo|01012022|
+05|Açúcar Demerara|01012022|
+06|Açúcar Cristal|01012022|
+07|Outros Açúcares|01012022|
+08|Álcool para outros fins|01012022|
+09|Mel|01012022|

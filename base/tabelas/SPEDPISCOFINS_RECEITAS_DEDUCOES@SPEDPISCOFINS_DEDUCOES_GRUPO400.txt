@@ -1,0 +1,8 @@
+versão=1 CODIGO, DESCRICAO, DT_INI, DT_FIM, IND_ATIV, IND_AJUSTE, GRUPO, SUBGRUPO, IND_OUTROS
+D0401010|Provisões para resgates (Resolução CNSP nº 281/2014)|01012014||04;06|P|400|D0401|N
+D0401020|Provisões para sorteios (Resolução CNSP nº 281/2014)|01012014||04;06|P|400|D0401|N
+D0401030|Demais provisões (Resolução CNSP nº 281/2014)|01012014||04;06|P|400|D0401|N
+D0402010|Rendimentos Auferidos na Aplicações Financeiras destinadas ao pagamento de Resgate de Títulos|01012014||04;06|P|400|D0402|N
+D0490010|Outras deduções e exclusões de caráter específico|01012014||04;06|P|400|D0490|S
+D0498010|Ajustes Negativos das deduções e exclusões de caráter específico|01012014||04;06|N|400|D0498|N
+D0499010|Ajustes Positivos das deduções e exclusões de caráter específico|01012014||04;06|P|400|D0499|N

@@ -43,8 +43,13 @@ class TestCancelamento(unittest.TestCase):
             self.assertFalse(pva._esperar_livre(999999, limite=0.6))
 
     def test_abrir_devolve_cancelado(self):
-        with mock.patch.object(pva, "janela",
-                               lambda layout, raiz=None: (123456, 999999)), \
+        # a suíte roda com a pasta do PVA vazia: a instalação é de mentira
+        falsa = {"exe": "PVA.exe", "pasta": ".", "titulo": "Sped Fiscal",
+                 "nome": "PVA Fiscal"}
+        janela = lambda layout, raiz=None: (123456, 999999)      # noqa: E731
+        with mock.patch.object(pva, "instalacao",
+                               lambda layout, raiz=None: falsa), \
+                mock.patch.object(pva, "janela", janela), \
                 mock.patch.object(pva, "_copiar", lambda texto: True):
             r = pva.abrir(__file__, "ICMS", cancelar=lambda: True)
         self.assertEqual(r["estado"], "cancelado")

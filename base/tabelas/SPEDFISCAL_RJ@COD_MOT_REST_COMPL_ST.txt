@@ -1,0 +1,8 @@
+versão=1 COD_AJUR, DESC_AJUR, DT_INI, DT_FIM
+RJ000|Não se aplica restituição, ressarcimento ou complemento|01012024|
+RJ100|Direito a restituição/ressarcimento do imposto, calculado com base no valor de saída inferior ao valor da BC ICMS ST|01012024|
+RJ300|Complemento do imposto, calculado com base no valor de saída da mercadoria superior ao valor da BC ICMS ST|01012024|
+RJ400|Devolução de entradas|01012024|
+RJ500|Devolução de saídas em que não se aplicou restituição, ressarcimento ou complemento|01012024|
+RJ600|Estorno da restituição/ressarcimento do imposto, calculado com base no valor de saída inferior ao valor da BC ICMS ST|01012024|
+RJ800|Estorno do complemento do imposto, calculado com base no valor de saída da mercadoria superior ao valor da BC ICMS ST|01012024|

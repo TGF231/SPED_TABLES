@@ -239,3 +239,16 @@ config_tabelas_rfb.json
 logs/
 recuperacao/
 sistemas_erp.json
+.venv-exe/
+
+# esboços do brainstorm (companheiro visual)
+.superpowers/
+.claude/worktrees/
+
+# Base de referência compilada de base/ (o programa recompila sozinho)
+recursos/base_referencia.db
+recursos/base_referencia.db.sha256
+*.compilando
+*.importando
+# base importada pelo usuário: rodando do código-fonte, a pasta de dados é a raiz
+/base_referencia.db

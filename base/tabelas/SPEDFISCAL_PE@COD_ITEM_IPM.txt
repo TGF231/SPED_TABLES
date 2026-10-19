@@ -1,0 +1,9 @@
+versão=1 COD_IPM, DESC_COD, DT_INI, DT_FIM
+PEIPMS0|Prestação de serviço de transporte intermunicipal ou interestadual|01082019|
+PEIPMS1|Prestação de serviço oneroso de comunicação|01082019|
+PEIPMS2|Substituição pelas entradas, nas operações não documentadas por nota avulsa|01082019|
+PEIPME3|Substituição pelas saídas, nas operações com não-inscrito (ENTRADAS: ST Saída)|01082019|
+PEIPMS3|Substituição pelas saídas, nas operações com não-inscrito (SAÍDAS: ST projetada Saídas)|01082019|
+PEIPMS4|Distribuição de mercadoria de fornecimento continuado|01082019|
+PEIPMS5|Escrituração centralizada, autorizada por regime especial|01082019|
+PEIPMS6|Escrituração centralizada, vinculada a estabelecimento sem inscrição|01082019|
