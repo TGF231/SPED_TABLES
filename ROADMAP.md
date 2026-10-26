@@ -180,6 +180,32 @@ Decisões tomadas:
 | 5 | Tela: pasta, período, prévia, lista de revisão, abrir o resultado | ✔ 0.58.0-dev.5 — decisões gravadas na memória; mês real sem bloqueio |
 | 6 | PVA de ensaio com o mês real | pendente |
 
+### 4.5 Em desenvolvimento: assistente de correção
+
+A fila do assistente, nesta ordem: **base de referência** (feita, projeto 1 do
+`ROADMAP_REGRAS_PVA.md`) → **versões do arquivo** → **assistente de correção**
+→ **retorno do PVA e feedback**. O desenho do assistente está em
+`docs/superpowers/specs/2026-10-26-assistente-de-correcao-design.md`: um fluxo
+linear de seis etapas (configuração, conferência, correção, recálculo, geração,
+validação) que o programa percorre a partir do Diagnóstico, com perguntas que
+não têm resposta padrão.
+
+| Componente | Suíte | Arquivo real | PVA |
+|---|---|---|---|
+| Assistente: as seis etapas e os estados de cada passo (concluído, parcial, não feito, pulado) | pendente | — | — |
+| Assistente: perguntas (XMLs do período, regime, divergência de alíquotas) | pendente | — | — |
+| Assistente: retomada, retroagir e estado guardado por empresa e período | pendente | — | — |
+| Assistente: validação no PVA por hash do arquivo salvo | pendente | — | pendente |
+| Geração com original × final (depende das versões do arquivo) | pendente | — | — |
+| Versões do arquivo: primeira importação guardada, reimportação por data e conteúdo | pendente | — | — |
+| Retorno do PVA e feedback de erro (LGPD, envio com cópia do arquivo) | pendente | — | — |
+
+**Onde estamos:** só o desenho. Nenhuma função nova está em `acoes.py`; a
+ação *Assistente de correção* nascerá com `pronta=False`. O desenho ainda
+precisa de aprovação antes de código, e seis decisões nele estão marcadas como
+do autor para revisão.
+---
+
 ## 5. Depois da 1.0
 
 Sem data; entram pelo canal dev e seguem a seção 1.
