@@ -314,12 +314,20 @@ os tokens de `tema.atual()` (`ok`, `warn`, `bad`, `info`, `produto`,
 escuro, e `tests/test_tema.py` reprova. Só existe um `setStyleSheet` no
 projeto — o global, em `main()`.
 
-A paleta é a da assinatura visual compartilhada (kit `minha-ui`, acento
-`#7D0E0E`) e o uso de cada token é contrato de contraste, descrito no topo
-de `tema.py`: `ink_3` só para desabilitado/placeholder (dica que se lê é
-`ink_2`), limite de campo é `field_border` (não `border_2`), foco é `focus`
-com 2 px, seleção = `accent_soft` **mais** linha de acento, erro sempre com
-texto. Papel trocado depois de o widget aparecer passa por
+O tema é o **MegUI** (1.1.0-dev.17): `interface/tema_tokens.py` é
+**gerado** pelo gerador do MegUI a partir do `megui.tokens.json` — não se
+edita à mão; tema novo é arquivo novo copiado por cima. Dali vêm as cores dos
+dois temas, a tipografia (Atkinson Hyperlegible Next / IBM Plex Mono, pesos
+400 e 700 só), a escala de espaço, as densidades (multiplicador e altura de
+controle), o raio e as medidas de layout; o `tema.py` monta a `Paleta` e o
+QSS a partir deles, e **nenhuma medida do QSS é literal** (só larguras de
+borda). O que o MegUI ainda não declara fica em `tema._EXTENSAO` — limite de
+campo, acento como texto, texto e fundo de erro, `produto` — até entrar no
+JSON. O uso de cada token é contrato de contraste, descrito no topo de
+`tema.py`: limite de campo é `field_border` (não `border_2`), foco, aba
+ativa, seleção e caixa marcada usam `accent_linha` (no escuro o `accent` é
+só preenchimento e some como linha), seleção = `accent_soft` **mais** a
+linha de acento, erro sempre com texto. Papel trocado depois de o widget aparecer passa por
 `comum.definir_papel` (sem unpolish/polish o rótulo fica com a cor antiga);
 campo com erro, por `comum.marcar_erro`.
 

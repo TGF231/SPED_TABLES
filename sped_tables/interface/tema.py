@@ -1,23 +1,30 @@
 # -*- coding: utf-8 -*-
 """Paleta e folha de estilo (QSS) do SPED Tables.
 
-É a **assinatura visual** compartilhada pelas ferramentas da família (kit
-`minha-ui`, `desktop-pyside6`): acento vinho `#7D0E0E`, neutros com viés
-azulado e as cores semânticas (ok/aviso/erro) separadas do acento, para que
-"atenção" nunca se confunda com "isto é clicável". Os valores das paletas são
-os dos tokens do kit; o único token próprio daqui é `produto` (o nome do
+Os valores vêm do tema **MegUI** (`tema_tokens.py`, GERADO pelo gerador do
+MegUI a partir do `megui.tokens.json` — não editar à mão): as cores dos dois
+temas, a tipografia, a escala de espaço, as densidades, o raio, as medidas
+de layout e o movimento. O gerador recusa paleta que reprove em contraste:
+cada tinta (`ink`, `ink_2`, `ink_3`) passa 4,5:1 sobre todo fundo,
+`accent_linha` passa 3:1 sobre `surface` e `on_accent`, 4,5:1 sobre
+`accent`. Valor que falte vai para o JSON do MegUI, não para cá.
+
+O que o MegUI ainda não declara e o programa precisa fica em `_EXTENSAO`,
+nominalmente, até entrar no JSON: o limite de campo, o acento como texto, o
+texto sobre o erro e o fundo de campo com erro, e o `produto` (nome do
 produto no topo das grades C170).
 
-O uso de cada token é um contrato de contraste:
+O uso de cada token é um contrato:
 
-* `ink_3` é **restrito** — texto desabilitado, placeholder sem informação ou
-  texto grande. Passa 3:1, não 4,5:1: dica que a pessoa precisa ler é
-  `ink_2`;
-* limite de campo é `field_border`, nunca `border_2` (que é decorativo);
-* foco é `focus`, com borda de 2 px;
-* seleção tem **dois** sinais: o fundo `accent_soft` e uma linha de acento —
+* limite de campo é `field_border` (>= 3:1), nunca `border_2`, que é
+  decorativo;
+* foco, aba ativa, seleção e caixa marcada são marcados com `accent_linha`:
+  no tema escuro o `accent` é um preenchimento (botão, caixa marcada) e quase
+  some como linha contra o fundo;
+* seleção tem **dois** sinais: o fundo `accent_soft` e a linha de acento —
   o fundo sozinho tem contraste ~1,2:1 e não basta;
-* acento e erro são dois vermelhos: erro vai sempre com ícone e texto.
+* acento e erro são dois vermelhos: erro vai sempre com ícone e texto;
+* só os pesos 400 e 700; nenhuma animação decorativa.
 
 O que este aplicativo tem de próprio é ser lido em **grades**: a linha
 divisória precisa ser discreta para não competir com o número, e visível o
@@ -33,9 +40,13 @@ para que as chaves do QSS não precisem ser dobradas.
 from dataclasses import dataclass
 from string import Template
 
+from sped_tables.interface import tema_tokens as megui
+
 # ------------------------------------------------------------------ fontes
-FONT_UI = '"Segoe UI", system-ui, "Roboto", "Noto Sans", sans-serif'
-FONT_MONO = '"Cascadia Mono", "Consolas", ui-monospace, monospace'
+# As famílias do MegUI; sem elas instaladas, as do Windows.
+FONT_UI = megui.FONT_UI.replace(", sans-serif", ', "Segoe UI", sans-serif')
+FONT_MONO = megui.FONT_MONO.replace(
+    ", monospace", ', "Cascadia Mono", "Consolas", monospace')
 
 
 @dataclass(frozen=True)
@@ -48,17 +59,18 @@ class Paleta:
     linha_alt: str        # linha alternada da grade (decorativo)
     somente_leitura: str  # célula derivada, não editável
     ink: str              # texto principal
-    ink_2: str            # texto secundário (dicas que se leem)
-    ink_3: str            # RESTRITO: desabilitado, placeholder, texto grande
+    ink_2: str            # texto secundário
+    ink_3: str            # desabilitado, placeholder (passa 4,5:1 no MegUI)
     border: str           # linha de grade e divisórias
     border_2: str         # contorno decorativo; NÃO é limite de campo
     field_border: str     # limite de campo/controle (>= 3:1)
-    accent: str           # ação primária, checkbox marcado, aba ativa
+    accent: str           # preenchimento: ação primária, caixa marcada
     accent_hover: str     # hover do acento (texto branco por cima)
-    accent_soft: str      # fundo de seleção (sempre com linha de acento)
+    accent_linha: str     # marca de acento: foco, aba ativa, seleção (>= 3:1)
+    accent_soft: str      # fundo de seleção (sempre com a linha de acento)
     on_accent: str        # texto sobre o acento
     accent_text: str      # acento como texto ou link (>= 4,5:1)
-    focus: str            # borda de foco (>= 3:1 contra todos os fundos)
+    focus: str            # borda de foco: é a accent_linha
     ok: str               # confere / sem divergência
     warn: str             # atenção / sem regra cadastrada
     bad: str              # divergência / erro
@@ -70,79 +82,40 @@ class Paleta:
     produto: str          # nome do produto no topo das grades C170
 
 
-CLARO = Paleta(
-    nome="claro",
-    bg="#F4F6F8",
-    surface="#FFFFFF",
-    surface_2="#E9EDF1",
-    sunken="#FBFCFD",
-    linha_alt="#F7F9FB",
-    somente_leitura="#EFF2F5",
-    ink="#16202A",
-    ink_2="#4A5A6A",
-    ink_3="#74848F",
-    border="#D2DAE2",
-    border_2="#BAC5D0",
-    field_border="#748AA0",
-    accent="#7D0E0E",
-    accent_hover="#5C0A0A",
-    accent_soft="#F6E7E6",
-    on_accent="#FFFFFF",
-    accent_text="#7D0E0E",
-    focus="#7D0E0E",
-    ok="#14793A",
-    warn="#975C07",
-    bad="#C92A1E",
-    on_bad="#FFFFFF",
-    bad_soft="#FCE8E6",
-    info="#1565C0",
-    inverse_surface="#16202A",
-    on_inverse_surface="#FFFFFF",
-    produto="#2E7D32",
-)
+# O que o MegUI ainda não declara (ver o topo): candidatos ao JSON.
+_EXTENSAO = {
+    "claro": dict(field_border="#748AA0", accent_text="#7D0E0E",
+                  on_bad="#FFFFFF", bad_soft="#FCE8E6", produto="#2E7D32"),
+    "escuro": dict(field_border="#5F768E", accent_text="#E0716D",
+                   on_bad="#1A0505", bad_soft="#3A1414", produto="#86EFAC"),
+}
 
-ESCURO = Paleta(
-    nome="escuro",
-    bg="#0F1620",
-    surface="#18212C",
-    surface_2="#212C39",
-    sunken="#131C25",
-    linha_alt="#1C2632",
-    somente_leitura="#222C38",
-    ink="#E3E9EF",
-    ink_2="#94A4B5",
-    ink_3="#6E7F91",
-    border="#2B3745",
-    border_2="#3A4857",
-    field_border="#5F768E",
-    accent="#D43A34",
-    accent_hover="#B82C26",
-    accent_soft="#2E1616",
-    on_accent="#FFFFFF",
-    accent_text="#E0716D",
-    focus="#E0716D",
-    ok="#4ADE80",
-    warn="#FBBF24",
-    bad="#FF8A8A",
-    on_bad="#1A0505",
-    bad_soft="#3A1414",
-    info="#60A5FA",
-    inverse_surface="#E3E9EF",
-    on_inverse_surface="#18212C",
-    produto="#86EFAC",
-)
+
+def _de_megui(m):
+    return Paleta(
+        nome=m.nome, bg=m.bg, surface=m.surface, surface_2=m.surface2,
+        sunken=m.sunken, linha_alt=m.linha_alt,
+        somente_leitura=m.somente_leitura, ink=m.ink, ink_2=m.ink2,
+        ink_3=m.ink3, border=m.border, border_2=m.border2,
+        accent=m.accent, accent_hover=m.accent_hover,
+        accent_linha=m.accent_linha, accent_soft=m.accent_soft,
+        on_accent=m.on_accent, focus=m.accent_linha, ok=m.ok, warn=m.warn,
+        bad=m.bad, info=m.info, inverse_surface=m.ink,
+        on_inverse_surface=m.surface, **_EXTENSAO[m.nome])
+
+
+CLARO = _de_megui(megui.CLARO)
+ESCURO = _de_megui(megui.ESCURO)
 
 # ------------------------------------------------------------- densidade
 # Numa tela apertada, alguns pixels de padding a menos por célula valem uma
-# coluna inteira a mais visível numa grade de SPED. A densidade só mexe em
-# espaçamento e corpo de fonte (px) — cor e borda seguem iguais nas duas.
-# Valores (y, x) para padding.
-DENSIDADES = {
-    "normal": {"fonte": 12, "celula": (2, 4), "aba": (6, 14),
-               "botao": (5, 13), "campo": (4, 7), "cabecalho": (5, 6)},
-    "compacta": {"fonte": 11, "celula": (1, 3), "aba": (4, 10),
-                 "botao": (4, 10), "campo": (3, 5), "cabecalho": (3, 5)},
-}
+# coluna inteira a mais visível numa grade de SPED. A densidade do MegUI mexe
+# no espaçamento (multiplicador) e na altura dos controles; corpo de fonte,
+# cor e borda seguem iguais nas duas. Pares (y, x) em chaves da escala de
+# espaço.
+DENSIDADES = megui.DENSIDADES
+_PADDINGS = {"celula": ("meio", "1"), "cabecalho": ("1", "2"),
+             "aba": ("1", "3"), "botao": ("1", "3"), "campo": ("1", "2")}
 _densidade = "normal"
 _ativa = CLARO
 
@@ -174,6 +147,12 @@ def e_escuro():
     return _ativa is ESCURO
 
 
+def _esp(chave, densidade_nome):
+    """Valor da escala de espaço do MegUI, pelo multiplicador da densidade."""
+    k = DENSIDADES[densidade_nome]["multiplicador"]
+    return max(1, round(megui.ESPACO[chave] * k))
+
+
 def _pad(yx, menos=0):
     y, x = yx
     return "%dpx %dpx" % (max(y - menos, 0), max(x - menos, 0))
@@ -201,11 +180,11 @@ QLabel[role="tituloApp"] { color: $ink; font-weight: 700; }
 QLabel[role="tituloCtx"] { color: $ink_2; }
 QWidget#barraTitulo QToolButton {
     background: transparent; color: $ink_2;
-    border: none; border-radius: 0; padding: 0; font-size: 11pt;
+    border: none; border-radius: 0; padding: 0; font-size: ${corpo}px;
 }
 /* glifos da fonte de ícones do Windows: mesmo peso e tamanho nos três */
 QWidget#barraTitulo QToolButton[iconfont="mdl2"] {
-    font-family: "Segoe MDL2 Assets"; font-size: 10px;
+    font-family: "Segoe MDL2 Assets"; font-size: ${dica}px;
 }
 QWidget#barraTitulo QToolButton:hover { background: $border; color: $ink; }
 QWidget#barraTitulo QToolButton#btn_fechar:hover { background: $bad; color: $on_bad; }
@@ -215,35 +194,38 @@ QToolBar {
     background: $surface_2;
     border: none;
     border-bottom: 1px solid $border;
-    padding: 3px 4px;
-    spacing: 2px;
+    padding: ${esp_meio}px ${esp_1}px;
+    spacing: ${esp_meio}px;
 }
-QToolBar::separator { background: $border_2; width: 1px; margin: 4px 6px; }
+QToolBar::separator { background: $border_2; width: 1px; margin: ${esp_1}px ${esp_2}px; }
 QToolButton {
     background: transparent;
     color: $ink_2;
     border: 1px solid transparent;
     border-radius: ${raio}px;
-    padding: 5px 11px;
-    min-height: 14px;
+    padding: $pad_botao;
+    min-height: ${min_controle}px;
 }
 QToolButton:hover { background: $surface; color: $ink; border-color: $border_2; }
 QToolButton:pressed { background: $border; }
-QToolButton:focus { border: 2px solid $focus; padding: 4px 10px; }
+QToolButton:focus { border: 2px solid $focus; padding: $pad_botao_foco; }
 QToolButton:disabled { color: $ink_3; }
 /* interruptor (painel Empresas aberto): estado, não clique que passou */
 QToolBar QToolButton:checked {
     background: $accent_soft; color: $ink;
-    border: 1px solid $accent; font-weight: 600;
+    border: 1px solid $accent_linha; font-weight: 700;
 }
 
-QMenu { background: $surface; color: $ink; border: 1px solid $border_2; padding: 4px; }
-QMenu::item { padding: 6px 22px 6px 14px; border-radius: 3px; }
+QMenu { background: $surface; color: $ink; border: 1px solid $border_2; padding: ${esp_1}px; }
+QMenu::item { padding: ${esp_2}px ${esp_6}px ${esp_2}px ${esp_3}px; border-radius: ${raio}px; }
 QMenu::item:selected { background: $accent_soft; color: $ink; }
 QMenu::item:disabled { color: $ink_3; }
-QMenu::separator { height: 1px; background: $border; margin: 4px 8px; }
+QMenu::separator { height: 1px; background: $border; margin: ${esp_1}px ${esp_2}px; }
 
-QStatusBar { background: $surface_2; color: $ink_2; border-top: 1px solid $border; }
+QStatusBar {
+    background: $surface_2; color: $ink_2; border-top: 1px solid $border;
+    min-height: ${rodape}px; max-height: ${rodape}px;
+}
 QStatusBar::item { border: none; }
 
 /* ---------------------------------------------------------------- abas */
@@ -262,8 +244,8 @@ QTabBar::tab {
     margin-right: 2px;
 }
 QTabBar::tab:selected {
-    background: $surface; color: $ink; font-weight: 600;
-    border-top: 2px solid $accent;
+    background: $surface; color: $ink; font-weight: 700;
+    border-top: 2px solid $accent_linha;
 }
 QTabBar::tab:hover:!selected { color: $ink; background: $surface_2; }
 QTabBar:focus { outline: none; }
@@ -289,8 +271,8 @@ QTableWidget::item, QTableView::item { padding: $pad_celula; }
 QTableWidget::item:selected, QTableView::item:selected {
     background: $accent_soft;
     color: $ink;
-    border-top: 1px solid $accent;
-    border-bottom: 1px solid $accent;
+    border-top: 1px solid $accent_linha;
+    border-bottom: 1px solid $accent_linha;
 }
 QTableWidget::item:focus, QTableView::item:focus { border: 1px solid $focus; }
 QTableWidget QLineEdit, QTableView QLineEdit {
@@ -304,7 +286,7 @@ QHeaderView::section {
     border-right: 1px solid $border;
     border-bottom: 1px solid $border_2;
     padding: $pad_cabecalho;
-    font-weight: 600;
+    font-weight: 700;
 }
 QHeaderView::section:hover { background: $border; color: $ink; }
 QHeaderView::section:vertical { border-right: 1px solid $border_2; font-weight: 400; }
@@ -325,7 +307,7 @@ QTreeWidget:focus, QTreeView:focus, QListWidget:focus, QListView:focus {
 QTreeWidget::item:selected, QTreeView::item:selected,
 QListWidget::item:selected, QListView::item:selected {
     background: $accent_soft; color: $ink;
-    border-left: 3px solid $accent;
+    border-left: 3px solid $accent_linha;
 }
 
 /* ------------------------------------------------------------- rótulos
@@ -341,11 +323,11 @@ QLabel[role="link"] { color: $accent_text; text-decoration: underline; }
 QLabel[role="ok"] { color: $ok; font-weight: bold; }
 QLabel[role="aviso"] { color: $warn; font-weight: bold; }
 QLabel[role="erro"] { color: $bad; font-weight: bold; }
-QLabel[role="tituloInicial"] { color: $ink; font-size: 15pt; font-weight: 700; }
+QLabel[role="tituloInicial"] { color: $ink; font-size: ${destaque}px; font-weight: 700; }
 QLabel[role="solte"] {
-    color: $ink_2; border: 2px dashed $field_border; border-radius: 6px; padding: 10px;
+    color: $ink_2; border: 2px dashed $field_border; border-radius: ${raio}px; padding: ${esp_3}px;
 }
-QLabel[role="produto"] { color: $produto; font-weight: bold; padding: 0 8px; }
+QLabel[role="produto"] { color: $produto; font-weight: bold; padding: 0 ${esp_2}px; }
 
 /* ------------------------------------------------------------- botões
    Botão se identifica pelo texto; a borda é decorativa (border_2). */
@@ -355,7 +337,7 @@ QPushButton {
     border: 1px solid $border_2;
     border-radius: ${raio}px;
     padding: $pad_botao;
-    min-height: 16px;
+    min-height: ${min_controle}px;
 }
 QPushButton:hover { background: $surface_2; }
 QPushButton:pressed { background: $border; }
@@ -363,7 +345,7 @@ QPushButton:focus { border: 2px solid $focus; padding: $pad_botao_foco; }
 QPushButton:disabled { background: $bg; color: $ink_3; border-color: $border; }
 QPushButton[role="accent"] {
     background: $accent; color: $on_accent;
-    border: 1px solid $accent; font-weight: 600;
+    border: 1px solid $accent; font-weight: 700;
 }
 QPushButton[role="accent"]:hover { background: $accent_hover; border-color: $accent_hover; }
 QPushButton[role="accent"]:focus { border: 2px solid $focus; }
@@ -375,10 +357,10 @@ QPushButton[role="perigo"]:hover { background: $bad; color: $on_bad; }
 /* botão dentro de célula (setCellWidget): cabe na altura da linha, com
    folga em volta, em vez de ocupar a célula inteira com o padding normal */
 QAbstractItemView QPushButton {
-    padding: 0 10px; margin: 2px 4px; min-height: 0;
-    border-radius: 3px; font-size: ${fonte_celula}px;
+    padding: 0 ${esp_2}px; margin: ${esp_meio}px ${esp_1}px; min-height: 0;
+    border-radius: ${raio}px; font-size: ${fonte_celula}px;
 }
-QAbstractItemView QPushButton:focus { padding: 0 9px; }
+QAbstractItemView QPushButton:focus { padding: 0 ${esp_2_foco}px; }
 
 /* ------------------------------------------------------------- campos
    Limite de campo = field_border (>= 3:1). Campo com erro: propriedade
@@ -391,6 +373,7 @@ QPlainTextEdit, QTextEdit {
     border: 1px solid $field_border;
     border-radius: ${raio}px;
     padding: $pad_campo;
+    min-height: ${min_controle}px;
     selection-background-color: $accent_soft;
     selection-color: $ink;
 }
@@ -413,70 +396,71 @@ QComboBox {
     border: 1px solid $field_border;
     border-radius: ${raio}px;
     padding: $pad_campo;
+    min-height: ${min_controle}px;
 }
 QComboBox:focus { border: 2px solid $focus; padding: $pad_campo_foco; }
 QComboBox:disabled { background: $bg; color: $ink_3; border-color: $border; }
-QComboBox::drop-down { border: none; width: 20px; }
-QComboBox::down-arrow { image: url("$chevron"); width: 12px; height: 12px; }
+QComboBox::drop-down { border: none; width: ${esp_6}px; }
+QComboBox::down-arrow { image: url("$chevron"); width: ${esp_3}px; height: ${esp_3}px; }
 QComboBox::down-arrow:disabled { image: url("$chevron_off"); }
 QComboBox QAbstractItemView {
     background: $surface; color: $ink; border: 1px solid $border_2;
     selection-background-color: $accent_soft; selection-color: $ink;
-    outline: none; padding: 2px;
+    outline: none; padding: ${esp_meio}px;
 }
 
-QCheckBox, QRadioButton { background: transparent; color: $ink; spacing: 7px; }
+QCheckBox, QRadioButton { background: transparent; color: $ink; spacing: ${esp_2}px; }
 QCheckBox:disabled, QRadioButton:disabled { color: $ink_3; }
 QCheckBox::indicator {
-    width: 14px; height: 14px;
+    width: ${caixa}px; height: ${caixa}px;
     border: 1px solid $field_border;
-    border-radius: 3px;
+    border-radius: ${raio}px;
     background: $surface;
 }
-QCheckBox::indicator:hover { border-color: $accent; }
-QCheckBox::indicator:focus { border: 2px solid $focus; width: 12px; height: 12px; }
-QCheckBox::indicator:checked { background: $accent; border-color: $accent; image: url("$check"); }
+QCheckBox::indicator:hover { border-color: $accent_linha; }
+QCheckBox::indicator:focus { border: 2px solid $focus; width: ${caixa_foco}px; height: ${caixa_foco}px; }
+QCheckBox::indicator:checked { background: $accent; border-color: $accent_linha; image: url("$check"); }
 QCheckBox::indicator:checked:focus { border: 2px solid $focus; }
 QCheckBox::indicator:disabled { background: $bg; border-color: $border; }
 
 QGroupBox {
     background: transparent; border: 1px solid $border;
-    border-radius: ${raio}px; margin-top: 10px; padding-top: 8px;
+    border-radius: ${raio}px; margin-top: ${esp_3}px; padding-top: ${esp_2}px;
 }
 QGroupBox::title {
-    subcontrol-origin: margin; left: 9px; padding: 0 5px;
-    color: $ink_2; font-weight: 600;
+    subcontrol-origin: margin; left: ${esp_2}px; padding: 0 ${esp_1}px;
+    color: $ink_2; font-weight: 700;
 }
 
 /* -------------------------------------------------------------- barras */
 QProgressBar {
     background: $surface_2; border: 1px solid $border;
-    border-radius: 7px; min-height: 14px; text-align: center; color: $ink;
+    border-radius: ${raio}px; min-height: ${esp_4}px; text-align: center; color: $ink;
 }
-QProgressBar::chunk { background: $accent; border-radius: 6px; }
+QProgressBar::chunk { background: $accent; border-radius: ${raio}px; }
 
-QScrollBar:vertical { background: $bg; width: 11px; margin: 0; }
-QScrollBar::handle:vertical { background: $border_2; border-radius: 5px; min-height: 24px; }
+QScrollBar:vertical { background: $bg; width: ${esp_3}px; margin: 0; }
+QScrollBar::handle:vertical { background: $border_2; border-radius: ${raio}px; min-height: ${esp_6}px; }
 QScrollBar::handle:vertical:hover { background: $ink_3; }
-QScrollBar:horizontal { background: $bg; height: 11px; margin: 0; }
-QScrollBar::handle:horizontal { background: $border_2; border-radius: 5px; min-width: 24px; }
+QScrollBar:horizontal { background: $bg; height: ${esp_3}px; margin: 0; }
+QScrollBar::handle:horizontal { background: $border_2; border-radius: ${raio}px; min-width: ${esp_6}px; }
 QScrollBar::handle:horizontal:hover { background: $ink_3; }
 QScrollBar::add-line, QScrollBar::sub-line { height: 0; width: 0; }
 QScrollBar::add-page, QScrollBar::sub-page { background: transparent; }
 
 QSplitter::handle { background: $border; }
-QSplitter::handle:hover { background: $accent; }
+QSplitter::handle:hover { background: $accent_linha; }
 
 QDockWidget { color: $ink; }
 QDockWidget::title {
-    background: $surface_2; padding: 4px 8px; border-bottom: 1px solid $border;
+    background: $surface_2; padding: ${esp_1}px ${esp_2}px; border-bottom: 1px solid $border;
 }
 
 /* ------------------------------------------------------------ diversos */
 QFrame[role="divisor"] { background: $border; max-height: 1px; border: none; }
 QToolTip {
     background: $inverse_surface; color: $on_inverse_surface;
-    border: none; padding: 5px 7px;
+    border: none; padding: ${esp_1}px ${esp_2}px;
 }
 QMessageBox { background: $bg; }
 QMessageBox QLabel { color: $ink; }
@@ -487,16 +471,29 @@ def valores(paleta=None, densidade_nome=None):
     """Dicionário de substituição do template (útil para testes)."""
     from sped_tables.interface import icones
     p = paleta or _ativa
-    d = DENSIDADES[densidade_nome or _densidade]
+    nome = densidade_nome or _densidade
+    tipo = megui.ESCALA_TIPO
     v = {k: getattr(p, k) for k in p.__dataclass_fields__ if k != "nome"}
     v.update(icones.caminhos(p))
+    pads = {k: (_esp(y, nome), _esp(x, nome))
+            for k, (y, x) in _PADDINGS.items()}
+    # altura do controle (botão, campo) = conteúdo + padding + 1 px de borda
+    # em cima e embaixo; o foco troca 1 px de padding por 1 px de borda
+    controle = DENSIDADES[nome]["alturaControle"]
+    v.update({"esp_" + k: _esp(k, nome) for k in megui.ESPACO})
     v.update(
-        font_ui=FONT_UI, font_mono=FONT_MONO, fonte=d["fonte"], raio=4,
-        fonte_celula=d["fonte"] - 1,
-        pad_celula=_pad(d["celula"]), pad_aba=_pad(d["aba"]),
-        pad_cabecalho=_pad(d["cabecalho"]),
-        pad_botao=_pad(d["botao"]), pad_botao_foco=_pad(d["botao"], 1),
-        pad_campo=_pad(d["campo"]), pad_campo_foco=_pad(d["campo"], 1),
+        font_ui=FONT_UI, font_mono=FONT_MONO, fonte=tipo["corpo"]["px"],
+        corpo=tipo["corpo"]["px"], dica=tipo["dica"]["px"],
+        destaque=tipo["destaque"]["px"], raio=megui.RAIO,
+        fonte_celula=tipo["dica"]["px"],
+        min_controle=controle - 2 * pads["botao"][0] - 2,
+        rodape=megui.LAYOUT["rodape"],
+        caixa=_esp("4", "normal"), caixa_foco=_esp("4", "normal") - 2,
+        esp_2_foco=_esp("2", nome) - 1,
+        pad_celula=_pad(pads["celula"]), pad_aba=_pad(pads["aba"]),
+        pad_cabecalho=_pad(pads["cabecalho"]),
+        pad_botao=_pad(pads["botao"]), pad_botao_foco=_pad(pads["botao"], 1),
+        pad_campo=_pad(pads["campo"]), pad_campo_foco=_pad(pads["campo"], 1),
     )
     return v
 

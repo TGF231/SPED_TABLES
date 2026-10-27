@@ -1,5 +1,29 @@
 # Changelog
 
+## [1.1.0-dev.17] — 2026-10-27
+
+### Alterado
+- **Tema MegUI.** A interface passa a seguir o tema MegUI: os valores saem de
+  `interface/tema_tokens.py`, gerado pelo gerador do MegUI (que recusa paleta
+  reprovada em contraste), e o `tema.py` só monta a paleta e a folha de
+  estilo a partir deles. O que muda na tela:
+  - `ink_3` (texto desabilitado e placeholder) fica mais escuro e passa
+    4,5:1 sobre todo fundo;
+  - no tema escuro o acento volta ao vinho `#7D0E0E` nos preenchimentos
+    (botão principal, caixa marcada), e foco, aba ativa, seleção e caixa
+    marcada ganham uma linha própria mais clara (`accent_linha`), que passa
+    3:1 sobre o fundo;
+  - corpo de texto de 13 px nas duas densidades (era 12 e 11), título da
+    tela inicial de 22 px, só os pesos 400 e 700 (o 600 virou 700);
+  - todo espaçamento sai da escala do MegUI (4, 8, 12, 16, 24…), com o
+    multiplicador 0,75 na densidade compacta; botão e campo têm altura de
+    28 px (24 na compacta); barra de título de 32 px e rodapé de 24 px;
+  - fonte: Atkinson Hyperlegible Next e IBM Plex Mono quando instaladas;
+    sem elas, Segoe UI e Cascadia Mono/Consolas.
+- O limite de campo, o acento como texto, as cores sobre o erro e a do nome
+  do produto continuam próprios do programa (`tema._EXTENSAO`), porque o
+  MegUI ainda não os declara.
+
 ## [1.1.0-dev.16] — 2026-10-18
 
 ### Adicionado

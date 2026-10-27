@@ -20,7 +20,8 @@ class TesteTema(unittest.TestCase):
         # cor literal some no tema escuro: tudo sai de tema.atual()
         achados = []
         for arq in glob.glob(os.path.join(RAIZ, "**", "*.py"), recursive=True):
-            if os.path.basename(arq) == "tema.py":
+            # tema.py e os tokens do MegUI (gerados) são onde a cor mora
+            if os.path.basename(arq) in ("tema.py", "tema_tokens.py"):
                 continue
             with open(arq, encoding="utf-8") as f:
                 for n, linha in enumerate(f, 1):

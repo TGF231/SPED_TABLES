@@ -7,6 +7,7 @@ from PyQt6.QtGui import QIcon
 from PyQt6.QtWidgets import QHBoxLayout, QLabel, QToolButton, QWidget
 
 from sped_tables.infra import dados
+from sped_tables.interface import tema_tokens as megui
 from sped_tables.version import APP_NAME
 
 
@@ -23,7 +24,7 @@ class BarraTitulo(QWidget):
     hoje apenas um asterisco no fim do título, fácil de passar batido.
     """
 
-    ALTURA = 34
+    ALTURA = megui.LAYOUT["barraTitulo"]
 
     # O Windows 10/11 traz "Segoe MDL2 Assets", a fonte que o próprio sistema
     # usa nos botões de janela: com ela os três glifos têm o mesmo peso,
