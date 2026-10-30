@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.1.0-dev.18] — 2026-10-30
+
+### Alterado
+- **Python 3.15.** O executável passa a ser gerado com o Python 3.15.2
+  (era 3.14.6), e o programa roda do código-fonte no 3.15. O `PyQt6-sip`
+  sobe para a 13.13.0, a primeira com pacote para o 3.15. O gerador
+  (`ferramentas/gerar_executavel.py`) só aceita Python de versão final —
+  o uv ainda distribui o 3.15 em beta — e compila o `pyodbc`, que não tem
+  pacote pronto para o 3.15, com as Ferramentas de Build do Visual Studio.
+  Executável de 26,7 MB, autoteste aprovado.
+
 ## [1.1.0-dev.17] — 2026-10-27
 
 ### Alterado

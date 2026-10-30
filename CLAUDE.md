@@ -13,7 +13,7 @@ py sped_editor.py [arquivo.txt]
 py -m unittest discover -s tests -t .
 ```
 
-O PyQt6 está no interpretador do `py` (`pythoncore-3.14-64`), não no
+O PyQt6 está no interpretador do `py` (`pythoncore-3.15-64`), não no
 `python` do PATH. Dependências em `requirements.txt` (PyQt6; `openpyxl` para
 planilhas XLSX). A suíte (~450 testes, ~35 s) roda **antes de todo commit**,
 **sem PVA**: a pasta do PVA aponta para um diretório vazio e tudo vem da base
@@ -1052,9 +1052,15 @@ outro plugin de imagem) precisa sair dessas listas — senão roda do
 código-fonte e quebra só no executável. O autoteste pega o que ele
 exercita; confira o `build/manifesto_executavel.txt`.
 
-Nesta máquina o atalho `cpython-3.14-…` do uv ficou inacessível depois de
-uma instalação interrompida, e `uv python find` falha com o Python
-instalado: o script procura a pasta versionada (`cpython-3.14.6-…`).
+**Python 3.15** (1.1.0-dev.18). O uv ainda só distribui o 3.15 em beta,
+e o executável não sai de beta: o script aceita só versão final
+(`_final`) e, sem uma do uv, usa a do sistema (`pythoncore-3.15-64`) como
+base do `.venv-exe` — o ambiente não enxerga os pacotes de lá. O `pyodbc`
+não tem pacote pronto para o 3.15 e é compilado no `uv pip sync`; o
+setuptools não reconhece as Ferramentas de Build do Visual Studio 2026,
+então o sync roda com o ambiente do `vcvars64.bat` e `DISTUTILS_USE_SDK=1`
+(`_ambiente_do_compilador`). Fora do script, o mesmo vale para instalar o
+`pyodbc` no Python do sistema: rodar o `pip` depois do `vcvars64.bat`.
 
 ## Gravar nunca pode destruir o arquivo de destino
 

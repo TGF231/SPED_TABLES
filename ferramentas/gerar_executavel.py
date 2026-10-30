@@ -31,7 +31,7 @@ VENV = os.path.join(RAIZ, ".venv-exe")
 PYTHON = os.path.join(VENV, "Scripts", "python.exe")
 REQUISITOS = os.path.join(RAIZ, "requirements-executavel.txt")
 EXE = os.path.join(RAIZ, "dist", "SPED Tables.exe")
-VERSAO_PYTHON = "3.14"
+VERSAO_PYTHON = "3.15"
 
 
 def _rodar(*cmd, **k):
@@ -39,17 +39,61 @@ def _rodar(*cmd, **k):
     subprocess.run(cmd, check=True, cwd=RAIZ, **k)
 
 
+def _final(caminho):
+    """Só Python de versão final: o uv também guarda betas (3.15.0b2), e o
+    executável não sai de um Python que ainda vai mudar."""
+    r = subprocess.run([caminho, "-c", "import sys; print("
+                        "sys.version_info.releaselevel)"],
+                       capture_output=True, text=True)
+    return r.returncode == 0 and r.stdout.strip() == "final"
+
+
 def _uv_find():
-    r = subprocess.run(["uv", "python", "find", "--managed-python",
-                        VERSAO_PYTHON], capture_output=True, text=True,
-                       cwd=RAIZ)
+    """O Python da versão pedida que o uv acha — o gerenciado por ele ou o
+    instalado no sistema. Quando o uv ainda não distribui a versão final
+    (foi o caso do 3.15.2), o do sistema serve: o `.venv-exe` não enxerga
+    os pacotes de lá, então o PyInstaller continua levando só a lista."""
+    r = subprocess.run(["uv", "python", "find", VERSAO_PYTHON],
+                       capture_output=True, text=True, cwd=RAIZ)
     caminho = r.stdout.strip()
-    return caminho if r.returncode == 0 and os.path.isfile(caminho) else None
+    ok = r.returncode == 0 and os.path.isfile(caminho) and _final(caminho)
+    return caminho if ok else None
+
+
+def _ambiente_do_compilador():
+    """Variáveis do compilador C do Visual Studio (vcvars64), ou None.
+
+    O `pyodbc` ainda não publica pacote pronto para o Python 3.15 e é
+    compilado na instalação; o setuptools não reconhece sozinho as
+    Ferramentas de Build do Visual Studio 2026 ("Unable to find a
+    compatible Visual Studio installation"). Com o ambiente do vcvars e
+    `DISTUTILS_USE_SDK`, ele usa o compilador que já está no PATH."""
+    vswhere = os.path.join(os.environ.get("ProgramFiles(x86)", ""),
+                           "Microsoft Visual Studio", "Installer",
+                           "vswhere.exe")
+    if not os.path.isfile(vswhere):
+        return None
+    r = subprocess.run([vswhere, "-latest", "-products", "*", "-requires",
+                        "Microsoft.VisualStudio.Component.VC.Tools.x86.x64",
+                        "-property", "installationPath"],
+                       capture_output=True, text=True)
+    vcvars = os.path.join(r.stdout.strip(), "VC", "Auxiliary", "Build",
+                          "vcvars64.bat")
+    if r.returncode != 0 or not os.path.isfile(vcvars):
+        return None
+    r = subprocess.run('"%s" >nul && set' % vcvars, shell=True,
+                       capture_output=True, text=True)
+    if r.returncode != 0:
+        return None
+    amb = dict(linha.split("=", 1) for linha in r.stdout.splitlines()
+               if "=" in linha)
+    amb.update(DISTUTILS_USE_SDK="1", MSSdk="1")
+    return amb
 
 
 def _pasta_versionada():
-    """A pasta `cpython-3.14.X-…` do uv, sem passar pelo atalho da versão
-    menor (`cpython-3.14-…`), que já ficou inacessível para o próprio uv
+    """A pasta `cpython-3.X.Y-…` do uv, sem passar pelo atalho da versão
+    menor (`cpython-3.X-…`), que já ficou inacessível para o próprio uv
     depois de uma instalação interrompida."""
     base = subprocess.run(["uv", "python", "dir"], capture_output=True,
                           text=True, check=True).stdout.strip()
@@ -58,7 +102,7 @@ def _pasta_versionada():
     achados = [os.path.join(base, n, "python.exe") for n in os.listdir(base)
                if n.startswith("cpython-%s." % VERSAO_PYTHON)
                and "freethreaded" not in n]
-    achados = [c for c in achados if os.path.isfile(c)]
+    achados = [c for c in achados if os.path.isfile(c) and _final(c)]
     achados.sort(key=lambda c: [int(x) for x in os.path.basename(
         os.path.dirname(c)).split("-")[1].split(".")])
     return achados[-1] if achados else None
@@ -98,7 +142,8 @@ def ambiente(recriar=False):
     if not os.path.isfile(PYTHON):
         _rodar("uv", "venv", VENV, "--python", _python_do_uv())
     # sync: instala o que falta e **tira** o que não está na lista
-    _rodar("uv", "pip", "sync", "--python", PYTHON, REQUISITOS)
+    _rodar("uv", "pip", "sync", "--python", PYTHON, REQUISITOS,
+           env=_ambiente_do_compilador())
 
 
 def compilar_base():
