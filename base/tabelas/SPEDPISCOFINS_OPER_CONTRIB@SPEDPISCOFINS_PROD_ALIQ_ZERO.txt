@@ -1,4 +1,4 @@
-versão=52 CODIGO, DESC_PROD, DT_INI, DT_FIM, NCM, NCM_EX, EX_IPI
+versão=53 CODIGO, DESC_PROD, DT_INI, DT_FIM, NCM, NCM_EX, EX_IPI
 101|Adubos ou fertilizantes classificados no Capítulo 31, exceto os produtos de uso veterinário, da TIPI, e suas matérias-primas|01012009||||
 102|Defensivos agropecuários classificados na posição 38.08 da TIPI e suas matérias-primas|01012009||||
 103|Sementes e mudas destinadas à semeadura e plantio, em conformidade com o disposto na Lei no 10.711/03, e produtos de natureza biológica utilizados em sua produção|01012009||||
@@ -151,9 +151,11 @@ versão=52 CODIGO, DESC_PROD, DT_INI, DT_FIM, NCM, NCM_EX, EX_IPI
 224|Receita ou o faturamento na venda ou sobre a importação de gás natural veicular  GNV classificado nos códigos 2711.11.00 ou 2711.21.00 da NCM|01032023|30062023|||
 225|As operações no mercado interno ou sobre importação que envolvam gasolina e suas correntes, exceto de aviação|23062022|31122022|||
 225|As operações no mercado interno ou sobre importação que envolvam gasolina e suas correntes, exceto de aviação|01012023|31122023|||
+225|As operações no mercado interno ou sobre importação que envolvam gasolina e suas correntes, exceto de aviação|10102026|09112026|||
 226|As operações no mercado interno e importação que envolvam etanol, inclusive para fins carburantes|23062022|31122022|||
 226|As operações no mercado interno ou importação que envolvam etanol, inclusive para fins carburantes|01012023|28022023|||
 226|Álcool, Etanol combustível  Venda por Produtor ou Importador - art. 3º,p.u, do Decreto nº 13.116/26|10092026|09102026|||
+226|Álcool, Etanol combustível  Venda por Produtor ou Importador - art. 2º,p.u, do Decreto nº 13.134/26|10102026|09112026|||
 919|Receita auferida na venda de pneumáticos e câmaras de ar de borracha para bicicletas (40115000/40132000),quando efetuada por PJ fabricante que utilizar no processo de indust.,em estabelecimentos implantados na ZFM,de acordo com o PPB fixado,borracha natural produzida por extrativismo não madeireiro na R.Norte|20012015||||
 920|Perse  Programa Emergencial de Retomado do Setor de Eventos.Resultado auferido pelas pessoas jurídicas de que trata o art. 2º da Lei 14.148, de 3 da maio de 2021, atualizada pelos artigos vetados pelo Presidente da República, mantido pelo Congresso Nacional, publicada em 18/3/2022.|18032022|28022027|||
 227|As receitas decorrentes da atividade de transporte aéreo regular de passageiros. (Art. 2º, § 2º, da MP nº 1.147/22)|01012023|31122026|||

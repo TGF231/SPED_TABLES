@@ -1118,7 +1118,7 @@ vem dos dois primeiros dígitos do NCM.
 **Tabela NCM Vigente (Siscomex).** Antes dava para apontar a planilha XLSX
 nesta tela; agora ela entra na base, entregue ao consolidador
 (`py -m consolidador extrair --ncm planilha.xlsx`). **A base entregue com
-esta versão (`2026.10.1`) foi extraída sem ela**, então a conferência de NCM
+esta versão (`2026.10.2`) foi extraída sem ela**, então a conferência de NCM
 vigente está **desligada** até alguém extrair de novo com `--ncm` e publicar
 a base.
 
@@ -1324,7 +1324,7 @@ PVA nenhum, a pré-validação dá o mesmo resultado. A instalação só é usad
 - **Para quem compila o programa.** O pacote `consolidador/` roda na
   máquina de quem gera o executável (nunca na de quem o usa):
   `py -m consolidador extrair` lê os PVAs instalados nela (e, com `--ncm`, a
-  planilha de NCM vigente do Siscomex — a base `2026.10.1` foi extraída sem
+  planilha de NCM vigente do Siscomex — a base `2026.10.2` foi extraída sem
   ela) e regrava as fontes em `base/`, em texto, para revisar com
   `git diff base/`; `guia` extrai um guia prático de um PDF e avança a
   versão da base no manifesto (sem isso o pacote sairia com o mesmo número
@@ -1403,7 +1403,7 @@ completa está em [ARQUITETURA.md](ARQUITETURA.md).
 | `sped_tables/infra/` | Configuração, pasta de dados, base de referência e suas tabelas, automação do PVA, acervo, registro de falhas. |
 | `sped_tables/interface/` | A aplicação PyQt6: janela, tabela de ações, controladores, grades, diálogos, tema. |
 | `consolidador/` | `py -m consolidador extrair\|guia\|compilar\|publicar`: lê os PVAs e os guias na máquina de **quem compila** e regrava `base/`. O `sped_tables` não o importa. |
-| `base/` | As fontes da base de referência, em texto e versionadas: manifesto, leiaute por versão, tabelas oficiais, guias práticos e, quando extraído com `--ncm`, o NCM vigente (a `2026.10.1` não o traz). |
+| `base/` | As fontes da base de referência, em texto e versionadas: manifesto, leiaute por versão, tabelas oficiais, guias práticos e, quando extraído com `--ncm`, o NCM vigente (a `2026.10.2` não o traz). |
 | `recursos/base_referencia.db` | A base compilada de `base/` (o programa a recompila sozinho; não vai para o git); vai junto no executável. |
 | `tests/` | Suíte automática (ver [TESTES.md](TESTES.md)). |
 | `SPED Tables.spec` | Empacotamento (PyInstaller, arquivo único). |

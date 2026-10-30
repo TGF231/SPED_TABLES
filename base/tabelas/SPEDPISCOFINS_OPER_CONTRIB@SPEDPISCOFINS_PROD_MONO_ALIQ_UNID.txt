@@ -1,4 +1,4 @@
-versão=40 CODIGO, DESC_PROD, DT_INI, DT_FIM, NCM, NCM_EX, EX_IPI, UNID, ALIQ_PIS, ALIQ_COFIN
+versão=41 CODIGO, DESC_PROD, DT_INI, DT_FIM, NCM, NCM_EX, EX_IPI, UNID, ALIQ_PIS, ALIQ_COFIN
 101|Gasolinas, Exceto Gasolina de Aviação|01012009|31012015|27101159;27101259|||Metro Cúbico|46,5800|215,0200
 101|Gasolinas, Exceto Gasolina de Aviação|01022015|30042015|27101159;27101259|||Metro Cúbico|85,75|395,86
 101|Gasolinas, Exceto Gasolina de Aviação|01052015|20072017|27101159;27101259|||Metro Cúbico|67,94|313,66
@@ -6,7 +6,7 @@ versão=40 CODIGO, DESC_PROD, DT_INI, DT_FIM, NCM, NCM_EX, EX_IPI, UNID, ALIQ_PI
 101|Gasolinas, Exceto Gasolina de Aviação|01032023|28062023|27101159;27101259|||Metro Cúbico|83,8380|386,160
 101|Gasolinas, Exceto Gasolina de Aviação|29062023|09092026|27101159;27101259|||Metro Cúbico|141,10|651,40
 101|Gasolinas, Exceto Gasolina de Aviação|10092026|09102026|27101159;27101259|||Metro Cúbico|28,49|131,51
-101|Gasolinas, Exceto Gasolina de Aviação|10102026||27101159;27101259|||Metro Cúbico|141,10|651,40
+101|Gasolinas, Exceto Gasolina de Aviação|10112026||27101159;27101259|||Metro Cúbico|141,10|651,40
 102|Óleo Diesel|01012009|31012015|27101921|||Metro Cúbico|26,3600|121,6400
 102|Óleo Diesel|01022015|30042015|27101921|||Metro Cúbico|53,08|244,92
 102|Óleo Diesel|01052015|20072017|27101921|||Metro Cúbico|44,17|203,83
@@ -17,6 +17,7 @@ versão=40 CODIGO, DESC_PROD, DT_INI, DT_FIM, NCM, NCM_EX, EX_IPI, UNID, ALIQ_PI
 102|Óleo Diesel|01102023|03102023|27101921|||Metro Cúbico|23,19|106,81
 102|Óleo Diesel|01012024|11032026|27101921|||Metro Cúbico|62,61|288,89
 102|Óleo Diesel|12032026|31052026|27101921|||Metro Cúbico|0,01|0,05
+102|Óleo Diesel|01062026||27101921|||Metro Cúbico|62,61|288,89
 103|Gás Liqüefeito de Petróleo - GLP|01012009||27111910|||Tonelada|29,8500|137,8500
 104|Querosene de Aviação|01012009|07042026|27101911|||Metro Cúbico|12,6900|58,5100
 104|Querosene de Aviação|08042026|31072026|27101911|||Metro Cúbico|0,010|0,030
@@ -28,7 +29,7 @@ versão=40 CODIGO, DESC_PROD, DT_INI, DT_FIM, NCM, NCM_EX, EX_IPI, UNID, ALIQ_PI
 105|Correntes Destinadas à Formulação de Gasolinas|01032023|28062023||||Metro Cúbico|83,8380|386,160
 105|Correntes Destinadas à Formulação de Gasolinas|29062023|09092026||||Metro Cúbico|141,10|651,40
 105|Correntes Destinadas à Formulação de Gasolinas|10092026|09102026||||Metro Cúbico|28,49|131,51
-105|Correntes Destinadas à Formulação de Gasolinas|10102026|||||Metro Cúbico|141,10|651,40
+105|Correntes Destinadas à Formulação de Gasolinas|10112026|||||Metro Cúbico|141,10|651,40
 106|Correntes Destinadas Exclusivamente à Formulação de Óleo Diesel|01012009|31012015||||Metro Cúbico|26,3600|121,6400
 106|Correntes Destinadas Exclusivamente à Formulação de Óleo Diesel|01022015|30042015||||Metro Cúbico|53,08|244,92
 106|Correntes Destinadas Exclusivamente à Formulação de Óleo Diesel|01052015|20072017||||Metro Cúbico|44,17|203,83
@@ -37,7 +38,9 @@ versão=40 CODIGO, DESC_PROD, DT_INI, DT_FIM, NCM, NCM_EX, EX_IPI, UNID, ALIQ_PI
 106|Correntes Destinadas Exclusivamente à Formulação de Óleo Diesel|01052021|10032022||||Metro Cúbico|62,61|288,89
 106|Correntes Destinadas Exclusivamente à Formulação de Óleo Diesel|05092023|30092023|27101921|||Metro Cúbico|19,50|90,41
 106|Correntes Destinadas Exclusivamente à Formulação de Óleo Diesel|01102023|03102023|27101921|||Metro Cúbico|23,19|106,81
-106|Correntes Destinadas Exclusivamente à Formulação de Óleo Diesel|01012024||27101921|||Metro Cúbico|62,61|288,89
+106|Correntes Destinadas Exclusivamente à Formulação de Óleo Diesel|01012024|11032026|27101921|||Metro Cúbico|62,61|288,89
+106|Correntes Destinadas Exclusivamente à Formulação de Óleo Diesel|12032026|31052026|27101921|||Metro Cúbico|0,01|0,05
+106|Correntes Destinadas Exclusivamente à Formulação de Óleo Diesel|01062026||27101921|||Metro Cúbico|62,61|288,89
 107|Nafta Petroquímica Destinada à Formulação de Gasolina ou de Óleo Diesel|01012009|||||Metro Cúbico|46,5800|215,0200
 108|Nafta Petroquímica Destinada à Formulação Exclusivamente de Óleo Diesel|01012009|||||Metro Cúbico|26,3600|121,6400
 109|Biodiesel|01012009|27062012|38249029;38260000||01|Metro Cúbico|31,75|146,20

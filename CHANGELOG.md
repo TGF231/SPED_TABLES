@@ -10,6 +10,13 @@
   o uv ainda distribui o 3.15 em beta — e compila o `pyodbc`, que não tem
   pacote pronto para o 3.15, com as Ferramentas de Build do Visual Studio.
   Executável de 26,7 MB, autoteste aprovado.
+- **Base de referência `2026.10.2`.** Reextraída do PVA atualizado: duas
+  tabelas do EFD Contribuições mudaram — produtos com alíquota zero (versão
+  53: novas vigências para gasolina e etanol a partir de 10/10/2026) e
+  monofásicos por unidade de medida (versão 41: a alíquota cheia da
+  gasolina volta em 10/11/2026, e o diesel e as correntes de diesel ganham
+  a vigência de 01/06/2026). Os testes de equivalência com o PVA voltam a
+  passar.
 
 ## [1.1.0-dev.17] — 2026-10-27
 
