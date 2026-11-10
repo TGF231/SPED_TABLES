@@ -41,7 +41,7 @@ interface ──► aplicacao ──► dominio ◄── infra
 | `sped_tables/interface/` | todos | `app` (`main`), `janela`, **`acoes` (tabela única de ações)**, `controladores/` (mixins da janela por área do menu), `grade`, `telas/`, `dialogos/`, `formulario_empresa`, `comum`, `tema`, `icones`, `barra_titulo`, `janela_custom`, `autoteste` (`--autoteste`: o roteiro 2.2 de dentro do executável) |
 
 Fora do `sped_tables/`, na raiz, o pacote **`consolidador/`** (`descritor`,
-`instalacao`, `extracao`, `guias`, `banco_pva`; linha de comando `py -m
+`instalacao`, `extracao`, `guias`, `banco_pva`; linha de comando `python -m
 consolidador extrair|guia|compilar|publicar`) é o único que lê a instalação do
 PVA para extrair a base — na máquina de **quem compila**, nunca na de quem usa.
 Ele pode importar o `sped_tables` (é permitido, e não há teste para isso);
