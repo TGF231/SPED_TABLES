@@ -3420,7 +3420,10 @@ class SpedDocument:
 
         Ação: `campos_alterar` lista quais datas mudar; `modo='especifica'` grava
         `valor` (date) fixo; `modo='dias'` desloca cada data em `valor` dias
-        (inteiro, pode ser negativo). Retorna resumo com contagens.
+        (inteiro, pode ser negativo); `modo='replicar'` copia a outra data do
+        mesmo documento (DT_DOC → DT_E_S ou DT_E_S → DT_DOC; uma só em
+        `campos_alterar`, e documento com a origem vazia ou inválida não
+        muda). Retorna resumo com contagens.
         """
         from datetime import datetime, timedelta
 
@@ -3435,6 +3438,9 @@ class SpedDocument:
         if "DT_E_S" in campos_alterar and i_dtes is not None:
             alvos.append(i_dtes)
         modelos = {str(m).strip() for m in (modelos or []) if str(m).strip()}
+        if modo == "replicar" and len(alvos) != 1:
+            raise ValueError("Replicar altera uma data só: a emissão ou a "
+                             "entrada/saída.")
 
         def parse(s):
             s = (s or "").strip()
@@ -3472,6 +3478,9 @@ class SpedDocument:
             for idx in alvos:
                 if modo == "especifica":
                     nova = valor
+                elif modo == "replicar":
+                    nova = parse(r.valor(i_dtes if idx == i_dtdoc
+                                         else i_dtdoc))
                 else:  # deslocamento em dias
                     atual = parse(r.valor(idx))
                     if atual is None:

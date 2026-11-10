@@ -233,6 +233,31 @@ class TestAlterarDatas(Base):
         c100 = next(r for r in doc.registros if r.reg == "C100")
         self.assertEqual(c100.valor(doc._ix("C100", "DT_E_S")), "06082026")
 
+    def test_replicar_nos_dois_sentidos(self):
+        doc = _doc(icms_basico())
+        c100 = next(r for r in doc.registros if r.reg == "C100")
+        i_doc, i_es = doc._ix("C100", "DT_DOC"), doc._ix("C100", "DT_E_S")
+        res = doc.alterar_datas_c100(campos_alterar=("DT_E_S",),
+                                     modo="replicar")
+        self.assertEqual(res["c100"], 1)
+        self.assertEqual(c100.valor(i_es), "05082026")
+        c100.set_valor(i_es, "07082026")
+        doc.alterar_datas_c100(campos_alterar=("DT_DOC",), modo="replicar")
+        self.assertEqual(c100.valor(i_doc), "07082026")
+        self.assertBemFormado(doc)
+
+    def test_replicar_exige_uma_data_e_origem_valida(self):
+        doc = _doc(icms_basico())
+        with self.assertRaises(ValueError):
+            doc.alterar_datas_c100(campos_alterar=("DT_DOC", "DT_E_S"),
+                                   modo="replicar")
+        c100 = next(r for r in doc.registros if r.reg == "C100")
+        c100.set_valor(doc._ix("C100", "DT_DOC"), "")
+        res = doc.alterar_datas_c100(campos_alterar=("DT_E_S",),
+                                     modo="replicar", campo_filtro="DT_E_S")
+        self.assertEqual(res["c100"], 0)
+        self.assertEqual(c100.valor(doc._ix("C100", "DT_E_S")), "06082026")
+
 
 class TestCadeiaIcms(Base):
     """O recálculo de ICMS refaz C190 e totais **só** de quem mudou."""

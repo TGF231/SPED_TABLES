@@ -352,7 +352,8 @@ class DialogoAlterarDatas(QDialog):
             "Data de entrada/saída (DT_E_S)", "Data de emissão (DT_DOC)",
             "Ambas (DT_DOC e DT_E_S)"])
         self.cb_modo = QComboBox()
-        self.cb_modo.addItems(["Para data específica", "Deslocar em dias"])
+        self.cb_modo.addItems(["Para data específica", "Deslocar em dias",
+                               "Replicar a outra data do documento"])
         self.cb_modo.currentIndexChanged.connect(self._modo_mudou)
         self.ed_valor = QLineEdit()
         fa.addRow("Data(s) a alterar:", self.cb_campos)
@@ -372,10 +373,11 @@ class DialogoAlterarDatas(QDialog):
         lay.addLayout(rod)
 
     def _modo_mudou(self):
-        if self.cb_modo.currentIndex() == 0:
-            self.ed_valor.setPlaceholderText("DDMMAAAA")
-        else:
-            self.ed_valor.setPlaceholderText("dias, ex.: 1 ou -3")
+        modo = self.cb_modo.currentIndex()
+        self.ed_valor.setEnabled(modo != 2)
+        self.ed_valor.setPlaceholderText(
+            ["DDMMAAAA", "dias, ex.: 1 ou -3",
+             "emissão → entrada/saída, ou o contrário"][modo])
 
     @staticmethod
     def _data(s):
@@ -419,6 +421,14 @@ class DialogoAlterarDatas(QDialog):
                 QMessageBox.critical(self, "Nova data",
                                      "Informe a nova data (DDMMAAAA).")
                 return None
+        elif self.cb_modo.currentIndex() == 2:
+            if len(campos) != 1:
+                QMessageBox.critical(
+                    self, "Replicar",
+                    "Escolha uma data só: a de entrada/saída recebe a de "
+                    "emissão, e a de emissão recebe a de entrada/saída.")
+                return None
+            modo, valor = "replicar", None
         else:
             modo = "dias"
             try:

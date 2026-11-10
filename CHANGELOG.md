@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.1.0-dev.20] — 2026-11-10
+
+### Adicionado
+- **Replicar a data no *Alterar datas emissão/saída (C100)*.** Novo modo
+  *Replicar a outra data do documento*: a DT_E_S recebe a DT_DOC, ou a
+  DT_DOC recebe a DT_E_S, em cada documento do filtro. Documento sem a data
+  de origem fica como está.
+
 ## [1.1.0-dev.19] — 2026-11-10
 
 ### Alterado

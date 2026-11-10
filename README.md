@@ -343,8 +343,11 @@ um **intervalo de datas** (avaliado sobre a data de entrada/saída *DT_E_S* ou a
 de emissão *DT_DOC*), podendo restringir por **tipo de movimento** (entrada/saída)
 e por **modelo** (campo *Somente modelos*, ex.: `55, 65`; em branco, todos). Nos
 documentos filtrados, altera a **DT_DOC**, a **DT_E_S** ou **ambas**, para uma
-**data específica** (DDMMAAAA) ou **deslocando N dias** (aceita negativos, ex.:
-`-3`). As datas seguem o formato do arquivo (DDMMAAAA).
+**data específica** (DDMMAAAA), **deslocando N dias** (aceita negativos, ex.:
+`-3`) ou **replicando a outra data do documento**: escolhendo a DT_E_S, ela
+recebe a data de emissão; escolhendo a DT_DOC, recebe a de entrada/saída
+(documento com a data de origem vazia fica como está). As datas seguem o
+formato do arquivo (DDMMAAAA).
 
 ### Conferir itens (NF-e modelo 55) com os XMLs
 
