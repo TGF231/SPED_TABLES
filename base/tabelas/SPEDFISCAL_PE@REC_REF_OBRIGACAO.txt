@@ -1,4 +1,4 @@
-versão=8 COD_REC, DESC_COD, DT_INI, DT_FIM
+versão=9 COD_REC, DESC_COD, DT_INI, DT_FIM
 0051|ICMS-normal|01092018|
 0086|ICMS - antecipação com ou sem substituição tributária (mercadorias importadas do exterior)|01092018|
 0094|ICMS - substituição pelas entradas sem diferimento|01092018|
@@ -32,3 +32,8 @@ versão=8 COD_REC, DESC_COD, DT_INI, DT_FIM
 0647|ICMS - Normal monofásico|02052023|
 1049|ICMS - Monofásico Provisionado|31082023|
 0353|ICMS - Normal - Regularização relativa a saídas ou prestações de serviço não declaradas no período fiscal relativo à ocorrência do fato gerador, quando a irregularidade for detectada por meio das informações da Declaração de Informações de Meios de Pagamentos - DIMP, e não constar em Extrato de Irregularidades do Sistema Gestão da Malha Fiscal.|01102025|
+1120|ICMS - Normal - Regularização relativa a documentos fiscais de saída escriturados com valor a menor de ICMS|01102026|
+1138|ICMS - Normal - Regularização relativa a documentos fiscais de entrada escriturados com crédito fiscal em desacordo com a legislação tributária|01102026|
+1146|ICMS - Normal - Regularização relativa a lançamentos de ajustes da apuração do ICMS em desacordo com a legislação tributária|01102026|
+1154|ICMS - Normal - Regularização relativa a lançamentos na apuração do ICMS normal em desacordo com a legislação tributária|01102026|
+1162|ICMS - Normal - Regularização relativa a lançamentos na apuração do ICMS devido por substituição tributária em desacordo com a legislação tributária|01102026|

@@ -8,6 +8,14 @@
   DT_DOC recebe a DT_E_S, em cada documento do filtro. Documento sem a data
   de origem fica como está.
 
+### Alterado
+- **Base de referência `2026.11.1`.** Reextraída do PVA atualizado: só
+  tabelas estaduais do ICMS/IPI mudaram — informações adicionais da
+  apuração do ES (versão 8, com as isenções prorrogadas pelo Convênio ICMS
+  178/21) e do RJ, ajustes e benefícios do RJ, itens do IPM do RJ e
+  códigos de receita de PE. O teste de equivalência com o PVA volta a
+  passar.
+
 ## [1.1.0-dev.19] — 2026-11-10
 
 ### Alterado

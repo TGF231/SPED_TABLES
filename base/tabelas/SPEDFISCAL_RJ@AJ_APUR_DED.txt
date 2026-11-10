@@ -1,4 +1,4 @@
-versão=129 COD_AJUR, DESC_AJUR, DT_INI, DT_FIM
+versão=131 COD_AJUR, DESC_AJUR, DT_INI, DT_FIM
 RJ000000|Outros débitos  Compensação de saldos entre estabelecimentos da empresa|01052019|
 RJ000002|Destaque incorreto do ICMS no documento fiscal.|01012009|31102021
 RJ000003|Ao final do prazo da operação amparada por suspensão ou não configurada a condição que a autorize (pelo remetente).|01012009|31072017
@@ -8,7 +8,7 @@ RJ000007|Operação com sucata e com lingotes e tarugos de metais não-ferrosos 
 RJ000008|Entradas de mercadorias importadas (lançamento conjunto em outros débitos e deduções).|01012009|
 RJ000011|Lançamento do imposto devido pelo contribuinte que calcula o valor do imposto devido com base na receita bruta na atividade de indústria de sal para alimentação.|01012009|04112014
 RJ000012|Lançamento do imposto devido pelo contribuinte que calcula o valor do imposto devido com base na receita bruta na atividade de fornecimento de alimentação.|01012009|31032019
-RJ000013|Lançamento do imposto devido pelo contribuinte que calcula o valor do imposto devido com base na receita bruta na atividade de transporte aquaviário no Estado.|01012009|
+RJ000013|Lançamento do imposto devido pelo contribuinte que calcula o valor do imposto devido com base na receita bruta na atividade de transporte aquaviário no Estado.|01012009|31102026
 RJ000014|Compensações, utilizações e transferências de saldos credores acumulados|01012009|01052014
 RJ000015|Provisão de Créditos Acumulados para uso próprio do estabelecimento|01052014|30042019
 RJ000016|Provisão de Créditos Acumulados para uso de terceiros|01052014|30042019
@@ -17,10 +17,10 @@ RJ000018|Outros débitos - Reserva de valor de saldo credor acumulado de exporta
 RJ000019|Outros débitos - Reserva de valor de saldo credor acumulado por estabelecimento industrial para aproveitamento da empresa|01052019|
 RJ000020|Outros débitos - Reserva de valor de saldo credor acumulado por estabelecimento industrial para transferência|01052019|
 RJ000021|Outros débitos - Reserva de valor de saldo credor recebido de terceiros em transferência que extrapolou o limite legal de utilização mensal|01052019|
-RJ000022|Lançamento do imposto devido por estimativa pelo contribuinte que presta serviço de transporte rodoviário coletivo intermunicipal de passageiros|01052019|
-RJ000023|Lançamento do imposto devido por estimativa pelo contribuinte que presta serviço de transporte intermunicipal de passageiros sob o regime de fretamento contínuo|01052019|
-RJ000024|Lançamento do imposto devido por estimativa pelo contribuinte que presta serviço de transporte de passageiros sob regime de fretamento eventual ou turístico|01052019|
-RJ000025|Lançamento do imposto devido por estimativa pelo contribuinte que presta serviço de transporte ferroviário de passageiros|27072021|
+RJ000022|Lançamento do imposto devido por estimativa pelo contribuinte que presta serviço de transporte rodoviário coletivo intermunicipal de passageiros|01052019|31102026
+RJ000023|Lançamento do imposto devido por estimativa pelo contribuinte que presta serviço de transporte intermunicipal de passageiros sob o regime de fretamento contínuo|01052019|31102026
+RJ000024|Lançamento do imposto devido por estimativa pelo contribuinte que presta serviço de transporte de passageiros sob regime de fretamento eventual ou turístico|01052019|31102026
+RJ000025|Lançamento do imposto devido por estimativa pelo contribuinte que presta serviço de transporte ferroviário de passageiros|27072021|31102026
 RJ000026|Outros débitos - ICMS devido pelo fornecimento de óleo diesel marítimo cuja NF-e foi emitida em período subsequente|01092023|
 RJ000077|Outros débitos  Transferência de saldo credor entre estabelecimentos da mesma empresa para pagamento do ICMS devido na importação|01052019|
 RJ000078|Outros débitos  Transferência de saldo credor entre estabelecimentos da mesma empresa para pagamento do ICMS devido na aquisição de sucata|01052019|
@@ -40,6 +40,11 @@ RJ008004|ICMS devido conforme o artigo 2.º da Lei n.º 6.331/12|01072016|310320
 RJ008005|Outros Débitos - Débito em função de norma relacionada no manual de que trata o Decreto 27.815/2001|01042019|31032020
 RJ008006|Outros Débitos - ICMS calculado sobre o faturamento, receita ou saída previsto em norma relacionada no manual de que trata o Decreto 27.815/2001|01042019|31122023
 RJ008006|Outros Débitos - ICMS calculado sobre o faturamento, receita ou saída previsto em norma relacionada no manual de que trata o Decreto 27.815/2001|01012024|
+RJ008007|Lançamento do imposto devido por estimativa pelo contribuinte que presta serviço de transporte rodoviário coletivo intermunicipal de passageiros|01112026|
+RJ008008|Lançamento do imposto devido por estimativa pelo contribuinte que presta serviço de transporte intermunicipal de passageiros sob o regime de fretamento contínuo|01112026|
+RJ008009|Lançamento do imposto devido por estimativa pelo contribuinte que presta serviço de transporte de passageiros sob regime de fretamento eventual ou turístico|01112026|
+RJ008010|Lançamento do imposto devido pelo contribuinte que calcula o valor do imposto devido com base na receita bruta na atividade de transporte aquaviário no Estado|01112026|
+RJ008011|Lançamento do imposto devido por estimativa pelo contribuinte que presta serviço de transporte ferroviário de passageiros|01112026|
 RJ009999|Outros|01012009|31122021
 RJ010000|Estorno de crédito - Estorno do saldo credor remanescente no momento de baixa da inscrição estadual|01072025|
 RJ010001|Estorno complementar da saída tributada de bem com valor do estorno calculado no CIAP superior ao imposto destacado na NF para os bens cuja entrada ocorreu de 01/11/96 a 31/01/99|01012009|30062017

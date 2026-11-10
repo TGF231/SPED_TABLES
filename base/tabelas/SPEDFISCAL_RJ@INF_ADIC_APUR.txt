@@ -1,4 +1,4 @@
-versão=138 INF_ADIC, DESC_INF, DT_INI, DT_FIM
+versão=139 INF_ADIC, DESC_INF, DT_INI, DT_FIM
 RJ000001|Valor do aporte de recursos conforme artigo 2º do DECRETO Nº 45.333, DE 5 DE AGOSTO DE 2015|01122015|
 RJ000002|Metas de arrecadação do ICMS fixada no  Termo de Acordo previsto na Lei 4.173/03|01012017|
 RJ000003|Desobrigado ao depósito no FEEF conforme Art. 3º da Lei 7.428/2016|01012017|25082017
@@ -726,3 +726,4 @@ RJ818470|Lei 10.638 de 2024 - Diferimento|10012025|
 RJ801471|Convênio ICMS 56 de 2024 - Isenção|16052024|30042026
 RJ805472|Lei 6.331 de 2012 - Crédito presumido|03102025|
 RJ805473|Convênio ICMS 22 de 2023 - Crédito Presumido|01072026|
+RJ801474|Convênio ICMS 187 de 2021 - Isenção|14102026|

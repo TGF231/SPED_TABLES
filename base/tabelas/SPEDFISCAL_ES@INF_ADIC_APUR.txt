@@ -1,4 +1,4 @@
-versão=6 INF_ADIC, DESC_INF, DT_INI, DT_FIM
+versão=8 INF_ADIC, DESC_INF, DT_INI, DT_FIM
 ES100001|Isenção do ICMS - Art. 5º-D da Lei 7.000/01,Convênio ICMS 190/17, Lei 11.253/2021|01032018|
 ES120001|Isenção do ICMS - Lei 10.550/2016|01072016|31122032
 ES130001|Isenção do ICMS - Art. 5º-C, II da Lei 7.000/01, Art. 5º, CXXXVIII e CXXXIX do RICMS/ES, Convênio ICMS 03/18, Convênio ICMS 130/07, Convênio ICMS 178/21|16122021|30042024
@@ -288,3 +288,46 @@ ES200045|Redução de BC do ICMS - Art. 5º-K da Lei 7.000/01|01012024|
 ES200046|Redução de BC do ICMS - Lei 12.322/24|23122024|
 ES200047|Redução de BC do ICMS - Convênio ICMS 111/24, Art. 70. LXXVI do RICMS/ES|22112024|31102025
 ES999999|Outros - Benefício fiscal cujo cBenef não foi contemplado na lista. Informar capitulação legal nas informações complementares|01072024|
+ES130001|Isenção do ICMS - Art. 5º-C, II da Lei 7.000/01, Art. 5º, CXXXVIII e CXXXIX do RICMS/ES, Convênio ICMS 03/18, Convênio ICMS 130/07, Convênio ICMS 178/21|01052026|31122026
+ES100020|Isenção do ICMS - Art. 5º, XIV do RICMS/ES, Anexo III, item 7 da Lei 7.000/01, Convênio ICMS 78/92, Convênio ICMS 178/21|01052026|31122026
+ES100022|Isenção do ICMS - Art. 5º, XVII do RICMS/ES, Anexo III, item 7 da Lei 7.000/01, Convênio ICMS 57/98, Convênio ICMS 178/21|01052026|31122026
+ES100028|Isenção do ICMS - Art. 5º, XXIII do RICMS/ES, Anexo III, item 7 da Lei 7.000/01, Convênio ICMS 41/91, Convênio ICMS 178/21|01052026|31122026
+ES100030|Isenção do ICMS - Art. 5º, XXV do RICMS/ES, Anexo III, item 7 da Lei 7.000/01, Convênio ICMS 95/98, Convênio ICMS 178/21|01052026|31122026
+ES100031|Isenção do ICMS - Art. 5º, XXVI do RICMS/ES, Anexo III, item 7 da Lei 7.000/01, Convênio ICMS 87/02, Convênio ICMS 178/21|01052026|31122026
+ES100037|Isenção do ICMS - Art. 5º, XXXIV do RICMS/ES, Anexo III, item 7 da Lei 7.000/01, Convênio ICMS 32/95, Convênio ICMS 178/21	|01052026|31122026
+ES100050|Isenção do ICMS - Art. 5º, XLVII do RICMS/ES, Anexo III, item 7 da Lei 7.000/01, Convênio ICMS 24/89, Convênio ICMS 178/21|01052026|31122026
+ES100051|Isenção do ICMS - Art. 5º, XLVIII do RICMS/ES, Anexo III, item 7 da Lei 7.000/01, Convênio ICMS 38/91, Convênio ICMS 178/21|01052026|31122026
+ES100054|Isenção do ICMS - Art. 5º, LI do RICMS/ES, Anexo III, item 7 da Lei 7.000/01, Convênio ICMS 104/89, Convênio ICMS 178/21|01052026|31122026
+ES100055|Isenção do ICMS - Art. 5º, LII do RICMS/ES, Anexo III, item 7 da Lei 7.000/01, Convênio ICMS 05/98, Convênio ICMS 178/21|01052026|31122026
+ES100057|Isenção do ICMS - Art. 5º, LV do RICMS/ES, Convênio ICMS 100/97, Convênio ICMS 26/21|01012026|31122027
+ES100059|Isenção do ICMS - Art. 5º, LVIII do RICMS/ES, Anexo III, item 7 da Lei 7.000/01, Convênio ICMS 55/92, Convênio ICMS 178/21|01052026|31122026
+ES100064|Isenção do ICMS - Art. 5º, LXIII do RICMS/ES, Anexo III, item 7 da Lei 7.000/01, Convênio ICMS 42/95, Convênio ICMS 178/21|01052026|31122026
+ES100073|Isenção do ICMS - Art. 5º, LXXVI do RICMS/ES, Anexo III, item 15 da Lei 7.000/01, Convênio ICMS 38/01, Convênio ICMS 178/21|01052026|31122026
+ES100079|Isenção do ICMS - Art. 5º, LXXXIII do RICMS/ES, Anexo III, item 7 da Lei 7.000/01, Convênio ICMS 91/98, Convênio ICMS 178/21|01052026|31122026
+ES100080|Isenção do ICMS - Art. 5º, LXXXIV do RICMS/ES, Anexo III, item 7 da Lei 7.000/01, Convênio ICMS 116/98, Convênio ICMS 178/21|01052026|31122026
+ES100084|	Isenção do ICMS - Art. 5º, XC do RICMS/ES, Convênio ICMS 178/21|01052026|31122026
+ES100087|Isenção do ICMS - Art. 5º, XCVII do RICMS/ES, Anexo III, item 7 da Lei 7.000/01, Convênio ICMS 140/01, Convênio ICMS 178/21|01052026|31122026
+ES100088|Isenção do ICMS - Art. 5º, XCIX do RICMS/ES, Anexo III, item 7 da Lei 7.000/01, Convênio ICMS 18/03, Convênio ICMS 178/21|01052026|31122026
+ES100090|Isenção do ICMS - Art. 5º, CI do RICMS/ES, Anexo III, item 7 da Lei 7.000/01, Convênio ICMS 02/04, Convênio ICMS 178/21|01052026|31122026
+ES100100|Isenção do ICMS - Art. 5º, CXIII do RICMS/ES, Anexo III, item 7 da Lei 7.000/01, Convênio ICMS 79/05, Convênio ICMS 178/21|01052026|31122026
+ES100102|Isenção do ICMS - Art. 5º, CXV do RICMS/ES, Anexo III, item 7 da Lei 7.000/01, Convênio ICMS 28/05, Convênio ICMS 178/21|01052026|31122026
+ES130004|Isenção do ICMS - Art. 5º, CXVII do RICMS/ES, Anexo III, item 7 da Lei 7.000/01, Convênio ICMS 03/06, Convênio ICMS 178/21|01052026|31122026
+ES100108|Isenção do ICMS - Art. 5º, CXXIV do RICMS/ES, Anexo III, item 7 da Lei 7.000/01, Convênio ICMS 09/07, Convênio ICMS 178/21|01052026|31122026
+ES100109|Isenção do ICMS - Art. 5º, CXXV do RICMS/ES, Anexo III, item 17 da Lei 7.000/01, Convênio ICMS 10/07, Convênio ICMS 178/21|01052026|31122026
+ES100110|Isenção do ICMS - Art. 5º, CXXVI do RICMS/ES, Anexo III, item 7 da Lei 7.000/01, Convênio ICMS 23/07, Convênio ICMS 178/21|01052026|31122026
+ES100112|Isenção do ICMS - Art. 5º, CXXX do RICMS/ES, Anexo III, item 7 da Lei 7.000/01, Convênio ICMS 89/07, Convênio ICMS 178/21|01052026|31122026
+ES100116|Isenção do ICMS - Art. 5º, CXXXVII do RICMS/ES, Anexo III, item 18 da Lei 7.000/01, Convênio ICMS 38/12, Convênio ICMS 204/21|01052026|31122026
+ES100126|Isenção do ICMS - Art. 5º, CL do RICMS/ES, Anexo III, item 7 da Lei 7.000/01, Convênio ICMS 73/10, Convênio ICMS 178/21|01052026|31122026
+ES100127|Isenção do ICMS - Art. 5º, CLIII do RICMS/ES, Anexo III, item 7 da Lei 7.000/01, Convênio ICMS 106/10, Convênio ICMS 178/21|01052026|31122026
+ES100138|Isenção do ICMS - Art. 5º, CLXXXII do RICMS/ES, Anexo III, item 5 da Lei 7.000/01, Convênio ICMS 75/19, Convênio ICMS 178/21|01052026|31122026
+ES100145|Isenção do ICMS - Art. 5º, LXXXV do RICMS/ES, Anexo III, item 7 da Lei 7.000/01, Convênio ICMS 01/99, Convênio ICMS 178/21|01052026|31122026
+ES100153|Isenção do ICMS - Art. 5º, CXCVIII do RICMS/ES, Convênio ICMS 33/01|01052026|31122026
+ES200022|Redução de BC do ICMS - Art. 70, VII do RICMS/ES, Convênio ICMS 100/97, Convênio ICMS 26/21|01012026|31122026
+ES200023|Redução de BC do ICMS- Art. 70, VIII do RICMS/ES, Convênio ICMS 100/97, Convênio ICMS 26/21|01012026|31122027
+ES200025|Redução de BC do ICMS - Art. 70, XII do RICMS/ES, Anexo III, item 7 da Lei 7.000/01, Convênio ICMS 75/91, Convênio ICMS 178/21	|01052026|31122026
+ES200026|Redução de BC do ICMS - Art. 70, XIII do RICMS/ES, Anexo III, item 7 da Lei 7.000/01, Convênio ICMS 33/96, Convênio ICMS 178/21	|01052026|31122026
+ES200031|Redução de BC do ICMS- Art. 70, XXIX do RICMS/ES,anexo III, item 6 da Lei 7.000/01, Convênio ICMS 52/91, Convênio ICMS 178/21	|01052026|31122026
+ES200032|Redução de BC do ICMS- Art. 70, XXX do RICMS/ES, Anexo III, item 6 da Lei 7.000/01, Convênio ICMS 52/91, Convênio ICMS 178/21	|01052026|31122026
+ES200033|Redução de BC do ICMS - Art. 70, XXXI do RICMS/ES, Anexo III, item 7 da Lei 7.000/01, Convênio ICMS 133/02, Convênio ICMS 178/21|01052026|31122026
+ES200043|Redução de BC do ICMS - Art. 70, LXVII do RICMS/ES, Anexo III, item 7 da Lei 7.000/01, Convênio ICMS 61/12, Convênio ICMS 178/21	|01052026|31122026
+ES200044|Redução de BC do ICMS - Art. 70, LXVIII do RICMS/ES, Anexo III, item 7 da Lei 7.000/01, Convênio ICMS 95/12, Convênio ICMS 178/21	|01052026|31122026

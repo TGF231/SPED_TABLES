@@ -85,7 +85,7 @@ vigente, e sem PVA as regras se abstinham. O projeto é o primeiro de quatro
   `manifesto.json`, `leiaute/<LEIAUTE>/<COD_VER>.json`,
   `tabelas/<GRUPO>@<TABELA>.txt` (o `$` da chave vira `@` no nome do arquivo,
   que atrapalha o terminal), `guias/<LEIAUTE>.json` e `ncm/vigente.txt`
-  (opcional: **a base `2026.10.2` não o tem** — `origem.ncm` do manifesto é
+  (opcional: **a base `2026.11.1` não o tem** — `origem.ncm` do manifesto é
   `null` —, então a Tabela NCM Vigente do Siscomex está desligada,
   `vigente_ncm` volta `None`, até alguém extrair com `python -m consolidador
   extrair --ncm planilha.xlsx`; antes a pessoa a ligava apontando a planilha

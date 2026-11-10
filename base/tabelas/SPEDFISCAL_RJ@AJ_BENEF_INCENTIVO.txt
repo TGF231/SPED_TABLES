@@ -1,4 +1,4 @@
-versão=69 COD_AJ, DESC_AJ, DT_INI, DT_FIM
+versão=70 COD_AJ, DESC_AJ, DT_INI, DT_FIM
 RJ00080300|Crédito Presumido sobre as entradas interestaduais  incisos II e III do artigo 3° da Lei n° 4.173/03|01012017|31032019
 RJ10000000|Crédito relativo a ICMS  próprio não apropriado no momento da aquisição de mercadoria sujeita a ICMS-ST devolvida ou remetida para outra UF ou em caso de devolução de mercadoria adquirida para uso e consumo|03012018|
 RJ10000001|Crédito de ICMS originário de operações com empresas do Simples Nacional|01122015|
@@ -29,6 +29,8 @@ RJ20000001|Estorno de débitos - Estorno vinculado ao débito especial do ICMS d
 RJ20000002|Estorno de débitos - Decisão Judicial|01092021|
 RJ20000003|Estorno de débitos - Sistema de Escoamento do Gás Natural não processado da Bacia de Campos ou SEG-BC - Decreto 48.683/2023|01092023|
 RJ20000004|Estorno de débitos - Estorno vinculado à NF-e emitida pelo fornecimento de óleo diesel marítimo em competência posterior ao do fornecimento|01092023|
+RJ20000006|Estorno de débito - NFGas substituída|28102026|
+RJ20000007|Estorno de débito - Estorno de ICMS relativo à diferença a maior entre a NFGas substituta e a NFGas substituída quando a substituição ocorrer em período de apuração diferente do período do fato gerador|28102026|
 RJ20001002|Estorno de débitos - Estorno de débito - emissão de CT-e de substituição|03042023|
 RJ20080100|Estorno de Débito - conforme art.3º da Lei 5.636/10|01052012|31052016
 RJ20001001|Estorno do ICMS destacado no documento fiscal de prestação de serviço de transporte quando o serviço for iniciado em outra UF|01092019|
@@ -54,6 +56,7 @@ RJ40080100|Outros Débitos - conforme art.3º da Lei 5.636/10|01052012|31052016
 RJ40081000|Outros débitos  cláusula nona do Ajuste SINIEF n° 22/21|13072021|
 RJ50000000|Estorno de Créditos - Devolução de mercadoria adquirida de contribuinte optante pelo Simples Nacional quando tiver ocorrido apropriação de crédito de ICMS na entrada|01032020|
 RJ50000001|Estorno de Créditos - Devolução de mercadoria adquirida para compor o ativo fixo cuja apropriação do crédito tiver sido iniciada|01032020|
+RJ50000002|Estorno de crédito - Estorno do crédito do ICMS oriundo de NFGas substituída|28102026|
 RJ50000013|Estorno de Créditos - Crédito relativo à sucata utilizada na fabricação de produto com posterior saída não tributada - art.6º, II, b, do Livro XII do RICMS/2000|01052024|
 RJ50001000|Estorno de crédito - Escrituração pelo tomador do serviço de CT-e de substituição|03042023|
 RJ50002000|Estorno de crédito - Estorno do crédito do ICMS oriundo de NFCom substituída|25072025|
@@ -87,6 +90,7 @@ RJ71000011|Débito especial - ICMS-ST devido em função de emissão de document
 RJ70000014|Débitos especiais - ICMS-difal devido na prestação de serviço não vinculada à prestação subsquente - Resolução SEFAZ 253 de 2021|01092021|
 RJ70000015|Débitos especiais - FECP-difal devido na prestação de serviço não vinculada à prestação subsquente - Resolução SEFAZ 253 de 2021|01092021|
 RJ70000016|Débitos especiais - ICMS devido nas operações de aquisição internas e interestaduais com os bens ou mercadorias referenciados no parágrafo 1º do artigo 2º da Lei 8.890/2020- Lei 8.890 de 15 de junho de 2020|01052022|
+RJ70000017|Débito especial - ICMS devido pela diferença a maior entre a NFGas de substituição e a NFGas substituída quando a substituição ocorrer em período de apuração diferente do período do fato gerador|28102026|
 RJ71001000|ICMS-ST devido pelo tomador de serviço de transporte de carga|29052018|30062018
 RJ71001001|FECP-ST devido pelo tomador de serviço de transporte de carga|29052018|30062018
 RJ71001002|Débitos especiais - ICMS-ST retido em prestação de serviço de transporte realizado por transportador estabelecido em outra UF ou por transportador autônomo|01072021|

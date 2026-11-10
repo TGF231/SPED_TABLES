@@ -1,4 +1,4 @@
-versão=22 COD_IPM, DESC_COD, DT_INI, DT_FIM
+versão=24 COD_IPM, DESC_COD, DT_INI, DT_FIM
 RJREC00001|Receita bruta anual do estabelecimento|01052023|
 RJREC00002|Receita bruta anual da empresa|01072025|
 RJVAF20001|Valor adicionado por operações e prestações não escrituradas, denunciadas espontaneamente ou apuradas em ação fiscal|01012019|31122021
@@ -198,4 +198,6 @@ RJVAF10016|Prestação de serviço de transporte intermunicipal e interestadual 
 RJVAF00016|Prestação de serviço de transporte intermunicipal e interestadual por contribuinte enquadrado na Lei 2.804/97 - Valor das entradas|01012024|
 RJVAF10017|Prestação de serviço de transporte intermunicipal e interestadual por contribuinte enquadrado na Lei 2.869/97 - Valor das saídas|01012024|
 RJVAF00017|Prestação de serviço de transporte intermunicipal e interestadual por contribuinte enquadrado na Lei 2.869/97 - Valor das entradas|01012024|
+RJVAF00018|Decisão judicial - Valor a ser reduzido do Valor Adicionado|01092026|
+RJVAF10018|Decisão judicial - Valor a ser acrescido ao Valor Adicionado|01092026|
 RJVAF30001|Revendedor autônomo - venda porta a porta|01012024|01012024
