@@ -3,9 +3,9 @@
 
 Rodar da raiz do projeto, com o interpretador que tem o PyQt6:
 
-    py -m unittest discover -s tests -t .
+    python -m unittest discover -s tests -t .
 
-(ou `py -m pytest tests`, se o pytest estiver instalado — os testes são
+(ou `python -m pytest tests`, se o pytest estiver instalado — os testes são
 `unittest` puro e o pytest os roda sem adaptação.)
 
 Nada aqui depende de arquivo de cliente: os SPED de teste são montados pela

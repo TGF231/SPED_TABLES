@@ -1,16 +1,16 @@
 # -*- coding: utf-8 -*-
 """Linha de comando do consolidador.
 
-    py -m consolidador extrair [--pva PASTA] [--data AAAA-MM-DD]
+    python -m consolidador extrair [--pva PASTA] [--data AAAA-MM-DD]
                                [--versao AAAA.MM.n] [--ncm planilha.xlsx]
         lê os PVAs desta máquina e regrava base/ (revise com git diff)
-    py -m consolidador guia ICMS|CONTRIB arquivo.pdf [--data AAAA-MM-DD]
+    python -m consolidador guia ICMS|CONTRIB arquivo.pdf [--data AAAA-MM-DD]
                             [--versao AAAA.MM.n]
         extrai o guia prático para base/guias/ e avança a versão da base no
         manifesto, como o extrair (a base com guia novo não é a mesma base)
-    py -m consolidador compilar [--saida arquivo.db]
+    python -m consolidador compilar [--saida arquivo.db]
         compila base/ (rodando do código-fonte, o programa faz isso sozinho)
-    py -m consolidador publicar [--saida PASTA]
+    python -m consolidador publicar [--saida PASTA]
         compila e gera o pacote base_referencia-AAAA.MM.n.zip
 """
 
@@ -26,7 +26,7 @@ from sped_tables.infra import base_referencia
 
 
 def main(argv=None):
-    p = argparse.ArgumentParser(prog="py -m consolidador")
+    p = argparse.ArgumentParser(prog="python -m consolidador")
     sub = p.add_subparsers(dest="comando", required=True)
     e = sub.add_parser("extrair")
     e.add_argument("--pva")

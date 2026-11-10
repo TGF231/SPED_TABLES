@@ -263,7 +263,7 @@ informação ou um alerta.
 | Um achado de diagnóstico | `dominio/diagnostico.py` + o módulo que corrige em `MODULOS`; o atalho no mapa `acoes` de `ControladorGerais.diagnosticar`. |
 | Um cálculo que grava no arquivo | Método de `SpedDocument` (ou módulo do domínio), com teste em `tests/test_correcoes.py`. |
 | Algo que precisa de tabela oficial | Método novo na porta (`dominio/referencias.py`, com resposta vazia) e no adaptador (`infra/referencias_base.py`). |
-| Uma tabela, versão de leiaute ou guia novo | **Não vai no código nem em `base/` à mão:** `py -m consolidador extrair` (ou `guia`) regrava `base/`, e a revisão é o `git diff base/`. |
+| Uma tabela, versão de leiaute ou guia novo | **Não vai no código nem em `base/` à mão:** `python -m consolidador extrair` (ou `guia`) regrava `base/`, e a revisão é o `git diff base/`. |
 | Um caminho, pasta ou opção da máquina | `infra/config.py`. Nunca `__file__`, nunca caminho escrito no módulo. |
 | Ler ou gravar um arquivo do usuário | `infra/` (JSON: `dados.gravar_json`, que é atômico). |
 | Um fluxo que junta várias peças | `aplicacao/`. |

@@ -4,7 +4,7 @@
 Rodam só quando a variável de ambiente aponta para a pasta com os arquivos:
 
     set SPED_TABLES_ARQUIVOS_REAIS=C:\\caminho\\para\\a\\pasta
-    py -m unittest tests.test_reais
+    python -m unittest tests.test_reais
 
 Sem ela, são pulados. A pasta pode ter subpastas; todo `.txt` que começa
 por `|0000|` entra.
@@ -20,7 +20,7 @@ Duas camadas:
   exatos" do CLAUDE.md, sem pôr dado de cliente no git. Para gerar a partir
   do estado atual (depois de conferir os números à mão):
 
-    py -m tests.test_reais gerar
+    python -m tests.test_reais gerar
 """
 
 import json

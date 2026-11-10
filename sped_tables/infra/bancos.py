@@ -285,7 +285,7 @@ class MySQL(_BancoSQL):
         except ImportError as exc:
             raise ErroDeBanco(
                 "O suporte a MySQL precisa do pacote pymysql "
-                "(py -m pip install pymysql).") from exc
+                "(python -m pip install pymysql).") from exc
         try:
             con = pymysql.connect(
                 host=self.c.host or "localhost",

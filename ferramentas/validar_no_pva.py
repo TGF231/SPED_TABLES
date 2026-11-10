@@ -13,10 +13,10 @@ substituiria a escrituração que o usuário tem lá. A automação só dirige
 janela cujo executável esteja dentro da pasta de ensaio
 (`pva._da_instalacao`).
 
-    py ferramentas/validar_no_pva.py preparar --ensaio D:\\pva_ensaio
-    py ferramentas/validar_no_pva.py gerar    --reais D:\\reais --saida D:\\saida
-    py ferramentas/validar_no_pva.py validar  --ensaio D:\\pva_ensaio --saida D:\\saida
-    py ferramentas/validar_no_pva.py relatorio --saida D:\\saida
+    python ferramentas/validar_no_pva.py preparar --ensaio D:\\pva_ensaio
+    python ferramentas/validar_no_pva.py gerar    --reais D:\\reais --saida D:\\saida
+    python ferramentas/validar_no_pva.py validar  --ensaio D:\\pva_ensaio --saida D:\\saida
+    python ferramentas/validar_no_pva.py relatorio --saida D:\\saida
 
 Nada disso vai para o repositório: a saída tem de ficar fora dele (o script
 recusa), porque são arquivos de cliente.

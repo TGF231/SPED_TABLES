@@ -2,7 +2,7 @@
 """Gera `COBERTURA.md`: quanto das validações dos guias práticos e dos
 validadores do PVA o programa reproduz, registro a registro.
 
-    py ferramentas/cobertura_guias.py
+    python ferramentas/cobertura_guias.py
 
 Usa a base de referência em uso (os validadores vêm do descritor da versão
 mais recente do leiaute que ela guarda); não precisa dos PVAs instalados.

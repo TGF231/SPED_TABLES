@@ -3,7 +3,7 @@
 ao PVA instalado nesta máquina — dado a dado e pela porta.
 
 Falhou depois de o PVA ser atualizado? A base ficou para trás: rode
-`py -m consolidador extrair`, revise o `git diff base/` e faça o commit."""
+`python -m consolidador extrair`, revise o `git diff base/` e faça o commit."""
 
 import datetime
 import json

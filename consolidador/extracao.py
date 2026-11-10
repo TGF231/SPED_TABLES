@@ -131,7 +131,7 @@ def registrar_guia(destino, layout, data, versao=None):
 
 def extrair(instalacao, destino, versao=None, ncm_xlsx=None):
     """Regrava `destino` (a pasta `base/`) com o que a instalação publica e
-    devolve o manifesto. Guias ficam como estão (`py -m consolidador
+    devolve o manifesto. Guias ficam como estão (`python -m consolidador
     guia`); o NCM só muda com `ncm_xlsx`.
 
     Valida tudo antes de gravar: uma extração recusada deixa o `base/` como

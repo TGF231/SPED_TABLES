@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.1.0-dev.19] — 2026-11-10
+
+### Alterado
+- **Ambiente isolado pelo pyenv.** O projeto fixa o Python no
+  `.python-version` (3.15.2, instalado pelo pyenv-win) e roda do próprio
+  ambiente, `.venv`, com as dependências de `requirements.txt` — nada mais
+  se instala no Python global. O gerador do executável cria o `.venv-exe`
+  a partir do Python do `.python-version` (antes procurava um Python do uv
+  e caía no do sistema). Os comandos da documentação passam de `py …` a
+  `python …`, com o ambiente ativo.
+
 ## [1.1.0-dev.18] — 2026-10-30
 
 ### Alterado

@@ -26,10 +26,15 @@ Para usar, basta o **`SPED Tables.exe`**: um arquivo só, sem instalação. Na
 primeira execução ele cria a pasta de dados (ver 3A) e oferece o atalho na
 área de trabalho.
 
-Para rodar do código-fonte, requer **Python 3.10+**:
+Para rodar do código-fonte, o projeto usa o Python fixado no
+`.python-version` (hoje 3.15.2), instalado pelo **pyenv** (pyenv-win), e um
+ambiente próprio em `.venv` — nada vai para o Python global:
 
 ```bash
-pip install -r requirements.txt
+pyenv install 3.15.2
+pyenv exec python -m venv .venv
+.venv\Scripts\activate
+python -m pip install -r requirements.txt
 ```
 
 - **PyQt6** — interface gráfica (obrigatório);
@@ -878,7 +883,7 @@ você está.
 
 Os textos são dos guias oficiais — *Guia Prático EFD ICMS/IPI 3.2.4* e *EFD
 Contribuições 1.35* —, extraídos para `base/guias/` e compilados na base de
-referência. Saiu guia novo: `py -m consolidador guia ICMS|CONTRIB arquivo.pdf`
+referência. Saiu guia novo: `python -m consolidador guia ICMS|CONTRIB arquivo.pdf`
 — que registra o guia no manifesto e **avança a versão da base**, como o
 `extrair` — e gere o executável de novo (ou publique o pacote da base, ver
 *Base de referência*).
@@ -1117,7 +1122,7 @@ vem dos dois primeiros dígitos do NCM.
 
 **Tabela NCM Vigente (Siscomex).** Antes dava para apontar a planilha XLSX
 nesta tela; agora ela entra na base, entregue ao consolidador
-(`py -m consolidador extrair --ncm planilha.xlsx`). **A base entregue com
+(`python -m consolidador extrair --ncm planilha.xlsx`). **A base entregue com
 esta versão (`2026.10.2`) foi extraída sem ela**, então a conferência de NCM
 vigente está **desligada** até alguém extrair de novo com `--ncm` e publicar
 a base.
@@ -1323,7 +1328,7 @@ PVA nenhum, a pré-validação dá o mesmo resultado. A instalação só é usad
   desligadas, e o Diagnóstico diz isso em vez de dizer "nenhum problema".
 - **Para quem compila o programa.** O pacote `consolidador/` roda na
   máquina de quem gera o executável (nunca na de quem o usa):
-  `py -m consolidador extrair` lê os PVAs instalados nela (e, com `--ncm`, a
+  `python -m consolidador extrair` lê os PVAs instalados nela (e, com `--ncm`, a
   planilha de NCM vigente do Siscomex — a base `2026.10.2` foi extraída sem
   ela) e regrava as fontes em `base/`, em texto, para revisar com
   `git diff base/`; `guia` extrai um guia prático de um PDF e avança a
@@ -1402,7 +1407,7 @@ completa está em [ARQUITETURA.md](ARQUITETURA.md).
 | `sped_tables/aplicacao/` | Casos de uso: o arquivo aberto (abrir/salvar/fechar), mandar ao PVA, a montagem. |
 | `sped_tables/infra/` | Configuração, pasta de dados, base de referência e suas tabelas, automação do PVA, acervo, registro de falhas. |
 | `sped_tables/interface/` | A aplicação PyQt6: janela, tabela de ações, controladores, grades, diálogos, tema. |
-| `consolidador/` | `py -m consolidador extrair\|guia\|compilar\|publicar`: lê os PVAs e os guias na máquina de **quem compila** e regrava `base/`. O `sped_tables` não o importa. |
+| `consolidador/` | `python -m consolidador extrair\|guia\|compilar\|publicar`: lê os PVAs e os guias na máquina de **quem compila** e regrava `base/`. O `sped_tables` não o importa. |
 | `base/` | As fontes da base de referência, em texto e versionadas: manifesto, leiaute por versão, tabelas oficiais, guias práticos e, quando extraído com `--ncm`, o NCM vigente (a `2026.10.2` não o traz). |
 | `recursos/base_referencia.db` | A base compilada de `base/` (o programa a recompila sozinho; não vai para o git); vai junto no executável. |
 | `tests/` | Suíte automática (ver [TESTES.md](TESTES.md)). |
@@ -1420,7 +1425,7 @@ completa está em [ARQUITETURA.md](ARQUITETURA.md).
 ### Testes
 
 ```bash
-py -m unittest discover -s tests -t .
+python -m unittest discover -s tests -t .
 ```
 
 A suíte monta arquivos SPED sintéticos na hora — nenhum dado de cliente entra

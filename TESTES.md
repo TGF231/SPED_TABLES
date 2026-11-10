@@ -10,13 +10,14 @@ o executável e o comportamento da janela no Windows.
 
 ### Rodar
 
-Da raiz do projeto, com o interpretador que tem o PyQt6 (`py`):
+Da raiz do projeto, com o ambiente do projeto ativo (`.venv\Scripts\activate`;
+ver *Instalação* no `README.md`):
 
 ```bash
-py -m unittest discover -s tests -t .
+python -m unittest discover -s tests -t .
 ```
 
-Os testes são `unittest` puro; com o pytest instalado, `py -m pytest tests`
+Os testes são `unittest` puro; com o pytest instalado, `python -m pytest tests`
 também roda. A suíte tem cerca de 450 testes e leva cerca de 35 segundos.
 
 A interface roda **sem tela** (`QT_QPA_PLATFORM=offscreen`, definido em
@@ -52,7 +53,7 @@ equivalência a usa. Nenhum outro teste pula por falta de PVA.
 | `test_referencias_base` | O adaptador da porta sobre a base: estrutura pela versão do arquivo, "fora da base" (e "mais nova que a base"), vigência, tabelas, classificador de NCM. |
 | `test_tabelas_oficiais` | As tabelas oficiais lidas de texto (formato do PVA, com vigência), independente de onde o texto veio. |
 | `test_versao_leiaute` | Quem tem o documento pede a estrutura do `COD_VER` dele (diagnóstico e validação); a geração, a versão vigente no período; só `COD_VER` ilegível cai na mais recente. Sobre a **base entregue**, a mesma linha é acusada no arquivo 019 e não no 020 (`C120.COD_DOC_IMP`, `1310`). |
-| `test_consolidador` | `py -m consolidador` sobre uma instalação de PVA **inventada**: extrai, compila, publica, avança a versão da base ao trocar um guia (`guia`), e recusa — sem deixar `base/` quebrada — o que não serve. |
+| `test_consolidador` | `python -m consolidador` sobre uma instalação de PVA **inventada**: extrai, compila, publica, avança a versão da base ao trocar um guia (`guia`), e recusa — sem deixar `base/` quebrada — o que não serve. |
 | `test_equivalencia_base` | **O teste central da migração:** a base compilada de `base/` responde igual ao PVA instalado nesta máquina. Pula sem PVA (ver 1.2.1). |
 | `test_estrutura` | Armadilhas: código depois de `return`, import sem uso, nome da biblioteca padrão, método duplicado. |
 | `test_interface` | A janela nasce; **toda ação do menu roda** nos dois leiautes; a tabela de ações é coerente; o formulário de empresa; `main()` inteiro pelo `sped_editor.py`. |
@@ -83,7 +84,7 @@ dos arquivos reais (fora do git):
 
 ```bash
 set SPED_TABLES_ARQUIVOS_REAIS=C:\caminho\das\copias
-py -m unittest tests.test_reais
+python -m unittest tests.test_reais
 ```
 
 Em todo `.txt` que começa com `|0000|`, confere:
@@ -99,7 +100,7 @@ Em todo `.txt` que começa com `|0000|`, confere:
   diagnóstico. Gerar (depois de conferir os números à mão):
 
   ```bash
-  py -m tests.test_reais gerar
+  python -m tests.test_reais gerar
   ```
 
 É o "validar contra arquivos reais com números exatos" do projeto, sem pôr
@@ -129,16 +130,16 @@ programa acusa —, e só um deles olha o PVA:
   **só com PVA instalado** (`tests.PVA_REAL`): a base compilada de `base/` tem
   de responder igual à instalação — versões do leiaute, estrutura, tabelas e
   cada método da porta. **Falhou** (o PVA foi atualizado e a base ficou para
-  trás)? Rode `py -m consolidador extrair`, **revise o `git diff base/`** (o
+  trás)? Rode `python -m consolidador extrair`, **revise o `git diff base/`** (o
   que mudou deve ser o que o PVA novo trouxe: versão de leiaute, campo, código
   de tabela), rode a suíte de novo e faça o commit da base.
 
 Para refazer os JSON dos guias e o `COBERTURA.md`:
 
 ```bash
-py -m consolidador guia ICMS "Guia Prático EFD - Versão X.pdf"
-py -m consolidador guia CONTRIB "Guia_Pratico_EFD_Contribuicoes_X.pdf"
-py ferramentas/cobertura_guias.py
+python -m consolidador guia ICMS "Guia Prático EFD - Versão X.pdf"
+python -m consolidador guia CONTRIB "Guia_Pratico_EFD_Contribuicoes_X.pdf"
+python ferramentas/cobertura_guias.py
 ```
 
 Cada `guia` regrava também o `base/manifesto.json`: registra o guia em
@@ -182,10 +183,10 @@ acusou com o arquivo original passado pelo mesmo caminho. Uma correção passa
 quando não aparece mensagem nova nem aumenta a contagem de nenhuma.
 
 ```bash
-py ferramentas/validar_no_pva.py preparar  --ensaio D:\pva_ensaio
-py ferramentas/validar_no_pva.py gerar     --reais D:\reais --saida D:\saida
-py ferramentas/validar_no_pva.py validar   --ensaio D:\pva_ensaio --saida D:\saida
-py ferramentas/validar_no_pva.py relatorio --saida D:\saida
+python ferramentas/validar_no_pva.py preparar  --ensaio D:\pva_ensaio
+python ferramentas/validar_no_pva.py gerar     --reais D:\reais --saida D:\saida
+python ferramentas/validar_no_pva.py validar   --ensaio D:\pva_ensaio --saida D:\saida
+python ferramentas/validar_no_pva.py relatorio --saida D:\saida
 ```
 
 - **Roda numa cópia da instalação** (`preparar`), com porta de banco própria:
@@ -240,7 +241,7 @@ banco de teste (de preferência com usuário só de leitura) numa variável
 set SPED_TABLES_ERP_FIREBIRD=localhost;3050;C:\dados\ERP.FDB;LEITOR;senha
 set SPED_TABLES_ERP_SQLSERVER=.\SQL2019;;master;;
 set SPED_TABLES_ERP_MYSQL=localhost;3306;erp;leitor;senha
-py -m unittest tests.test_erp
+python -m unittest tests.test_erp
 ```
 
 Cada um conecta, lista as tabelas e lê uma linha da primeira. Sem usuário,
@@ -249,7 +250,7 @@ o SQL Server entra com a conta do Windows.
 ### 2.2 No executável
 
 ```bash
-py ferramentas/gerar_executavel.py
+python ferramentas/gerar_executavel.py
 "dist\SPED Tables.exe" --autoteste relatorio.json arquivo_real.txt
 ```
 
@@ -293,7 +294,7 @@ Na tela, que o autoteste não vê:
       (a pergunta em português, "Sim"/"Não")
 - [ ] Ícone na janela, na barra própria e na barra de tarefas
 - [ ] *Configurações → Base de referência…* mostra a versão e a impressão
-      digital; importar um pacote de `py -m consolidador publicar` com versão
+      digital; importar um pacote de `python -m consolidador publicar` com versão
       mais nova é aceito (e vale no próximo diagnóstico), e o mesmo pacote
       de novo é recusado como "não é mais nova que a em uso" — com
       `SPED_TABLES_DADOS` numa pasta de teste, para não deixar a base

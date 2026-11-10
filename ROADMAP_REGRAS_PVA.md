@@ -20,7 +20,7 @@ desenho em `docs/superpowers/specs/`; as decisões de fundo estão em
 
 | # | Projeto | O que entrega | Estado |
 |---|---|---|---|
-| 1 | **Base de referência** | O leiaute de cada versão, as tabelas oficiais, os guias e — quando o consolidador o recebe; a `2026.10.2` não o traz — o NCM vigente numa base compilada e atualizável por importação; o programa deixa de ler o PVA da máquina; o consolidador (`py -m consolidador`) regrava `base/` | **feito na 1.1.0-dev.16** |
+| 1 | **Base de referência** | O leiaute de cada versão, as tabelas oficiais, os guias e — quando o consolidador o recebe; a `2026.10.2` não o traz — o NCM vigente numa base compilada e atualizável por importação; o programa deixa de ler o PVA da máquina; o consolidador (`python -m consolidador`) regrava `base/` | **feito na 1.1.0-dev.16** |
 | 2 | **Motor de regras** | Cada regra é uma consulta SQL nossa sobre o arquivo montado como banco (ADR 0002); ocorrência 1:1 com o PVA (registro, linha, mensagem); a **causa** da ocorrência, dita com os valores do arquivo | pendente |
 | 3 | **Consolidador completo** | A diferença entre versões do PVA (regra nova, removida, alterada), a confirmação das regras no PVA de ensaio e as notas técnicas | pendente |
 | 4 | **Migração e cobertura** | As regras de hoje passam para o motor e a cobertura cresce — as fases da seção 3 | pendente |
@@ -228,7 +228,7 @@ CHANGELOG.
 - **Mudança de versão do PVA.** As regras mudam com o validador: o
   inventário registra a versão do `.jar` e acusa regra nova, removida ou
   com SQL alterado ao rodar contra outra instalação. Para o leiaute e as
-  tabelas já vale o projeto 1: `py -m consolidador extrair` regrava `base/`, o
+  tabelas já vale o projeto 1: `python -m consolidador extrair` regrava `base/`, o
   `git diff base/` mostra o que mudou e o teste de equivalência acusa a base
   que ficou para trás do PVA.
 - **Base desatualizada no executável distribuído.** É para isso a importação

@@ -3,8 +3,8 @@
 `base/guias/`, que o programa usa como texto de ajuda e como a fonte
 escrita das regras que reproduz.
 
-    py -m consolidador guia ICMS    "Guia Prático EFD - Versão 3.2.4.pdf"
-    py -m consolidador guia CONTRIB "Guia_Pratico_EFD_Contribuicoes_Versao_1_35.pdf"
+    python -m consolidador guia ICMS    "Guia Prático EFD - Versão 3.2.4.pdf"
+    python -m consolidador guia CONTRIB "Guia_Pratico_EFD_Contribuicoes_Versao_1_35.pdf"
 
 Precisa do `pdftotext` (vem com o Git para Windows, em `mingw64/bin`, e com
 o poppler). O texto sai com `-layout`: no modo corrido o PDF embaralha

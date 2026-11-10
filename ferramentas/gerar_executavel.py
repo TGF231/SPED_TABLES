@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
-"""Gera o executável a partir de um ambiente mínimo do uv e confere.
+"""Gera o executável a partir de um ambiente mínimo e confere.
 
-    py ferramentas/gerar_executavel.py [--recriar] [--sem-autoteste]
+    python ferramentas/gerar_executavel.py [--recriar] [--sem-autoteste]
 
-1. cria (ou reaproveita) `.venv-exe` com um Python do uv e instala **só**
-   `requirements-executavel.txt` — do Python do sistema, o PyInstaller
-   arrastava tudo o que estivesse instalado lá;
+1. cria (ou reaproveita) `.venv-exe` com o Python do `.python-version`
+   (pyenv) e instala, com o uv, **só** `requirements-executavel.txt` — do
+   ambiente de desenvolvimento, o PyInstaller arrastaria tudo o que
+   estivesse instalado lá;
 2. compila a base de referência de `base/` para `recursos/base_referencia.db`
    — a que vai dentro do executável é sempre a de agora, nunca a que
    estiver por acaso em `recursos/`;
@@ -16,7 +17,7 @@
    um SPED sintético — o pacote enxuto precisa continuar inteiro, inclusive
    a base de referência.
 
-Precisa do `uv` no PATH (https://docs.astral.sh/uv/).
+Precisa do pyenv (pyenv-win) e do `uv` no PATH.
 """
 
 import json
@@ -31,7 +32,6 @@ VENV = os.path.join(RAIZ, ".venv-exe")
 PYTHON = os.path.join(VENV, "Scripts", "python.exe")
 REQUISITOS = os.path.join(RAIZ, "requirements-executavel.txt")
 EXE = os.path.join(RAIZ, "dist", "SPED Tables.exe")
-VERSAO_PYTHON = "3.15"
 
 
 def _rodar(*cmd, **k):
@@ -39,25 +39,21 @@ def _rodar(*cmd, **k):
     subprocess.run(cmd, check=True, cwd=RAIZ, **k)
 
 
-def _final(caminho):
-    """Só Python de versão final: o uv também guarda betas (3.15.0b2), e o
-    executável não sai de um Python que ainda vai mudar."""
-    r = subprocess.run([caminho, "-c", "import sys; print("
-                        "sys.version_info.releaselevel)"],
-                       capture_output=True, text=True)
-    return r.returncode == 0 and r.stdout.strip() == "final"
-
-
-def _uv_find():
-    """O Python da versão pedida que o uv acha — o gerenciado por ele ou o
-    instalado no sistema. Quando o uv ainda não distribui a versão final
-    (foi o caso do 3.15.2), o do sistema serve: o `.venv-exe` não enxerga
-    os pacotes de lá, então o PyInstaller continua levando só a lista."""
-    r = subprocess.run(["uv", "python", "find", VERSAO_PYTHON],
-                       capture_output=True, text=True, cwd=RAIZ)
+def _python_do_pyenv():
+    """O Python fixado no `.python-version` da raiz, instalado pelo pyenv.
+    O `.venv-exe` só guarda o caminho dele: os pacotes do executável ficam
+    no ambiente, nunca no Python do pyenv."""
+    if shutil.which("pyenv") is None:
+        raise SystemExit("O pyenv (pyenv-win) não está no PATH.")
+    with open(os.path.join(RAIZ, ".python-version"), encoding="ascii") as fh:
+        versao = fh.read().strip()
+    r = subprocess.run(["pyenv", "which", "python"], capture_output=True,
+                       text=True, cwd=RAIZ, shell=True)
     caminho = r.stdout.strip()
-    ok = r.returncode == 0 and os.path.isfile(caminho) and _final(caminho)
-    return caminho if ok else None
+    if r.returncode != 0 or not os.path.isfile(caminho):
+        raise SystemExit("O pyenv não tem o Python %s do .python-version "
+                         "(instale com: pyenv install %s)." % (versao, versao))
+    return caminho
 
 
 def _ambiente_do_compilador():
@@ -81,8 +77,11 @@ def _ambiente_do_compilador():
                           "vcvars64.bat")
     if r.returncode != 0 or not os.path.isfile(vcvars):
         return None
+    # o `set` do cmd sai na página de código do console (cp850 aqui): o
+    # padrão do Python 3.15 é UTF-8, e uma variável com acento derrubava a
+    # leitura — o sync seguia sem compilador
     r = subprocess.run('"%s" >nul && set' % vcvars, shell=True,
-                       capture_output=True, text=True)
+                       capture_output=True, encoding="oem")
     if r.returncode != 0:
         return None
     amb = dict(linha.split("=", 1) for linha in r.stdout.splitlines()
@@ -91,39 +90,9 @@ def _ambiente_do_compilador():
     return amb
 
 
-def _pasta_versionada():
-    """A pasta `cpython-3.X.Y-…` do uv, sem passar pelo atalho da versão
-    menor (`cpython-3.X-…`), que já ficou inacessível para o próprio uv
-    depois de uma instalação interrompida."""
-    base = subprocess.run(["uv", "python", "dir"], capture_output=True,
-                          text=True, check=True).stdout.strip()
-    if not os.path.isdir(base):
-        return None
-    achados = [os.path.join(base, n, "python.exe") for n in os.listdir(base)
-               if n.startswith("cpython-%s." % VERSAO_PYTHON)
-               and "freethreaded" not in n]
-    achados = [c for c in achados if os.path.isfile(c) and _final(c)]
-    achados.sort(key=lambda c: [int(x) for x in os.path.basename(
-        os.path.dirname(c)).split("-")[1].split(".")])
-    return achados[-1] if achados else None
-
-
-def _python_do_uv():
-    """O executável do Python gerenciado pelo uv; instala se faltar."""
-    caminho = _uv_find() or _pasta_versionada()
-    if caminho:
-        return caminho
-    _rodar("uv", "python", "install", VERSAO_PYTHON)
-    caminho = _uv_find() or _pasta_versionada()
-    if not caminho:
-        raise SystemExit("Não achei o Python %s do uv depois de instalar."
-                         % VERSAO_PYTHON)
-    return caminho
-
-
 def _saudavel():
     """O `.venv-exe` existe **e** o Python de base dele ainda está lá.
-    O ambiente guarda só o caminho do Python do uv (`pyvenv.cfg`): se esse
+    O ambiente guarda só o caminho do Python do pyenv (`pyvenv.cfg`): se esse
     Python sumir ou for reinstalado noutro lugar, o `python.exe` do
     ambiente continua no disco e falha ao rodar ("did not find executable
     at …")."""
@@ -140,7 +109,7 @@ def ambiente(recriar=False):
         print("recriando %s" % VENV, flush=True)
         shutil.rmtree(VENV)
     if not os.path.isfile(PYTHON):
-        _rodar("uv", "venv", VENV, "--python", _python_do_uv())
+        _rodar("uv", "venv", VENV, "--python", _python_do_pyenv())
     # sync: instala o que falta e **tira** o que não está na lista
     _rodar("uv", "pip", "sync", "--python", PYTHON, REQUISITOS,
            env=_ambiente_do_compilador())

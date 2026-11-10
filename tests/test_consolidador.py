@@ -468,7 +468,7 @@ class TestGuiaNoManifesto(_Rodar, unittest.TestCase):
 
 
 class TestLinhaDeComando(_Rodar, unittest.TestCase):
-    """`py -m consolidador`: só o que não regrava o `base/` do repositório
+    """`python -m consolidador`: só o que não regrava o `base/` do repositório
     (o `extrair` de verdade roda à mão, com revisão do `git diff base/`)."""
 
     def test_extrair_sem_pva_recusa_e_nao_toca_em_base(self):

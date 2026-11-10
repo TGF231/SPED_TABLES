@@ -5,7 +5,7 @@ e NCM vigente —, montado na compilação e nunca lido do PVA da máquina de
 quem usa (ver `docs/adr/0001-base-de-referencia-compilada.md`).
 
 As fontes ficam em `base/`, em texto, versionadas no git e regravadas pelo
-consolidador (`py -m consolidador extrair`); `compilar` as transforma num
+consolidador (`python -m consolidador extrair`); `compilar` as transforma num
 SQLite que viaja com o executável. Uma base mais nova pode ser importada
 sem trocar de programa (`importar`); vale a mais nova entre a embutida e a
 importada (`em_uso`).

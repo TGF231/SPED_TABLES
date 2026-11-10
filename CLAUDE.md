@@ -9,13 +9,16 @@ Brasil.**
 ## Executar e testar
 
 ```bash
-py sped_editor.py [arquivo.txt]
-py -m unittest discover -s tests -t .
+python sped_editor.py [arquivo.txt]
+python -m unittest discover -s tests -t .
 ```
 
-O PyQt6 está no interpretador do `py` (`pythoncore-3.15-64`), não no
-`python` do PATH. Dependências em `requirements.txt` (PyQt6; `openpyxl` para
-planilhas XLSX). A suíte (~450 testes, ~35 s) roda **antes de todo commit**,
+Os comandos rodam com o ambiente do projeto ativo (`.venv\Scripts\activate`,
+ou `.venv\Scripts\python` direto): o `.venv` é criado do Python fixado no
+`.python-version` (3.15.2, pelo pyenv-win) e tem as dependências de
+`requirements.txt` (PyQt6; `openpyxl` para planilhas XLSX; os drivers dos
+bancos de ERP). **Nada se instala no Python global nem no do pyenv** — o
+lançador `py` e o `pythoncore` não são mais usados. A suíte (~450 testes, ~35 s) roda **antes de todo commit**,
 **sem PVA**: a pasta do PVA aponta para um diretório vazio e tudo vem da base
 de referência; ver `TESTES.md`.
 
@@ -84,7 +87,7 @@ vigente, e sem PVA as regras se abstinham. O projeto é o primeiro de quatro
   que atrapalha o terminal), `guias/<LEIAUTE>.json` e `ncm/vigente.txt`
   (opcional: **a base `2026.10.2` não o tem** — `origem.ncm` do manifesto é
   `null` —, então a Tabela NCM Vigente do Siscomex está desligada,
-  `vigente_ncm` volta `None`, até alguém extrair com `py -m consolidador
+  `vigente_ncm` volta `None`, até alguém extrair com `python -m consolidador
   extrair --ncm planilha.xlsx`; antes a pessoa a ligava apontando a planilha
   na tela das tabelas da RFB, que saiu). Só **fatos** — campos, tipos,
   tamanhos, códigos de tabela pública —: nada de SQL, Java nem texto de
@@ -146,7 +149,7 @@ vigente, e sem PVA as regras se abstinham. O projeto é o primeiro de quatro
   liga a base compilada de `base/`. A instalação de verdade fica em
   `tests.PVA_REAL`, e só `tests/test_equivalencia_base.py` a usa: a base
   compilada tem de responder à porta igual ao PVA instalado. **Falhou?** A
-  base ficou para trás do PVA — `py -m consolidador extrair`, revisar o
+  base ficou para trás do PVA — `python -m consolidador extrair`, revisar o
   `git diff base/`, commitar.
 
 ## Convenções obrigatórias
@@ -689,7 +692,7 @@ mesmo sintoma da barra de título e dos tradutores. Na suíte, use `_app()` de
 ## Os guias práticos e as regras do guia
 
 Os dois guias (EFD ICMS/IPI 3.2.4, EFD Contribuições 1.35) estão extraídos
-em `base/guias/<LEIAUTE>.json` por `py -m consolidador guia ICMS|CONTRIB
+em `base/guias/<LEIAUTE>.json` por `python -m consolidador guia ICMS|CONTRIB
 arquivo.pdf` (`consolidador/guias.py`), que roda o `pdftotext -layout` (vem
 com o Git para Windows) — e viajam na base compilada, não mais soltos em
 `recursos/`. O comando `guia` regrava também o `base/manifesto.json`
@@ -1029,11 +1032,13 @@ preenchido.
 
 ## Gerar o executável
 
-`py ferramentas/gerar_executavel.py`: ambiente mínimo do uv (`.venv-exe`,
+`python ferramentas/gerar_executavel.py`: ambiente mínimo (`.venv-exe`, do
+Python do `.python-version`, com os pacotes pelo uv;
 `requirements-executavel.txt` com tudo fixado, inclusive as dependências
 do PyInstaller — o `uv pip sync` remove o que não está na lista),
-PyInstaller e `--autoteste`. **Não gere do Python do sistema**: o
-PyInstaller arrasta o que estiver instalado lá (64 MB contra 24 MB).
+PyInstaller e `--autoteste`. **Não gere do `.venv` de desenvolvimento**:
+o PyInstaller arrasta o que estiver instalado no ambiente (64 MB contra
+24 MB).
 
 **O gerador compila a base de referência de `base/` antes do PyInstaller**
 (`compilar_base()`): a que vai dentro é sempre a de agora, nunca a que
@@ -1042,8 +1047,8 @@ estiver por acaso em `recursos/`. O `.spec` a embute como
 soltos. Sem ela no pacote o programa abre, mas as verificações por leiaute e
 tabelas ficam desligadas: o item *base de referência* do autoteste (versão,
 origem, registros e guia de cada leiaute) é quem pega isso, e só no
-executável. A base nova (`py -m consolidador extrair`) chega a quem usa por
-executável novo ou pelo pacote de `py -m consolidador publicar`.
+executável. A base nova (`python -m consolidador extrair`) chega a quem usa por
+executável novo ou pelo pacote de `python -m consolidador publicar`.
 
 O `.spec` tira DLLs e plugins que o programa não carrega
 (`_desnecessario`, `_EXCLUIR`). **Dependência nova que use Qt ou Python
@@ -1052,15 +1057,14 @@ outro plugin de imagem) precisa sair dessas listas — senão roda do
 código-fonte e quebra só no executável. O autoteste pega o que ele
 exercita; confira o `build/manifesto_executavel.txt`.
 
-**Python 3.15** (1.1.0-dev.18). O uv ainda só distribui o 3.15 em beta,
-e o executável não sai de beta: o script aceita só versão final
-(`_final`) e, sem uma do uv, usa a do sistema (`pythoncore-3.15-64`) como
-base do `.venv-exe` — o ambiente não enxerga os pacotes de lá. O `pyodbc`
-não tem pacote pronto para o 3.15 e é compilado no `uv pip sync`; o
-setuptools não reconhece as Ferramentas de Build do Visual Studio 2026,
-então o sync roda com o ambiente do `vcvars64.bat` e `DISTUTILS_USE_SDK=1`
-(`_ambiente_do_compilador`). Fora do script, o mesmo vale para instalar o
-`pyodbc` no Python do sistema: rodar o `pip` depois do `vcvars64.bat`.
+**Python pelo pyenv** (1.1.0-dev.19). A versão é a do `.python-version`
+da raiz; o script pede o caminho ao `pyenv which python` e falha dizendo o
+`pyenv install` que falta. Subir de versão é trocar o `.python-version` e
+rodar com `--recriar` (e recriar o `.venv`). O `pyodbc` 5.3.0 fixado não
+tem pacote pronto para o 3.15 e é compilado no `uv pip sync`; o setuptools
+não reconhece as Ferramentas de Build do Visual Studio 2026, então o sync
+roda com o ambiente do `vcvars64.bat` e `DISTUTILS_USE_SDK=1`
+(`_ambiente_do_compilador`).
 
 ## Gravar nunca pode destruir o arquivo de destino
 

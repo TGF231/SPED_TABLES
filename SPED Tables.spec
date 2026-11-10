@@ -43,7 +43,7 @@ O que saiu fica listado em `build/manifesto_executavel.txt`, com o tamanho,
 para conferir a cada versão; o `--autoteste` do executável confere que o
 que ficou basta.
 
-Gerar com:  py ferramentas/gerar_executavel.py
+Gerar com:  python ferramentas/gerar_executavel.py
 """
 
 import os
