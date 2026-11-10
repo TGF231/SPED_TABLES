@@ -25,6 +25,8 @@ desenho em `docs/superpowers/specs/`; as decisões de fundo estão em
 | 3 | **Consolidador completo** | A diferença entre versões do PVA (regra nova, removida, alterada), a confirmação das regras no PVA de ensaio e as notas técnicas | pendente |
 | 4 | **Migração e cobertura** | As regras de hoje passam para o motor e a cobertura cresce — as fases da seção 3 | pendente |
 
+O assistente de correção (fila do assistente: versões do arquivo, assistente e retorno do PVA) não é projeto de regras. Seu status está no `ROADMAP.md`, seção 4.5, e o desenho em `docs/superpowers/specs/2026-10-26-assistente-de-correcao-design.md`.
+
 ### Projeto 1 — o que ficou pronto
 
 - **O programa não lê nada da instalação do PVA** para validar, diagnosticar
